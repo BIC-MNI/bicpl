@@ -1,5 +1,7 @@
 2001-01-28  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
+	* NEWS: Updated.
+
 	* Tagged as release-1_3_3.
 
 	* configure.in: Put BIC libs into variable BIC_LIBS, rather than LIBS.
