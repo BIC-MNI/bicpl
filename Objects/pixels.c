@@ -306,7 +306,7 @@ public  void  resample_pixels(
     if( pixels->pixel_type != RGB_PIXEL ||
         new_pixels->pixel_type != RGB_PIXEL )
     {
-        print( "Can only resample 24 bit rgb pixels.\n" );
+        print_error( "Can only resample 24 bit rgb pixels.\n" );
         return;
     }
 
