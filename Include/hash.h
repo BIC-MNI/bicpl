@@ -29,7 +29,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char hash_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/hash.h,v 1.9 1996-05-17 19:35:20 david Exp $";
+static char hash_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/hash.h,v 1.10 1997-04-17 17:26:12 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -56,5 +56,31 @@ typedef  struct
     int                current_index;
     hash_entry_struct  *current_entry;
 } hash_table_pointer;
+
+/*---- 2 key hash */ 
+
+typedef  struct  hash2_entry_struct
+{
+    int                           key1;
+    int                           key2;
+    struct   hash2_entry_struct   *next;
+    char                          data[1];
+} hash2_entry_struct;
+
+typedef  struct
+{
+    int                 data_size;
+    int                 size;
+    int                 n_entries;
+    Real                enlarge_threshold;
+    Real                new_density;
+    hash2_entry_struct   **table;
+} hash2_table_struct;
+
+typedef  struct
+{
+    int                 current_index;
+    hash2_entry_struct  *current_entry;
+} hash2_table_pointer;
 
 #endif

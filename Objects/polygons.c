@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.37 1996-12-09 20:20:40 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.38 1997-04-17 17:27:15 david Exp $";
 #endif
 
 private  void  reverse_polygon_order(
@@ -1209,7 +1209,6 @@ public  BOOLEAN  get_plane_segment_intersection(
 {
     Real     dist1, dist2, t;
     BOOLEAN  intersects;
-    Point    t1, t2;
 
     dist1 = DIST_FROM_PLANE( *normal, d, *p1 );
     dist2 = DIST_FROM_PLANE( *normal, d, *p2 );
@@ -1225,7 +1224,7 @@ public  BOOLEAN  get_plane_segment_intersection(
 
     if( t >= 0.0 && t <= 1.0 )
     {
-        INTERPOLATE_POINTS( *intersection_point, t1, t2, t );
+        INTERPOLATE_POINTS( *intersection_point, *p1, *p2, t );
 
         intersects = TRUE;
     }

@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.1 1997-04-16 15:38:52 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.2 1997-04-17 17:27:54 david Exp $";
 #endif
 
 #define    DEFAULT_USER_DEFINED_COLOUR_CODE_SUFFIX      "ccd"

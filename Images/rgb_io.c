@@ -5,6 +5,12 @@ static  void  error_function(
     char  error[] );
 
 #ifdef  __sgi
+#if _MIPS_ISA == 1
+#define  HAVE_IMAGE_LIBRARY
+#endif
+#endif
+
+#ifdef  HAVE_IMAGE_LIBRARY
 #include <image.h>
 
 extern  unsigned short *ibufalloc(IMAGE *image);
@@ -25,7 +31,7 @@ public  Status  input_rgb_file(
     STRING          filename,
     pixels_struct   *pixels )
 {
-#ifdef  __sgi
+#ifdef  HAVE_IMAGE_LIBRARY
     IMAGE                 *iimage;
     int                   x_size, y_size, z_size;
     int                   x, y;
@@ -77,7 +83,7 @@ public  Status  output_rgb_file(
     STRING          filename,
     pixels_struct   *pixels )
 {
-#ifdef  __sgi
+#ifdef  HAVE_IMAGE_LIBRARY
     IMAGE                 *oimage;
     int                   x, y;
     Colour                col;

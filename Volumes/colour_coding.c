@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.20 1997-03-23 21:11:35 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.21 1997-04-17 17:27:23 david Exp $";
 #endif
 
 private  void  interpolate_colours(
@@ -448,7 +448,7 @@ private  void  recreate_piecewise_function(
 @GLOBALS    : 
 @CALLS      :  
 @CREATED    : Nov. 25, 1996    David MacDonald
-@MODIFIED   : 
+@MODIFIED   : Apr. 16, 1997    D. MacDonald - now rescales to [0..1]
 ---------------------------------------------------------------------------- */
 
 public  BOOLEAN  define_colour_coding_user_defined(
@@ -458,6 +458,7 @@ public  BOOLEAN  define_colour_coding_user_defined(
     Real                  positions[],
     Colour_spaces         interpolation_space )
 {
+    Real      pos;
     int       p;
 
     if( n_colours < 2 )
@@ -466,20 +467,19 @@ public  BOOLEAN  define_colour_coding_user_defined(
         return( FALSE );
     }
 
-    if( positions[0] != 0.0 || positions[n_colours-1] != 1.0 )
+    if( positions[0] == positions[n_colours-1] )
     {
         print(
-             "User defined colour coding positions must range from 0 to 1.\n" );
+          "User defined colour coding must have non-empty position range.\n" );
         return( FALSE );
     }
 
     for_less( p, 0, n_colours )
     {
-        if( positions[p] < 0.0 || positions[p] > 1.0 ||
-            p > 0 && positions[p-1] > positions[p] )
+        if( p > 0 && positions[p-1] > positions[p] )
         {
             print( "User defined colour coding must have\n" );
-            print( "monotonic positions in the range 0 to 1.\n" );
+            print( "monotonic positions.\n" );
             return( FALSE );
         }
     }
@@ -491,8 +491,16 @@ public  BOOLEAN  define_colour_coding_user_defined(
     ALLOC( colour_code->user_defined_colour_points, n_colours );
 
     for_less( p, 0, n_colours )
-    { 
-        colour_code->user_defined_colour_points[p].position = positions[p];
+    {
+        if( p == 0 )
+            pos = 0.0;
+        else if( p == n_colours - 1 )
+            pos = 1.0;
+        else
+            pos = (positions[p] - positions[0]) /
+                  (positions[n_colours-1] - positions[0]);
+
+        colour_code->user_defined_colour_points[p].position = pos;
         colour_code->user_defined_colour_points[p].r =
                                              get_Colour_r_0_1(colours[p]);
         colour_code->user_defined_colour_points[p].g =

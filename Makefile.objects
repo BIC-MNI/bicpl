@@ -3,6 +3,7 @@ DATA_STRUCT_SRC = \
                   Data_structures/$(ARCH_DIR)/bitlist.c \
                   Data_structures/$(ARCH_DIR)/build_bintree.c \
                   Data_structures/$(ARCH_DIR)/hash_table.c \
+                  Data_structures/$(ARCH_DIR)/hash2_table.c \
                   Data_structures/$(ARCH_DIR)/object_bintrees.c \
                   Data_structures/$(ARCH_DIR)/point_bintree.c \
                   Data_structures/$(ARCH_DIR)/ray_bintree.c \

@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.24 1997-04-08 17:23:22 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.25 1997-04-17 17:26:44 david Exp $";
 #endif
 
 private  Status  io_vectors(
@@ -38,6 +38,12 @@ private  Status  io_end_indices(
     int            n_items,
     int            *end_indices[],
     int            min_size );
+private  Status  io_points(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    int             n,
+    Point           *points[] );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : io_lines
@@ -309,14 +315,13 @@ public  Status  io_pixels(
 }
 
 static  BOOLEAN  use_compressed = FALSE;
+static  BOOLEAN  compressed_initialized = FALSE;
 
 private  BOOLEAN   use_compressed_polygons( void )
 {
-    static  BOOLEAN  initialized = FALSE;
-
-    if( !initialized )
+    if( !compressed_initialized )
     {
-        initialized = TRUE;
+        compressed_initialized = TRUE;
         use_compressed = getenv( "USE_COMPRESSED_POLYGONS" ) != NULL;
     }
 
@@ -327,6 +332,7 @@ public  void  set_use_compressed_polygons_flag(
     BOOLEAN  value )
 {
     use_compressed = value;
+    compressed_initialized = TRUE;
 }
 
 public  BOOLEAN  get_use_compressed_polygons_flag( void )
