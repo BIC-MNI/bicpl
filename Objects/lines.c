@@ -1,10 +1,9 @@
 
-#include  <def_objects.h>
-#include  <def_arrays.h>
+#include  <def_mni.h>
 
-public  Status  initialize_lines( lines, col )
-    lines_struct    *lines;
-    Colour          col;
+public  Status  initialize_lines(
+    lines_struct    *lines,
+    Colour          col )
 {
     Status   status;
 
@@ -20,8 +19,7 @@ public  Status  initialize_lines( lines, col )
     return( status );
 }
 
-public  Status  delete_lines( lines )
-    lines_struct    *lines;
+public  Status  delete_lines( lines_struct *lines )
 {
     Status   status;
 
@@ -39,8 +37,7 @@ public  Status  delete_lines( lines )
     return( status );
 }
 
-public  Status  start_new_line( lines )
-    lines_struct   *lines;
+public  Status  start_new_line( lines_struct *lines )
 {
     Status   status;
     int      n_indices;
@@ -53,9 +50,9 @@ public  Status  start_new_line( lines )
     return( status );
 }
 
-public  Status  add_point_to_line( lines, point )
-    lines_struct   *lines;
-    Point          *point;
+public  Status  add_point_to_line(
+    lines_struct   *lines,
+    Point          *point )
 {
     Status   status;
 

@@ -1,16 +1,16 @@
 
-#include  <def_objects.h>
+#include  <def_mni.h>
 
-public  Status  initialize_text( text, position, colour, font, size )
-    text_struct     *text;
-    Point           *position;
-    Colour          colour;
-    Font_types      font;
-    Real            size;
+public  Status  initialize_text(
+    text_struct     *text,
+    Point           *position,
+    Colour          colour,
+    Font_types      text_font,
+    Real            size )
 {
     text->origin = *position;
     text->colour = colour;
-    text->font = font;
+    text->font = text_font;
     text->size = size;
 
     return( OK );

@@ -66,8 +66,6 @@ public  void  create_volume_slice(
     Boolean         interpolation_flag,
     Colour          rgb_colour_map[],
     int             colour_index_offset,
-    int             *x_position,
-    int             *y_position,
     int             *n_pixels_alloced,
     pixels_struct   *pixels )
 {
@@ -75,6 +73,7 @@ public  void  create_volume_slice(
     Volume_type  *slice_start;
     Boolean      within_viewport;
     int          axis, strides[3], indices[3], x_size, y_size;
+    int          x_position, y_position;
     Real         x_delta, x_start, x_end, y_delta, y_start, y_end;
     Real         x_offset, y_offset;
 
@@ -91,10 +90,12 @@ public  void  create_volume_slice(
                                               x_end, y_end,
                                               &x_start, &y_start,
                                               &x_size, &y_size,
-                                              x_position, y_position );
+                                              &x_position, &y_position );
 
     status = modify_pixels_size( n_pixels_alloced, pixels, x_size, y_size,
                                  pixel_type );
+    pixels->x_position = x_position;
+    pixels->y_position = y_position;
 
     if( status == OK && within_viewport )
     {

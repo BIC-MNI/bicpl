@@ -1,12 +1,10 @@
 
-#include  <def_objects.h>
-#include  <def_arrays.h>
-#include  <def_geometry.h>
+#include  <def_mni.h>
 
-public  Status  initialize_polygons( polygons, col, spr )
-    polygons_struct   *polygons;
-    Colour            col;
-    Surfprop          *spr;
+public  Status  initialize_polygons(
+    polygons_struct   *polygons,
+    Colour            col,
+    Surfprop          *spr )
 {
     Status   status;
 
@@ -31,8 +29,7 @@ public  Status  initialize_polygons( polygons, col, spr )
     return( status );
 }
 
-public  Status  delete_polygons( polygons )
-    polygons_struct    *polygons;
+public  Status  delete_polygons( polygons_struct *polygons )
 {
     Status   status;
 
@@ -57,8 +54,7 @@ public  Status  delete_polygons( polygons )
     return( status );
 }
 
-public  Status  start_new_polygon( polygons )
-    polygons_struct   *polygons;
+public  Status  start_new_polygon( polygons_struct *polygons )
 {
     Status   status;
     int      n_indices;
@@ -71,10 +67,10 @@ public  Status  start_new_polygon( polygons )
     return( status );
 }
 
-public  Status  add_point_to_polygon( polygons, point, normal )
-    polygons_struct   *polygons;
-    Point             *point;
-    Vector            *normal;
+public  Status  add_point_to_polygon(
+    polygons_struct   *polygons,
+    Point             *point,
+    Vector            *normal )
 {
     int      n_points;
     Status   status;
@@ -87,8 +83,8 @@ public  Status  add_point_to_polygon( polygons, point, normal )
         if( normal != (Vector *) 0 && polygons->normals == (Vector *) 0 ||
             normal == (Vector *) 0 && polygons->normals != (Vector *) 0 )
         {
-            (void) fprintf( stderr,
-                   "Be consistent with normals in add_point_to_polygon.\n" );
+            print(
+              "Error: be consistent with normals in add_point_to_polygon.\n" );
         }
     }
 

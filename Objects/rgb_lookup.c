@@ -1,9 +1,9 @@
 
-#include  <def_objects.h>
+#include  <def_mni.h>
 
 #define  NUM_PIXELS8   256
 
-public  Colour     *get_8bit_rgb_pixel_lookup()
+public  Colour     *get_8bit_rgb_pixel_lookup( void )
 {
     static  Boolean       initialized = FALSE;
     static  Colour        lookup_table[NUM_PIXELS8];
