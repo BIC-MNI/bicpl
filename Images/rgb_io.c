@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <volume_io/internal_volume_io.h>
 #include <bicpl/objects.h>
 #include <bicpl/images.h>

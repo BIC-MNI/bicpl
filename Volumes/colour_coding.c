@@ -16,7 +16,7 @@
 #include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.25 2000-02-06 15:30:53 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.26 2000-12-15 19:55:07 stever Exp $";
 #endif
 
 private  void  interpolate_colours(
@@ -467,13 +467,6 @@ public  BOOLEAN  define_colour_coding_user_defined(
         return( FALSE );
     }
 
-    if( positions[0] == positions[n_colours-1] )
-    {
-        print(
-          "User defined colour coding must have non-empty position range.\n" );
-        return( FALSE );
-    }
-
     for_less( p, 0, n_colours )
     {
         if( p > 0 && positions[p-1] > positions[p] )
@@ -482,6 +475,13 @@ public  BOOLEAN  define_colour_coding_user_defined(
             print( "monotonic positions.\n" );
             return( FALSE );
         }
+    }
+
+    if( positions[0] == positions[n_colours-1] )
+    {
+        print(
+          "User defined colour coding must have non-empty position range.\n" );
+        return( FALSE );
     }
 
     if( colour_code->user_defined_n_colour_points > 0 )

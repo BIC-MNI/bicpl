@@ -16,7 +16,7 @@
 #include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.4 2000-02-06 15:30:53 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.5 2000-12-15 19:55:06 stever Exp $";
 #endif
 
 #define    DEFAULT_USER_DEFINED_COLOUR_CODE_SUFFIX      "ccd"
@@ -61,7 +61,11 @@ public  Status  input_user_defined_colour_coding(
         delete_string( line );
 
         ADD_ELEMENT_TO_ARRAY( colours, n_colours, col, DEFAULT_CHUNK_SIZE );
-        --n_colours;
+	/* n_colours is the number of elements currently in the array.
+	   A side-effect of the macro ADD_ELEMENT_TO_ARRAY is that n_colours is
+	   incremented, so we have to decrement it before using it as the index
+	   for the second array. */
+        --n_colours; 
         ADD_ELEMENT_TO_ARRAY( positions, n_colours, pos, DEFAULT_CHUNK_SIZE );
     }
 

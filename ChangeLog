@@ -1,3 +1,16 @@
+2000-12-15  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* acinclude.m4: Update to latest version from smr_macros.
+
+	* Images/rgb_io.c: Include config.h.
+
+2000-10-18  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Volumes/colour_coding.c (define_colour_coding_user_defined):
+	check for monotonic colour scale before checking for non-empty
+	range, otherwise a non-monotonic scale may falsely claim that the
+	position range is empty.
+
 2000-10-07  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Include/bicpl/marching_cube_data.h: moved header from Marching_cubes.
