@@ -14,7 +14,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.9 1996-09-15 17:15:06 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.10 1996-09-18 18:14:42 david Exp $";
 #endif
 
 #include  <internal_volume_io.h>
@@ -73,8 +73,8 @@ public  BOOLEAN  get_interpolation_weights_2d(
     return( TRUE );
 }
 
-#define  DEBUG
 #ifdef   DEBUG
+#define  DEBUG
 
 #include <prog_utils.h>
 #include <numerical.h>
@@ -246,7 +246,7 @@ private  void  test_solution_3d(
     Real   xs[],
     Real   ys[],
     Real   zs[],
-    Real   weights[] )
+    Real   *weights[3] )
 {
     int        iter, n_iters, p;
     Real       y_angle, z_angle, x_trans, y_trans, z_trans;
@@ -275,7 +275,9 @@ private  void  test_solution_3d(
         {
             transform_point( &transform, xs[p], ys[p], zs[p],
                              &ps[0], &ps[1], &ps[2] );
-            value += weights[p] * ps[dim];
+            value += weights[0][p] * ps[0];
+            value += weights[1][p] * ps[1];
+            value += weights[2][p] * ps[2];
         }
 
         transform_point( &transform, x, y, z, &ps[0], &ps[1], &ps[2] );
@@ -289,6 +291,8 @@ private  void  test_solution_3d(
     }
 }
 #endif
+
+#define TOLERANCE  1.0e-1
 
 private  BOOLEAN   get_four_point_prediction(
     Real   ax,
@@ -336,7 +340,7 @@ private  BOOLEAN   get_four_point_prediction(
     denom = x12 * z3 + z12 * y3 + y12 * x3;
 
     if( v1_len == 0.0 || v2_len == 0.0 ||
-        FABS( denom / v1_len / v2_len / max_len ) < 1.0e-2 )
+        FABS( denom / v1_len / v2_len / max_len ) < TOLERANCE )
         return( FALSE );
 
     x23 = x2 * y3 - x3 * y2;
@@ -365,13 +369,20 @@ public  BOOLEAN  get_prediction_weights_3d(
     Real   xs[],
     Real   ys[],
     Real   zs[],
-    Real   weights[] )
+    Real   *x_weights[3],
+    Real   *y_weights[3],
+    Real   *z_weights[3] )
 {
-    int   p, p1, p2, p3, p4, n_quads;
+    int   p, p1, p2, p3, p4, n_quads, dim;
     Real  weights4[4];
 
     for_less( p, 0, n_points )
-        weights[p] = 0.0;
+    for_less( dim, 0, N_DIMENSIONS )
+    {
+        x_weights[dim][p] = 0.0;
+        y_weights[dim][p] = 0.0;
+        z_weights[dim][p] = 0.0;
+    }
 
     n_quads = 0;
     for_less( p1, 0, n_points-3 )
@@ -386,10 +397,18 @@ public  BOOLEAN  get_prediction_weights_3d(
                                       xs[p4], ys[p4], zs[p4],
                                       weights4 ) )
         {
-            weights[p1] += weights4[0];
-            weights[p2] += weights4[1];
-            weights[p3] += weights4[2];
-            weights[p4] += weights4[3];
+            x_weights[0][p1] += weights4[0];
+            x_weights[0][p2] += weights4[1];
+            x_weights[0][p3] += weights4[2];
+            x_weights[0][p4] += weights4[3];
+            y_weights[1][p1] += weights4[0];
+            y_weights[1][p2] += weights4[1];
+            y_weights[1][p3] += weights4[2];
+            y_weights[1][p4] += weights4[3];
+            z_weights[2][p1] += weights4[0];
+            z_weights[2][p2] += weights4[1];
+            z_weights[2][p3] += weights4[2];
+            z_weights[2][p4] += weights4[3];
             ++n_quads;
         }
     }
@@ -398,12 +417,17 @@ public  BOOLEAN  get_prediction_weights_3d(
         return( FALSE );
 
     for_less( p, 0, n_points )
-        weights[p] /= (Real) n_quads;
+    for_less( dim, 0, N_DIMENSIONS )
+    {
+        x_weights[dim][p] /= (Real) n_quads;
+        y_weights[dim][p] /= (Real) n_quads;
+        z_weights[dim][p] /= (Real) n_quads;
+    }
 
 #ifdef DEBUG
-    test_solution_3d( 0, x, y, z, n_points, xs, ys, zs, weights );
-    test_solution_3d( 1, x, y, z, n_points, xs, ys, zs, weights );
-    test_solution_3d( 2, x, y, z, n_points, xs, ys, zs, weights );
+    test_solution_3d( 0, x, y, z, n_points, xs, ys, zs, x_weights );
+    test_solution_3d( 1, x, y, z, n_points, xs, ys, zs, y_weights );
+    test_solution_3d( 2, x, y, z, n_points, xs, ys, zs, z_weights );
 #endif
 
     return( TRUE );
