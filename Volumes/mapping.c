@@ -1,5 +1,5 @@
 
-#include  <mni.h>
+#include  <vols.h>
 
 public  void  get_mapping(
     Volume          volume,
