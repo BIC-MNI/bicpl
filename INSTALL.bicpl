@@ -24,7 +24,11 @@ library in "/foo/lib", you can use the --with-build-path option:
 	./configure --with-build-path=/foo
 
 This is equivalent to setting CPPFLAGS and LDFLAGS, as in the previous
-example.
+example.  If you have software installed in two or more places, e.g.
+/foo and /bar, concatenate them using colons:
+
+	./configure --with-build-path=/foo:/bar
+
 
 
 		Image I/O
