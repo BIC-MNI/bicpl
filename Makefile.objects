@@ -50,13 +50,15 @@ NUMERICAL_SRC  = \
                  Numerical/least_squares.c \
                  Numerical/matrix_svd.c \
                  Numerical/numerical.c \
-                 Numerical/statistics.c
+                 Numerical/statistics.c \
+                 Numerical/t_stat.c
 
 OBJECTS_SRC   = \
                 Objects/colours.c \
                 Objects/graphics_io.c \
                 Objects/landmark_file.c \
                 Objects/lines.c \
+                Objects/markers.c \
                 Objects/models.c \
                 Objects/object_io.c \
                 Objects/objects.c \
@@ -85,6 +87,7 @@ VOLUMES_SRC = \
               Volumes/filters.c \
               Volumes/fill_volume.c \
               Volumes/interpolate.c \
+              Volumes/input.c \
               Volumes/labels.c \
               Volumes/mapping.c \
               Volumes/output_free.c \
