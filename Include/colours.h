@@ -16,26 +16,27 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colours.h,v 1.10 1995-09-13 13:24:52 david Exp $";
+static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colours.h,v 1.11 1996-09-14 17:38:09 david Exp $";
 #endif
 
 #include  <volume_io.h>
 
 #define  COMPOSITE_COLOURS( result, front, back ) \
          { \
-             Real  rf, gf, bf, af, rb, gb, bb, ab; \
-             rf = get_Colour_r_0_1(front); \
-             gf = get_Colour_g_0_1(front); \
-             bf = get_Colour_b_0_1(front); \
-             af = get_Colour_a_0_1(front); \
-             rb = get_Colour_r_0_1(back); \
-             gb = get_Colour_g_0_1(back); \
-             bb = get_Colour_b_0_1(back); \
-             ab = get_Colour_a_0_1(back); \
-             (result) = make_rgba_Colour_0_1( af * rf + (1.0 - af) * rb, \
-                                              af * gf + (1.0 - af) * gb, \
-                                              af * bf + (1.0 - af) * bb, \
-                                              af * af + (1.0 - af) * ab ); \
+             Real  _rf, _gf, _bf, _af, _rb, _gb, _bb, _ab, _weight; \
+             _rf = get_Colour_r_0_1(front); \
+             _gf = get_Colour_g_0_1(front); \
+             _bf = get_Colour_b_0_1(front); \
+             _af = get_Colour_a_0_1(front); \
+             _rb = get_Colour_r_0_1(back); \
+             _gb = get_Colour_g_0_1(back); \
+             _bb = get_Colour_b_0_1(back); \
+             _ab = get_Colour_a_0_1(back); \
+             _weight = (1.0 - _af) * _ab; \
+             (result) = make_rgba_Colour_0_1( _af * _rf + _weight * _rb, \
+                                              _af * _gf + _weight * _gb, \
+                                              _af * _bf + _weight * _bb, \
+                                              _af * _af + _weight * _ab ); \
          }
 
 typedef  enum  { RGB_SPACE, HSL_SPACE }  Colour_spaces;
