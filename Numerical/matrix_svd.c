@@ -23,7 +23,7 @@ int bicpl_dgesvd_(char *jobu, char *jobvt, long int *m, long int *n,
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.7 2004-04-15 19:00:17 vsingh Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.8 2004-04-15 22:04:05 vsingh Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -62,12 +62,12 @@ public  BOOLEAN  singular_value_decomposition(
   long int ldu = _m;
   long int ldvt = _n;
   long int lwork = MAX(3*MIN(_m,_n)+MAX(_m,_n),5*MIN(_m,_n));
-  double** _a;
-  double* work;
-  double** _u;
-  double** _v;
+  Real** _a;
+  Real* work;
+  Real** _u;
+  Real** _v;
   long int info;
-  double temp;
+  Real temp;
 
   ALLOC(work,(int) lwork);
   ALLOC2D(_a,n,m);
@@ -97,6 +97,10 @@ public  BOOLEAN  singular_value_decomposition(
     }
   }
 
+  FREE(work);
+  FREE2D(_u);
+  FREE2D(_v);
+  FREE2D(_a);
+  
   return val;  
-
 }
