@@ -179,15 +179,17 @@ private  Real  convert_to_mm(
     Real    brain_dist_low,
     Real    brain_dist_high,
     Real    brain_limit_low,
-    Real    brain_limit_high,
-    Real    *mm )
+    Real    brain_limit_high )
 {
+    Real   mm;
     Real   stereotactic;
 
     stereotactic = limit_low + (limit_high - limit_low) * tal / (Real) n_planes;
 
-    *mm = brain_dist_low + (brain_dist_high - brain_dist_low) *
+    mm = brain_dist_low + (brain_dist_high - brain_dist_low) *
       (stereotactic - brain_limit_low) / (brain_limit_high - brain_limit_low);
+
+    return( mm );
 }
 
 public  void  convert_talairach_to_mm(
@@ -200,13 +202,13 @@ public  void  convert_talairach_to_mm(
 {
     check_initialized();
 
-    convert_to_mm( x_tal, nx, x_low, x_high, x_dist_minus_1, x_dist_1,
-                   -1.0, 1.0, x_mm );
-    convert_to_mm( y_tal, ny, y_low, y_high, y_dist_minus_1, y_dist_1,
-                   -1.0, 1.0, y_mm );
+    *x_mm = convert_to_mm( x_tal, nx, x_low, x_high, x_dist_minus_1, x_dist_1,
+                           -1.0, 1.0 );
+    *y_mm = convert_to_mm( y_tal, ny, y_low, y_high, y_dist_minus_1, y_dist_1,
+                           -1.0, 1.0 );
     *y_mm -= TALAIRACH_OFFSET;
-    convert_to_mm( z_tal, nz, z_low, z_high, z_dist_0, z_dist_1,
-                   0.0, 1.0, z_mm );
+    *z_mm = convert_to_mm( z_tal, nz, z_low, z_high, z_dist_0, z_dist_1,
+                           0.0, 1.0 );
 }
 
 private  Real  convert_from_mm(

@@ -273,7 +273,7 @@ public  void  convert_pixels24_to_dithered(
                 errors[1-error_row][c][x] += five;
             }
 
-            PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) = ind;
+            PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) = (unsigned char) ind;
         }
 
         error_row = 1 - error_row;

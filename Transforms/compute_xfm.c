@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.4  1995-03-07 18:54:49  david
+@MODIFIED   : Revision 1.5  1995-04-04 03:42:05  david
 @MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.4  1995/03/07  18:54:49  david
+ * check_in_all
+ *
  * Revision 1.3  95/02/27  17:20:20  david
  * *** empty log message ***
  * 
@@ -68,7 +71,6 @@ private void compute_12param_transform(int npoints,
                                        Real **tag_list2, 
                                        Trans_type trans_type,
                                        General_transform *transform);
-private void lfit_func(float *point, float *afunc, int npars);
 private void compute_tps_transform(int npoints, 
                                    Real **tag_list1, 
                                    Real **tag_list2, 

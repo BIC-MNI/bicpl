@@ -46,7 +46,7 @@ public  void  compute_statistics(
         REMOVE_FROM_PRIORITY_QUEUE( heap, ignored, *median );
 
 #ifdef lint
-    if( ignored != (char) 0 ) {}
+    if( ignored != (char) 0 ) { ignored = 0; }
 #endif
 
     DELETE_PRIORITY_QUEUE( heap );

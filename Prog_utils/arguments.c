@@ -236,7 +236,7 @@ public  BOOLEAN  get_prefix_argument(
     BOOLEAN   found;
 
     if( arguments_remaining() &&
-        strlen(get_current_argument_string()) >= strlen(prefix) &&
+        (int) strlen(get_current_argument_string()) >= strlen(prefix) &&
         strncmp( get_current_argument_string(), prefix, strlen(prefix) ) == 0 )
     {
         arguments.current_offset_within_arg += strlen(prefix);

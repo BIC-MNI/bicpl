@@ -1,6 +1,7 @@
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
+#include  <numerical.h>
 
 #define  MAX_POINTS    30
 

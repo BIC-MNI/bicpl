@@ -194,7 +194,7 @@ public  Status  io_tag_point(
 
     if( io_direction == WRITE_FILE )
     {
-        if( status == OK && strlen(marker->label) > 0 )
+        if( status == OK && (int) strlen(marker->label) > 0 )
             status = io_quoted_string( file, io_direction, ASCII_FORMAT,
                                        marker->label, MAX_STRING_LENGTH );
     }

@@ -537,14 +537,14 @@ public  void  render_volume_to_slice(
             pixel_ptr = &pixels->data.pixels_16bit_colour_index[IJ(y,0,x_size)];
             for_less( x, 0, start_x[y] )
             {
-                *pixel_ptr = empty_colour;
+                *pixel_ptr = (unsigned short) empty_colour;
                 ++pixel_ptr;
             }
 
             pixel_ptr = &pixels->data.pixels_16bit_colour_index[IJ(y,end_x[y]+1,x_size)];
             for_less( x, end_x[y]+1, x_size )
             {
-                *pixel_ptr = empty_colour;
+                *pixel_ptr = (unsigned short) empty_colour;
                 ++pixel_ptr;
             }
         }

@@ -452,8 +452,8 @@ public void nr_rotzf(float **M, float a)
 
 public void nr_multd(double **A, int mA1, int mA2, int nA1, int nA2, 
 	 double **B, int mB1, int mB2, int nB1, int nB2, 
-	 double **C )
-{ /* ARGSUSED */
+	 double **C )  /* ARGSUSED */
+{
    int i, j, k;
 
    for ( k = mA1; k <= mA2; k++ ) {
@@ -471,8 +471,8 @@ public void nr_multd(double **A, int mA1, int mA2, int nA1, int nA2,
 
 public void nr_multf(float **A, int mA1, int mA2, int nA1, int nA2, 
 	 float **B, int mB1, int mB2, int nB1, int nB2, 
-	 float **C)
-{ /* ARGSUSED */
+	 float **C) /* ARGSUSED */
+{
    int i, j, k;
 
    for ( k = mA1; k <= mA2; k++ ) {

@@ -476,8 +476,9 @@ public  Status  io_colour(
     File_formats    format,
     Colour          *colour )
 {
-    float    r, g, b, a;
-    Status   status;
+    float          r, g, b, a;
+    unsigned char  comps[4];
+    Status         status;
 
     status = OK;
 
@@ -503,8 +504,14 @@ public  Status  io_colour(
             *colour = make_rgba_Colour_0_1( r, g, b, a );
     }
     else
-        status = io_binary_data( file, io_flag, (void *) colour,
-                                 sizeof(*colour), 1 );
+    {
+        comps[3] = get_Colour_r( *colour );
+        comps[2] = get_Colour_g( *colour );
+        comps[1] = get_Colour_b( *colour );
+        comps[0] = get_Colour_a( *colour );
+        status = io_binary_data( file, io_flag, (void *) comps,
+                                 sizeof(comps[0]), 4 );
+    }
 
     return( status );
 }
@@ -542,19 +549,13 @@ public  Status  io_colours(
 
     if( status == OK )
     {
-        if( format == ASCII_FORMAT )
+        for_less( i, 0, n_colours )
         {
-            for_less( i, 0, n_colours )
-            {
-                status = io_colour( file, io_flag, format, &(*colours)[i] );
+            status = io_colour( file, io_flag, format, &(*colours)[i] );
 
-                if( status == OK )
-                    status = io_newline( file, io_flag, format );
-            }
+            if( status == OK )
+                status = io_newline( file, io_flag, format );
         }
-        else
-            status = io_binary_data( file, io_flag, (void *) (*colours),
-                                     sizeof((*colours)[0]), n_colours );
     }
 
     return( status );

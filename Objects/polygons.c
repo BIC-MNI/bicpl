@@ -165,7 +165,7 @@ public  void  set_polygons_visibilities(
     if( polygons->visibilities != (Smallest_int *) 0 )
     {
         for_less( i, 0, polygons->n_items )
-            polygons->visibilities[i] = state;
+            polygons->visibilities[i] = (Smallest_int) state;
     }
 }
 

@@ -1,11 +1,6 @@
 #include  <internal_volume_io.h>
 #include  <geom.h>
 
-private  void  get_surface_colour(
-    Real    curvature,
-    Real    max_curvature,
-    Colour  *colour );
-
 public  void  get_polygon_vertex_curvatures(
     polygons_struct   *polygons,
     Real              smoothing_distance,

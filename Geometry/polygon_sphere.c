@@ -1,5 +1,6 @@
 #include  <internal_volume_io.h>
 #include  <geom.h>
+#include  <numerical.h>
 
 private  int  get_n_sphere_points(
     int   n_up,

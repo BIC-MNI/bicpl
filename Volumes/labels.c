@@ -331,7 +331,7 @@ public  Status  save_label_volume(
 
     check_alloc_label_data( label_volume );
 
-    if( original_filename != NULL && strlen(original_filename) > 0 &&
+    if( original_filename != NULL && (int) strlen(original_filename) > 0 &&
         file_exists( original_filename ) )
     {
         status = output_modified_volume( filename,
