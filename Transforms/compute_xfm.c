@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.2  1994-11-25 14:23:13  david
-@MODIFIED   : check_in_all
+@MODIFIED   : Revision 1.3  1995-02-27 17:20:20  david
+@MODIFIED   : *** empty log message ***
 @MODIFIED   :
+ * Revision 1.2  94/11/25  14:23:13  david
+ * check_in_all
+ * 
  * Revision 1.1  94/11/04  14:45:47  david
  * Initial revision
  * 
@@ -674,78 +677,56 @@ private void lfit_func(float *point, float *afunc, int npars)
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
-private void compute_tps_transform(int npoints, 
-                                   Real **tag_list1, 
-                                   Real **tag_list2, 
-                                   Trans_type trans_type,
-                                   General_transform *transform)
+private  void  compute_tps_transform(int npoints, 
+                                     Real **tag_list1, 
+                                     Real **tag_list2, 
+                                     Trans_type trans_type,
+                                     General_transform *transform)
 {
-   float **afterdef, **beforedef, **invmly, **points, **displacements;
-   int ndim, i, j;
-   General_transform inv_transform;
+   float              **points, **displacements;
+   int                ndim, i, j;
+   General_transform  inv_transform;
 
    /* Check trans_type */
+
    if (trans_type != TRANS_TPS) {
       (void) fprintf(stderr, "Wrong trans type in compute_tps_transform\n");
       exit(EXIT_FAILURE);
    }
 
    /* Allocate matrices */
+
    ndim = NUMBER_OF_DIMENSIONS;
-   afterdef = matrix(1,npoints,1,ndim);
-   beforedef = matrix(1,npoints,1,ndim);
-   invmly = matrix(1,npoints+1+ndim,1,ndim);
+
+   ALLOC2D( points, npoints, ndim );
+   ALLOC2D( displacements, npoints+1+ndim, ndim );
 
    /* Copy points (we calculate transformation from vol 1 to vol 2 and
       then invert it so that resampling is faster) */
-   for (i=0; i<npoints; i++) {
-      for (j=0; j<ndim; j++) {
-         afterdef[i+1][j+1] = tag_list2[i][j];
-         beforedef[i+1][j+1] = tag_list1[i][j];
-      }
-   }
 
-   get_nonlinear_warp(beforedef, afterdef, invmly, npoints, ndim);
+   get_nonlinear_warp( tag_list1, tag_list2, displacements, npoints, ndim );
 
-   for (i=0; i<npoints+1+ndim; i++) {
-      for (j=0; j<ndim; j++) {
-      }
-   }
-
-   /* Allocate and copy matrices for gen transform */
-   points = matrix(0, npoints-1, 0, ndim-1);
-   displacements = matrix(0, npoints+1+ndim-1, 0, ndim-1);
-
-   for (i=0; i<npoints; i++) {
-      for (j=0; j<ndim; j++) {
-         points[i][j] = beforedef[i+1][j+1];
-      }
-   }
-
-   for (i=0; i<npoints+1+ndim; i++) {
-      for (j=0; j<ndim; j++) {
-         displacements[i][j] = invmly[i+1][j+1];
-      }
+   for_less( i, 0, npoints )
+   {
+       for_less( j, 0, ndim )
+           points[i][j] = (float) tag_list1[i][j];
    }
 
    /* Create general transform */
-   create_thin_plate_transform(&inv_transform, ndim, npoints, 
-                               points, displacements);
+
+   create_thin_plate_transform( &inv_transform, ndim, npoints, 
+                                points, displacements);
 
    /* Invert general transform */
-   create_inverse_general_transform(&inv_transform, transform);
+
+   create_inverse_general_transform( &inv_transform, transform );
 
    /* Free inverse transform */
+
    delete_general_transform(&inv_transform);
 
    /* Free points and displacements */
-   free_matrix(points, 0, npoints-1, 0, ndim-1);
-   free_matrix(displacements, 0, npoints+1+ndim-1, 0, ndim-1);
 
-   /* Free matrices */
-   free_matrix(afterdef,1,npoints,1,ndim);
-   free_matrix(beforedef,1,npoints,1,ndim);
-   free_matrix(invmly,1,npoints+1+ndim,1,ndim);
-
-   return;
+   FREE2D( points );
+   FREE2D( displacements );
 }
