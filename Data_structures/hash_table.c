@@ -16,18 +16,20 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.9 1995-09-19 18:23:55 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.10 1996-04-29 15:27:06 david Exp $";
 #endif
+
+#define  HASH_FUNCTION_CONSTANT          0.6180339887498948482
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_hash_table
-@INPUT      : n_keys
+@INPUT      : 
             : size
             : enlarge_threshold
             : new_density
 @OUTPUT     : hash_table
 @RETURNS    : Status
-@DESCRIPTION: Initializes a hash table to empty, storing the number of keys,
+@DESCRIPTION: Initializes a hash table to empty, storing the
             : initial size, and parameters controlling automatic growth.
 @METHOD     : 
 @GLOBALS    : 
@@ -38,17 +40,12 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 
 public   void  initialize_hash_table(
     hash_table_struct  *hash_table,
-    int                n_keys,
     int                size,
     Real               enlarge_threshold,
     Real               new_density )
 {
     int        i;
 
-    if( n_keys < 1 )
-        handle_internal_error( "Hash table # keys\n" );
-
-    hash_table->n_keys = n_keys;
     hash_table->size = size;
     hash_table->n_entries = 0;
     hash_table->enlarge_threshold = enlarge_threshold;
@@ -57,7 +54,7 @@ public   void  initialize_hash_table(
     ALLOC( hash_table->table, size );
 
     for( i = 0;  i < size;  ++i )
-        hash_table->table[i] = (hash_entry_struct *) 0;
+        hash_table->table[i] = NULL;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -103,7 +100,7 @@ public   void  delete_hash_table(
     {
         entry = hash_table->table[i];
 
-        while( entry != (hash_entry_struct *) 0 )
+        while( entry != NULL )
         {
             next = entry->next;
             FREE( entry );
@@ -117,10 +114,11 @@ public   void  delete_hash_table(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : hash_function
 @INPUT      : hash_table
-            : keys
+            : key
 @OUTPUT     : 
 @RETURNS    : an index into the hash table.
-@DESCRIPTION: Hashes the one or more keys to create an index into the table.
+@DESCRIPTION: Hashes the key to create an index into the table.  Uses
+              the multiplicative hash method from Corman book on algorithms.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -130,63 +128,25 @@ public   void  delete_hash_table(
 
 private   int  hash_function(
     hash_table_struct   *hash_table,
-    int                 keys[] )
+    int                 key )
 {
-    int           i;
-    unsigned int  single_hash;
-    static int    factors[] = { 1, 1393, 2713, 4343 };
+    int    index;
+    Real   v;
 
-    single_hash = keys[0];
+    v = (Real) key * HASH_FUNCTION_CONSTANT;
 
-    for_less( i, 1, hash_table->n_keys )
-        single_hash += factors[i % SIZEOF_STATIC_ARRAY(factors)] * keys[i];
+    index = (int) (FRACTION(v) * (Real) hash_table->size);
 
-    return( (int) (single_hash % (unsigned int) hash_table->size) );
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : keys_equal
-@INPUT      : n_keys
-            : keys1
-            : keys2
-@OUTPUT     : 
-@RETURNS    : TRUE if equal
-@DESCRIPTION: Compares the keys to see if they are equal.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    :                      David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-private  BOOLEAN  keys_equal(
-    int   n_keys,
-    int   keys1[],
-    int   keys2[] )
-{
-    BOOLEAN  equal;
-    int      i;
-
-    equal = (keys1[0] == keys2[0]);
-
-    for_less( i, 1, n_keys )
-    {
-        if( !equal )
-            break;
-
-        equal = (keys1[i] == keys2[i]);
-    }
-
-    return( equal );
+    return( index );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : lookup
 @INPUT      : hash_table
-            : keys
+            : key
 @OUTPUT     : 
 @RETURNS    : a pointer to a pointer to the hash table entry
-@DESCRIPTION: Looks up the given keys in the hash table, and returns a pointer
+@DESCRIPTION: Looks up the given key in the hash table, and returns a pointer
             : to a pointer to the entry, suitable for inserting or deleting.
 @METHOD     : 
 @GLOBALS    : 
@@ -197,18 +157,18 @@ private  BOOLEAN  keys_equal(
 
 private   hash_entry_struct  **lookup(
     hash_table_struct  *hash_table,
-    int                keys[] )
+    int                key )
 {
     int                 i;
     hash_entry_struct   **ptr_to_entry;
 
-    i = hash_function( hash_table, keys );
+    i = hash_function( hash_table, key );
 
     ptr_to_entry = &hash_table->table[i];
 
-    while( *ptr_to_entry != (hash_entry_struct *) 0 )
+    while( *ptr_to_entry != NULL )
     {
-        if( keys_equal( hash_table->n_keys, (*ptr_to_entry)->keys, keys ) )
+        if( (*ptr_to_entry)->key == key )
             break;
 
         ptr_to_entry = &(*ptr_to_entry)->next;
@@ -220,7 +180,7 @@ private   hash_entry_struct  **lookup(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : insert_in_hash_table
 @INPUT      : hash_table
-            : keys
+            : key
             : data_ptr
 @OUTPUT     : 
 @RETURNS    : Status
@@ -234,24 +194,21 @@ private   hash_entry_struct  **lookup(
 
 public  void  insert_in_hash_table(
     hash_table_struct  *hash_table,
-    int                keys[],
+    int                key,
     void               *data_ptr )
 {
-    int                 i;
     hash_entry_struct   **ptr_to_entry;
     hash_entry_struct   *entry;
 
-    ptr_to_entry = lookup( hash_table, keys );
+    ptr_to_entry = lookup( hash_table, key );
 
     entry = *ptr_to_entry;
 
-    if( entry == (hash_entry_struct *) 0 )
+    if( entry == NULL )
     {
-        ALLOC_VAR_SIZED_STRUCT( entry, int, hash_table->n_keys );
+        ALLOC( entry, 1 );
 
-        for_less( i, 0, hash_table->n_keys )
-            entry->keys[i] = keys[i];
-
+        entry->key = key;
         entry->data_ptr = data_ptr;
         entry->next = *ptr_to_entry;
 
@@ -264,23 +221,25 @@ public  void  insert_in_hash_table(
         {
             int   new_size;
 
-            new_size = (int) (
-                    hash_table->n_entries / hash_table->new_density + 0.5);
+            new_size = ROUND( (Real) hash_table->n_entries /
+                              hash_table->new_density );
             increase_hash_table_size( hash_table, new_size );
         }
     }
     else
-        handle_internal_error( "Insert in hash table" );
+    {
+        print_error( "Insert in hash table: entry already present: %d\n", key );
+    }
 }
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : lookup_in_hash_table
 @INPUT      : hash_table
-            : keys
-            : data_ptr
-@OUTPUT     : 
+            : key
+@OUTPUT     : : data_ptr
 @RETURNS    : TRUE if found
-@DESCRIPTION: Lookups the given keys and data in the hash table.
+@DESCRIPTION: Lookups the given key in the hash table, passing back the
+              data if found.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -290,24 +249,24 @@ public  void  insert_in_hash_table(
 
 public  BOOLEAN  lookup_in_hash_table(
     hash_table_struct  *hash_table,
-    int                keys[],
+    int                key,
     void               **data_ptr )
 {
     BOOLEAN             found;
     hash_entry_struct   **ptr_to_entry;
     hash_entry_struct   *entry;
 
-    ptr_to_entry = lookup( hash_table, keys );
+    ptr_to_entry = lookup( hash_table, key );
 
     entry = *ptr_to_entry;
 
-    if( entry == (hash_entry_struct *) 0 )
+    if( entry == NULL )
     {
         found = FALSE;
     }
     else
     {
-        if( data_ptr != (void **) 0 )
+        if( data_ptr != NULL )
             *data_ptr = entry->data_ptr;
 
         found = TRUE;
@@ -320,8 +279,7 @@ public  BOOLEAN  lookup_in_hash_table(
 @NAME       : remove_from_hash_table
 @INPUT      : hash_table
             : keys
-            : data_ptr
-@OUTPUT     : 
+@OUTPUT     : : data_ptr
 @RETURNS    : TRUE if it existed in the table
 @DESCRIPTION: Finds and removes the given data from the hash table.
 @METHOD     : 
@@ -333,24 +291,24 @@ public  BOOLEAN  lookup_in_hash_table(
 
 public  BOOLEAN  remove_from_hash_table(
     hash_table_struct  *hash_table,
-    int                keys[],
+    int                key,
     void               **data_ptr )
 {
     BOOLEAN             removed;
     hash_entry_struct   **ptr_to_entry;
     hash_entry_struct   *entry;
 
-    ptr_to_entry = lookup( hash_table, keys );
+    ptr_to_entry = lookup( hash_table, key );
 
     entry = *ptr_to_entry;
 
-    if( entry == (hash_entry_struct *) 0 )
+    if( entry == NULL )
     {
         removed = FALSE;
     }
     else
     {
-        if( data_ptr != (void **) 0 )
+        if( data_ptr != NULL )
             *data_ptr = entry->data_ptr;
 
         *ptr_to_entry = entry->next;
@@ -389,11 +347,11 @@ private   void  move_hash_entries_to_new_table(
     {
         entry = src->table[i];
 
-        while( entry != (hash_entry_struct *) 0 )
+        while( entry != NULL )
         {
             next = entry->next;
 
-            hash = hash_function( dest, entry->keys );
+            hash = hash_function( dest, entry->key );
             entry->next = dest->table[hash];
             dest->table[hash] = entry;
             ++dest->n_entries;
@@ -401,7 +359,7 @@ private   void  move_hash_entries_to_new_table(
             entry = next;
         }
 
-        src->table[i] = (hash_entry_struct *) 0;
+        src->table[i] = NULL;
     }
 }
 
@@ -427,7 +385,7 @@ public   void  increase_hash_table_size(
 {
     hash_table_struct   new_table;
 
-    initialize_hash_table( &new_table, hash_table->n_keys, new_size,
+    initialize_hash_table( &new_table, new_size,
                            hash_table->enlarge_threshold,
                            hash_table->new_density );
 
@@ -456,7 +414,7 @@ public  void  initialize_hash_pointer(
     hash_table_pointer  *ptr )
 {
     ptr->current_index = -1;
-    ptr->current_entry = (hash_entry_struct *) 0;
+    ptr->current_entry = NULL;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -481,23 +439,23 @@ public  BOOLEAN  get_next_hash_entry(
 {
     BOOLEAN   found;
 
-    if( ptr->current_entry != (hash_entry_struct *) 0 )
+    if( ptr->current_entry != NULL )
         ptr->current_entry = ptr->current_entry->next;
 
-    if( ptr->current_entry == (hash_entry_struct *) 0 )
+    if( ptr->current_entry == NULL )
     {
         do
         {
             ++ptr->current_index;
         }
         while( ptr->current_index < hash_table->size &&
-               hash_table->table[ptr->current_index] == (hash_entry_struct *)0);
+               hash_table->table[ptr->current_index] == NULL );
 
         if( ptr->current_index < hash_table->size )
             ptr->current_entry = hash_table->table[ptr->current_index];
     }
 
-    found = (ptr->current_entry != (hash_entry_struct *) 0);
+    found = (ptr->current_entry != NULL);
 
     if( found && data_ptr != NULL )
         *data_ptr = ptr->current_entry->data_ptr;

@@ -17,7 +17,7 @@
 #include  <prog_utils.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.7 1995-07-31 13:45:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.8 1996-04-29 15:27:06 david Exp $";
 #endif
 
 private  int  get_random_level( void );
@@ -61,27 +61,25 @@ typedef  struct
 ---------------------------------------------------------------------------- */
 
 public   void  initialize_skiplist(
-    skiplist_struct  *skiplist,
-    int              (*compare_function) ( void *, void * ) )
+    skiplist_struct  *skiplist )
 {
     int       i;
 
-    skiplist->compare_function = compare_function;
     skiplist->level = 1;
 
     ALLOC_SKIP_STRUCT( skiplist->header, MAX_SKIP_LEVELS );
 
     for_less( i, 0, MAX_SKIP_LEVELS )
-        skiplist->header->forward[i] = (skip_struct *) 0;
+        skiplist->header->forward[i] = NULL;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : find_data_position
 @INPUT      : skiplist
-            : ptr
+            : key
 @OUTPUT     : update
 @RETURNS    : TRUE if found
-@DESCRIPTION: Searches the skiplist for the given data, and sets the update
+@DESCRIPTION: Searches the skiplist for the given key, and sets the update
             : struct so that it can provide an insert.
 @METHOD     : 
 @GLOBALS    : 
@@ -92,7 +90,7 @@ public   void  initialize_skiplist(
 
 private  BOOLEAN  find_data_position(
     skiplist_struct    *skiplist,
-    void               *data_ptr,
+    int                key,
     update_struct      *update )
 {
     int           i;
@@ -103,19 +101,15 @@ private  BOOLEAN  find_data_position(
 
     for( i = skiplist->level-1;  i >= 0;  --i )
     {
-        while( x->forward[i] != (skip_struct *) 0 &&
-               skiplist->compare_function( x->forward[i]->data_ptr, data_ptr )
-                      == LESS_THAN )
-        {
+        while( x->forward[i] != NULL && x->forward[i]->key < key )
             x = x->forward[i];
-        }
+
         update->update[i] = x;
     }
 
     x = update->update[0]->forward[0];
 
-    found = (x != (skip_struct *) 0) &&
-            (skiplist->compare_function(x->data_ptr,data_ptr) == EQUAL_TO);
+    found = x != NULL && x->key == key;
 
     return( found );
 }
@@ -124,6 +118,7 @@ private  BOOLEAN  find_data_position(
 @NAME       : insert_data_in_skiplist
 @INPUT      : skiplist
             : update           - the set of pointers indicating where to insert
+            : key              - search key
             : data_ptr         - the data to insert
 @OUTPUT     : 
 @RETURNS    : 
@@ -138,6 +133,7 @@ private  BOOLEAN  find_data_position(
 private   void  insert_data_in_skiplist(
     skiplist_struct   *skiplist,
     update_struct     *update,
+    int               key,
     void              *data_ptr )
 {
     int           i, new_level;
@@ -163,6 +159,7 @@ private   void  insert_data_in_skiplist(
     ALLOC_SKIP_STRUCT( x, new_level );
 
     x->data_ptr = data_ptr;
+    x->key = key;
 
     for( i = 0;  i < new_level;  ++i )
     {
@@ -208,8 +205,7 @@ private   void  delete_entry_from_skiplist(
     FREE( x );
 
     while( skiplist->level > 1 &&
-           skiplist->header->forward[skiplist->level-1] ==
-                (skip_struct *) 0 )
+           skiplist->header->forward[skiplist->level-1] == NULL )
     {
         --skiplist->level;
     }
@@ -261,7 +257,7 @@ public   void  delete_skiplist(
 
     ptr = skiplist->header;
 
-    while( ptr != (skip_struct *) 0 )
+    while( ptr != NULL )
     {
         deleting = ptr;
         ptr = ptr->forward[0];
@@ -272,13 +268,11 @@ public   void  delete_skiplist(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : search_skiplist
 @INPUT      : skiplist
-            : key_data_ptr
+            : key
 @OUTPUT     : data_ptr
 @RETURNS    : TRUE if found, FALSE if not
 @DESCRIPTION: Searches the skiplist for a data record that matches the
-            : key_data_ptr.  In order to call this, you may have to create
-            : a temporary data record, with just the appropriate key values
-            : filled in.  This function will find the matching record,
+            : key.  This function will find the matching record,
             : and return it.
 @METHOD     : 
 @GLOBALS    : 
@@ -289,13 +283,13 @@ public   void  delete_skiplist(
 
 public  BOOLEAN  search_skiplist(
     skiplist_struct          *skiplist,
-    void                     *key_data_ptr,
+    int                      key,
     void                     **data_ptr )
 {
     BOOLEAN        found;
     update_struct  update_ptrs;
 
-    found = find_data_position( skiplist, key_data_ptr, &update_ptrs );
+    found = find_data_position( skiplist, key, &update_ptrs );
 
     if( found )
         *data_ptr = update_ptrs.update[0]->forward[0]->data_ptr;
@@ -306,6 +300,7 @@ public  BOOLEAN  search_skiplist(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : insert_in_skiplist
 @INPUT      : skiplist
+            : key
             : data_ptr
 @OUTPUT     : 
 @RETURNS    : TRUE if inserted, FALSE if already there
@@ -319,15 +314,16 @@ public  BOOLEAN  search_skiplist(
 
 public  BOOLEAN  insert_in_skiplist(
     skiplist_struct          *skiplist,
+    int                      key,
     void                     *data_ptr )
 {
     BOOLEAN        already_there;
     update_struct  update_ptrs;
 
-    already_there = find_data_position( skiplist, data_ptr, &update_ptrs );
+    already_there = find_data_position( skiplist, key, &update_ptrs );
 
     if( !already_there )
-        insert_data_in_skiplist( skiplist, &update_ptrs, data_ptr );
+        insert_data_in_skiplist( skiplist, &update_ptrs, key, data_ptr );
 
     return( !already_there );
 }
@@ -335,10 +331,11 @@ public  BOOLEAN  insert_in_skiplist(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : delete_from_skiplist
 @INPUT      : skiplist
-            : data_ptr        - data to delete
-@OUTPUT     : 
-@RETURNS    : TRUE if data_ptr was in list and successfully deleted.
-@DESCRIPTION: Deletes the entry for the given data_ptr from the skiplist.
+            : key
+@OUTPUT     : data_ptr
+@RETURNS    : TRUE if key was in list and successfully deleted.
+@DESCRIPTION: Deletes the entry for the given data_ptr from the skiplist,
+            : passing back the pointer that was stored.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -348,13 +345,13 @@ public  BOOLEAN  insert_in_skiplist(
 
 public  BOOLEAN  delete_from_skiplist(
     skiplist_struct  *skiplist,
-    void             *key_ptr,
+    int              key,
     void             **data_ptr )
 {
     BOOLEAN        in_skiplist;
     update_struct  update_ptrs;
 
-    in_skiplist = find_data_position( skiplist, key_ptr, &update_ptrs );
+    in_skiplist = find_data_position( skiplist, key, &update_ptrs );
 
     if( in_skiplist )
     {
@@ -370,10 +367,11 @@ public  BOOLEAN  delete_from_skiplist(
 @NAME       : get_first_skiplist_entry
 @INPUT      : skiplist
 @OUTPUT     : entry_ptr
+            : key
             : data_ptr
 @RETURNS    : True if an entry exists in the skiplist.
 @DESCRIPTION: Initializes the entry_ptr to point to the first entry,
-            : and the data_ptr to the data for the first entry.
+            : and the key and data_ptr to the data for the first entry.
             : This function is used to traverse the list sequentially.
 @METHOD     : 
 @GLOBALS    : 
@@ -385,23 +383,28 @@ public  BOOLEAN  delete_from_skiplist(
 public  BOOLEAN  get_first_skiplist_entry(
     skiplist_struct   *skiplist,
     skip_struct       **entry_ptr,
+    int               *key,
     void              **data_ptr )
 {
     *entry_ptr = skiplist->header->forward[0];
 
-    if( *entry_ptr != (skip_struct *) 0 )
+    if( *entry_ptr != NULL )
+    {
+        *key = (*entry_ptr)->key;
         *data_ptr = (*entry_ptr)->data_ptr;
+    }
 
-    return( *entry_ptr != (skip_struct *) 0 );
+    return( *entry_ptr != NULL );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_next_skiplist_entry
 @INPUT      : entry_ptr
-@OUTPUT     : data_ptr
+@OUTPUT     : key
+            : data_ptr
 @RETURNS    : True if another entry is found.
 @DESCRIPTION: Advances the entry_ptr to the next entry, and copies that entry's
-            : data ptr to data_ptr.
+            : key and data ptr to the function arguments.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -411,14 +414,18 @@ public  BOOLEAN  get_first_skiplist_entry(
 
 public  BOOLEAN  get_next_skiplist_entry(
     skip_struct       **entry_ptr,
+    int               *key,
     void              **data_ptr )
 {
     *entry_ptr = (*entry_ptr)->forward[0];
 
-    if( *entry_ptr != (skip_struct *) 0 )
+    if( *entry_ptr != NULL )
+    {
+        *key = (*entry_ptr)->key;
         *data_ptr = (*entry_ptr)->data_ptr;
+    }
 
-    return( *entry_ptr != (skip_struct *) 0 );
+    return( *entry_ptr != NULL );
 }
 
 #ifdef DEBUG
@@ -433,7 +440,7 @@ private  BOOLEAN  test_skiplist_integrity(
     for_less( i, 0, skiplist->level )
         update.update[i] = skiplist->header->forward[i];
 
-    while( update.update[0] != (skip_struct *) 0 )
+    while( update.update[0] != NULL )
     {
         i = 1;
         while( i < skiplist->level && update.update[0] == update.update[i] )
@@ -447,7 +454,7 @@ private  BOOLEAN  test_skiplist_integrity(
     okay = TRUE;
 
     for_less( i, 0, skiplist->level )
-        if( update.update[i] != (skip_struct *) 0 )
+        if( update.update[i] != NULL )
             okay = FALSE;
 
     if( !okay )
