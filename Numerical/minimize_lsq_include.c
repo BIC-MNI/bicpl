@@ -2,9 +2,6 @@
 #include  <numerical.h>
 #include  <prog_utils.h>
 
-#define   MAX_SAVES        100
-#define   N_SAVES            0
-#define   N_BETWEEN_SAVES    3
 #define   DEFAULT_RATIO      1.0
 
 private  Real  evaluate_fit(
@@ -47,8 +44,9 @@ private  void  evaluate_fit_derivative(
     Real             parm_values[],
     Real             derivatives[] )
 {
-    int   parm, n, neigh_parm, n_terms;
-    Real  term, parm_val, deriv_p;
+    int        parm, n, neigh_parm, n_terms, *cp;
+    Real       term, parm_val, deriv_p;
+    LSQ_TYPE   *ct;
 
     for_less( parm, 0, n_parameters )
         derivatives[parm] = 0.0;
@@ -60,13 +58,15 @@ private  void  evaluate_fit_derivative(
         deriv_p = (Real) linear_terms[parm] +
                          2.0 * parm_val * (Real) square_terms[parm];
 
+        ct = cross_terms[parm];
+        cp = cross_parms[parm];
         n_terms = n_cross_terms[parm];
         for_less( n, 0, n_terms )
         {
-            neigh_parm = cross_parms[parm][n];
-            term = (Real) cross_terms[parm][n];
+            neigh_parm = *cp++;
+            term = (Real) (*ct++);
             deriv_p += term * parm_values[neigh_parm];
-            derivatives[neigh_parm] += term * (Real) parm_val;
+            derivatives[neigh_parm] += term * parm_val;
         }
         derivatives[parm] += deriv_p;
     }
@@ -81,37 +81,32 @@ private  void  evaluate_fit_along_line(
     int              *cross_parms[],
     LSQ_TYPE         *cross_terms[],
     Real             parm_values[],
+    Real             negative_gradient[],
     Real             line_coefs[],
     Real             *a_ptr,
     Real             *b_ptr )
 {
-    int   parm, n, neigh_parm, n_terms;
-    Real  weight, square, a, b, parm_val, line_coef;
-    Real  b_inc1, b_inc2, wc;
+    int        parm, n, n_terms, *cp;
+    Real       a, b, line_coef;
+    Real       a_inc;
+    LSQ_TYPE   *ct;
 
     a = 0.0;
     b = 0.0;
 
     for_less( parm, 0, n_parameters )
     {
-        parm_val = parm_values[parm];
-        square = (Real) square_terms[parm];
         line_coef = line_coefs[parm];
+        a_inc = line_coef * (Real) square_terms[parm];
 
-        b_inc1 = (Real) linear_terms[parm] + square * 2.0 * parm_val;
-        b_inc2 = 0.0;
-
+        ct = cross_terms[parm];
+        cp = cross_parms[parm];
         n_terms = n_cross_terms[parm];
         for_less( n, 0, n_terms )
-        {
-            neigh_parm = cross_parms[parm][n];
-            weight = (Real) cross_terms[parm][n];
-            wc = weight * line_coefs[neigh_parm];
-            b_inc2 += wc;
-            b_inc1 += weight * parm_values[neigh_parm];
-        }
-        a += line_coef * (line_coef * square + b_inc2);
-        b += b_inc1 * line_coef + b_inc2 * parm_val;
+            a_inc += (Real) (*ct++) * line_coefs[*cp++];
+
+        a += line_coef * a_inc;
+        b += line_coef * (-negative_gradient[parm]);
     }
 
     *a_ptr = a;
@@ -128,6 +123,7 @@ private  void  minimize_along_line(
     LSQ_TYPE         *cross_terms[],
     Real             max_step_size,
     Real             parm_values[],
+    Real             negative_gradient[],
     Real             line_coefs[] )
 {
     int     parm;
@@ -145,7 +141,8 @@ private  void  minimize_along_line(
 
     evaluate_fit_along_line( n_parameters, constant_term, linear_terms,
                              square_terms, n_cross_terms, cross_parms,
-                             cross_terms, parm_values, line_coefs, &a, &b );
+                             cross_terms, parm_values, negative_gradient,
+                             line_coefs, &a, &b );
 
     if( a == 0.0 )
         return;
@@ -180,33 +177,10 @@ private  Real   private_minimize_lsq(
     Real             parm_values[] )
 {
     Real              fit, len, gg, dgg, gam;
-    int               iter, p, n_between_saves, n_saves;
-    int               update_rate, s;
+    int               iter, p;
+    int               update_rate;
     Real              *unit_dir, *g, *h, *xi;
-    Real              *saves[MAX_SAVES], *swap;
     Real              last_update_time, current_time;
-
-    if( getenv( "LSQ_N_SAVES" ) == NULL ||
-        sscanf( getenv( "LSQ_N_SAVES" ), "%d", &n_saves ) != 1 )
-        n_saves = N_SAVES;
-
-    if( n_saves > 0 )
-    {
-        if( getenv( "LSQ_N_BETWEEN_SAVES" ) == NULL ||
-            sscanf( getenv( "LSQ_N_BETWEEN_SAVES" ), "%d", &n_between_saves )
-                                                != 1 )
-            n_between_saves = n_iters / n_saves;
-
-        n_between_saves = MAX( n_between_saves, 1 );
-        n_between_saves = MIN( n_between_saves, N_BETWEEN_SAVES );
-
-        for_less( s, 0, n_saves )
-        {
-            ALLOC( saves[s], n_parameters );
-            for_less( p, 0, n_parameters )
-                saves[s][p] = parm_values[p];
-        }
-    }
 
     ALLOC( g, n_parameters );
     ALLOC( h, n_parameters );
@@ -248,28 +222,7 @@ private  Real   private_minimize_lsq(
         minimize_along_line( n_parameters, constant_term, linear_terms,
                              square_terms, n_cross_terms, cross_parms,
                              cross_terms,
-                             max_step_size, parm_values, unit_dir );
-
-        if( n_saves > 0 )
-        {
-            s = get_random_int( n_saves );
-            len = 0.0;
-            for_less( p, 0, n_parameters )
-            {
-                unit_dir[p] = parm_values[p] - saves[s][p];
-                len += unit_dir[p] * unit_dir[p];
-                parm_values[p] = saves[s][p];
-            }
-
-            len = sqrt( len );
-            for_less( p, 0, n_parameters )
-                unit_dir[p] /= len;
-
-            minimize_along_line( n_parameters, constant_term, linear_terms,
-                                 square_terms, n_cross_terms, cross_parms,
-                                 cross_terms,
-                                 max_step_size, parm_values, unit_dir );
-        }
+                             max_step_size, parm_values, g, unit_dir );
 
         if( ((iter+1) % update_rate) == 0 || iter == n_iters - 1 )
         {
@@ -285,20 +238,10 @@ private  Real   private_minimize_lsq(
             last_update_time = current_time;
         }
 
-        if( n_saves > 0 && (iter % n_between_saves) == 0 )
-        {
-            swap = saves[0];
-            for_less( s, 0, n_saves-1 )
-                saves[s] = saves[s+1];
-            saves[n_saves-1] = swap;
-            for_less( p, 0, n_parameters )
-                saves[s][p] = parm_values[p];
-        }
-
         evaluate_fit_derivative( n_parameters, constant_term, linear_terms,
                                  square_terms, n_cross_terms,
                                  cross_parms, cross_terms,
-                                 parm_values, xi );
+                                parm_values, xi );
 
         gg = 0.0;
         dgg = 0.0;
@@ -323,9 +266,6 @@ private  Real   private_minimize_lsq(
             xi[p] = h[p];
         }
     }
-
-    for_less( s, 0, n_saves )
-        FREE( saves[s] );
 
     FREE( g );
     FREE( h );
