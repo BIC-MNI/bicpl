@@ -50,8 +50,7 @@ typedef  struct
     Real                          fractional_step;
     Real                          max_step;
     Real                          max_search_distance;
-    Real                          search_increment;
-    Real                          min_size;
+    int                           degrees_continuity;
     boundary_definition_struct    boundary_definition;
     int                           max_iterations;
     Real                          stop_threshold;
