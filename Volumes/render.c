@@ -15,21 +15,21 @@ private  void  render_colour_map_flat(
     Volume_type   *volume_data,
     int           x_offsets[],
     int           y_offsets[],
-    int           colour_map_offset,
+    unsigned short cmode_colour_map[],
     pixels_struct *pixels );
 
 public  void  render_volume_to_slice(
-    Volume_type   *volume_data,
-    int           x_stride,
-    int           y_stride,
-    Real          x_start,
-    Real          y_start,
-    Real          x_delta,
-    Real          y_delta,
-    Boolean       interpolation_flag,
-    Colour        rgb_colour_map[],
-    int           colour_index_offset,
-    pixels_struct *pixels )
+    Volume_type     *volume_data,
+    int             x_stride,
+    int             y_stride,
+    Real            x_start,
+    Real            y_start,
+    Real            x_delta,
+    Real            y_delta,
+    Boolean         interpolation_flag,
+    unsigned short  cmode_colour_map[],
+    Colour          rgb_colour_map[],
+    pixels_struct   *pixels )
 {
     int                  x_size, y_size, x, y;
     Boolean              colour_map_mode;
@@ -79,14 +79,14 @@ public  void  render_volume_to_slice(
         {
 /*
             render_colour_map_interpolated( volume_data, x_stride, y_stride,
-                                            thickness, colour_index_offset,
+                                            thickness, cmode_colour_map,
                                             pixels );
 */
         }
         else
         {
             render_colour_map_flat( x_size, y_size, volume_data,
-                                    x_offsets, y_offsets, colour_index_offset,
+                                    x_offsets, y_offsets, cmode_colour_map,
                                     pixels );
         }
     }
@@ -112,7 +112,7 @@ private  void  render_colour_map_interpolated(
     int           x_stride,
     int           y_stride,
     Real          thickness[],
-    int           colour_index_offset,
+    unsigned short  cmode_colour_map[],
     pixels_struct *pixels )    /* ARGSUSED */
 {
 }
@@ -185,7 +185,7 @@ private  void  render_colour_map_flat(
     Volume_type   *volume_data,
     int           x_offsets[],
     int           y_offsets[],
-    int           colour_map_offset,
+    unsigned short  cmode_colour_map[],
     pixels_struct *pixels )
 {
     int              x, y;
@@ -221,8 +221,7 @@ private  void  render_colour_map_flat(
                 if( x_offset != prev_x_offset )
                 {
                     prev_x_offset = x_offset;
-                    voxel_data = (unsigned short) (voxel_ptr[x_offset] +
-                                                   colour_map_offset);
+                    voxel_data = cmode_colour_map[voxel_ptr[x_offset]];
                 }
                 *pixel_ptr = voxel_data;
                 ++pixel_ptr;

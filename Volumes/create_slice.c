@@ -64,8 +64,8 @@ public  void  create_volume_slice(
     int             y_viewport_size,
     Pixel_types     pixel_type,
     Boolean         interpolation_flag,
+    unsigned short  cmode_colour_map[],
     Colour          rgb_colour_map[],
-    int             colour_index_offset,
     int             *n_pixels_alloced,
     pixels_struct   *pixels )
 {
@@ -118,8 +118,8 @@ public  void  create_volume_slice(
         render_volume_to_slice( slice_start,
                                 strides[x_axis_index], strides[y_axis_index],
                                 x_start, y_start, x_delta, y_delta,
-                                interpolation_flag, rgb_colour_map,
-                                colour_index_offset, pixels );
+                                interpolation_flag, cmode_colour_map,
+                                rgb_colour_map, pixels );
     }
 }
 
