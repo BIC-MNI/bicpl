@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.15 1996-02-28 16:04:00 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.16 1996-04-04 19:37:00 david Exp $";
 #endif
 
 
@@ -777,7 +777,6 @@ private  BOOLEAN  intersect_ray_with_marker(
 @NAME       : intersect_ray_object
 @INPUT      : origin
               direction
-              t_min
               object
               obj_index
 @OUTPUT     : closest_obj_index
@@ -785,7 +784,7 @@ private  BOOLEAN  intersect_ray_with_marker(
               n_intersections
               distances
 @RETURNS    : 
-@DESCRIPTION: Tests if the ray intersects the given object, past t_min.
+@DESCRIPTION: Tests if the ray intersects the given object.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -796,7 +795,6 @@ private  BOOLEAN  intersect_ray_with_marker(
 public  void  intersect_ray_object(
     Point                 *origin,
     Vector                *direction,
-    Real                  t_min,
     object_struct         *object,
     int                   obj_index,
     int                   *closest_obj_index,
@@ -828,7 +826,7 @@ public  void  intersect_ray_object(
                                            get_marker_ptr(object), &dist );
     }
 
-    if( found && dist >= t_min - TOLERANCE )
+    if( found )
     {
         if( distances != (Real **) NULL )
         {
@@ -936,8 +934,7 @@ public  int  intersect_ray_with_object(
 
     for_less( i, 0, n_objects )
     {
-        intersect_ray_object( origin, direction, 0.0,
-                              object, i, obj_index,
+        intersect_ray_object( origin, direction, object, i, obj_index,
                               dist, &n_intersections, distances );
     }
 
