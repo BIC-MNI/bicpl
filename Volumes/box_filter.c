@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.13 1995-10-19 15:48:11 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.14 1996-04-23 13:30:22 david Exp $";
 #endif
 
 #define  DEBUG
@@ -205,7 +205,7 @@ public  Volume  create_box_filtered_volume(
 #ifdef DEBUG
     Real               correct_voxel;
 #endif
-    Real               total_volume, value, sum;
+    Real               total_volume, value, sum, sample;
     int                start, end;
     int                x_init_recede_index, y_init_recede_index;
     int                z_init_recede_index;
@@ -227,9 +227,9 @@ public  Volume  create_box_filtered_volume(
            "create_box_filtered_volume: volume must be 3D.\n" );
     }
 
-    x_width = ABS( x_width );
-    y_width = ABS( y_width );
-    z_width = ABS( z_width );
+    x_width = FABS( x_width );
+    y_width = FABS( y_width );
+    z_width = FABS( z_width );
 
     get_volume_sizes( volume, sizes );
 
@@ -262,8 +262,8 @@ public  Volume  create_box_filtered_volume(
         for_less( y, 0, sizes[Y] )
         {
             for_less( z, 0, sizes[Z] )
-                volume_cache[x][y][z] = get_volume_real_value( volume, x, y, z,
-                                                               0, 0 );
+                volume_cache[x][y][z] = (float)
+                             get_volume_real_value( volume, x, y, z, 0, 0 );
         }
     }
 
@@ -282,7 +282,8 @@ public  Volume  create_box_filtered_volume(
         {
             GET_FIRST_SAMPLE( x_bound_flag, x_init_advance_index,
                               x_left_weight,
-                              volume_cache[_I][y][z], slice[y][z] )
+                              (Real) volume_cache[_I][y][z], sample );
+            slice[y][z] = (float) sample;
         }
     }
 
@@ -310,8 +311,8 @@ public  Volume  create_box_filtered_volume(
                 {
                     for_less( z, 0, sizes[Z] )
                     {
-                        volume_cache[i][y][z] = get_volume_real_value( volume,
-                                                i, y, z, 0, 0 );
+                        volume_cache[i][y][z] = (float)
+                           get_volume_real_value( volume, i, y, z, 0, 0 );
                     }
                 }
             }
@@ -322,7 +323,8 @@ public  Volume  create_box_filtered_volume(
         for_less( z, 0, sizes[Z] )
         {
             GET_FIRST_SAMPLE( y_bound_flag, y_init_advance_index,
-                              y_left_weight, slice[_I][z], row[z] )
+                              y_left_weight, (Real) slice[_I][z], sample )
+            row[z] = (float) sample;
         }
         y_recede_index = y_init_recede_index;
         y_advance_index = y_init_advance_index;
@@ -330,7 +332,7 @@ public  Volume  create_box_filtered_volume(
         for_less( y, 0, sizes[Y] )
         {
             GET_FIRST_SAMPLE( z_bound_flag, z_init_advance_index,
-                              z_left_weight, row[_I], sum )
+                              z_left_weight, (Real) row[_I], sum )
             z_recede_index = z_init_recede_index;
             z_advance_index = z_init_advance_index;
 
@@ -352,7 +354,7 @@ public  Volume  create_box_filtered_volume(
 
                 GET_NEXT_SAMPLE( z_inc_flag, z_bound_flag, z_recede_index,
                                  z_advance_index, z_left_weight, z_right_weight,
-                                 sizes[Z], row[_I], sum )
+                                 sizes[Z], (Real) row[_I], sum )
 
                 ++z_recede_index;
                 ++z_advance_index;
@@ -365,7 +367,8 @@ public  Volume  create_box_filtered_volume(
             {
                 GET_NEXT_SAMPLE( y_inc_flag, y_bound_flag, y_recede_index,
                                  y_advance_index, y_left_weight, y_right_weight,
-                                 sizes[Y], slice[_I][z], row[z] )
+                                 sizes[Y], (Real) slice[_I][z], sample )
+                row[z] = (float) sample;
             }
 
             ++y_recede_index;
@@ -383,7 +386,9 @@ public  Volume  create_box_filtered_volume(
             {
                 GET_NEXT_SAMPLE( x_inc_flag, x_bound_flag, x_recede_index,
                                  x_advance_index, x_left_weight, x_right_weight,
-                                 sizes[X], volume_cache[_I][y][z], slice[y][z] )
+                                 sizes[X], (Real) volume_cache[_I][y][z],
+                                 sample )
+                slice[y][z] = (float) sample;
             }
         }
 
