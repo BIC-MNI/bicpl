@@ -39,6 +39,9 @@ typedef  struct
     Real                      *curvatures;
     Real                      min_curvature_offset;
     Real                      max_curvature_offset;
+    Boolean                   position_constrained;
+    Boolean                   max_position_offset;
+    Point                     *original_positions;
 } deformation_model_struct;
 
 typedef  struct
