@@ -1,14 +1,16 @@
 #include  <def_mni.h>
 
-public  Status  output_volume(
+public  Status  output_volume_free_format(
     char           prefix[],
-    volume_struct  *volume,
+    Volume         volume,
     int            axis_ordering[] )
 {
     Status           status;
-    Real             trans;
+    Real             trans, separations[MAX_DIMENSIONS];
+    int              sizes[MAX_DIMENSIONS];
     int              a1, a2, a3;
     int              n_bytes_per_voxel, indices[N_DIMENSIONS];
+    void             *ptr;
     FILE             *file;
     String           header_filename, voxel_filename, abs_voxel_filename;
     String           filename_no_dirs;
@@ -34,16 +36,18 @@ public  Status  output_volume(
     if( status == OK )
         status = output_newline( file );
 
+    get_volume_sizes( volume, sizes );
+    get_volume_separations( volume, separations );
+
     for_less( axis, 0, N_DIMENSIONS )
     {
         if( status == OK )
         {
             trans = Transform_elem(volume->voxel_to_world_transform,axis,3);
 
-            if( volume->thickness[axis] < 0.0 )
+            if( separations[axis] < 0.0 )
             {
-                trans += volume->thickness[axis] *
-                         (Real) (volume->sizes[axis]-1);
+                trans += separations[axis] * (Real) (sizes[axis]-1);
             }
 
             status = output_float( file, trans );
@@ -56,10 +60,10 @@ public  Status  output_volume(
     for_less( axis, 0, N_DIMENSIONS )
     {
         if( status == OK )
-            status = output_int( file, volume->sizes[axis_ordering[axis]] );
+            status = output_int( file, sizes[axis_ordering[axis]] );
 
         if( status == OK )
-            status = output_real( file, volume->thickness[axis_ordering[axis]]);
+            status = output_real( file, separations[axis_ordering[axis]]);
 
         if( status == OK )
             status = output_character( file, ' ' );
@@ -90,24 +94,22 @@ public  Status  output_volume(
         a2 = axis_ordering[1];
         a3 = axis_ordering[2];
 
-        initialize_progress_report( &progress, FALSE,
-                                    volume->sizes[a1] * volume->sizes[a2],
+        initialize_progress_report( &progress, FALSE, sizes[a1] * sizes[a2],
                                     "Writing Volume" );
 
-        for_less( indices[a1], 0, volume->sizes[a1] )
+        for_less( indices[a1], 0, sizes[a1] )
         {
-            for_less( indices[a2], 0, volume->sizes[a2] )
+            for_less( indices[a2], 0, sizes[a2] )
             {
-                for_less( indices[a3], 0, volume->sizes[a3] )
+                for_less( indices[a3], 0, sizes[a3] )
                 {
+                    GET_VOXEL_PTR_3D( ptr, volume,
+                                      indices[X],indices[Y],indices[Z] );
                     status = io_binary_data( file, WRITE_FILE,
-                                    GET_VOLUME_DATA_PTR(*volume,
-                                    indices[X],indices[Y],indices[Z]),
-                                    n_bytes_per_voxel, 1 );
+                                             ptr, n_bytes_per_voxel, 1 );
                 }
 
-                update_progress_report( &progress,
-                                        indices[a1] * volume->sizes[a2] +
+                update_progress_report( &progress, indices[a1] * sizes[a2] +
                                         indices[a2] + 1 );
             }
         }

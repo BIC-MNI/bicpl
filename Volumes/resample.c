@@ -2,9 +2,9 @@
 
 public  void  initialize_resample_volume(
     resample_struct  *resample,
-    volume_struct    *src_volume,
+    Volume           src_volume,
     Transform        *dest_to_src_transform,
-    volume_struct    *dest_volume )
+    Volume           dest_volume )
 {
     Transform  inverse;
 
@@ -72,8 +72,8 @@ public  Boolean  do_more_resampling(
                 }
                 else
                 {
-                    value = GET_VOLUME_DATA( *resample->src_volume, ROUND( xv ),
-                                             ROUND( yv ), ROUND( zv ) );
+                    GET_VOXEL_3D( value, resample->src_volume,
+                                     ROUND( xv ), ROUND( yv ), ROUND( zv ) );
                 }
             }
             else
@@ -85,14 +85,14 @@ public  Boolean  do_more_resampling(
                 v = FRACTION( yv );
                 w = FRACTION( zv );
 
-                v000 = GET_VOLUME_DATA(*resample->src_volume, xi  , yi  , zi );
-                v001 = GET_VOLUME_DATA(*resample->src_volume, xi  , yi  , zi+1);
-                v010 = GET_VOLUME_DATA(*resample->src_volume, xi  , yi+1, zi );
-                v011 = GET_VOLUME_DATA(*resample->src_volume, xi  , yi+1, zi+1);
-                v100 = GET_VOLUME_DATA(*resample->src_volume, xi+1, yi  , zi );
-                v101 = GET_VOLUME_DATA(*resample->src_volume, xi+1, yi  , zi+1);
-                v110 = GET_VOLUME_DATA(*resample->src_volume, xi+1, yi+1, zi );
-                v111 = GET_VOLUME_DATA(*resample->src_volume, xi+1, yi+1, zi+1);
+                GET_VOXEL_3D(v000, resample->src_volume, xi  , yi  , zi );
+                GET_VOXEL_3D(v001, resample->src_volume, xi  , yi  , zi+1);
+                GET_VOXEL_3D(v010, resample->src_volume, xi  , yi+1, zi );
+                GET_VOXEL_3D(v011, resample->src_volume, xi  , yi+1, zi+1);
+                GET_VOXEL_3D(v100, resample->src_volume, xi+1, yi  , zi );
+                GET_VOXEL_3D(v101, resample->src_volume, xi+1, yi  , zi+1);
+                GET_VOXEL_3D(v110, resample->src_volume, xi+1, yi+1, zi );
+                GET_VOXEL_3D(v111, resample->src_volume, xi+1, yi+1, zi+1);
                 
                 v00 = (Real) v000 + (Real) (v001 - v000) * w;
                 v01 = (Real) v010 + (Real) (v011 - v010) * w;
@@ -105,8 +105,8 @@ public  Boolean  do_more_resampling(
                 value = ROUND( (Real) v0 + (Real) (v1 - v0) * u );
             }
 
-            ASSIGN_VOLUME_DATA( *resample->dest_volume,
-                                resample->x, resample->y, z, value );
+            SET_VOXEL_3D( resample->dest_volume, resample->x, resample->y, z,
+                          value );
 
             xv += Point_x(z_axis);
             yv += Point_y(z_axis);
@@ -131,9 +131,9 @@ public  Boolean  do_more_resampling(
 }
 
 public  void  resample_volume(
-    volume_struct    *src_volume,
+    Volume           src_volume,
     Transform        *dest_to_src_transform,
-    volume_struct    *dest_volume )
+    Volume           dest_volume )
 {
     static const     int  FACTOR = 1000;
     resample_struct  resample;

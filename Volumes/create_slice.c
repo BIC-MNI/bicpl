@@ -2,7 +2,7 @@
 #include  <def_mni.h>
 
 private  void  get_mapping(
-    volume_struct   *volume,
+    Volume          volume,
     Real            x_translation,
     Real            x_scale,
     int             x_axis_index,
@@ -18,7 +18,7 @@ private  void  get_mapping(
     Real            *y_delta,
     Real            *y_offset )
 {
-    *x_delta = x_scale * volume->thickness[x_axis_index];
+    *x_delta = x_scale * volume->separation[x_axis_index];
     *x_offset = x_translation;
     if( *x_delta >= 0.0 )
     {
@@ -31,7 +31,7 @@ private  void  get_mapping(
         *x_start = (Real) volume->sizes[x_axis_index] - 0.5;
     }
 
-    *y_delta = y_scale * volume->thickness[y_axis_index];
+    *y_delta = y_scale * volume->separation[y_axis_index];
     *y_offset = y_translation;
 
     if( *y_delta >= 0.0 )
@@ -86,13 +86,13 @@ private  void  get_mapping(
 ---------------------------------------------------------------------------- */
 
 public  void  create_volume_slice(
-    volume_struct   *volume1,
+    Volume          volume1,
     Real            slice_position1,
     Real            x_translation1,
     Real            y_translation1,
     Real            x_scale1,
     Real            y_scale1,
-    volume_struct   *volume2,
+    Volume          volume2,
     Real            slice_position2,
     Real            x_translation2,
     Real            y_translation2,
@@ -135,7 +135,7 @@ public  void  create_volume_slice(
                                &x_pixel_start, &y_pixel_start,
                                &x_pixel_end, &y_pixel_end );
 
-    if( volume2 != (volume_struct *) NULL )
+    if( volume2 != (Volume) NULL )
     {
         get_mapping( volume2,
                      x_translation2, x_scale2, x_axis_index,
@@ -177,7 +177,7 @@ public  void  create_volume_slice(
                                       x_delta1, y_delta1,
                                       &x_start1, &y_start1 );
 
-        if( volume2 != (volume_struct *) NULL )
+        if( volume2 != (Volume) NULL )
         {
             convert_pixel_start_to_voxel( x_pixel_start, y_pixel_start,
                                           x_offset2, y_offset2,
@@ -200,14 +200,14 @@ public  void  create_volume_slice(
                 indices1[axis] = volume1->sizes[axis] - 1;
         }
 
-        slice_start1 = GET_VOLUME_DATA_PTR( *volume1,
-                                indices1[X], indices1[Y], indices1[Z] );
+        GET_VOXEL_PTR_3D( slice_start1, volume1,
+                          indices1[X], indices1[Y], indices1[Z] );
 
         strides1[X] = volume1->sizes[Y] * volume1->sizes[Z];
         strides1[Y] = volume1->sizes[Z];
         strides1[Z] = 1;
 
-        if( volume2 != (volume_struct *) NULL )
+        if( volume2 != (Volume) NULL )
         {
             volume2_data_type = volume2->data_type;
             indices2[X] = ROUND( slice_position2 );
@@ -222,8 +222,8 @@ public  void  create_volume_slice(
                     indices2[axis] = volume2->sizes[axis] - 1;
             }
 
-            slice_start2 = GET_VOLUME_DATA_PTR( *volume2,
-                                  indices2[X], indices2[Y], indices2[Z] );
+            GET_VOXEL_PTR_3D( slice_start2, volume2,
+                              indices2[X], indices2[Y], indices2[Z] );
 
             strides2[X] = volume2->sizes[Y] * volume2->sizes[Z];
             strides2[Y] = volume2->sizes[Z];
@@ -244,7 +244,7 @@ public  void  create_volume_slice(
 }
 
 public  Boolean  convert_slice_pixel_to_voxel(
-    volume_struct   *volume,
+    Volume          volume,
     Real            x_pixel,
     Real            y_pixel,
     Real            slice_position[N_DIMENSIONS],
@@ -274,14 +274,11 @@ public  Boolean  convert_slice_pixel_to_voxel(
     pixel_slice_position[y_axis_index] =
              map_viewport_to_slice_1d( y_pixel, y_offset, y_delta );
 
-    return( voxel_is_within_volume( volume,
-                                    pixel_slice_position[X],
-                                    pixel_slice_position[Y],
-                                    pixel_slice_position[Z] ) );
+    return( voxel_is_within_volume( volume, pixel_slice_position ) );
 }
 
 public  void  convert_voxel_to_slice_pixel(
-    volume_struct   *volume,
+    Volume          volume,
     Real            voxel_position[N_DIMENSIONS],
     int             x_axis_index,
     int             y_axis_index,

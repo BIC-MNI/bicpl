@@ -7,18 +7,19 @@ private  Real  calculate_weight(
     Real     x_min,
     Real     x_max );
 
-public  void  smooth_resample_volume(
-    volume_struct       *volume,
+public  Volume  smooth_resample_volume(
+    Volume              volume,
     int                 new_nx,
     int                 new_ny,
-    int                 new_nz,
-    volume_struct       *resampled_volume )
+    int                 new_nz )
 {
+    Volume           resampled_volume;
     Boolean          activity_present;
     int              nx, ny, nz;
     int              x, y, z, xv, yv, zv;
     Real             x_min, x_max, y_min, y_max, z_min, z_max;
     Real             dx, dy, dz;
+    Real             voxel;
     Real             x_weight, xy_weight, weight;
     Real             *y_weights, *z_weights;
     Real             val;
@@ -26,7 +27,9 @@ public  void  smooth_resample_volume(
     Transform        scale_transform, translation_transform, transform;
     progress_struct  progress;
 
-    get_volume_size( volume, &nx, &ny, &nz );
+    nx = volume->sizes[X];
+    ny = volume->sizes[Y];
+    nz = volume->sizes[Z];
 
     if( new_nx <= 0 )
         new_nx = nx;
@@ -37,7 +40,13 @@ public  void  smooth_resample_volume(
     if( new_nz <= 0 )
         new_nz = nz;
 
+    resampled_volume = create_volume( 3, volume->dimension_names,
+                                      volume->nc_data_type,
+                                      volume->signed_flag, 0.0, 0.0 );
+
     *resampled_volume = *volume;
+
+    resampled_volume->data = (void *) NULL;
 
     resampled_volume->sizes[X] = new_nx;
     resampled_volume->sizes[Y] = new_ny;
@@ -47,9 +56,9 @@ public  void  smooth_resample_volume(
     dy = (Real) ny / (Real) new_ny;
     dz = (Real) nz / (Real) new_nz;
 
-    resampled_volume->thickness[X] *= dx;
-    resampled_volume->thickness[Y] *= dy;
-    resampled_volume->thickness[Z] *= dz;
+    resampled_volume->separation[X] *= dx;
+    resampled_volume->separation[Y] *= dy;
+    resampled_volume->separation[Z] *= dz;
 
     make_translation_transform( dx / 2.0 - 0.5, dy / 2.0 - 0.5, dz / 2.0 - 0.5,
                                 &translation_transform );
@@ -64,7 +73,7 @@ public  void  smooth_resample_volume(
     compute_transform_inverse( &resampled_volume->voxel_to_world_transform,
                                &resampled_volume->world_to_voxel_transform );
 
-    alloc_volume( resampled_volume );
+    alloc_volume_data( resampled_volume );
 
     activity_present = (volume->labels != (unsigned char ***) NULL);
 
@@ -124,8 +133,8 @@ public  void  smooth_resample_volume(
 
                             if( weight > 0.0 )
                             {
-                                val += weight *
-                                       (Real) GET_VOLUME_DATA(*volume,xv,yv,zv);
+                                GET_VOXEL_3D(voxel,volume,xv,yv,zv);
+                                val += weight * voxel;
                                 if( get_voxel_activity_flag(volume,xv,yv,zv) )
                                     voxel_valid = TRUE;
                             }
@@ -133,7 +142,7 @@ public  void  smooth_resample_volume(
                     }
                 }
 
-                ASSIGN_VOLUME_DATA(*resampled_volume,x,y,z, val + 0.5 );
+                SET_VOXEL_3D(resampled_volume,x,y,z, val + 0.5 );
 
                 if( !voxel_valid && activity_present )
                     set_voxel_activity_flag( resampled_volume, x, y, z,
@@ -148,6 +157,8 @@ public  void  smooth_resample_volume(
 
     FREE( y_weights );
     FREE( z_weights );
+
+    return( resampled_volume );
 }
 
 private  Real  calculate_weight(
