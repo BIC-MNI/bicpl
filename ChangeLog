@@ -1,3 +1,12 @@
+2001-12-21  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* tools/bicobj2vtk.c: New.  Transform polygons into VTK
+	data file.
+
+	* tools/ParseArgv.c:
+	* tools/ParseArgv.h: New.  Temporarily add these until they
+	are available elsewhere (e.g. MINC).
+
 2001-10-19  Steve ROBBINS  <stever@bic.mni.mcgill.ca>
 
 	* Objects/object_io.c: Document TEXT object file format.
