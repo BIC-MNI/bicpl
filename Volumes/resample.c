@@ -39,12 +39,12 @@ public  BOOLEAN  do_more_resampling(
     Real             max_seconds,
     Real             *fraction_done )
 {
-    int             value;
+    Real            value;
     BOOLEAN         linear;
     Vector          z_axis;
     int             z;
     Real            xv, yv, zv, voxel[MAX_DIMENSIONS];
-    Real            end_time, real_value;
+    Real            end_time;
     int             dest_sizes[MAX_DIMENSIONS], src_sizes[MAX_DIMENSIONS];
 
     if( max_seconds >= 0.0 )
@@ -71,44 +71,21 @@ public  BOOLEAN  do_more_resampling(
                                          (Real) z,
                                          &xv, &yv, &zv );
 
-            if( xv < 0.0 || xv >= (Real) (src_sizes[X]-1) ||
-                yv < 0.0 || yv >= (Real) (src_sizes[Y]-1) ||
-                zv < 0.0 || zv >= (Real) (src_sizes[Z]-1) )
-            {
-                if( xv < -0.5 || xv >= (Real) src_sizes[X] - 0.5 ||
-                    yv < -0.5 || yv >= (Real) src_sizes[Y] - 0.5 ||
-                    zv < -0.5 || zv >= (Real) src_sizes[Z] - 0.5 )
-                {
-                    value = get_volume_voxel_min( resample->src_volume );
-                }
-                else
-                {
-                    value = get_volume_voxel_value( resample->src_volume,
-                                  ROUND( xv ), ROUND( yv ), ROUND( zv ), 0, 0 );
-                }
-            }
-            else
-            {
-                voxel[X] = xv;
-                voxel[Y] = yv;
-                voxel[Z] = zv;
-                evaluate_volume( resample->src_volume, voxel, NULL,
-                                 0, FALSE,
-                                 get_volume_real_min(resample->src_volume),
-                                 &real_value, NULL, NULL );
+            voxel[X] = xv;
+            voxel[Y] = yv;
+            voxel[Z] = zv;
+            evaluate_volume( resample->src_volume, voxel, NULL, 0, FALSE,
+                             get_volume_real_min(resample->src_volume),
+                             &value, NULL, NULL );
 
-                value = ROUND( real_value );
-            }
-
-            set_volume_voxel_value( resample->dest_volume,
-                                    resample->x, resample->y, z, 0, 0,
-                                    (Real) value );
+            set_volume_real_value( resample->dest_volume,
+                                   resample->x, resample->y, z, 0, 0, value );
 
             if( linear )
             {
-                xv += Vector_x(z_axis);
-                yv += Vector_y(z_axis);
-                zv += Vector_z(z_axis);
+                xv += (Real) Vector_x(z_axis);
+                yv += (Real) Vector_y(z_axis);
+                zv += (Real) Vector_z(z_axis);
             }
         }
 

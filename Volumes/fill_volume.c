@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/fill_volume.c,v 1.7 1996-05-17 19:35:53 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/fill_volume.c,v 1.8 1996-05-24 18:42:47 david Exp $";
 #endif
 
 typedef struct
@@ -54,15 +54,17 @@ public  BOOLEAN  fill_connected_voxels(
     int                 max_label_threshold,
     int                 desired_label,
     Real                min_threshold,
-    Real                max_threshold )
+    Real                max_threshold,
+    int                 range_changed[2][N_DIMENSIONS] )
 {
-    int                          dir, n_dirs, *dx, *dy, *dz;
+    int                          dir, n_dirs, *dx, *dy, *dz, dim;
     int                          x, y, z, tx, ty, tz;
     int                          sizes[N_DIMENSIONS];
     int                          voxel_index[MAX_DIMENSIONS];
     xyz_struct                   entry;
     QUEUE_STRUCT( xyz_struct )   queue;
     bitlist_3d_struct            checked_flags, change_flags;
+    BOOLEAN                      first;
 
     if( !should_change_this_one( volume, label_volume, voxel,
                                  min_threshold, max_threshold,
@@ -126,6 +128,8 @@ public  BOOLEAN  fill_connected_voxels(
         }
     }
 
+    first = TRUE;
+
     for_less( voxel_index[X], 0, sizes[X] )
     for_less( voxel_index[Y], 0, sizes[Y] )
     for_less( voxel_index[Z], 0, sizes[Z] )
@@ -134,6 +138,16 @@ public  BOOLEAN  fill_connected_voxels(
                                 voxel_index[Z] ) )
         {
             set_volume_label_data( label_volume, voxel_index, desired_label );
+
+            for_less( dim, 0, N_DIMENSIONS )
+            {
+                if( first || voxel_index[dim] < range_changed[0][dim] )
+                    range_changed[0][dim] = voxel_index[dim];
+                if( first || voxel_index[dim] > range_changed[1][dim] )
+                    range_changed[1][dim] = voxel_index[dim];
+            }
+
+            first = FALSE;
         }
     }
 

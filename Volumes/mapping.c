@@ -17,7 +17,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.28 1996-05-17 19:35:49 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.29 1996-05-24 18:42:44 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -671,7 +671,7 @@ public  BOOLEAN  voxel_contains_range(
     Real     max_value )
 {               
     BOOLEAN  less, greater;
-    int      i, n_values, mx, my, mz, ms, mt;
+    int      i, n_values;
     Real     value, values[1 << MAX_DIMENSIONS];
 
     less = FALSE;

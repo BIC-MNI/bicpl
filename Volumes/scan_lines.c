@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.6 1996-05-17 19:35:51 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.7 1996-05-24 18:42:45 david Exp $";
 #endif
 
 private  void  scan_line_segment_to_voxels(

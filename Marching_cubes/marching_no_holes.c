@@ -754,7 +754,7 @@ public  int  get_holeless_isosurface_polygons(
     return( voxel_case->polygons[amb_index].n_polygons );
 }
 
-public  void  delete_marching_cubes_table()
+public  void  delete_marching_cubes_table( void )
 {
     Case_types   case_flags[2][2][2];
 

@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/change_labels.c,v 1.4 1996-05-17 19:35:54 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/change_labels.c,v 1.5 1996-05-24 18:42:48 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -43,10 +43,11 @@ public  void  modify_labels_in_range(
     int      src_label,
     int      dest_label,
     Real     min_threshold,
-    Real     max_threshold )
+    Real     max_threshold,
+    int      range_changed[2][N_DIMENSIONS] )
 {
-    int              voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
-    BOOLEAN          must_change;
+    int              voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS], dim;
+    BOOLEAN          must_change, first;
     Real             value;
     progress_struct  progress;
 
@@ -55,6 +56,7 @@ public  void  modify_labels_in_range(
     initialize_progress_report( &progress, FALSE, sizes[X] * sizes[Y],
                                 "Modifying Labels" );
 
+    first = TRUE;
 
     for_less( voxel[X], 0, sizes[X] )
     {
@@ -74,7 +76,17 @@ public  void  modify_labels_in_range(
                 }
 
                 if( must_change )
+                {
                     set_volume_label_data( label_volume, voxel, dest_label );
+                    for_less( dim, 0, N_DIMENSIONS )
+                    {
+                        if( first || voxel[dim] < range_changed[0][dim] )
+                            range_changed[0][dim] = voxel[dim];
+                        if( first || voxel[dim] > range_changed[1][dim] )
+                            range_changed[1][dim] = voxel[dim];
+                    }
+                    first = FALSE;
+                }
             }
 
             update_progress_report( &progress, voxel[X] * sizes[Y] +

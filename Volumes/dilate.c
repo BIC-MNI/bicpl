@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.10 1996-05-17 19:35:52 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.11 1996-05-24 18:42:46 david Exp $";
 #endif
 
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
@@ -58,7 +58,8 @@ public  int  dilate_voxels_3d(
     Real            min_outside_value,
     Real            max_outside_value,
     Real            new_label,
-    Neighbour_types connectivity )
+    Neighbour_types connectivity,
+    int             range_changed[2][N_DIMENSIONS] )
 {
     int                     n_changed;
     int                     x, y, z, delta_x, tx, ty, tz;
@@ -213,6 +214,22 @@ public  int  dilate_voxels_3d(
                         {
                             set_volume_real_value( label_volume, x, y, z, 0, 0,
                                                    new_label );
+
+                            if( n_changed == 0 || x < range_changed[0][X] )
+                                range_changed[0][X] = x;
+                            if( n_changed == 0 || x > range_changed[1][X] )
+                                range_changed[1][X] = x;
+
+                            if( n_changed == 0 || y < range_changed[0][Y] )
+                                range_changed[0][Y] = y;
+                            if( n_changed == 0 || y > range_changed[1][Y] )
+                                range_changed[1][Y] = y;
+
+                            if( n_changed == 0 || z < range_changed[0][Z] )
+                                range_changed[0][Z] = z;
+                            if( n_changed == 0 || z > range_changed[1][Z] )
+                                range_changed[1][Z] = z;
+
                             ++n_changed;
                             break;
                         }

@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/intersect.c,v 1.8 1996-05-17 19:35:27 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/intersect.c,v 1.9 1996-05-24 18:42:41 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -164,7 +164,7 @@ public  BOOLEAN  clip_line_to_box(
     Real     dir, org, t1, t2, min_t, max_t;
 
     dir = (Real) Vector_x( *direction );
-    org = (Real) Point_x(*origin);
+    org = (Real) Point_x( *origin );
 
     if( dir == 0.0 )
     {
@@ -172,7 +172,7 @@ public  BOOLEAN  clip_line_to_box(
             return( FALSE );
 
         dir = (Real) Vector_y( *direction );
-        org = (Real) Point_y(*origin);
+        org = (Real) Point_y( *origin );
 
         if( dir < 0.0 )
         {
@@ -195,32 +195,40 @@ public  BOOLEAN  clip_line_to_box(
         }
 
         dir = (Real) Vector_z( *direction );
-        org = (Real) Point_z(*origin);
+        org = (Real) Point_z( *origin );
 
         if( dir < 0.0 )
         {
-            t1 = (y_max - org) / dir;
-            t2 = (y_min - org) / dir;
+            t1 = (z_max - org) / dir;
+            t2 = (z_min - org) / dir;
 
             if( first || t1 > min_t )
                 min_t = t1;
             if( first || t2 < max_t )
                 max_t = t2;
+            first = FALSE;
         }
         else if( dir > 0.0 )
         {
-            t1 = (y_min - org) / dir;
-            t2 = (y_max - org) / dir;
+            t1 = (z_min - org) / dir;
+            t2 = (z_max - org) / dir;
 
             if( first || t1 > min_t )
                 min_t = t1;
             if( first || t2 < max_t )
                 max_t = t2;
+            first = FALSE;
         }
         else
         {
             if( org < z_min || org > z_max )
                 return( FALSE );
+        }
+
+        if( first )
+        {
+            min_t = 0.0;
+            max_t = 0.0;
         }
 
         *t_min = min_t;
@@ -267,11 +275,11 @@ public  BOOLEAN  clip_line_to_box(
     }
 
     dir = (Real) Vector_z( *direction );
-    org = (Real) Point_z(*origin);
+    org = (Real) Point_z( *origin );
 
     if( dir == 0.0 )
     {
-        if( org < y_min || org > y_max )
+        if( org < z_min || org > z_max )
             return( FALSE );
     }
     else
