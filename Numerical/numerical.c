@@ -213,7 +213,7 @@ public  int solve_cubic(
     return num;
 }
 
-private  Real  evaluate_polynomial(
+public  Real  evaluate_polynomial(
     int     n,
     Real    poly[],
     Real    u )
@@ -261,102 +261,13 @@ private  int  get_roots_of_cubic(
     return( n_inside );
 }
 
-#ifdef OLD
-private  void  check_interval(
-    int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    val_min,
-    Real    u_max,
-    Real    val_max,
-    Real    accuracy,
-    int     *n_roots,
-    Real    roots[] )
-{
-    int    i, which;
-    Real   u_mid, min_diff, diff, val_mid;
-
-    u_mid = (u_max + u_min) / 2.0;
-
-    if( u_max - u_min <= accuracy )
-    {
-        if( *n_roots == n-1 )
-        {
-            which = 0;
-            min_diff = 0.0;
-            for_less( i, 0, *n_roots-1 )
-            {
-                diff = roots[i+1] - roots[i];
-                if( which == 0 || diff < min_diff )
-                {
-                    min_diff = diff;
-                    which = i;
-                }
-            }
-
-            for_less( i, which+1, *n_roots-1 )
-                roots[i] = roots[i+1];
-            --(*n_roots);
-        }
-
-        roots[*n_roots] = u_mid;
-        ++(*n_roots);
-    }
-    else
-    {
-        val_mid = evaluate_polynomial( n, poly, u_mid );
-        if( val_min * val_mid <= 0.0 )
-        {
-            check_interval( n, poly, u_min, val_min, u_mid, val_mid,
-                            accuracy, n_roots, roots );
-        }
-        if( val_mid * val_max <= 0.0 )
-        {
-            check_interval( n, poly, u_mid, val_mid, u_max, val_max,
-                            accuracy, n_roots, roots );
-        }
-    }
-}
-
-public  int  get_roots_of_polynomial(
+private  void  interval_value_range(
     int     n,
     Real    poly[],
     Real    u_min,
     Real    u_max,
-    Real    step,
-    Real    accuracy,
-    Real    roots[] )
-{
-    Real       u1, u2, val1, val2;
-    int        n_roots;
-
-    if( n <= 4 )
-        return( get_roots_of_cubic( n, poly, u_min, u_max, roots ) );
-
-    n_roots = 0;
-
-    val2 = evaluate_polynomial( n, poly, u_min );
-
-    for( u1 = u_min;  u1 < u_max;  u1 += step )
-    {
-        val1 = val2;
-        u2 = u1 + step;
-        val2 = evaluate_polynomial( n, poly, u2 );
-
-        if( val1 * val2 <= 0.0 )
-            check_interval( n, poly, u1, val1, u2, val2, accuracy,
-                            &n_roots, roots );
-    }
-
-    return( n_roots );
-}
-#else
-
-private  Boolean  interval_contains_zero(
-    int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    u_max )
+    Real    *min_val_ptr,
+    Real    *max_val_ptr )
 {
     int    i;
     Real   min_val, max_val, t1, t2, t3, t4;
@@ -420,6 +331,20 @@ private  Boolean  interval_contains_zero(
             max_val += poly[i];
         }
     }
+
+    *min_val_ptr = min_val;
+    *max_val_ptr = max_val;
+}
+
+private  Boolean  interval_contains_zero(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    u_max )
+{
+    Real   min_val, max_val;
+
+    interval_value_range( n, poly, u_min, u_max, &min_val, &max_val );
 
     return( min_val <= 0.0 && max_val >= 0.0 );
 }
@@ -491,4 +416,90 @@ public  int  get_roots_of_polynomial(
 
     return( n_roots );
 }
-#endif
+
+private  Boolean  polynomial_may_include_range(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    u_max,
+    Real    min_val,
+    Real    max_val )
+{
+    Real  min_range, max_range;
+
+    interval_value_range( n, poly, u_min, u_max, &min_range, &max_range );
+
+    return( max_val >= min_range && min_val <= max_range );
+}
+
+private  Boolean  check_range(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    u_max,
+    Real    min_val,
+    Real    max_val,
+    Real    accuracy,
+    Real    *u_min_range,
+    Real    *u_max_range )
+{
+    Real     u_mid;
+    Boolean  left_has_value, right_has_value;
+
+    if( u_max - u_min <= accuracy )
+    {
+        *u_min_range = u_min;
+        *u_max_range = u_max;
+        return( TRUE );
+    }
+
+    u_mid = (u_min + u_max) / 2.0;
+
+    left_has_value = polynomial_may_include_range( n, poly, u_min, u_mid,
+                                                   min_val, max_val );
+    right_has_value = polynomial_may_include_range( n, poly, u_mid, u_max,
+                                                    min_val, max_val );
+
+    if( left_has_value && right_has_value )
+    {
+        *u_min_range = u_min;
+        *u_max_range = u_max;
+        return( TRUE );
+    }
+    else if( left_has_value && !right_has_value )
+    {
+        return( check_range( n, poly, u_min, u_mid, min_val, max_val,
+                             accuracy, u_min_range, u_max_range ) );
+    }
+    else if( !left_has_value && right_has_value )
+    {
+        return( check_range( n, poly, u_mid, u_max, min_val, max_val,
+                             accuracy, u_min_range, u_max_range ) );
+    }
+    else
+        return( FALSE );
+}
+
+public  Boolean  get_range_of_polynomial(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    u_max,
+    Real    min_val,
+    Real    max_val,
+    Real    accuracy,
+    Real    *u_min_range,
+    Real    *u_max_range )
+{
+    Boolean  found;
+
+    if( polynomial_may_include_range( n, poly, u_min, u_max, min_val, max_val ))
+    {
+        found = check_range( n, poly, u_min, u_max, min_val, max_val, accuracy,
+                             u_min_range, u_max_range );
+    }
+    else
+        found = FALSE;
+
+    return( found );
+}

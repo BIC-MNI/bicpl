@@ -259,8 +259,8 @@ public  void  render_volume_to_slice(
     Real            weights1[],
     int             x_stride1,
     int             y_stride1,
-    Real            x_start1,
-    Real            y_start1,
+    Real            x_offset1,
+    Real            y_offset1,
     Real            x_delta1,
     Real            y_delta1,
     void            *second_volume_data,
@@ -268,8 +268,8 @@ public  void  render_volume_to_slice(
     Real            weights2[],
     int             x_stride2,
     int             y_stride2,
-    Real            x_start2,
-    Real            y_start2,
+    Real            x_offset2,
+    Real            y_offset2,
     Real            x_delta2,
     Real            y_delta2,
     Boolean         interpolation_flag,    /* ARGSUSED */
@@ -301,24 +301,24 @@ public  void  render_volume_to_slice(
 
     for_less( x, 0, x_size )
     {
-        x_voxel = x_start1 + ((Real) x + 0.5) / x_delta1;
+        x_voxel = map_viewport_to_slice_1d( (Real) x, x_offset1, x_delta1 );
         x_offsets[x] = x_stride1 * ROUND( x_voxel );
 
         if( second_volume_data != (void **) NULL )
         {
-            x_voxel = x_start2 + ((Real) x + 0.5) / x_delta2;
+            x_voxel = map_viewport_to_slice_1d( (Real) x, x_offset2, x_delta2 );
             second_x_offsets[x] = x_stride2 * ROUND( x_voxel );
         }
     }
 
     for_less( y, 0, y_size )
     {
-        y_voxel = y_start1 + ((Real) y + 0.5) / y_delta1;
+        y_voxel = map_viewport_to_slice_1d( (Real) y, y_offset1, y_delta1 );
         y_offsets[y] = y_stride1 * ROUND( y_voxel );
 
         if( second_volume_data != (void **) NULL )
         {
-            y_voxel = y_start2 + ((Real) y + 0.5) / y_delta2;
+            y_voxel = map_viewport_to_slice_1d( (Real) y, y_offset2, y_delta2 );
             second_y_offsets[y] = y_stride2 * ROUND( y_voxel );
         }
     }

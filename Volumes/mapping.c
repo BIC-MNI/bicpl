@@ -51,12 +51,16 @@ private  void  clip_slice_to_pixels_1d(
                                                      translation, delta );
         real_end_pixel = map_slice_to_viewport_1d( clipped_end,
                                                    translation, delta );
+
         if( IS_INT( real_start_pixel ) )
             *start_pixel = (int) real_start_pixel;
         else
             *start_pixel = (int) real_start_pixel + 1;
 
-        *end_pixel = (int) real_end_pixel;
+        if( IS_INT( real_start_pixel ) )
+            *end_pixel = (int) real_end_pixel - 1;
+        else
+            *end_pixel = (int) real_end_pixel;
     }
     else
     {
@@ -88,20 +92,4 @@ public  void  clip_slice_to_pixel_range(
     clip_slice_to_pixels_1d( y_viewport_size, y_translation,
                              y_delta, y_start, y_end,
                              y_pixel_start, y_pixel_end );
-}
-
-public  void  convert_pixel_start_to_voxel(
-    int           x_pixel,
-    int           y_pixel,
-    Real          x_translation,
-    Real          y_translation,
-    Real          x_delta,
-    Real          y_delta,
-    Real          *x_voxel_start,
-    Real          *y_voxel_start )
-{
-    *x_voxel_start = map_viewport_to_slice_1d( (Real) x_pixel,
-                                               x_translation, x_delta );
-    *y_voxel_start = map_viewport_to_slice_1d( (Real) y_pixel,
-                                               y_translation, y_delta );
 }

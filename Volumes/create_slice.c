@@ -201,24 +201,17 @@ private  void  create_weighted_volume_slices(
     x_size = x_pixel_end - x_pixel_start + 1;
     y_size = y_pixel_end - y_pixel_start + 1;
 
-    --x_size;    /* because last pixel may be on boundary of volume */
-    --y_size;
-
     modify_pixels_size( n_pixels_alloced, pixels, x_size, y_size, pixel_type );
 
     if( x_size > 0 && y_size > 0 )
     {
-        convert_pixel_start_to_voxel( x_pixel_start, y_pixel_start,
-                                      x_offset1, y_offset1,
-                                      x_delta1, y_delta1,
-                                      &x_start1, &y_start1 );
+        x_offset1 -= (Real) x_pixel_start;
+        y_offset1 -= (Real) y_pixel_start;
 
         if( volume2 != (Volume) NULL )
         {
-            convert_pixel_start_to_voxel( x_pixel_start, y_pixel_start,
-                                          x_offset2, y_offset2,
-                                          x_delta2, y_delta2,
-                                          &x_start2, &y_start2 );
+            x_offset2 -= (Real) x_pixel_start;
+            y_offset2 -= (Real) y_pixel_start;
         }
 
         pixels->x_position = x_pixel_start;
@@ -282,10 +275,10 @@ private  void  create_weighted_volume_slices(
         render_volume_to_slice( n_slices,
                                 slice_start1, volume1->data_type, weights1,
                                 strides1[x_axis_index], strides1[y_axis_index],
-                                x_start1, y_start1, x_delta1, y_delta1,
+                                x_offset1, y_offset1, x_delta1, y_delta1,
                                 slice_start2, volume2_data_type, weights2,
                                 strides2[x_axis_index], strides2[y_axis_index],
-                                x_start2, y_start2, x_delta2, y_delta2,
+                                x_offset2, y_offset2, x_delta2, y_delta2,
                                 interpolation_flag, cmode_colour_map,
                                 rgb_colour_map, pixels );
 

@@ -80,10 +80,7 @@ public  Volume  smooth_resample_volume(
 
     activity_present = (volume->labels != (unsigned char ***) NULL);
 
-    if( activity_present )
-        alloc_auxiliary_data( resampled_volume );
-    else
-        resampled_volume->labels = (unsigned char ***) NULL;
+    resampled_volume->labels = (unsigned char ***) NULL;
 
     ALLOC( y_weights, (int) dy + 2 );
     ALLOC( z_weights, (int) dz + 2 );

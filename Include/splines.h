@@ -307,6 +307,29 @@
         -3.0 * (v0) + 9.0 * (v1) - 9.0 * (v2) + 3.0 * (v3)  ) \
      )
 
+#define  CUBIC_UNIVAR_VAL_DERIV1( v0, v1, v2, v3, u, val, deriv )              \
+     {                                                                         \
+         Real   _c1, _c2, _c3;                                                 \
+                                                                               \
+         _c1 = CUBIC_COEF_1(v0,v1,v2,v3);                                      \
+         _c2 = CUBIC_COEF_2(v0,v1,v2,v3);                                      \
+         _c3 = CUBIC_COEF_3(v0,v1,v2,v3);                                      \
+         (val) = CUBIC_COEF_0(v0,v1,v2,v3) + (u) * (_c1+(u)*(_c2+(u)*_c3));    \
+         (deriv) = _c1 + (u) * (2.0*_c2 + 3.0 * (u) * _c3);                    \
+     }
+
+#define  CUBIC_UNIVAR_VAL_DERIV2( v0, v1, v2, v3, u, val, deriv1, deriv2 )     \
+     {                                                                         \
+         Real   _c1, _c2, _c3;                                                 \
+                                                                               \
+         _c1 = CUBIC_COEF_1(v0,v1,v2,v3);                                      \
+         _c2 = CUBIC_COEF_2(v0,v1,v2,v3);                                      \
+         _c3 = CUBIC_COEF_3(v0,v1,v2,v3);                                      \
+         (val) = CUBIC_COEF_0(v0,v1,v2,v3) + (u) * (_c1 + (u) * (_c2+(u)*_c3));\
+         (deriv1) = _c1 + (u) * (2.0*_c2 + 3.0 * (u) * _c3);                   \
+         (deriv2) = 2.0 * _c2 + 6.0 * (u) * _c3;                               \
+     }
+
 #define  CUBIC_BIVAR( v00, v01, v02, v03, v10, v11, v12, v13, v20, v21, v22, v23, v30, v31, v32, v33, u, v, val ) \
      { \
          double  cu0, cu1, cu2, cu3; \
@@ -364,6 +387,22 @@
          cu2 = CUBIC_UNIVAR( v20, v21, v22, v23, v ); \
          cu3 = CUBIC_UNIVAR( v30, v31, v32, v33, v ); \
          duu = CUBIC_UNIVAR_DERIV2( cu0, cu1, cu2, cu3, u ); \
+     }
+
+#define  CUBIC_BIVAR_VAL_DERIV2( v00, v01, v02, v03, v10, v11, v12, v13, v20, v21, v22, v23, v30, v31, v32, v33, u, v, val, du, dv, duu, duv, dvv ) \
+     {                                                                        \
+         double  c0, c1, c2, c3;                                              \
+         double  dv0, dv1, dv2, dv3;                                          \
+         double  dvv0, dvv1, dvv2, dvv3;                                      \
+                                                                              \
+         CUBIC_UNIVAR_VAL_DERIV2( v00, v01, v02, v03, v, c0, dv0, dvv0 );     \
+         CUBIC_UNIVAR_VAL_DERIV2( v10, v11, v12, v13, v, c1, dv1, dvv1 );     \
+         CUBIC_UNIVAR_VAL_DERIV2( v20, v21, v22, v23, v, c2, dv2, dvv2 );     \
+         CUBIC_UNIVAR_VAL_DERIV2( v30, v31, v32, v33, v, c3, dv3, dvv3 );     \
+                                                                              \
+         dvv = CUBIC_UNIVAR( dvv0, dvv1, dvv2, dvv3, u );                     \
+         CUBIC_UNIVAR_VAL_DERIV1( dv0, dv1, dv2, dv3, u, dv, duv );           \
+         CUBIC_UNIVAR_VAL_DERIV2( c0, c1, c2, c3, u, val, du, duu );          \
      }
 
 #define  CUBIC_TRIVAR( c, u, v, w, val ) \
@@ -579,6 +618,64 @@
         (duu) = CUBIC_UNIVAR_DERIV2( c0, c1, c2, c3, u ); \
         (duv) = CUBIC_UNIVAR_DERIV( dv0, dv1, dv2, dv3, u ); \
         (duw) = CUBIC_UNIVAR_DERIV( dw0, dw1, dw2, dw3, u ); \
+        (dvv) = CUBIC_UNIVAR( dvv0, dvv1, dvv2, dvv3, u ); \
+        (dvw) = CUBIC_UNIVAR( dvw0, dvw1, dvw2, dvw3, u ); \
+        (dww) = CUBIC_UNIVAR( dww0, dww1, dww2, dww3, u ); \
+    }
+
+#define  CUBIC_TRIVAR_VAL_DERIV2( c, u, v, w, val, du, dv, dw, duu, duv, duw, dvv, dvw, dww ) \
+    { \
+        double  c00, c01, c02, c03, c10, c11, c12, c13; \
+        double  c20, c21, c22, c23, c30, c31, c32, c33; \
+        double  c0, c1, c2, c3; \
+        double  dw00, dw01, dw02, dw03, dw10, dw11, dw12, dw13; \
+        double  dw20, dw21, dw22, dw23, dw30, dw31, dw32, dw33; \
+        double  dww00, dww01, dww02, dww03, dww10, dww11, dww12, dww13; \
+        double  dww20, dww21, dww22, dww23, dww30, dww31, dww32, dww33; \
+        double  dww0, dww1, dww2, dww3; \
+        double  dv0, dv1, dv2, dv3; \
+        double  dvv0, dvv1, dvv2, dvv3; \
+        double  dvw0, dvw1, dvw2, dvw3; \
+        double  dw0, dw1, dw2, dw3; \
+ \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,000),GLUE(c,001),GLUE(c,002),GLUE(c,003),w,c00,dw00,dww00); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,010),GLUE(c,011),GLUE(c,012),GLUE(c,013),w,c01,dw01,dww01); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,020),GLUE(c,021),GLUE(c,022),GLUE(c,023),w,c02,dw02,dww02); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,030),GLUE(c,031),GLUE(c,032),GLUE(c,033),w,c03,dw03,dww03); \
+ \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,100),GLUE(c,101),GLUE(c,102),GLUE(c,103),w,c10,dw10,dww10); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,110),GLUE(c,111),GLUE(c,112),GLUE(c,113),w,c11,dw11,dww11); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,120),GLUE(c,121),GLUE(c,122),GLUE(c,123),w,c12,dw12,dww12); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,130),GLUE(c,131),GLUE(c,132),GLUE(c,133),w,c13,dw13,dww13); \
+ \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,200),GLUE(c,201),GLUE(c,202),GLUE(c,203),w,c20,dw20,dww20); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,210),GLUE(c,211),GLUE(c,212),GLUE(c,213),w,c21,dw21,dww21); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,220),GLUE(c,221),GLUE(c,222),GLUE(c,223),w,c22,dw22,dww22); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,230),GLUE(c,231),GLUE(c,232),GLUE(c,233),w,c23,dw23,dww23); \
+ \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,300),GLUE(c,301),GLUE(c,302),GLUE(c,303),w,c30,dw30,dww30); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,310),GLUE(c,311),GLUE(c,312),GLUE(c,313),w,c31,dw31,dww31); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,320),GLUE(c,321),GLUE(c,322),GLUE(c,323),w,c32,dw32,dww32); \
+        CUBIC_UNIVAR_VAL_DERIV2(GLUE(c,330),GLUE(c,331),GLUE(c,332),GLUE(c,333),w,c33,dw33,dww33); \
+ \
+        CUBIC_UNIVAR_VAL_DERIV2( c00, c01, c02, c03, v, c0, dv0, dvv0 ); \
+        CUBIC_UNIVAR_VAL_DERIV2( c10, c11, c12, c13, v, c1, dv1, dvv1 ); \
+        CUBIC_UNIVAR_VAL_DERIV2( c20, c21, c22, c23, v, c2, dv2, dvv2 ); \
+        CUBIC_UNIVAR_VAL_DERIV2( c30, c31, c32, c33, v, c3, dv3, dvv3 ); \
+ \
+        CUBIC_UNIVAR_VAL_DERIV1( dw00, dw01, dw02, dw03, v, dw0, dvw0 ); \
+        CUBIC_UNIVAR_VAL_DERIV1( dw10, dw11, dw12, dw13, v, dw1, dvw1 ); \
+        CUBIC_UNIVAR_VAL_DERIV1( dw20, dw21, dw22, dw23, v, dw2, dvw2 ); \
+        CUBIC_UNIVAR_VAL_DERIV1( dw30, dw31, dw32, dw33, v, dw3, dvw3 ); \
+ \
+        dww0 = CUBIC_UNIVAR( dww00, dww01, dww02, dww03, v ); \
+        dww1 = CUBIC_UNIVAR( dww10, dww11, dww12, dww13, v ); \
+        dww2 = CUBIC_UNIVAR( dww20, dww21, dww22, dww23, v ); \
+        dww3 = CUBIC_UNIVAR( dww30, dww31, dww32, dww33, v ); \
+ \
+        CUBIC_UNIVAR_VAL_DERIV2( c0, c1, c2, c3, u, val, du, duu ); \
+        CUBIC_UNIVAR_VAL_DERIV1( dv0, dv1, dv2, dv3, u, dv, duv ); \
+        CUBIC_UNIVAR_VAL_DERIV1( dw0, dw1, dw2, dw3, u, dw, duw ); \
         (dvv) = CUBIC_UNIVAR( dvv0, dvv1, dvv2, dvv3, u ); \
         (dvw) = CUBIC_UNIVAR( dvw0, dvw1, dvw2, dvw3, u ); \
         (dww) = CUBIC_UNIVAR( dww0, dww1, dww2, dww3, u ); \

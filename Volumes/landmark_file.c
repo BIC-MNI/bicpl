@@ -1,5 +1,10 @@
 #include  <def_mni.h>
 
+public  char  *get_default_landmark_file_suffix()
+{
+    return( "lmk" );
+}
+
 public  Status   input_landmark_file(
     Volume         volume,
     char           filename[],

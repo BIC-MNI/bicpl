@@ -12,12 +12,19 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  alloc_auxiliary_data(
+private  void  alloc_auxiliary_data(
     Volume  volume )
 {
     ALLOC3D( volume->labels, volume->sizes[X], volume->sizes[Y],
              volume->sizes[Z] );
     set_all_volume_auxiliary_data( volume, ACTIVE_BIT );
+}
+
+private  void  check_alloc_auxiliary_data(
+    Volume  volume )
+{
+    if( volume->labels == (unsigned char ***) NULL )
+        alloc_auxiliary_data( volume );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -55,6 +62,8 @@ public  void  set_all_volume_auxiliary_data(
     int             n_voxels, i;
     unsigned char   *label_ptr;
 
+    check_alloc_auxiliary_data( volume );
+
     n_voxels = volume->sizes[X] * volume->sizes[Y] * volume->sizes[Z];
 
     label_ptr = volume->labels[0][0];
@@ -86,6 +95,8 @@ public  void  set_all_volume_auxiliary_data_bit(
 {
     int             n_voxels, i;
     unsigned char   *label_ptr;
+
+    check_alloc_auxiliary_data( volume );
 
     n_voxels = volume->sizes[X] * volume->sizes[Y] * volume->sizes[Z];
 
@@ -159,6 +170,8 @@ public  void  set_volume_auxiliary_data(
     int             z,
     int             value )
 {
+    check_alloc_auxiliary_data( volume );
+
     volume->labels[x][y][z] = (unsigned char) value;
 }
 
@@ -170,7 +183,7 @@ public  void  set_volume_auxiliary_data(
               z
 @OUTPUT     : 
 @RETURNS    : value
-@DESCRIPTION: Gets the auxiliary data of the given voxel to the value.
+@DESCRIPTION: Returns the auxiliary data of the given voxel.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
@@ -181,7 +194,10 @@ public  int  get_volume_auxiliary_data(
     int             y,
     int             z )
 {
-    return( (int) (volume->labels[x][y][z]) );
+    if( volume->labels == (unsigned char ***) NULL )
+        return( ACTIVE_BIT );
+    else
+        return( (int) (volume->labels[x][y][z]) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -232,6 +248,8 @@ public  void  set_voxel_activity_flag(
     Boolean         value )
 {
     unsigned  char  *ptr;
+
+    check_alloc_auxiliary_data( volume );
 
     ptr = &volume->labels[x][y][z];
     if( value )
@@ -285,6 +303,8 @@ public  void  set_voxel_label_flag(
 {
     unsigned  char  *ptr;
 
+    check_alloc_auxiliary_data( volume );
+
     ptr = &volume->labels[x][y][z];
     if( value )
         *ptr |= LABEL_BIT;
@@ -322,6 +342,8 @@ public  Status  io_volume_auxiliary_bit(
     nx = volume->sizes[X];
     ny = volume->sizes[Y];
     nz = volume->sizes[Z];
+
+    check_alloc_auxiliary_data( volume );
 
     create_bitlist_3d( nx, ny, nz, &bitlist );
 
@@ -384,6 +406,8 @@ public  Status  input_tags_as_labels(
     int             *structure_ids, *patient_ids;
     char            **labels;
 
+    check_alloc_auxiliary_data( volume );
+
     if( input_tag_points( file, &n_volumes, &n_tag_points,
                                &tags1, &tags2, &weights, &structure_ids,
                                &patient_ids, &labels ) != OK )
@@ -428,6 +452,7 @@ public  Status  output_labels_as_tags(
     Real            **tags, *weights;
     int             *structure_ids, *patient_ids;
 
+    check_alloc_auxiliary_data( volume );
     get_volume_sizes( volume, sizes );
 
     n_tags = 0;
@@ -489,6 +514,8 @@ public  Status  input_landmarks_as_labels(
     int             label, ind[N_DIMENSIONS];
     Real            x_voxel, y_voxel, z_voxel;
     marker_struct   marker;
+
+    check_alloc_auxiliary_data( volume );
 
     while( io_tag_point( file, READ_FILE, volume, 1.0, &marker ) == OK )
     {
