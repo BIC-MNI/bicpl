@@ -1,0 +1,50 @@
+This is a description of the polygons format as produced by the deformation
+algorithm:
+
+A file looks like:                                 and means:
+
+P 0.3 0.7 0.5 100 1 65538        # amb   diff  spec    spec    opacity n_points
+                                 # coef  coef  coef  exponent
+
+  63.7483 -0.0488046 25.3558     #  x y z  for point 0
+ -62.3075 0.616629 25.0492       #  x y z  for point 1
+            .                             .
+            .                             .
+            .                             .
+ -0.319302 -5.36752 -5.124       #  x y z  for point n_points-2
+ -0.277344 -6.09656 -5.0817      #  x y z  for point n_points-1
+
+ 0.889197 -0.441812 0.118871     #  x y z  for normal for point 0
+ -0.771675 -0.275487 -0.573259   #  x y z  for normal for point 1
+            .                             .
+            .                             .
+            .                             .
+ 0.954681 0.00771897 -0.29753    #  x y z  for normal for point n_points-2
+ 0.969842 0.0843502 -0.228673    #  x y z  for normal for point n_points-1
+
+ 131072                          # number of triangles
+ 2 0.321569 0 0 1                # 2 == one colour per point  r g b a for point0
+                                 # 0 == one colour for whole set of polygons
+ 0.305882 0 0 1                  # r g b a for point 1   (alpha (a) is always 1)
+ 0.0431373 0 0 1                 # r g b a for point 2
+            .                             .
+            .                             .
+            .                             .
+ 0.219608 0 0 1                  # r g b a for point n_points-2
+ 0.235294 0 0 1                  # r g b a for point n_points-1
+
+ 3 6 9 12 15 18 21 24            # 131072 integers which can be ignored
+ 27 30 33 36 39 42 45 48         # since they are multiples of 3
+            . 
+            . 
+            . 
+ 393171 393174 393177 393180 393183 393186 393189 393192
+ 393195 393198 393201 393204 393207 393210 393213 393216
+
+ 0 16386 16388 16386 4098 16387 16388 16386      # 3 * 131072 integers where
+ 16387 16388 16387 4100 4098 16389 16391 16389   # 1 2 3 are indices of tri 1
+            .                                    # 4 5 6 are indices of tri 2
+            .                                          etc.
+            . 
+ 65536 65537 65536 9297 13920 65537 55488 65537
+ 9297 37025 55488 65537 37025 55488 37025 5

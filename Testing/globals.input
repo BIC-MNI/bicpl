@@ -1,0 +1,8 @@
+    Test_int = 3;
+    Test_real = 3.0;
+    Test_boolean = TRUE;
+    Test_point = 3 3 3;
+    Test_vector = 3 3 3
+    Test_surfprop = 3 3 3 3 3;
+    Test_colour = BLUE;
+    Test_string = "Read from File";

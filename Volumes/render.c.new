@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.39 1999-06-21 21:00:25 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c.new,v 1.1 1999-06-21 21:00:26 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -597,15 +597,6 @@ public  void  render_volume_to_slice(
 
         x_left = MAX( x_pixel_start, start_x[y] );
         x_right = MIN( x_pixel_end, end_x[y] );
-
-        /* there is a core-dumping bug somewhere */
-        /* this is a temporary fix for register */
-
-        if( volume_data2 != NULL && total_cases2 != 1 )
-        {
-            ++x_left;
-            --x_right;
-        }
 
         if( x_left <= x_right )
         {

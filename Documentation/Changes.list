@@ -1,0 +1,19 @@
+Oct. 18, 1995  :  Changed input and output of labels as tags to perform
+                  one-tag-at-a-time io, avoiding allocation of large amounts
+                  of memory.
+
+Dec.  7, 1995  :  Added one function to load labels or tags.
+Apr. 16, 1996  :  Made 'cc -fullwarn -lint' proof
+Apr. 23, 1996  :  Fixed the bug of double incrementing n_steps_no_improvement
+Apr. 29, 1996  :  Added icosahedron to list of building blocks for triangulation
+Jul. 31, 1996  :  Changed format of .obj file to have sizes instead of end indic
+Aug.  1, 1996  :  Fixed separate_object_points to handle per-vertex colours.
+Aug.  6, 1996  :  Sped up ray-tube intersection test
+Aug. 20, 1996  :  get_object_normals returns null pointer. 
+Nov.  7, 1996  :  Added is_transform_right_handed() to transforms.c
+Nov. 25, 1996  :  Added User defined colour coding.
+Jun.  6, 1997  :  Fixed label loading to be faster and more correct.
+Jun. 13, 1997  :  Fixed plane-polygon intersection program to handle
+                  in plane cases better.
+Jun. 30, 1997  :  Fixed the bounding problem in scan lines to volume
+Jul. 23, 1997  :  Made quadmeshes scanable to volume.

@@ -17,7 +17,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.7 1996-05-17 19:35:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.8 1999-06-21 21:00:24 stever Exp $";
 #endif
 
 private Colour ANTIQUE_WHITE_COL;
@@ -916,7 +916,11 @@ public  Colour  convert_string_to_colour(
     {
         if( sscanf( string, "%lf %lf %lf %lf", &r, &g, &b, &a ) == 4 )
             colour = make_rgba_Colour_0_1( r, g, b, a );
+        else if( sscanf( string, "%lf,%lf,%lf,%lf", &r, &g, &b, &a ) == 4 )
+            colour = make_rgba_Colour_0_1( r, g, b, a );
         else if( sscanf( string, "%lf %lf %lf", &r, &g, &b ) == 3 )
+            colour = make_Colour_0_1( r, g, b );
+        else if( sscanf( string, "%lf,%lf,%lf", &r, &g, &b ) == 3 )
             colour = make_Colour_0_1( r, g, b );
         else
             colour = make_Colour( 0, 0, 0 );

@@ -2,6 +2,8 @@ def: all
 
 include ../Volume_io/Makefile.include
 
+include Makefile.objects
+
 OPT = $(OPT_O)
 
 BIC_OBJ = $(BIC_SRC:.c=.o)
@@ -10,14 +12,11 @@ BIC_LIB      = $(ARCH_DIR)/libbicpl.a
 BIC_LIB-O3   = $(ARCH_DIR)/libbicpl-O3.a
 BIC_LINT_LIB = $(ARCH_DIR)/llib-lbicpl.ln
 
-include Makefile.objects
-
-INCLUDE = $(VOLUME_IO_INCLUDE) -IInclude
+INCLUDE = $(VOLUME_IO_INCLUDE) -IInclude $(SGI_IMAGE_INCLUDE)
 
 #-----------------------------------------------------------------------------
 
-$(DATA_STRUCT_SRC) $(TRANSFORM_SRC) $(GEOMETRY_SRC) $(NUMERICAL_SRC) \
-$(OBJECTS_SRC) $(PROG_UTILS_SRC) $(VOLUMES_SRC) \
+$(BIC_SRC) \
 Numerical/$(ARCH_DIR)/minimize_lsq_include.c \
 Volumes/$(ARCH_DIR)/call_rend_f_include.c \
 Volumes/$(ARCH_DIR)/rend_f_include.c \
@@ -34,6 +33,20 @@ Volumes/$(ARCH_DIR)/rend_f.o \
 Volumes/$(ARCH_DIR)/rend_f.u: Volumes/$(ARCH_DIR)/call_rend_f_include.c \
                               Volumes/$(ARCH_DIR)/rend_f_include.c \
                               Volumes/$(ARCH_DIR)/render_funcs_include.c
+
+#-----------------------------------------------------------------------------
+
+IMAGE_PROTOTYPE_FILE = Include/image_prototypes.h
+
+$(IMAGE_PROTOTYPE_FILE): $(IMAGE_SRC)
+	@$(MAKE_PROTOTYPES) $@ $(IMAGE_SRC)
+
+#-----------------------------------------------------------------------------
+
+MARCHING_PROTOTYPE_FILE = Include/march_prototypes.h
+
+$(MARCHING_PROTOTYPE_FILE): $(MARCHING_SRC)
+	@$(MAKE_PROTOTYPES) $@ $(MARCHING_SRC)
 
 #-----------------------------------------------------------------------------
 
@@ -88,8 +101,10 @@ $(VOLUMES_PROTOTYPE_FILE): $(VOLUMES_SRC)
 
 $(BIC_LIB): $(DS_PROTOTYPE_FILE) \
             $(GEOMETRY_PROTOTYPE_FILE) \
+            $(IMAGE_PROTOTYPE_FILE) \
             $(TRANSFORM_PROTOTYPE_FILE) \
             $(NUMERIC_PROTOTYPE_FILE) \
+            $(MARCHING_PROTOTYPE_FILE) \
             $(OBJ_PROTOTYPE_FILE) \
             $(PROG_PROTOTYPE_FILE) \
             $(VOLUMES_PROTOTYPE_FILE) \
@@ -101,6 +116,7 @@ $(BIC_LIB): $(DS_PROTOTYPE_FILE) \
 $(BIC_LIB-O3): $(DS_PROTOTYPE_FILE) \
             $(GEOMETRY_PROTOTYPE_FILE) \
             $(TRANSFORM_PROTOTYPE_FILE) \
+            $(MARCHING_PROTOTYPE_FILE) \
             $(NUMERIC_PROTOTYPE_FILE) \
             $(OBJ_PROTOTYPE_FILE) \
             $(PROG_PROTOTYPE_FILE) \
@@ -112,6 +128,7 @@ $(BIC_LIB-O3): $(DS_PROTOTYPE_FILE) \
 
 $(BIC_LINT_LIB): $(DS_PROTOTYPE_FILE) \
                  $(GEOMETRY_PROTOTYPE_FILE) \
+                 $(IMAGE_PROTOTYPE_FILE) \
                  $(TRANSFORM_PROTOTYPE_FILE) \
                  $(NUMERIC_PROTOTYPE_FILE) \
                  $(OBJ_PROTOTYPE_FILE) \
@@ -126,3 +143,6 @@ $(ARCH_DIR):
 all: $(ARCH_DIR) $(BIC_LIB)
 
 lint: $(BIC_LINT_LIB)
+
+cvstatic.fileset:
+	@echo $(BIC_SRC) > $@

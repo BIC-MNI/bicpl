@@ -110,14 +110,17 @@ lint_test_gradient: test_gradient.ln
 
 # ----------------------------------------------------------------------------
 
-render_speed: render_speed.o
-	$(CC) render_speed.o -o $@ $(BIC_PL_LIBS)
+$(ARCH_DIR)/render_speed.c:
+	@$(MAKE_SOURCE_LINKS) $(ARCH_DIR)/render_speed.c
 
-render_speed-O3: render_speed.u
-	$(CC) -O3 render_speed.u -o $@ $(BIC_PL_LIBS-O3)
+$(ARCH_DIR)/render_speed: $(ARCH_DIR)/render_speed.o
+	$(CC) $(ARCH_DIR)/render_speed.o -o $@ $(BIC_PL_LIBS)
 
-lint_render_speed: render_speed.ln
-	$(LINT) -u $(LINTFLAGS) render_speed.ln $(BIC_PL_LINT_LIBS)
+$(ARCH_DIR)/render_speed-O3: $(ARCH_DIR)/render_speed.u
+	$(CC) -O3 $(ARCH_DIR)/render_speed.u -o $@ $(BIC_PL_LIBS-O3)
+
+lint_render_speed: $(ARCH_DIR)/render_speed.ln
+	$(LINT) -u $(LINTFLAGS) $(ARCH_DIR)/render_speed.ln $(BIC_PL_LINT_LIBS)
 
 # ----------------------------------------------------------------------------
 
@@ -180,8 +183,44 @@ test_sphere: test_sphere.o ../libbicpl.a
 
 # ----------------------------------------------------------------------------
 
-test_bintree: test_bintree.o ../libbicpl.a
-	$(CC) test_bintree.o -o $@ $(BIC_PL_LIBS)
+$(ARCH)/test_bintree.c $(ARCH)/ray_intersect.c:
+	@$(MAKE_SOURCE_LINKS) $@
+
+$(ARCH)/test_bintree: $(ARCH)/test_bintree.o $(ARCH)/ray_intersect.o
+	$(CC) $(ARCH)/test_bintree.o $(ARCH)/ray_intersect.o -o $@ $(BIC_PL_LIBS)
+
+$(ARCH)/test_bintree-O3: $(ARCH)/test_bintree.u $(ARCH)/ray_intersect.u
+	$(CC) -O3 $(ARCH)/test_bintree.u $(ARCH)/ray_intersect.u -o $@ $(BIC_PL_LIBS-O3)
+
+$(ARCH)/test_bintree.pixie: $(ARCH)/test_bintree
+	pixie -o $@ $(ARCH)/test_bintree
+
+$(ARCH)/test_bintree-O3.pixie: $(ARCH)/test_bintree-O3
+	pixie -o $@ $(ARCH)/test_bintree-O3
+
+prof.test_bintree: test_bintree.Counts Makefile
+	prof -E _random \
+             -E get_planes \
+             -E get_random \
+             -E get_random_0_to_1 \
+             -E check_initialized \
+             -E main \
+             -E get_node_split_position \
+             -E get_node_split_axis \
+             -E find_best_split_node_for_axis \
+             -quit 100 -pixie -h -p  $(ARCH)/test_bintree test_bintree.Counts >&! $@
+
+prof.test_bintree-O3: test_bintree-O3.Counts Makefile
+	prof -E _random \
+             -E get_planes \
+             -E get_random \
+             -E get_random_0_to_1 \
+             -E check_initialized \
+             -E main \
+             -E get_node_split_position \
+             -E get_node_split_axis \
+             -E find_best_split_node_for_axis \
+             -quit 100 -pixie -h -p  $(ARCH)/test_bintree-O3 test_bintree-O3.Counts >&! $@
 
 # ----------------------------------------------------------------------------
 

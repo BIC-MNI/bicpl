@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.10 1997-03-23 21:11:29 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.11 1999-06-21 21:00:26 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -190,6 +190,8 @@ public  void  create_tetrahedral_sphere(
             fill_Point( polygons->points[p], cx + dx, cy + dy, cz + dz );
         }
     }
+
+    compute_polygon_normals( polygons );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
