@@ -5,14 +5,15 @@ public  Status  output_volume(
     volume_struct  *volume,
     int            axis_ordering[] )
 {
-    Status   status;
-    Real     trans;
-    int      a1, a2, a3;
-    int      n_bytes_per_voxel, indices[N_DIMENSIONS];
-    FILE     *file;
-    String   header_filename, voxel_filename, abs_voxel_filename;
-    String   filename_no_dirs;
-    int      axis;
+    Status           status;
+    Real             trans;
+    int              a1, a2, a3;
+    int              n_bytes_per_voxel, indices[N_DIMENSIONS];
+    FILE             *file;
+    String           header_filename, voxel_filename, abs_voxel_filename;
+    String           filename_no_dirs;
+    int              axis;
+    progress_struct  progress;
 
     (void) sprintf( header_filename, "%s.fre", prefix );
     (void) sprintf( abs_voxel_filename, "%s.img", prefix );
@@ -88,6 +89,11 @@ public  Status  output_volume(
         a1 = axis_ordering[0];
         a2 = axis_ordering[1];
         a3 = axis_ordering[2];
+
+        initialize_progress_report( &progress, FALSE,
+                                    volume->sizes[a1] * volume->sizes[a2],
+                                    "Writing Volume" );
+
         for_less( indices[a1], 0, volume->sizes[a1] )
         {
             for_less( indices[a2], 0, volume->sizes[a2] )
@@ -99,8 +105,14 @@ public  Status  output_volume(
                                     indices[X],indices[Y],indices[Z]),
                                     n_bytes_per_voxel, 1 );
                 }
+
+                update_progress_report( &progress,
+                                        indices[a1] * volume->sizes[a2] +
+                                        indices[a2] + 1 );
             }
         }
+
+        terminate_progress_report( &progress );
     }
                         
     return( status );
