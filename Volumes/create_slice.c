@@ -1,6 +1,8 @@
 
 #include  <mni.h>
 
+#define  BIG_NUMBER  1.0e10
+
 private  void clip_one_edge(
     BOOLEAN  closing,
     int      edge,
@@ -121,29 +123,28 @@ private  int  clip_points(
     return( n_clipped_points );
 }
 
-private  void    clip_viewport_to_volume(
+public  void    get_volume_mapping_range(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
     Real     y_axis[],
-    int      *x_pixel_start,
-    int      *x_pixel_end,
-    int      *y_pixel_start,
-    int      *y_pixel_end )
+    Real     *x_pixel_start,
+    Real     *x_pixel_end,
+    Real     *y_pixel_start,
+    Real     *y_pixel_end )
 {
     Real    points[4][2], clipped_points[2*MAX_DIMENSIONS][2];
     int     i, n_points, sizes[MAX_DIMENSIONS], n_dims;
-    Real    x_min, x_max, y_min, y_max;
 
     get_volume_sizes( volume, sizes );
-    points[0][0] = (Real) *x_pixel_start;
-    points[0][1] = (Real) *y_pixel_start;
-    points[1][0] = (Real) *x_pixel_end;
-    points[1][1] = (Real) *y_pixel_start;
-    points[2][0] = (Real) *x_pixel_end;
-    points[2][1] = (Real) *y_pixel_end;
-    points[3][0] = (Real) *x_pixel_start;
-    points[3][1] = (Real) *y_pixel_end;
+    points[0][0] = -BIG_NUMBER;
+    points[0][1] = -BIG_NUMBER;
+    points[1][0] =  BIG_NUMBER;
+    points[1][1] = -BIG_NUMBER;
+    points[2][0] =  BIG_NUMBER;
+    points[2][1] =  BIG_NUMBER;
+    points[3][0] = -BIG_NUMBER;
+    points[3][1] =  BIG_NUMBER;
 
     n_dims = get_volume_n_dimensions( volume );
 
@@ -154,38 +155,66 @@ private  void    clip_viewport_to_volume(
     if( n_points == 1 || n_points == 2 || n_points > 2 * n_dims )
     {
         HANDLE_INTERNAL_ERROR( "clipping" );
+        n_points = 0;
     }
 
     if( n_points == 0 )
     {
-        *x_pixel_start = 1;
-        *x_pixel_end = 0;
-        *y_pixel_start = 1;
-        *y_pixel_end = 0;
+        *x_pixel_start = 1.0;
+        *x_pixel_end = 0.0;
+        *y_pixel_start = 1.0;
+        *y_pixel_end = 0.0;
     }
     else
     {
-        x_min = clipped_points[0][0];
-        x_max = clipped_points[0][0];
-        y_min = clipped_points[0][1];
-        y_max = clipped_points[0][1];
+        *x_pixel_start = clipped_points[0][0];
+        *x_pixel_end = clipped_points[0][0];
+        *y_pixel_start = clipped_points[0][1];
+        *y_pixel_end = clipped_points[0][1];
         for_less( i, 0, n_points )
         {
-            if( clipped_points[i][0] < x_min )
-                x_min = clipped_points[i][0];
-            else if( clipped_points[i][0] > x_max )
-                x_max = clipped_points[i][0];
-            if( clipped_points[i][1] < y_min )
-                y_min = clipped_points[i][1];
-            else if( clipped_points[i][1] > y_max )
-                y_max = clipped_points[i][1];
+            if( clipped_points[i][0] < *x_pixel_start )
+                *x_pixel_start = clipped_points[i][0];
+            else if( clipped_points[i][0] > *x_pixel_end )
+                *x_pixel_end = clipped_points[i][0];
+            if( clipped_points[i][1] < *y_pixel_start )
+                *y_pixel_start = clipped_points[i][1];
+            else if( clipped_points[i][1] > *y_pixel_end )
+                *y_pixel_end = clipped_points[i][1];
         }
-
-        *x_pixel_start = CEILING( x_min );
-        *x_pixel_end = FLOOR( x_max );
-        *y_pixel_start = CEILING( y_min );
-        *y_pixel_end = FLOOR( y_max );
     }
+}
+
+private  void    clip_viewport_to_volume(
+    Volume   volume,
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    int      *x_pixel_start,
+    int      *x_pixel_end,
+    int      *y_pixel_start,
+    int      *y_pixel_end )
+{
+    int     int_x_min, int_x_max, int_y_min, int_y_max;
+    Real    x_min, x_max, y_min, y_max;
+
+    get_volume_mapping_range( volume, origin, x_axis, y_axis,
+                              &x_min, &x_max, &y_min, &y_max );
+
+    int_x_min = CEILING( x_min );
+    int_x_max = FLOOR( x_max );
+    int_y_min = CEILING( y_min );
+    int_y_max = FLOOR( y_max );
+
+    if( int_x_min > *x_pixel_start )
+        *x_pixel_start = int_x_min;
+    if( int_x_max < *x_pixel_end )
+        *x_pixel_end = int_x_max;
+
+    if( int_y_min > *y_pixel_start )
+        *y_pixel_start = int_y_min;
+    if( int_y_max < *y_pixel_end )
+        *y_pixel_end = int_y_max;
 }
 
 private  void  create_weighted_volume_slices(
