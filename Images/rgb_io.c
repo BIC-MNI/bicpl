@@ -7,15 +7,17 @@ static  void  error_function(
 #ifdef  __sgi
 #include <image.h>
 
-int getrow(IMAGE *image, unsigned short *buffer,
+extern  unsigned short *ibufalloc(IMAGE *image);
+
+extern int getrow(IMAGE *image, unsigned short *buffer,
                 unsigned int y, unsigned int z);
 
-int iclose(IMAGE *image);
+extern int iclose(IMAGE *image);
 
-int putrow(IMAGE *image, unsigned short *buffer,
+extern int putrow(IMAGE *image, unsigned short *buffer,
                 unsigned int y, unsigned int z);
 
-int i_seterror( void (*func)() );
+extern int i_seterror( void (*func)() );
 
 #endif
 
@@ -25,8 +27,8 @@ public  Status  input_rgb_file(
 {
 #ifdef  __sgi
     IMAGE                 *iimage;
-    unsigned int          x_size, y_size, z_size;
-    unsigned int          x, y;
+    int                   x_size, y_size, z_size;
+    int                   x, y;
     int                   r, g, b;
     unsigned short        rbuf[8192];
     unsigned short        gbuf[8192];
@@ -39,9 +41,9 @@ public  Status  input_rgb_file(
         return( ERROR );
     }
 
-    x_size = iimage->xsize;
-    y_size = iimage->ysize;
-    z_size = iimage->zsize;
+    x_size = (int) iimage->xsize;
+    y_size = (int) iimage->ysize;
+    z_size = (int) iimage->zsize;
 
     initialize_pixels( pixels, 0, 0, x_size, y_size, 1.0, 1.0, RGB_PIXEL );
 
@@ -53,15 +55,15 @@ public  Status  input_rgb_file(
 
     for_less( y, 0, y_size )
     {
-        getrow( iimage, rbuf, y, 0 );
-        getrow( iimage, gbuf, y, 1 );
-        getrow( iimage, bbuf, y, 2 );
+        getrow( iimage, rbuf, (unsigned int) y, 0 );
+        getrow( iimage, gbuf, (unsigned int) y, 1 );
+        getrow( iimage, bbuf, (unsigned int) y, 2 );
 
         for_less( x, 0, x_size )
         {
-            r = rbuf[x];
-            g = gbuf[x];
-            b = bbuf[x];
+            r = (int) rbuf[x];
+            g = (int) gbuf[x];
+            b = (int) bbuf[x];
             PIXEL_RGB_COLOUR( *pixels, x, y ) = make_Colour( r, g, b );
         }
     }
@@ -77,7 +79,7 @@ public  Status  output_rgb_file(
 {
 #ifdef  __sgi
     IMAGE                 *oimage;
-    unsigned int          x, y;
+    int                   x, y;
     Colour                col;
     unsigned short        rbuf[8192];
     unsigned short        gbuf[8192];
@@ -103,14 +105,14 @@ public  Status  output_rgb_file(
         for_less( x, 0, pixels->x_size )
         {
             col = PIXEL_RGB_COLOUR( *pixels, x, y );
-            rbuf[x] = get_Colour_r( col );
-            gbuf[x] = get_Colour_g( col );
-            bbuf[x] = get_Colour_b( col );
+            rbuf[x] = (unsigned short) get_Colour_r( col );
+            gbuf[x] = (unsigned short) get_Colour_g( col );
+            bbuf[x] = (unsigned short) get_Colour_b( col );
         }
 
-	putrow( oimage, rbuf, y, 0 );
-	putrow( oimage, gbuf, y, 1 );
-	putrow( oimage, bbuf, y, 2 );
+	putrow( oimage, rbuf, (unsigned int) y, 0 );
+	putrow( oimage, gbuf, (unsigned int) y, 1 );
+	putrow( oimage, bbuf, (unsigned int) y, 2 );
     }
 
     iclose(oimage);
