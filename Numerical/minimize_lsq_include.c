@@ -5,6 +5,7 @@
 #define   MAX_SAVES        100
 #define   N_SAVES            3
 #define   N_BETWEEN_SAVES    3
+#define   DEFAULT_RATIO      1.0
 
 private  Real  evaluate_fit(
     int              n_parameters,
@@ -125,8 +126,18 @@ private  void  minimize_along_line(
     Real             parm_values[],
     Real             line_coefs[] )
 {
-    int   parm;
-    Real  a, b, t, step_size;
+    int     parm;
+    Real    a, b, t, step_size;
+    static  BOOLEAN  first = TRUE;
+    static  Real     ratio;
+
+    if( first )
+    {
+        first = FALSE;
+        if( getenv( "LSQ_STEP_RATIO" ) == 0 ||
+            sscanf( getenv( "LSQ_STEP_RATIO" ), "%lf", &ratio ) != 1 )
+            ratio = DEFAULT_RATIO;
+    }
 
     evaluate_fit_along_line( n_parameters, constant_term, linear_terms,
                              square_terms, n_cross_terms, cross_parms,
@@ -135,7 +146,7 @@ private  void  minimize_along_line(
     if( a == 0.0 )
         return;
 
-    t = -b / (2.0 * a);
+    t = ratio * -b / (2.0 * a);
 
     if( max_step_size >= 0.0 )
     {
@@ -170,9 +181,13 @@ private  Real   private_minimize_lsq(
     Real              *saves[MAX_SAVES], *swap, *derivs;
     Real              last_update_time, current_time;
 
-    if( getenv( "N_SAVES" ) == NULL ||
-        sscanf( getenv( "N_SAVES" ), "%d", &n_saves ) != 1 )
+    if( getenv( "LSQ_N_SAVES" ) == NULL ||
+        sscanf( getenv( "LSQ_N_SAVES" ), "%d", &n_saves ) != 1 )
         n_saves = N_SAVES;
+
+    if( getenv( "LSQ_N_BETWEEN_SAVES" ) == NULL ||
+        sscanf( getenv( "LSQ_N_BETWEEN_SAVES" ), "%d", &n_between_saves ) != 1 )
+        n_between_saves = n_iters / n_saves;
 
     for_less( s, 0, n_saves )
     {
@@ -180,10 +195,6 @@ private  Real   private_minimize_lsq(
         for_less( p, 0, n_parameters )
             saves[s][p] = parm_values[p];
     }
-
-    if( getenv( "N_BETWEEN_SAVES" ) == NULL ||
-        sscanf( getenv( "N_BETWEEN_SAVES" ), "%d", &n_between_saves ) != 1 )
-        n_between_saves = n_iters / n_saves;
 
     n_between_saves = MAX( n_between_saves, 1 );
     n_between_saves = MIN( n_between_saves, N_BETWEEN_SAVES );
