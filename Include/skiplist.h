@@ -29,14 +29,14 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char skiplist_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/skiplist.h,v 1.5 1996-05-17 19:35:21 david Exp $";
+static char skiplist_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/skiplist.h,v 1.6 1996-11-25 14:14:34 david Exp $";
 #endif
 
 #include  <volume_io.h>
 
 typedef  struct  skip_struct
 {
-    int                     key;
+    float                   key;
     void                    *data_ptr;
     struct  skip_struct     *forward[1];
 } skip_struct;

@@ -30,7 +30,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char bitlist_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/bitlist.h,v 1.6 1995-07-31 13:44:39 david Exp $";
+static char bitlist_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/bitlist.h,v 1.7 1996-11-25 14:14:33 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -50,6 +50,7 @@ typedef  struct
 typedef  struct
 {
     int            nx, ny, nz;
+    int            n_z_words;
     bitlist_type   ***bits;
 }  bitlist_3d_struct;
 

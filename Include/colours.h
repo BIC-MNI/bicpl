@@ -16,35 +16,44 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colours.h,v 1.12 1996-10-02 18:16:37 david Exp $";
+static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colours.h,v 1.13 1996-11-25 14:14:34 david Exp $";
 #endif
 
 #include  <volume_io.h>
 
 #define  COMPOSITE_COLOURS( result, front, back ) \
          { \
-             Real  _rf, _gf, _bf, _af, _rb, _gb, _bb, _ab, _weight; \
-             Real  _r, _g, _b, _a; \
-             _rf = get_Colour_r_0_1(front); \
-             _gf = get_Colour_g_0_1(front); \
-             _bf = get_Colour_b_0_1(front); \
-             _af = get_Colour_a_0_1(front); \
-             _rb = get_Colour_r_0_1(back); \
-             _gb = get_Colour_g_0_1(back); \
-             _bb = get_Colour_b_0_1(back); \
-             _ab = get_Colour_a_0_1(back); \
-             _weight = (1.0 - _af) * _ab; \
-             _r = _af * _rf + _weight * _rb; \
-             _g = _af * _gf + _weight * _gb; \
-             _b = _af * _bf + _weight * _bb; \
-             _a = _af + _weight; \
-             if( _a > 0.0 ) \
+             int  _rf, _gf, _bf, _af, _rb, _gb, _bb, _ab, _weight; \
+             int  _r, _g, _b, _a; \
+             _af = get_Colour_a(front); \
+             _ab = get_Colour_a(back); \
+             if( _af == 255 || _ab == 0 ) \
+                 (result) = front; \
+             else if( _af == 0 ) \
+                 (result) = back; \
+             else \
              { \
-                 _r /= _a; \
-                 _g /= _a; \
-                 _b /= _a; \
+                 _rf = get_Colour_r(front); \
+                 _gf = get_Colour_g(front); \
+                 _bf = get_Colour_b(front); \
+                 _rb = get_Colour_r(back); \
+                 _gb = get_Colour_g(back); \
+                 _bb = get_Colour_b(back); \
+                 _weight = (255 - _af) * _ab; \
+                 _af *= 255; \
+                 _r = _af * _rf + _weight * _rb; \
+                 _g = _af * _gf + _weight * _gb; \
+                 _b = _af * _bf + _weight * _bb; \
+                 _a = _af + _weight; \
+                 if( _a > 0 ) \
+                 { \
+                     _r /= _a; \
+                     _g /= _a; \
+                     _b /= _a; \
+                     _a /= 255; \
+                 } \
+                 (result) = make_rgba_Colour( _r, _g, _b, _a ); \
              } \
-             (result) = make_rgba_Colour_0_1( _r, _g, _b, _a ); \
          }
 
 typedef  enum  { RGB_SPACE, HSL_SPACE }  Colour_spaces;

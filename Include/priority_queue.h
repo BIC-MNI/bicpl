@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/priority_queue.h,v 1.6 1995-08-14 18:08:40 david Exp $";
+static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/priority_queue.h,v 1.7 1996-11-25 14:14:34 david Exp $";
 #endif
 
 #include  <arrays.h>
@@ -54,7 +54,7 @@ static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/
          { \
              int      n_alloced; \
              int      n_entries; \
-             Real     *priorities; \
+             float    *priorities; \
              type     *entries; \
          }
 
@@ -75,8 +75,8 @@ static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/
          { \
              (q).n_alloced = 0; \
              (q).n_entries = 1; \
-             (q).priorities = 0; \
-             (q).entries = 0; \
+             (q).priorities = NULL; \
+             (q).entries = NULL; \
          }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -108,14 +108,14 @@ static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/
              while( _index > 1 ) \
              { \
                  _next_index = _index >> 1; \
-                 if( (q).priorities[_next_index] > priority ) \
+                 if( (Real) (q).priorities[_next_index] > (Real) (priority) ) \
                      break; \
-                 (q).priorities[_index] = (q).priorities[_next_index]; \
+                 (q).priorities[_index] = (float) (q).priorities[_next_index]; \
                  (q).entries[_index] = (q).entries[_next_index]; \
                  _index = _next_index; \
              } \
  \
-             (q).priorities[_index] = priority; \
+             (q).priorities[_index] = (float) (priority); \
              (q).entries[_index] = entry; \
          \
              ++(q).n_entries; \
@@ -177,7 +177,7 @@ static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/
                  int  _index, _next_index; \
  \
                  entry = (q).entries[1]; \
-                 priority = (q).priorities[1]; \
+                 priority = (Real) (q).priorities[1]; \
  \
                  _index = 1; \
                  _next_index = 2; \
@@ -217,7 +217,7 @@ static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/
          }
 
 #define  GET_TOP_PRIORITY( q ) \
-             ( IS_PRIORITY_QUEUE_EMPTY(q) ? 0.0 : (q).priorities[1] )
+             ( IS_PRIORITY_QUEUE_EMPTY(q) ? 0.0 : (Real) (q).priorities[1] )
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : DELETE_PRIORITY_QUEUE
