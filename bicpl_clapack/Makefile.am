@@ -2,6 +2,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/Include
 
 noinst_LTLIBRARIES = libbicpl_cla.la
 libbicpl_cla_la_SOURCES = \
+		blaswrap.h \
+		f2c.h \
                 dbdsqr.c \
                 dcopy.c \
                 dgebd2.c \
