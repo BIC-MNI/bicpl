@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_dist.c,v 1.5 1995-10-19 15:47:41 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_dist.c,v 1.6 1996-09-09 19:15:34 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -33,15 +33,17 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_d
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  sq_distance_between_points(
+public  Real  sq_distance_between_points(
     Point  *p1,
     Point  *p2 )
 {
-    Vector  diff;
+    Real   dx, dy, dz;
 
-    SUB_POINTS( diff, *p1, *p2 );
+    dx = RPoint_x(*p1) - RPoint_x(*p2);
+    dy = RPoint_y(*p1) - RPoint_y(*p2);
+    dz = RPoint_z(*p1) - RPoint_z(*p2);
 
-    return( DOT_VECTORS( diff, diff ) );
+    return( dx * dx + dy * dy + dz * dz );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
