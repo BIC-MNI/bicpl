@@ -1,4 +1,5 @@
 #include  <def_mni.h>
+#include  <def_stack.h>
 
 public  Boolean  numerically_close(
     Real  n1,
@@ -210,4 +211,155 @@ public  int solve_cubic(
 	s[ i ] -= sub;
 
     return num;
+}
+
+private  Boolean  range_may_contain_zero(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    u_max )
+{
+    int     i;
+    Boolean opposite_signs;
+    Real    min_value, max_value, u_min_power, u_max_power;
+    Real    min_power, max_power;
+
+    opposite_signs = (u_min * u_max < 0.0);
+
+    min_value = poly[0];
+    max_value = poly[0];
+    u_min_power = 1.0;
+    u_max_power = 1.0;
+
+    for_less( i, 1, n )
+    {
+        u_min_power *= u_min;
+        u_max_power *= u_max;
+        if( i % 2 == 0 && opposite_signs )
+        {
+            if( poly[i] >= 0.0 )
+            {
+                min_power = 0.0;
+                max_power = poly[i] * MAX( u_min_power, u_max_power );
+            }
+            else
+            {
+                min_power = poly[i] * MAX( u_min_power, u_max_power );
+                max_power = 0.0;
+            }
+        }
+        else
+        {
+            if( poly[i] >= 0.0 )
+            {
+                min_power = poly[i] * MIN( u_min_power, u_max_power );
+                max_power = poly[i] * MAX( u_min_power, u_max_power );
+            }
+            else
+            {
+                min_power = poly[i] * MAX( u_min_power, u_max_power );
+                max_power = poly[i] * MIN( u_min_power, u_max_power );
+            }
+        }
+
+        min_value += min_power;
+        max_value += max_power;
+    }
+
+    return( min_value <= 0.0 && max_value >= 0.0 );
+}
+
+public  int  get_roots_of_polynomial(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    u_max,
+    Real    accuracy,
+    Real    roots[] )
+{
+    Boolean              done, may_contain_zero, subdivide;
+    int                  n_roots, i, which, n_inside;
+    Real                 u_mid, diff, min_diff, cubic[4];
+    STACK_STRUCT( Real ) next_u_max;
+
+    if( n <= 4 )
+    {
+        for_less( i, 0, 4 )
+        {
+            if( i >= n )
+                cubic[i] = 0.0;
+            else
+                cubic[i] = poly[i];
+        }
+
+        n_roots = solve_cubic( cubic[3], cubic[2], cubic[1], cubic[0], roots );
+        n_inside = 0;
+        for_less( i, 0, n_roots )
+        {
+            if( u_min <= roots[i] && roots[i] >= roots[i] )
+            {
+                roots[n_inside] = roots[i];
+                ++n_inside;
+            }
+        }
+        return( n_inside );
+    }
+
+    INITIALIZE_STACK( next_u_max );
+
+    PUSH_STACK( next_u_max, u_max );
+
+    done = FALSE;
+    n_roots = 0;
+
+    while( !done )
+    {
+        u_mid = (u_min + u_max) / 2.0;
+        subdivide = (u_max - u_min > accuracy);
+        may_contain_zero = range_may_contain_zero( n, poly, u_min, u_max );
+
+        if( may_contain_zero && subdivide )
+        {
+            PUSH_STACK( next_u_max, u_max );
+            u_max = u_mid;
+        }
+        else
+        {
+            if( may_contain_zero && (n_roots == 0 || roots[n_roots-1] != u_mid))
+            {
+                if( n_roots == n-1 )
+                {
+                    which = 0;
+                    min_diff = 0.0;
+                    for_less( i, 0, n_roots-1 )
+                    {
+                        diff = roots[i+1] - roots[i];
+                        if( which == 0 || diff < min_diff )
+                        {
+                            min_diff = diff;
+                            which = i;
+                        }
+                    }
+
+                    for_less( i, which+1, n_roots-1 )
+                        roots[i] = roots[i+1];
+                    --n_roots;
+                }
+                roots[n_roots] = u_mid;
+                ++n_roots;
+            }
+
+            if( IS_STACK_EMPTY( next_u_max ) )
+                done = TRUE;
+            else
+            {
+                u_min = u_max;
+                POP_STACK( next_u_max, u_max );
+            }
+        }
+    }
+
+    DELETE_STACK( next_u_max );
+
+    return( n_roots );
 }
