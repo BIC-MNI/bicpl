@@ -1,5 +1,9 @@
-New in Release 1.3.6 (PRERELEASE VERSION)
+New in Release 1.3.6
 
+* Interface change:
+  clip_polygon_against_box: parameter specifying size of output_points array 
+    added.
+    
 * New tool: ascii_binary.
 * New optional second argument to bicobj2oogl.
 * Requires MINC 0.8 to compile.
