@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.8 1995-12-13 14:24:22 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.9 1996-02-23 20:45:37 david Exp $";
 #endif
 
 #define  DEFAULT_N_MEDIAN_BOXES    100000
@@ -338,7 +338,12 @@ public  void  get_statistics(
         variance = (sum_xx - sum_x * sum_x / (Real) n) / (Real) (n - 1);
 
     if( std_deviation != NULL )
-        *std_deviation = sqrt( variance );
+    {
+        if( variance <= 0.0 )
+            *std_deviation = 0.0;
+        else
+            *std_deviation = sqrt( variance );
+    }
 }
 
 public  void  terminate_statistics(
