@@ -16,7 +16,7 @@
 #include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.45 2000-02-06 15:30:54 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.46 2005-03-29 22:16:47 bert Exp $";
 #endif
 
 private  void  create_pixel_mapping(
@@ -281,8 +281,7 @@ private  void  create_weighted_volume_slices(
                                          origins1[0],
                                          x_axis1, y_axis1,
                                          volume2, n_dimensions2,
-                                         (volume_data2 == NULL) ? NULL :
-                                         origins2[0],
+                                         (volume2 == NULL) ? NULL : origins2[0],
                                          x_axis2, y_axis2,
                                          x_pixel_start, x_pixel_end,
                                          y_pixel_start, y_pixel_end,
@@ -459,6 +458,9 @@ public  void  create_volume_slice(
     Real         **real_origins1, **real_origins2;
     Real         real_x_axis1[MAX_DIMENSIONS], real_y_axis1[MAX_DIMENSIONS];
     Real         real_x_axis2[MAX_DIMENSIONS], real_y_axis2[MAX_DIMENSIONS];
+
+    real_origins1 = NULL;       /* Initialize this!! */
+    real_origins2 = NULL;       /* Initialize this!! */
 
     if( !get_filter_slices( volume1, slice_position1, x_axis1, y_axis1,
                             filter_type1, filter_width1, &n_slices1,
