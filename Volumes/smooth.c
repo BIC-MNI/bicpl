@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 private  Real  calculate_weight(
     int      x,
@@ -14,8 +14,8 @@ public  Volume  smooth_resample_volume(
     int                 new_nz )
 {
     Volume             resampled_volume;
-    int                sizes[N_DIMENSIONS], new_sizes[N_DIMENSIONS];
-    int                x, y, z, xv, yv, zv, c;
+    int                sizes[MAX_DIMENSIONS], new_sizes[MAX_DIMENSIONS];
+    int                dest_voxel[N_DIMENSIONS], src_voxel[N_DIMENSIONS], c;
     Real               x_min, x_max, y_min, y_max, z_min, z_max;
     Real               separations[N_DIMENSIONS];
     Real               dx, dy, dz;
@@ -23,10 +23,15 @@ public  Volume  smooth_resample_volume(
     Real               x_weight, xy_weight, weight;
     Real               *y_weights, *z_weights;
     Real               val;
-    Boolean            voxel_valid;
+    BOOLEAN            voxel_valid;
     Transform          scale_transform, translation_transform, transform;
-    General_transform  general_transform;
+    General_transform  general_transform, tmp;
     progress_struct    progress;
+
+    if( get_volume_n_dimensions(volume) != 3 )
+    {
+        HANDLE_INTERNAL_ERROR( "smooth_resample_volume: volume must be 3D.\n" );
+    }
 
     get_volume_sizes( volume, sizes );
 
@@ -67,11 +72,11 @@ public  Volume  smooth_resample_volume(
 
     concat_transforms( &transform, &scale_transform, &translation_transform );
 
-    create_linear_transform( &general_transform, &transform );
+    create_linear_transform( &tmp, &transform );
 
-    concat_general_transforms( &general_transform,
-                               get_voxel_to_world_transform(volume),
+    concat_general_transforms( &tmp, get_voxel_to_world_transform(volume),
                                &general_transform );
+    delete_general_transform( &tmp );
 
     set_voxel_to_world_transform( resampled_volume, &general_transform );
 
@@ -83,68 +88,76 @@ public  Volume  smooth_resample_volume(
     initialize_progress_report( &progress, FALSE, new_nx * new_ny,
                                 "Resampling" );
 
-    for_less( x, 0, new_nx )
+    for_less( dest_voxel[X], 0, new_nx )
     {
-        x_min = (Real)   x    * dx;
-        x_max = (Real)  (x+1) * dx;
+        x_min = (Real)   dest_voxel[X]    * dx;
+        x_max = (Real)  (dest_voxel[X]+1) * dx;
 
-        for_less( y, 0, new_ny )
+        for_less( dest_voxel[Y], 0, new_ny )
         {
-            y_min = (Real)  y    * dy;
-            y_max = (Real) (y+1) * dy;
+            y_min = (Real)  dest_voxel[Y]    * dy;
+            y_max = (Real) (dest_voxel[Y]+1) * dy;
 
-            for_less( z, 0, new_nz )
+            for_less( dest_voxel[Z], 0, new_nz )
             {
-                z_min = (Real)  z    * dz;
-                z_max = (Real) (z+1) * dz;
+                z_min = (Real)  dest_voxel[Z]    * dz;
+                z_max = (Real) (dest_voxel[Z]+1) * dz;
 
-                for_inclusive( yv, (int) y_min, (int) y_max )
+                for_inclusive( src_voxel[Y], (int) y_min, (int) y_max )
                 {
-                    y_weights[yv-(int)y_min] =
-                        calculate_weight( yv, dy, y_min, y_max );
+                    y_weights[src_voxel[Y]-(int)y_min] =
+                        calculate_weight( src_voxel[Y], dy, y_min, y_max );
                 }
 
-                for_inclusive( zv, (int) z_min, (int) z_max )
+                for_inclusive( src_voxel[Z], (int) z_min, (int) z_max )
                 {
-                    z_weights[zv-(int)z_min] =
-                        calculate_weight( zv, dz, z_min, z_max );
+                    z_weights[src_voxel[Z]-(int)z_min] =
+                        calculate_weight( src_voxel[Z], dz, z_min, z_max );
                 }
 
                 val = 0.0;
 
                 voxel_valid = FALSE;
 
-                for_inclusive( xv, (int) x_min, (int) x_max )
+                for_inclusive( src_voxel[X], (int) x_min, (int) x_max )
                 {
-                    x_weight = calculate_weight( xv, dx, x_min, x_max );
+                    x_weight = calculate_weight( src_voxel[X], dx,
+                                                 x_min, x_max );
 
-                    for_inclusive( yv, (int) y_min, (int) y_max )
+                    for_inclusive( src_voxel[Y], (int) y_min, (int) y_max )
                     {
-                        xy_weight = x_weight * y_weights[yv-(int)y_min];
+                        xy_weight = x_weight *
+                                    y_weights[src_voxel[Y]-(int)y_min];
 
-                        for_inclusive( zv, (int) z_min, (int) z_max )
+                        for_inclusive( src_voxel[Z], (int) z_min, (int) z_max )
                         {
-                            weight = xy_weight * z_weights[zv-(int)z_min];
+                            weight = xy_weight *
+                                     z_weights[src_voxel[Z]-(int)z_min];
 
                             if( weight > 0.0 )
                             {
-                                GET_VOXEL_3D(voxel,volume,xv,yv,zv);
+                                GET_VOXEL_3D( voxel, volume,
+                                              src_voxel[X], src_voxel[Y],
+                                              src_voxel[Z]);
                                 val += weight * voxel;
-                                if( get_voxel_activity_flag(volume,xv,yv,zv) )
+                                if( get_voxel_activity_flag(volume,src_voxel) )
                                     voxel_valid = TRUE;
                             }
                         }
                     }
                 }
 
-                SET_VOXEL_3D(resampled_volume,x,y,z, val + 0.5 );
+                SET_VOXEL_3D( resampled_volume,
+                              dest_voxel[X], dest_voxel[Y], dest_voxel[Z],
+                              val + 0.5 );
 
                 if( !voxel_valid )
-                    set_voxel_activity_flag( resampled_volume, x, y, z,
+                    set_voxel_activity_flag( resampled_volume, dest_voxel,
                                              voxel_valid );
             }
 
-            update_progress_report( &progress, x * new_ny + y + 1 );
+            update_progress_report( &progress,
+                                   dest_voxel[X] * new_ny + dest_voxel[Y] + 1 );
         }
     }
 

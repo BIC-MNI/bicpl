@@ -1,5 +1,5 @@
-#include  <def_mni.h>
-#include  <def_splines.h>
+#include  <mni.h>
+#include  <splines.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : voxel_is_within_volume
@@ -12,19 +12,21 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  voxel_is_within_volume(
+public  BOOLEAN  voxel_is_within_volume(
     Volume   volume,
     Real     voxel_position[] )
 {
-    int      i;
-    Boolean  inside;
+    int      i, sizes[MAX_DIMENSIONS];
+    BOOLEAN  inside;
 
     inside = TRUE;
 
-    for_less( i, 0, volume->n_dimensions )
+    get_volume_sizes( volume, sizes );
+
+    for_less( i, 0, get_volume_n_dimensions(volume) )
     {
         if( voxel_position[i] < -0.5 ||
-            voxel_position[i] >= (Real) volume->sizes[i] - 0.5 )
+            voxel_position[i] >= (Real) sizes[i] - 0.5 )
         {
             inside = FALSE;
             break;
@@ -46,18 +48,20 @@ public  Boolean  voxel_is_within_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  int_voxel_is_within_volume(
+public  BOOLEAN  int_voxel_is_within_volume(
     Volume   volume,
     int      indices[] )
 {
-    int      i;
-    Boolean  inside;
+    int      i, sizes[MAX_DIMENSIONS];
+    BOOLEAN  inside;
 
     inside = TRUE;
 
-    for_less( i, 0, volume->n_dimensions )
+    get_volume_sizes( volume, sizes );
+
+    for_less( i, 0, get_volume_n_dimensions(volume) )
     {
-        if( indices[i] < 0 || indices[i] >= volume->sizes[i] )
+        if( indices[i] < 0 || indices[i] >= sizes[i] )
         {
             inside = FALSE;
             break;
@@ -65,6 +69,17 @@ public  Boolean  int_voxel_is_within_volume(
     }
 
     return( inside );
+}
+
+public  void  convert_real_to_int_voxel(
+    int      n_dimensions,
+    Real     voxel[],
+    int      int_voxel[] )
+{
+    int   i;
+
+    for_less( i, 0, n_dimensions )
+        int_voxel[i] = ROUND( voxel[i] );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -81,48 +96,74 @@ public  Boolean  int_voxel_is_within_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  voxel_contains_value(
+public  BOOLEAN  voxel_contains_value(
     Volume   volume,
-    int      x,
-    int      y,
-    int      z,
+    int      int_voxel[],
     Real     target_value )
 {               
-    Boolean  less, greater;
-    int      x_offset, y_offset, z_offset;
+    BOOLEAN  less, greater;
+    int      n_dimensions;
+    int      c, mx, my, mz, ms, mt;
+    int      base_indices[MAX_DIMENSIONS], indices[MAX_DIMENSIONS];
     Real     value;
-
-    if( volume->n_dimensions != 3 )
-    {
-        HANDLE_INTERNAL_ERROR( "voxel_contains_value.\n" );
-    }
 
     less = FALSE;
     greater = FALSE;
 
-    for_less( x_offset, 0, 2 )
+    n_dimensions = get_volume_n_dimensions( volume );
+
+    if( n_dimensions >= 1 )
+        mx = 2;
+    else
+        mx = 1;
+
+    if( n_dimensions >= 2 )
+        my = 2;
+    else
+        my = 1;
+
+    if( n_dimensions >= 3 )
+        mz = 2;
+    else
+        mz = 1;
+
+    if( n_dimensions >= 4 )
+        ms = 2;
+    else
+        ms = 1;
+
+    if( n_dimensions >= 5 )
+        mt = 2;
+    else
+        mt = 1;
+
+    for_less( c, 0, n_dimensions )
+        base_indices[c] = int_voxel[c];
+
+    for_less( c, n_dimensions-1, MAX_DIMENSIONS )
+        base_indices[c] = 0;
+
+    for_less( indices[X], base_indices[X], base_indices[X] + mx )
+    for_less( indices[Y], base_indices[Y], base_indices[Y] + my )
+    for_less( indices[Z], base_indices[Z], base_indices[Z] + mz )
+    for_less( indices[3], base_indices[3], base_indices[3] + ms )
+    for_less( indices[4], base_indices[4], base_indices[4] + mt )
     {
-        for_less( y_offset, 0, 2 )
+        GET_VALUE( value, volume,
+                   indices[0], indices[1], indices[2], indices[3], indices[4] );
+
+        if( value < target_value )
         {
-            for_less( z_offset, 0, 2 )
-            {
-                GET_VALUE_3D( value, volume,
-                              x + x_offset, y + y_offset, z + z_offset );
+            if( greater )
+                return( TRUE );
+            less = TRUE;
+        }
 
-                if( value < target_value )
-                {
-                    if( greater )
-                        return( TRUE );
-                    less = TRUE;
-                }
-
-                if( value > target_value )
-                {
-                    if( less )
-                        return( TRUE );
-                    greater = TRUE;
-                }
-            }
+        if( value > target_value )
+        {
+            if( less )
+                return( TRUE );
+            greater = TRUE;
         }
     }
 
@@ -130,7 +171,7 @@ public  Boolean  voxel_contains_value(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : evaluate_volume_in_world
+@NAME       : evaluate_3D_volume_in_world
 @INPUT      : volume
               x
               y
@@ -148,7 +189,7 @@ public  Boolean  voxel_contains_value(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   evaluate_volume_in_world(
+public  void   evaluate_3D_volume_in_world(
     Volume         volume,
     Real           x,
     Real           y,
@@ -166,16 +207,23 @@ public  void   evaluate_volume_in_world(
     Real           *deriv_zz )
 {
     Real      ignore, dxx, dxy, dxz, dyy, dyz, dzz;
+    Real      voxel[MAX_DIMENSIONS];
     Real      txx, txy, txz;
     Real      tyx, tyy, tyz;
     Real      tzx, tzy, tzz;
 
-    convert_world_to_voxel( volume, x, y, z, &x, &y, &z );
+    if( get_volume_n_dimensions(volume) != 3 )
+    {
+        HANDLE_INTERNAL_ERROR(
+                 "evaluate_3D_volume_in_world: volume must be 3D.\n" );
+    }
 
-    evaluate_volume( volume, x, y, z, degrees_continuity,
-                     value, deriv_x, deriv_y, deriv_z,
-                     deriv_xx, deriv_xy, deriv_xz,
-                     deriv_yy, deriv_yz, deriv_zz );
+    convert_world_to_voxel( volume, x, y, z, voxel );
+
+    evaluate_3D_volume( volume, voxel[X], voxel[Y], voxel[Z],
+                        degrees_continuity, value, deriv_x, deriv_y, deriv_z,
+                        deriv_xx, deriv_xy, deriv_xz,
+                        deriv_yy, deriv_yz, deriv_zz );
 
     if( deriv_x != (Real *) 0 )
     {
@@ -215,7 +263,7 @@ public  void   evaluate_volume_in_world(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : evaluate_slice_in_world
+@NAME       : evaluate_3D_slice_in_world
 @INPUT      : volume
               x
               y
@@ -235,7 +283,7 @@ public  void   evaluate_volume_in_world(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   evaluate_slice_in_world(
+public  void   evaluate_3D_slice_in_world(
     Volume         volume,
     Real           x,
     Real           y,
@@ -248,14 +296,22 @@ public  void   evaluate_slice_in_world(
     Real           *deriv_yy )
 {
     Real      ignore, dxx, dxy, dyy;
+    Real      voxel[MAX_DIMENSIONS];
     Real      txx, txy, txz;
     Real      tyx, tyy, tyz;
     Real      tzx, tzy, tzz;
 
-    convert_world_to_voxel( volume, x, y, z, &x, &y, &z );
+    if( get_volume_n_dimensions(volume) != 3 )
+    {
+        HANDLE_INTERNAL_ERROR(
+                 "evaluate_3D_slice_in_world: volume must be 3D.\n" );
+    }
 
-    evaluate_slice( volume, x, y, z, value, deriv_x, deriv_y,
-                    deriv_xx, deriv_xy, deriv_yy );
+    convert_world_to_voxel( volume, x, y, z, voxel );
+
+    evaluate_3D_slice( volume, voxel[X], voxel[Y], voxel[Z],
+                       value, deriv_x, deriv_y,
+                       deriv_xx, deriv_xy, deriv_yy );
 
     if( deriv_x != (Real *) 0 )
     {
@@ -298,23 +354,20 @@ private  void   triconstant_interpolate_volume(
     Real           *deriv_y,
     Real           *deriv_z )
 {
-    int                i, j, k;
+    int                i, j, k, sizes[MAX_DIMENSIONS];
     Real               prev, next, dx, dy, dz, voxel_value;
-    int                nx, ny, nz;
 
-    nx = volume->sizes[X];
-    ny = volume->sizes[Y];
-    nz = volume->sizes[Z];
+    get_volume_sizes( volume, sizes );
 
     i = ROUND( x );
-    if( i == nx )
-        i = nx-1;
+    if( i == sizes[X] )
+        i = sizes[X]-1;
     j = ROUND( y );
-    if( j == ny )
-        j = ny-1;
+    if( j == sizes[Y] )
+        j = sizes[Y]-1;
     k = ROUND( z );
-    if( k == nz )
-        k = nz-1;
+    if( k == sizes[Z] )
+        k = sizes[Z]-1;
 
     GET_VALUE_3D( voxel_value, volume, i, j, k );
 
@@ -334,7 +387,7 @@ private  void   triconstant_interpolate_volume(
             ++dx;
         }
 
-        if( i == nx-1 )
+        if( i == sizes[X]-1 )
             next = voxel_value;
         else
         {
@@ -358,7 +411,7 @@ private  void   triconstant_interpolate_volume(
             ++dy;
         }
 
-        if( j == ny-1 )
+        if( j == sizes[Y]-1 )
             next = voxel_value;
         else
         {
@@ -382,7 +435,7 @@ private  void   triconstant_interpolate_volume(
             ++dz;
         }
 
-        if( k == nz-1 )
+        if( k == sizes[Z]-1 )
             next = voxel_value;
         else
         {
@@ -407,22 +460,19 @@ private  void   trilinear_interpolate_volume(
     Real           *deriv_y,
     Real           *deriv_z )
 {
-    int                i, j, k;
+    int                i, j, k, sizes[MAX_DIMENSIONS];
     Real               u, v, w;
     Real               c000, c001, c010, c011, c100, c101, c110, c111;
     Real               c00, c01, c10, c11;
     Real               c0, c1;
     Real               du00, du01, du10, du11, du0, du1;
     Real               dv0, dv1;
-    int                nx, ny, nz;
 
-    nx = volume->sizes[X];
-    ny = volume->sizes[Y];
-    nz = volume->sizes[Z];
+    get_volume_sizes( volume, sizes );
 
-    if( x == (Real) (nx-1) )
+    if( x == (Real) (sizes[X]-1) )
     {
-        i = nx-2;
+        i = sizes[X]-2;
         u = 1.0;
     }
     else
@@ -431,9 +481,9 @@ private  void   trilinear_interpolate_volume(
         u = FRACTION( x );
     }
 
-    if( y == (Real) (ny-1) )
+    if( y == (Real) (sizes[Y]-1) )
     {
-        j = ny-2;
+        j = sizes[Y]-2;
         v = 1.0;
     }
     else
@@ -442,9 +492,9 @@ private  void   trilinear_interpolate_volume(
         v = FRACTION( y );
     }
 
-    if( z == (Real) (nz-1) )
+    if( z == (Real) (sizes[Z]-1) )
     {
-        k = nz-2;
+        k = sizes[Z]-2;
         w = 1.0;
     }
     else
@@ -508,25 +558,22 @@ private  void   triquadratic_interpolate_volume(
     Real           *deriv_yz,
     Real           *deriv_zz )
 {
-    int                i, j, k;
-    int                nx, ny, nz;
-    Real               tx, ty, tz, u, v, w;
-    Real               c000, c001, c002, c010, c011, c012, c020, c021, c022;
-    Real               c100, c101, c102, c110, c111, c112, c120, c121, c122;
-    Real               c200, c201, c202, c210, c211, c212, c220, c221, c222;
+    int      i, j, k;
+    Real     tx, ty, tz, u, v, w;
+    Real     c000, c001, c002, c010, c011, c012, c020, c021, c022;
+    Real     c100, c101, c102, c110, c111, c112, c120, c121, c122;
+    Real     c200, c201, c202, c210, c211, c212, c220, c221, c222;
+    int      sizes[MAX_DIMENSIONS];
 
-
-    nx = volume->sizes[X];
-    ny = volume->sizes[Y];
-    nz = volume->sizes[Z];
+    get_volume_sizes( volume, sizes );
 
     tx = x + 0.5;
     ty = y + 0.5;
     tz = z + 0.5;
 
-    if( x == (Real) nx - 1.5 )
+    if( x == (Real) sizes[X] - 1.5 )
     {
-        i = nx-2;
+        i = sizes[X]-2;
         u = 1.0;
     }
     else
@@ -535,9 +582,9 @@ private  void   triquadratic_interpolate_volume(
         u = FRACTION( tx );
     }
 
-    if( y == (Real) ny - 1.5 )
+    if( y == (Real) sizes[Y] - 1.5 )
     {
-        j = ny-2;
+        j = sizes[Y]-2;
         v = 1.0;
     }
     else
@@ -546,9 +593,9 @@ private  void   triquadratic_interpolate_volume(
         v = FRACTION( ty );
     }
 
-    if( z == (Real) nz - 1.5 )
+    if( z == (Real) sizes[Z] - 1.5 )
     {
-        k = nz-2;
+        k = sizes[Z]-2;
         w = 1.0;
     }
     else
@@ -621,7 +668,6 @@ private  void   tricubic_interpolate_volume(
     Real           *deriv_zz )
 {
     int                i, j, k;
-    int                nx, ny, nz;
     Real               u, v, w;
     Real               c000, c001, c002, c003, c010, c011, c012, c013;
     Real               c020, c021, c022, c023, c030, c031, c032, c033;
@@ -631,15 +677,13 @@ private  void   tricubic_interpolate_volume(
     Real               c220, c221, c222, c223, c230, c231, c232, c233;
     Real               c300, c301, c302, c303, c310, c311, c312, c313;
     Real               c320, c321, c322, c323, c330, c331, c332, c333;
+    int                sizes[MAX_DIMENSIONS];
 
+    get_volume_sizes( volume, sizes );
 
-    nx = volume->sizes[X];
-    ny = volume->sizes[Y];
-    nz = volume->sizes[Z];
-
-    if( x == (Real) nx - 1.5 )
+    if( x == (Real) sizes[X] - 1.5 )
     {
-        i = nx-2;
+        i = sizes[X]-2;
         u = 1.0;
     }
     else
@@ -648,9 +692,9 @@ private  void   tricubic_interpolate_volume(
         u = FRACTION( x );
     }
 
-    if( y == (Real) ny - 1.5 )
+    if( y == (Real) sizes[Y] - 1.5 )
     {
-        j = ny-2;
+        j = sizes[Y]-2;
         v = 1.0;
     }
     else
@@ -659,9 +703,9 @@ private  void   tricubic_interpolate_volume(
         v = FRACTION( y );
     }
 
-    if( z == (Real) nz - 1.5 )
+    if( z == (Real) sizes[Z] - 1.5 )
     {
-        k = nz-2;
+        k = sizes[Z]-2;
         w = 1.0;
     }
     else
@@ -772,18 +816,16 @@ private  void   bicubic_interpolate_volume(
     Real           *deriv_yy )
 {
     int                i, j, k;
-    int                nx, ny, nz;
     Real               u, v;
     Real               c00, c01, c02, c03, c10, c11, c12, c13;
     Real               c20, c21, c22, c23, c30, c31, c32, c33;
+    int                sizes[MAX_DIMENSIONS];
 
-    nx = volume->sizes[X];
-    ny = volume->sizes[Y];
-    nz = volume->sizes[Z];
+    get_volume_sizes( volume, sizes );
 
-    if( x == (Real) nx - 1.5 )
+    if( x == (Real) sizes[X] - 1.5 )
     {
-        i = nx-2;
+        i = sizes[X]-2;
         u = 1.0;
     }
     else
@@ -792,9 +834,9 @@ private  void   bicubic_interpolate_volume(
         u = FRACTION( x );
     }
 
-    if( y == (Real) ny - 1.5 )
+    if( y == (Real) sizes[Y] - 1.5 )
     {
-        j = ny-2;
+        j = sizes[Y]-2;
         v = 1.0;
     }
     else
@@ -803,9 +845,9 @@ private  void   bicubic_interpolate_volume(
         v = FRACTION( y );
     }
 
-    if( z == (Real) nz - 1.5 )
+    if( z == (Real) sizes[Z] - 1.5 )
     {
-        k = nz-2;
+        k = sizes[Z]-2;
     }
     else
     {
@@ -854,7 +896,7 @@ private  void   bicubic_interpolate_volume(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : evaluate_volume
+@NAME       : evaluate_3D_volume
 @INPUT      : volume
               x
               y
@@ -872,7 +914,7 @@ private  void   bicubic_interpolate_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   evaluate_volume(
+public  void   evaluate_3D_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -889,15 +931,18 @@ public  void   evaluate_volume(
     Real           *deriv_yz,
     Real           *deriv_zz )
 {
-    int              nx, ny, nz;
+    int         sizes[MAX_DIMENSIONS];
 
-    nx = volume->sizes[X];
-    ny = volume->sizes[Y];
-    nz = volume->sizes[Z];
+    if( get_volume_n_dimensions(volume) != 3 )
+    {
+        HANDLE_INTERNAL_ERROR( "evaluate_3D_volume: volume must be 3D.\n" );
+    }
 
-    if( x < -0.5 || x > (Real) nx - 0.5 ||
-        y < -0.5 || y > (Real) ny - 0.5 ||
-        z < -0.5 || z > (Real) nz - 0.5 )
+    get_volume_sizes( volume, sizes );
+
+    if( x < -0.5 || x > (Real) sizes[X] - 0.5 ||
+        y < -0.5 || y > (Real) sizes[Y] - 0.5 ||
+        z < -0.5 || z > (Real) sizes[Z] - 0.5 )
     {
         *value = get_volume_voxel_min( volume );
         if( deriv_x != (Real *) NULL )
@@ -919,11 +964,11 @@ public  void   evaluate_volume(
     }
 
     if( x < (Real) degrees_continuity * 0.5 ||
-        x > (Real) (nx-1) - (Real) degrees_continuity * 0.5 ||
+        x > (Real) (sizes[X]-1) - (Real) degrees_continuity * 0.5 ||
         y < (Real) degrees_continuity * 0.5 ||
-        y > (Real) (ny-1) - (Real) degrees_continuity * 0.5 ||
+        y > (Real) (sizes[Y]-1) - (Real) degrees_continuity * 0.5 ||
         z < (Real) degrees_continuity * 0.5 ||
-        z > (Real) (nz-1) - (Real) degrees_continuity * 0.5 )
+        z > (Real) (sizes[Z]-1) - (Real) degrees_continuity * 0.5 )
     {
         degrees_continuity = -1;
     }
@@ -965,12 +1010,12 @@ public  void   evaluate_volume(
         break;
 
     default:
-        HANDLE_INTERNAL_ERROR( "evaluate_volume: invalid continuity" );
+        HANDLE_INTERNAL_ERROR( "evaluate_3D_volume: invalid continuity" );
     }
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : evaluate_slice
+@NAME       : evaluate_3D_slice
 @INPUT      : volume
               x
               y
@@ -990,7 +1035,7 @@ public  void   evaluate_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   evaluate_slice(
+public  void   evaluate_3D_slice(
     Volume         volume,
     Real           x,
     Real           y,
@@ -1002,15 +1047,18 @@ public  void   evaluate_slice(
     Real           *deriv_xy,
     Real           *deriv_yy )
 {
-    int              nx, ny, nz;
+    int           sizes[MAX_DIMENSIONS];
 
-    nx = volume->sizes[X];
-    ny = volume->sizes[Y];
-    nz = volume->sizes[Z];
+    if( get_volume_n_dimensions(volume) != 3 )
+    {
+        HANDLE_INTERNAL_ERROR( "evaluate_3D_slice: volume must be 3D.\n" );
+    }
 
-    if( x < 1.0 || x > (Real) nx - 2.0 ||
-        y < 1.0 || y > (Real) ny - 2.0 ||
-        z < 1.0 || z > (Real) nz - 2.0 )
+    get_volume_sizes( volume, sizes );
+
+    if( x < 1.0 || x > (Real) sizes[X] - 2.0 ||
+        y < 1.0 || y > (Real) sizes[Y] - 2.0 ||
+        z < 1.0 || z > (Real) sizes[Z] - 2.0 )
     {
         *value = get_volume_voxel_min( volume );
         if( deriv_x != (Real *) NULL )

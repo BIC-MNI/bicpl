@@ -1,6 +1,5 @@
 
-#include  <def_mni.h>
-#include  <def_module.h>
+#include  <module.h>
 
 public  void   remove_invisible_polygons(
     polygons_struct  *polygons )

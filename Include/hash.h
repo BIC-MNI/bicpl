@@ -2,7 +2,7 @@
 #define  DEF_HASH
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : def_hash.h
+@NAME       : hash.h
 @INPUT      : 
 @OUTPUT     : 
 @RETURNS    : 
@@ -14,7 +14,7 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#include  <def_basic.h>
+#include  <basic.h>
 
 typedef  struct  hash_entry_struct
 {

@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 private  Status  io_points(
     FILE            *file,
@@ -698,7 +698,7 @@ public  Status  input_object_type(
     FILE           *file,
     Object_types   *type,
     File_formats   *format,
-    Boolean        *eof )
+    BOOLEAN        *eof )
 {
     char     ch;
     Status   status;

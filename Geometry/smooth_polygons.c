@@ -1,6 +1,5 @@
 
-#include  <def_mni.h>
-#include  <def_module.h>
+#include  <module.h>
 
 #define  CHECK_INTERVAL     1.0
 
@@ -12,7 +11,7 @@ private  void  smooth_points(
     Real             max_dist_from_original,
     Real             fraction_to_move,
     Real             normal_ratio,
-    Boolean          range_flag,
+    BOOLEAN          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value,
@@ -28,11 +27,11 @@ private  Real  update_point_position(
     Real             max_dist_from_original,
     Real             fraction_to_move,
     Real             normal_ratio,
-    Boolean          range_flag,
+    BOOLEAN          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value );
-private  Boolean   point_inside_range(
+private  BOOLEAN   point_inside_range(
     volume_struct  *volume,
     Point          *point,
     int            min_value,
@@ -44,7 +43,7 @@ public  void  smooth_polygon(
     Real             fraction_to_move,
     Real             stop_threshold,
     Real             normal_ratio,
-    Boolean          range_flag,
+    BOOLEAN          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value )
@@ -117,7 +116,7 @@ private  void  smooth_points(
     Real             max_dist_from_original,
     Real             fraction_to_move,
     Real             normal_ratio,
-    Boolean          range_flag,
+    BOOLEAN          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value,
@@ -184,7 +183,7 @@ private  Real  update_point_position(
     Real             max_dist_from_original,
     Real             fraction_to_move,
     Real             normal_ratio,
-    Boolean          range_flag,
+    BOOLEAN          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value )
@@ -195,7 +194,7 @@ private  Real  update_point_position(
     Point            new_pos, current_scaled, centroid, destination;
     Real             len, ratio, movement, sin_of_angle;
     Vector           diff, delta, normal, unit_delta, unit_normal, cross;
-    Boolean          interior_point;
+    BOOLEAN          interior_point;
 
     n_neighbours = get_neighbours_of_point( polygons, poly, vertex_index,
                                             neighbours, MAX_NEIGHBOURS,
@@ -277,7 +276,7 @@ private  Real  update_point_position(
     return( movement );
 }
 
-private  Boolean   point_inside_range(
+private  BOOLEAN   point_inside_range(
     volume_struct  *volume,
     Point          *point,
     int            min_value,

@@ -1,5 +1,5 @@
-#include  <def_mni.h>
-#include  <def_stack.h>
+#include  <volume_io.h>
+#include  <stack.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : numerically_close
@@ -16,7 +16,7 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  numerically_close(
+public  BOOLEAN  numerically_close(
     Real  n1,
     Real  n2,
     Real  threshold_ratio )
@@ -451,7 +451,7 @@ private  void  interval_value_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Boolean  interval_may_contain_zero(
+private  BOOLEAN  interval_may_contain_zero(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -586,7 +586,7 @@ public  int  get_roots_of_polynomial(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Boolean  polynomial_may_include_range(
+private  BOOLEAN  polynomial_may_include_range(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -601,7 +601,7 @@ private  Boolean  polynomial_may_include_range(
     return( max_val >= min_range && min_val <= max_range );
 }
 
-private  Boolean  check_range(
+private  BOOLEAN  check_range(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -613,7 +613,7 @@ private  Boolean  check_range(
     Real    *u_max_range )
 {
     Real     u_mid;
-    Boolean  left_has_value, right_has_value;
+    BOOLEAN  left_has_value, right_has_value;
 
     if( u_max - u_min <= accuracy )
     {
@@ -649,7 +649,7 @@ private  Boolean  check_range(
         return( FALSE );
 }
 
-public  Boolean  get_range_of_polynomial(
+public  BOOLEAN  get_range_of_polynomial(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -660,7 +660,7 @@ public  Boolean  get_range_of_polynomial(
     Real    *u_min_range,
     Real    *u_max_range )
 {
-    Boolean  found;
+    BOOLEAN  found;
 
     if( polynomial_may_include_range( n, poly, u_min, u_max, min_val, max_val ))
     {

@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 #define  TALAIRACH_OFFSET   16.0
 
@@ -24,7 +24,7 @@ private  Real  y_dist_1       =  86.0;
 private  Real  z_dist_0       =   0.0;
 private  Real  z_dist_1       =  75.0;
 
-private  Boolean   initialized = FALSE;
+private  BOOLEAN   initialized = FALSE;
 
 private  void  read_talairach_coordinate_system( void );
 

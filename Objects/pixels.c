@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 public  void  initialize_pixels(
     pixels_struct  *pixels,

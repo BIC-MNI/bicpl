@@ -1,7 +1,7 @@
 #ifndef  DEF_SURFACE_REP
 #define  DEF_SURFACE_REP
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 typedef  enum  { SUPERQUADRIC, SPLINE,
                  N_SURFACE_REPRESENTATIONS }
@@ -14,7 +14,7 @@ typedef struct surface_rep_struct
 
     int                       (*get_num_parameters)( double [] );
     void                      (*get_default_descriptors)( double [] );
-    Boolean                   (*are_parameters_valid)( double [], double []);
+    BOOLEAN                   (*are_parameters_valid)( double [], double []);
     void                      (*get_parameter_influence)( int, double [],
                                                           double *, double *, 
                                                           double *, double * );

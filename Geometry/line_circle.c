@@ -1,5 +1,4 @@
-#include  <def_mni.h>
-#include  <def_module.h>
+#include  <module.h>
 
 public  void  create_line_circle(
     Point            *centre,

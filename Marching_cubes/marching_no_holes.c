@@ -1,7 +1,5 @@
 
-#include  <def_mni.h>
-#include  <def_marching_cubes.h>
-#include  <def_module.h>
+#include  <module.h>
 
 #define  MAX_POLYGONS_PER_VOXEL    4
 #define  MAX_INDICES_PER_VOXEL    12
@@ -31,7 +29,7 @@ typedef  enum  { PLUS_FLAG, MINUS_FLAG, MAX_CASES /*, ZERO_FLAG */ }
 
 private  case_struct   cases[3][3][3][3][3][3][3][3];
 
-private   Boolean  initialized = FALSE;
+private   BOOLEAN  initialized = FALSE;
 
 private  void  create_marching_cubes_lookup( void );
 private  void  create_case(
@@ -51,13 +49,13 @@ private  void  get_face_flags(
     int          c,
     int          face,
     Case_types   face_flags[4] );
-private  Boolean  ambiguous_face_case(
+private  BOOLEAN  ambiguous_face_case(
     Case_types   face_flags[4] );
-private  Boolean  face_is_ambiguous(
+private  BOOLEAN  face_is_ambiguous(
     Case_types   case_flags[2][2][2],
     int          c,
     int          face );
-private  Boolean  surface_edge(
+private  BOOLEAN  surface_edge(
     Case_types     face_flags[4],
     int            edge );
 private  void  get_edge_point(
@@ -81,7 +79,7 @@ private  void  delete_case(
     case_struct  *case_info );
 private  void  create_case_polygons(
     Case_types     case_flags[2][2][2],
-    Boolean        face_ambiguity_flags[3][2],
+    BOOLEAN        face_ambiguity_flags[3][2],
     polygons_list  *polygons );
 
 private  void  check_initialized( void )
@@ -151,7 +149,7 @@ private  void  create_case(
 {
     int          i, amb, n_cases, c, face, n_ambiguities;
     int          ambiguous_faces[6][2];
-    Boolean      face_ambiguity_flags[3][2];
+    BOOLEAN      face_ambiguity_flags[3][2];
     face_struct  face_indices;
 
     n_ambiguities = 0;
@@ -279,10 +277,10 @@ private  void  get_face_flags(
     }
 }
 
-private  Boolean  ambiguous_face_case(
+private  BOOLEAN  ambiguous_face_case(
     Case_types   face_flags[4] )
 {
-    Boolean      ambiguous;
+    BOOLEAN      ambiguous;
 
     ambiguous = (face_flags[0] == MINUS_FLAG && face_flags[2] == MINUS_FLAG &&
                  face_flags[1] == PLUS_FLAG  && face_flags[3] == PLUS_FLAG) ||
@@ -292,7 +290,7 @@ private  Boolean  ambiguous_face_case(
     return( ambiguous );
 }
 
-private  Boolean  face_is_ambiguous(
+private  BOOLEAN  face_is_ambiguous(
     Case_types   case_flags[2][2][2],
     int          c,
     int          face )
@@ -308,7 +306,7 @@ typedef  struct
 {
     int      n_edges;
     int      edge_points[4];
-    Boolean  edge_used[2];
+    BOOLEAN  edge_used[2];
 } edges_struct;
 
 private  void  follow_edge(
@@ -326,11 +324,11 @@ private  void  find_voxel_edge_index(
     int            *edge_index );
 private  void  create_edges(
     Case_types     case_flags[2][2][2],
-    Boolean        face_ambiguity_flags[3][2],
+    BOOLEAN        face_ambiguity_flags[3][2],
     edges_struct   edges[3][2] );
 private  void  create_edge_for_face(
     Case_types     face_flags[4],
-    Boolean        face_ambiguity_flag,
+    BOOLEAN        face_ambiguity_flag,
     edges_struct   *edges );
 private  void  follow_edge(
     polygons_list  *polygons,
@@ -342,7 +340,7 @@ private  void  follow_edge(
 
 private  void  create_case_polygons(
     Case_types     case_flags[2][2][2],
-    Boolean        face_ambiguity_flags[3][2],
+    BOOLEAN        face_ambiguity_flags[3][2],
     polygons_list  *polygons )
 {
     int            c, face, edge_index, ind, prev_ind;
@@ -388,7 +386,7 @@ private  void  create_case_polygons(
 
 private  void  create_edges(
     Case_types     case_flags[2][2][2],
-    Boolean        face_ambiguity_flags[3][2],
+    BOOLEAN        face_ambiguity_flags[3][2],
     edges_struct   edges[3][2] )
 {
     int          c, face;
@@ -408,7 +406,7 @@ private  void  create_edges(
 
 private  void  create_edge_for_face(
     Case_types     face_flags[4],
-    Boolean        face_ambiguity_flag,
+    BOOLEAN        face_ambiguity_flag,
     edges_struct   *edges )
 {
     int   first_edge, second_edge;
@@ -491,7 +489,7 @@ private  void  create_edge_for_face(
     }
 }
 
-private  Boolean  surface_edge(
+private  BOOLEAN  surface_edge(
     Case_types     face_flags[4],
     int            edge )
 {
@@ -637,7 +635,7 @@ private  void  find_voxel_edge_index(
     edges_struct   edges[3][2],
     int            *edge_index )
 {
-    Boolean  found;
+    BOOLEAN  found;
 
     found = FALSE;
 

@@ -1,9 +1,7 @@
 #ifndef  DEF_MARCHING_CUBES_DATA
 #define  DEF_MARCHING_CUBES_DATA
 
-/*  @(#)def_marching_cube_data.h	1.1  2/26/91  */
-
-#include  <def_marching_cubes.h>
+#include  <marching_cubes.h>
 
 typedef struct
 {

@@ -2,7 +2,7 @@
 #define  DEF_QUEUE
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : def_queue.h
+@NAME       : queue.h
 @INPUT      : 
 @OUTPUT     : 
 @RETURNS    : 
@@ -14,7 +14,7 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#include  <def_arrays.h>
+#include  <arrays.h>
 
 #define  SHIFT_QUEUE_AT      100
 #define  SHIFT_QUEUE_RATIO     1

@@ -6,7 +6,7 @@ START_GLOBALS
     DEF_GLOBAL( Test_int, int, 1000 )
     DEF_GLOBAL( Test_colour, Colour, 0 )
     DEF_GLOBAL( Test_real, Real, 123.4 )
-    DEF_GLOBAL( Test_boolean, Boolean, TRUE )
+    DEF_GLOBAL( Test_boolean, BOOLEAN, TRUE )
     DEF_GLOBAL_STRING( Test_string, "Test string" )
     DEF_GLOBAL3( Test_point, Point, 1.0, 2.0, 3.0 )
     DEF_GLOBAL3( Test_vector, Vector, -1.0, -1.0, -1.0 )

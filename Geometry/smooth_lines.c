@@ -1,7 +1,6 @@
 
-#include  <def_mni.h>
-#include  <def_splines.h>
-#include  <def_module.h>
+#include  <splines.h>
+#include  <module.h>
 
 public  void  smooth_lines(
     lines_struct  *lines,
@@ -9,7 +8,7 @@ public  void  smooth_lines(
 {
     int       *new_ids, n_points, n_items, n_indices, *indices, *end_indices;
     int       l, p, point_index, size;
-    Boolean   keep_point;
+    BOOLEAN   keep_point;
     Point     prev;
     Real      dist_to_prev;
     Point     *points;
@@ -87,7 +86,7 @@ public  void  create_line_spline(
     lines_struct  *new_lines )
 {
     int       l, p, point_index1, point_index2, pt_index, line_size, segment;
-    Boolean   wrap_around;
+    BOOLEAN   wrap_around;
     Point     points[4], point;
     Real      u;
 

@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <volume_io.h>
 
 typedef struct
 {
@@ -24,7 +24,7 @@ private  arguments_struct   arguments;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Boolean  arguments_remaining( void )
+private  BOOLEAN  arguments_remaining( void )
 {
     return( arguments.current_arg < arguments.argc );
 }
@@ -111,11 +111,11 @@ public  void  initialize_argument_processing(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  get_int_argument(
+public  BOOLEAN  get_int_argument(
     int   default_value,
     int   *value )
 {
-    Boolean   found;
+    BOOLEAN   found;
 
     if( arguments_remaining() &&
         sscanf( get_current_argument_string(), "%d", value ) == 1 )
@@ -147,11 +147,11 @@ public  Boolean  get_int_argument(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  get_real_argument(
+public  BOOLEAN  get_real_argument(
     Real   default_value,
     Real   *value )
 {
-    Boolean   found;
+    BOOLEAN   found;
 
     if( arguments_remaining() &&
         (real_is_double() &&
@@ -187,11 +187,11 @@ public  Boolean  get_real_argument(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  get_string_argument(
+public  BOOLEAN  get_string_argument(
     char   default_value[],
     char   *value[] )
 {
-    Boolean   found;
+    BOOLEAN   found;
 
     if( arguments_remaining() )
     {
@@ -223,11 +223,11 @@ public  Boolean  get_string_argument(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  get_prefix_argument(
+public  BOOLEAN  get_prefix_argument(
     char  prefix[] )
 {
     char      *next_str;
-    Boolean   found;
+    BOOLEAN   found;
 
     if( arguments_remaining() &&
         strlen(get_current_argument_string()) >= strlen(prefix) &&

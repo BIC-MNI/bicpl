@@ -1,4 +1,4 @@
-#include  <def_mni.h>
+#include  <mni.h>
 
 private  void  advance_object_traverse(
     object_traverse_struct  *object_traverse );
@@ -16,7 +16,7 @@ public  object_struct  *create_object(
     return( object );
 }
 
-public  Boolean  get_object_visibility(
+public  BOOLEAN  get_object_visibility(
     object_struct  *object )
 {
     return( object->visibility );
@@ -24,7 +24,7 @@ public  Boolean  get_object_visibility(
 
 public  void  set_object_visibility(
     object_struct  *object,
-    Boolean        visibility )
+    BOOLEAN        visibility )
 {
     object->visibility = visibility;
 }
@@ -561,11 +561,11 @@ public  void  initialize_object_traverse(
     PUSH_STACK( object_traverse->stack, push_entry );
 }
 
-public  Boolean  get_next_object_traverse(
+public  BOOLEAN  get_next_object_traverse(
     object_traverse_struct  *object_traverse,
     object_struct           **object )
 {
-    Boolean               object_found;
+    BOOLEAN               object_found;
     object_stack_struct   *top_entry;
 
     if( !IS_STACK_EMPTY(object_traverse->stack) )
@@ -620,13 +620,13 @@ public  void  terminate_object_traverse(
     DELETE_STACK( object_traverse->stack );
 }
 
-public  Boolean  get_range_of_object(
+public  BOOLEAN  get_range_of_object(
     object_struct   *object,
-    Boolean         visible_ones_only,
+    BOOLEAN         visible_ones_only,
     Point           *min_corner,
     Point           *max_corner )
 {
-    Boolean                 found_flag;
+    BOOLEAN                 found_flag;
     Point                   min_obj, max_obj, *points;
     int                     n_points;
     object_struct           *current_object;
@@ -688,12 +688,12 @@ public  Status  input_object(
     FILE           *file,
     File_formats   *format,
     object_struct  **object,
-    Boolean        *eof )
+    BOOLEAN        *eof )
 {
     Status         status;
     File_formats   sub_format;
     Object_types   type;
-    String         abs_filename;
+    STRING         abs_filename;
 
     status = input_object_type( file, &type, format, eof );
 
@@ -810,11 +810,11 @@ public  Status  output_object(
     return( status );
 }
 
-public  Boolean  get_object_colour(
+public  BOOLEAN  get_object_colour(
     object_struct  *object,
     Colour         *colour )
 {
-    Boolean       has_single_colour;
+    BOOLEAN       has_single_colour;
     Colour_flags  *colour_flag;
     Colour        *colours;
 
@@ -876,7 +876,7 @@ public  void  free_colours(
     int            n_points,
     int            n_items )
 {
-    Boolean  should_free;
+    BOOLEAN  should_free;
 
     should_free = FALSE;
 

@@ -1,10 +1,10 @@
 
-#include  <def_mni.h>
+#include  <volume_io.h>
 #include  <sys/time.h>
 
 #define  MAX_RAND  2147483648.0
 
-private  Boolean  initialized = FALSE;
+private  BOOLEAN  initialized = FALSE;
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : set_random_seed

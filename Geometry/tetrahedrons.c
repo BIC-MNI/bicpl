@@ -1,7 +1,6 @@
-#include  <def_mni.h>
-#include  <def_module.h>
+#include  <module.h>
 
-public  Boolean  is_this_tetrahedral_topology(
+public  BOOLEAN  is_this_tetrahedral_topology(
     polygons_struct   *polygons )
 {
     int    n_polygons;

@@ -1,4 +1,4 @@
-#include  <def_mni.h>
+#include  <mni.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_hash_table
@@ -140,12 +140,12 @@ private   int  hash_function(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Boolean  keys_equal(
+private  BOOLEAN  keys_equal(
     int   n_keys,
     int   keys1[],
     int   keys2[] )
 {
-    Boolean  equal;
+    BOOLEAN  equal;
     int      i;
 
     equal = (keys1[0] == keys2[0]);
@@ -271,12 +271,12 @@ public  void  insert_in_hash_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  lookup_in_hash_table(
+public  BOOLEAN  lookup_in_hash_table(
     hash_table_struct  *hash_table,
     int                keys[],
     void               **data_ptr )
 {
-    Boolean             found;
+    BOOLEAN             found;
     hash_entry_struct   **ptr_to_entry;
     hash_entry_struct   *entry;
 
@@ -314,12 +314,12 @@ public  Boolean  lookup_in_hash_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  remove_from_hash_table(
+public  BOOLEAN  remove_from_hash_table(
     hash_table_struct  *hash_table,
     int                keys[],
     void               **data_ptr )
 {
-    Boolean             removed;
+    BOOLEAN             removed;
     hash_entry_struct   **ptr_to_entry;
     hash_entry_struct   *entry;
 
@@ -457,12 +457,12 @@ public  void  initialize_hash_pointer(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  get_next_hash_entry(
+public  BOOLEAN  get_next_hash_entry(
     hash_table_struct   *hash_table,
     hash_table_pointer  *ptr,
     void                **data_ptr )
 {
-    Boolean   found;
+    BOOLEAN   found;
 
     if( ptr->current_entry != (hash_entry_struct *) 0 )
         ptr->current_entry = ptr->current_entry->next;

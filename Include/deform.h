@@ -1,7 +1,7 @@
 #ifndef  DEF_DEFORM
 #define  DEF_DEFORM
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 typedef  enum  { TOWARDS_LOWER, TOWARDS_HIGHER, ANY_DIRECTION }
                Normal_directions;
@@ -51,8 +51,8 @@ typedef  struct
 {
     int                       n_models;
     deform_model_struct       *models;
-    Boolean                   position_constrained;
-    Boolean                   max_position_offset;
+    BOOLEAN                   position_constrained;
+    BOOLEAN                   max_position_offset;
     Point                     *original_positions;
 } deformation_model_struct;
 

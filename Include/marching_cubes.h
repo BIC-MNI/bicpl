@@ -1,7 +1,7 @@
 #ifndef  DEF_MARCHING_CUBES
 #define  DEF_MARCHING_CUBES
 
-#include  <def_geometry.h>
+#include  <geometry.h>
 
 typedef  enum  { ON_FIRST_CORNER, ON_EDGE, ON_SECOND_CORNER } Point_classes;
 
@@ -27,7 +27,7 @@ typedef struct
 
 typedef  struct
 {
-    Boolean  surface_point_exists;
+    BOOLEAN  surface_point_exists;
     int      point_index;
 
 } axis_struct;

@@ -1,7 +1,7 @@
 #ifndef  DEF_COLOUR_CODING
 #define  DEF_COLOUR_CODING
 
-#include  <def_basic.h>
+#include  <basic.h>
 
 typedef enum { GRAY_SCALE,
                HOT_METAL,

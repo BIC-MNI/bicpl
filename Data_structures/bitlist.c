@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_bitlist
@@ -89,7 +89,7 @@ public  void  fill_bitlist(
 public  void     set_bitlist_bit(
     bitlist_struct  *bitlist,
     int             bit_index,
-    Boolean         value )
+    BOOLEAN         value )
 {
     int           word_index, bit_sub_index;
     bitlist_type  bit;
@@ -119,13 +119,13 @@ public  void     set_bitlist_bit(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean     get_bitlist_bit(
+public  BOOLEAN     get_bitlist_bit(
     bitlist_struct  *bitlist,
     int             bit_index )
 {
     int           word_index, bit_sub_index;
     bitlist_type  word_bits;
-    Boolean       value;
+    BOOLEAN       value;
 
     word_index = bit_index >> LOG_BITS_PER_BITLIST_WORD;
     bit_sub_index = bit_index & BITS_PER_BITLIST_WORD_MINUS_1;
@@ -276,7 +276,7 @@ public  void     set_bitlist_bit_3d(
     int                x,
     int                y,
     int                z,
-    Boolean            value )
+    BOOLEAN            value )
 {
     int           word_index, bit_sub_index;
     bitlist_type  bit;
@@ -315,7 +315,7 @@ public  void     set_bitlist_bit_3d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean     get_bitlist_bit_3d(
+public  BOOLEAN     get_bitlist_bit_3d(
     bitlist_3d_struct  *bitlist,
     int                x,
     int                y,

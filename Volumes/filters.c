@@ -1,4 +1,4 @@
-#include  <def_mni.h>
+#include  <mni.h>
 
 #define  N_STD_DEVIATIONS  3.0
 #define  N_SAMPLES         9
@@ -12,7 +12,7 @@ public  int  get_slice_weights_for_filter(
     Real           *positions[],
     Real           *weights[] )
 {
-    int   i, n_slices, sizes[N_DIMENSIONS], size;
+    int   i, n_slices, sizes[MAX_DIMENSIONS], size;
     int   slice, first_slice, last_slice, s;
     Real  sum_weights, pos, frac, min_limit, max_limit, start, end, weight;
     Real  half_width, sigma, start_interval, end_interval, x;

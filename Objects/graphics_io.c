@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 public  Status   input_graphics_file(
     char           filename[],
@@ -9,9 +9,9 @@ public  Status   input_graphics_file(
 {
     Status         status;
     FILE           *file;
-    Boolean        eof;
+    BOOLEAN        eof;
     object_struct  *object;
-    String         current_directory;
+    STRING         current_directory;
 
     status = open_file_with_default_suffix( filename, "obj", READ_FILE,
                                             BINARY_FORMAT, &file );

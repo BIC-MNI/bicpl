@@ -1,9 +1,9 @@
 #ifndef  DEF_OBJECTS
 #define  DEF_OBJECTS
 
-#include  <def_basic.h>
-#include  <def_stack.h>
-#include  <def_bintree.h>
+#include  <basic.h>
+#include  <stack.h>
+#include  <bintree.h>
 
 #define  SET_OBJECT_SIZE( object, n, size ) \
              { \
@@ -54,7 +54,7 @@ typedef  struct
     Colour         colour;
     Point          position;
     Real           size;
-    String         label;
+    STRING         label;
     int            structure_id;
     int            patient_id;
 } marker_struct;
@@ -85,7 +85,7 @@ typedef  struct
     Colour          *colours;
     Surfprop        surfprop;
 
-    Boolean         m_closed, n_closed;
+    BOOLEAN         m_closed, n_closed;
 
     int             m, n;
     Point           *points;
@@ -100,10 +100,10 @@ typedef  struct
     Colour      colour;
     Font_types  font;
     Real        size;
-    String      string;
+    STRING      string;
 } text_struct;
 
-typedef enum { 
+typedef enum {
                  COLOUR_INDEX_8BIT_PIXEL, COLOUR_INDEX_16BIT_PIXEL, RGB_PIXEL
              } Pixel_types;
 
@@ -141,7 +141,7 @@ typedef enum  { LINES, MARKER, MODEL, PIXELS, POLYGONS, QUADMESH, TEXT,
 
 typedef  struct
 {
-    String                 filename;
+    STRING                 filename;
     int                    n_objects;
     struct  object_struct  **objects;
     void                   *extra_ptr;
@@ -150,7 +150,7 @@ typedef  struct
 typedef struct  object_struct
 {
     Object_types    object_type;
-    Boolean         visibility;
+    BOOLEAN         visibility;
 
     union
     {

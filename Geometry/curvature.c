@@ -1,6 +1,4 @@
-#include  <def_mni.h>
-#include  <def_deform.h>
-#include  <def_module.h>
+#include  <module.h>
 
 private  void  get_surface_colour(
     Real    curvature,
@@ -11,7 +9,7 @@ public  void  colour_polygons_by_curvature(
     polygons_struct   *polygons,
     polygons_struct   *sphere,
     Real              max_curvature,
-    Boolean           set_below_to_zero_flag )
+    BOOLEAN           set_below_to_zero_flag )
 {
     int           size, point_index, vertex_index, poly;
     Real          curvature, base_length;

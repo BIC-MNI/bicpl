@@ -1,4 +1,4 @@
-#include  <def_mni.h>
+#include  <mni.h>
 
 private  void  render_byte_volume_colour_map_flat(
     int             x_size,
@@ -272,14 +272,14 @@ public  void  render_volume_to_slice(
     Real            y_offset2,
     Real            x_delta2,
     Real            y_delta2,
-    Boolean         interpolation_flag,    /* ARGSUSED */
+    BOOLEAN         interpolation_flag,    /* ARGSUSED */
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     pixels_struct   *pixels )
 {
     int                  x_size, y_size, x, y;
     Real                 x_voxel, y_voxel;
-    Boolean              colour_map_mode;
+    BOOLEAN              colour_map_mode;
     int                  *x_offsets;
     int                  *y_offsets;
     int                  *second_x_offsets;

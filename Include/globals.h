@@ -5,7 +5,7 @@
 #ifndef  DEF_GLOBALS
 #define  DEF_GLOBALS
 
-#include  <def_basic.h>
+#include  <basic.h>
 
 /*  ----------------- globals are being defined --------------------- */
 
@@ -24,9 +24,9 @@
     type  variable = { initial1, initial2, initial3, initial4, initial5 };
 
 #define  DEF_GLOBAL_STRING( variable, initial ) \
-    DEF_GLOBAL( variable, String, initial )
+    DEF_GLOBAL( variable, STRING, initial )
 
-#include  <def_global_variables.h>
+#include  <global_variables.h>
 
 #undef  START_GLOBALS
 #undef  END_GLOBALS
@@ -56,7 +56,7 @@
            (void *) variable, CREATE_STRING(variable), String_type \
        },
 
-#include  <def_global_variables.h>
+#include  <global_variables.h>
 
 #undef  START_GLOBALS
 #undef  END_GLOBALS
@@ -82,9 +82,9 @@
          DEF_GLOBAL( variable, type, i1 )
 
 #define  DEF_GLOBAL_STRING( variable, initial ) \
-         extern  String  variable;
+         extern  STRING  variable;
 
-#include  <def_global_variables.h>
+#include  <global_variables.h>
 
 #undef  START_GLOBALS
 #undef  END_GLOBALS

@@ -1,7 +1,6 @@
-#include  <def_mni.h>
-#include  <def_marching_cube_data.h>
-#include  <def_splines.h>
-#include  <def_module.h>
+#include  <marching_cube_data.h>
+#include  <splines.h>
+#include  <module.h>
 
 private  marching_cube_data_struct  marching_cube_cases[256] =
     {
@@ -3486,7 +3485,7 @@ private  marching_cube_data_struct  marching_cube_cases[256] =
     };
 
 private  int  get_voxel_case_struct(
-    Boolean             above_flags[2][2][2],
+    BOOLEAN             above_flags[2][2][2],
     voxel_point_type    *points_list_ptr[] );
 
 public  int  compute_isotriangles_in_voxel(
@@ -3494,7 +3493,7 @@ public  int  compute_isotriangles_in_voxel(
     Real                target_value,
     voxel_point_type    *points_list_ptr[] )
 {
-    Boolean   above_flags[2][2][2];
+    BOOLEAN   above_flags[2][2][2];
 
     above_flags[0][0][0] = (corner_values[0][0][0] >= target_value);
     above_flags[0][0][1] = (corner_values[0][0][1] >= target_value);
@@ -3509,7 +3508,7 @@ public  int  compute_isotriangles_in_voxel(
 }
 
 private  int  get_voxel_case_struct(
-    Boolean             above_flags[2][2][2],
+    BOOLEAN             above_flags[2][2][2],
     voxel_point_type    *points_list_ptr[] )
 {
     int                         case_index;
@@ -3539,7 +3538,7 @@ public  void   create_point(
     int                 y,
     int                 z,
     int                 edge_intersected,
-    Boolean             normal_towards_lower,
+    BOOLEAN             normal_towards_lower,
     int                 max_surface_refinements,
     Real                max_surface_error,
     Point               *point,

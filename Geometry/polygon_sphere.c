@@ -1,5 +1,4 @@
-#include  <def_mni.h>
-#include  <def_module.h>
+#include  <module.h>
 
 #define  N_AROUND_TOP   -1
 
@@ -28,7 +27,7 @@ public  void  create_polygons_sphere(
     Real             z_size,
     int              n_up,
     int              n_around,
-    Boolean          subdividing_flag,
+    BOOLEAN          subdividing_flag,
     polygons_struct  *polygons )
 {
     int      point_index, top_point_index, bottom_point_index;
@@ -257,7 +256,7 @@ private  void  get_subdivided_point(
     Point    *point )
 {
     int       input_up, input_around;
-    Boolean   up_midpoint_flag, around_midpoint_flag;
+    BOOLEAN   up_midpoint_flag, around_midpoint_flag;
     Point     corner_below, corner_across, corner_below_across;
 
     input_up = up / 2;
@@ -293,7 +292,7 @@ private  void  get_subdivided_point(
     }
 }
 
-public  Boolean  is_this_sphere_topology(
+public  BOOLEAN  is_this_sphere_topology(
     polygons_struct  *polygons )
 {
     int     tess;
@@ -301,13 +300,13 @@ public  Boolean  is_this_sphere_topology(
     return( get_tessellation_of_polygons_sphere( polygons, &tess ) );
 }
 
-public  Boolean  get_tessellation_of_polygons_sphere(
+public  BOOLEAN  get_tessellation_of_polygons_sphere(
     polygons_struct  *polygons,
     int              *tess )
 {
     Real    size; 
     int     int_size, n_around_top, n_triangles, i;
-    Boolean is_sphere;
+    BOOLEAN is_sphere;
 
     is_sphere = FALSE;
 

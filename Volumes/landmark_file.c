@@ -1,4 +1,4 @@
-#include  <def_mni.h>
+#include  <mni.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_default_landmark_file_suffix
@@ -97,7 +97,7 @@ public  Status  io_tag_point(
     marker_struct   *marker )
 {
     Status   status;
-    String   line;
+    STRING   line;
     Point    position;
     int      sizes[MAX_DIMENSIONS];
     int      len, offset;

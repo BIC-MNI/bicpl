@@ -1,4 +1,4 @@
-#include  <def_mni.h>
+#include  <mni.h>
 
 public  void  initialize_resample_volume(
     resample_struct      *resample,
@@ -6,7 +6,7 @@ public  void  initialize_resample_volume(
     General_transform    *dest_to_src_transform,
     Volume               dest_volume )
 {
-    General_transform  inverse;
+    General_transform  inverse, tmp;
 
     resample->src_volume = src_volume;
     resample->dest_volume = dest_volume;
@@ -20,34 +20,37 @@ public  void  initialize_resample_volume(
     {
         create_inverse_general_transform( dest_to_src_transform, &inverse );
 
-        concat_general_transforms( &resample->transform, &inverse,
-                                   &resample->transform );
+        concat_general_transforms( &resample->transform, &inverse, &tmp );
+        delete_general_transform( &resample->transform );
+        resample->transform = tmp;
     }
 
     create_inverse_general_transform( get_voxel_to_world_transform(src_volume),
                                       &inverse );
 
-    concat_general_transforms( &resample->transform, &inverse,
-                               &resample->transform );
+    concat_general_transforms( &resample->transform, &inverse, &tmp );
+    delete_general_transform( &resample->transform );
+    resample->transform = tmp;
 }
 
-public  Boolean  do_more_resampling(
+public  BOOLEAN  do_more_resampling(
     resample_struct  *resample,
     Real             max_seconds,
     Real             *fraction_done )
 {
     int             value;
-    Boolean         linear;
+    BOOLEAN         linear;
     Vector          z_axis;
     int             z;
     Real            xv, yv, zv;
     Real            end_time, real_value;
-    int             *dest_sizes, *src_sizes;
+    int             dest_sizes[MAX_DIMENSIONS], src_sizes[MAX_DIMENSIONS];
 
     if( max_seconds >= 0.0 )
         end_time = current_realtime_seconds() + max_seconds;
 
-    dest_sizes = resample->dest_volume->sizes;
+    get_volume_sizes( resample->dest_volume, dest_sizes );
+    get_volume_sizes( resample->src_volume, src_sizes );
 
     linear = get_transform_type( &resample->transform ) == LINEAR;
     if( linear )
@@ -58,8 +61,6 @@ public  Boolean  do_more_resampling(
 
     while( resample->x < dest_sizes[X] )
     {
-        src_sizes = resample->src_volume->sizes;
-
         for_less( z, 0, dest_sizes[Z] )
         {
             if( !linear || z == 0 )
@@ -80,16 +81,16 @@ public  Boolean  do_more_resampling(
                 else
                 {
                     GET_VOXEL_3D( value, resample->src_volume,
-                                     ROUND( xv ), ROUND( yv ), ROUND( zv ) );
+                                  ROUND( xv ), ROUND( yv ), ROUND( zv ) );
                 }
             }
             else
             {
-                evaluate_volume( resample->src_volume, xv, yv, zv,
-                                 0, &real_value,
-                                 (Real *) 0, (Real *) 0, (Real *) 0,
-                                 (Real *) 0, (Real *) 0, (Real *) 0,
-                                 (Real *) 0, (Real *) 0, (Real *) 0 );
+                evaluate_3D_volume( resample->src_volume, xv, yv, zv,
+                                    0, &real_value,
+                                    (Real *) 0, (Real *) 0, (Real *) 0,
+                                    (Real *) 0, (Real *) 0, (Real *) 0,
+                                    (Real *) 0, (Real *) 0, (Real *) 0 );
 
                 value = ROUND( real_value );
             }

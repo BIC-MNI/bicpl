@@ -1,4 +1,4 @@
-#include  <def_mni.h>
+#include  <mni.h>
 
 public  Status  output_volume_free_format(
     char           prefix[],
@@ -9,11 +9,11 @@ public  Status  output_volume_free_format(
     Real               trans, separations[MAX_DIMENSIONS];
     int                sizes[MAX_DIMENSIONS];
     int                a1, a2, a3;
-    int                n_bytes_per_voxel, indices[N_DIMENSIONS];
+    int                n_bytes_per_voxel, indices[MAX_DIMENSIONS];
     void               *ptr;
     FILE               *file;
-    String             header_filename, voxel_filename, abs_voxel_filename;
-    String             filename_no_dirs;
+    STRING             header_filename, voxel_filename, abs_voxel_filename;
+    STRING             filename_no_dirs;
     int                axis;
     progress_struct    progress;
     General_transform  *voxel_to_world;

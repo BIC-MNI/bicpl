@@ -1,8 +1,8 @@
 
-#include  <def_mni.h>
+#include  <volume_io.h>
 
 static    Status  input_global_variable( int, global_struct [],
-                                         FILE *, Boolean * );
+                                         FILE *, BOOLEAN * );
 static    void    extract_string( char [], char [] );
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -27,7 +27,7 @@ public  Status  input_globals_file(
     char            filename[] )
 {
     Status  status;
-    Boolean eof;
+    BOOLEAN eof;
     FILE    *file;
 
     status = open_file( filename, READ_FILE, ASCII_FORMAT, &file );
@@ -66,11 +66,11 @@ private  Status  input_global_variable(
     int             n_globals_lookup,
     global_struct   globals_lookup[],
     FILE            *file,
-    Boolean         *eof )
+    BOOLEAN         *eof )
 {
     Status   set_status, status;
-    String   variable_name;
-    String   value;
+    STRING   variable_name;
+    STRING   value;
 
     *eof = FALSE;
 
@@ -126,7 +126,7 @@ private  Status  lookup_global(
     Variable_types   *type )
 {
     Status  status;
-    String  stripped;
+    STRING  stripped;
     char    *global_name;
     int     i, s, len;
 
@@ -189,8 +189,8 @@ public  Status  get_global_variable(
     {
         switch( type )
         {
-        case Boolean_type:
-            if( * ((Boolean *) ptr) )
+        case BOOLEAN_type:
+            if( * ((BOOLEAN *) ptr) )
                 (void) strcpy( value, "True" );
             else
                 (void) strcpy( value, "False" );
@@ -269,7 +269,7 @@ public  Status  set_global_variable(
     char             value_to_set[] )
 {
     Status             status;
-    String             value;
+    STRING             value;
     void               *ptr;
     Variable_types     type;
     int                tmp_int;
@@ -288,14 +288,14 @@ public  Status  set_global_variable(
     {
         switch( type )
         {
-        case Boolean_type:
+        case BOOLEAN_type:
             if( (value[0] == 't' || value[0] == 'T') )
             {
-                * (Boolean *) ptr = TRUE;
+                * (BOOLEAN *) ptr = TRUE;
             }
             else if( (value[0] == 'f' || value[0] == 'F') )
             {
-                * (Boolean *) ptr = FALSE;
+                * (BOOLEAN *) ptr = FALSE;
             }
             else
             {
@@ -408,7 +408,7 @@ public  Status  set_or_get_global_variable(
     char             value_string[] )
 {
     Status  status;
-    String  tmp_var_name, value_to_set;
+    STRING  tmp_var_name, value_to_set;
     int     equal_index;
 
     status = OK;

@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 public  Real  map_viewport_to_slice_1d(
     Real viewport_pos,

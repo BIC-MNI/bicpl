@@ -1,6 +1,5 @@
 
-#include  <def_mni.h>
-#include  <def_module.h>
+#include  <module.h>
 
 private  void  follow_path(
     int   polygon1,
@@ -20,11 +19,11 @@ public   void   find_path_between_polygons(
     int            end_indices[],
     Smallest_int   visibilities[],
     int            neighbours[],
-    Boolean        *path_exists,
+    BOOLEAN        *path_exists,
     int            *path_length,
     int            *path[] )
 {
-    Boolean    found_polygon1;
+    BOOLEAN    found_polygon1;
     int        start_index, end_index, neighbour;
     int        i, n, *distances, distance, curr_index, prev_index;
     int        n_step[2], n_step_alloced[2], *step_list[2];

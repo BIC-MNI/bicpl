@@ -1,7 +1,17 @@
-#include  <def_mni.h>
+#include  <mni.h>
 
 #define  ACTIVE_BIT                128
 #define  LOWER_AUXILIARY_BITS      127
+
+public  int  get_max_label()
+{
+    return( LOWER_AUXILIARY_BITS );
+}
+
+public  int  get_active_bit()
+{
+    return( ACTIVE_BIT );
+}
 
 public  Volume  create_label_volume(
     int    n_dimensions,
@@ -72,7 +82,7 @@ public  void  set_all_volume_label_data(
 public  void  set_all_volume_label_data_bit(
     Volume         volume,
     int            bit,
-    Boolean        value )
+    BOOLEAN        value )
 {
     int             n_voxels, i;
     void            *void_ptr;
@@ -108,7 +118,7 @@ public  void  set_all_volume_label_data_bit(
 
 public  void  set_all_voxel_activity_flags(
     Volume         volume,
-    Boolean        value )
+    BOOLEAN        value )
 {
     set_all_volume_label_data_bit( volume, ACTIVE_BIT, !value );
 }
@@ -129,14 +139,13 @@ public  void  set_all_voxel_activity_flags(
 
 public  void  set_volume_label_data(
     Volume          volume,
-    int             x,
-    int             y,
-    int             z,
+    int             voxel[],
     int             value )
 {
     check_alloc_label_data( volume );
 
-    SET_VOXEL_3D( volume, x, y, z, value );
+    SET_VOXEL( volume, voxel[0], voxel[1], voxel[2], voxel[3], voxel[4],
+               value );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -154,9 +163,7 @@ public  void  set_volume_label_data(
 
 public  int  get_volume_label_data(
     Volume          volume,
-    int             x,
-    int             y,
-    int             z )
+    int             voxel[] )
 {
     int    label;
 
@@ -164,121 +171,104 @@ public  int  get_volume_label_data(
         return( 0 );
     else
     {
-        GET_VOXEL_3D( label, volume, x, y, z );
+        GET_VOXEL( label, volume,
+                   voxel[0], voxel[1], voxel[2], voxel[3], voxel[4] );
         return( label );
     }
 }
 
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : get_voxel_activity_flag
-@INPUT      : volume
-              x
-              y
-              z
-@OUTPUT     : 
-@RETURNS    : TRUE if voxel is active
-@DESCRIPTION: Returns the active bit of the voxel, or if no label data,
-              then all voxels are active.
-@CREATED    : Mar   1993           David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  Boolean  get_voxel_activity_flag(
+public  BOOLEAN  get_voxel_label_bit(
     Volume          volume,
-    int             x,
-    int             y,
-    int             z )
+    int             voxel[],
+    int             bit )
 {
-    return( (get_volume_label_data( volume, x, y, z ) & ACTIVE_BIT) == 0 );
+    return( (get_volume_label_data( volume, voxel ) & bit) == 0 );
 }
 
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : set_voxel_activity_flag
-@INPUT      : volume
-              x
-              y
-              z
-              value
-@OUTPUT     : 
-@RETURNS    : 
-@DESCRIPTION: Sets the activity flag for the given voxel.
-@CREATED    : Mar   1993           David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  void  set_voxel_activity_flag(
+public  void  set_voxel_label_bit(
     Volume          volume,
-    int             x,
-    int             y,
-    int             z,
-    Boolean         value )
+    int             voxel[],
+    int             bit,
+    BOOLEAN         value )
 {
     void            *void_ptr;
     unsigned char   *label_ptr;
 
     check_alloc_label_data( volume );
 
-    GET_VOXEL_PTR_3D( void_ptr, volume, x, y, z );
+    GET_VOXEL_PTR( void_ptr, volume,
+                   voxel[0], voxel[1], voxel[2], voxel[3], voxel[4] );
     label_ptr = (unsigned char *) void_ptr;
 
     if( !value )
-        *label_ptr |= ACTIVE_BIT;
-    else if( (*label_ptr & ACTIVE_BIT) != 0 )
-        *label_ptr ^= ACTIVE_BIT;
+        *label_ptr |= bit;
+    else if( (*label_ptr & bit) != 0 )
+        *label_ptr ^= bit;
 }
 
-public  Boolean  get_volume_voxel_activity(
-    Volume     volume,
-    Real       x,
-    Real       y,
-    Real       z,
-    Boolean    activity_if_mixed )
+public  BOOLEAN  get_voxel_activity_flag(
+    Volume          volume,
+    int             voxel[] )
 {
-    int   n_active, x_int, y_int, z_int;
-    int   sizes[MAX_DIMENSIONS];
+    return( get_voxel_label_bit( volume, voxel, ACTIVE_BIT ) );
+}
+
+public  void  set_voxel_activity_flag(
+    Volume          volume,
+    int             voxel[],
+    BOOLEAN         value )
+{
+    set_voxel_label_bit( volume, voxel, ACTIVE_BIT, value );
+}
+
+public  BOOLEAN  get_volume_voxel_activity(
+    Volume     volume,
+    Real       voxel[],
+    BOOLEAN    activity_if_mixed )
+{
+    BOOLEAN  active_found, inactive_found;
+    int      c, int_index[MAX_DIMENSIONS], ind[MAX_DIMENSIONS];
+    int      n[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
 
     get_volume_sizes( volume, sizes );
 
-    if( x < 0.0 || x > sizes[X]-1 ||
-        y < 0.0 || y > sizes[Y]-1 ||
-        z < 0.0 || z > sizes[Z]-1 )
-        return( FALSE );
+    for_less( c, 0, get_volume_n_dimensions(volume) )
+        if( voxel[c] < 0.0 || voxel[c] > sizes[c]-1 )
+            return( FALSE );
 
-    x_int = (int) x;
-    if( x_int == sizes[X] - 1 )
-        x_int = sizes[X] - 2;
+    for_less( c, 0, get_volume_n_dimensions(volume) )
+    {
+        int_index[c] = (int) voxel[c];
+        if( int_index[c] == sizes[c] - 1 )
+            int_index[c] = sizes[c] - 2;
+        n[c] = 2;
+    }
 
-    y_int = (int) y;
-    if( y_int == sizes[Y] - 1 )
-        y_int = sizes[Y] - 2;
+    for_less( c, get_volume_n_dimensions(volume)-1, MAX_DIMENSIONS )
+    {
+        n[c] = 1;
+        int_index[c] = 0;
+    }
 
-    z_int = (int) z;
-    if( z_int == sizes[Z] - 1 )
-        z_int = sizes[Z] - 2;
+    active_found = FALSE;
+    inactive_found = FALSE;
 
-    n_active = 0;
+    for_less( ind[X], int_index[X], int_index[X] + n[X] )
+    for_less( ind[Y], int_index[Y], int_index[Y] + n[Y] )
+    for_less( ind[Z], int_index[Z], int_index[Z] + n[Z] )
+    for_less( ind[3], int_index[3], int_index[3] + n[3] )
+    for_less( ind[4], int_index[4], int_index[4] + n[4] )
+    {
+        if( get_voxel_activity_flag( volume, ind ) )
+            active_found = TRUE;
+        else
+            inactive_found = TRUE;
+    }
 
-    if( get_voxel_activity_flag( volume, x, y, z ) )
-        ++n_active;
-    if( get_voxel_activity_flag( volume, x, y, z+1 ) )
-        ++n_active;
-    if( get_voxel_activity_flag( volume, x, y+1, z ) )
-        ++n_active;
-    if( get_voxel_activity_flag( volume, x, y+1, z+1 ) )
-        ++n_active;
-    if( get_voxel_activity_flag( volume, x+1, y, z ) )
-        ++n_active;
-    if( get_voxel_activity_flag( volume, x+1, y, z+1 ) )
-        ++n_active;
-    if( get_voxel_activity_flag( volume, x+1, y+1, z ) )
-        ++n_active;
-    if( get_voxel_activity_flag( volume, x+1, y+1, z+1 ) )
-        ++n_active;
-
-    if( n_active == 0 )
-        return( FALSE );
-    else if( n_active == 8 )
+    if( active_found && !inactive_found )
         return( TRUE );
+    else if( !active_found && inactive_found )
+        return( FALSE );
     else
         return( activity_if_mixed );
 }
@@ -305,15 +295,23 @@ public  Status  io_volume_label_bit(
 {
     Status             status;
     bitlist_3d_struct  bitlist;
-    int                x, y, z, nx, ny, nz;
+    int                x, y, z, nx, ny, nz, sizes[MAX_DIMENSIONS];
     void               *void_ptr;
     unsigned char      *label_ptr;
 
+    if( get_volume_n_dimensions(volume) != 3 )
+    {
+        print( "io_volume_label_bit:  volume must be 3D\n" );
+        return( ERROR );
+    }
+
     status = OK;
 
-    nx = volume->sizes[X];
-    ny = volume->sizes[Y];
-    nz = volume->sizes[Z];
+    get_volume_sizes( volume, sizes );
+
+    nx = sizes[X];
+    ny = sizes[Y];
+    nz = sizes[Z];
 
     check_alloc_label_data( volume );
 
@@ -382,8 +380,8 @@ public  Status  input_tags_as_labels(
     Volume  volume,
     Volume  label_volume )
 {
-    int             i, label, ind[N_DIMENSIONS];
-    Real            x_voxel, y_voxel, z_voxel;
+    int             i, c, label, ind[MAX_DIMENSIONS];
+    Real            voxel[MAX_DIMENSIONS];
     int             n_volumes, n_tag_points;
     Real            **tags1, **tags2, *weights;
     int             *structure_ids, *patient_ids;
@@ -392,25 +390,26 @@ public  Status  input_tags_as_labels(
     check_alloc_label_data( label_volume );
 
     if( input_tag_points( file, &n_volumes, &n_tag_points,
-                               &tags1, &tags2, &weights, &structure_ids,
-                               &patient_ids, &labels ) != OK )
+                          &tags1, &tags2, &weights, &structure_ids,
+                          &patient_ids, &labels ) != OK )
         return( ERROR );
 
     for_less( i, 0, n_tag_points )
     {
         convert_world_to_voxel( volume,
                                 tags1[i][X], tags1[i][Y], tags1[i][Z],
-                                &x_voxel, &y_voxel, &z_voxel );
+                                voxel );
 
-        ind[X] = ROUND( x_voxel );
-        ind[Y] = ROUND( y_voxel );
-        ind[Z] = ROUND( z_voxel );
+        for_less( c, 0, get_volume_n_dimensions(volume) )
+        {
+            ind[c] = ROUND( voxel[c] );
+        }
 
         label = structure_ids[i];
         if( label >= 0 && label <= LOWER_AUXILIARY_BITS &&
             int_voxel_is_within_volume( volume, ind ) )
         {
-            set_volume_label_data( label_volume, ind[X], ind[Y], ind[Z], label);
+            set_volume_label_data( label_volume, ind, label);
         }
     }
 
@@ -429,29 +428,38 @@ public  Status  output_labels_as_tags(
     int     patient_id )
 {
     Status          status;
-    int             x, y, z;
-    int             n_tags, label, sizes[N_DIMENSIONS];
-    Real            x_world, y_world, z_world;
+    int             ind[N_DIMENSIONS];
+    int             n_tags, label, sizes[MAX_DIMENSIONS];
+    Real            x_world, y_world, z_world, real_ind[N_DIMENSIONS];
     Real            **tags, *weights;
     int             *structure_ids, *patient_ids;
+
+    if( get_volume_n_dimensions(volume) != 3 )
+    {
+        print( "output_labels_as_tags:  volume must be 3D\n" );
+        return( ERROR );
+    }
 
     check_alloc_label_data( label_volume );
     get_volume_sizes( label_volume, sizes );
 
     n_tags = 0;
 
-    for_less( x, 0, sizes[X] )
+    for_less( ind[X], 0, sizes[X] )
     {
-        for_less( y, 0, sizes[Y] )
+        real_ind[X] = (Real) ind[X];
+        for_less( ind[Y], 0, sizes[Y] )
         {
-            for_less( z, 0, sizes[Z] )
+            real_ind[Y] = (Real) ind[Y];
+            for_less( ind[Z], 0, sizes[Z] )
             {
-                label = get_volume_label_data( label_volume, x, y, z ) &
+                real_ind[Z] = (Real) ind[Z];
+                label = get_volume_label_data( label_volume, ind ) &
                         LOWER_AUXILIARY_BITS;
 
                 if( label == desired_label || (desired_label < 0 && label > 0) )
                 {
-                    convert_voxel_to_world( volume, (Real) x, (Real) y, (Real)z,
+                    convert_voxel_to_world( volume, real_ind,
                                             &x_world, &y_world, &z_world );
 
                     SET_ARRAY_SIZE( tags, n_tags, n_tags+1, DEFAULT_CHUNK_SIZE);
@@ -495,8 +503,8 @@ public  Status  input_landmarks_as_labels(
     Volume  volume,
     Volume  label_volume )
 {
-    int             label, ind[N_DIMENSIONS];
-    Real            x_voxel, y_voxel, z_voxel;
+    int             c, label, ind[MAX_DIMENSIONS];
+    Real            voxel[MAX_DIMENSIONS];
     marker_struct   marker;
 
     check_alloc_label_data( label_volume );
@@ -506,18 +514,16 @@ public  Status  input_landmarks_as_labels(
         convert_world_to_voxel( volume,
                                 Point_x(marker.position),
                                 Point_y(marker.position),
-                                Point_z(marker.position),
-                                &x_voxel, &y_voxel, &z_voxel );
+                                Point_z(marker.position), voxel );
 
-        ind[X] = ROUND( x_voxel );
-        ind[Y] = ROUND( y_voxel );
-        ind[Z] = ROUND( z_voxel );
+        for_less( c, 0, get_volume_n_dimensions(volume) )
+            ind[c] = ROUND( voxel[c] );
 
         label = marker.structure_id;
         if( label >= 0 && label <= LOWER_AUXILIARY_BITS &&
             int_voxel_is_within_volume( volume, ind ) )
         {
-            set_volume_label_data( label_volume, ind[X], ind[Y], ind[Z], label);
+            set_volume_label_data( label_volume, ind, label );
         }
     }
 

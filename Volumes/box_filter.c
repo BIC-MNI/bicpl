@@ -3,10 +3,18 @@
 
 private  Real  get_amount_in_box(
     Volume    volume,
-    int       min_voxel[],
-    int       max_voxel[],
-    Real      min_pos[],
-    Real      max_pos[] );
+    int       x_min_voxel,
+    int       x_max_voxel,
+    int       y_min_voxel,
+    int       y_max_voxel,
+    int       z_min_voxel,
+    int       z_max_voxel,
+    Real      x_min,
+    Real      x_max,
+    Real      y_min,
+    Real      y_max,
+    Real      z_min,
+    Real      z_max );
 
 public  Volume  create_box_filtered_volume(
     Volume   volume,
@@ -18,9 +26,14 @@ public  Volume  create_box_filtered_volume(
     int                x, y, z;
     int                sizes[MAX_DIMENSIONS];
     Real               separations[MAX_DIMENSIONS];
-    int                min_voxel[MAX_DIMENSIONS], max_voxel[MAX_DIMENSIONS];
-    Real               min_pos[MAX_DIMENSIONS], max_pos[MAX_DIMENSIONS];
+    int                x_min_voxel, x_max_voxel;
+    int                y_min_voxel, y_max_voxel;
+    int                z_min_voxel, z_max_voxel;
+    Real               x_min, x_max, y_min, y_max, z_min, z_max;
     Real               sum, voxel, sample_volume;
+    BOOLEAN            shortcut;
+    Real               prev_z_min, prev_z_max, added, removed;
+    int                prev_z_min_voxel, prev_z_max_voxel;
     progress_struct    progress;
 
     if( get_volume_n_dimensions(volume) != 3 )
@@ -44,63 +57,110 @@ public  Volume  create_box_filtered_volume(
     y_width /= 2.0;
     z_width /= 2.0;
 
+    if( z_width > 4.0 )
+        shortcut = TRUE;
+    else
+        shortcut = FALSE;
+
+#ifdef lint
+    prev_z_min = 0.0;
+    prev_z_max = 0.0;
+    prev_z_min_voxel = 0;
+    prev_z_max_voxel = 0;
+#endif
+
     for_less( x, 0, sizes[X] )
     {
-        min_pos[X] = x - x_width;
-        max_pos[X] = x + x_width;
+        x_min = x - x_width;
+        x_max = x + x_width;
 
-        if( min_pos[X] < -0.5 )
-            min_pos[X] = 0.5;
-        if( max_pos[X] > sizes[X]-0.5 )
-            max_pos[X] = sizes[X]-0.5;
+        if( x_min < -0.5 )
+            x_min = 0.5;
+        if( x_max > sizes[X]-0.5 )
+            x_max = sizes[X]-0.5;
 
-        min_voxel[X] = ROUND( min_pos[X] );
+        x_min_voxel = ROUND( x_min );
 
-        if( IS_INT( max_pos[X] + 0.5 ) )
-            max_voxel[X] = (int) max_pos[X];
+        if( IS_INT( x_max + 0.5 ) )
+            x_max_voxel = (int) x_max;
         else
-            max_voxel[X] = ROUND( max_pos[X] );
+            x_max_voxel = ROUND( x_max );
 
         for_less( y, 0, sizes[Y] )
         {
-            min_pos[Y] = y - y_width;
-            max_pos[Y] = y + y_width;
+            y_min = y - y_width;
+            y_max = y + y_width;
 
-            if( min_pos[Y] < -0.5 )
-                min_pos[Y] = 0.5;
-            if( max_pos[Y] > sizes[Y]-0.5 )
-                max_pos[Y] = sizes[Y]-0.5;
+            if( y_min < -0.5 )
+                y_min = 0.5;
+            if( y_max > sizes[Y]-0.5 )
+                y_max = sizes[Y]-0.5;
 
-            min_voxel[Y] = ROUND( min_pos[Y] );
+            y_min_voxel = ROUND( y_min );
 
-            if( IS_INT( max_pos[Y] + 0.5 ) )
-                max_voxel[Y] = (int) max_pos[Y];
+            if( IS_INT( y_max + 0.5 ) )
+                y_max_voxel = (int) y_max;
             else
-                max_voxel[Y] = ROUND( max_pos[Y] );
+                y_max_voxel = ROUND( y_max );
 
             for_less( z, 0, sizes[Z] )
             {
-                min_pos[Z] = z - z_width;
-                max_pos[Z] = z + z_width;
+                z_min = z - z_width;
+                z_max = z + z_width;
 
-                if( min_pos[Z] < -0.5 )
-                    min_pos[Z] = 0.5;
-                if( max_pos[Z] > sizes[Z]-0.5 )
-                    max_pos[Z] = sizes[Z]-0.5;
+                if( z_min < -0.5 )
+                    z_min = 0.5;
+                if( z_max > sizes[Z]-0.5 )
+                    z_max = sizes[Z]-0.5;
 
-                min_voxel[Z] = ROUND( min_pos[Z] );
+                z_min_voxel = ROUND( z_min );
 
-                if( IS_INT( max_pos[Z] + 0.5 ) )
-                    max_voxel[Z] = (int) max_pos[Z];
+                if( IS_INT( z_max + 0.5 ) )
+                    z_max_voxel = (int) z_max;
                 else
-                    max_voxel[Z] = ROUND( max_pos[Z] );
+                    z_max_voxel = ROUND( z_max );
 
-                sum = get_amount_in_box( volume, min_voxel, max_voxel,
-                                         min_pos, max_pos );
+                if( !shortcut || z == 0 )
+                {
+                    sum = get_amount_in_box( volume,
+                                             x_min_voxel, x_max_voxel,
+                                             y_min_voxel, y_max_voxel,
+                                             z_min_voxel, z_max_voxel,
+                                             x_min, x_max,
+                                             y_min, y_max,
+                                             z_min, z_max );
+                }
+                else
+                {
+                    removed = get_amount_in_box( volume,
+                                             x_min_voxel, x_max_voxel,
+                                             y_min_voxel, y_max_voxel,
+                                             prev_z_min_voxel, z_min_voxel,
+                                             x_min, x_max,
+                                             y_min, y_max,
+                                             prev_z_min, z_min );
+                    added = get_amount_in_box( volume,
+                                             x_min_voxel, x_max_voxel,
+                                             y_min_voxel, y_max_voxel,
+                                             prev_z_max_voxel, z_max_voxel,
+                                             x_min, x_max,
+                                             y_min, y_max,
+                                             prev_z_max, z_max );
+
+                    sum += added - removed;
+                }
 
                 voxel = sum / sample_volume;
 
                 SET_VOXEL_3D( resampled_volume, x, y, z, voxel );
+
+                if( shortcut )
+                {
+                    prev_z_min = z_min;
+                    prev_z_max = z_max;
+                    prev_z_min_voxel = z_min_voxel;
+                    prev_z_max_voxel = z_max_voxel;
+                }
             }
 
             update_progress_report( &progress, x * sizes[Y] + y + 1 );
@@ -114,53 +174,61 @@ public  Volume  create_box_filtered_volume(
 
 private  Real  get_amount_in_box(
     Volume    volume,
-    int       min_voxel[],
-    int       max_voxel[],
-    Real      min_pos[],
-    Real      max_pos[] )
+    int       x_min_voxel,
+    int       x_max_voxel,
+    int       y_min_voxel,
+    int       y_max_voxel,
+    int       z_min_voxel,
+    int       z_max_voxel,
+    Real      x_min,
+    Real      x_max,
+    Real      y_min,
+    Real      y_max,
+    Real      z_min,
+    Real      z_max )
 {
     int   x, y, z;
     Real  sum, start, end, x_weight, xy_weight, xyz_weight, voxel;
 
     sum = 0.0;
 
-    for_inclusive( x, min_voxel[X], max_voxel[X] )
+    for_inclusive( x, x_min_voxel, x_max_voxel )
     {
-        if( x == min_voxel[X] )
-            start = min_pos[X];
+        if( x == x_min_voxel )
+            start = x_min;
         else
             start = (Real) x - 0.5;
 
-        if( x == max_voxel[X] )
-            end = max_pos[X];
+        if( x == x_max_voxel )
+            end = x_max;
         else
             end = (Real) x + 0.5;
 
         x_weight = end - start;
 
-        for_inclusive( y, min_voxel[Y], max_voxel[Y] )
+        for_inclusive( y, y_min_voxel, y_max_voxel )
         {
-            if( y == min_voxel[Y] )
-                start = min_pos[Y];
+            if( y == y_min_voxel )
+                start = y_min;
             else
                 start = (Real) y - 0.5;
 
-            if( y == max_voxel[Y] )
-                end = max_pos[Y];
+            if( y == y_max_voxel )
+                end = y_max;
             else
                 end = (Real) y + 0.5;
 
             xy_weight = x_weight * (end - start);
 
-            for_inclusive( z, min_voxel[Z], max_voxel[Z] )
+            for_inclusive( z, z_min_voxel, z_max_voxel )
             {
-                if( z == min_voxel[Z] )
-                    start = min_pos[Z];
+                if( z == z_min_voxel )
+                    start = z_min;
                 else
                     start = (Real) z - 0.5;
 
-                if( z == max_voxel[Z] )
-                    end = max_pos[Z];
+                if( z == z_max_voxel )
+                    end = z_max;
                 else
                     end = (Real) z + 0.5;
 

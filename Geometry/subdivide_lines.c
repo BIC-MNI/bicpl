@@ -1,5 +1,4 @@
-#include  <def_mni.h>
-#include  <def_module.h>
+#include  <module.h>
 
 private  void  subdivide_line(
     lines_struct      *lines,

@@ -1,10 +1,10 @@
 #ifndef  DEF_PRIORITY_QUEUE
 #define  DEF_PRIORITY_QUEUE
 
-#include  <def_arrays.h>
+#include  <arrays.h>
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : def_priority_queue.h
+@NAME       : priority_queue.h
 @INPUT      :
 @OUTPUT     :
 @RETURNS    :

@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 private  void  get_mapping(
     Volume          volume,
@@ -103,7 +103,7 @@ private  void  create_weighted_volume_slices(
     int             x_viewport_size,
     int             y_viewport_size,
     Pixel_types     pixel_type,
-    Boolean         interpolation_flag,
+    BOOLEAN         interpolation_flag,
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     int             *n_pixels_alloced,
@@ -111,14 +111,17 @@ private  void  create_weighted_volume_slices(
 {
     Data_types   volume2_data_type;
     void         **slice_start1, **slice_start2;
-    int          strides1[N_DIMENSIONS], strides2[N_DIMENSIONS];
-    int          indices[N_DIMENSIONS];
+    int          strides1[MAX_DIMENSIONS], strides2[MAX_DIMENSIONS];
+    int          indices[MAX_DIMENSIONS];
+    int          n_dimensions1, n_dimensions2;
     int          axis, x_size, y_size, s;
     int          x_pixel_start, x_pixel_end, y_pixel_start, y_pixel_end;
     int          x_pixel_start2, x_pixel_end2, y_pixel_start2, y_pixel_end2;
     int          sizes1[MAX_DIMENSIONS], sizes2[MAX_DIMENSIONS];
     Real         x_delta1, y_delta1, x_offset1, y_offset1;
     Real         x_delta2, y_delta2, x_offset2, y_offset2;
+
+    n_dimensions1 = get_volume_n_dimensions( volume1 );
 
     get_mapping( volume1,
                  x_translation1, x_scale1, x_axis_index,
@@ -135,6 +138,7 @@ private  void  create_weighted_volume_slices(
 
     if( volume2 != (Volume) NULL )
     {
+        n_dimensions2 = get_volume_n_dimensions( volume1 );
         get_mapping( volume2,
                      x_translation2, x_scale2, x_axis_index,
                      y_translation2, y_scale2, y_axis_index,
@@ -183,25 +187,26 @@ private  void  create_weighted_volume_slices(
 
         for_less( s, 0, n_slices )
         {
-            indices[X] = ROUND( slice_positions1[s] );
-            indices[Y] = ROUND( slice_positions1[s] );
-            indices[Z] = ROUND( slice_positions1[s] );
+            for_less( axis, 0, n_dimensions1 )
+                indices[axis] = ROUND( slice_positions1[s] );
+
             indices[x_axis_index] = 0;
             indices[y_axis_index] = 0;
 
-            for_less( axis, 0, N_DIMENSIONS )
+            for_less( axis, 0, n_dimensions1 )
             {
                 if( indices[axis] == sizes1[axis] )
                     indices[axis] = sizes1[axis] - 1;
             }
 
-            GET_VOXEL_PTR_3D( slice_start1[s], volume1,
-                              indices[X], indices[Y], indices[Z] );
+            GET_VOXEL_PTR( slice_start1[s], volume1,
+                           indices[0], indices[1], indices[2],
+                           indices[3], indices[4] );
         }
 
-        strides1[X] = sizes1[Y] * sizes1[Z];
-        strides1[Y] = sizes1[Z];
-        strides1[Z] = 1;
+        strides1[n_dimensions1-1] = 1;
+        for( axis = n_dimensions1 - 2;  axis >= 0;  --axis )
+             strides1[axis] = strides1[axis+1] * sizes1[axis+1];
 
         if( volume2 != (Volume) NULL )
         {
@@ -211,25 +216,26 @@ private  void  create_weighted_volume_slices(
 
             for_less( s, 0, n_slices )
             {
-                indices[X] = ROUND( slice_positions2[s] );
-                indices[Y] = ROUND( slice_positions2[s] );
-                indices[Z] = ROUND( slice_positions2[s] );
+                for_less( axis, 0, n_dimensions2 )
+                    indices[axis] = ROUND( slice_positions2[s] );
+
                 indices[x_axis_index] = 0;
                 indices[y_axis_index] = 0;
 
-                for_less( axis, 0, N_DIMENSIONS )
+                for_less( axis, 0, n_dimensions2 )
                 {
                     if( indices[axis] == sizes2[axis] )
                         indices[axis] = sizes2[axis] - 1;
                 }
 
-                GET_VOXEL_PTR_3D( slice_start2[s], volume2,
-                                  indices[X], indices[Y], indices[Z] );
+                GET_VOXEL_PTR( slice_start2[s], volume2,
+                               indices[0], indices[1], indices[2],
+                               indices[3], indices[4] );
             }
 
-            strides2[X] = sizes2[Y] * sizes2[Z];
-            strides2[Y] = sizes2[Z];
-            strides2[Z] = 1;
+            strides2[n_dimensions2-1] = 1;
+            for( axis = n_dimensions2 - 2;  axis >= 0;  --axis )
+                 strides2[axis] = strides2[axis+1] * sizes2[axis+1];
         }
         else
             slice_start2 = (void **) NULL;
@@ -314,7 +320,7 @@ public  void  create_volume_slice(
     int             x_viewport_size,
     int             y_viewport_size,
     Pixel_types     pixel_type,
-    Boolean         interpolation_flag,
+    BOOLEAN         interpolation_flag,
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     int             *n_pixels_alloced,
@@ -402,7 +408,7 @@ if( n_slices > 1 )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  convert_slice_pixel_to_voxel(
+public  BOOLEAN  convert_slice_pixel_to_voxel(
     Volume          volume,
     Real            x_pixel,
     Real            y_pixel,
@@ -552,8 +558,8 @@ public  void  fit_volume_slice_to_viewport(
     Volume       volume,
     int          x_axis_index,
     int          y_axis_index,
-    Boolean      x_flip,
-    Boolean      y_flip,
+    BOOLEAN      x_flip,
+    BOOLEAN      y_flip,
     int          x_viewport_size,
     int          y_viewport_size,
     Real         fraction_oversize,

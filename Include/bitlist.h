@@ -2,7 +2,7 @@
 #define  DEF_BITLIST
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : def_bitlist.h
+@NAME       : bitlist.h
 @INPUT      : 
 @OUTPUT     : 
 @RETURNS    : 
@@ -15,7 +15,7 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#include  <def_basic.h>
+#include  <basic.h>
 
 typedef  unsigned int   bitlist_type;
 

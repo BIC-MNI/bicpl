@@ -1,5 +1,5 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
 private  Real  angle_between_points(
     Point  *prev,
@@ -111,7 +111,7 @@ public  void  create_polygons_visibilities(
 
 public  void  set_polygons_visibilities(
     polygons_struct   *polygons,
-    Boolean           state )
+    BOOLEAN           state )
 {
     int   i;
 
@@ -268,7 +268,7 @@ public  int  find_edge_index(
     return( index );
 }
 
-public  Boolean  find_polygon_with_edge(
+public  BOOLEAN  find_polygon_with_edge(
     polygons_struct  *polygons,
     int              point_index1,
     int              point_index2,
@@ -292,7 +292,7 @@ public  Boolean  find_polygon_with_edge(
     return( poly < polygons->n_items );
 }
 
-public  Boolean  lookup_polygon_vertex(
+public  BOOLEAN  lookup_polygon_vertex(
     polygons_struct   *polygons,
     Point             *point,
     int               *point_index )
@@ -311,14 +311,14 @@ public  Boolean  lookup_polygon_vertex(
     return( i < polygons->n_points );
 }
 
-public  Boolean  find_polygon_with_vertex(
+public  BOOLEAN  find_polygon_with_vertex(
     polygons_struct   *polygons,
     int               point_index,
     int               *poly_index,
     int               *vertex_index )
 {
     int      poly, size, i;
-    Boolean  found;
+    BOOLEAN  found;
 
     found = FALSE;
 
@@ -341,7 +341,7 @@ public  Boolean  find_polygon_with_vertex(
     return( found );
 }
 
-public  Boolean  find_next_edge_around_point(
+public  BOOLEAN  find_next_edge_around_point(
     polygons_struct   *polygons,
     int               poly,
     int               index_1,
@@ -393,11 +393,11 @@ public  int  get_neighbours_of_point(
     int               vertex_index,
     int               neighbours[],
     int               max_neighbours,
-    Boolean           *interior_point )
+    BOOLEAN           *interior_point )
 {
     int      n_neighbours, current_poly, current_index_within_poly;
     int      size, neighbour_index_within_poly;
-    Boolean  found;
+    BOOLEAN  found;
 
     size = GET_OBJECT_SIZE( *polygons, poly );
 
@@ -445,7 +445,7 @@ public  int  get_polygons_around_vertex(
     int      current_poly, current_index_within_poly;
     int      size, neighbour_index_within_poly;
     int      n_polys, dir;
-    Boolean  found;
+    BOOLEAN  found;
 
     size = GET_OBJECT_SIZE( *polygons, poly );
 
@@ -595,7 +595,7 @@ private  Real  angle_between_points(
     return( angle );
 }
 
-public  Boolean  get_plane_polygon_intersection(
+public  BOOLEAN  get_plane_polygon_intersection(
     Vector           *normal,
     Real             d,
     polygons_struct  *polygons,
@@ -628,7 +628,7 @@ public  Boolean  get_plane_polygon_intersection(
     return( n_intersections == 2 );
 }
 
-public  Boolean  get_plane_segment_intersection(
+public  BOOLEAN  get_plane_segment_intersection(
     Vector           *normal,
     Real             d,
     Point            *p1,
@@ -636,7 +636,7 @@ public  Boolean  get_plane_segment_intersection(
     Point            *intersection_point )
 {
     Real     dist1, dist2, t;
-    Boolean  intersects;
+    BOOLEAN  intersects;
     Point    t1, t2;
 
     dist1 = DIST_FROM_PLANE( *normal, d, *p1 );
@@ -686,7 +686,7 @@ public  void   make_polygons_front_facing(
     }
 }
 
-public  Boolean  polygon_is_back_facing(
+public  BOOLEAN  polygon_is_back_facing(
     polygons_struct   *polygons,
     int               poly )
 {
@@ -777,7 +777,7 @@ public  void  compute_polygon_point_centroid(
 {
     int              n_neighbours;
     int              neighbours[MAX_NEIGHBOURS];
-    Boolean          interior_point;
+    BOOLEAN          interior_point;
 
     n_neighbours = get_neighbours_of_point( polygons, poly, vertex_index,
                                             neighbours, MAX_NEIGHBOURS,
@@ -903,7 +903,7 @@ public  Real  get_polygon_edge_angle(
     return( angle );
 }
 
-public  Boolean  polygons_are_same_topology(
+public  BOOLEAN  polygons_are_same_topology(
     polygons_struct  *p1,
     polygons_struct  *p2 )
 {

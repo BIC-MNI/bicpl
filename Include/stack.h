@@ -2,7 +2,7 @@
 #define  DEF_STACK
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : def_stack.h
+@NAME       : stack.h
 @INPUT      : 
 @OUTPUT     : 
 @RETURNS    : 
@@ -14,7 +14,7 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#include  <def_basic.h>
+#include  <basic.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : STACK_STRUCT

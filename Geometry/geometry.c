@@ -1,14 +1,14 @@
 
-#include  <def_mni.h>
+#include  <mni.h>
 
-public  Boolean  intersect_lines_3d(
+public  BOOLEAN  intersect_lines_3d(
     Point   *origin1,
     Vector  *delta1,
     Point   *origin2,
     Vector  *delta2,
     Point   *intersection_pt )
 {
-    Boolean   intersects;
+    BOOLEAN   intersects;
     Real      t, bottom;
     Real      d11, d12, d22;
     Real      o11, o12, o21, o22;
@@ -83,22 +83,6 @@ public  Real  get_polygon_2d_area(
     return( area / 2.0 );
 }
 
-public  void  get_noncolinear_vector(
-    Vector   *v,
-    Vector   *non_colinear )
-{
-    *non_colinear = *v;
-
-    if( Vector_x(*v) == 0.0 )
-        Vector_x(*non_colinear) = 1.0;
-    else if( Vector_y(*v) == 0.0 )
-        Vector_y(*non_colinear) = Vector_x(*v);
-    else if( Vector_z(*v) == 0.0 )
-        Vector_z(*non_colinear) = Vector_x(*v);
-    else
-        Vector_z(*non_colinear) = 0.0;
-}
-
 public  void   get_plane_through_points(
     int      n_points,
     Point    points[],
@@ -149,7 +133,7 @@ public  Real  distance_from_line(
     return( dist );
 }
 
-public  Boolean  find_closest_line_sphere_intersection(
+public  BOOLEAN  find_closest_line_sphere_intersection(
     Point    *line_origin,
     Vector   *line_direction,
     Point    *sphere_centre,
@@ -158,7 +142,7 @@ public  Boolean  find_closest_line_sphere_intersection(
     Real     z_size,
     Point    *intersection )
 {
-    Boolean   intersects;
+    BOOLEAN   intersects;
     int       n_solutions;
     Real      a, b, c, ox, oy, oz, dx, dy, dz, t1, t2, t;
     Vector    offset;
@@ -201,7 +185,7 @@ public  Boolean  find_closest_line_sphere_intersection(
     return( intersects );
 }
 
-public  Boolean  clip_line_to_box(
+public  BOOLEAN  clip_line_to_box(
     Point    *origin,
     Vector   *direction,
     Real     x_min,
@@ -213,7 +197,7 @@ public  Boolean  clip_line_to_box(
     Real     *t_min,
     Real     *t_max )
 {
-    Boolean  first;
+    BOOLEAN  first;
     int      c, first_ind;
     Real     dir, t1, t2, limits[2][N_DIMENSIONS];
 
