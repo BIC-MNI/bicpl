@@ -142,7 +142,7 @@ public  Volume  smooth_resample_volume(
                                               src_voxel[X], src_voxel[Y],
                                               src_voxel[Z]);
                                 val += weight * voxel;
-                                if( get_voxel_activity_flag(volume,src_voxel) )
+                                if( get_volume_label_data(volume,src_voxel) ==0)
                                     voxel_valid = TRUE;
                             }
                         }
@@ -154,8 +154,7 @@ public  Volume  smooth_resample_volume(
                               val + 0.5 );
 
                 if( !voxel_valid )
-                    set_voxel_activity_flag( resampled_volume, dest_voxel,
-                                             voxel_valid );
+                    set_volume_label_data( resampled_volume, dest_voxel, 1 );
             }
 
             update_progress_report( &progress,
