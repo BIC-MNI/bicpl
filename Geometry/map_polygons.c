@@ -14,9 +14,10 @@
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
+#include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.9 1995-12-19 15:45:49 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.10 1996-08-22 18:47:21 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -434,6 +435,23 @@ public  Real  map_point_to_unit_sphere(
     return( dist );
 }
 
+public  void  map_unit_sphere_to_point(
+    polygons_struct  *unit_sphere,
+    Point            *unit_sphere_point,
+    polygons_struct  *p,
+    Point            *point )
+{
+    Point    poly_point;
+    int      poly;
+
+    poly = find_closest_polygon_point( unit_sphere_point, unit_sphere,
+                                       &poly_point );
+
+    map_point_between_polygons( unit_sphere, poly, &poly_point, p,
+                                point );
+}
+
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : polygon_transform_point
 @INPUT      : src_object
@@ -510,4 +528,38 @@ public  void  polygon_transform_points(
         polygon_transform_point( src_object, dest_object,
                                  &src_points[i], &dest_points[i] );
     }
+}
+
+public  void  map_sphere_to_uv(
+    Real    x,
+    Real    y,
+    Real    z,
+    Real    *u,
+    Real    *v )
+{
+    Real    angle_up, angle_around;
+
+    angle_up = acos( z );
+
+    *v = 1.0 - angle_up / PI;
+
+    angle_around = compute_clockwise_rotation( x, -y );
+
+    *u = angle_around / (2.0*PI);
+}
+
+public  void  map_uv_to_sphere(
+    Real    u,
+    Real    v,
+    Real    *x,
+    Real    *y,
+    Real    *z )
+{
+    Real   r;
+
+    *z = cos( (1.0 - v) * PI );
+    r = sin( (1.0 - v) * PI );
+
+    *x = r * cos( u * 2.0 * PI );
+    *y = r * sin( u * 2.0 * PI );
 }
