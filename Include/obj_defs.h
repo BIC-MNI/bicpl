@@ -1,7 +1,7 @@
-#ifndef  DEF_OBJECTS
-#define  DEF_OBJECTS
+#ifndef  DEF_OBJECT_DEFS
+#define  DEF_OBJECT_DEFS
 
-#include  <basic.h>
+#include  <volume_io.h>
 #include  <stack.h>
 
 #define  SET_OBJECT_SIZE( object, n, size ) \
