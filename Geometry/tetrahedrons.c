@@ -16,7 +16,7 @@
 #include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.13 2000-02-06 15:30:19 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.14 2002-04-29 18:31:05 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -26,7 +26,8 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrah
 @RETURNS    : TRUE if correct topology
 @DESCRIPTION: Tests if the polygons are a tetrahedron (4 polygons),
               two tetrahedrons glued together (6 polygons), two pyramids glued
-              together (8 polygons) or a subdivision of one of these.
+              together (8 polygons), an icosahedron (20 polygons),
+              or a subdivision of one of these.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -82,9 +83,10 @@ public  int  get_tetra_tessellation_with_n_points(
 @OUTPUT     : polygons
 @RETURNS    : 
 @DESCRIPTION: Creates a tetrahedral tessellation of a sphere.  This is
-              either a tetrahedron, two tetrahedrons glued together, or
-              two pyramids glued together, or some subdivision of these.
-              This means that n_triangles must be either 4, 6, 8, or
+              either a tetrahedron, two tetrahedrons glued together, 
+              two pyramids glued together, an icosahedron,
+	      or some subdivision of these.
+              This means that n_triangles must be either 4, 6, 8, 20, or
               a power of 4 times one of these, since a subdivision step
               quadruples the number of triangles.  If it is not, then the
               smallest power of 4 larger than n_triangles will be used,

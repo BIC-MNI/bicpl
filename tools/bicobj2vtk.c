@@ -1,8 +1,10 @@
 /**
  * Convert a David MacDonald .obj file to a VTK-format file.
  *
- * TODO: Generalize to allow multiple attributes of the same
- * kind (e.g. POINT_DATA scalars).
+ * TODO: 
+ * - Generalize to allow multiple attributes of the same
+ *   kind (e.g. POINT_DATA scalars).
+ * - check for space in attribute name
  **/
 
 #include <stdio.h>
@@ -286,7 +288,7 @@ int main( int ac, char** av )
 
     /* Spit out the header */
     fprintf( out, "# vtk DataFile Version 2.0\n" );
-    fprintf( out, "File '%s' (converted by bicobj2vtk $Id: bicobj2vtk.c,v 1.1 2001-12-21 16:19:49 stever Exp $\n", av[1] );
+    fprintf( out, "File '%s' (converted by bicobj2vtk $Id: bicobj2vtk.c,v 1.2 2002-04-29 18:31:06 stever Exp $\n", av[1] );
     fprintf( out, "ASCII\n" );
     fprintf( out, "DATASET POLYDATA\n" );
     

@@ -18,8 +18,22 @@
 #include  <bicpl/trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.42 2001-04-21 17:06:53 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.43 2002-04-29 18:31:05 stever Exp $";
 #endif
+
+
+/*! \defgroup grp_polygons Polygons
+ *  \ingroup grp_bicobj
+ *
+ * A polygons structure contains a list of vertices and
+ * facets constructed from those vertices.
+ *
+ * There are \em n_points vertices and \em n_items
+ * facets stored in the structure.
+ *
+ * @{
+ */
+
 
 private  void  reverse_polygon_order(
     polygons_struct   *polygons,
@@ -1710,3 +1724,9 @@ public  BOOLEAN  polygons_are_same_topology(
                                        p2->n_points, p2->n_items,
                                        p2->end_indices, p2->indices ) );
 }
+
+
+/*!
+ * @}
+ * End of grp_polygons.
+ */

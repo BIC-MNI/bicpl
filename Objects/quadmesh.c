@@ -18,7 +18,7 @@
 #include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.19 2001-07-05 04:13:42 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.20 2002-04-29 18:31:06 stever Exp $";
 #endif
 
 
@@ -27,9 +27,9 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmes
  *
  * A quadmesh consists of \em m rows and \em n columns of points.
  * Neighbouring points along a row and along a column are joined with
- * an edge.  Think of a piece of graph paper.  The first and last
+ * an edge, as on a piece of graph paper.  The first and last
  * points of each row (or of each column) may optionally have an edge
- * between them.  Think of a piece of graph paper rolled into a
+ * between them; picture rolling the graph paper into a
  * cylinder.  If both the rows and the columns are closed in this
  * manner, you end up with a toroidal topology.
  *
@@ -37,8 +37,8 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmes
  * (i,j) with 0 <= i < m, and 0 <= j < n.
  *
  * Each quadrilateral of the mesh, or \em patch, is defined by the
- * four points at its corners.  The points comprising the interior of
- * the patch are undefined.  Four points are not planar, in general.
+ * four points at its corners.  The set of points comprising the interior of
+ * the patch is undefined.  Four points are not planar, in general.
  *
  * Patches are addressed using integer pairs (i,j) with 0 <= i < mp,
  * and 0 <= j < np.  Use get_quadmesh_n_objects() to compute \c mp and
