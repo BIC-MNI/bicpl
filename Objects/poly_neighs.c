@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.9 1995-10-19 15:47:53 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.10 1996-04-29 15:08:22 david Exp $";
 #endif
 
 #define  INVALID_ID       -1
@@ -99,6 +99,8 @@ private   void   create_polygon_neighbours(
     hash_table_pointer  hash_ptr;
     progress_struct     progress;
 
+    edge_ptr = NULL;
+
     topology_error = FALSE;
 
     if( n_polygons > 0 )
@@ -108,7 +110,7 @@ private   void   create_polygon_neighbours(
     }
 
     initialize_hash_table( &edge_table, 2,
-                           (int) (INITIAL_HASH_TABLE_SIZE*n_polygons),
+                           (int) (INITIAL_HASH_TABLE_SIZE* (Real) n_polygons),
                            ENLARGE_THRESHOLD, NEW_DENSITY );
 
     end_index = 0;

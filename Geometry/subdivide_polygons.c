@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.10 1995-07-31 13:45:00 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.11 1996-04-29 15:05:57 david Exp $";
 #endif
 
 private  void  subdivide_polygon(
@@ -56,6 +56,9 @@ public  void  subdivide_polygons(
     hash_table_struct  midpoint_table;
     hash_table_pointer hash_pointer;
     progress_struct    progress;
+
+    index_ptr = NULL;
+    new_points = NULL;
 
     if( is_this_sphere_topology( polygons ) )
     {
