@@ -43,7 +43,7 @@ public  void  subdivide_polygons(
     for_less( i, 0, new_n_points )
         new_points[i] = polygons->points[i];
 
-    initialize_hash_table( &midpoint_table, 2, polygons->n_points, 0.5, 0.25 );
+    initialize_hash_table( &midpoint_table, 2, polygons->n_points, 0.75, 0.4 );
 
     initialize_progress_report( &progress, TRUE, polygons->n_items,
                                 "Subdividing Polygon" );
