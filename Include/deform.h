@@ -69,21 +69,25 @@ typedef struct
 typedef struct
 {
     int                  axis;
+    Point                *save_points;
     Real                 *curvature_factors;
     Point                *equilibrium_points;
+    Point                *new_equilibrium_points;
     Real                 temperature;
     Real                 temperature_factor;
     int                  temperature_step;
-    Real                 random_distance;
-    Real                 random_distance_increment;
-    Real                 min_random_distance;
+    int                  min_n_to_move;
+    int                  max_n_to_move;
+    Real                 max_translation;
+    Real                 max_angle_rotation;
+    Real                 max_scale_offset;
+    int                  stop_criteria;
     int                  try;
     int                  max_tries;
     int                  max_successes;
     int                  n_successes;
     int                  n_pos_successes;
     int                  n_no_moves;
-    int                  stop_criteria;
     Real                 min_delta_energy;
     Real                 max_delta_energy;
     Real                 energy;
