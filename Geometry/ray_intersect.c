@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.27 1997-08-13 13:21:50 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.28 1998-04-27 17:15:31 david Exp $";
 #endif
 
 
@@ -169,53 +169,17 @@ private  BOOLEAN   intersect_ray_polygon_points(
     Real             *dist )
 {
     BOOLEAN  intersects;
-    Vector   normal;
-    Real     n_dot_d, n_dot_o, t, plane_const, nx, ny, nz;
-    Real     cx, cy, cz;
-    Point    pt;
     int      p;
 
     intersects = FALSE;
 
-    find_polygon_normal_no_normalize( n_points, points, &nx, &ny, &nz );
-
-    n_dot_d = nx * (Real) Vector_x(*ray_direction) +
-              ny * (Real) Vector_y(*ray_direction) +
-              nz * (Real) Vector_z(*ray_direction);
-
-    if( n_dot_d != 0.0 )
+    for_less( p, 1, n_points-1 )
     {
-        cx = 0.0;
-        cy = 0.0;
-        cz = 0.0;
+        intersects = intersect_ray_triangle( ray_origin, ray_direction,
+                      &points[0], &points[p], &points[p+1], dist );
 
-        for_less( p, 0, n_points )
-        {
-            cx += (Real) Point_x(points[p]);
-            cy += (Real) Point_y(points[p]);
-            cz += (Real) Point_z(points[p]);
-        }
-
-        plane_const = (nx * cx + ny * cy + nz * cz) / (Real) n_points;
-
-        n_dot_o = nx * (Real) Point_x(*ray_origin) +
-                  ny * (Real) Point_y(*ray_origin) +
-                  nz * (Real) Point_z(*ray_origin);
-
-        t = (plane_const - n_dot_o) / n_dot_d;
-
-        if( t >= 0.0 )
-        {
-            GET_POINT_ON_RAY( pt, *ray_origin, *ray_direction, t );
-
-            fill_Vector( normal, nx, ny, nz );
-
-            if( point_within_polygon( &pt, n_points, points, &normal ) )
-            {
-                *dist = t;
-                intersects = TRUE;
-            }
-        }
+        if( intersects )
+            break;
     }
 
     return( intersects );
