@@ -23,30 +23,42 @@ smr_REQUIRED_LIB(minc,miicv_create,minc.h)
 smr_REQUIRED_LIB(volume_io,input_volume,volume_io.h)
 
 
-dnl Decide which file format is used for images.
-dnl Prefer PPM if available, otherwise use SGI's irisimage,
-dnl otherwise no image I/O is possible
+dnl Decide which file format is used for images.  The installer *must* choose
+dnl a "--with-image-X" option, otherwise no image I/O is possible
 
-imageio_GLUE_CODE=rgb_io_none.c
+imagelib=none
 
-smr_OPTIONAL_LIB(ppm,ppm_writeppminit,ppm.h,[-lpgm -lpbm])
+AC_ARG_WITH([image-ppm],
+  [  --with-image-ppm        use PPM library to output raster data],
+  [imagelib=ppm]
+)
 
-if test $HAVE_libppm = yes; then
-    imageio_GLUE_CODE=rgb_io_ppm.c
-else
-    smr_OPTIONAL_LIB(image,iopen,image.h)
-    if test $HAVE_libimage = yes; then
+AC_ARG_WITH([image-sgi],
+  [  --with-image-sgi        use SGI image library to output raster data],
+  [imagelib=sgi]
+)
+
+case "$imagelib" in
+    none)
+	AC_MSG_WARN([No image library chosen.  Raster output disabled!!])
+	imageio_GLUE_CODE=rgb_io_none.c
+	;;
+    ppm)
+	smr_REQUIRED_LIB(ppm,ppm_writeppminit,ppm.h,[-lpgm -lpbm])
+ 	imageio_GLUE_CODE=rgb_io_ppm.c
+	;;
+    sgi)
+	smr_REQUIRED_LIB(image,iopen,image.h)
 	imageio_GLUE_CODE=rgb_io_sgi.c
-    fi
-fi
+	;;
+    *)
+	AC_MSG_ERROR([configure is broken.  Fix me.])
+	;;
+esac
 
 AC_DEFINE_UNQUOTED(imageio_GLUE_CODE,
     ["$imageio_GLUE_CODE"],[File to include in Images/rgb_io.c])
 
-
-
-
-dnl AC_CHECK_TYPE(bool,int)
 
 AC_OUTPUT( 
 Makefile

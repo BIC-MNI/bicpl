@@ -35,14 +35,18 @@ example.  If you have software installed in two or more places, e.g.
 		---------
 
 The bicpl library includes functions for reading and writing a (2D)
-image file.  The format of this file is fixed at configure time, and
-may be one of:
+image file.  The format of this file is must be chosen at configure
+time, using one of the following configure options.
 
-	Portable PixMap (PPM) format,
-or	IRIS image format (from SGI)
+    Library			       Configure Option
+    -------			       ----------------
+    Portable PixMap (PPM) format       --with-image-ppm
+    IRIS image format (from SGI)       --with-image-sgi
 
-The configure script will probe for the netpbm library (PPM format).
-If not found, then IRIS image library will be probed for.  
+
+You need to have the requisite library installed in order to build bicpl 
+with it.  The configure script will probe for the library requested.
 
 If the library is installed but not found, see the previous section
 on finding 3rd party libraries.
+

@@ -1,3 +1,9 @@
+2003-06-17  Steve ROBBINS  <stever@bic.mni.mcgill.ca>
+
+	* configure.in: Add options to select SGI image library
+	or PPM library for raster I/O.  The installer must choose
+	one or the other, else no raster I/O possible.
+
 2003-06-16  Steve ROBBINS  <stever@bic.mni.mcgill.ca>
 
 	* Include/bicpl/vol_prototypes.h: 
