@@ -1,5 +1,6 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <objects.h>
 
 public  void  initialize_lines(
     lines_struct    *lines,

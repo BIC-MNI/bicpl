@@ -15,15 +15,12 @@
 
 
 
-#define public
-#define private static
-
+#include <internal_volume_io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <recipes.h>
-#include <matrix_basics.h>
-#include <compute_tps.h>
+#include <geom.h>
 
 
 /* prototype definitions: */
@@ -128,6 +125,9 @@ private float return_r(float *cor1, float *cor2, int dim)
                      " impossible error in mapping.c, dim = %d (return_r)\n",
                      dim);
       exit(-1); 
+#ifdef lint
+      return( 0.0 );
+#endif
    }
 }
 
@@ -155,6 +155,9 @@ private float FU(float r, int dim)
                      " impossible error in mapping.c, dim = %d (FU)\n",
                      dim);
       exit(-1); 
+#ifdef lint
+      return( 0.0 );
+#endif
    }
 }
  

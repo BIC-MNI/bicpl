@@ -1,5 +1,6 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <vols.h>
 
 #define  TALAIRACH_OFFSET   16.0
 

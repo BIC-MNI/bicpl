@@ -1,5 +1,6 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <vols.h>
 
 #define  DEBUG
 #undef  DEBUG
@@ -205,7 +206,7 @@ public  Volume  create_box_filtered_volume(
 
     if( get_volume_n_dimensions(volume) != 3 )
     {
-        HANDLE_INTERNAL_ERROR(
+        handle_internal_error(
            "create_box_filtered_volume: volume must be 3D.\n" );
     }
 
@@ -319,7 +320,7 @@ public  Volume  create_box_filtered_volume(
                                                     x_width, y_width, z_width );
 
                 if( !numerically_close( sum, correct_voxel, 0.001 ) )
-                    HANDLE_INTERNAL_ERROR( "Dang" );
+                    handle_internal_error( "Dang" );
 #endif
 
                 value = sum / total_volume;

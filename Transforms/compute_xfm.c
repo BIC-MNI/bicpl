@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.1  1994-11-04 14:45:47  david
-@MODIFIED   : Initial revision
+@MODIFIED   : Revision 1.2  1994-11-25 14:23:13  david
+@MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.1  94/11/04  14:45:47  david
+ * Initial revision
+ * 
  * Revision 1.4  93/09/10  11:52:58  neelin
  * Fixed 9 and 10 parameter fitting.
  * 
@@ -26,13 +29,10 @@
  * 
 ---------------------------------------------------------------------------- */
 
-#include <mni.h>
+#include <internal_volume_io.h>
+#include <geom.h>
 #include <recipes.h>
 #include <compute_xfm.h>
-#include <procrustes.h>
-#include <compute_tps.h>
-#include <rotmat_to_ang.h>
-#include <matrix_basics.h>
 
 /* Constants */
 #define NUMBER_OF_DIMENSIONS 3

@@ -1,4 +1,5 @@
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <vols.h>
 
 public  void  initialize_resample_volume(
     resample_struct      *resample,

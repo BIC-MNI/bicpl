@@ -1,4 +1,5 @@
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <geom.h>
 
 public  Real  get_polygon_surface_area(
     int      n_points,

@@ -1,4 +1,5 @@
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <geom.h>
 
 private  Real  get_baricentric(
     Point       *point,
@@ -119,7 +120,7 @@ private  Real  get_two_d_coordinate(
         if( !intersect_lines( &intersect, p, p1, q1, &point ) )
         {
 /*
-            HANDLE_INTERNAL_ERROR( "get_two_d_coordinate" );
+            handle_internal_error( "get_two_d_coordinate" );
 */
             return( 0.0 );
         }

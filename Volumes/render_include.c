@@ -8,17 +8,21 @@
     /* TWO    if needed
        TYPE1, TYPE2 */
 {
+#ifndef ONE_SLICE
     TYPE1          **start_data1;
 #ifdef TWO_VOLUMES
     TYPE2          **start_data2;
+#endif
 #endif
 #ifdef ONE_SLICE
     TYPE1          *ptr1;
     TWO( TYPE2     *ptr2; )
 #endif
 
-    ALLOC( start_data1, n_slices1 );
-    TWO( ALLOC( start_data2, n_slices2 ); )
+#ifndef ONE_SLICE
+    start_data1 = (TYPE1 **) start_slices1;
+    TWO( start_data2 = (TYPE2 **) start_slices2; )
+#endif
 
 #ifdef ONE_SLICE
     ptr1 = &((TYPE1 *) volume_data1) [y_offsets1[0][y]];
@@ -79,7 +83,4 @@
         *pixel_ptr = colour;
         ++pixel_ptr;
     }
-
-    FREE( start_data1 );
-    TWO( FREE( start_data2 ); )
 }

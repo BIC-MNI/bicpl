@@ -1,4 +1,5 @@
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <geom.h>
 
 private  void  subdivide_polygon(
     polygons_struct   *polygons,
@@ -16,7 +17,7 @@ public  void  subdivide_polygons(
 {
     int                i, new_n_points, new_n_indices, new_n_polygons;
     int                *new_indices, *new_end_indices;
-    int                *index_ptr;
+    int                *index_ptr, size;
     Point              *new_points;
     Point              dummy;
     Colour             save_colour;
@@ -37,7 +38,8 @@ public  void  subdivide_polygons(
     new_n_polygons = 0;
     new_n_indices = 0;
 
-    SET_ARRAY_SIZE( new_points, 0, new_n_points, DEFAULT_CHUNK_SIZE );
+    size = 0;
+    SET_ARRAY_SIZE( new_points, size, new_n_points, DEFAULT_CHUNK_SIZE );
 
     for_less( i, 0, new_n_points )
         new_points[i] = polygons->points[i];
@@ -128,7 +130,7 @@ private  void  subdivide_polygon(
             if( midpoint_indices[edge] < 0 ||
                 midpoint_indices[edge] >= *new_n_points )
             {
-                HANDLE_INTERNAL_ERROR( "midpoint_indices" );
+                handle_internal_error( "midpoint_indices" );
             }
         }
         else

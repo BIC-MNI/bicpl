@@ -1,6 +1,8 @@
 
+#include  <internal_volume_io.h>
+#include  <geom.h>
+#include  <data_structures.h>
 #include  <splines.h>
-#include  <module.h>
 
 public  void  smooth_lines(
     lines_struct  *lines,

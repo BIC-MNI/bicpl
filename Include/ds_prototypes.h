@@ -221,4 +221,33 @@ public  BOOLEAN  ray_intersects_range(
     Vector        *direction,
     Real          *t_min,
     Real          *t_max );
+
+public   void  initialize_skiplist(
+    skiplist_struct  *skiplist,
+    int              (*compare_function) ( void *, void * ) );
+
+public   void  delete_skiplist(
+    skiplist_struct  *skiplist );
+
+public  BOOLEAN  search_skiplist(
+    skiplist_struct          *skiplist,
+    void                     *key_data_ptr,
+    void                     **data_ptr );
+
+public  BOOLEAN  insert_in_skiplist(
+    skiplist_struct          *skiplist,
+    void                     *data_ptr );
+
+public  BOOLEAN  delete_from_skiplist(
+    skiplist_struct  *skiplist,
+    void             *data_ptr );
+
+public  BOOLEAN  get_first_skiplist_entry(
+    skiplist_struct   *skiplist,
+    skip_struct       **entry_ptr,
+    void              **data_ptr );
+
+public  BOOLEAN  get_next_skiplist_entry(
+    skip_struct       **entry_ptr,
+    void              **data_ptr );
 #endif

@@ -1,5 +1,6 @@
 
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <data_structures.h>
 
 private  Status  io_range(
     FILE             *file,
@@ -173,7 +174,7 @@ public  bintree_node_struct  *create_bintree_internal_node(
 
     if( n_children == 0 )
     {
-        HANDLE_INTERNAL_ERROR( "create_bintree_internal_node" );
+        handle_internal_error( "create_bintree_internal_node" );
         return( (bintree_node_struct *) NULL );
     }
 

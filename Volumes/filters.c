@@ -1,4 +1,5 @@
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <vols.h>
 
 #define  N_STD_DEVIATIONS  3.0
 #define  N_SAMPLES         9
@@ -141,7 +142,7 @@ public  int  get_slice_weights_for_filter(
 
     if( n_slices < 1 )
     {
-        HANDLE_INTERNAL_ERROR( "get_slice_weights_for_filter" );
+        handle_internal_error( "get_slice_weights_for_filter" );
         return( 0 );
     }
 

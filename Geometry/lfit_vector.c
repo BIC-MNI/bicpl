@@ -1,4 +1,5 @@
-#include <mni.h>
+#include <internal_volume_io.h>
+#include <geom.h>
 
 static float sqrarg;
 #define SQR(a) (sqrarg=(a),sqrarg*sqrarg)

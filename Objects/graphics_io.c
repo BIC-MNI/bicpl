@@ -1,5 +1,6 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <objects.h>
 
 public  Status   input_graphics_file(
     char           filename[],
@@ -63,6 +64,39 @@ public  Status   output_graphics_file(
 
     if( status == OK )
         status = close_file( file );
+
+    return( status );
+}
+
+public  Status   input_objects_any_format(
+    Volume         volume,
+    char           filename[],
+    Colour         marker_colour,
+    Real           marker_size,
+    Marker_types   marker_type,
+    int            *n_objects,
+    object_struct  **object_list[] )
+{
+    Status            status;
+    File_formats      format;
+
+    if( filename_extension_matches(filename,get_default_landmark_file_suffix()))
+    {
+        status = input_landmark_file( volume, filename,
+                                      marker_colour, marker_size, marker_type,
+                                      n_objects, object_list );
+    }
+    else if( filename_extension_matches(filename,get_default_tag_file_suffix()))
+    {
+        status = input_tag_objects_file( filename,
+                                 marker_colour, marker_size, marker_type,
+                                 n_objects, object_list );
+    }
+    else
+    {
+        status = input_graphics_file( filename, &format,
+                                      n_objects, object_list );
+    }
 
     return( status );
 }

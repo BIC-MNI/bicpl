@@ -1,4 +1,6 @@
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <data_structures.h>
+#include  <geom.h>
 
 public  void  delete_the_bintree(
     bintree_struct  **bintree )

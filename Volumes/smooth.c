@@ -1,5 +1,7 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <vols.h>
+#include  <geom.h>
 
 private  Real  calculate_weight(
     int      x,
@@ -30,7 +32,7 @@ public  Volume  smooth_resample_volume(
 
     if( get_volume_n_dimensions(volume) != 3 )
     {
-        HANDLE_INTERNAL_ERROR( "smooth_resample_volume: volume must be 3D.\n" );
+        handle_internal_error( "smooth_resample_volume: volume must be 3D.\n" );
     }
 
     get_volume_sizes( volume, sizes );
@@ -182,7 +184,7 @@ private  Real  calculate_weight(
 
     if( end < start || end - start > 1.0 )
     {
-        HANDLE_INTERNAL_ERROR( "calculate_weight" );
+        handle_internal_error( "calculate_weight" );
     }
 
     weight = (end - start) / dx;

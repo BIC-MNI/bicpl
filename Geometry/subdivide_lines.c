@@ -1,3 +1,5 @@
+
+#include  <internal_volume_io.h>
 #include  <geom.h>
 
 private  void  subdivide_line(
@@ -106,8 +108,8 @@ private  void  subdivide_closed_curve(
         lines->indices[i] = i % lines->n_points;
 }
 
-public  void  subdivide_lines(
-    lines_struct  *lines )
+public  BOOLEAN is_single_closed_curve(
+    lines_struct   *lines )
 {
     int      i;
     BOOLEAN  single_closed_curve;
@@ -128,7 +130,13 @@ public  void  subdivide_lines(
         }
     }
 
-    if( single_closed_curve )
+    return( single_closed_curve );
+}
+
+public  void  subdivide_lines(
+    lines_struct  *lines )
+{
+    if( is_single_closed_curve( lines ) )
         subdivide_closed_curve( lines );
     else
         general_subdivide_lines( lines );

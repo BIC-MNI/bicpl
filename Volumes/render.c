@@ -41,6 +41,103 @@ private  void  clip(
     }
 }
 
+typedef  struct
+{
+    int     **x_offsets1;
+    int     **y_offsets1;
+    int     ***which_x_offsets1;
+    void    **start_slices1;
+    int     **row_offsets1;
+
+    int     **x_offsets2;
+    int     **y_offsets2;
+    int     ***which_x_offsets2;
+    void    **start_slices2;
+    int     **row_offsets2;
+
+    int     *start_x;
+    int     *end_x;
+
+    int     x_size1_alloced;
+    int     y_size1_alloced;
+    int     total_cases1_alloced;
+    int     n_slices1_alloced;
+
+    int     x_size2_alloced;
+    int     y_size2_alloced;
+    int     total_cases2_alloced;
+    int     n_slices2_alloced;
+}
+render_storage_struct;
+
+public  void   *initialize_render_storage()
+{
+    render_storage_struct  *store;
+    void                   *void_ptr;
+
+    ALLOC( store, 1 );
+
+    store->x_size1_alloced = 0;
+    store->y_size1_alloced = 0;
+    store->total_cases1_alloced = 0;
+    store->n_slices1_alloced = 0;
+
+    store->x_size2_alloced = 0;
+    store->y_size2_alloced = 0;
+    store->total_cases2_alloced = 0;
+    store->n_slices2_alloced = 0;
+
+    void_ptr = (void *) store;
+
+    return( void_ptr );
+}
+
+public  void   delete_render_storage(
+    void  *ptr )
+{
+    render_storage_struct  *store;
+
+    store = (render_storage_struct *) ptr;
+
+    if( store->total_cases1_alloced > 0 && store->x_size1_alloced > 0 )
+        FREE2D( store->x_offsets1 );
+
+    if( store->n_slices1_alloced > 0 && store->y_size1_alloced > 0 )
+    {
+        FREE2D( store->y_offsets1 );
+        FREE2D( store->which_x_offsets1 );
+    }
+
+    if( store->n_slices1_alloced > 0 )
+    {
+        FREE( store->start_slices1 );
+        FREE( store->row_offsets1 );
+    }
+
+    if( store->total_cases2_alloced > 0 && store->x_size2_alloced > 0 )
+        FREE2D( store->x_offsets2 );
+
+    if( store->n_slices2_alloced > 0 && store->y_size2_alloced > 0 )
+    {
+        FREE2D( store->y_offsets2 );
+        FREE2D( store->which_x_offsets2 );
+    }
+
+    if( store->n_slices2_alloced > 0 )
+    {
+        FREE( store->start_slices2 );
+        FREE( store->row_offsets2 );
+    }
+
+    if( store->y_size1_alloced > 0 )
+    {
+        FREE( store->start_x );
+        FREE( store->end_x );
+    }
+
+    FREE( store );
+}
+
 public  void  render_volume_to_slice(
     int             n_dims1,
     int             sizes1[],
@@ -66,6 +163,7 @@ public  void  render_volume_to_slice(
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     Colour          empty_colour,
+    void            *render_storage,
     pixels_struct   *pixels )
 {
     int     i, c, p, total_cases, case_index, case_multiplier;
@@ -75,10 +173,19 @@ public  void  render_volume_to_slice(
     int     **x_offsets2, **y_offsets2;
     int     ***which_x_offsets1, ***which_x_offsets2;
     int     remainder_case, x_size, y_size;
+    int     **row_offsets1, **row_offsets2;
     void    **start_slices1, **start_slices2;
     Real    start_c, x_start, x_end, remainder, tmp_origin[MAX_DIMENSIONS];
     Real    remainder_offset, left_edge, right_edge, delta;
+    render_storage_struct  *store;
     static  int   max_cases[MAX_DIMENSIONS] = { 10, 10, 4, 3, 3 };
+    int     new_total_cases1, new_x_size1, new_y_size1, new_n_slices1;
+    int     new_total_cases2, new_x_size2, new_y_size2, new_n_slices2;
+
+    if( render_storage == NULL )
+        store = (render_storage_struct *) initialize_render_storage();
+    else
+        store = (render_storage_struct *) render_storage;
 
     x_size = pixels->x_size;
     y_size = pixels->y_size;
@@ -101,7 +208,108 @@ public  void  render_volume_to_slice(
         total_cases *= n_cases1[c];
     }
 
-    ALLOC2D( x_offsets1, total_cases, x_size );
+    new_total_cases1 = MAX( total_cases, store->total_cases1_alloced );
+    new_x_size1 = MAX( x_size, store->x_size1_alloced );
+    new_y_size1 = MAX( y_size, store->y_size1_alloced );
+    new_n_slices1 = MAX( n_slices1, store->n_slices1_alloced );
+
+    if( new_total_cases1 > store->total_cases1_alloced ||
+        new_x_size1 > store->x_size1_alloced )
+    {
+        if( store->total_cases1_alloced > 0 && store->x_size1_alloced > 0 )
+            FREE2D( store->x_offsets1 );
+        ALLOC2D( store->x_offsets1, new_total_cases1, new_x_size1 );
+    }
+
+    if( new_n_slices1 > store->n_slices1_alloced ||
+        new_y_size1 > store->y_size1_alloced )
+    {
+        if( store->n_slices1_alloced > 0 && store->y_size1_alloced > 0 )
+        {
+            FREE2D( store->y_offsets1 );
+            FREE2D( store->which_x_offsets1 );
+        }
+        ALLOC2D( store->y_offsets1, new_n_slices1, new_y_size1 );
+        ALLOC2D( store->which_x_offsets1, new_n_slices1, new_y_size1 );
+    }
+
+    
+    if( new_n_slices1 > store->n_slices1_alloced )
+    {
+        SET_ARRAY_SIZE( store->start_slices1, store->n_slices1_alloced,
+                        new_n_slices1, DEFAULT_CHUNK_SIZE );
+        SET_ARRAY_SIZE( store->row_offsets1, store->n_slices1_alloced,
+                        new_n_slices1, DEFAULT_CHUNK_SIZE );
+    }
+
+    if( new_y_size1 > store->y_size1_alloced )
+    {
+        SET_ARRAY_SIZE( store->start_x, store->y_size1_alloced,
+                        new_y_size1, DEFAULT_CHUNK_SIZE );
+        SET_ARRAY_SIZE( store->end_x, store->y_size1_alloced,
+                        new_y_size1, DEFAULT_CHUNK_SIZE );
+    }
+
+    store->total_cases1_alloced = new_total_cases1;
+    store->n_slices1_alloced = new_n_slices1;
+    store->x_size1_alloced = new_x_size1;
+    store->y_size1_alloced = new_y_size1;
+
+    x_offsets1 = store->x_offsets1;
+    y_offsets1 = store->y_offsets1;
+    which_x_offsets1 = store->which_x_offsets1;
+    start_slices1 = store->start_slices1;
+
+    start_x = store->start_x;
+    end_x = store->end_x;
+    row_offsets1 = store->row_offsets1;
+
+    if( volume_data2 != (void *) NULL )
+    {
+        new_total_cases2 = MAX( total_cases, store->total_cases2_alloced );
+        new_x_size2 = MAX( x_size, store->x_size2_alloced );
+        new_y_size2 = MAX( y_size, store->y_size2_alloced );
+        new_n_slices2 = MAX( n_slices2, store->n_slices2_alloced );
+
+        if( new_total_cases2 > store->total_cases2_alloced ||
+            new_x_size2 > store->x_size2_alloced )
+        {
+            if( store->total_cases2_alloced > 0 && store->x_size2_alloced > 0 )
+                FREE2D( store->x_offsets2 );
+            ALLOC2D( store->x_offsets2, new_total_cases2, new_x_size2 );
+        }
+
+        if( new_n_slices2 > store->n_slices2_alloced ||
+            new_y_size2 > store->y_size2_alloced )
+        {
+            if( store->n_slices2_alloced > 0 && store->y_size2_alloced > 0 )
+            {
+                FREE2D( store->y_offsets2 );
+                FREE2D( store->which_x_offsets2 );
+            }
+            ALLOC2D( store->y_offsets2, new_n_slices2, new_y_size2 );
+            ALLOC2D( store->which_x_offsets2, new_n_slices2, new_y_size2 );
+        }
+    
+        if( new_n_slices2 > store->n_slices2_alloced )
+        {
+            SET_ARRAY_SIZE( store->start_slices2, store->n_slices2_alloced,
+                            new_n_slices2, DEFAULT_CHUNK_SIZE );
+            SET_ARRAY_SIZE( store->row_offsets2, store->n_slices2_alloced,
+                            new_n_slices2, DEFAULT_CHUNK_SIZE );
+        }
+
+        store->total_cases2_alloced = new_total_cases2;
+        store->n_slices2_alloced = new_n_slices2;
+        store->x_size2_alloced = new_x_size2;
+        store->y_size2_alloced = new_y_size2;
+
+        x_offsets2 = store->x_offsets2;
+        y_offsets2 = store->y_offsets2;
+        which_x_offsets2 = store->which_x_offsets2;
+        start_slices2 = store->start_slices2;
+        row_offsets2 = store->row_offsets2;
+    }
 
     for_less( i, 0, total_cases )
     {
@@ -128,10 +336,6 @@ public  void  render_volume_to_slice(
         }
     }
 
-    ALLOC2D( y_offsets1, n_slices1, y_size );
-    ALLOC2D( which_x_offsets1, n_slices1, y_size );
-    ALLOC( start_slices1, n_slices1 );
-
     if( volume_data2 != (void *) NULL )
     {
         total_cases = 1;
@@ -151,8 +355,6 @@ public  void  render_volume_to_slice(
 
             total_cases *= n_cases2[c];
         }
-
-        ALLOC2D( x_offsets2, total_cases, x_size );
 
         for_less( i, 0, total_cases )
         {
@@ -179,14 +381,7 @@ public  void  render_volume_to_slice(
                 x_offsets2[i][x] = offset;
             }
         }
-
-        ALLOC2D( y_offsets2, n_slices2, y_size );
-        ALLOC2D( which_x_offsets2, n_slices2, y_size );
-        ALLOC( start_slices2, n_slices2 );
     }
-
-    ALLOC( start_x, y_size );
-    ALLOC( end_x, y_size );
 
     for_less( y, 0, y_size )
     {
@@ -273,8 +468,8 @@ public  void  render_volume_to_slice(
     }
 
 {
-    int              voxel_data1, **row_offsets1;
-    int              voxel_data2, **row_offsets2;
+    int              voxel_data1;
+    int              voxel_data2;
     int              *offset_ptr1, *offset_ptr2;
     Real             real_voxel_data1, real_voxel_data2;
     unsigned short   *single_cmode_map;
@@ -290,10 +485,6 @@ public  void  render_volume_to_slice(
         else
             single_cmode_map = cmode_colour_map[0];
     }
-
-    ALLOC( row_offsets1, n_slices1 );
-    if( volume_data2 != (void *) NULL )
-        ALLOC( row_offsets2, n_slices2 );
 
     for_less( y, 0, y_size )
     {
@@ -348,25 +539,8 @@ public  void  render_volume_to_slice(
             }
         }
     }
-
-    FREE( row_offsets1 );
-    if( volume_data2 != (void *) NULL )
-        FREE( row_offsets2 );
 }
 
-    FREE2D( x_offsets1 );
-    FREE2D( y_offsets1 );
-    FREE2D( which_x_offsets1 );
-    FREE( start_slices1 );
-
-    if( volume_data2 != (void *) NULL )
-    {
-        FREE2D( x_offsets2 );
-        FREE2D( y_offsets2 );
-        FREE2D( which_x_offsets2 );
-        FREE( start_slices2 );
-    }
-
-    FREE( end_x );
-    FREE( start_x );
+    if( render_storage == NULL )
+        delete_render_storage( (void *) store );
 }

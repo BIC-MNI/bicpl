@@ -5,7 +5,7 @@
 #ifndef  DEF_GLOBALS
 #define  DEF_GLOBALS
 
-#include  <basic.h>
+#include  <volume_io.h>
 
 /*  ----------------- globals are being defined --------------------- */
 
@@ -36,6 +36,8 @@
 #undef  DEF_GLOBAL_STRING
 
 /*  ----- database of correspondence between globals and string names ----- */
+
+#include  <global_lookup.h>
 
 #define  START_GLOBALS   private  global_struct  GLOBALS_LOOKUP_NAME[] = {
 #define  END_GLOBALS                                        };

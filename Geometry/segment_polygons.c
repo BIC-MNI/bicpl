@@ -1,5 +1,6 @@
 
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <geom.h>
 
 public  void   remove_invisible_polygons(
     polygons_struct  *polygons )

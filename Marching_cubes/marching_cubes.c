@@ -1,6 +1,6 @@
+#include  <internal_volume_io.h>
 #include  <marching_cube_data.h>
-#include  <splines.h>
-#include  <module.h>
+#include  <marching.h>
 
 private  marching_cube_data_struct  marching_cube_cases[256] =
     {

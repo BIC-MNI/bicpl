@@ -1,5 +1,5 @@
-#include  <module.h>
-#include  <priority_queue.h>
+#include  <numerical.h>
+#include  <data_structures.h>
 
 public  void  compute_statistics(
     int      n,

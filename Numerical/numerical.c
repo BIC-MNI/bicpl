@@ -1,4 +1,5 @@
-#include  <prog_utils.h>
+#include  <internal_volume_io.h>
+#include  <numerical.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : numerically_close
@@ -566,7 +567,6 @@ public  int  get_roots_of_polynomial(
     Real    poly[],
     Real    u_min,
     Real    u_max,
-    Real    step,
     Real    accuracy,
     Real    roots[] )
 {

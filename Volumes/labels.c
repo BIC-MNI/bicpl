@@ -1,4 +1,5 @@
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <vols.h>
 
 #define  ACTIVE_BIT                128
 #define  LOWER_AUXILIARY_BITS      127

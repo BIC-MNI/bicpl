@@ -1,5 +1,7 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <objects.h>
+#include  <geom.h>
 
 public  void  initialize_pixels(
     pixels_struct  *pixels,

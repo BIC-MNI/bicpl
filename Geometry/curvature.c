@@ -1,4 +1,5 @@
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <geom.h>
 
 private  void  get_surface_colour(
     Real    curvature,

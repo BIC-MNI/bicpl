@@ -1,7 +1,7 @@
 #ifndef  DEF_MARCHING_CUBES
 #define  DEF_MARCHING_CUBES
 
-#include  <geometry.h>
+#include  <bicpl.h>
 
 typedef  enum  { ON_FIRST_CORNER, ON_EDGE, ON_SECOND_CORNER } Point_classes;
 
@@ -39,5 +39,17 @@ typedef  struct
     axis_struct   edge_info[N_DIMENSIONS];
 
 } voxel_struct;
+
+#ifndef  public
+#define       public   extern
+#define       public_was_defined_here
+#endif
+
+#include  <march_prototypes.h>
+
+#ifdef  public_was_defined_here
+#undef       public
+#undef       public_was_defined_here
+#endif
 
 #endif

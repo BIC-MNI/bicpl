@@ -1,5 +1,7 @@
 
+#include  <internal_volume_io.h>
 #include  <data_structures.h>
+#include  <geom.h>
 
 private  void  recursive_intersect_ray(
     Point                 *origin,

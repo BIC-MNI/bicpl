@@ -1,5 +1,7 @@
 
+#include  <internal_volume_io.h>
 #include  <vols.h>
+#include  <numerical.h>
 
 public  void  get_mapping(
     Volume          volume,
@@ -371,4 +373,190 @@ public  void   scale_slice_about_viewport_centre(
     *y_translation = y_centre - scale_factor * (y_centre - *y_translation);
     *x_scale *= scale_factor;
     *y_scale *= scale_factor;
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : voxel_is_within_volume
+@INPUT      : volume
+              voxel_position
+@OUTPUT     : 
+@RETURNS    : TRUE if voxel is within volume.
+@DESCRIPTION: Determines if a voxel position is within the volume.
+@CREATED    : Mar   1993           David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  BOOLEAN  voxel_is_within_volume(
+    Volume   volume,
+    Real     voxel_position[] )
+{
+    int      i, sizes[MAX_DIMENSIONS];
+    BOOLEAN  inside;
+
+    inside = TRUE;
+
+    get_volume_sizes( volume, sizes );
+
+    for_less( i, 0, get_volume_n_dimensions(volume) )
+    {
+        if( voxel_position[i] < -0.5 ||
+            voxel_position[i] >= (Real) sizes[i] - 0.5 )
+        {
+            inside = FALSE;
+            break;
+        }
+    }
+
+    return( inside );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : int_voxel_is_within_volume
+@INPUT      : volume
+              indices
+@OUTPUT     : 
+@RETURNS    : TRUE if voxel within volume
+@DESCRIPTION: Determines if the voxel with integer coordinates is within the
+              volume.
+@CREATED    : Mar   1993           David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  BOOLEAN  int_voxel_is_within_volume(
+    Volume   volume,
+    int      indices[] )
+{
+    int      i, sizes[MAX_DIMENSIONS];
+    BOOLEAN  inside;
+
+    inside = TRUE;
+
+    get_volume_sizes( volume, sizes );
+
+    for_less( i, 0, get_volume_n_dimensions(volume) )
+    {
+        if( indices[i] < 0 || indices[i] >= sizes[i] )
+        {
+            inside = FALSE;
+            break;
+        }
+    }
+
+    return( inside );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_real_to_int_voxel
+@INPUT      : n_dimensions
+              voxel
+@OUTPUT     : int_voxel
+@RETURNS    : 
+@DESCRIPTION: Converts real valued voxel positions to integer positions, by
+              rounding.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void  convert_real_to_int_voxel(
+    int      n_dimensions,
+    Real     voxel[],
+    int      int_voxel[] )
+{
+    int   i;
+
+    for_less( i, 0, n_dimensions )
+        int_voxel[i] = ROUND( voxel[i] );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : voxel_contains_range
+@INPUT      : volume
+              int_voxel
+              target_value
+@OUTPUT     : 
+@RETURNS    : TRUE if voxel contains this value
+@DESCRIPTION: Determines if the voxel contains this value, by assuming
+              trilinear interpolation between the 8 corner values of this
+              voxel.
+@CREATED    : Mar   1993           David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  BOOLEAN  voxel_contains_range(
+    Volume   volume,
+    int      int_voxel[],
+    Real     min_value,
+    Real     max_value )
+{               
+    BOOLEAN  less, greater;
+    int      n_dimensions;
+    int      c, mx, my, mz, ms, mt;
+    int      base_indices[MAX_DIMENSIONS], indices[MAX_DIMENSIONS];
+    Real     value;
+
+    n_dimensions = get_volume_n_dimensions( volume );
+
+    if( n_dimensions >= 1 )
+        mx = 2;
+    else
+        mx = 1;
+
+    if( n_dimensions >= 2 )
+        my = 2;
+    else
+        my = 1;
+
+    if( n_dimensions >= 3 )
+        mz = 2;
+    else
+        mz = 1;
+
+    if( n_dimensions >= 4 )
+        ms = 2;
+    else
+        ms = 1;
+
+    if( n_dimensions >= 5 )
+        mt = 2;
+    else
+        mt = 1;
+
+    for_less( c, 0, n_dimensions )
+        base_indices[c] = int_voxel[c];
+
+    for_less( c, n_dimensions, MAX_DIMENSIONS )
+        base_indices[c] = 0;
+
+    less = FALSE;
+    greater = FALSE;
+
+    for_less( indices[X], base_indices[X], base_indices[X] + mx )
+    for_less( indices[Y], base_indices[Y], base_indices[Y] + my )
+    for_less( indices[Z], base_indices[Z], base_indices[Z] + mz )
+    for_less( indices[3], base_indices[3], base_indices[3] + ms )
+    for_less( indices[4], base_indices[4], base_indices[4] + mt )
+    {
+        GET_VALUE( value, volume,
+                   indices[0], indices[1], indices[2], indices[3], indices[4] );
+
+        if( value < min_value )
+        {
+            if( greater )
+                return( TRUE );
+            less = TRUE;
+        }
+        else if( value > max_value )
+        {
+            if( less )
+                return( TRUE );
+            greater = TRUE;
+        }
+        else
+            return( TRUE );
+    }
+
+    return( FALSE );
 }

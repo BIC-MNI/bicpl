@@ -1,5 +1,6 @@
 
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <geom.h>
 
 private  void   fill_in_ellipse_points(
     Point   tube_points[],

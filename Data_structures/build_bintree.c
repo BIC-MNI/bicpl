@@ -1,6 +1,6 @@
 
-#include  <module.h>
-#include  <priority_queue.h>
+#include  <internal_volume_io.h>
+#include  <data_structures.h>
 
 #define  NODE_VISIT_COST        0.02
 #define  NET_CHANGE_THRESHOLD   0.0
@@ -62,7 +62,10 @@ public  void  create_object_bintree(
     int              max_nodes )
 {
     int       i, c;
-    Real      avg_nodes, avg_objects, best_objects, limits[N_DIMENSIONS][2];
+    Real      avg_nodes, avg_objects, limits[N_DIMENSIONS][2];
+#ifdef  DEBUG
+    Real      best_objects;
+#endif
 
     for_less( i, 0, n_objects )
     {
@@ -95,12 +98,12 @@ public  void  create_object_bintree(
 
     evaluate_bintree_efficiency( bintree, &avg_nodes, &avg_objects );
 
+#ifdef  DEBUG
     best_objects = 0.0;
     for_less( i, 0, n_objects )
         best_objects += node_visit_estimation( &bound_vols[i] );
     best_objects /= node_visit_estimation( &bintree->range );
 
-#ifdef DEBUG
     print( "Est Nodes Visit: %g    Est Objects Visit %g  (Best possible: %g\n",
            avg_nodes, avg_objects, best_objects );
 
@@ -294,6 +297,7 @@ private  double  find_best_split_node_for_axis(
         (b) = _tmp; \
     }
 
+#ifdef  DEBUG
 private  void  check_objects(
     range_struct          *limits,
     int                   n_objects,
@@ -305,8 +309,9 @@ private  void  check_objects(
         for_less( c, 0, N_DIMENSIONS )
             if( bound_vols[object_list[i]].limits[c][0] < limits->limits[c][0] ||
                 bound_vols[object_list[i]].limits[c][1] > limits->limits[c][1] )
-                HANDLE_INTERNAL_ERROR( "check_objects" );
+                handle_internal_error( "check_objects" );
 }
+#endif
 
 private  void  split_node(
     range_struct          bound_vols[],
@@ -332,7 +337,7 @@ private  void  split_node(
 
     if( n_objects == 0 )
     {
-        HANDLE_INTERNAL_ERROR( "split bintree node" );
+        handle_internal_error( "split bintree node" );
         return;
     }
 
@@ -439,9 +444,10 @@ private  void  split_node(
         *left_cost = bottom * node_visit_estimation( left_limits );
 
         left_child = create_bintree_leaf( left_plane, bottom, object_list );
-/*
-check_objects( left_limits, bottom, object_list, bound_vols );
-*/
+
+#ifdef  DEBUG
+        check_objects( left_limits, bottom, object_list, bound_vols );
+#endif
 
         ++(*n_nodes);
     }
@@ -458,10 +464,10 @@ check_objects( left_limits, bottom, object_list, bound_vols );
 
         right_child = create_bintree_leaf( right_plane, n_objects - bottom,
                                            &object_list[bottom] );
-/*
-check_objects( right_limits, n_objects - bottom, &object_list[bottom],
-               bound_vols );
-*/
+#ifdef  DEBUG
+        check_objects( right_limits, n_objects - bottom, &object_list[bottom],
+                       bound_vols );
+#endif
         ++(*n_nodes);
     }
     else
@@ -469,7 +475,7 @@ check_objects( right_limits, n_objects - bottom, &object_list[bottom],
 
     if( left_child == (bintree_node_struct *) NULL &&
         right_child == (bintree_node_struct *) NULL )
-        HANDLE_INTERNAL_ERROR( "Split bintree node" );
+        handle_internal_error( "Split bintree node" );
 
     /* --- replace the leaf with an internal node */
 
@@ -524,9 +530,7 @@ private  void  remove_from_leaf_queue(
     REMOVE_FROM_PRIORITY_QUEUE( *leaf_queue, entry, node_cost );
 
     if( node_cost < 0.0 )
-    {
-        HANDLE_INTERNAL_ERROR( "remove from leaf queue" );
-    }
+        handle_internal_error( "remove from leaf queue" );
 
     *ptr_to_node = entry.ptr_to_node;
     *limits = entry.limits;

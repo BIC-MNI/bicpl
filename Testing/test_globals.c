@@ -1,6 +1,5 @@
-#include  <def_mni.h>
-
-extern int  fscanf_compress(FILE *iop, const unsigned char *fmt, ... );
+#include  <internal_volume_io.h>
+#include  <volume_io.h>
 
 #define  GLOBALS_LOOKUP_NAME  globals_list
 #include  <def_globals.h>

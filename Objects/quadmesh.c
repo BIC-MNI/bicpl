@@ -1,5 +1,7 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <objects.h>
+#include  <geom.h>
 
 public  void  initialize_quadmesh(
     quadmesh_struct   *quadmesh,
@@ -136,7 +138,7 @@ public  void  compute_quadmesh_normals(
 
             if( n_neighs < 2 )
             {
-                HANDLE_INTERNAL_ERROR( "compute_quadmesh_normals" );
+                handle_internal_error( "compute_quadmesh_normals" );
             }
             else if( n_neighs == 2 )
             {

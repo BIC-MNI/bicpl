@@ -1,5 +1,7 @@
 
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <data_structures.h>
+#include  <prog_utils.h>
 
 private  int  get_random_level( void );
 
@@ -532,9 +534,7 @@ private  BOOLEAN  test_skiplist_integrity(
             okay = FALSE;
 
     if( !okay )
-    {
-        HANDLE_INTERNAL_ERROR( "Skiplist integrity" );
-    }
+        handle_internal_error( "Skiplist integrity" );
 
     return( okay );
 }

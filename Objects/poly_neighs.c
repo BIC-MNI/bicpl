@@ -1,5 +1,6 @@
 
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <objects.h>
 
 #define  INVALID_ID       -1
 
@@ -150,9 +151,7 @@ private  void  assign_neighbours(
     }
 
     if( edge2 == size2 )
-    {
-        HANDLE_INTERNAL_ERROR( "assign neighbours" );
-    }
+        handle_internal_error( "assign neighbours" );
 
     neighbours[POINT_INDEX( end_indices, polygon1, edge1 )] = polygon2;
     neighbours[POINT_INDEX( end_indices, polygon2, edge2 )] = polygon1;

@@ -1,4 +1,5 @@
 
+#include  <internal_volume_io.h>
 #include  <objects.h>
 
 private  Status  io_points(
@@ -911,6 +912,131 @@ private  Status  io_line_thickness(
     if( status == OK && io_flag == READ_FILE && format == BINARY_FORMAT &&
         (*line_thickness <= 0.001 || *line_thickness > 20.0) )
         *line_thickness = 1.0;
+
+    return( status );
+}
+
+/* ------------------ io -------------------- */
+
+public  Status  input_object(
+    char           directory[],
+    FILE           *file,
+    File_formats   *format,
+    object_struct  **object,
+    BOOLEAN        *eof )
+{
+    Status         status;
+    File_formats   sub_format;
+    Object_types   type;
+    STRING         abs_filename;
+
+    status = input_object_type( file, &type, format, eof );
+
+    if( status == OK && !(*eof) )
+    {
+        *object = create_object( type );
+
+        switch( type )
+        {
+        case LINES:
+            status = io_lines( file, READ_FILE, *format,
+                               get_lines_ptr(*object) );
+            break;
+
+        case MARKER:
+            status = io_marker( file, READ_FILE, *format,
+                                get_marker_ptr(*object) );
+            break;
+
+        case MODEL:
+            status = io_model( file, READ_FILE, *format,
+                               get_model_ptr(*object) );
+
+            get_absolute_filename( get_model_ptr(*object)->filename,
+                                   directory, abs_filename );
+
+            if( status == OK )
+            {
+                status = input_graphics_file( abs_filename, &sub_format,
+                                          &get_model_ptr(*object)->n_objects,
+                                          &get_model_ptr(*object)->objects );
+            }
+            break;
+
+        case PIXELS:
+            status = io_pixels( file, READ_FILE, *format,
+                                get_pixels_ptr(*object) );
+            break;
+
+        case POLYGONS:
+            status = io_polygons( file, READ_FILE, *format,
+                                   get_polygons_ptr( *object ) );
+
+            break;
+
+        case QUADMESH:
+            status = io_quadmesh( file, READ_FILE, *format,
+                                  get_quadmesh_ptr( *object ) );
+            break;
+
+        case TEXT:
+            status = io_text( file, READ_FILE, *format,
+                              get_text_ptr( *object ) );
+            break;
+
+        default:
+            print( "Unrecognized object type %d\n", type );
+            status = ERROR;
+        }
+    }
+
+    return( status );
+}
+
+/* ------------------ output -------------------- */
+
+public  Status  output_object(
+    FILE           *file,
+    File_formats   format,
+    object_struct  *object )
+{
+    Status         status;
+
+    switch( object->object_type )
+    {
+    case LINES:
+        status = io_lines( file, WRITE_FILE, format, get_lines_ptr(object) );
+        break;
+
+    case MARKER:
+        status = io_marker( file, WRITE_FILE, format, get_marker_ptr(object) );
+        break;
+
+    case MODEL:
+        status = io_model( file, WRITE_FILE, format, get_model_ptr(object) );
+        break;
+
+    case PIXELS:
+        status = io_pixels( file, WRITE_FILE, format, get_pixels_ptr(object) );
+        break;
+
+    case POLYGONS:
+        status = io_polygons( file, WRITE_FILE, format,
+                              get_polygons_ptr(object) );
+        break;
+
+    case QUADMESH:
+        status = io_quadmesh( file, WRITE_FILE, format,
+                              get_quadmesh_ptr(object) );
+        break;
+
+    case TEXT:
+        status = io_text( file, WRITE_FILE, format, get_text_ptr(object) );
+        break;
+
+    default:
+        status = ERROR;
+    }
 
     return( status );
 }

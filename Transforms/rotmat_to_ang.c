@@ -62,8 +62,8 @@ Tue Jun  8 08:44:59 EST 1993 LC
 
 ---------------------------------------------------------------------------- */
 
-#include <mni.h>
-#include "rotmat_to_ang.h"
+#include <internal_volume_io.h>
+#include <geom.h>
 #include <recipes.h>
 
 extern char *prog_name;

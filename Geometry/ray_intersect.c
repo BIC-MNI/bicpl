@@ -1,4 +1,5 @@
 
+#include  <internal_volume_io.h>
 #include  <geom.h>
 
 #define  MAX_POINTS    30
@@ -271,6 +272,58 @@ private  BOOLEAN   intersect_ray_quadmesh(
 
     intersects = intersect_ray_polygon_points( ray_origin, ray_direction,
                                                4, points, dist );
+
+    return( intersects );
+}
+
+public  BOOLEAN  line_intersects_ellipsoid(
+    Point    *line_origin,
+    Vector   *line_direction,
+    Point    *sphere_centre,
+    Real     x_size,
+    Real     y_size,
+    Real     z_size,
+    Point    *intersection )
+{
+    BOOLEAN   intersects;
+    int       n_solutions;
+    Real      a, b, c, ox, oy, oz, dx, dy, dz, t1, t2, t;
+    Vector    offset;
+
+    ox = (Point_x(*line_origin) - Point_x(*sphere_centre)) / x_size;
+    oy = (Point_y(*line_origin) - Point_y(*sphere_centre)) / y_size;
+    oz = (Point_z(*line_origin) - Point_z(*sphere_centre)) / z_size;
+
+    dx = Vector_x(*line_direction) / x_size;
+    dy = Vector_y(*line_direction) / y_size;
+    dz = Vector_z(*line_direction) / z_size;
+
+    a = dx * dx + dy * dy + dz * dz;
+    b = 2.0 * ( ox * dx + oy * dy + oz * dz);
+    c = ox * ox + oy * oy + oz * oz - 1.0;
+
+    n_solutions = solve_quadratic( a, b, c, &t1, &t2 );
+
+    if( n_solutions == 0 )
+        intersects = FALSE;
+    else if( n_solutions == 1 )
+    {
+        intersects = TRUE;
+        t = t1;
+    }
+    else
+    {
+        intersects = TRUE;
+        t = t1;
+        if( ABS(t2) < ABS(t1) )
+            t = t2;
+    }
+
+    if( intersects )
+    {
+        SCALE_VECTOR( offset, *line_direction, t );
+        ADD_POINT_VECTOR( *intersection, *line_origin, offset );
+    }
 
     return( intersects );
 }

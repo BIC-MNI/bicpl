@@ -1,5 +1,7 @@
-#include  <module.h>
-#include  <priority_queue.h>
+
+#include  <internal_volume_io.h>
+#include  <geom.h>
+#include  <data_structures.h>
 
 private  BOOLEAN  get_vertex_distances(
     polygons_struct   *polygons,

@@ -1,7 +1,7 @@
-#include <mni.h>
+#include <internal_volume_io.h>
+#include <geom.h>
 #include <recipes.h>
 #include <limits.h>
-#include <float.h>
 
 
 /* global parameters */

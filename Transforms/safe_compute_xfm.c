@@ -7,21 +7,25 @@
 @GLOBALS    : 
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : $Log: safe_compute_xfm.c,v $
-@MODIFIED   : Revision 1.1  1994-11-04 14:45:55  david
-@MODIFIED   : Initial revision
+@MODIFIED   : Revision 1.2  1994-11-25 14:23:27  david
+@MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.1  94/11/04  14:45:55  david
+ * Initial revision
+ * 
  * Revision 1.1  94/04/22  08:07:20  neelin
  * Initial revision
  * 
 ---------------------------------------------------------------------------- */
 
+#include <internal_volume_io.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <mni.h>
+#include <geom.h>
 #include <compute_xfm.h>
 
 /* ----------------------------- MNI Header -----------------------------------

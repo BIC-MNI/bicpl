@@ -1,5 +1,5 @@
-#include  <histogram.h>
-#include  <alloc.h>
+#include  <internal_volume_io.h>
+#include  <numerical.h>
 
 public  void  initialize_histogram(
     histogram_struct  *histogram,
@@ -156,8 +156,8 @@ public  int  get_histogram_counts(
     histogram_struct  *histogram,
     Real              *counts[],
     Real              filter_width,
-    Real              *scale,
-    Real              *trans )
+    Real              *scale_factor,
+    Real              *trans_factor )
 {
     int    i, n, width;
     Real   *tmp_counts;
@@ -179,9 +179,9 @@ public  int  get_histogram_counts(
 
     FREE( tmp_counts );
 
-    *scale = histogram->delta;
-    *trans = convert_real_index_to_value( histogram,
-                                          (Real) histogram->min_index + 0.5);
+    *scale_factor = histogram->delta;
+    *trans_factor = convert_real_index_to_value( histogram,
+                                          (Real) histogram->min_index + 0.5 );
 
     return( n );
 }

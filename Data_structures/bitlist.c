@@ -1,5 +1,6 @@
 
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <data_structures.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_bitlist

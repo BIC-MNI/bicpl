@@ -1,5 +1,6 @@
 
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <geom.h>
 
 private  void  follow_path(
     int   polygon1,
@@ -156,9 +157,7 @@ private  void  follow_path(
         }
 
         if( n == end_index )
-        {
-            HANDLE_INTERNAL_ERROR( "follow_path" );
-        }
+            handle_internal_error( "follow_path" );
 
         current_polygon = neighbour;
         path[path_index] = current_polygon;

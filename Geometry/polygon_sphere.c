@@ -1,6 +1,5 @@
-#include  <module.h>
-
-#define  N_AROUND_TOP   -1
+#include  <internal_volume_io.h>
+#include  <geom.h>
 
 private  int  get_n_sphere_points(
     int   n_up,
@@ -110,10 +109,11 @@ public  void  create_polygons_sphere(
 
     top_point_index = get_sphere_point_index( 0, 0, n_up, n_around );
 
-    if( N_AROUND_TOP > 0 )
-        n_around_top = N_AROUND_TOP;
-    else
-        n_around_top = n_around;
+#ifdef  N_AROUND_TOP
+    n_around_top = N_AROUND_TOP;
+#else
+    n_around_top = n_around;
+#endif
 
     for_less( a, 0, n_around_top )
     {
@@ -202,7 +202,7 @@ public  int  get_sphere_point_index(
     {
         (void) printf( "up %d/%d     around %d/%d\n", up, n_up,
                        around, n_around );
-        HANDLE_INTERNAL_ERROR( "get_sphere_point_index" );
+        handle_internal_error( "get_sphere_point_index" );
     }
 
     if( up == 0 )
@@ -312,17 +312,14 @@ public  BOOLEAN  get_tessellation_of_polygons_sphere(
 
     if( polygons->n_items > 10 )
     {
-        if( N_AROUND_TOP > 0 )
-        {
-            size = 1 + sqrt( (double) polygons->n_items / 2.0 + 1.0 -
-                            (double) N_AROUND_TOP );
-            n_around_top = N_AROUND_TOP;
-        }
-        else
-        {
-           size = sqrt( (double) polygons->n_items / 2.0 );
-           n_around_top = 2 * size;
-        }
+#ifdef  N_AROUND_TOP
+        size = 1 + sqrt( (double) polygons->n_items / 2.0 + 1.0 -
+                        (double) N_AROUND_TOP );
+        n_around_top = N_AROUND_TOP;
+#else
+        size = sqrt( (double) polygons->n_items / 2.0 );
+        n_around_top = 2 * size;
+#endif
 
         if( IS_INT(size) )
         {
@@ -360,18 +357,15 @@ public  int  get_tessellation_with_n_points(
     Real  a, b, c, s1, s2;
     int   n_sol;
 
-    if( N_AROUND_TOP > 0 )
-    {
-        a = 2.0;
-        b = -6.0;
-        c = 2.0 * N_AROUND_TOP + 2.0 - (Real) n_points;
-    }
-    else
-    {
-        a = 2.0;
-        b = -2.0;
-        c = 2.0 - (Real) n_points;
-    }
+#ifdef  N_AROUND_TOP
+    a = 2.0;
+    b = -6.0;
+    c = 2.0 * N_AROUND_TOP + 2.0 - (Real) n_points;
+#else
+    a = 2.0;
+    b = -2.0;
+    c = 2.0 - (Real) n_points;
+#endif
 
     n_sol = solve_quadratic( a, b, c, &s1, &s2 );
 

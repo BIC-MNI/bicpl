@@ -14,9 +14,10 @@
 @CREATED    : January 31, 1992 (Peter Neelin)
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
-#include <def_mni.h>
+
+#include  <internal_volume_io.h>
+#include <geom.h>
 #include <recipes.h>
-#include <matrix_basics.h>
 
 
 

@@ -1,5 +1,6 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <objects.h>
 
 #define  NUM_PIXELS8   256
 

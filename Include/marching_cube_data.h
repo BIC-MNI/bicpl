@@ -1,6 +1,7 @@
 #ifndef  DEF_MARCHING_CUBES_DATA
 #define  DEF_MARCHING_CUBES_DATA
 
+#include  <bicpl.h>
 #include  <marching_cubes.h>
 
 typedef struct

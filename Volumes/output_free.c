@@ -1,4 +1,5 @@
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <vols.h>
 
 public  Status  output_volume_free_format(
     char           prefix[],

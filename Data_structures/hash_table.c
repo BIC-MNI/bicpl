@@ -1,4 +1,5 @@
-#include  <module.h>
+#include  <internal_volume_io.h>
+#include  <data_structures.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_hash_table
@@ -27,7 +28,7 @@ public   void  initialize_hash_table(
     int        i;
 
     if( n_keys < 1 )
-        HANDLE_INTERNAL_ERROR( "Hash table # keys\n" );
+        handle_internal_error( "Hash table # keys\n" );
 
     hash_table->n_keys = n_keys;
     hash_table->size = size;
@@ -251,9 +252,7 @@ public  void  insert_in_hash_table(
         }
     }
     else
-    {
-        HANDLE_INTERNAL_ERROR( "Insert in hash table" );
-    }
+        handle_internal_error( "Insert in hash table" );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

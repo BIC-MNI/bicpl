@@ -1,7 +1,7 @@
 #ifndef  DEF_GLOBAL_LOOKUP
 #define  DEF_GLOBAL_LOOKUP
 
-#include  <basic.h>
+#include  <volume_io.h>
 
 typedef  enum {
                  BOOLEAN_type,

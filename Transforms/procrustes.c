@@ -11,9 +11,10 @@
 @MODIFIED   : February 7, 1992 (Peter Neelin)
                  - added routine transformations_to_homogeneous
 ---------------------------------------------------------------------------- */
-#include <mni.h>
+
+#include <internal_volume_io.h>
+#include <geom.h>
 #include <recipes.h>
-#include <matrix_basics.h>
 
 /* Routines called in this file */
 void svdcmp(float **, int, int, float *, float **);

@@ -1,5 +1,7 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <prog_utils.h>
+#include  <objects.h>
 
 static    Status  input_global_variable( int, global_struct [],
                                          FILE *, BOOLEAN * );
@@ -132,7 +134,7 @@ private  Status  lookup_global(
 
     status = ERROR;
 
-    strip_blanks( variable_name, stripped );
+    strip_outer_blanks( variable_name, stripped );
 
     for_less( i, 0, n_globals )
     {
@@ -237,7 +239,7 @@ public  Status  get_global_variable(
             break;
 
         default:
-            HANDLE_INTERNAL_ERROR( "get_global_variable\n" );
+            handle_internal_error( "get_global_variable\n" );
             break;
         }
     }
@@ -279,7 +281,7 @@ public  Status  set_global_variable(
     Colour             tmp_colour;
     Surfprop           tmp_surfprop;
 
-    strip_blanks( value_to_set, value );
+    strip_outer_blanks( value_to_set, value );
 
     status = lookup_global( n_globals_lookup, globals_lookup, variable_name,
                             &ptr, &type );
@@ -371,7 +373,7 @@ public  Status  set_global_variable(
             break;
 
         default:
-            HANDLE_INTERNAL_ERROR( "set_global_variable\n" );
+            handle_internal_error( "set_global_variable\n" );
             break;
         }
     }
@@ -425,7 +427,7 @@ public  Status  set_or_get_global_variable(
                                       tmp_var_name, value_to_set );
     }
 
-    strip_blanks( tmp_var_name, variable_name );
+    strip_outer_blanks( tmp_var_name, variable_name );
 
     if( status == OK )
     {

@@ -1,4 +1,5 @@
 
+#include  <internal_volume_io.h>
 #include  <vols.h>
 
 #define  BIG_NUMBER  1.0e10
@@ -222,7 +223,7 @@ private  int    get_cross_section(
 
     if( n_points == 1 || n_points == 2 || n_points > 2 * n_dims )
     {
-        HANDLE_INTERNAL_ERROR( "clipping" );
+        handle_internal_error( "clipping" );
         n_points = 0;
     }
 
@@ -512,6 +513,7 @@ private  void  create_weighted_volume_slices(
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     Colour          empty_colour,
+    void            *render_storage,
     int             *n_pixels_alloced,
     pixels_struct   *pixels )
 {
@@ -631,12 +633,14 @@ private  void  create_weighted_volume_slices(
                                 strides2, real_origins2,
                                 real_x_axis2, real_y_axis2,
                                 interpolation_flag, cmode_colour_map,
-                                rgb_colour_map, empty_colour, pixels );
+                                rgb_colour_map, empty_colour,
+                                render_storage, pixels );
     }
 
-    FREE2D( real_origins1 );
     if( volume2 != (Volume) NULL )
         FREE2D( real_origins2 );
+
+    FREE2D( real_origins1 );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -777,6 +781,7 @@ public  void  create_volume_slice(
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     Colour          empty_colour,
+    void            *render_storage,
     int             *n_pixels_alloced,
     pixels_struct   *pixels )
 {
@@ -815,14 +820,15 @@ public  void  create_volume_slice(
                                    x_viewport_size, y_viewport_size,
                                    pixel_type, interpolation_flag,
                                    cmode_colour_map, rgb_colour_map,
-                                   empty_colour, n_pixels_alloced, pixels );
-
-    FREE2D( positions1 );
-    FREE( weights1 );
+                                   empty_colour, render_storage,
+                                   n_pixels_alloced, pixels );
 
     if( volume2 != (Volume) NULL )
     {
         FREE2D( positions2 );
         FREE( weights2 );
     }
+
+    FREE2D( positions1 );
+    FREE( weights1 );
 }

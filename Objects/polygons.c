@@ -1,5 +1,7 @@
 
-#include  <mni.h>
+#include  <internal_volume_io.h>
+#include  <objects.h>
+#include  <geom.h>
 
 private  void  reverse_polygon_order(
     polygons_struct   *polygons,
@@ -938,7 +940,7 @@ public  Real  compute_polygon_vertex_curvature(
 
     if( !find_polygon_with_vertex( polygons, point_index, &poly, &vertex ) )
     {
-        HANDLE_INTERNAL_ERROR( "compute_polygon_vertex_curvature" );
+        handle_internal_error( "compute_polygon_vertex_curvature" );
         return( 0.0 );
     }
 
