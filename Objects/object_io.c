@@ -505,12 +505,21 @@ public  Status  io_colour(
     }
     else
     {
-        comps[3] = get_Colour_r( *colour );
-        comps[2] = get_Colour_g( *colour );
-        comps[1] = get_Colour_b( *colour );
-        comps[0] = get_Colour_a( *colour );
+        if( io_flag == WRITE_FILE )
+        {
+            comps[3] = get_Colour_r( *colour );
+            comps[2] = get_Colour_g( *colour );
+            comps[1] = get_Colour_b( *colour );
+            comps[0] = get_Colour_a( *colour );
+        }
+
         status = io_binary_data( file, io_flag, (void *) comps,
                                  sizeof(comps[0]), 4 );
+
+        if( io_flag == READ_FILE )
+        {
+            *colour = make_rgba_Colour( comps[3], comps[2], comps[1], comps[0]);
+        }
     }
 
     return( status );
