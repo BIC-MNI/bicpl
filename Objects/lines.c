@@ -10,7 +10,7 @@ public  void  initialize_lines(
     lines->colour_flag = ONE_COLOUR;
     lines->colours[0] = col;
 
-    lines->line_thickness = 1;
+    lines->line_thickness = 1.0;
     lines->n_points = 0;
     lines->n_items = 0;
 

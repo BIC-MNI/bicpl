@@ -36,7 +36,7 @@ typedef  struct
 {
     Colour_flags   colour_flag;
     Colour         *colours;
-    int            line_thickness;
+    float          line_thickness;
 
     int            n_points;
     Point          *points;
@@ -69,7 +69,7 @@ typedef  struct
     Colour_flags    colour_flag;
     Colour          *colours;
     Surfprop        surfprop;
-    int             line_thickness;
+    float           line_thickness;
 
     int             n_points;
     Point           *points;

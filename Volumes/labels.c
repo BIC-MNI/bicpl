@@ -18,12 +18,10 @@ public  Volume  create_label_volume(
 {
     Volume   label_volume;
 
-    label_volume = copy_volume_definition( volume, NC_BYTE, FALSE,
-                                           0.0, 255.0 );
+    label_volume = copy_volume_definition_no_alloc( volume, NC_BYTE, FALSE,
+                                                    0.0, 255.0 );
 
     set_volume_real_range( label_volume, 0.0, 255.0 );
-
-    set_all_volume_label_data( label_volume, 0 );
 
     return( label_volume );
 }
@@ -32,7 +30,10 @@ private  void  check_alloc_label_data(
     Volume  volume )
 {
     if( volume->data == (void *) NULL )
+    {
         alloc_volume_data( volume );
+        set_all_volume_label_data( volume, 0 );
+    }
 }
 
 /* ----------------------------- MNI Header -----------------------------------

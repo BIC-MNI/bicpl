@@ -13,6 +13,11 @@ private  Status  io_vectors(
     File_formats    format,
     int             n,
     Vector          *vectors[] );
+private  Status  io_line_thickness(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    float           *line_thickness );
 
 public  Status  io_lines(
     FILE                *file,
@@ -36,7 +41,8 @@ public  Status  io_lines(
         status = io_object_type( file, io_flag, format, LINES );
 
         if( status == OK )
-            status = io_int( file, io_flag, format, &lines->line_thickness );
+            status = io_line_thickness( file, io_flag, format,
+                                        &lines->line_thickness );
 
         if( status == OK )
             status = io_int( file, io_flag, format, &lines->n_points );
@@ -298,7 +304,7 @@ public  Status  io_polygons(
         }
 
         if( io_flag == READ_FILE )
-            polygons->line_thickness = 1;
+            polygons->line_thickness = 1.0;
     }
 
     return( status );
@@ -889,6 +895,23 @@ public  Status  io_pixel_colour(
         status = io_binary_data( file, io_flag, (void *) pixel_colour,
                                  sizeof(*pixel_colour), 1 );
     }
+
+    return( status );
+}
+
+private  Status  io_line_thickness(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    float           *line_thickness )
+{
+    Real   status;
+
+    status = io_float( file, io_flag, format, line_thickness );
+
+    if( status == OK && io_flag == READ_FILE && format == BINARY_FORMAT &&
+        (*line_thickness <= 0.001 || *line_thickness > 20.0) )
+        *line_thickness = 1.0;
 
     return( status );
 }

@@ -109,8 +109,9 @@ public  void  convert_pixels24_to_pixels8(
 {
     int   x, y;
 
-    initialize_pixels( pixels_8, 0, 0, pixels_rgb->x_size, pixels_rgb->y_size,
-                       1.0, 1.0,
+    initialize_pixels( pixels_8, pixels_rgb->x_position, pixels_rgb->y_position,
+                       pixels_rgb->x_size, pixels_rgb->y_size,
+                       pixels_rgb->x_zoom, pixels_rgb->y_zoom,
                        COLOUR_INDEX_8BIT_PIXEL );
 
     for_less( x, 0, pixels_rgb->x_size )
@@ -120,6 +121,56 @@ public  void  convert_pixels24_to_pixels8(
             PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) =
                    convert_rgb_pixel_to_8bit_lookup(
                                 PIXEL_RGB_COLOUR(*pixels_rgb,x,y) );
+        }
+    }
+}
+
+public  void  convert_pixels24_to_index8(
+    pixels_struct   *pixels_rgb,
+    pixels_struct   *pixels_8,
+    int             n_colours,
+    Colour          colour_table[] )
+{
+    Colour  col;
+    int     x, y;
+
+    initialize_pixels( pixels_8, pixels_rgb->x_position, pixels_rgb->y_position,
+                       pixels_rgb->x_size, pixels_rgb->y_size,
+                       pixels_rgb->x_zoom, pixels_rgb->y_zoom,
+                       COLOUR_INDEX_8BIT_PIXEL );
+
+    for_less( x, 0, pixels_rgb->x_size )
+    {
+        for_less( y, 0, pixels_rgb->y_size )
+        {
+            col = PIXEL_RGB_COLOUR(*pixels_rgb,x,y);
+
+            PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) =
+                   find_closest_colour( get_Colour_r(col),
+                                        get_Colour_g(col),
+                                        get_Colour_b(col),
+                                        n_colours, colour_table );
+        }
+    }
+}
+
+public  void  convert_index8_to_pixels24(
+    pixels_struct   *pixels_8,
+    Colour          colour_table[],
+    pixels_struct   *pixels_rgb )
+{
+    int     x, y;
+
+    initialize_pixels( pixels_rgb, pixels_8->x_position, pixels_8->y_position,
+                       pixels_8->x_size, pixels_8->y_size,
+                       pixels_8->x_zoom, pixels_8->y_zoom, RGB_PIXEL );
+
+    for_less( x, 0, pixels_rgb->x_size )
+    {
+        for_less( y, 0, pixels_rgb->y_size )
+        {
+            PIXEL_RGB_COLOUR(*pixels_rgb,x,y) = colour_table[
+                            PIXEL_COLOUR_INDEX_8(*pixels_8,x,y)];
         }
     }
 }
@@ -192,10 +243,6 @@ public  void  convert_pixels24_to_dithered(
             comp[0] = get_Colour_r( col ) + errors[error_row][0][x];
             comp[1] = get_Colour_g( col ) + errors[error_row][1][x];
             comp[2] = get_Colour_b( col ) + errors[error_row][2][x];
-#ifdef DEBUG
-comp[1] = 0;
-comp[2] = 0;
-#endif
 
             ind = find_closest_colour( comp[0], comp[1], comp[2],
                                        n_colours, colour_table );
@@ -203,10 +250,6 @@ comp[2] = 0;
             used[0] = get_Colour_r( colour_table[ind] );
             used[1] = get_Colour_g( colour_table[ind] );
             used[2] = get_Colour_b( colour_table[ind] );
-#ifdef DEBUG
-            used[1] = 0;
-            used[2] = 0;
-#endif
 
             for_less( c, 0, 3 )
             {

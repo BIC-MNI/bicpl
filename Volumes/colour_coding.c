@@ -299,10 +299,20 @@ public  Colour  get_colour_code(
     int            i, n_points;
     colour_point   *points;
 
-    if( value < colour_coding->min_value )
-        return( colour_coding->under_colour );
-    else if( value > colour_coding->max_value )
-        return( colour_coding->over_colour );
+    if( colour_coding->min_value <= colour_coding->max_value )
+    {
+        if( value < colour_coding->min_value )
+            return( colour_coding->under_colour );
+        else if( value > colour_coding->max_value )
+            return( colour_coding->over_colour );
+    }
+    else
+    {
+        if( value > colour_coding->min_value )
+            return( colour_coding->under_colour );
+        else if( value < colour_coding->max_value )
+            return( colour_coding->over_colour );
+    }
 
     pos = (value - colour_coding->min_value) /
           (colour_coding->max_value - colour_coding->min_value);

@@ -6,7 +6,7 @@
     else
     {
 #define  TWO_VOLUMES
-        switch( volume1_type )
+        switch( volume2_type )
         {
         case  UNSIGNED_BYTE:
 #define  TYPE2   unsigned char

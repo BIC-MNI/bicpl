@@ -470,7 +470,8 @@ public  int  get_polygons_around_vertex(
     int               poly,
     int               vertex_index,
     int               poly_indices[],
-    int               n_polys_alloced )
+    int               n_polys_alloced,
+    BOOLEAN           *closed_flag )
 {
     int      current_poly, current_index_within_poly;
     int      size, neighbour_index_within_poly;
@@ -509,6 +510,11 @@ public  int  get_polygons_around_vertex(
 
         if( found ) break;
     }
+
+    if( dir == -1 )
+        *closed_flag = TRUE;
+    else
+        *closed_flag = FALSE;
 
     return( n_polys );
 }
