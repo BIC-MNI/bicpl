@@ -2,14 +2,8 @@
 @NAME       : matrix_basics.c
 @DESCRIPTION: File containing routines for doing basic matrix calculations
 @METHOD     : Contains routines :
-                 printmatrix
-                 calc_centroid
-                 translate_points
                  transpose
                  matrix_multiply
-                 trace_of_matrix
-                 matrix_scalar_multiply
-                 invertmatrix
 @CALLS      : 
 @CREATED    : January 31, 1992 (Peter Neelin)
 @MODIFIED   : 
@@ -18,93 +12,6 @@
 #include  <internal_volume_io.h>
 #include <geom.h>
 
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : calc_centroid
-@INPUT      : npoints - number of points
-              ndim    - number of dimensions
-              points  - points matrix (in numerical recipes form).
-                 The dimensions of this matrix should be defined to be 
-                 1 to npoints and 1 to ndim (when calling the numerical 
-                 recipes routine matrix).
-@OUTPUT     : centroid - vector of centroid of points (in num. rec. form)
-                 This vector should run from 1 to ndim.
-@RETURNS    : (nothing)
-@DESCRIPTION: Calculates the centroid of a number of points in ndim dimensions.
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Feb. 26, 1990 (Weiqian Dai)
-@MODIFIED   : January 31, 1992 (Peter Neelin)
-                 - change to roughly NIL-abiding code and modified calling
-                 sequence.
-@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
-
----------------------------------------------------------------------------- */
-
-public  void  calc_centroid(
-    int     npoints,
-    int     ndim,
-    Real    **points, 
-    Real    centroid[] )
-{
-    int i, j;
-
-    /* Loop over each dimension */
-
-    for_less( i, 0, ndim )
-    {
-         /* Add up points and divide by number of points */
-
-         centroid[i] = 0.0;
-         for_less( j, 0, npoints )
-             centroid[i] += points[j][i];
-
-         if( npoints > 0 )
-             centroid[i] /= (Real) npoints;
-    }
-}
-
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : translate_points
-@INPUT      : npoints - number of points
-              ndim    - number of dimensions
-              points  - points matrix (in numerical recipes form).
-                 The dimensions of this matrix should be defined to be 
-                 1 to npoints and 1 to ndim (when calling the numerical 
-                 recipes routine matrix).
-              translation - translation vector (in num. rec. form, running
-                 from 1 to ndim).
-@OUTPUT     : newpoints - translated points matrix (see points). This matrix
-                 can be the original points matrix.
-@RETURNS    : (nothing)
-@DESCRIPTION: Translates a set of points by a given translation.
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Feb. 26, 1990 (Weiqian Dai)
-@MODIFIED   : January 31, 1992 (Peter Neelin)
-                 - change to roughly NIL-abiding code and modified calling
-                 sequence.
-@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
----------------------------------------------------------------------------- */
-
-public  void  translate_points(
-    int    npoints,
-    int    ndim,
-    Real   **points, 
-    Real   translation[],
-    Real   **newpoints)
-{
-    int i, j;
-
-    for_less( i, 0, npoints )
-    {
-        for_less( j, 0, ndim )
-            newpoints[i][j] = points[i][j] + translation[j];
-    }
-}
 
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -247,75 +154,4 @@ public  void  matrix_multiply(
     /* Free the matrix */
 
     FREE2D( Ctemp );
-}
-                  
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : trace_of_matrix
-@INPUT      : size   - size of the_matrix (the_matrix should be square)
-              the_matrix - matrix for which trace should be calculated (in 
-                 numerical recipes form). Dimensions are 1 to size and 
-                 1 to size.
-@OUTPUT     : (none)
-@RETURNS    : trace of matrix
-@DESCRIPTION: Calculates the trace of a matrix.
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Feb. 26, 1990 (Weiqian Dai)
-@MODIFIED   : January 31, 1992 (Peter Neelin)
-                 - change to roughly NIL-abiding code and modified calling
-                 sequence.
-@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
----------------------------------------------------------------------------- */
-
-public  Real  trace_of_matrix(
-    int    size,
-    Real   **the_matrix )
-{
-    int  i;
-    Real sum;
-
-    sum = 0.0;
-
-    for_less( i, 0, size )
-        sum += the_matrix[i][i];
-
-    return( sum );
-}
-
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : matrix_scalar_multiply
-@INPUT      : rows    - number of rows of the_matrix.
-              cols    - number of columns of the_matrix
-              scalar  - scalar by which the_matrix should be multiplied.
-              the_matrix  - matrix to be multiplied (in numerical recipes 
-                 form). Dimensions are 1 to rows and 1 to cols.
-@OUTPUT     : product - result of multiply ( in numerical recipes form).
-                 Dimensions are 1 to rows and 1 to cols. This matrix
-                 can be the input matrix.
-@RETURNS    : (nothing)
-@DESCRIPTION: Multiplies a matrix by a scalar.
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Feb. 26, 1990 (Weiqian Dai)
-@MODIFIED   : January 31, 1992 (Peter Neelin)
-                 - change to roughly NIL-abiding code and modified calling
-                 sequence.
----------------------------------------------------------------------------- */
-
-public  void  matrix_scalar_multiply(
-    int     rows,
-    int     cols,
-    Real    scalar, 
-    Real    **the_matrix,
-    Real    **product )
-{
-    int   i, j;
-
-    for_less( i, 0, rows )
-        for_less( j, 0, cols )
-            product[i][j] = scalar * the_matrix[i][j];
 }
