@@ -195,7 +195,7 @@ AC_DEFUN(smr_ARG_WITHINCLUDES,
 
   dnl If the header file smr_header exists, then define
   dnl HAVE_[]smr_header (in all capitals).
-  AC_CHECK_HEADERS([smr_header])
+  AC_CHECK_HEADERS([smr_header], , AC_MSG_ERROR([header smr_header not found]))
 
   if test x"$smr_test_CPPFLAGS" = xset; then
     CPPFLAGS=$smr_save_CPPFLAGS
@@ -252,12 +252,6 @@ AC_DEFUN(smr_CHECK_LIB,
                  [$]smr_safe_name[]_CFLAGS [smr_extra_flags] [$]smr_safe_name[]_LIBS [smr_extra_libs],
                  [ifelse(smr_prototype, , , [[#]include <smr_header>])],
                  smr_prototype)
-
-    dnl If the caller of smr_CHECK_LIB specified a header file for this
-    dnl library, then we insist that it exists.  The shell variable
-    dnl HAVE_[smr_name] (in all capitals) will be defined if the header
-    dnl file was found.
-    ifelse(smr_header, , , [test x"$ac_cv_header_[]smr_safe_name[]" = xno && AC_MSG_ERROR([smr_header for smr_name library not found!])])
 
     if test x"[$]smr_have_[]smr_safe_name[]_library" = xyes; then
       AC_MSG_RESULT([using smr_name library])
@@ -360,19 +354,6 @@ changequote([, ])dnl
 
 # Is the length of the LHS greater or equal to the $lhs_column?
 if `echo "$lhs" | grep ".\{$lhs_column\}" > /dev/null 2>&1`; then
-
-  # Build up a string of spaces to pad the left-hand-side of the RHS
-  # with.  Note that padding the RHS is an "expensive" operation
-  # (i.e. expensive in the sense of there being multiple calls to
-  # `grep') only the first time AC_PRETTY_HELP_STRING is called.  Once
-  # this macro is called once, subsequent calls will be nice and zippy.
-#  : ${rhs_pad=""}
-#changequote(, )dnl
-#  while ! `echo "$rhs_pad" | grep "[ ]\{$rhs_column\}" > /dev/null 2>&1`; do
-#changequote([, ])dnl
-#    rhs_pad=" $rhs_pad"
-#  done
-
   # Strip all leading spaces from the RHS.
 changequote(, )dnl
   rhs=`echo "$rhs" | sed -n -e "s/[ ]*\(.*\)/\1/p"`
@@ -382,19 +363,6 @@ $3="$lhs
 ${rhs_pad}${rhs}"
 
 else
-
-  # Pad the LHS with spaces.  Note that padding the LHS is an
-  # "expensive" operation (i.e. expensive in the sense of there being
-  # multiple calls to `grep') only the first time AC_PRETTY_HELP_STRING
-  # is called.  Once this macro is called once, subsequent calls will be
-  # nice and zippy.
-#  : ${lhs_pad=""}
-#changequote(, )dnl
-#  while ! `echo "$lhs_pad" | grep "[ ]\{$lhs_column\}" > /dev/null 2>&1`; do
-#changequote([, ])dnl
-#    lhs_pad=" $lhs_pad"
-#  done
-
   lhs="${lhs}${lhs_pad}"
 changequote(, )dnl
 $3=`echo "$lhs" | sed -n -e "/.\{$lhs_column\}[ ][ ]*$/ s/\(.\{$rhs_column\}\).*/\1$rhs/p"`
