@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.16 1996-09-25 01:04:44 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.17 1996-10-08 15:04:36 david Exp $";
 #endif
 
 #define  INVALID_ID       -1
@@ -292,10 +292,10 @@ public   void   create_polygon_point_neighbours(
     {
         size = GET_OBJECT_SIZE( *polygons, poly );
 
+        i1 = polygons->indices[POINT_INDEX(polygons->end_indices,poly,size-1)];
         for_less( edge, 0, size )
         {
-            i0 = polygons->indices[
-                  POINT_INDEX(polygons->end_indices,poly,edge)];
+            i0 = i1;
             i1 = polygons->indices[
                   POINT_INDEX(polygons->end_indices,poly,(edge+1)%size)];
 
