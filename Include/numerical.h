@@ -5,7 +5,6 @@
 #include  <objects.h>
 #include  <amoeba.h>
 #include  <histogram.h>
-#include  <interval.h>
 #include  <minimization.h>
 #include  <splines.h>
 
