@@ -15,7 +15,7 @@ public  Status  output_volume(
     int      axis;
 
     (void) sprintf( header_filename, "%s.fre", prefix );
-    (void) sprintf( abs_voxel_filename, "%s.fre", prefix );
+    (void) sprintf( abs_voxel_filename, "%s.img", prefix );
 
     remove_directories_from_filename( prefix, filename_no_dirs );
     (void) sprintf( voxel_filename, "%s.img", filename_no_dirs );
