@@ -16,14 +16,10 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.18 1996-10-23 14:02:28 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.19 1996-11-09 23:21:01 david Exp $";
 #endif
 
-#define  INVALID_ID       -1
-
-#define  INITIAL_HASH_TABLE_SIZE   2.0   /* times number of polygons */
-#define  ENLARGE_THRESHOLD         0.25
-#define  NEW_DENSITY               0.125
+#define  SMALL_CHUNK_SIZE          4
 
 private   void   create_polygon_neighbours(
     polygons_struct  *polygons,
@@ -151,7 +147,7 @@ private  void  insert_neighbours(
         }
     }
 
-    SET_ARRAY_SIZE( *neighbours, *n_neighbours, n_to_add, DEFAULT_CHUNK_SIZE);
+    SET_ARRAY_SIZE( *neighbours, *n_neighbours, n_to_add, SMALL_CHUNK_SIZE);
 
     *n_neighbours = n_to_add;
     for_less( i, 0, n_to_add )
