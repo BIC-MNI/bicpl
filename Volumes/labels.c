@@ -304,8 +304,9 @@ public  Status  load_label_volume(
             new_sizes[1] != sizes[1] ||
             new_sizes[2] != sizes[2] )
         {
-            print( "Volume file %s is not the right size for label volume.\n",
-                   filename );
+            print_error(
+                "Volume file %s is not the right size for label volume.\n",
+                filename );
             status = ERROR;
         }
 
@@ -411,7 +412,7 @@ public  Status  output_labels_as_tags(
 
     if( get_volume_n_dimensions(volume) != 3 )
     {
-        print( "output_labels_as_tags:  volume must be 3D\n" );
+        print_error( "output_labels_as_tags:  volume must be 3D\n" );
         return( ERROR );
     }
 
