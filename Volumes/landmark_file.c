@@ -1,7 +1,7 @@
 #include  <def_mni.h>
 
 public  Status   input_landmark_file(
-    volume_struct  *volume,
+    Volume         volume,
     char           filename[],
     Colour         marker_colour,
     Real           default_size,
@@ -42,14 +42,14 @@ public  Status   input_landmark_file(
 public  Status  io_tag_point(
     FILE            *file,
     IO_types        io_direction,
-    volume_struct   *volume,
+    Volume          volume,
     Real            default_size,
     marker_struct   *marker )
 {
     Status   status;
     String   line;
     Point    position;
-    int      nx, ny, nz;
+    int      sizes[MAX_DIMENSIONS];
     int      len, offset;
     Real     x, y, z;
     Real     x_w, y_w, z_w;
@@ -58,7 +58,7 @@ public  Status  io_tag_point(
 
     if( io_direction == WRITE_FILE )
     {
-        if( volume == (volume_struct *) 0 )
+        if( volume == (Volume) NULL )
         {
             position = marker->position;
         }
@@ -70,9 +70,10 @@ public  Status  io_tag_point(
                                     Point_z(marker->position),
                                     &x, &y, &z );
 
-            get_volume_size( volume, &nx, &ny, &nz );
+            get_volume_sizes( volume, sizes );
 
-            convert_voxel_to_talairach( x, y, z, nx, ny, nz, &x, &y, &z );
+            convert_voxel_to_talairach( x, y, z, sizes[X], sizes[Y], sizes[Z],
+                                        &x, &y, &z );
 
             fill_Point( position, x, y, z );
         }
@@ -83,18 +84,19 @@ public  Status  io_tag_point(
 
     if( io_direction == READ_FILE )
     {
-        if( volume == (volume_struct *) 0 )
+        if( volume == (Volume) NULL )
         {
             marker->position = position;
         }
         else
         {
-            get_volume_size( volume, &nx, &ny, &nz );
+            get_volume_sizes( volume, sizes );
 
             convert_talairach_to_voxel( Point_x(position),
                                         Point_y(position),
                                         Point_z(position),
-                                        nx, ny, nz, &x, &y, &z );
+                                        sizes[X], sizes[Y], sizes[Z],
+                                        &x, &y, &z );
 
             convert_voxel_to_world( volume, x, y, z, &x_w, &y_w, &z_w );
             fill_Point( marker->position, x_w, y_w, z_w );
