@@ -1,26 +1,4 @@
-head	1.1;
-access;
-symbols;
-locks; strict;
-comment	@ * @;
-
-
-1.1
-date	99.06.21.21.00.17;	author stever;	state Exp;
-branches;
-next	;
-
-
-desc
-@@
-
-
-1.1
-log
-@final checkin before switch to CVS
-@
-text
-@#ifndef  DEF_prog_prototypes
+#ifndef  DEF_prog_prototypes
 #define  DEF_prog_prototypes
 
 public  int  get_n_arguments_remaining( void );
@@ -80,4 +58,3 @@ public  void  end_timing(
     char   title[],
     int    n );
 #endif
-@

@@ -1,26 +1,4 @@
-head	1.1;
-access;
-symbols;
-locks; strict;
-comment	@ * @;
-
-
-1.1
-date	99.06.21.21.00.17;	author stever;	state Exp;
-branches;
-next	;
-
-
-desc
-@@
-
-
-1.1
-log
-@final checkin before switch to CVS
-@
-text
-@#ifndef  DEF_object_prototypes
+#ifndef  DEF_object_prototypes
 #define  DEF_object_prototypes
 
 public  void  get_default_surfprop(
@@ -713,4 +691,3 @@ public  void   initialize_text(
     Font_types      text_font,
     Real            size );
 #endif
-@

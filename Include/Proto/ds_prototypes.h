@@ -1,26 +1,4 @@
-head	1.1;
-access;
-symbols;
-locks; strict;
-comment	@ * @;
-
-
-1.1
-date	99.06.21.21.00.16;	author stever;	state Exp;
-branches;
-next	;
-
-
-desc
-@@
-
-
-1.1
-log
-@final checkin before switch to CVS
-@
-text
-@#ifndef  DEF_ds_prototypes
+#ifndef  DEF_ds_prototypes
 #define  DEF_ds_prototypes
 
 public  void  initialize_bintree(
@@ -274,4 +252,3 @@ public  BOOLEAN  get_next_skiplist_entry(
     skip_struct       **entry_ptr,
     void              **data_ptr );
 #endif
-@

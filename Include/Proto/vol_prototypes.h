@@ -1,26 +1,4 @@
-head	1.1;
-access;
-symbols;
-locks; strict;
-comment	@ * @;
-
-
-1.1
-date	99.06.21.21.00.16;	author stever;	state Exp;
-branches;
-next	;
-
-
-desc
-@@
-
-
-1.1
-log
-@final checkin before switch to CVS
-@
-text
-@#ifndef  DEF_vol_prototypes
+#ifndef  DEF_vol_prototypes
 #define  DEF_vol_prototypes
 
 public  Volume  create_box_filtered_volume(
@@ -548,4 +526,3 @@ public  void  convert_mm_to_talairach(
     Real   *y_tal,
     Real   *z_tal );
 #endif
-@

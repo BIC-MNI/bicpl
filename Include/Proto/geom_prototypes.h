@@ -1,26 +1,4 @@
-head	1.1;
-access;
-symbols;
-locks; strict;
-comment	@ * @;
-
-
-1.1
-date	99.06.21.21.00.16;	author stever;	state Exp;
-branches;
-next	;
-
-
-desc
-@@
-
-
-1.1
-log
-@final checkin before switch to CVS
-@
-text
-@#ifndef  DEF_geom_prototypes
+#ifndef  DEF_geom_prototypes
 #define  DEF_geom_prototypes
 
 public  void  get_closest_point_on_line_segment(
@@ -383,4 +361,3 @@ public  void   create_slice_3d(
     Vector           *normal,
     polygons_struct  *polygons );
 #endif
-@

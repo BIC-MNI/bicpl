@@ -1,26 +1,4 @@
-head	1.1;
-access;
-symbols;
-locks; strict;
-comment	@ * @;
-
-
-1.1
-date	99.06.21.21.00.16;	author stever;	state Exp;
-branches;
-next	;
-
-
-desc
-@@
-
-
-1.1
-log
-@final checkin before switch to CVS
-@
-text
-@#ifndef  DEF_numeric_prototypes
+#ifndef  DEF_numeric_prototypes
 #define  DEF_numeric_prototypes
 
 public  void  initialize_amoeba(
@@ -173,4 +151,3 @@ public  void  compute_statistics(
     Real     *std_dev,
     Real     *median );
 #endif
-@
