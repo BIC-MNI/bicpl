@@ -22,40 +22,6 @@
 
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : printmatrix
-@INPUT      : rows   - number of rows in matrix
-              cols   - number of columns in matrix
-              the_matrix - matrix to be printed (in numerical recipes form).
-                 The dimensions of this matrix should be defined to be 
-                 1 to rows and 1 to cols (when calling the numerical 
-                 recipes routine matrix).
-@OUTPUT     : (nothing)
-@RETURNS    : (nothing)
-@DESCRIPTION: Prints out a matrix on stdout with one row per line.
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Feb. 26, 1990 (Weiqian Dai)
-@MODIFIED   : January 31, 1992 (Peter Neelin)
-                 - change to roughly NIL-abiding code
----------------------------------------------------------------------------- */
-public void printmatrix(int rows, int cols, float **the_matrix)
-{
-   int i,j;
-   float f;
-
-   /* Loop through rows and columns, printing one row per line */
-   for (i=1; i <= rows; ++i) {
-      for (j=1; j <= cols; ++j) {
-         f=the_matrix[i][j];
-         (void) printf(" %10.6f ",f);
-      }
-      (void) printf("\n");
-   }
-}
-
-
-/* ----------------------------- MNI Header -----------------------------------
 @NAME       : calc_centroid
 @INPUT      : npoints - number of points
               ndim    - number of dimensions
@@ -158,83 +124,6 @@ public void transpose(int rows, int cols, float **mat, float **mat_transpose)
       }
    }
 }
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : transpose
-@INPUT      : rows    - number of rows
-              cols    - number of columns
-              mat     - original matrix (in numerical recipes form).
-                 The dimensions of this matrix should be defined to be 
-                 1 to rows and 1 to cols (when calling the numerical 
-                 recipes routine matrix).
-@OUTPUT     : mat_transpose  - transposed matrix (in numerical recipes form,
-                 with dimensions 1 to cols and 1 to rows). Matrix 
-                 mat_transpose cannot be the original matrix mat.
-@RETURNS    : (nothing)
-@DESCRIPTION: Transposes a matrix.
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Feb. 26, 1990 (Weiqian Dai)
-@MODIFIED   : January 31, 1992 (Peter Neelin)
-                 - change to roughly NIL-abiding code and modified calling
-                 sequence.
----------------------------------------------------------------------------- */
-public void invertmatrix(int n, float **mat, float **mat_invert)
-{
-
-  void svdcmp(float **a, int m, int n, float *w, float **v);
-
-  float 
-    wmax,wmin,
-    **ut,**u,*w,**v,**wd;
-  int 
-    i,j;
-
-  u=matrix(1,n,1,n);
-  ut=matrix(1,n,1,n);
-  wd=matrix(1,n,1,n);
-  w=vector(1,n);
-  v=matrix(1,n,1,n);
-
-  for (i=1; i<=n; ++i)		/* copy the input matrix */
-    for (j=1; j<=n; ++j)
-      u[i][j] = mat[i][j];
-
-
-  svdcmp(u,n,n,w,v);
-
-  wmax=0.0;
-  for (j=1; j<=n; ++j) if (w[j]>wmax) wmax=w[j];
-
-				/* this is where the threshold is set for editing
-				   singular values.  The constant must be experimented
-				   with. */
-  wmin = wmax*1.0e-6;
-
-  for (j=1; j<=n; ++j) 
-    if (w[j]<wmin) 
-      w[j]=0.0;
-    else 
-      w[j] = 1.0/w[j];  
-
-  for (i=1; i<=n; ++i) {		/* multiply v by a matrix with diag=w */
-    for (j=1; j<=n; ++j) 
-      wd[i][j] = 0.0;
-    wd[i][i] = w[i];
-  }
-
-  transpose(n,n,u,ut);
-  raw_matrix_multiply(n,n,n,v,wd,u);
-  raw_matrix_multiply(n,n,n,u,ut,mat_invert);
-
-  free_matrix(u,1,n,1,n);
-  free_matrix(ut,1,n,1,n);
-  free_matrix(wd,1,n,1,n);
-  free_matrix(v,1,n,1,n);
-  free_vector(w,1,n);
-  
-}
-
 
 
 /* ----------------------------- mni Header -----------------------------------
