@@ -1,3 +1,7 @@
+Wed Jan 19 19:42:52 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Include/Makefile.am (all-local): test -l doesn't exist on linux.
+
 Wed Jan 19 18:05:49 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Include/Makefile.am (all-local): test -e doesn't exist on IRIX5.
