@@ -73,6 +73,8 @@ typedef struct
     Real                 *curvature_factors;
     Point                *equilibrium_points;
     Point                *new_equilibrium_points;
+    Point                *boundary_points;
+    Point                *new_boundary_points;
     Real                 temperature;
     Real                 temperature_factor;
     int                  temperature_step;
