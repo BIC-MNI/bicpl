@@ -1,6 +1,19 @@
 #include  <def_mni.h>
 #include  <def_module.h>
 
+public  Boolean  is_this_tetrahedral_topology(
+    polygons_struct   *polygons )
+{
+    int    n_polygons;
+
+    n_polygons = polygons->n_items;
+
+    while( n_polygons > 8 && n_polygons % 4 == 0 )
+         n_polygons /= 4;
+
+    return( n_polygons == 4 || n_polygons == 6 || n_polygons == 8 );
+}
+
 public  void  create_tetrahedral_sphere(
     Point            *centre,
     Real             rx,
@@ -110,5 +123,32 @@ public  void  create_tetrahedral_sphere(
             dz *= scale;
             fill_Point( polygons->points[p], cx + dx, cy + dy, cz + dz );
         }
+    }
+}
+
+public  void  half_sample_tetrahedral_tessellation(
+    polygons_struct  *polygons,
+    polygons_struct  *half )
+{
+    int             i, quarter_n_polygons;
+    static  Point   dummy_centre = { 0.0, 0.0, 0.0 };
+
+    quarter_n_polygons = polygons->n_items / 4;
+
+    create_tetrahedral_sphere( &dummy_centre, 1.0, 1.0, 1.0,
+                               quarter_n_polygons, half );
+
+    for_less( i, 0, half->n_points )
+    {
+        half->points[i] = polygons->points[i];
+        half->normals[i] = polygons->normals[i];
+    }
+
+    if( polygons->colour_flag == PER_VERTEX_COLOURS )
+    {
+        half->colour_flag = PER_VERTEX_COLOURS;
+        REALLOC( half->colours, half->n_points );
+        for_less( i, 0, half->n_points )
+            half->colours[i] = polygons->colours[i];
     }
 }

@@ -10,7 +10,11 @@ typedef  struct
 {
     Real               min_isovalue;
     Real               max_isovalue;
+    Real               gradient_threshold;
+    Real               min_dot_product;
+    Real               max_dot_product;
     Normal_directions  normal_direction;
+    Real               tolerance;
 } boundary_definition_struct;
 
 typedef  enum  { SPHERE_DATA, VOLUME_DATA }  Deform_data_types;
