@@ -306,3 +306,56 @@ public  Boolean  get_tessellation_of_polygons_sphere(
 
     return( is_sphere );
 }
+
+public  void  half_sample_sphere_tessellation(
+    polygons_struct   *polygons,
+    polygons_struct   *half )
+{
+    static Point   centre = { 0.0, 0.0, 0.0 };
+    int            n_up, n_around, half_n_up, half_n_around;
+    int            up, around, n_circum, point_index, half_point_index;
+
+    if( get_tessellation_of_polygons_sphere( polygons, &n_up ) )
+    {
+        n_around = 2 * n_up;
+        half_n_up = n_up / 2;
+        half_n_around = 2 * half_n_up;
+        create_polygons_sphere( &centre, 1.0, 1.0, 1.0, half_n_up,
+                                half_n_around, FALSE, half );
+
+        half->surfprop = polygons->surfprop;
+
+        if( polygons->colour_flag == ONE_COLOUR ||
+            polygons->colour_flag == PER_ITEM_COLOURS )
+        {
+            half->colour_flag = ONE_COLOUR;
+            half->colours[0] = polygons->colours[0];
+        }
+        else
+        {
+            REALLOC( half->colours, half->n_points );
+        }
+
+        for_less( up, 0, half_n_up+1 )
+        {
+            if( up == 0 || up == half_n_up )
+                n_circum = 1;
+            else
+                n_circum = half_n_around;
+
+            for_less( around, 0, n_circum )
+            {
+                half_point_index = get_sphere_point_index( up, around,
+                                                  half_n_up, half_n_around );
+                point_index = get_sphere_point_index( 2 * up, 2 * around,
+                                                  n_up, n_around );
+
+                half->points[half_point_index] = polygons->points[point_index];
+
+                if( half->colour_flag == PER_VERTEX_COLOURS )
+                    half->colours[half_point_index] =
+                                                polygons->colours[point_index];
+            }
+        }
+    }
+}
