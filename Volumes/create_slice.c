@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.37 1995-08-30 14:07:07 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.38 1995-09-04 17:29:13 david Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10
@@ -616,6 +616,10 @@ private  void  create_weighted_volume_slices(
     Real            x_axis2[],
     Real            y_axis2[],
     Real            weights2[],
+    int             x_pixel_start,
+    int             x_pixel_end,
+    int             y_pixel_start,
+    int             y_pixel_end,
     int             degrees_continuity,
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
@@ -678,6 +682,26 @@ private  void  create_weighted_volume_slices(
         else
             volume_data2 = NULL;
 
+        if( x_pixel_start > x_pixel_end || y_pixel_start > y_pixel_end )
+        {
+            x_pixel_start = 0;
+            x_pixel_end = pixels->x_size-1;
+            y_pixel_start = 0;
+            y_pixel_end = pixels->y_size-1;
+        }
+        else
+        {
+            if( x_pixel_start < 0 )
+                x_pixel_start = 0;
+            if( x_pixel_end >= pixels->x_size )
+                x_pixel_end = pixels->x_size-1;
+
+            if( y_pixel_start < 0 )
+                y_pixel_start = 0;
+            if( y_pixel_end >= pixels->y_size )
+                y_pixel_end = pixels->y_size-1;
+        }
+
         if( volume1->is_cached_volume ||
             (volume2 != NULL && volume2->is_cached_volume) ||
             degrees_continuity != -1 && n_slices1 == 1 &&
@@ -690,10 +714,11 @@ private  void  create_weighted_volume_slices(
                                          (volume_data2 == NULL) ? NULL :
                                          origins2[0],
                                          x_axis2, y_axis2,
+                                         x_pixel_start, x_pixel_end,
+                                         y_pixel_start, y_pixel_end,
                                          degrees_continuity,
                                          cmode_colour_map, rgb_colour_map,
                                          empty_colour, pixels );
-
         }
         else
         {
@@ -703,6 +728,8 @@ private  void  create_weighted_volume_slices(
                                     n_dimensions2, sizes2, volume_data2,
                                     volume2_data_type, n_slices2, weights2,
                                     strides2, origins2, x_axis2, y_axis2,
+                                    x_pixel_start, x_pixel_end,
+                                    y_pixel_start, y_pixel_end,
                                     cmode_colour_map,
                                     rgb_colour_map, empty_colour,
                                     render_storage, pixels );
@@ -843,6 +870,10 @@ public  void  create_volume_slice(
     Real            y_scale2,
     int             x_viewport_size,
     int             y_viewport_size,
+    int             x_pixel_start,
+    int             x_pixel_end,
+    int             y_pixel_start,
+    int             y_pixel_end,
     Pixel_types     pixel_type,
     int             degrees_continuity,
     unsigned short  **cmode_colour_map,
@@ -892,6 +923,8 @@ public  void  create_volume_slice(
                                    volume2, n_slices2,
                                    real_origins2, real_x_axis2, real_y_axis2,
                                    weights2,
+                                   x_pixel_start, x_pixel_end,
+                                   y_pixel_start, y_pixel_end,
                                    degrees_continuity,
                                    cmode_colour_map, rgb_colour_map,
                                    empty_colour, render_storage,
@@ -901,12 +934,12 @@ public  void  create_volume_slice(
     {
         FREE2D( positions2 );
         FREE( weights2 );
-        FREE( real_origins2 );
+        FREE2D( real_origins2 );
     }
 
     FREE2D( positions1 );
     FREE( weights1 );
-    FREE( real_origins1 );
+    FREE2D( real_origins1 );
 }
 
 public  void  set_volume_slice_pixel_range(
@@ -974,10 +1007,10 @@ public  void  set_volume_slice_pixel_range(
     {
         FREE2D( positions2 );
         FREE( weights2 );
-        FREE( real_origins2 );
+        FREE2D( real_origins2 );
     }
 
     FREE2D( positions1 );
     FREE( weights1 );
-    FREE( real_origins1 );
+    FREE2D( real_origins1 );
 }
