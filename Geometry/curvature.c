@@ -1,4 +1,5 @@
 #include  <def_objects.h>
+#include  <def_deform.h>
 
 public  Status  create_sphere_from_polygons( polygons, sphere, centre,
                                    x_radius, y_radius, z_radius, max_curvature,
@@ -22,6 +23,8 @@ public  Status  create_sphere_from_polygons( polygons, sphere, centre,
     Status        compute_polygon_normals();
     void          get_surface_colour();
     void          compute_polygon_point_centroid();
+    deform_struct deform;
+    Status        deform_polygons();
 
     status = OK;
 
@@ -38,14 +41,16 @@ public  Status  create_sphere_from_polygons( polygons, sphere, centre,
 
         if( status == OK )
         {
+            sphere->colour_flag = PER_VERTEX_COLOURS;
+
+            REALLOC( status, sphere->colours, sphere->n_points );
+#ifdef OLD
             if( !offset_flag )
             {
-                sphere->colour_flag = PER_VERTEX_COLOURS;
-
-                REALLOC( status, sphere->colours, sphere->n_points );
             }
             else
                 sphere->colours[0] = polygons->colours[0];
+#endif
         }
 
         if( status == OK )
@@ -71,6 +76,7 @@ public  Status  create_sphere_from_polygons( polygons, sphere, centre,
                                   &normal, &base_length, &curvature );
 
                         
+#ifdef OLD
                         if( offset_flag )
                         {
                             SUB_POINTS( sphere_normal,
@@ -84,18 +90,34 @@ public  Status  create_sphere_from_polygons( polygons, sphere, centre,
                                               sphere->points[point_index],
                                               offset );
                         }
-                        else
-                        {
-                            get_surface_colour( curvature, max_curvature,
-                                                &sphere->colours[point_index] );
-                        }
+#endif
+
+                        if( offset_flag && ABS( curvature ) < max_curvature )
+                            curvature = 0.0;
+
+                        get_surface_colour( curvature, max_curvature,
+                                            &sphere->colours[point_index] );
                     }
                 }
             }
         }
+
+        deform.deform_data.type = SPHERE_DATA;
+        deform.deform_data.sphere_centre = *centre;
+        deform.deform_data.sphere_x_size = x_radius;
+        deform.deform_data.sphere_y_size = y_radius;
+        deform.deform_data.sphere_z_size = z_radius;
+        deform.deformation_model.model_type = POINT_SPHERE_MODEL;
+        deform.deformation_model.max_curvature = 200.0;
+        deform.model_weight = 0.0;
+        deform.max_step = 0.2;
+        deform.fractional_step = 0.5;
+        deform.max_iterations = 10;
+        deform.stop_threshold = 0.001;
+
+        if( status == OK )
+            status = deform_polygons( sphere, &deform );
     }
-
-
 
     return( status );
 }
