@@ -43,6 +43,16 @@ public  void  initialize_polygons(
     polygons->bintree = (bintree_struct_ptr) NULL;
 }
 
+public  void  free_polygon_neighbours(
+    polygons_struct   *polygons )
+{
+    if( polygons->neighbours != (int *) NULL )
+    {
+        FREE( polygons->neighbours );
+        polygons->neighbours = (int *) NULL;
+    }
+}
+
 public  void  delete_polygons( polygons_struct *polygons )
 {
     free_colours( polygons->colour_flag, polygons->colours, polygons->n_points,
@@ -63,13 +73,11 @@ public  void  delete_polygons( polygons_struct *polygons )
     if( polygons->visibilities != (Smallest_int *) 0 )
         FREE( polygons->visibilities );
 
-    if( polygons->neighbours != (int *) 0 )
-        FREE( polygons->neighbours );
+    free_polygon_neighbours( polygons );
 
     delete_bintree_if_any( &polygons->bintree );
 
     polygons->visibilities = (Smallest_int *) 0;
-    polygons->neighbours = (int *) 0;
 }
 
 public  void  copy_polygons(
