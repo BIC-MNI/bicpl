@@ -1,3 +1,30 @@
+2001-01-23  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Makefile.include:
+	* Makefile.objects: Removed.
+
+	* INSTALL.bicpl: New.
+
+	* configure.in: Detect whether netpbm or IRIS image library
+	is installed, used to read or write image files in Images/rgb_io.c;
+	we prefer netpbm over IRIS image.  This is is a change, but previous
+	behaviour can be restored using "--without-ppm".
+
+	* Images/Makefile.am: Changes for above.
+
+	* Images/rgb_io_sgi.c: Code formerly in rgb_io.c.
+	* Images/rgb_io_ppm.c: New.  Do image I/O using netpbm's PPM files.
+	* Images/rgb_io_none.c: New.  Emit error if image I/O function called.
+	* Images/rgb_io.c: New.  Dummy file that includes one of the above
+	options.
+
+2001-01-05  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* configure.in: Add "--with-build-path" flag to set
+	CPPFLAGS and LDFLAGS, rather than generating them
+	from ${prefix}.
+	
+
 2000-12-15  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* acinclude.m4: Update to latest version from smr_macros.

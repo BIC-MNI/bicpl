@@ -1,0 +1,21 @@
+This library contains support code originally written by David MacDonald,
+and previously released as part of his "display" and "Register" programs.
+
+The following libraries MUST be installed before you can build
+bicpl:
+
+  NetCDF - see http://www.unidata.ucar.edu/packages/netcdf/
+  MINC   - see ftp://ftp.bic.mni.mcgill.ca/pub/minc/
+
+
+In addition, it is recommended that at least one of the following
+libraries be installed.  The bicpl package will compile without
+any of them, but you won't be able to load or save bitmapped images.
+
+  NetPBM             - see http://netpbm.sourceforge.net/
+  IRIS image library - available from SGI for IRIX systems
+
+See INSTALL and INSTALL.bicpl for installation instructions.
+
+Send BUG reports to stever@bic.mni.mcgill.ca.
+

@@ -1,0 +1,31 @@
+See INSTALL for generic installation instructions.
+
+
+		Image I/O
+
+The bicpl library includes functions for reading and writing a (2D)
+image file.  The format of this file is fixed at configure time, and
+may be one of:
+
+	Portable PixMap (PPM) format,
+or	IRIS image format (from SGI)
+
+By default, configure will probe for the netpbm library (PPM format).
+If not found, then IRIS image library will be probed for.  This
+behaviour can be overridden using the following options to configure:
+
+  --with-ppm-library[=PATH]
+                          use ppm library (Portable PixMap library)
+  --with-ppm-includes[=DIR]
+                          set directory for ppm headers
+  --with-irisimage-library[=PATH]
+                          use irisimage library (SGI image library)
+  --with-irisimage-includes[=DIR]
+                          set directory for irisimage headers
+
+
+The library check may be disabled by negating the option, e.g.
+specifying "--without-ppm-library" will suppress checking for
+netpbm.
+
+

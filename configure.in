@@ -4,15 +4,16 @@ AC_INIT(Include/bicpl.h)
 AM_INIT_AUTOMAKE(bicpl, 0.0)
 AM_CONFIG_HEADER(config.h)
 
-# if prefix is set, use it to set CPPFLAGS and LDFLAGS
-if test "$prefix" != "NONE"; then
-    if test "$CPPFLAGS" = "" -a -d "${prefix}/include"; then
-	CPPFLAGS="-I${prefix}/include"
-    fi
-    if test "$LDFLAGS" = "" -a -d "${prefix}/lib"; then
-	LDFLAGS="-L${prefix}/lib"
-    fi
-fi
+dnl Add extra include or link directories
+AC_ARG_WITH(build-path,[
+  --with-build-path[=DIR] use DIR/include DIR/lib
+],[
+for d in `echo $withval | tr : ' '`; do
+    test -d $d/include && CPPFLAGS="$CPPFLAGS -I$d/include"
+    test -d $d/lib && LDFLAGS="$LDFLAGS -L$d/lib"
+done
+])
+
 
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -20,10 +21,6 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AM_PROG_LIBTOOL
 
-smr_CHECK_LIB(irisimage, image,
-[SGI image library], iopen, image.h)
-AC_SUBST(irisimage_CFLAGS)
-AC_SUBST(irisimage_LIBS)
 
 smr_CHECK_LIB(netcdf,,
 [NetCDF library], ncopen, netcdf.h)
@@ -47,6 +44,38 @@ fi
 
 CFLAGS="$volumeio_CFLAGS $minc_CFLAGS $netcdf_CFLAGS"
 LIBS="$volumeio_LIBS $minc_LIBS $netcdf_LIBS"
+
+
+dnl Decide which file format is used for images.
+dnl Prefer PPM if available, otherwise use SGI's irisimage,
+dnl otherwise no image I/O is possible
+
+imageio_GLUE_CODE=rgb_io_none.c
+
+smr_CHECK_LIB(ppm,netpbm,
+[Portable PixMap library], ppm_writeppminit, ppm.h)
+if test "$ppm_LIBS" != ""; then
+    imageio_CFLAGS="$ppm_CFLAGS"
+    imageio_LIBS="$ppm_LIBS"
+    imageio_GLUE_CODE=rgb_io_ppm.c
+else
+    smr_CHECK_LIB(irisimage, image,
+    [SGI image library], iopen, image.h)
+    if test "$irisimage_LIBS" != ""; then
+	imageio_CFLAGS="$irisimage_CFLAGS"
+	imageio_LIBS="$irisimage_LIBS"
+	imageio_GLUE_CODE=rgb_io_sgi.c
+    fi
+fi
+
+AC_SUBST(imageio_CFLAGS)
+AC_SUBST(imageio_LIBS)
+
+AC_DEFINE_UNQUOTED(imageio_GLUE_CODE,
+    ["$imageio_GLUE_CODE"],[File to include in Images/rgb_io.c])
+
+
+
 
 dnl AC_CHECK_TYPE(bool,int)
 
