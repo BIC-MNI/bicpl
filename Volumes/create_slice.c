@@ -277,8 +277,8 @@ private  int    get_cross_section(
 
     if( n_points == 1 || n_points == 2 || n_points > 2 * n_dims )
     {
-        print( "N points = %d\n", n_points );
 /*
+        print( "N points = %d\n", n_points );
         handle_internal_error( "clipping" );
 */
         n_points = 0;
