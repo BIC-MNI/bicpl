@@ -16,18 +16,71 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.8 1996-12-09 20:20:53 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.9 1997-01-13 19:14:48 david Exp $";
 #endif
 
 #define  MAX_TEMP_STORAGE  1000
 
-private  void  recursive_polygon_scan(
+private  void  recursive_scan_polygon_to_voxels(
     int                 size,
-    Point               vertices[],
-    Volume              volume,
+    Point               points[],
     Volume              label_volume,
     int                 label,
-    Real                max_size );
+    int                 min_voxel[],
+    int                 max_voxel[] )
+{
+    int        n_clip, dim, max_dim, save, pos;
+    Real       slice_pos;
+    Point      output_vertices[MAX_TEMP_STORAGE];
+    Vector     normal;
+
+    max_dim = 0;
+    for_less( dim, 1, N_DIMENSIONS )
+    {
+        if( max_voxel[dim] - min_voxel[dim] >
+            max_voxel[max_dim] - min_voxel[max_dim] )
+            max_dim = dim;
+    }
+
+    if( min_voxel[max_dim] == max_voxel[max_dim] )
+    {
+        set_volume_label_data( label_volume, min_voxel, label );
+        return;
+    }
+
+    pos = (min_voxel[max_dim] + max_voxel[max_dim]) / 2;
+    slice_pos = (Real) pos + 0.5;
+
+    fill_Vector( normal, 0.0, 0.0, 0.0 );
+    Vector_coord( normal, max_dim ) = -1.0f;
+
+    n_clip = clip_polygon_against_plane( size, points, slice_pos,
+                                         &normal, output_vertices );
+
+    if( n_clip > 0 )
+    {
+        save = max_voxel[max_dim];
+        max_voxel[max_dim] = pos;
+        recursive_scan_polygon_to_voxels( n_clip, output_vertices,
+                                          label_volume, label,
+                                          min_voxel, max_voxel );
+        max_voxel[max_dim] = save;
+    }
+
+    Vector_coord( normal, max_dim ) = 1.0f;
+    n_clip = clip_polygon_against_plane( size, points, -slice_pos,
+                                         &normal, output_vertices );
+
+    if( n_clip > 0 )
+    {
+        save = min_voxel[max_dim];
+        min_voxel[max_dim] = pos+1;
+        recursive_scan_polygon_to_voxels( n_clip, output_vertices,
+                                          label_volume, label,
+                                          min_voxel, max_voxel );
+        min_voxel[max_dim] = save;
+    }
+}
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : scan_polygons_to_voxels
@@ -56,13 +109,13 @@ public  void  scan_polygons_to_voxels(
     int                 label,
     Real                max_size )
 {
-    int        vertex, poly, size, dim, point_index;
+    int        vertex, poly, size, dim, point_index, n_clip;
     Point      vertices[MAX_TEMP_STORAGE];
     Point      output_vertices[2*MAX_TEMP_STORAGE];
     Real       voxel[N_DIMENSIONS];
     Real       min_voxel[N_DIMENSIONS], max_voxel[N_DIMENSIONS];
     int        min_iv[N_DIMENSIONS], max_iv[N_DIMENSIONS];
-    int        sizes[N_DIMENSIONS], int_voxel[N_DIMENSIONS];
+    int        sizes[N_DIMENSIONS];
 
     get_volume_sizes( label_volume, sizes );
 
@@ -114,150 +167,21 @@ public  void  scan_polygons_to_voxels(
             if( max_iv[dim] >= sizes[dim] )
                 max_iv[dim] = sizes[dim]-1;
         }
-/*
-min_iv[0] = 12;
-max_iv[0] = 12;
-min_iv[1] = 36;
-max_iv[1] = 36;
-min_iv[2] = 25;
-max_iv[2] = 25;
-*/
 
-        for_inclusive( int_voxel[X], min_iv[X], max_iv[X] ) 
-        for_inclusive( int_voxel[Y], min_iv[Y], max_iv[Y] ) 
-        for_inclusive( int_voxel[Z], min_iv[Z], max_iv[Z] ) 
+        n_clip = clip_polygon_against_box( size, vertices,
+                                           (Real) min_iv[X] - 0.5,
+                                           (Real) max_iv[X] + 0.5,
+                                           (Real) min_iv[Y] - 0.5,
+                                           (Real) max_iv[Y] + 0.5,
+                                           (Real) min_iv[Z] - 0.5,
+                                           (Real) max_iv[Z] + 0.5,
+                                           output_vertices );
+
+        if( n_clip > 0 )
         {
-            if( clip_polygon_against_box( size, vertices,
-                                          (Real) int_voxel[X] - 0.5,
-                                          (Real) int_voxel[X] + 0.5,
-                                          (Real) int_voxel[Y] - 0.5,
-                                          (Real) int_voxel[Y] + 0.5,
-                                          (Real) int_voxel[Z] - 0.5,
-                                          (Real) int_voxel[Z] + 0.5,
-                                          output_vertices ) > 0 )
-            {
-                set_volume_label_data( label_volume, int_voxel, label );
-            }
+            recursive_scan_polygon_to_voxels( n_clip, output_vertices,
+                                              label_volume, label,
+                                              min_iv, max_iv );
         }
-    }
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : recursive_polygon_scan
-@INPUT      : size
-              vertices
-              volume
-              label_volume
-              label
-              max_size
-@OUTPUT     : 
-@RETURNS    : 
-@DESCRIPTION: Recursviely Subdivides a polygon until it is smaller than
-              max_size size, then labels the voxel corresponding to the
-              centre of each fragment.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    :         1993    David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-private  void  recursive_polygon_scan(
-    int                 size,
-    Point               vertices[],
-    Volume              volume,
-    Volume              label_volume,
-    int                 label,
-    Real                max_size )
-{
-    Point            midpoints[4], min_point, max_point, centre;
-    Point            sub_points[4];
-    Real             voxel[MAX_DIMENSIONS];
-    int              edge, int_voxel[MAX_DIMENSIONS];
-
-    get_range_points( size, vertices, &min_point, &max_point );
-
-    if( (Real) Point_x(max_point) - (Real) Point_x(min_point) < max_size &&
-        (Real) Point_y(max_point) - (Real) Point_y(min_point) < max_size &&
-        (Real) Point_z(max_point) - (Real) Point_z(min_point) < max_size )
-    {
-        get_points_centroid( size, vertices, &centre );
-        convert_world_to_voxel( volume,
-                                (Real) Point_x(centre),
-                                (Real) Point_y(centre),
-                                (Real) Point_z(centre), voxel );
-        fill_Point( centre, voxel[X], voxel[Y], voxel[Z] );
-
-        if( voxel_is_within_volume( volume, voxel ) )
-        {
-            convert_real_to_int_voxel( N_DIMENSIONS, voxel, int_voxel );
-            set_volume_label_data( label_volume, int_voxel, label );
-        }
-        return;
-    }
-
-    for_less( edge, 0, size )
-    {
-        INTERPOLATE_POINTS( midpoints[edge], vertices[edge],
-                            vertices[(edge+1)%size], 0.5 );
-    }
-
-    if( size == 3 )
-    {
-        sub_points[0] = vertices[0];
-        sub_points[1] = midpoints[0];
-        sub_points[2] = midpoints[2];
-        recursive_polygon_scan( size, sub_points, volume, label_volume,
-                                label, max_size );
-
-        sub_points[0] = midpoints[0];
-        sub_points[1] = vertices[1];
-        sub_points[2] = midpoints[1];
-        recursive_polygon_scan( size, sub_points, volume, label_volume,
-                                label, max_size );
-
-        sub_points[0] = midpoints[2];
-        sub_points[1] = midpoints[1];
-        sub_points[2] = vertices[2];
-        recursive_polygon_scan( size, sub_points, volume, label_volume,
-                                label, max_size );
-
-        sub_points[0] = midpoints[0];
-        sub_points[1] = midpoints[1];
-        sub_points[2] = midpoints[2];
-        recursive_polygon_scan( size, sub_points, volume, label_volume,
-                                label, max_size );
-    }
-    else
-    {
-        get_points_centroid( size, vertices, &centre );
-
-        sub_points[0] = vertices[0];
-        sub_points[1] = midpoints[0];
-        sub_points[2] = centre;
-        sub_points[3] = midpoints[3];
-        recursive_polygon_scan( size, sub_points, volume, label_volume,
-                                label, max_size );
-
-        sub_points[0] = midpoints[0];
-        sub_points[1] = vertices[1];
-        sub_points[2] = midpoints[1];
-        sub_points[3] = centre;
-        recursive_polygon_scan( size, sub_points, volume, label_volume,
-                                label, max_size );
-
-        sub_points[0] = midpoints[3];
-        sub_points[1] = centre;
-        sub_points[2] = midpoints[2];
-        sub_points[3] = vertices[3];
-        recursive_polygon_scan( size, sub_points, volume, label_volume,
-                                label, max_size );
-
-        sub_points[0] = centre;
-        sub_points[1] = midpoints[1];
-        sub_points[2] = vertices[2];
-        sub_points[3] = midpoints[2];
-        recursive_polygon_scan( size, sub_points, volume, label_volume,
-                                label, max_size );
     }
 }
