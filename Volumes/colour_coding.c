@@ -1,5 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.16 1995-07-31 13:45:42 david Exp $";
+#endif
 
 typedef struct {
     Real           position;
@@ -188,6 +206,20 @@ public  void  set_colour_coding_over_colour(
     colour_coding->over_colour = over_colour;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_colour_table_piecewise_function
+@INPUT      : colour_coding
+@OUTPUT     : points
+@RETURNS    : number of points
+@DESCRIPTION: Gets a piecewise function from 0 to 1 representing the colour
+              coding.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  int  get_colour_table_piecewise_function(
     colour_coding_struct  *colour_coding,
     colour_point          *points[] )
@@ -225,13 +257,6 @@ private  int  get_colour_table_piecewise_function(
                       { 0.95, 0.8000,0.0000,0.0000, RGB_SPACE},
                       { 1.00, 0.8000,0.8000,0.8000, RGB_SPACE}
                     };
-#ifdef  OLD
-                    { {0.0,     make_Colour_0_1( 0.0, 0.0, 1.0 ), HSL_SPACE },
-                      {0.333,   make_Colour_0_1( 0.0, 1.0, 0.0 ), HSL_SPACE },
-                      {0.74,    make_Colour_0_1( 1.0, 0.0, 0.0 ), HSL_SPACE },
-                      {0.86,    make_Colour_0_1( 1.0, 0.0, 1.0 ), HSL_SPACE },
-                      {1.0,     make_Colour_0_1( 1.0, 1.0, 1.0 ), HSL_SPACE } };
-#endif
     static  colour_point  red_points[] =
                              { {0.0, 0.0, 0.0, 0.0, RGB_SPACE },
                                {1.0, 1.0, 0.0, 0.0, RGB_SPACE } };
@@ -346,7 +371,7 @@ public  Colour  get_colour_code(
 
     for_less( i, 0, n_points-1 )
     {
-        if( pos < points[i+1].position )
+        if( pos <= points[i+1].position )
             break;
     }
 

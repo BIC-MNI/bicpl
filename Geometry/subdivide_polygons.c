@@ -1,5 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.10 1995-07-31 13:45:00 david Exp $";
+#endif
 
 private  void  subdivide_polygon(
     polygons_struct   *polygons,
@@ -11,6 +29,20 @@ private  void  subdivide_polygon(
     int               *new_n_indices,
     int               *new_indices[],
     hash_table_struct *midpoint_table );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : subdivide_polygons
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Subdivides the polygons, each polygon become 4 polygons.
+              Can only handle polygons that have 3 or 4 vertices.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  subdivide_polygons(
     polygons_struct  *polygons )
@@ -85,6 +117,26 @@ public  void  subdivide_polygons(
     polygons->end_indices = new_end_indices;
     polygons->indices = new_indices;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : subdivide_polygon
+@INPUT      : polygons
+              poly
+@OUTPUT     : new_n_points
+              new_points
+              new_n_polygons
+              new_end_indices
+              new_n_indices
+              new_indices
+              midpoint_table
+@RETURNS    : 
+@DESCRIPTION: Subdivides the poly'th polygon into 4 new polygons.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  subdivide_polygon(
     polygons_struct   *polygons,

@@ -1,7 +1,24 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
 #include  <data_structures.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.5 1995-07-31 13:45:03 david Exp $";
+#endif
 
 private  BOOLEAN  get_vertex_distances(
     polygons_struct   *polygons,
@@ -20,6 +37,24 @@ private  Real  get_average_curvature(
     int     n_smoothing_points,
     Point   smoothing_points[],
     Vector  *avg_normal );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_smooth_surface_curvature
+@INPUT      : polygons
+              poly
+              vertex
+              smoothing_distance
+@OUTPUT     : 
+@RETURNS    : curvature between -180 and 180
+@DESCRIPTION: Computes the smooth surface curvature by finding a set of
+              points the appropriate distance from the vertex and computing
+              an average curvature of these points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1994    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Real  get_smooth_surface_curvature(
     polygons_struct   *polygons,
@@ -69,6 +104,22 @@ typedef  struct
 
 #define   GREATER_THAN_DISTANCE     -1.0
 #define   ALREADY_DONE              -2.0
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_vertex_distances
+@INPUT      : polygons
+              poly
+              vertex
+              distance
+@OUTPUT     : distances
+@RETURNS    : 
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1994    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  BOOLEAN  get_vertex_distances(
     polygons_struct   *polygons,
@@ -157,6 +208,22 @@ private  BOOLEAN  get_vertex_distances(
     return( closed_flag );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_smoothing_points
+@INPUT      : polygons
+              smoothing_distance
+@OUTPUT     : distances
+              smoothing_points
+              avg_normal
+@RETURNS    : 
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1994    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  int  get_smoothing_points(
     polygons_struct   *polygons,
     Real              smoothing_distance,
@@ -241,6 +308,23 @@ private  int  get_smoothing_points(
 
     return( n_smoothing_points );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_average_curvature
+@INPUT      : point
+              n_smoothing_points
+              smoothing_points
+              avg_normal
+@OUTPUT     : 
+@RETURNS    : angle
+@DESCRIPTION: Gets average angle computed from centroid of points, point,
+              and each of the smoothing points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1994    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  get_average_curvature(
     Point   *point,

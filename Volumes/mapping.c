@@ -1,7 +1,46 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <vols.h>
 #include  <numerical.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.25 1995-07-31 13:45:45 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_mapping
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+              x_translation
+              y_translation
+              x_scale
+              y_scale
+@OUTPUT     : pix_origin
+              pix_x_axis
+              pix_y_axis
+@RETURNS    : 
+@DESCRIPTION: Computes the mapping from pixels to voxels.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  get_mapping(
     Volume          volume,
@@ -51,6 +90,24 @@ public  void  get_mapping(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : map_pixel_to_voxel
+@INPUT      : x_pixel
+              y_pixel
+              n_dims
+              voxel_origin
+              voxel_x_axis
+              voxel_y_axis
+@OUTPUT     : voxel
+@RETURNS    : 
+@DESCRIPTION: Converts a pixel to a voxel.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  map_pixel_to_voxel(
     Real   x_pixel,
     Real   y_pixel,
@@ -69,6 +126,21 @@ private  void  map_pixel_to_voxel(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : dot
+@INPUT      : n
+              v1
+              v2
+@OUTPUT     : 
+@RETURNS    : Dot product
+@DESCRIPTION: Computes the dot product of 2 n-dimensional vectors.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Real   dot(
     int    n,
     Real   v1[],
@@ -83,6 +155,25 @@ private  Real   dot(
 
     return( d );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_two_axes_coordinates
+@INPUT      : n
+              vector
+              x_axis
+              y_axis
+@OUTPUT     : x_pos
+              y_pos
+@RETURNS    : 
+@DESCRIPTION: Computes the (x,y) coordinate given a vector and an x and y
+              axis.  Finds the values such that
+                      x_pos * x_axis + y_pos * y_axis = vector
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  get_two_axes_coordinates(
     int   n,
@@ -105,6 +196,24 @@ private  void  get_two_axes_coordinates(
     *y_pos = (y_dot_v * x_dot_x - x_dot_y * x_dot_v) /
              (y_dot_y * x_dot_x - x_dot_y * x_dot_y);
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : map_voxel_to_pixel
+@INPUT      : n
+              voxel
+              origin
+              x_axis
+              y_axis
+@OUTPUT     : x_pixel
+              y_pixel
+@RETURNS    : 
+@DESCRIPTION: Converts a voxel coordinate to a pixel coordinate.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  map_voxel_to_pixel(
     int    n,
@@ -227,6 +336,30 @@ public  void  convert_voxel_to_slice_pixel(
                         real_x_axis, real_y_axis, x_pixel, y_pixel );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : resize_volume_slice
+@INPUT      : old_x_viewport_size
+              old_y_viewport_size
+              old_used_x_viewport_size
+              old_used_y_viewport_size
+              new_x_viewport_size
+              new_y_viewport_size
+@MODIFIED   : x_translation
+              y_translation
+              x_scale
+              y_scale
+@OUTPUT     : used_x_viewport_size
+              used_y_viewport_size
+@RETURNS    : 
+@DESCRIPTION: Computes the new transformation required after resizing the
+              viewport containing a slice.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  resize_volume_slice(
     int          old_x_viewport_size,
     int          old_y_viewport_size,
@@ -267,6 +400,31 @@ public  void  resize_volume_slice(
     *x_translation += (new_x_viewport_size - old_x_viewport_size) / 2.0;
     *y_translation += (new_y_viewport_size - old_y_viewport_size) / 2.0;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : fit_volume_slice_to_viewport
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+              x_viewport_size
+              y_viewport_size
+              fraction_oversize
+@OUTPUT     : x_translation
+              y_translation
+              x_scale
+              y_scale
+              used_x_viewport_size
+              used_y_viewport_size
+@RETURNS    : 
+@DESCRIPTION: Computes the transformation required to fit a slice to the
+              viewport.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  fit_volume_slice_to_viewport(
     Volume       volume,
@@ -325,6 +483,25 @@ public  void  fit_volume_slice_to_viewport(
     *y_translation = ((Real) y_viewport_size - *y_scale * (y_max - y_min))/2.0 -
                      *y_scale * y_min;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : scale_slice_about_viewport_centre
+@INPUT      : scale_factor
+              x_viewport_size
+              y_viewport_size
+@OUTPUT     : x_translation
+              y_translation
+              x_scale
+              y_scale
+@RETURNS    : 
+@DESCRIPTION: Modifies the scale and translation to scale a slice about
+              the centre pixel of a viewport.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void   scale_slice_about_viewport_centre(
     Real        scale_factor,

@@ -1,3 +1,17 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 /* ----------------------------- MNI Header ----------------------------------- @NAME       : rotmat_to_ang.c
 @INPUT      : rot      - rotation matrix (3x3 in num recipes form) calculated
                          by the calling program.
@@ -64,6 +78,10 @@ Tue Jun  8 08:44:59 EST 1993 LC
 
 #include <internal_volume_io.h>
 #include <trans.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.15 1995-07-31 13:46:03 david Exp $";
+#endif
 
 #ifdef DEBUG
 private  void  are_rotations_equivalent(
@@ -142,6 +160,23 @@ public  BOOLEAN  rotmat_to_ang(
     return(TRUE);
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : are_rotations_equivalent
+@INPUT      : rot_trans
+              rx
+              ry
+              rz
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Tests if the rot_transform is equivalent to the three
+              successive counter-clockwise rotations.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 #ifdef DEBUG
 private  void  are_rotations_equivalent(
     Transform  *rot_trans,
@@ -191,4 +226,3 @@ private  void  are_rotations_equivalent(
     }
 }
 #endif
-

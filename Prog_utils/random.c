@@ -1,7 +1,24 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <prog_utils.h>
 #include  <sys/time.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.7 1995-07-31 13:45:57 david Exp $";
+#endif
 
 #define  MAX_RAND  2147483648.0
 
@@ -16,7 +33,7 @@ private  BOOLEAN  initialized = FALSE;
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
-@CREATED    :                      David MacDonald
+@CREATED    :      1993            David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
@@ -38,7 +55,7 @@ public  void  set_random_seed( int seed )
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
-@CREATED    :                      David MacDonald
+@CREATED    :      1993            David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
@@ -66,7 +83,7 @@ private  void  check_initialized( void )
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
-@CREATED    :                      David MacDonald
+@CREATED    :      1993            David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
@@ -90,7 +107,7 @@ private  int  get_random( void )
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
-@CREATED    :                      David MacDonald
+@CREATED    :      1993            David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
@@ -109,7 +126,7 @@ public  int  get_random_int( int n )
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
-@CREATED    :                      David MacDonald
+@CREATED    :      1993            David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 

@@ -1,7 +1,40 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.10 1995-07-31 13:45:16 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : initialize_quadmesh
+@INPUT      : col
+              spr
+              m
+              n
+@OUTPUT     : quadmesh
+@RETURNS    : 
+@DESCRIPTION: Initializes a quadmesh to the given size.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  initialize_quadmesh(
     quadmesh_struct   *quadmesh,
@@ -34,6 +67,19 @@ public  void  initialize_quadmesh(
     quadmesh->bintree = (bintree_struct_ptr) NULL;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_quadmesh
+@INPUT      : quadmesh
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes a quadmesh structure.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  delete_quadmesh(
     quadmesh_struct *quadmesh )
 {
@@ -52,6 +98,23 @@ public  void  delete_quadmesh(
     delete_bintree_if_any( &quadmesh->bintree );   
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_quadmesh_point
+@INPUT      : quadmesh
+              i
+              j
+              point
+              normal
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the point and normal of the quadmesh.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  set_quadmesh_point(
     quadmesh_struct  *quadmesh,
     int              i,
@@ -64,25 +127,24 @@ public  void  set_quadmesh_point(
     ind = IJ( i, j, quadmesh->n );
 
     quadmesh->points[ind] = *point;
-    if( normal != (Vector *) NULL )
+    if( normal != NULL && quadmesh->normals != NULL )
         quadmesh->normals[ind] = *normal;
 }
 
-public  void  get_quadmesh_n_objects(
-    quadmesh_struct  *quadmesh,
-    int              *m,
-    int              *n )
-{
-    if( quadmesh->m_closed )
-        *m = quadmesh->m;
-    else
-        *m = quadmesh->m - 1;
-
-    if( quadmesh->n_closed )
-        *n = quadmesh->n;
-    else
-        *n = quadmesh->n - 1;
-}
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadmesh_point
+@INPUT      : quadmesh
+              i
+              j
+@OUTPUT     : point
+@RETURNS    : TRUE if i,j is valid
+@DESCRIPTION: Passes back the specified point of the quadmesh.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  BOOLEAN  get_quadmesh_point(
     quadmesh_struct  *quadmesh,
@@ -104,6 +166,49 @@ private  BOOLEAN  get_quadmesh_point(
     return( TRUE );
 }
     
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadmesh_n_objects
+@INPUT      : quadmesh
+@OUTPUT     : m
+              n
+@RETURNS    : 
+@DESCRIPTION: Passes back the number of patches in the quadmesh.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void  get_quadmesh_n_objects(
+    quadmesh_struct  *quadmesh,
+    int              *m,
+    int              *n )
+{
+    if( quadmesh->m_closed )
+        *m = quadmesh->m;
+    else
+        *m = quadmesh->m - 1;
+
+    if( quadmesh->n_closed )
+        *n = quadmesh->n;
+    else
+        *n = quadmesh->n - 1;
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : compute_quadmesh_normals
+@INPUT      : quadmesh
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Computes the normals of a quadmesh.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  compute_quadmesh_normals(
     quadmesh_struct  *quadmesh )
 {
@@ -158,6 +263,22 @@ public  void  compute_quadmesh_normals(
     terminate_progress_report( &progress );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadmesh_patch_indices
+@INPUT      : quadmesh
+              i
+              j
+@OUTPUT     : indices
+@RETURNS    : 
+@DESCRIPTION: Passes back the indices of the quadmesh points making up the
+              i,j'th patch
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  get_quadmesh_patch_indices(
     quadmesh_struct  *quadmesh,
     int              i,
@@ -169,6 +290,21 @@ public  void  get_quadmesh_patch_indices(
     indices[2] = IJ( (i+1) % quadmesh->m, (j+1) % quadmesh->n, quadmesh->n );
     indices[3] = IJ(                   i, (j+1) % quadmesh->n, quadmesh->n );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadmesh_patch
+@INPUT      : quadmesh
+              i
+              j
+@OUTPUT     : points
+@RETURNS    : 
+@DESCRIPTION: Passes back the 4 points defining the i,j'th patch.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  get_quadmesh_patch(
     quadmesh_struct  *quadmesh,

@@ -1,5 +1,37 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_dist.c,v 1.4 1995-07-31 13:45:03 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : sq_distance_between_points
+@INPUT      : p1
+              p2
+@OUTPUT     : 
+@RETURNS    : squared distance between the points
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  sq_distance_between_points(
     Point  *p1,
@@ -12,43 +44,46 @@ private  Real  sq_distance_between_points(
     return( DOT_VECTORS( diff, diff ) );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : point_segment_sq_distance
+@INPUT      : p
+              q1
+              q2
+@OUTPUT     : closest_point
+@RETURNS    : squared distance
+@DESCRIPTION: Returns the squared distance from a point to a line segment.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Real  point_segment_sq_distance(
     Point   *p,
     Point   *q1,
     Point   *q2,
     Point   *closest_point )
 {
-    Real    mag, t;
-    Vector  to_point, offset;
-
-    SUB_POINTS( to_point, *p, *q1 );
-    SUB_POINTS( offset, *q2, *q1 );
-
-    mag = DOT_VECTORS( offset, offset );
-    if( mag == 0.0 )
-    {
-        *closest_point = *q1;
-        return( DOT_VECTORS( to_point, to_point ) );
-    }
-
-    t = DOT_VECTORS( to_point, offset ) / mag;
-
-    if( t <= 0.0 )
-    {
-        *closest_point = *q1;
-        return( sq_distance_between_points( p, q1 ) );
-    }
-    else if( t >= 1.0 )
-    {
-        *closest_point = *q2;
-        return( sq_distance_between_points( p, q2 ) );
-    }
-
-    SCALE_VECTOR( offset, offset, t );
-    ADD_POINT_VECTOR( *closest_point, *q1, offset );
+    get_closest_point_on_line_segment( p, q1, q2, closest_point );
 
     return( sq_distance_between_points( p, closest_point ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_point_polygon_distance
+@INPUT      : point
+              n_points
+              poly_points
+@OUTPUT     : closest_point
+@RETURNS    : distance
+@DESCRIPTION: Returns the closest distance of a point to a polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Real  find_point_polygon_distance(
     Point     *point,
@@ -60,6 +95,8 @@ public  Real  find_point_polygon_distance(
     Real     n_dot_n, t, closest_dist, dist, d1, d2;
     Vector   offset, o_a, normal;
     Point    seg1_point, seg2_point;
+
+    /*--- first, find closest point on plane of polygon */
 
     find_polygon_normal( n_points, poly_points, &normal );
 
@@ -77,8 +114,13 @@ public  Real  find_point_polygon_distance(
     SCALE_VECTOR( offset, normal, t ); 
     ADD_POINT_VECTOR( *closest_point, *point, offset );
 
+    /*--- if closest point on plane of polygon is within the polygon, then
+          it is the closest point of the polygon */
+
     if( point_within_polygon( closest_point, n_points, poly_points, &normal ) )
         return( MAGNITUDE( offset ) );
+
+    /*---  find the vertex of the polygon which is closest */
 
     closest = 0;
     closest_dist = 0.0;
@@ -92,6 +134,9 @@ public  Real  find_point_polygon_distance(
             closest_dist = dist;
         }
     }
+
+    /*--- the closest point is on one of the two polygon edges touching the
+          closest vertex */
 
     d1 = point_segment_sq_distance( point,
                                     &poly_points[(closest-1+n_points)%n_points],
@@ -114,6 +159,21 @@ public  Real  find_point_polygon_distance(
 
     return( sqrt( closest_dist ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_closest_polygon_point
+@INPUT      : point
+              polygons
+@OUTPUT     : closest_point
+@RETURNS    : index of polygon
+@DESCRIPTION: Finds the closest point on a polygons struct, returning the
+              index of the polygon which has the closest point.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  find_closest_polygon_point(
     Point              *point,

@@ -1,10 +1,42 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <numerical.h>
 
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.9 1995-07-31 13:45:21 david Exp $";
+#endif
+
 #define  FLIP_RATIO      1.0
 #define  CONTRACT_RATIO  0.5
 #define  STRETCH_RATIO   2.0
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_function_value
+@INPUT      : amoeba
+              parameters
+@OUTPUT     : 
+@RETURNS    : function value
+@DESCRIPTION: Evaluates the function being minimized by amoeba, by calling
+              the user function.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  get_function_value(
     amoeba_struct  *amoeba,
@@ -12,6 +44,24 @@ private  Real  get_function_value(
 {
     return( (*amoeba->function) ( amoeba->function_data, parameters ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : initialize_amoeba
+@INPUT      : n_parameters
+              initial_parameters
+              parameter_deltas
+              function
+              function_data
+              tolerance
+@OUTPUT     : amoeba
+@RETURNS    : 
+@DESCRIPTION: Initializes the amoeba structure to minimize the function.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  initialize_amoeba(
     amoeba_struct     *amoeba,
@@ -51,6 +101,20 @@ public  void  initialize_amoeba(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_amoeba_parameters
+@INPUT      : amoeba
+@OUTPUT     : parameters
+@RETURNS    : function value
+@DESCRIPTION: Passes back the current position of the amoeba (best value),
+              and returns the function value at that point.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Real  get_amoeba_parameters(
     amoeba_struct  *amoeba,
     Real           parameters[] )
@@ -70,6 +134,19 @@ public  Real  get_amoeba_parameters(
     return( amoeba->values[low] );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : terminate_amoeba
+@INPUT      : amoeba
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Frees the amoeba.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  terminate_amoeba(
     amoeba_struct  *amoeba )
 {
@@ -77,6 +154,25 @@ public  void  terminate_amoeba(
     FREE( amoeba->values );
     FREE( amoeba->sum );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : try_amoeba
+@INPUT      : amoeba
+              sum
+              high
+              fac
+@OUTPUT     : 
+@RETURNS    : value
+@DESCRIPTION: Does a modification to the high vertex of the amoeba and
+              returns the value of the new point.  If the new point is
+              better (smaller value), it replaces the high vertex of the
+              amoeba.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  try_amoeba(
     amoeba_struct  *amoeba,
@@ -114,6 +210,23 @@ private  Real  try_amoeba(
 }
 
 #define  N_STEPS_NO_IMPROVEMENT  10
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : perform_amoeba
+@INPUT      : amoeba
+@OUTPUT     : 
+@RETURNS    : TRUE if numerically significant improvement
+@DESCRIPTION: Performs one iteration of an amoeba, returning true if a
+              numerically significant improvement has been found recently.
+              Even if it returns FALSE, you can keep calling this function,
+              since it may be contracting with no improvement, but will 
+              eventually shrink small enough to get an improvment.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  perform_amoeba(
     amoeba_struct  *amoeba )

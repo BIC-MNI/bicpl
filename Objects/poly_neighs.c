@@ -1,6 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.8 1995-07-31 13:45:14 david Exp $";
+#endif
 
 #define  INVALID_ID       -1
 
@@ -25,22 +42,54 @@ private   void   create_polygon_neighbours(
     int    n_polygons,
     int    indices[],
     int    end_indices[],
-    int    *neighbours[] );
+    int    neighbours[] );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : check_polygons_neighbours_computed
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Creates the polygons neighbours (neighbouring polygon index for
+              each polygon edge), if necessary.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  check_polygons_neighbours_computed(
     polygons_struct   *polygons )
 {
-    if( polygons->neighbours == (int *) 0 )
+    if( polygons->neighbours == NULL && polygons->n_items > 0 )
+    {
+        ALLOC( polygons->neighbours,polygons->end_indices[polygons->n_items-1]);
         create_polygon_neighbours( polygons->n_items, polygons->indices,
                                    polygons->end_indices,
-                                   &polygons->neighbours );
+                                   polygons->neighbours );
+    }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_polygon_neighbours
+@INPUT      : n_polygons
+              indices
+              end_indices
+@OUTPUT     : neighbours
+@RETURNS    : 
+@DESCRIPTION: Computes the neighbours for each edge of the polygons
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private   void   create_polygon_neighbours(
     int    n_polygons,
     int    indices[],
     int    end_indices[],
-    int    *neighbours[] )
+    int    neighbours[] )
 {
     int                 keys[2], i, edge, i0, i1, size;
     int                 start_index, end_index;
@@ -54,10 +103,8 @@ private   void   create_polygon_neighbours(
 
     if( n_polygons > 0 )
     {
-        ALLOC( *neighbours, end_indices[n_polygons-1] );
-
         for_less( i, 0, end_indices[n_polygons-1] )
-            (*neighbours)[i] = INVALID_ID;
+            neighbours[i] = INVALID_ID;
     }
 
     initialize_hash_table( &edge_table, 2,
@@ -87,7 +134,7 @@ private   void   create_polygon_neighbours(
             if( remove_from_hash_table( &edge_table, keys,
                                         (void **) &edge_ptr ) )
             {
-                assign_neighbours( indices, end_indices, *neighbours,
+                assign_neighbours( indices, end_indices, neighbours,
                                    i, edge, edge_ptr->polygon_index,
                                    &topology_error );
                 FREE( edge_ptr );
@@ -129,7 +176,7 @@ private   void   create_polygon_neighbours(
         n_open = 0;
         for_less( i, 0, end_indices[n_polygons-1] )
         {
-            if( (*neighbours)[i] == INVALID_ID )
+            if( neighbours[i] == INVALID_ID )
                 ++n_open;
         }
     
@@ -141,6 +188,27 @@ private   void   create_polygon_neighbours(
     }
 #endif
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : assign_neighbours
+@INPUT      : indices
+              end_indices
+              polygon1
+              edge1
+              polygon2
+@OUTPUT     : neighbours
+              topology_error
+@RETURNS    : 
+@DESCRIPTION: Assigns the neighbour for edge1 of polygon1 to be polygon2
+              and for the corresponding edge of polygon2 to be polygon1.
+              If either one has already been assigned, then a topology error
+              is flagged.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  assign_neighbours(
     int       indices[],

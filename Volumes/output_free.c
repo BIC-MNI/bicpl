@@ -1,5 +1,39 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.17 1995-07-31 13:45:46 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : output_volume_free_format
+@INPUT      : prefix
+              volume
+              axis_ordering
+@OUTPUT     : 
+@RETURNS    : OR or ERROR
+@DESCRIPTION: Outputs a volume in the simple free format.  Will probably
+              become obsolete soon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  output_volume_free_format(
     char           prefix[],

@@ -1,5 +1,40 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.6 1995-07-31 13:45:04 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_baricentric
+@INPUT      : point
+              p1
+              p2
+              p3
+@OUTPUT     : 
+@RETURNS    : baricentric coordinate
+@DESCRIPTION: Returns the baricentric coordinate of the point within the
+              triangle (p1,p2,p3), relative to the p3 point.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  get_baricentric(
     Point       *point,
@@ -22,6 +57,24 @@ private  Real  get_baricentric(
     return( weight );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_triangle_interpolation_weights
+@INPUT      : point
+              points
+@OUTPUT     : weights
+@RETURNS    : 
+@DESCRIPTION: Computes the triangle interpolation weights, meaning the weights
+              corresponding to each vertex.  If the values at the vertex are
+              v[0], v[1], v[2], they can be interpolated at point as
+              value at point = v[0] * weights[0] + v[1] * weights[1] +
+                               v[2] * weights[2].
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  get_triangle_interpolation_weights(
     Point       *point,
     Point       points[],
@@ -32,46 +85,24 @@ private  void  get_triangle_interpolation_weights(
     weights[2] = get_baricentric( point, &points[0], &points[1], &points[2] );
 }
 
-private  Real   distance_to_segment(
-    Point   *point,
-    Point   *p1,
-    Point   *p2,
-    Real    *alpha )
-{
-    Vector   delta, offset, scaled_delta;
-    Real     d_dot_d;
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_lines_2d
+@INPUT      : p1
+              p2
+              q1
+              q2
+@OUTPUT     : intersect
+@RETURNS    : TRUE if lines intersect
+@DESCRIPTION: Tests if two 2d lines intersect, i.e., are not parallel, and
+              passes back the point of intersection.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
-    SUB_POINTS( delta, *p2, *p1 );
-    SUB_POINTS( offset, *point, *p1 );
-
-    d_dot_d = DOT_VECTORS( delta, delta );
-
-    if( d_dot_d == 0.0 )
-    {
-        *alpha = 0.0;
-        return( distance_between_points( point, p1 ) );
-    }
-
-    *alpha = DOT_VECTORS( offset, delta ) / d_dot_d;
-
-    if( *alpha <= 0.0 )
-    {
-        *alpha = 0.0;
-        return( distance_between_points( point, p1 ) );
-    }
-    else if( *alpha >= 1.0 )
-    {
-        *alpha = 1.0;
-        return( distance_between_points( point, p2 ) );
-    }
-
-    SCALE_VECTOR( scaled_delta, delta, *alpha );
-    SUB_POINTS( offset, offset, scaled_delta );
-
-    return( MAGNITUDE( offset ) );
-}
-
-private  BOOLEAN  intersect_lines(
+private  BOOLEAN  intersect_lines_2d(
     Point    *p1,
     Point    *p2,
     Point    *q1,
@@ -102,6 +133,24 @@ private  BOOLEAN  intersect_lines(
     return( intersects );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_two_d_coordinate
+@INPUT      : p
+              p1
+              p2
+              q1
+              q2
+@OUTPUT     : 
+@RETURNS    : two coordinate
+@DESCRIPTION: Returns a coordinate distance between 0 and 1 for a point in
+              a quadrilateral, whose two opposite sides are p1--p2 and q1--q2.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Real  get_two_d_coordinate(
     Point    *p,
     Point    *p1,
@@ -115,15 +164,11 @@ private  Real  get_two_d_coordinate(
 
     SUB_POINTS( p1_q1, *q1, *p1 );
 
-    if( intersect_lines( p1, p2, q1, q2, &intersect ) )
+    if( intersect_lines_2d( p1, p2, q1, q2, &intersect ) )
     {
-        if( !intersect_lines( &intersect, p, p1, q1, &point ) )
-        {
-/*
-            handle_internal_error( "get_two_d_coordinate" );
-*/
+        if( !intersect_lines_2d( &intersect, p, p1, q1, &point ) )
             return( 0.0 );
-        }
+
         SUB_POINTS( p_p1, point, *p1 );
         factor = DOT_VECTORS( p_p1, p1_q1 ) / DOT_VECTORS( p1_q1, p1_q1 );
     }
@@ -138,6 +183,21 @@ private  Real  get_two_d_coordinate(
 
     return( factor );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadrilateral_interpolation_weights
+@INPUT      : point
+              points  - 4 points
+@OUTPUT     : weights
+@RETURNS    : 
+@DESCRIPTION: Gets the interpolation weights of the 4 quadrilateral vertices,
+              by getting the equivalent u and v components on a unit square.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  get_quadrilateral_interpolation_weights(
     Point       *point,
@@ -157,6 +217,20 @@ private  void  get_quadrilateral_interpolation_weights(
     weights[3] = (1.0 - u) *        v;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_arbitrary_polygon_interpolation_weights
+@INPUT      : point
+              n_points
+@OUTPUT     : weights
+@RETURNS    : 
+@DESCRIPTION: Computes the interpolation weights of each vertex of a polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  get_arbitrary_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
@@ -173,8 +247,9 @@ private  void  get_arbitrary_polygon_interpolation_weights(
 
     for_less( i, 0, n_points )
     {
-        dist = distance_to_segment( point, &points[i], &points[(i+1)%n_points],
-                                    &alpha );
+        dist = get_distance_to_line_segment( point,
+                                           &points[i], &points[(i+1)%n_points],
+                                           &alpha );
 
         if( dist == 0.0 )
         {
@@ -196,6 +271,21 @@ private  void  get_arbitrary_polygon_interpolation_weights(
         weights[i] /= sum_weights;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygon_interpolation_weights
+@INPUT      : point
+              n_points
+              points
+@OUTPUT     : weights
+@RETURNS    : 
+@DESCRIPTION: Computes the interpolation weights for the polygon vertices.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  get_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
@@ -210,6 +300,23 @@ public  void  get_polygon_interpolation_weights(
         get_arbitrary_polygon_interpolation_weights( point, n_points, points,
                                                      weights );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : map_point_between_polygons
+@INPUT      : p1           - polygons struct
+              poly_index   - which polygon
+              p1_point     - a point in the polygon
+              p2           - the destination polygons of same topology
+@OUTPUT     : p2_point     - the corresponding point in the second polygon
+@RETURNS    : 
+@DESCRIPTION: Given two polygons of the same topology and a point in the first
+              polygon, finds the corresponding point in the second polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  map_point_between_polygons(
     polygons_struct  *p1,
@@ -240,6 +347,21 @@ public  void  map_point_between_polygons(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : map_point_to_unit_sphere
+@INPUT      : p
+              point
+              unit_sphere
+@OUTPUT     : unit_sphere_point
+@RETURNS    : 
+@DESCRIPTION: Maps a point on a polygon to the unit sphere of the same topology.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  map_point_to_unit_sphere(
     polygons_struct  *p,
     Point            *point,
@@ -260,11 +382,29 @@ public  void  map_point_to_unit_sphere(
 
     mag = MAGNITUDE( offset );
 
+    /*--- project it to the sphere */
+
     if( mag != 1.0 )
     {
         SCALE_POINT( *unit_sphere_point, *unit_sphere_point, 1.0 / mag );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : polygon_transform_point
+@INPUT      : src_object
+              dest_object
+              src_point
+@OUTPUT     : dest_point
+@RETURNS    : 
+@DESCRIPTION: Finds the point on the destination polygons corresponding to the
+              src_point on the source polygons.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  polygon_transform_point(
     object_struct   *src_object,
@@ -282,6 +422,22 @@ private  void  polygon_transform_point(
                                 &point, get_polygons_ptr(dest_object),
                                 dest_point );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : polygon_transform_points
+@INPUT      : src_polygons
+              dest_polygons
+              n_points
+              src_points
+@OUTPUT     : dest_points
+@RETURNS    : 
+@DESCRIPTION: Maps each of the src_point to the dest_polygons.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  polygon_transform_points(
     polygons_struct   *src_polygons,

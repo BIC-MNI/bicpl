@@ -1,5 +1,24 @@
+
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <objects.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.4 1995-07-31 13:45:19 david Exp $";
+#endif
 
 private Colour ANTIQUE_WHITE_COL;
 private Colour ALICE_BLUE_COL;
@@ -299,6 +318,20 @@ private  colours_struct  colour_lookup[] =
 };
 
 private   BOOLEAN  strings_equivalent( char [], char [] );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : check_initialize_colours
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: The first time it is called, this function creates the global
+              colour variables.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  check_initialize_colours()
 {
@@ -886,6 +919,23 @@ public  Colour  convert_string_to_colour(
     return( colour );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_colour_distance
+@INPUT      : r   : in range 0 to 255
+              g
+              b
+@OUTPUT     : 
+@RETURNS    : Squared Distance
+@DESCRIPTION: Returns the squared distance between two colours, one
+              specified by its rgb components, and the other as a Colour
+              entity.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int  get_colour_distance(
     int      r,
     int      g,
@@ -900,6 +950,24 @@ public  int  get_colour_distance(
 
     return( dr * dr + dg * dg + db * db );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_closest_colour
+@INPUT      : r
+              g
+              b
+              n_colours
+              colours[]
+@OUTPUT     : 
+@RETURNS    : index into colours[]
+@DESCRIPTION: Finds the closest colour in a list of colours, returning the
+              index.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int   find_closest_colour(
     int     r,
@@ -926,6 +994,19 @@ public  int   find_closest_colour(
     return( min_index );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_Colour_luminance
+@INPUT      : colour
+@OUTPUT     : 
+@RETURNS    : value between 0 and 255
+@DESCRIPTION: Converts a colour to gray-scale.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int  get_Colour_luminance(
     Colour   colour )
 {
@@ -934,12 +1015,27 @@ public  int  get_Colour_luminance(
                    0.114 * (Real) get_Colour_b(colour) ) );
 }
 
-public  Colour  SCALE_COLOUR(
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : scale_colour
+@INPUT      : colour
+              factor
+@OUTPUT     : 
+@RETURNS    : Colour
+@DESCRIPTION: Scales a colour by a factor, but not the alpha component.  Does
+              not check for overflow.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  Colour  scale_colour(
     Colour   colour,
     Real     factor )
 {
-    return( make_rgba_Colour( (int) (get_Colour_r(colour) * factor),
-                              (int) (get_Colour_g(colour) * factor),
-                              (int) (get_Colour_b(colour) * factor),
+    return( make_rgba_Colour( (int) (get_Colour_r(colour) * factor + 0.5),
+                              (int) (get_Colour_g(colour) * factor + 0.5),
+                              (int) (get_Colour_b(colour) * factor + 0.5),
                               get_Colour_a(colour) ) );
 }

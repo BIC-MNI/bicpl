@@ -1,6 +1,38 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/graphics_io.c,v 1.5 1995-07-31 13:45:08 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_graphics_file
+@INPUT      : filename
+@OUTPUT     : format
+              n_objects
+              object_list
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Inputs a file of graphics objects.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status   input_graphics_file(
     char           filename[],
@@ -40,6 +72,22 @@ public  Status   input_graphics_file(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : output_graphics_file
+@INPUT      : filename
+              format
+              n_objects
+              object_list
+@OUTPUT     : 
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Writes a file of graphics objects.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status   output_graphics_file(
     char           filename[],
     File_formats   format,
@@ -67,6 +115,25 @@ public  Status   output_graphics_file(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_objects_any_format
+@INPUT      : volume
+              filename
+              marker_colour  \
+              marker_size      these three used to set tag information
+              marker_type    /
+@OUTPUT     : n_objects
+              object_list
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Inputs a landmark file, a tag point file, or a graphics file,
+              creating graphics objects.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status   input_objects_any_format(
     Volume         volume,

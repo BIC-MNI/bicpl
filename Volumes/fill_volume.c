@@ -1,10 +1,49 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/fill_volume.c,v 1.4 1995-07-31 13:45:52 david Exp $";
+#endif
 
 typedef struct
 {
     int  x, y, z;
 } xyz_struct;
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : fill_connected_voxels
+@INPUT      : volume
+              label_volume
+              connectivity
+              voxel
+              min_label_threshold
+              max_label_threshold
+              desired_label
+              min_threshold
+              max_threshold
+@OUTPUT     : 
+@RETURNS    : TRUE if changed
+@DESCRIPTION: Performs a 3D fill from the specified voxel.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  fill_connected_voxels(
     Volume              volume,
@@ -112,6 +151,19 @@ private   int   Dy4[4] = { 0, 1,  0, -1 };
 private   int   Dx8[8] = {  1,  1,  0, -1, -1, -1,  0,  1 };
 private   int   Dy8[8] = {  0,  1,  1,  1,  0, -1, -1, -1 };
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_neighbour_directions
+@INPUT      : connectivity
+@OUTPUT     : dx
+              dy
+@RETURNS    : number of directions
+@DESCRIPTION: Passes back the neighbour directions of a 2D grid.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  get_neighbour_directions(
     Neighbour_types   connectivity,
@@ -146,6 +198,19 @@ private   int   Dx26[26];
 private   int   Dy26[26];
 private   int   Dz26[26];
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_3D_neighbours
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Initializes the 3D neighbours.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  create_3D_neighbours()
 {
     int   x, y, z, n;
@@ -169,6 +234,21 @@ private  void  create_3D_neighbours()
         HANDLE_INTERNAL_ERROR( "create_3D_neighbours" );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_3D_neighbour_directions
+@INPUT      : connectivity
+@OUTPUT     : dx
+              dy
+              dz
+@RETURNS    : number of directions
+@DESCRIPTION: Passes back the neighbour directions of a 3D grid.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  get_3D_neighbour_directions(
     Neighbour_types   connectivity,
@@ -204,6 +284,26 @@ public  int  get_3D_neighbour_directions(
 
     return( n_dirs );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : should_change_this_one
+@INPUT      : volume
+              label_volume
+              voxel
+              min_threshold
+              max_threshold
+              label_min_threshold
+              label_max_threshold
+              desired_label
+@OUTPUT     : 
+@RETURNS    : TRUE if should change this
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  should_change_this_one(
     Volume          volume,

@@ -1,5 +1,40 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.33 1995-07-31 13:45:46 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : clip
+@INPUT      : left_edge
+              right_edge
+              origin
+              delta
+@OUTPUT     : t_min
+              t_max
+@RETURNS    : 
+@DESCRIPTION: Clips one row of a slice.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  clip(
     Real  left_edge,
@@ -70,6 +105,20 @@ typedef  struct
 }
 render_storage_struct;
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : initialize_render_storage
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : pointer to storage
+@DESCRIPTION: Creates a structure containing rendering arrays, so that it
+              can be used for many slice renders, without allocating many times.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void   *initialize_render_storage()
 {
     render_storage_struct  *store;
@@ -91,6 +140,19 @@ public  void   *initialize_render_storage()
 
     return( void_ptr );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_render_storage
+@INPUT      : ptr
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the render storage.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void   delete_render_storage(
     void  *ptr )
@@ -137,6 +199,19 @@ public  void   delete_render_storage(
 
     FREE( store );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : render_volume_to_slice
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Renders a slice.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  render_volume_to_slice(
     int             n_dims1,
@@ -499,16 +574,16 @@ public  void  render_volume_to_slice(
                 row_offsets2[s] = which_x_offsets2[s][y];
         }
 
-        render_the_slice( volume_data1, volume1_type,
-                          y, start_x[y], end_x[y],
-                          y_offsets1, row_offsets1, start_slices1,
-                          n_slices1, weights1,
-                          volume_data2, volume2_type,
-                          y_offsets2, row_offsets2, start_slices2,
-                          n_slices2, weights2,
-                          cmode_colour_map,
-                          rgb_colour_map,
-                          pixels );
+        render_one_row( volume_data1, volume1_type,
+                        y, start_x[y], end_x[y],
+                        y_offsets1, row_offsets1, start_slices1,
+                        n_slices1, weights1,
+                        volume_data2, volume2_type,
+                        y_offsets2, row_offsets2, start_slices2,
+                        n_slices2, weights2,
+                        cmode_colour_map,
+                        rgb_colour_map,
+                        pixels );
 
         if( pixels->pixel_type == RGB_PIXEL )
         {

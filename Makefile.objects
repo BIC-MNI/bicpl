@@ -22,7 +22,6 @@ TRANSFORM_OBJ = \
 GEOMETRY_OBJ = \
                Geometry/closest_point.o \
                Geometry/curvature.o \
-               Geometry/generate_tube.o \
                Geometry/geometry.o \
                Geometry/intersect.o \
                Geometry/line_circle.o \

@@ -1,3 +1,18 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              Peter Neelin, Louis Collins,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : matrix_basics.c
 @DESCRIPTION: File containing routines for doing basic matrix calculations
@@ -12,8 +27,10 @@
 #include  <internal_volume_io.h>
 #include  <trans.h>
 
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/matrix_basics.c,v 1.13 1995-07-31 13:46:01 david Exp $";
+#endif
 
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : transpose
 @INPUT      : rows    - number of rows

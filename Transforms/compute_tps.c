@@ -1,3 +1,18 @@
+
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : compute_tps.c
 @INPUT      : 
@@ -11,12 +26,15 @@
 @CREATED    : Dec 2, 1991 LC
 @MODIFIED   : Mon Apr  5 09:00:54 EST 1993 louis 
                 - building new library routines, with prototypes
-@MODIFIED   : Jul 6 1995,   David MacDonald removed recipes type code
+@MODIFIED   : Jul 6 1995,   David MacDonald removed recipes type code, rewrote
 ---------------------------------------------------------------------------- */
-
 
 #include <internal_volume_io.h>
 #include <trans.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.10 1995-07-31 13:45:59 david Exp $";
+#endif
 
 /* prototype definitions: */
 
@@ -35,6 +53,24 @@ private  void  makeL(
     int    n_dims );
 
 /* This function will get coefficients of the warping function. */
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_nonlinear_warp
+@INPUT      : positions
+              values
+              n_points
+              n_dims
+              n_values
+@OUTPUT     : INVMLY
+@RETURNS    : 
+@DESCRIPTION: Computes the thin plate splines weights required to interpolate
+              the given values at the positions.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  get_nonlinear_warp(
    Real     **positions,   /* n_points x n_dims */
@@ -63,13 +99,23 @@ public  void  get_nonlinear_warp(
    FREE2D( INVML );
 }
 
-		/* this function will build the L matrix for image deformation.
-		 * ML  -   store the L matrix.	
-		 * n_points - is integer for number of landmarks.
-		 * n_dims -  This is the dimension of the image.
-		 *        n_dims = 2 for the 2-D image deformation.
-		 *        n_dims = 3 for the 3-D image deformation.
-		 */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : makeL
+@INPUT      : positions
+              n_points
+              n_dims
+@OUTPUT     : 
+              ML
+@RETURNS    : 
+@DESCRIPTION: Creates the L matrix full of distance weights for the positions,
+              used for computing the weights.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  makeL(
     Real   **positions,
     Real   **ML,
@@ -112,6 +158,24 @@ private  void  makeL(
         }
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : calculate_weights
+@INPUT      : YM
+              INVML
+              n_points
+              n_dims
+              n_values
+@OUTPUT     : INVMLY
+@RETURNS    : 
+@DESCRIPTION: Computes the weights by multiplying the Y matrix by the
+              inverse of the L matrix.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  calculate_weights(
     Real    **YM,

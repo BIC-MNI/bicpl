@@ -1,5 +1,38 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <numerical.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/histogram.c,v 1.8 1995-07-31 13:45:21 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : initialize_histogram
+@INPUT      : delta
+              offset
+@OUTPUT     : histogram
+@RETURNS    : 
+@DESCRIPTION: Initializes a histogram of boxes whose boundaries are integer
+              multiples of delta from offset.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  initialize_histogram(
     histogram_struct  *histogram,
@@ -13,6 +46,19 @@ public  void  initialize_histogram(
     histogram->max_index = -1;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_histogram
+@INPUT      : histogram
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the histogram.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  delete_histogram(
     histogram_struct  *histogram )
 {
@@ -21,6 +67,21 @@ public  void  delete_histogram(
         FREE( histogram->counts );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_histogram_index
+@INPUT      : histogram
+              value
+@OUTPUT     : 
+@RETURNS    : box index
+@DESCRIPTION: Converts a real value to a histogram box index, which can be
+              positive, zero, or negative.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  int  get_histogram_index(
     histogram_struct  *histogram,
@@ -33,6 +94,20 @@ private  int  get_histogram_index(
     return( ind );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_real_index_to_value
+@INPUT      : histogram
+              ind
+@OUTPUT     : 
+@RETURNS    : value
+@DESCRIPTION: Converts a histogram box index to a real value.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Real  convert_real_index_to_value(
     histogram_struct  *histogram,
     Real              ind )
@@ -40,12 +115,43 @@ private  Real  convert_real_index_to_value(
     return( ind * histogram->delta + histogram->offset );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_index_to_value
+@INPUT      : histogram
+              ind
+@OUTPUT     : 
+@RETURNS    : value
+@DESCRIPTION: Converts a histogram box index to a real value, which is the
+              left edge of the ind'th box.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Real  convert_index_to_value(
     histogram_struct  *histogram,
     int               ind )
 {
     return( convert_real_index_to_value( histogram, (Real) ind ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : add_to_histogram
+@INPUT      : histogram
+              value
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Adds a value to the histogram, by finding the box it belongs in,
+              expanding the list of histogram boxes, if needed, and incrementing
+              the box count for that box.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  add_to_histogram(
     histogram_struct  *histogram,
@@ -55,14 +161,14 @@ public  void  add_to_histogram(
 
     ind = get_histogram_index( histogram, value );
 
-    if( histogram->min_index > histogram->max_index )
+    if( histogram->min_index > histogram->max_index )   /* first box */
     {
         ALLOC( histogram->counts, 1 );
         histogram->counts[0] = 1;
         histogram->min_index = ind;
         histogram->max_index = ind;
     }
-    else if( ind < histogram->min_index )
+    else if( ind < histogram->min_index )   /* need to expand below */
     {
         prev_size = histogram->max_index - histogram->min_index + 1;
         new_size = histogram->max_index - ind + 1;
@@ -81,7 +187,7 @@ public  void  add_to_histogram(
 
         histogram->min_index = ind;
     }
-    else if( ind > histogram->max_index )
+    else if( ind > histogram->max_index )    /* need to expand above */
     {
         prev_size = histogram->max_index - histogram->min_index + 1;
         new_size = ind - histogram->min_index + 1;
@@ -94,9 +200,24 @@ public  void  add_to_histogram(
 
         histogram->max_index = ind;
     }
-    else
+    else                                     /* box already exists */
         ++histogram->counts[ind-histogram->min_index];
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_histogram_range
+@INPUT      : histogram
+@OUTPUT     : min_value
+              max_value
+@RETURNS    : 
+@DESCRIPTION: Passes back the range of the histogram, which is the left
+              edge of the first box, and the right edge of the last box.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  get_histogram_range(
     histogram_struct  *histogram,
@@ -106,6 +227,19 @@ private  void  get_histogram_range(
     *min_value = convert_index_to_value( histogram, histogram->min_index );
     *max_value = convert_index_to_value( histogram, histogram->max_index + 1 );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_histogram_max_count
+@INPUT      : histogram
+@OUTPUT     : 
+@RETURNS    : maximum count
+@DESCRIPTION: Finds the maximum number of counts in the histogram boxes.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  int  get_histogram_max_count(
     histogram_struct  *histogram )
@@ -122,6 +256,23 @@ private  int  get_histogram_max_count(
 
     return( max_count );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : box_filter_histogram
+@INPUT      : n
+              counts
+              width
+@OUTPUT     : new_counts
+@RETURNS    : 
+@DESCRIPTION: Box filters the histogram boxes into another set of boxes
+              which corresponds to the average number of counts in the
+              range i - width to i + width.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  box_filter_histogram(
     int          n,
@@ -151,6 +302,24 @@ private  void  box_filter_histogram(
             current_value += counts[end_index];
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_histogram_counts
+@INPUT      : histogram
+              filter_width
+@OUTPUT     : counts
+              scale_factor
+              trans_factor
+@RETURNS    : n
+@DESCRIPTION: Gets the histogram counts, after filtering as necessary.
+              and a scale and trans factor for converting counts indices
+              to real values.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  get_histogram_counts(
     histogram_struct  *histogram,
@@ -185,6 +354,24 @@ public  int  get_histogram_counts(
 
     return( n );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : resample_histogram
+@INPUT      : histogram
+              x_size
+              y_size
+@OUTPUT     : x_scale
+              y_scale
+              height
+@RETURNS    : 
+@DESCRIPTION: Resamples the histogram to fit in a grid of x_size boxes by
+              max y_size counts.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  resample_histogram(
     histogram_struct  *histogram,
@@ -241,6 +428,21 @@ private  void  resample_histogram(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : display_histogram
+@INPUT      : histogram
+              x_size
+              y_size
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Displays the histogram as an ascii plot.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  display_histogram(
     histogram_struct  *histogram,
     int               x_size,
@@ -274,6 +476,22 @@ public  void  display_histogram(
 
     FREE( n_chars );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_histogram_line
+@INPUT      : histogram
+              x_size
+              y_size
+              filter_width
+@OUTPUT     : lines
+@RETURNS    : 
+@DESCRIPTION: Creates a lines structure corresponding to the histogram.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  create_histogram_line(
     histogram_struct  *histogram,

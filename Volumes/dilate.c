@@ -1,5 +1,47 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <bicpl.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.5 1995-07-31 13:45:51 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : dilate_labeled_voxels_3d
+@INPUT      : volume
+              label_volume
+              min_inside_label
+              max_inside_label
+              min_inside_value
+              max_inside_value
+              min_outside_label
+              max_outside_label
+              min_outside_value
+              max_outside_value
+              new_label
+              connectivity
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Dilates the label volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  dilate_labeled_voxels_3d(
     Volume          volume,

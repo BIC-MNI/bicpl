@@ -1,5 +1,42 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.13 1995-07-31 13:44:54 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygon_vertex_curvatures
+@INPUT      : polygons
+              smoothing_distance
+              low_threshold
+@OUTPUT     : curvatures
+@RETURNS    : 
+@DESCRIPTION: Computes the curvatures at each vertex of the polygon, using
+              1 of two methods.  If smoothing distance is zero, computes
+              instantaneous curvature in terms of a fractional relative
+              curvature.  If non-zero, returns +/- angle in degrees of the
+              smoothed curvature.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1994    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  get_polygon_vertex_curvatures(
     polygons_struct   *polygons,

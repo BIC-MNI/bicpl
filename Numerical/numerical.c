@@ -1,6 +1,24 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <numerical.h>
 #include  <limits.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.18 1995-07-31 13:45:20 david Exp $";
+#endif
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : numerically_close
@@ -84,6 +102,20 @@ public  Real  get_good_round_value(
 
     return( sign * rounded );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : round_to_nearest_multiple
+@INPUT      : value
+              multiple_value
+@OUTPUT     : 
+@RETURNS    : some multiple of multiple_value 
+@DESCRIPTION: Returns the nearest integer multiple of multiple_value near value.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Real  round_to_nearest_multiple(
     Real    value,

@@ -1,6 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/path_surface.c,v 1.5 1995-07-31 13:44:55 david Exp $";
+#endif
 
 private  void  follow_path(
     int   polygon1,
@@ -12,6 +29,26 @@ private  void  follow_path(
     int   path[] );
 
 #define  INVALID_DISTANCE   -1
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_path_between_polygons
+@INPUT      : polygon1
+              polygon2
+              n_polygons
+              end_indices
+              visibilities
+@OUTPUT     : path_exists
+              path_length
+              path
+@RETURNS    : 
+@DESCRIPTION: Finds the shortest path between two polygons, in terms of the
+              number of intervening polygons.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public   void   find_path_between_polygons(
     int            polygon1,
@@ -32,9 +69,7 @@ public   void   find_path_between_polygons(
     ALLOC( distances, n_polygons );
 
     for_less( i, 0, n_polygons )
-    {
         distances[i] = INVALID_DISTANCE;
-    }
 
     n_step[0] = 0;
     n_step[1] = 0;
@@ -123,6 +158,25 @@ public   void   find_path_between_polygons(
 
     FREE( distances );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : follow_path
+@INPUT      : polygon1
+              polygon2
+              end_indices
+              neighbours
+              distances
+              path_length
+@OUTPUT     : path
+@RETURNS    : 
+@DESCRIPTION: Fills in the path from polygon1 to polygon2, given the distances
+              of every polygon from polygon1.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  follow_path(
     int   polygon1,

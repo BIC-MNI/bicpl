@@ -1,5 +1,39 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <bicpl.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.3 1995-07-31 13:45:53 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_volume_crop_bounds
+@INPUT      : volume
+              min_crop_threshold
+              max_crop_threshold
+@OUTPUT     : limits
+@RETURNS    : TRUE if volume can be cropped
+@DESCRIPTION: Checks if the volume can be cropped, where values between
+              min_crop_threshold and max_crop_threshold can be cropped.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  find_volume_crop_bounds(
     Volume          volume,
@@ -89,6 +123,20 @@ public  BOOLEAN  find_volume_crop_bounds(
 
     return( limits[0][X] < limits[1][X] );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_cropped_volume
+@INPUT      : volume
+              limits
+@OUTPUT     : 
+@RETURNS    : cropped volume
+@DESCRIPTION: Crops a volume to the specified limits.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Volume  create_cropped_volume(
     Volume          volume,

@@ -1,6 +1,24 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <geom.h>
 #include  <numerical.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.13 1995-07-31 13:44:56 david Exp $";
+#endif
 
 private  int  get_n_sphere_points(
     int   n_up,
@@ -19,6 +37,28 @@ private  void  get_subdivided_point(
     Point    input_points[],
     int      input_n_up,
     Point    *point );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_polygons_sphere
+@INPUT      : centre
+              x_size
+              y_size
+              z_size
+              n_up
+              n_around
+              subdividing_flag
+@OUTPUT     : polygons
+@RETURNS    : 
+@DESCRIPTION: Creates a tessellated sphere, using lines of latitude and
+              longitude to create triangles around the poles, and quadrilaterals
+              everywhere else.  If subdividing_flag is true, then we are
+              subdividing the polygons and are maintaining its sphere topology.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  create_polygons_sphere(
     Point            *centre,
@@ -191,6 +231,24 @@ public  void  create_polygons_sphere(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_sphere_point_index
+@INPUT      : up
+              around
+              n_up
+              n_around
+@OUTPUT     : 
+@RETURNS    : index
+@DESCRIPTION: Computes the point index in the sphere tessellation, where
+              up is in range 0 to n_up, and around is in the range of 0
+              to n_around-1.  up = 0 and up == n_up correspond to the 2 poles.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int  get_sphere_point_index(
     int   up,
     int   around,
@@ -222,12 +280,44 @@ public  int  get_sphere_point_index(
     return( point_index );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_n_sphere_points
+@INPUT      : n_up
+              n_around
+@OUTPUT     : 
+@RETURNS    : number of points
+@DESCRIPTION:
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  int  get_n_sphere_points(
     int   n_up,
     int   n_around )
 {
     return( 2 + (n_up-1) * n_around );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_sphere_point
+@INPUT      : up        : between 0 and 1
+              around    : between 0 and 1
+              centre
+              x_size
+              y_size
+              z_size
+@OUTPUT     : point
+@RETURNS    : 
+@DESCRIPTION: Computes a point on a sphere.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  get_sphere_point(
     Real     up,
@@ -248,6 +338,22 @@ private  void  get_sphere_point(
                         Point_y(*centre) + dy,
                         Point_z(*centre) + dz );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_subdivided_point
+@INPUT      : up
+              around
+              input_points
+              input_n_up
+@OUTPUT     : point
+@RETURNS    : 
+@DESCRIPTION: Finds the point in the subdivided sphere topology.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  get_subdivided_point(
     int      up,
@@ -293,6 +399,19 @@ private  void  get_subdivided_point(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : is_this_sphere_topology
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : TRUE or FALSE
+@DESCRIPTION: Returns true if the polygons are of sphere topology.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  is_this_sphere_topology(
     polygons_struct  *polygons )
 {
@@ -300,6 +419,20 @@ public  BOOLEAN  is_this_sphere_topology(
 
     return( get_tessellation_of_polygons_sphere( polygons, &tess ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_tessellation_of_polygons_sphere
+@INPUT      : polygons
+@OUTPUT     : tess
+@RETURNS    : TRUE or FALSE
+@DESCRIPTION: Determines if the polygons is of sphere topology and if so,
+              what tessellation.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  get_tessellation_of_polygons_sphere(
     polygons_struct  *polygons,
@@ -352,6 +485,20 @@ public  BOOLEAN  get_tessellation_of_polygons_sphere(
     return( is_sphere );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_tessellation_with_n_points
+@INPUT      : n_points
+@OUTPUT     : 
+@RETURNS    : tess
+@DESCRIPTION: Given the number of points in the polygons, finds a sphere
+              tessellation n_up that corresponds to this.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int  get_tessellation_with_n_points(
     int   n_points )
 {
@@ -380,6 +527,20 @@ public  int  get_tessellation_with_n_points(
 
     return( 0 );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : half_sample_sphere_tessellation
+@INPUT      : polygons
+@OUTPUT     : half
+@RETURNS    : 
+@DESCRIPTION: Half samples the sphere tessellation polygon, maintaining a
+              sphere topology.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  half_sample_sphere_tessellation(
     polygons_struct   *polygons,

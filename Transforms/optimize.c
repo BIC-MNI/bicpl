@@ -1,6 +1,25 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              Peter Neelin, Louis Collins,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include <internal_volume_io.h>
 #include <trans.h>
 #include <numerical.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.10 1995-07-31 13:46:01 david Exp $";
+#endif
 
 #define   FUNCTION_TOLERANCE    1e-6
 #define   INITIAL_SIMPLEX_SIZE  3.0
@@ -17,10 +36,14 @@ typedef struct
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : lsq_objective
-@INPUT      :  lt - a transformation matrix (with translation on the last column)
+@INPUT      :  lt - a transformation matrix
+               pts1
+               pts2
+               npoints
 @OUTPUT     : 
-@RETURNS    : 
-@DESCRIPTION:         apply matrix lt to pts2 and measure distance from pts1.              
+@RETURNS    : sum of square error 
+@DESCRIPTION: Transforms the pts2 and takes the sum squared distance from
+              pts1.
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    : 
@@ -107,11 +130,14 @@ private  Real  lsq_objective(
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : fit_function
-@INPUT      : params - a variable length array of real
+@INPUT      : func_data - info for evaluation the fit function
+              params - a variable length array of real
 @OUTPUT     :               
 @RETURNS    : a Real value of the user requested objective function,
               measuring the similarity between two data sets.
-@DESCRIPTION: 
+@DESCRIPTION: This function
+              is passed to the general purpose amoeba routine to be called
+              as the function to minimize.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 

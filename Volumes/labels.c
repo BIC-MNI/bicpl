@@ -1,5 +1,36 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.25 1995-07-31 13:45:44 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_label_volume_real_range
+@INPUT      : volume
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the real range to be equal to the voxel range.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  set_label_volume_real_range(
     Volume  volume )
@@ -14,6 +45,20 @@ public  void  set_label_volume_real_range(
     else
         volume->real_range_set = FALSE;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_label_volume
+@INPUT      : volume
+              type
+@OUTPUT     : 
+@RETURNS    : a volume
+@DESCRIPTION: Creates a label volume with the same tessellation as the volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Volume  create_label_volume(
     Volume  volume,
@@ -31,6 +76,19 @@ public  Volume  create_label_volume(
 
     return( label_volume );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : check_alloc_label_data
+@INPUT      : volume
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Checks if the label data has been allocated.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  check_alloc_label_data(
     Volume  volume )
@@ -137,6 +195,22 @@ public  int  get_volume_label_data(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_3D_volume_label_data
+@INPUT      : volume
+              x
+              y
+              z
+@OUTPUT     : 
+@RETURNS    : label
+@DESCRIPTION: Gets the label value of a 3D label volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int  get_3D_volume_label_data(
     Volume          volume,
     int             x,
@@ -154,6 +228,21 @@ public  int  get_3D_volume_label_data(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_voxel_label_bit
+@INPUT      : volume
+              voxel
+              bit
+@OUTPUT     : 
+@RETURNS    : TRUE or FALSE
+@DESCRIPTION: Returns the label bit.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  get_voxel_label_bit(
     Volume          volume,
     int             voxel[],
@@ -161,6 +250,22 @@ public  BOOLEAN  get_voxel_label_bit(
 {
     return( (get_volume_label_data( volume, voxel ) & bit) == 0 );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_voxel_label_bit
+@INPUT      : volume
+              voxel
+              bit
+              value
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the voxel label bit.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  set_voxel_label_bit(
     Volume          volume,
@@ -227,6 +332,22 @@ public  void  set_all_volume_label_data_bit(
     END_ALL_VOXELS
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_volume_voxel_activity
+@INPUT      : volume
+              voxel
+              activity_if_mixed
+@OUTPUT     : 
+@RETURNS    : TRUE or FALSE
+@DESCRIPTION: Returns the voxel activity, by looking at the 2^d corners of the
+              voxel.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  get_volume_voxel_activity(
     Volume     volume,
     Real       voxel[],
@@ -290,6 +411,19 @@ public  BOOLEAN  get_volume_voxel_activity(
         return( activity_if_mixed );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : load_label_volume
+@INPUT      : filename
+@OUTPUT     : label_volume
+@RETURNS    : ERROR or OK
+@DESCRIPTION: Loads the label volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  load_label_volume(
     char     filename[],
     Volume   label_volume )
@@ -339,6 +473,21 @@ public  Status  load_label_volume(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : save_label_volume
+@INPUT      : filename
+              original_filename
+              label_volume
+@OUTPUT     : 
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Saves the label volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  save_label_volume(
     char     filename[],
@@ -411,6 +560,24 @@ public  Status  input_tags_as_labels(
 
     return( OK );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : output_labels_as_tags
+@INPUT      : file
+              volume
+              label_volume
+              desired_label
+              size
+              patient_id
+@OUTPUT     : 
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Outputs a set of labels as tags.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  output_labels_as_tags(
     FILE    *file,
@@ -489,6 +656,20 @@ public  Status  output_labels_as_tags(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_landmarks_as_labels
+@INPUT      : file
+              volume
+@OUTPUT     : label_volume
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Loads a set of landmarks into the label_volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  input_landmarks_as_labels(
     FILE    *file,

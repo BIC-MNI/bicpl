@@ -1,7 +1,24 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <data_structures.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.8 1995-07-31 13:45:31 david Exp $";
+#endif
 
 private  void  recursive_intersect_ray(
     Point                 *origin,
@@ -18,12 +35,43 @@ private  void  recursive_intersect_ray(
 private  int  n_nodes_searched = 0;
 private  int  n_objects_searched = 0;
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : print_bintree_stats
+@INPUT      : n_objects
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Prints information on the bintree search structure.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Jun 21, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  print_bintree_stats(
     int   n_objects )
 {
     print( "Nodes %g  ", (Real) n_nodes_searched / n_objects );
     print( "Objects %g\n", (Real) n_objects_searched / n_objects );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_ray_with_bintree
+@INPUT      : origin
+              direction
+              bintree
+@OUTPUT     : object
+              obj_index
+              dist
+              distances
+@RETURNS    : number of intersections
+@DESCRIPTION: Tests if the ray intersects the objects in the bintree.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  intersect_ray_with_bintree(
     Point               *origin,
@@ -51,6 +99,27 @@ public  int  intersect_ray_with_bintree(
 
     return( n_intersections );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : recursive_intersect_ray
+@INPUT      : origin
+              direction
+              t_min
+              t_max
+              node
+@OUTPUT     : object
+              obj_index
+              closest_dist
+              n_intersections
+              distances
+@RETURNS    : 
+@DESCRIPTION: Traverses the bintree testing for ray intersection.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Jun 21, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  recursive_intersect_ray(
     Point                 *origin,
@@ -188,6 +257,23 @@ private  void  recursive_intersect_ray(
         }
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : ray_intersects_range
+@INPUT      : range   - a box
+              origin
+              direction
+@OUTPUT     : t_min
+              t_max
+@RETURNS    : TRUE if ray intersects box
+@DESCRIPTION: Tests if the ray intersects the box and passes back the
+              two intersection distances.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Jun 21, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  ray_intersects_range(
     range_struct  *range,

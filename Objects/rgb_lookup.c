@@ -1,8 +1,38 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
 
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.8 1995-07-31 13:45:17 david Exp $";
+#endif
+
 #define  NUM_PIXELS8   256
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_8bit_rgb_pixel_lookup
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : colour table
+@DESCRIPTION: Returns the 8 bit (3-3-2 bit) RGB colour table.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Colour     *get_8bit_rgb_pixel_lookup( void )
 {
@@ -34,6 +64,19 @@ public  Colour     *get_8bit_rgb_pixel_lookup( void )
 
     return( lookup_table );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_rgb_pixel_to_8bit_lookup
+@INPUT      : colour
+@OUTPUT     : 
+@RETURNS    : index
+@DESCRIPTION: Converts an RGB pixel to an 8 bit index.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  convert_rgb_pixel_to_8bit_lookup(
     Colour    colour )

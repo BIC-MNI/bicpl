@@ -1,41 +1,38 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
 
-public  BOOLEAN  intersect_lines_3d(
-    Point   *origin1,
-    Vector  *delta1,
-    Point   *origin2,
-    Vector  *delta2,
-    Point   *intersection_pt )
-{
-    BOOLEAN   intersects;
-    Real      t, bottom;
-    Real      d11, d12, d22;
-    Real      o11, o12, o21, o22;
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.13 1995-07-31 13:45:02 david Exp $";
+#endif
 
-    d11 = DOT_VECTORS( *delta1, *delta1 );
-    d12 = DOT_VECTORS( *delta1, *delta2 );
-    d22 = DOT_VECTORS( *delta2, *delta2 );
-
-    bottom = d11 * d22 - d12 * d12;
-
-    intersects = (bottom != 0.0);
-
-    if( intersects )
-    {
-        o11 = DOT_POINT_VECTOR( *origin1, *delta1 );
-        o12 = DOT_POINT_VECTOR( *origin1, *delta2 );
-        o21 = DOT_POINT_VECTOR( *origin2, *delta1 );
-        o22 = DOT_POINT_VECTOR( *origin2, *delta2 );
-
-        t = -(d22 * (o11 - o21) + d12 * (o22 - o12)) / bottom;
-
-        GET_POINT_ON_RAY( *intersection_pt, *origin1, *delta1, t );
-    }
-
-    return( intersects );
-}
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_polygon_normal
+@INPUT      : n_points
+              points
+@OUTPUT     : normal
+@RETURNS    : 
+@DESCRIPTION: Finds the normal to a polygon (convex or not), using Newell's
+              formula, then normalizing the result to unit length.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  find_polygon_normal(
     int      n_points,
@@ -63,6 +60,9 @@ public  void  find_polygon_normal(
                              (Point_y(points[i]) - Point_y(points[next_i]) );
     }
 
+    /*--- if result is null, try to find one vertex for which a normal can
+          be computed */
+
     if( null_Vector( normal ) )
     {
         for_less( i, 0, n_points )
@@ -75,27 +75,27 @@ public  void  find_polygon_normal(
         }
     }
 
+    /*--- make it unit length */
+
     NORMALIZE_VECTOR( *normal, *normal );
 }
 
-public  Real  get_polygon_2d_area(
-    int      n_points,
-    Point    points[] )
-{
-    int    i, next_i;
-    Real   area;
-
-    area = 0.0;
-
-    for_less( i, 0, n_points )
-    {
-        next_i = (i + 1) % n_points;
-        area += Point_x(points[i]) * Point_y(points[next_i]) -
-                Point_x(points[next_i]) * Point_y(points[i]);
-    }
-
-    return( area / 2.0 );
-}
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_plane_through_points
+@INPUT      : n_points
+              points
+@OUTPUT     : normal
+              plane_constant
+@RETURNS    : 
+@DESCRIPTION: Computes the plane through the 3D points.  Rather than compute
+              the polygon normal, which is dependent on the ordering of
+              points, it should do a linear least squares fit of the points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void   get_plane_through_points(
     int      n_points,
@@ -114,6 +114,21 @@ public  void   get_plane_through_points(
     *plane_constant = - distance_from_plane( &centroid, normal, 0.0 );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : distance_from_plane
+@INPUT      : point
+              plane_normal
+              plane_constant
+@OUTPUT     : 
+@RETURNS    : Distance
+@DESCRIPTION: Returns the distance of a point from a plane.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Real  distance_from_plane(
     Point    *point,
     Vector   *plane_normal,
@@ -122,97 +137,46 @@ public  Real  distance_from_plane(
     return( DOT_POINT_VECTOR( *point, *plane_normal ) + plane_constant );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : distance_from_line
+@INPUT      : point
+              end_point1
+              end_point2
+@OUTPUT     : 
+@RETURNS    : Distance
+@DESCRIPTION: Returns the distance from the point to the line.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Real  distance_from_line(
     Point    *point,
     Point    *end_point1,
     Point    *end_point2 )
 {
-    Vector   v12, v1p, perp;
-    Real     projection, dist, len;
+    Vector   d, v;
+    Real     dist, len, v_dot_d, v_dot_v;
 
-    SUB_POINTS( v12, *end_point2, *end_point1 );
-    SUB_POINTS( v1p, *point, *end_point1 );
+    SUB_POINTS( d, *end_point2, *end_point1 );
 
-    len = DOT_VECTORS( v12, v12 );
+    len = DOT_VECTORS( d, d );
     if( len == 0.0 )
-        len = 1.0;
-
-    projection = DOT_VECTORS( v12, v1p ) / len;
-
-    SCALE_VECTOR( v12, v12, projection );
-    SUB_POINT_VECTOR( perp, v1p, v12 );
-
-    dist = MAGNITUDE( perp );
-
-    return( dist );
-}
-
-public  BOOLEAN  clip_line_to_box(
-    Point    *origin,
-    Vector   *direction,
-    Real     x_min,
-    Real     x_max,
-    Real     y_min,
-    Real     y_max,
-    Real     z_min,
-    Real     z_max,
-    Real     *t_min,
-    Real     *t_max )
-{
-    BOOLEAN  first;
-    int      c, first_ind;
-    Real     dir, t1, t2, limits[2][N_DIMENSIONS];
-
-    limits[0][X] = x_min;
-    limits[1][X] = x_max;
-    limits[0][Y] = y_min;
-    limits[1][Y] = y_max;
-    limits[0][Z] = z_min;
-    limits[1][Z] = z_max;
-
-    first = TRUE;
-    *t_min = 0.0;
-    *t_max = 0.0;
-
-    for_less( c, 0, 3 )
     {
-        dir = Vector_coord( *direction, c );
+        dist = distance_between_points( point, end_point1 );
+    }
+    else
+    {
+        SUB_POINTS( v, *point, *end_point1 );
 
-        if( dir != 0.0 )
-        {
-            if( dir < 0.0 )
-                first_ind = 1;
-            else
-                first_ind = 0;
+        v_dot_d = DOT_VECTORS( v, d );
+        v_dot_v = DOT_VECTORS( v, v );
 
-            t1 = (limits[first_ind][c] - Point_coord(*origin,c)) / dir;
-            t2 = (limits[1-first_ind][c] - Point_coord(*origin,c)) / dir;
-
-            if( first )
-            {
-                *t_min = t1;
-                *t_max = t2;
-                first = FALSE;
-            }
-            else
-            {
-                if( t1 > *t_min )
-                    *t_min = t1;
-                if( t2 < *t_max )
-                    *t_max = t2;
-            }
-        }
-        else
-        {
-            if( Point_coord(*origin,c) < limits[0][c] ||
-                Point_coord(*origin,c) > limits[1][c] )
-            {
-                *t_min = 0.0;
-                *t_max = -1.0;
-                break;
-            }
-        }
+        dist = v_dot_v - v_dot_d * v_dot_d / len;
+        dist = sqrt( dist );
     }
 
-    return( *t_min <= *t_max );
+    return( dist );
 }

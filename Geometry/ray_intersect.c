@@ -1,9 +1,26 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
 #include  <numerical.h>
 
 #define  MAX_POINTS    30
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.11 1995-07-31 13:45:05 david Exp $";
+#endif
+
 
 #define  TOLERANCE  1.0e-3
 
@@ -15,6 +32,23 @@ private  BOOLEAN  point_within_polygon_2d(
     int     n_points,
     Point   points[],
     Vector  *polygon_normal );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_ray_polygon_points
+@INPUT      : ray_origin
+              ray_direction
+              n_points
+              points
+@OUTPUT     : dist
+@RETURNS    : TRUE if ray intersects
+@DESCRIPTION: Tests if the ray intersects the polygon, passing back the
+              distance.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  BOOLEAN   intersect_ray_polygon_points(
     Point            *ray_origin,
@@ -57,6 +91,22 @@ private  BOOLEAN   intersect_ray_polygon_points(
     return( intersects );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_ray_polygon
+@INPUT      : ray_origin
+              ray_direction
+              polygons
+              poly_index
+@OUTPUT     : dist
+@RETURNS    : TRUE if intersects
+@DESCRIPTION: Tests if a ray intersects a given poly in the polygons.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  BOOLEAN   intersect_ray_polygon(
     Point            *ray_origin,
     Vector           *ray_direction,
@@ -98,6 +148,22 @@ private  BOOLEAN   intersect_ray_polygon(
     return( intersects );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : point_within_polygon
+@INPUT      : pt
+              n_points
+              points
+              polygon_normal
+@OUTPUT     : 
+@RETURNS    : TRUE if inside
+@DESCRIPTION: Tests if a point is within a 3d polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  point_within_polygon(
     Point   *pt,
     int     n_points,
@@ -114,6 +180,21 @@ public  BOOLEAN  point_within_polygon(
 
     return( intersects );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : point_within_triangle_2d
+@INPUT      : pt
+              points
+@OUTPUT     : 
+@RETURNS    : TRUE if inside
+@DESCRIPTION: Tests if a point is within a 3D triangle.  The point should
+              be on or close to on the plane of the triangle.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  BOOLEAN  point_within_triangle_2d(
     Point   *pt,
@@ -146,6 +227,23 @@ private  BOOLEAN  point_within_triangle_2d(
 
     return( inside );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : point_within_polygon_2d
+@INPUT      : pt
+              n_points
+              points
+              polygon_normal
+@OUTPUT     : 
+@RETURNS    : TRUE if inside
+@DESCRIPTION: Tests if the point is within the 3D polygon, by projecting
+              the problem to 2 dimensions.  The polygon may be convex or not.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  BOOLEAN  point_within_polygon_2d(
     Point   *pt,
@@ -285,7 +383,24 @@ private  BOOLEAN  point_within_polygon_2d(
     return( intersects );
 }
 
-private  BOOLEAN   intersect_ray_quadmesh(
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_ray_quadmesh_patch
+@INPUT      : ray_origin
+              ray_direction
+              dist
+              quadmesh
+              obj_index
+@OUTPUT     : 
+@RETURNS    : TRUE if intersects
+@DESCRIPTION: Tests if a ray intersects a given quadrilateral of a quadmesh.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+private  BOOLEAN   intersect_ray_quadmesh_patch(
     Point            *ray_origin,
     Vector           *ray_direction,
     Real             *dist,
@@ -309,6 +424,26 @@ private  BOOLEAN   intersect_ray_quadmesh(
     return( intersects );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : line_intersects_ellipsoid
+@INPUT      : line_origin
+              line_direction
+              sphere_centre
+              x_size
+              y_size
+              z_size
+@OUTPUT     : t_min
+              t_max
+@RETURNS    : TRUE if intersects
+@DESCRIPTION: Tests if the line intersects the ellipsoid, and if so, passes
+              back the enter and exit distance, as a multiple of line_direction.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  line_intersects_ellipsoid(
     Point    *line_origin,
     Vector   *line_direction,
@@ -316,12 +451,12 @@ public  BOOLEAN  line_intersects_ellipsoid(
     Real     x_size,
     Real     y_size,
     Real     z_size,
-    Point    *intersection )
+    Real     *t_min,
+    Real     *t_max )
 {
     BOOLEAN   intersects;
     int       n_solutions;
-    Real      a, b, c, ox, oy, oz, dx, dy, dz, t1, t2, t;
-    Vector    offset;
+    Real      a, b, c, ox, oy, oz, dx, dy, dz, t1, t2;
 
     ox = (Point_x(*line_origin) - Point_x(*sphere_centre)) / x_size;
     oy = (Point_y(*line_origin) - Point_y(*sphere_centre)) / y_size;
@@ -342,24 +477,34 @@ public  BOOLEAN  line_intersects_ellipsoid(
     else if( n_solutions == 1 )
     {
         intersects = TRUE;
-        t = t1;
+        *t_min = t1;
+        *t_max = t2;
     }
     else
     {
         intersects = TRUE;
-        t = t1;
-        if( ABS(t2) < ABS(t1) )
-            t = t2;
-    }
-
-    if( intersects )
-    {
-        SCALE_VECTOR( offset, *line_direction, t );
-        ADD_POINT_VECTOR( *intersection, *line_origin, offset );
+        *t_min = MIN( t1, t2 );
+        *t_max = MAX( t1, t2 );
     }
 
     return( intersects );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : ray_intersects_sphere
+@INPUT      : origin
+              direction
+              centre
+              radius
+@OUTPUT     : dist
+@RETURNS    : TRUE if intersects
+@DESCRIPTION: Tests if a ray intersects a sphere.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  ray_intersects_sphere(
     Point       *origin,
@@ -368,34 +513,43 @@ public  BOOLEAN  ray_intersects_sphere(
     Real        radius,
     Real        *dist )
 {
-    int     n_sols;
-    Real    a, b, c, sols[2];
-    Vector  o_minus_c;
+    BOOLEAN  intersects;
+    Real     t_min, t_max;
 
-    SUB_VECTORS( o_minus_c, *origin, *centre );
+    intersects = line_intersects_ellipsoid( origin, direction, centre,
+                                            radius, radius, radius,
+                                            &t_min, &t_max );
 
-    a = DOT_VECTORS( *direction, *direction );
-    b = 2.0 * DOT_VECTORS( o_minus_c, *direction );
-    c = DOT_VECTORS( o_minus_c, o_minus_c ) - radius * radius;
-
-    n_sols = solve_quadratic( a, b, c, &sols[0], &sols[1] );
-
-    if( n_sols == 0 )
-        *dist = -1.0;
-    else if( n_sols == 1 )
-        *dist = sols[0];
-    else
+    if( intersects )
     {
-        if( sols[0] < 0.0 )
-            *dist = sols[1];
-        else if( sols[1] < 0.0 )
-            *dist = sols[0];
+        if( t_min >= 0.0 )
+            *dist = t_min;
+        else if( t_max >= 0.0 )
+            *dist = t_max;
         else
-            *dist = MIN( sols[0], sols[1] );
+            intersects = FALSE;
     }
 
-    return( *dist >= 0.0 );
+    return( intersects );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : ray_intersects_tube
+@INPUT      : origin
+              direction
+              p1
+              p2
+              radius
+@OUTPUT     : dist
+@RETURNS    : TRUE if intersects
+@DESCRIPTION: Tests if a ray intersects a cylinder from p1 to p2 with given
+              radius.  Solution of a quadratic is required.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  BOOLEAN  ray_intersects_tube(
     Point       *origin,
@@ -409,7 +563,7 @@ private  BOOLEAN  ray_intersects_tube(
     Vector   v, o, offset;
     Point    point;
     int      n_sols;
-    Real     a, b, c, sols[2];
+    Real     a, b, c, sols[2], t_min, t_max;
 
     SUB_POINTS( v, *p2, *p1 );
     NORMALIZE_VECTOR( v, v );
@@ -432,27 +586,51 @@ private  BOOLEAN  ray_intersects_tube(
 
     if( n_sols == 0 )
         *dist = -1.0;
+    else if( n_sols == 1 )
+        *dist = sols[0];
     else
     {
-        if( sols[0] < 0.0 )
-            *dist = sols[1];
-        else if( sols[1] < 0.0 )
-            *dist = sols[0];
+        t_min = MIN( sols[0], sols[1] );
+        t_max = MAX( sols[0], sols[1] );
+        if( t_min >= 0.0 )
+            *dist = t_min;
+        else if( t_max >= 0.0 )
+            *dist = t_max;
         else
-            *dist = MIN( sols[0], sols[1] );
+            *dist = -1.0;
+    }
 
-        if( *dist >= 0.0 )
-        {
-            GET_POINT_ON_RAY( point, *origin, *direction, *dist );
-            SUB_POINTS( offset, point, *p1 );
-            d = DOT_VECTORS( v, offset );
-            if( d < 0.0 || d > distance_between_points( p1, p2 ) )
-                *dist = -1.0;
-        }
+    /*--- if intersects infinitely long tube, check if it intersects
+          between p1 and p2 */
+
+    if( *dist >= 0.0 )
+    {
+        GET_POINT_ON_RAY( point, *origin, *direction, *dist );
+        SUB_POINTS( offset, point, *p1 );
+        d = DOT_VECTORS( v, offset );
+        if( d < 0.0 || d > distance_between_points( p1, p2 ) )
+            *dist = -1.0;
     }
 
     return( *dist >= 0.0 );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_ray_tube_segment
+@INPUT      : origin
+              direction
+              lines
+              obj_index
+@OUTPUT     : dist
+@RETURNS    : TRUE if intersects
+@DESCRIPTION: Tests if a ray intersects the tube segment corresponding to
+              a line segment.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  BOOLEAN   intersect_ray_tube_segment(
     Point            *origin,
@@ -494,81 +672,69 @@ private  BOOLEAN   intersect_ray_tube_segment(
     return( found );
 }
 
-private  BOOLEAN  intersect_ray_with_box(
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_ray_with_cube
+@INPUT      : ray_origin
+              ray_direction
+              centre
+              size
+@OUTPUT     : dist
+@RETURNS    : TRUE if intersects
+@DESCRIPTION: Tests if the ray intersects the cube.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+private  BOOLEAN  intersect_ray_with_cube(
     Point            *ray_origin,
     Vector           *ray_direction,
     Point            *centre,
     Real             size,
     Real             *dist )
 {
-    int       c, enter, leave;
-    Real      t_int[2], t_min, t_max, delta, box_low, box_high, origin;
+    Real      t_min, t_max;
     BOOLEAN   intersects;
 
-    t_min = 0.0;
-    t_max = 1.0e30;
-
-    intersects = TRUE;
-
-    for_less( c, 0, N_DIMENSIONS )
-    {
-        box_low = Point_coord(*centre,c) - size / 2.0;
-        box_high = Point_coord(*centre,c) + size / 2.0;
-
-        origin = Point_coord(*ray_origin,c);
-
-        delta = Point_coord( *ray_direction, c );
-        if( delta == 0.0 )
-        {
-            if( origin < box_low || origin > box_high )
-            {
-                intersects = FALSE;
-                break;
-            }
-        }
-        else
-        {
-            if( delta < 0.0 )
-            {
-                enter = 1;
-                leave = 0;
-            }
-            else
-            {
-                enter = 0;
-                leave = 1;
-            }
-
-            t_int[0] = (box_low - origin) / delta;
-            t_int[1] = (box_high - origin) / delta;
-
-            if( t_int[enter] > t_min )
-            {
-                t_min = t_int[enter];
-                if( t_min > t_max )
-                {
-                    intersects = FALSE;
-                    break;
-                }
-            }
-
-            if( t_int[leave] < t_max )
-            {
-                t_max = t_int[leave];
-                if( t_min > t_max )
-                {
-                    intersects = FALSE;
-                    break;
-                }
-            }
-        }
-    }
+    intersects = clip_line_to_box( ray_origin, ray_direction,
+                                   Point_x(*centre) - size / 2.0,
+                                   Point_x(*centre) + size / 2.0,
+                                   Point_y(*centre) - size / 2.0,
+                                   Point_y(*centre) + size / 2.0,
+                                   Point_z(*centre) - size / 2.0,
+                                   Point_z(*centre) + size / 2.0,
+                                   &t_min, &t_max );
 
     if( intersects )
-        *dist = t_min;
+    {
+        if( t_min >= 0.0 )
+            *dist = t_min;
+        else if( t_max >= 0.0 )
+            *dist = t_max;
+        else
+            intersects = FALSE;
+    }
 
     return( intersects );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_ray_with_marker
+@INPUT      : ray_origin
+              ray_direction
+              marker
+@OUTPUT     : dist
+@RETURNS    : TRUE if intersects
+@DESCRIPTION: Tests if the ray intersects the marker, which can be a cube
+              or a sphere.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  BOOLEAN  intersect_ray_with_marker(
     Point            *ray_origin,
@@ -578,7 +744,7 @@ private  BOOLEAN  intersect_ray_with_marker(
 {
     if( marker->type == BOX_MARKER )
     {
-        return( intersect_ray_with_box( ray_origin, ray_direction,
+        return( intersect_ray_with_cube( ray_origin, ray_direction,
                                         &marker->position, marker->size, dist));
     }
     else
@@ -587,6 +753,26 @@ private  BOOLEAN  intersect_ray_with_marker(
                                        &marker->position, marker->size, dist) );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_ray_object
+@INPUT      : origin
+              direction
+              t_min
+              object
+              obj_index
+@OUTPUT     : closest_obj_index
+              closest_dist
+              n_intersections
+              distances
+@RETURNS    : 
+@DESCRIPTION: Tests if the ray intersects the given object, past t_min.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  intersect_ray_object(
     Point                 *origin,
@@ -609,7 +795,7 @@ public  void  intersect_ray_object(
     }
     else if( get_object_type( object ) == QUADMESH )
     {
-        found = intersect_ray_quadmesh( origin, direction, &dist,
+        found = intersect_ray_quadmesh_patch( origin, direction, &dist,
                                         get_quadmesh_ptr(object), obj_index );
     }
     else if( get_object_type( object ) == LINES )
@@ -642,6 +828,23 @@ public  void  intersect_ray_object(
         ++(*n_intersections);
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : intersect_ray_with_object
+@INPUT      : origin
+              direction
+              object
+@OUTPUT     : obj_index
+              dist
+              distances
+@RETURNS    : n_intersections
+@DESCRIPTION: Tests for intersection of the ray with an object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  intersect_ray_with_object(
     Point           *origin,

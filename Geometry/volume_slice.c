@@ -1,6 +1,46 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/volume_slice.c,v 1.8 1995-07-31 13:45:01 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_slice_quadmesh
+@INPUT      : volume
+              axis_index
+              voxel_position
+              x_tess
+              y_tess
+              x_min   : optional ranges, ignored if x_min > x_max
+              x_max
+              y_min   : optional ranges, ignored if y_min > y_max
+              y_max
+@OUTPUT     : quadmesh
+@RETURNS    : 
+@DESCRIPTION: Creates a quadmesh slice corresponding to a slice through
+              the volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void   create_slice_quadmesh(
     Volume           volume,
@@ -64,6 +104,22 @@ public  void   create_slice_quadmesh(
         }
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_slice_3d
+@INPUT      : volume
+              origin
+              normal
+@OUTPUT     : polygons
+@RETURNS    : 
+@DESCRIPTION: Creates a polygon of 3 to 6 points which is the intersection
+              of an arbitrarily oriented plane with a volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void   create_slice_3d(
     Volume           volume,

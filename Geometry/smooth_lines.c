@@ -1,8 +1,38 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
 #include  <data_structures.h>
-#include  <numerical.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_lines.c,v 1.8 1995-07-31 13:44:57 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : smooth_lines
+@INPUT      : lines
+              smooth_length
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Removes segments that are smaller than the smooth length.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  smooth_lines(
     lines_struct  *lines,
@@ -81,6 +111,21 @@ public  void  smooth_lines(
 
     FREE( new_ids );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_line_spline
+@INPUT      : lines
+              n_curve_segments
+@OUTPUT     : new_lines
+@RETURNS    : 
+@DESCRIPTION: Creates a new line which is a cubic spline interpolation of the
+              input lines, with n_curve_segments per input line segment.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  create_line_spline(
     lines_struct  *lines,

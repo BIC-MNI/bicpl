@@ -1,9 +1,41 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
 
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.3 1995-07-31 13:45:50 david Exp $";
+#endif
+
 #include  "render_funcs_include.c"
 
-public  void  render_the_slice (
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : render_one_row
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Renders a row of a slice, by including the generated source
+              files which handle each of the cases separately, for speed.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void  render_one_row (
     void            *volume_data1,
     Data_types      volume1_type,
     int             y,

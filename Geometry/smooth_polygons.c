@@ -1,6 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_polygons.c,v 1.9 1995-07-31 13:44:58 david Exp $";
+#endif
 
 #define  CHECK_INTERVAL     1.0
 
@@ -37,6 +54,28 @@ private  BOOLEAN   point_inside_range(
     Point          *point,
     int            min_value,
     int            max_value );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : smooth_polygon
+@INPUT      : polygons
+              max_dist_from_original
+              fraction_to_move
+              stop_threshold
+              normal_ratio
+              range_flag
+              volume
+              min_value
+              max_value
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Smooths the polygons by moving vertices towards the centroid
+              of their neighbours.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  smooth_polygon(
     polygons_struct  *polygons,
@@ -109,6 +148,30 @@ public  void  smooth_polygon(
     FREE( point_done );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : smooth_points
+@INPUT      : polygons
+              current_points[]
+              new_points
+              point_done
+              max_dist_from_original
+              fraction_to_move
+              normal_ratio
+              range_flag
+              volume
+              min_value
+              max_value
+@OUTPUT     : avg_moved
+              max_moved
+@RETURNS    : 
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  smooth_points(
     polygons_struct  *polygons,
     Point            current_points[],
@@ -173,6 +236,19 @@ private  void  smooth_points(
 }
 
 #define  MAX_NEIGHBOURS   100
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : update_point_position
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  update_point_position(
     polygons_struct  *polygons,
@@ -277,6 +353,23 @@ private  Real  update_point_position(
     return( movement );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : point_inside_range
+@INPUT      : volume
+              point
+              min_value
+              max_value
+@OUTPUT     : 
+@RETURNS    : TRUE or FALSE
+@DESCRIPTION: Tests if the volume value at the point is within the specified
+              value range.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  BOOLEAN   point_inside_range(
     volume_struct  *volume,
     Point          *point,
@@ -287,9 +380,9 @@ private  BOOLEAN   point_inside_range(
     Real    x, y, z;
 
     convert_3D_world_to_voxel( volume,
-                            (Real) Point_x(*point), (Real) Point_y(*point),
-                            (Real) Point_z(*point),
-                            &x, &y, &z );
+                               (Real) Point_x(*point), (Real) Point_y(*point),
+                               (Real) Point_z(*point),
+                               &x, &y, &z );
 
     vx = ROUND( x );
     vy = ROUND( y );

@@ -1,9 +1,25 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include <internal_volume_io.h>
 #include <numerical.h>
 
-#define  MAX_ITERATIONS  30
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.4 1995-07-31 13:45:27 david Exp $";
+#endif
 
-private  Real   at,bt,ct;
+#define  MAX_ITERATIONS  30
 
 #define PYTHAG(a,b) ((at=fabs(a)) > (bt=fabs(b)) ? \
 (ct=bt/at,at*sqrt(1.0+ct*ct)) : (bt ? (ct=at/bt,bt*sqrt(1.0+ct*ct)): 0.0))
@@ -39,6 +55,7 @@ public  BOOLEAN  singular_value_decomposition(
     Real        c, f, h, s, x, y, z;
     Real        anorm, g, scale, t;
     Real        *rv1;
+    Real        at, bt, ct;
 
     if( m < n )
     {

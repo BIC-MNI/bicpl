@@ -1,6 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <data_structures.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/build_bintree.c,v 1.8 1995-07-31 13:45:34 david Exp $";
+#endif
 
 #define  NODE_VISIT_COST        0.02
 #define  NET_CHANGE_THRESHOLD   0.0
@@ -12,6 +29,8 @@ typedef  struct
 } leaf_queue_type;
 
 typedef     PRIORITY_QUEUE_STRUCT( leaf_queue_type )   leaf_queue_struct;
+
+/*---------------- private functions ------------------------- */
 
 private  void  subdivide_bintree(
     bintree_struct_ptr   bintree,
@@ -56,6 +75,21 @@ private  Real  node_visit_estimation(
 /* ---------------------------------------------------------- */
 
 #define  FACTOR 1.0e-4
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_object_bintree
+@INPUT      : n_objects
+              bound_vols
+              max_nodes
+@OUTPUT     : bintree
+@RETURNS    : 
+@DESCRIPTION: Creates a bintree of objects specified by their bounding volumes.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  create_object_bintree(
     int                  n_objects,
@@ -126,6 +160,23 @@ public  void  create_object_bintree(
 #endif
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : subdivide_bintree
+@INPUT      : bintree
+              max_nodes
+              n_objects
+              bound_vols
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Creates a subtree by prioritized subdivision of leaves until
+              the max_nodes is reached.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  subdivide_bintree(
     bintree_struct_ptr   bintree,
     int                  max_nodes,
@@ -188,6 +239,26 @@ private  void  subdivide_bintree(
     delete_leaf_queue( &leaf_queue );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_planes
+@INPUT      : axis_index
+              n_objects
+              list
+              bound_vols
+              right_plane
+@OUTPUT     : left_plane
+              n_left
+              n_overlap
+              n_right
+@RETURNS    : 
+@DESCRIPTION: Computes the plane position for a node.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void   get_planes(
     int             axis_index,
     int             n_objects,
@@ -236,6 +307,24 @@ private  void   get_planes(
 }
 
 #define  THRESHOLD  30
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_best_split_node_for_axis
+@INPUT      : axis_index
+              n_objects
+              object_list
+              bound_vols
+              limits
+@OUTPUT     : best_left_plane
+              best_right_plane
+@RETURNS    : 
+@DESCRIPTION: Finds a good split plane for the bintree.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  find_best_split_node_for_axis(
     int                   axis_index,
@@ -322,6 +411,19 @@ private  void  check_objects(
                 handle_internal_error( "check_objects" );
 }
 #endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : split_node
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  split_node(
     range_struct          bound_vols[],

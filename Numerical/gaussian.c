@@ -1,5 +1,41 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <bicpl.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gaussian.c,v 1.5 1995-07-31 13:45:26 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : scaled_maximal_pivoting_gaussian_elimination_float
+@INPUT      : n
+              coefs
+              n_values
+              values
+@OUTPUT     : 
+@RETURNS    : TRUE if successful
+@DESCRIPTION: Finds the solution to coefs[n][n] * solution[n][n_values] =
+                             values[n_values][n] transposed, placing the
+              solution in values.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
     int    n,
@@ -44,6 +80,21 @@ private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
     return( success );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : solve_linear_system_float
+@INPUT      : n
+              coefs[n][n]
+              values
+@OUTPUT     : solution
+@RETURNS    : TRUE if successful
+@DESCRIPTION: Solves the linear system of equations (coefs * solution = values).
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  solve_linear_system_float(
     int    n,
     float  **coefs,
@@ -58,6 +109,20 @@ public  BOOLEAN  solve_linear_system_float(
     return( scaled_maximal_pivoting_gaussian_elimination_float( n, coefs, 1,
                                                                 &solution ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : invert_square_matrix_float
+@INPUT      : n
+              matrix
+@OUTPUT     : inverse
+@RETURNS    : TRUE if successful.
+@DESCRIPTION: Computes the inverse of a square matrix of floats.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  invert_square_matrix_float(
     int    n,

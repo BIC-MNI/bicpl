@@ -1,6 +1,24 @@
 
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <data_structures.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bintree.c,v 1.6 1995-07-31 13:45:33 david Exp $";
+#endif
 
 private  Status  io_range(
     FILE             *file,
@@ -56,11 +74,37 @@ public  void  initialize_bintree(
     bintree->root = (bintree_node_struct *) 0;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_bintree_node
+@INPUT      : node
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes a node of the bintree.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  delete_bintree_node(
     bintree_node_struct   *node )
 {
     FREE( node );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : recursive_delete_bintree
+@INPUT      : node
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes a bintree node and its children.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  recursive_delete_bintree(
     bintree_node_struct   *node )
@@ -114,6 +158,21 @@ public  void  get_bintree_limits(
 {
     *limits = bintree->range;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_bintree_child
+@INPUT      : node
+              which    : LEFT_CHILD or RIGHT_CHILD
+              child
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the given child of the node to the 'child'.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  set_bintree_child(
     bintree_node_struct   *node,
@@ -193,6 +252,21 @@ public  bintree_node_struct  *create_bintree_internal_node(
 
     return( node );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_bintree_leaf
+@INPUT      : split_position
+              n_objects
+              object_list
+@OUTPUT     : 
+@RETURNS    : leaf
+@DESCRIPTION: Creates a leaf node containing pointers to the objects.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  bintree_node_struct  *create_bintree_leaf(
     Real                  split_position,
@@ -317,6 +391,20 @@ public  BOOLEAN  get_bintree_left_child_ptr(
     return( child_exists );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_bintree_left_child
+@INPUT      : bintree
+              node
+@OUTPUT     : left_child
+@RETURNS    : TRUE if child exists
+@DESCRIPTION: Passes back the left child of the given node, if it exists.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  get_bintree_left_child(
     bintree_node_struct  *node,
     bintree_node_struct  **left_child )
@@ -337,7 +425,6 @@ public  BOOLEAN  get_bintree_left_child(
 @INPUT      : bintree
               node
 @OUTPUT     : right_child
-              right_limit
 @RETURNS    : TRUE if child exists
 @DESCRIPTION: Passes back the right child of the given node, if it exists.
 @METHOD     : 
@@ -370,6 +457,20 @@ public  BOOLEAN  get_bintree_right_child_ptr(
     return( child_exists );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_bintree_right_child
+@INPUT      : bintree
+              node
+@OUTPUT     : right_child
+@RETURNS    : TRUE if child exists
+@DESCRIPTION: Passes back the right child of the given node, if it exists.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  get_bintree_right_child(
     bintree_node_struct  *node,
     bintree_node_struct  **right_child )
@@ -386,11 +487,37 @@ public  BOOLEAN  get_bintree_right_child(
 }
 
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_node_split_axis
+@INPUT      : node
+@OUTPUT     : 
+@RETURNS    : axis X, Y, or Z
+@DESCRIPTION: Returns the split axis of the node.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int  get_node_split_axis(
     bintree_node_struct  *node )
 {
     return( node->node_info & SUBDIVISION_AXIS_BITS );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_node_split_position
+@INPUT      : node
+@OUTPUT     : 
+@RETURNS    : position
+@DESCRIPTION: Returns the split position of the node.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Real  get_node_split_position(
     bintree_node_struct  *node )
@@ -551,6 +678,21 @@ private  Status  io_range(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : output_leaf_node
+@INPUT      : file
+              format
+              node
+@OUTPUT     : 
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Outputs a leaf node.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Status  output_leaf_node(
     FILE                    *file,
     File_formats            format,
@@ -571,6 +713,21 @@ private  Status  output_leaf_node(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : output_bintree_node
+@INPUT      : file
+              format
+              node
+@OUTPUT     : 
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Outputs a bintree node.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Status  output_bintree_node(
     FILE                    *file,
@@ -603,6 +760,20 @@ private  Status  output_bintree_node(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_bintree_node
+@INPUT      : file
+              format
+@OUTPUT     : node
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Inputs a bintree node
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Status  input_bintree_node(
     FILE                    *file,

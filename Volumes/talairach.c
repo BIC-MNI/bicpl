@@ -1,6 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <vols.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.11 1995-07-31 13:45:48 david Exp $";
+#endif
 
 #define  TALAIRACH_OFFSET   16.0
 
@@ -29,6 +46,20 @@ private  BOOLEAN   initialized = FALSE;
 
 private  void  read_talairach_coordinate_system( void );
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : check_initialized
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Checks if the Talairach system has been read from the standard
+              place.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  check_initialized( void )
 {
     if( !initialized )
@@ -37,6 +68,20 @@ private  void  check_initialized( void )
         initialized = TRUE;
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : read_talairach_coordinate_system
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Reads the Talairach system coordinates from the standard
+              place.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  read_talairach_coordinate_system( void )
 {
@@ -135,6 +180,26 @@ private  void  read_talairach_coordinate_system( void )
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_voxel_to_talairach
+@INPUT      : x_voxel
+              y_voxel
+              z_voxel
+              nx_voxels
+              ny_voxels
+              nz_voxels
+@OUTPUT     : x_tal
+              y_tal
+              z_tal
+@RETURNS    : 
+@DESCRIPTION: Converts a voxel to a Talairach voxel.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  convert_voxel_to_talairach(
     Real   x_voxel,
     Real   y_voxel,
@@ -153,6 +218,26 @@ public  void  convert_voxel_to_talairach(
     *z_tal = z_voxel / (Real) nz_voxels * (Real) nz;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_talairach_to_voxel
+@INPUT      : x_tal
+              y_tal
+              z_tal
+              nx_voxels
+              ny_voxels
+              nz_voxels
+@OUTPUT     : x_voxel
+              y_voxel
+              z_voxel
+@RETURNS    : 
+@DESCRIPTION: Converts a Talairach voxel to a volume voxel.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  convert_talairach_to_voxel(
     Real   x_tal,
     Real   y_tal,
@@ -170,6 +255,26 @@ public  void  convert_talairach_to_voxel(
     *y_voxel = y_tal / (Real) ny * (Real) ny_voxels;
     *z_voxel = z_tal / (Real) nz * (Real) nz_voxels;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_to_mm
+@INPUT      : tal
+              n_planes
+              limit_low
+              limit_high
+              brain_dist_low
+              brain_dist_high
+              brain_limit_low
+              brain_limit_high
+@OUTPUT     : 
+@RETURNS    : mm distance
+@DESCRIPTION: Converts to Talairach mm in one axis.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  convert_to_mm(
     Real    tal,
@@ -192,6 +297,23 @@ private  Real  convert_to_mm(
     return( mm );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_talairach_to_mm
+@INPUT      : x_tal
+              y_tal
+              z_tal
+@OUTPUT     : x_mm
+              y_mm
+              z_mm
+@RETURNS    : 
+@DESCRIPTION: Converts a Talairach voxel to a Talairach mm coordinate.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  convert_talairach_to_mm(
     Real   x_tal,
     Real   y_tal,
@@ -210,6 +332,27 @@ public  void  convert_talairach_to_mm(
     *z_mm = convert_to_mm( z_tal, nz, z_low, z_high, z_dist_0, z_dist_1,
                            0.0, 1.0 );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_from_mm
+@INPUT      : mm
+              n_planes
+              limit_low
+              limit_high
+              brain_dist_low
+              brain_dist_high
+              brain_limit_low
+              brain_limit_high
+@OUTPUT     : 
+@RETURNS    : Talairach voxel
+@DESCRIPTION: Converts from Talairach mm space to Talairach voxel space,
+              along one axis.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  convert_from_mm(
     Real    mm,
@@ -230,6 +373,23 @@ private  Real  convert_from_mm(
     return( (stereotactic - limit_low) * (Real) n_planes /
             (limit_high - limit_low) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_mm_to_talairach
+@INPUT      : x_mm
+              y_mm
+              z_mm
+@OUTPUT     : x_tal
+              y_tal
+              z_tal
+@RETURNS    : 
+@DESCRIPTION: Converts Talairach mm to Talairach voxels.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  convert_mm_to_talairach(
     Real   x_mm,

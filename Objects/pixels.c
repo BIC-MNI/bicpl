@@ -1,8 +1,44 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
 #include  <geom.h>
 #include  <trans.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.17 1995-07-31 13:45:14 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : initialize_pixels
+@INPUT      : x_position
+              y_position
+              x_size
+              y_size
+              x_zoom
+              y_zoom
+              pixel_type
+@OUTPUT     : pixels
+@RETURNS    : 
+@DESCRIPTION: Initializes the pixels struct and allocates memory as needed.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  initialize_pixels(
     pixels_struct  *pixels,
@@ -29,6 +65,19 @@ public  void  initialize_pixels(
     modify_pixels_size( &n_alloced, pixels, x_size, y_size, pixel_type );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_pixels
+@INPUT      : pixels
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the pixels.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  delete_pixels( pixels_struct *pixels )
 {
     if( pixels->x_size > 0 && pixels->y_size > 0 )
@@ -49,6 +98,23 @@ public  void  delete_pixels( pixels_struct *pixels )
         }
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : modify_pixels_size
+@INPUT      : n_pixels_alloced
+              pixels
+              x_size
+              y_size
+              pixel_type
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Changes the size of the pixels struct, reallocating as necessary.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  modify_pixels_size(
     int            *n_pixels_alloced,
@@ -106,6 +172,19 @@ public  void  modify_pixels_size(
     *n_pixels_alloced = new_n_pixels;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_pixels24_to_pixels8
+@INPUT      : pixels_rgb
+@OUTPUT     : pixels_8
+@RETURNS    : 
+@DESCRIPTION: Converts the 24 bit pixels to an 8 bit (3-3-2 bit) lookup.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  convert_pixels24_to_pixels8(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8 )
@@ -127,6 +206,22 @@ public  void  convert_pixels24_to_pixels8(
         }
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_pixels24_to_index8
+@INPUT      : pixels_rgb
+              n_colours
+              colour_table
+@OUTPUT     : pixels_8
+@RETURNS    : 
+@DESCRIPTION: Converts the rgb pixels to the 8-bit colour index pixels,
+              given a colour table.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  convert_pixels24_to_index8(
     pixels_struct   *pixels_rgb,
@@ -157,6 +252,20 @@ public  void  convert_pixels24_to_index8(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_index8_to_pixels24
+@INPUT      : pixels_8
+              colour_table
+@OUTPUT     : pixels_rgb
+@RETURNS    : 
+@DESCRIPTION: Creates an rgb pixel map from 8 bit indices and a colour table.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  convert_index8_to_pixels24(
     pixels_struct   *pixels_8,
     Colour          colour_table[],
@@ -178,6 +287,19 @@ public  void  convert_index8_to_pixels24(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_pixels24_to_gray_scale
+@INPUT      : pixels_rgb
+@OUTPUT     : pixels_8
+@RETURNS    : 
+@DESCRIPTION: Converts 24 bit pixels to 8 bit gray scale.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  convert_pixels24_to_gray_scale(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8 )
@@ -197,6 +319,22 @@ public  void  convert_pixels24_to_gray_scale(
         }
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_pixels24_to_dithered
+@INPUT      : pixels_rgb
+              n_colours
+              colour_table
+@OUTPUT     : pixels_8
+@RETURNS    : 
+@DESCRIPTION: Performs Floyd-Steinberg error diffusion to convert a 24 bit
+              image to an 8 bit image with the given colour map.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  convert_pixels24_to_dithered(
     pixels_struct   *pixels_rgb,
@@ -291,6 +429,22 @@ public  void  convert_pixels24_to_dithered(
     FREE3D( errors );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : resample_pixels
+@INPUT      : pixels
+              transform
+              n_samples
+              background_colour
+@OUTPUT     : new_pixels
+@RETURNS    : 
+@DESCRIPTION: Resamples the pixels in the transformed space.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  resample_pixels(
     pixels_struct   *pixels,
     Transform_2d    *transform,
@@ -374,6 +528,23 @@ public  void  resample_pixels(
         }
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : copy_pixel_region
+@INPUT      : pixels
+              x_min
+              x_max
+              y_min
+              y_max
+@OUTPUT     : new_pixels
+@RETURNS    : 
+@DESCRIPTION: Copies the subset of the pixels, creating new_pixels.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  copy_pixel_region(
     pixels_struct   *pixels,

@@ -1,9 +1,42 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
 
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/segment_polygons.c,v 1.5 1995-07-31 13:44:57 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : remove_invisible_polygons
+@INPUT      : polygons
+              visibilities
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Removes any polygon that is not marked as visible from the
+              polygons.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void   remove_invisible_polygons(
-    polygons_struct  *polygons )
+    polygons_struct  *polygons,
+    Smallest_int     visibilities[] )
 {
     int              tmp_n_points, i, n_points, n_items, *indices, *end_indices;
     int              p, poly, n_indices, size, point_index;
@@ -11,6 +44,9 @@ public  void   remove_invisible_polygons(
     Point            *points;
     Vector           *normals;
     Colour           col;
+
+    if( visibilities == NULL )
+        return;
 
     n_points = 0;
     n_items = 0;
@@ -23,7 +59,7 @@ public  void   remove_invisible_polygons(
 
     for_less( poly, 0, polygons->n_items )
     {
-        if( polygons->visibilities[poly] )
+        if( visibilities[poly] )
         {
             size = GET_OBJECT_SIZE( *polygons, poly );
 
@@ -70,6 +106,4 @@ public  void   remove_invisible_polygons(
     polygons->n_items = n_items;
     polygons->indices = indices;
     polygons->end_indices = end_indices;
-
-    create_polygons_visibilities( polygons );
 }

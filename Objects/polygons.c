@@ -1,8 +1,25 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
 #include  <geom.h>
 #include  <trans.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.31 1995-07-31 13:45:15 david Exp $";
+#endif
 
 private  void  reverse_polygon_order(
     polygons_struct   *polygons,
@@ -14,6 +31,20 @@ private  Real  estimate_polygon_curvature(
     Point   *centroid,
     Vector  *normal,
     Real    *base_length );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : initialize_polygons
+@INPUT      : col
+              spr   : optional
+@OUTPUT     : polygons
+@RETURNS    : 
+@DESCRIPTION: Initializes the polygons to an empty set.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  initialize_polygons(
     polygons_struct   *polygons,
@@ -46,6 +77,19 @@ public  void  initialize_polygons(
     polygons->bintree = (bintree_struct_ptr) NULL;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : free_polygon_neighbours
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the polygon neighbours.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  free_polygon_neighbours(
     polygons_struct   *polygons )
 {
@@ -55,6 +99,19 @@ public  void  free_polygon_neighbours(
         polygons->neighbours = (int *) NULL;
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_polygons
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the polygons.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  delete_polygons( polygons_struct *polygons )
 {
@@ -82,6 +139,19 @@ public  void  delete_polygons( polygons_struct *polygons )
 
     polygons->visibilities = (Smallest_int *) 0;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : copy_polygons
+@INPUT      : src
+@OUTPUT     : dest
+@RETURNS    : 
+@DESCRIPTION: Copies the polygons.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  copy_polygons(
     polygons_struct   *src,
@@ -124,6 +194,19 @@ public  void  copy_polygons(
     dest->bintree = (bintree_struct_ptr) NULL;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_polygon_per_item_colours
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the polygons to per polygon colours.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  set_polygon_per_item_colours(
     polygons_struct   *polygons )
 {
@@ -142,6 +225,19 @@ public  void  set_polygon_per_item_colours(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_polygons_visibilities
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Allocates a visibility flag for each polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  create_polygons_visibilities(
     polygons_struct   *polygons )
 {
@@ -157,6 +253,20 @@ public  void  create_polygons_visibilities(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_polygons_visibilities
+@INPUT      : polygons
+              state
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets visibilities of all polygons to the state.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  set_polygons_visibilities(
     polygons_struct   *polygons,
     BOOLEAN           state )
@@ -170,7 +280,21 @@ public  void  set_polygons_visibilities(
     }
 }
 
-public  void  start_new_polygon( polygons_struct *polygons )
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : start_new_polygon
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Starts a new polygon in the structure, with size zero.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void  start_new_polygon(
+    polygons_struct *polygons )
 {
     int      n_indices;
 
@@ -179,6 +303,21 @@ public  void  start_new_polygon( polygons_struct *polygons )
     ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
                           n_indices, DEFAULT_CHUNK_SIZE );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : add_point_to_polygon
+@INPUT      : polygons
+              point
+              normal
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Adds the given point and normal to the last polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  add_point_to_polygon(
     polygons_struct   *polygons,
@@ -215,6 +354,20 @@ public  void  add_point_to_polygon(
                           *point, DEFAULT_CHUNK_SIZE );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygon_points
+@INPUT      : polygons
+              poly
+@OUTPUT     : points
+@RETURNS    : number points
+@DESCRIPTION: Passes back the points of the specified poly.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int  get_polygon_points(
     polygons_struct   *polygons,
     int               poly,
@@ -232,6 +385,20 @@ public  int  get_polygon_points(
 
     return( size );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygon_centroid
+@INPUT      : polygons
+              poly
+@OUTPUT     : centroid
+@RETURNS    : 
+@DESCRIPTION: Passes back the centroid of the specified poly.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  get_polygon_centroid(
     polygons_struct   *polygons,
@@ -255,6 +422,22 @@ public  void  get_polygon_centroid(
     if( size > 0 )
         SCALE_POINT( *centroid, *centroid, 1.0 / (Real) size );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_vertex_index
+@INPUT      : polygons
+              poly
+              point_index
+@OUTPUT     : 
+@RETURNS    : index in poly of the point
+@DESCRIPTION: Finds which vertex index of the poly corresponds to the
+              point_index.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  find_vertex_index(
     polygons_struct  *polygons,
@@ -280,6 +463,22 @@ public  int  find_vertex_index(
 
     return( ind );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_edge_index
+@INPUT      : polygons
+              poly 
+              point_index1 
+              point_index2
+@OUTPUT     : 
+@RETURNS    : edge index
+@DESCRIPTION: Finds the index of the edge in the poly between the two points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  find_edge_index(
     polygons_struct  *polygons,
@@ -311,6 +510,22 @@ public  int  find_edge_index(
     return( ind );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_polygon_with_edge
+@INPUT      : polygons
+              point_index1
+              point_index2
+@OUTPUT     : poly_containing_edge
+              edge_index
+@RETURNS    : TRUE if found
+@DESCRIPTION: Finds a polygon containing the given edge.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  find_polygon_with_edge(
     polygons_struct  *polygons,
     int              point_index1,
@@ -335,24 +550,20 @@ public  BOOLEAN  find_polygon_with_edge(
     return( poly < polygons->n_items );
 }
 
-public  BOOLEAN  lookup_polygon_vertex(
-    polygons_struct   *polygons,
-    Point             *point,
-    int               *point_index )
-{
-    int      i;
-
-    for_less( i, 0, polygons->n_points )
-    {
-        if( EQUAL_POINTS( polygons->points[i], *point ) )
-        {
-            *point_index = i;
-            break;
-        }
-    }
-
-    return( i < polygons->n_points );
-}
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_polygon_with_vertex
+@INPUT      : polygons
+              point_index
+@OUTPUT     : poly_index
+              vertex_index
+@RETURNS    : TRUE if found
+@DESCRIPTION: Searches for a polygon containing the point.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  find_polygon_with_vertex(
     polygons_struct   *polygons,
@@ -383,6 +594,60 @@ public  BOOLEAN  find_polygon_with_vertex(
 
     return( found );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : lookup_polygon_vertex
+@INPUT      : polygons
+              point
+@OUTPUT     : point_index
+@RETURNS    : TRUE if successful
+@DESCRIPTION: Finds the point index of a given point.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  BOOLEAN  lookup_polygon_vertex(
+    polygons_struct   *polygons,
+    Point             *point,
+    int               *point_index )
+{
+    int      i;
+
+    for_less( i, 0, polygons->n_points )
+    {
+        if( EQUAL_POINTS( polygons->points[i], *point ) )
+        {
+            *point_index = i;
+            break;
+        }
+    }
+
+    return( i < polygons->n_points );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_next_edge_around_point
+@INPUT      : polygons
+              poly
+              index_1
+              index_2
+@OUTPUT     : next_poly
+              next_index_1
+              next_index_2
+@RETURNS    : TRUE if found
+@DESCRIPTION: Given a polygon and two vertex indices within the poly,
+              corresponding to an edge, finds the neighbouring poly, and
+              the two vertex indices corresponding to the next counter-
+              clockwise edge around the point corresponding to poly,index_1.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  find_next_edge_around_point(
     polygons_struct   *polygons,
@@ -429,6 +694,25 @@ public  BOOLEAN  find_next_edge_around_point(
 
     return( *next_poly >= 0 );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_neighbours_of_point
+@INPUT      : polygons
+              poly
+              vertex_index
+              max_neighbours  - max storage 
+@OUTPUT     : neighbours
+              interior_point
+@RETURNS    : number of neighbours
+@DESCRIPTION: Gets the points which are the neighbours of the specified point.
+              interior_point is set to true if the point is totally
+              surrounded by polygons.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  get_neighbours_of_point(
     polygons_struct   *polygons,
@@ -477,6 +761,25 @@ public  int  get_neighbours_of_point(
 
     return( n_neighbours );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygons_around_vertex
+@INPUT      : polygons
+              poly
+              vertex_index
+              n_polys_alloced - max space for poly_indices
+@OUTPUT     : poly_indices
+              closed_flag
+@RETURNS    : number of polygons
+@DESCRIPTION: Returns a list of polygons, in order, around the vertex.  If
+              the vertex is surrounded by polygons, closed_flag will be set
+              to true.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  get_polygons_around_vertex(
     polygons_struct   *polygons,
@@ -532,13 +835,26 @@ public  int  get_polygons_around_vertex(
     return( n_polys );
 }
 
-#define  MAX_TEMP_STORAGE  1000
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : compute_polygon_normal
+@INPUT      : polygons
+              poly
+@OUTPUT     : normal
+@RETURNS    : 
+@DESCRIPTION: Computes the polygon normal.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  compute_polygon_normal(
     polygons_struct  *polygons,
     int              poly,
     Vector           *normal )
 {
+#define  MAX_TEMP_STORAGE  1000
     int                e, size, point_index;
     Point              polygon[MAX_TEMP_STORAGE];
 
@@ -556,6 +872,21 @@ public  void  compute_polygon_normal(
 
     find_polygon_normal( size, polygon, normal );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : compute_polygon_normals
+@INPUT      : polygons
+@OUTPUT     : polygons
+@RETURNS    : 
+@DESCRIPTION: Computes the normals at the vertices of the polygons.  These
+              are weighted averages of the normals of the polygonal faces
+              touching a vertex.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  compute_polygon_normals(
     polygons_struct  *polygons )
@@ -592,6 +923,9 @@ public  void  compute_polygon_normals(
                   polygons->indices[POINT_INDEX(polygons->end_indices,poly,
                                                 (e+1)%size)];
 
+            /*--- weight this contribution by the size of the angle around
+                  the vertex */
+
             scale = get_angle_between_points( &polygons->points[prev_index],
                                               &polygons->points[point_index],
                                               &polygons->points[next_index] );
@@ -618,6 +952,24 @@ public  void  compute_polygon_normals(
                           polygons->normals[point_index] );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : average_polygon_normals
+@INPUT      : polygons
+              n_iters
+              neighbour_weight
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Averages the normals of the polygons by iteratively setting each
+              normal to some interpolation between its current value and the
+              average of its neighbours.  The interpolation is controlled by
+              neighbour_weight which should be between 0 and 1.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  average_polygon_normals(
     polygons_struct  *polygons,
@@ -702,6 +1054,23 @@ public  void  average_polygon_normals(
     FREE( new_normals );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_plane_polygon_intersection
+@INPUT      : normal
+              d
+              polygons
+              poly
+@OUTPUT     : intersection_points
+@RETURNS    : number of intersection points
+@DESCRIPTION: Computes the intersection of a plane with a polygon, returning
+              0 or 2 points, (or more if non-convex polygon).
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  get_plane_polygon_intersection(
     Vector           *normal,
     Real             d,
@@ -735,6 +1104,22 @@ public  BOOLEAN  get_plane_polygon_intersection(
     return( n_intersections == 2 );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_plane_segment_intersection
+@INPUT      : normal
+              d
+              p1
+              p2
+@OUTPUT     : intersection_point
+@RETURNS    : TRUE if intersects
+@DESCRIPTION: Tests for a plane and segment intersection.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  get_plane_segment_intersection(
     Vector           *normal,
     Real             d,
@@ -749,14 +1134,18 @@ public  BOOLEAN  get_plane_segment_intersection(
     dist1 = DIST_FROM_PLANE( *normal, d, *p1 );
     dist2 = DIST_FROM_PLANE( *normal, d, *p2 );
 
-    if( (dist1 <= 0.0 && dist2 >= 0.0 || dist1 >= 0.0 && dist2 <= 0.0) &&
-        dist1 != dist2 )
-    {
+    if( dist1 == 0.0 )
+        t = 0.0;
+    else if( dist2 == 0.0 )
+        t = 1.0;
+    else if( dist1 == dist2 )
+        t = -1.0;
+    else
         t = dist1 / (dist1 - dist2);
 
-        SCALE_POINT( t1, *p1, 1.0 - t );
-        SCALE_POINT( t2, *p2, t );
-        ADD_POINTS( *intersection_point, t1, t2 );
+    if( t >= 0.0 && t <= 1.0 )
+    {
+        INTERPOLATE_POINTS( *intersection_point, t1, t2, t );
 
         intersects = TRUE;
     }
@@ -765,6 +1154,19 @@ public  BOOLEAN  get_plane_segment_intersection(
 
     return( intersects );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : reverse_polygons_vertices
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Reverses the order of the polygon vertices.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void   reverse_polygons_vertices(
     polygons_struct  *polygons )
@@ -777,6 +1179,20 @@ public  void   reverse_polygons_vertices(
     for_less( poly, 0, polygons->n_items )
         reverse_polygon_order( polygons, poly );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : make_polygons_front_facing
+@INPUT      : polygons
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Makes all polygons front facing, based on the normals at the
+              vertices.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void   make_polygons_front_facing(
     polygons_struct  *polygons )
@@ -792,6 +1208,21 @@ public  void   make_polygons_front_facing(
             reverse_polygon_order( polygons, poly );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : polygon_is_back_facing
+@INPUT      : polygons
+              poly
+@OUTPUT     : 
+@RETURNS    : TRUE if polygon is back facing
+@DESCRIPTION: Uses the average normal of the polygon vertices to see if the
+              polygon is back facing.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  polygon_is_back_facing(
     polygons_struct   *polygons,
@@ -817,6 +1248,20 @@ public  BOOLEAN  polygon_is_back_facing(
     return( DOT_VECTORS( avg_vertex_normal, polygon_normal ) > 0.0 );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : reverse_polygon_order
+@INPUT      : polygons
+              poly
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Reverses the order of the specified poly.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  reverse_polygon_order(
     polygons_struct   *polygons,
     int               poly )
@@ -835,7 +1280,27 @@ private  void  reverse_polygon_order(
     }
 }
 
-#define  MAX_NEIGHBOURS   1000
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : compute_points_centroid_and_normal
+@INPUT      : polygons
+              point_index
+              n_neighbours
+              neighbours
+@OUTPUT     : centroid
+              normal
+              base_length
+              curvature
+@RETURNS    : 
+@DESCRIPTION: Computes the centroid and normal of the neighbours of a vertex,
+              as well as a measure of the size of the polygon defined by the
+              neighbours, and the relative curvature of the surface at the
+              vertex.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  compute_points_centroid_and_normal(
     polygons_struct  *polygons,
@@ -847,6 +1312,7 @@ public  void  compute_points_centroid_and_normal(
     Real             *base_length,
     Real             *curvature )
 {
+#define  MAX_NEIGHBOURS   1000
     int              i;
     Point            neigh_points[MAX_NEIGHBOURS];
 
@@ -872,6 +1338,28 @@ public  void  compute_points_centroid_and_normal(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : compute_points_centroid_and_normal
+@INPUT      : polygons
+              poly
+              vertex_index
+              point_index
+@OUTPUT     : centroid
+              normal
+              base_length
+              curvature
+@RETURNS    : 
+@DESCRIPTION: Computes the centroid and normal of the neighbours of a vertex,
+              as well as a measure of the size of the polygon defined by the
+              neighbours, and the relative curvature of the surface at the
+              vertex.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  compute_polygon_point_centroid(
     polygons_struct  *polygons,
     int              poly,
@@ -895,6 +1383,23 @@ public  void  compute_polygon_point_centroid(
                                         centroid, normal, base_length,
                                         curvature );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : estimate_polygon_curvature
+@INPUT      : point
+              n_neighs
+              neighs
+              centroid
+              normal
+@OUTPUT     : base_length
+@RETURNS    : curvature
+@DESCRIPTION: Computes the curvature at a vertex of a polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  estimate_polygon_curvature(
     Point   *point,
@@ -930,6 +1435,20 @@ private  Real  estimate_polygon_curvature(
     return( curvature );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : compute_polygon_vertex_curvature
+@INPUT      : polygons
+              point_index
+@OUTPUT     : 
+@RETURNS    : curvature
+@DESCRIPTION: Computes the curvature of the surface at a specified vertex.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Real  compute_polygon_vertex_curvature(
     polygons_struct  *polygons,
     int              point_index )
@@ -952,6 +1471,21 @@ public  Real  compute_polygon_vertex_curvature(
     return( curvature );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_opposite_point
+@INPUT      : polygon
+              poly
+              edge
+@OUTPUT     : point
+@RETURNS    : 
+@DESCRIPTION: Gets the point opposite the given edge.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  get_opposite_point(
     polygons_struct  *polygons,
     int              poly,
@@ -970,6 +1504,21 @@ private  void  get_opposite_point(
     *point = polygons->points[polygons->indices[
                          POINT_INDEX( polygons->end_indices, poly, v)]];
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygon_edge_angle
+@INPUT      : polygons
+              poly
+              edge
+@OUTPUT     : 
+@RETURNS    : angle between -PI and PI
+@DESCRIPTION: Computes the angle across the edge.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Real  get_polygon_edge_angle(
     polygons_struct  *polygons,
@@ -1031,6 +1580,20 @@ public  Real  get_polygon_edge_angle(
 
     return( angle );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : polygons_are_same_topology
+@INPUT      : p1
+              p2
+@OUTPUT     : 
+@RETURNS    : TRUE if same
+@DESCRIPTION: Tests if two polygons are the same topology.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  polygons_are_same_topology(
     polygons_struct  *p1,

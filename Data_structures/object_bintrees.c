@@ -1,7 +1,38 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <data_structures.h>
 #include  <geom.h>
 #include  <objects.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.7 1995-07-31 13:45:36 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_the_bintree
+@INPUT      : bintree
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the bintree.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  delete_the_bintree(
     bintree_struct_ptr  *bintree )
@@ -15,6 +46,22 @@ public  void  delete_the_bintree(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : check_install_bintree_delete_function
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Checks whether the bintree delete function has been installed.
+              In order to avoid linking in all the bintree stuff whenever
+              object_struct's are used, the delete function is called as
+              a pointer.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  check_install_bintree_delete_function()
 {
     static  BOOLEAN  first = TRUE;
@@ -26,6 +73,19 @@ private  void  check_install_bintree_delete_function()
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : allocate_bintree
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Allocates a bintree structure.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  *allocate_bintree()
 {
     bintree_struct_ptr   bintree;
@@ -34,6 +94,20 @@ public  void  *allocate_bintree()
 
     return( (void *) bintree );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_lines_bintree
+@INPUT      : lines
+              max_nodes
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Creates a bintree for the lines, storing it in lines->bintree.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  create_lines_bintree(
     lines_struct   *lines,
@@ -86,6 +160,21 @@ public  void  create_lines_bintree(
     FREE( bound_vols );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_polygons_bintree
+@INPUT      : polygons
+              max_nodes
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Creates a bintree for the polygons, storing it in
+              polygons->bintree.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  create_polygons_bintree(
     polygons_struct   *polygons,
     int               max_nodes )
@@ -119,6 +208,21 @@ public  void  create_polygons_bintree(
 
     FREE( bound_vols );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_quadmesh_bintree
+@INPUT      : quadmesh
+              max_nodes
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Creates a bintree for the quadmesh, storing it in
+              quadmesh->bintree.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  create_quadmesh_bintree(
     quadmesh_struct   *quadmesh,

@@ -1,6 +1,20 @@
 #ifndef  DEF_HASH
 #define  DEF_HASH
 
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : hash.h
 @INPUT      : 
@@ -13,6 +27,10 @@
 @CREATED    :                      David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
+
+#ifndef lint
+static char hash_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/hash.h,v 1.7 1995-07-31 13:44:37 david Exp $";
+#endif
 
 #include  <volume_io.h>
 

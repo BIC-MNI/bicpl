@@ -1,6 +1,41 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_lines.c,v 1.7 1995-07-31 13:44:59 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : subdivide_line
+@INPUT      : l
+@OUTPUT     : new_n_points
+              new_points
+              new_n_lines
+              new_end_indices
+              new_n_indices
+              new_indices
+@RETURNS    : 
+@DESCRIPTION: Subdivides the l'th line segment, adding to the new line.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  subdivide_line(
     lines_struct      *lines,
@@ -43,6 +78,19 @@ private  void  subdivide_line(
                           *new_n_indices, DEFAULT_CHUNK_SIZE );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : general_subdivide_lines
+@INPUT      : lines
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Subdivides a line structure of any topology.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  general_subdivide_lines(
     lines_struct  *lines )
 {
@@ -79,6 +127,20 @@ private  void  general_subdivide_lines(
     lines->indices = new_indices;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : subdivide_closed_curve
+@INPUT      : lines
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Subdivides a lines structure of a single loop topology, into
+              similar topology.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  subdivide_closed_curve(
     lines_struct      *lines )
 {
@@ -108,6 +170,20 @@ private  void  subdivide_closed_curve(
         lines->indices[i] = i % lines->n_points;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : is_single_closed_curve
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : TRUE if single loop
+@DESCRIPTION: Checks if lines is a single closed loop, with indices
+              0, 1, 2, lines->n_points-1, 0.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN is_single_closed_curve(
     lines_struct   *lines )
 {
@@ -122,7 +198,7 @@ public  BOOLEAN is_single_closed_curve(
         single_closed_curve = TRUE;
         for_less( i, 0, lines->n_points + 1 )
         {
-            if( lines->indices[i] != i % lines->n_points )
+            if( lines->indices[i] != (i % lines->n_points) )
             {
                 single_closed_curve = FALSE;
                 break;
@@ -132,6 +208,19 @@ public  BOOLEAN is_single_closed_curve(
 
     return( single_closed_curve );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : subdivide_lines
+@INPUT      : lines
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Subdivides the lines, splitting each segment in half.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  subdivide_lines(
     lines_struct  *lines )

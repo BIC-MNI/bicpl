@@ -1,8 +1,44 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
 
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/filters.c,v 1.9 1995-07-31 13:45:44 david Exp $";
+#endif
+
 #define  N_STD_DEVIATIONS  3.0
 #define  N_SAMPLES         9
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_slice_weights_for_filter
+@INPUT      : volume
+              voxel_position
+              voxel_direction
+              filter_type
+              full_width_half_max
+@OUTPUT     : positions
+              weights
+@RETURNS    : 
+@DESCRIPTION: Computes the slice weights for the given filter.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  get_slice_weights_for_filter(
     Volume         volume,

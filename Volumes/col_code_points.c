@@ -1,7 +1,43 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
 
-/* -------------------------------------------------------------------- */
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_points.c,v 1.5 1995-07-31 13:45:51 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : colour_code_points
+@INPUT      : colour_coding
+              volume
+              continuity
+              n_points
+              points
+@OUTPUT     : colour_flag
+              colours
+@RETURNS    : 
+@DESCRIPTION: Colour codes the points according to the associated value in the
+              volume.  Adjust the colour_flag and reallocs the colours as
+              necessary.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  colour_code_points(
     colour_coding_struct  *colour_coding,
@@ -44,6 +80,21 @@ private  void  colour_code_points(
         (*colours)[i] = get_colour_code( colour_coding, val );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : colour_code_object
+@INPUT      : volume
+              continuity
+              colour_coding
+@OUTPUT     : object
+@RETURNS    : 
+@DESCRIPTION: Colour codes an object, modifying its per-vertex colours.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  colour_code_object(
     Volume                 volume,

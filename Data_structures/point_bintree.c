@@ -1,6 +1,24 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <data_structures.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/point_bintree.c,v 1.4 1995-07-31 13:45:38 david Exp $";
+#endif
 
 private  void  recursive_find_closest_point(
     Point                 *point,
@@ -13,6 +31,23 @@ private  void  recursive_find_closest_point(
 private  Real  get_point_range_dist(
     Point         *point,
     range_struct  *range );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_closest_point_in_bintree
+@INPUT      : point
+              bintree
+@OUTPUT     : object
+              obj_index
+              point_on_object
+@RETURNS    : distance
+@DESCRIPTION: Finds the closest point in a set of objects with an
+              associated bintree to a given point.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Jun 21, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Real  find_closest_point_in_bintree(
     Point               *point,
@@ -33,6 +68,24 @@ public  Real  find_closest_point_in_bintree(
 
     return( dist );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : recursive_find_closest_point
+@INPUT      : point
+              node
+              range
+@OUTPUT     : object
+              obj_index
+              closest_dist
+              closest_point
+@RETURNS    : 
+@DESCRIPTION: Traverses the bintree looking for the closest point.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Jun 21, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  recursive_find_closest_point(
     Point                 *point,
@@ -118,6 +171,20 @@ private  void  recursive_find_closest_point(
         }
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_point_range_dist
+@INPUT      : point
+              range
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Gets the distance to a box.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Jun 21, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real  get_point_range_dist(
     Point         *point,

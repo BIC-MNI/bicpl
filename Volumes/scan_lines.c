@@ -1,5 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <bicpl.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.4 1995-07-31 13:45:49 david Exp $";
+#endif
 
 private  void  scan_line_segment_to_voxels(
     Volume    volume,
@@ -8,6 +26,23 @@ private  void  scan_line_segment_to_voxels(
     Point     *p1,
     Point     *p2,
     Real      radius );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : scan_lines_to_voxels
+@INPUT      : lines
+              volume
+              label_volume
+              label
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Fills in the label_volume with label, where the line
+              intersects it.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  scan_lines_to_voxels(
     lines_struct     *lines,
@@ -36,38 +71,51 @@ public  void  scan_lines_to_voxels(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : 
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Real  point_segment_distance_squared(
     Point    *point,
     Point    *p1,
     Point    *p2 )
 {
-    Real     t, mag;
-    Point    line_point;
-    Vector   p1_p2, p1_p, offset;
+    Vector   offset;
+    Point    closest;
 
-    SUB_POINTS( p1_p2, *p2, *p1 );
-    SUB_POINTS( p1_p, *point, *p1 );
+    get_closest_point_on_line_segment( point, p1, p2, &closest );
 
-    mag = DOT_VECTORS( p1_p2, p1_p2 );
-
-    if( mag == 0.0 )
-        line_point = *p1;
-    else
-    {
-        t = DOT_VECTORS( p1_p, p1_p2 ) / mag;
-
-        if( t <= 0.0 )
-            line_point = *p1;
-        else if( t >= 1.0 )
-            line_point = *p2;
-        else
-            INTERPOLATE_POINTS( line_point, *p1, *p2, t );
-    }
-
-    SUB_POINTS( offset, *point, line_point );
+    SUB_POINTS( offset, *point, closest );
 
     return( DOT_VECTORS( offset, offset ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : scan_line_segment_to_voxels
+@INPUT      : volume
+              label_volume
+              label
+              p1
+              p2
+              radius
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Scans a cylinder with spheres on both ends into the volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  scan_line_segment_to_voxels(
     Volume    volume,

@@ -1,8 +1,41 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
 
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/closest_point.c,v 1.5 1995-07-31 13:45:04 david Exp $";
+#endif
+
 #define  MAX_POINTS    300
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_point_polygon_distance
+@INPUT      : point
+              polygons
+              poly_index
+@OUTPUT     : object_point
+@RETURNS    : distance
+@DESCRIPTION: Returns the closest distance from the point to the polygon,
+              and passes back the closest point in the polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real   get_point_polygon_distance(
     Point            *point,
@@ -25,6 +58,22 @@ private  Real   get_point_polygon_distance(
         return( 1.0e30 );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_point_quadmesh_distance
+@INPUT      : point
+              quadmeshs
+              obj_index
+@OUTPUT     : object_point
+@RETURNS    : distance
+@DESCRIPTION: Returns the closest distance from the point to the quadmesh,
+              and passes back the closest point in the quadmesh.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Real   get_point_quadmesh_distance(
     Point            *point,
     quadmesh_struct  *quadmesh,
@@ -44,14 +93,33 @@ private  Real   get_point_quadmesh_distance(
     return( find_point_polygon_distance( point, 4, points, object_point ) );
 }
 
-public  void  get_closest_point_on_line_segment(
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_line_segment_alpha
+@INPUT      : point
+              p1     \ endpoints of segment
+              p2     /
+@OUTPUT     : closest_point
+              alpha
+@RETURNS    : 
+@DESCRIPTION: Finds the closest point on the line segment to the 'point',
+              and the position of the point on the segment, ranging from
+              0 to 1.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+private  void  get_line_segment_alpha(
     Point  *point,
     Point  *p1,
     Point  *p2,
-    Point  *closest_point )
+    Point  *closest_point,
+    Real   *alpha )
 {
     Vector   p2_minus_p1, p_minus_p1;
-    Real     mag, t;
+    Real     mag;
 
     SUB_VECTORS( p2_minus_p1, *p2, *p1 );
     SUB_VECTORS( p_minus_p1, *point, *p1 );
@@ -59,19 +127,95 @@ public  void  get_closest_point_on_line_segment(
     mag = DOT_VECTORS( p2_minus_p1, p2_minus_p1 );
 
     if( mag == 0.0 )
+        *alpha = 0.0;
+    else
+        *alpha = DOT_VECTORS( p_minus_p1, p2_minus_p1 ) / mag;
+
+    if( *alpha <= 0.0 )
+    {
         *closest_point = *p1;
+        *alpha = 0.0;
+    }
+    else if( *alpha >= 1.0 )
+    {
+        *closest_point = *p2;
+        *alpha = 1.0;
+    }
     else
     {
-        t = DOT_VECTORS( p_minus_p1, p2_minus_p1 ) / mag;
-
-        if( t <= 0.0 )
-            *closest_point = *p1;
-        else if( t >= 1.0 )
-            *closest_point = *p2;
-        else
-            INTERPOLATE_POINTS( *closest_point, *p1, *p2, t );
+        INTERPOLATE_POINTS( *closest_point, *p1, *p2, *alpha );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_closest_point_on_line_segment
+@INPUT      : point
+              p1     \ endpoints of segment
+              p2     /
+@OUTPUT     : closest_point
+@RETURNS    : 
+@DESCRIPTION: Finds the closest point on the line segment to the 'point'.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void  get_closest_point_on_line_segment(
+    Point  *point,
+    Point  *p1,
+    Point  *p2,
+    Point  *closest_point )
+{
+    Real     t;
+
+    get_line_segment_alpha( point, p1, p2, closest_point, &t );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_distance_to_line_segment
+@INPUT      : point
+              p1     \ endpoints of segment
+              p2     /
+@OUTPUT     : alpha
+@RETURNS    : Distance
+@DESCRIPTION: Finds the distance to the line segment, and returns the
+              relative position on the segment of the closest point
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  Real  get_distance_to_line_segment(
+    Point  *point,
+    Point  *p1,
+    Point  *p2,
+    Real   *alpha )
+{
+    Point    closest;
+
+    get_line_segment_alpha( point, p1, p2, &closest, alpha );
+
+    return( distance_between_points( point, &closest ) );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_point_line_segment_distance
+@INPUT      : point
+              lines
+              obj_index
+@OUTPUT     : object_point
+@RETURNS    : distance
+@DESCRIPTION: Returns the distance to the closest point on the line segment.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Real   get_point_line_segment_distance(
     Point            *point,
@@ -92,6 +236,20 @@ private  Real   get_point_line_segment_distance(
     return( distance_between_points( point, object_point ) );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_point_marker_distance
+@INPUT      : point
+              marker
+@OUTPUT     : object_point
+@RETURNS    : distance
+@DESCRIPTION: Returns the distance from the point to the marker.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Real  get_point_marker_distance(
     Point            *point,
     marker_struct    *marker,
@@ -101,6 +259,21 @@ private  Real  get_point_marker_distance(
 
     return( distance_between_points( point, object_point ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_point_object_distance
+@INPUT      : point
+              object
+              obj_index
+@OUTPUT     : object_point
+@RETURNS    : distance
+@DESCRIPTION: Finds the closest distance to the given object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Real  get_point_object_distance(
     Point                 *point,
@@ -135,6 +308,22 @@ public  Real  get_point_object_distance(
 
     return( dist );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_closest_point_on_object
+@INPUT      : point
+              object
+@OUTPUT     : obj_index
+              point_on_object
+@RETURNS    : distance
+@DESCRIPTION: Finds the closest point on the object, and the index of the
+              object component where it was found.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Real  find_closest_point_on_object(
     Point           *point,

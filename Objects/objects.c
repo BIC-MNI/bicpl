@@ -1,9 +1,40 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <objects.h>
 #include  <geom.h>
 
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.17 1995-07-31 13:45:13 david Exp $";
+#endif
+
 private  void  advance_object_traverse(
     object_traverse_struct  *object_traverse );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_object
+@INPUT      : object_type
+@OUTPUT     : 
+@RETURNS    : an object
+@DESCRIPTION: Creates an object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  object_struct  *create_object(
     Object_types   object_type )
@@ -18,11 +49,37 @@ public  object_struct  *create_object(
     return( object );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_type
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : type
+@DESCRIPTION: Returns the type of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Object_types  get_object_type(
     object_struct   *object )
 {
     return( object->object_type );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_visibility
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : visibility
+@DESCRIPTION: Returns the visibility of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  get_object_visibility(
     object_struct  *object )
@@ -30,12 +87,39 @@ public  BOOLEAN  get_object_visibility(
     return( object->visibility );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_object_visibility
+@INPUT      : object
+              visibility
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the visibility of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  set_object_visibility(
     object_struct  *object,
     BOOLEAN        visibility )
 {
     object->visibility = visibility;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_lines_ptr
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : lines
+@DESCRIPTION: Returns a pointer to the lines of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  lines_struct  *get_lines_ptr(
     object_struct  *object )
@@ -49,6 +133,19 @@ public  lines_struct  *get_lines_ptr(
         return( &object->specific.lines );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_marker_ptr
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : marker
+@DESCRIPTION: Returns a pointer to the marker of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  marker_struct  *get_marker_ptr(
     object_struct  *object )
 {
@@ -60,6 +157,19 @@ public  marker_struct  *get_marker_ptr(
     else
         return( &object->specific.marker );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_model_ptr
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : model
+@DESCRIPTION: Returns a pointer to the model of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  model_struct  *get_model_ptr(
     object_struct  *object )
@@ -73,6 +183,19 @@ public  model_struct  *get_model_ptr(
         return( &object->specific.model );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_pixels_ptr
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : pixels
+@DESCRIPTION: Returns a pointer to the pixels of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  pixels_struct  *get_pixels_ptr(
     object_struct  *object )
 {
@@ -84,6 +207,19 @@ public  pixels_struct  *get_pixels_ptr(
     else
         return( &object->specific.pixels );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygons_ptr
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : polygons
+@DESCRIPTION: Returns a pointer to the polygons of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  polygons_struct  *get_polygons_ptr(
     object_struct  *object )
@@ -97,6 +233,19 @@ public  polygons_struct  *get_polygons_ptr(
         return( &object->specific.polygons );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadmesh_ptr
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : quadmesh
+@DESCRIPTION: Returns a pointer to the quadmesh of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  quadmesh_struct  *get_quadmesh_ptr(
     object_struct  *object )
 {
@@ -108,6 +257,19 @@ public  quadmesh_struct  *get_quadmesh_ptr(
     else
         return( &object->specific.quadmesh );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_text_ptr
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : text
+@DESCRIPTION: Returns a pointer to the text of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  text_struct  *get_text_ptr(
     object_struct  *object )
@@ -121,7 +283,19 @@ public  text_struct  *get_text_ptr(
         return( &object->specific.text );
 }
 
-/* --------------------- get points ------------------------ */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_lines_points
+@INPUT      : object
+@OUTPUT     : points
+@RETURNS    : number of points
+@DESCRIPTION: Passes back the points of the object and returns the number
+              of points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  int  get_lines_points(
     object_struct   *object,
@@ -132,6 +306,20 @@ private  int  get_lines_points(
     return( get_lines_ptr(object)->n_points );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_marker_points
+@INPUT      : object
+@OUTPUT     : points
+@RETURNS    : number of points
+@DESCRIPTION: Passes back the points of the object and returns the number
+              of points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  int  get_marker_points(
     object_struct   *object,
     Point           *points[] )
@@ -140,6 +328,20 @@ private  int  get_marker_points(
 
     return( 1 );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_zero_points
+@INPUT      : object
+@OUTPUT     : points
+@RETURNS    : number of points
+@DESCRIPTION: Passes back the points of objects with no points and returns
+              the number of points (0).
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 /* ARGSUSED */
 
@@ -150,6 +352,20 @@ private  int  get_object_zero_points(
     return( 0 );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygons_points
+@INPUT      : object
+@OUTPUT     : points
+@RETURNS    : number of points
+@DESCRIPTION: Passes back the points of the object and returns the number
+              of points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  int  get_polygons_points(
     object_struct   *object,
     Point           *points[] )
@@ -158,6 +374,20 @@ private  int  get_polygons_points(
 
     return( get_polygons_ptr(object)->n_points );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadmesh_points
+@INPUT      : object
+@OUTPUT     : points
+@RETURNS    : number of points
+@DESCRIPTION: Passes back the points of the object and returns the number
+              of points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  int  get_quadmesh_points(
     object_struct   *object,
@@ -168,6 +398,20 @@ private  int  get_quadmesh_points(
     return( get_quadmesh_ptr(object)->m * get_quadmesh_ptr(object)->n );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_text_points
+@INPUT      : object
+@OUTPUT     : points
+@RETURNS    : number of points
+@DESCRIPTION: Passes back the points of the object and returns the number
+              of points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  int  get_text_points(
     object_struct   *object,
     Point           *points[] )
@@ -177,7 +421,19 @@ private  int  get_text_points(
     return( 1 );
 }
 
-/* --------------------- get normals ------------------------ */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_zero_normals
+@INPUT      : object
+@OUTPUT     : normals
+@RETURNS    : number of normals
+@DESCRIPTION: Passes back the normals of the object and returns the number
+              of normals.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 /* ARGSUSED */
 
@@ -188,6 +444,20 @@ private  int  get_object_zero_normals(
     return( 0 );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygons_normals
+@INPUT      : object
+@OUTPUT     : normals
+@RETURNS    : number of normals
+@DESCRIPTION: Passes back the normals of the object and returns the number
+              of normals.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  int  get_polygons_normals(
     object_struct   *object,
     Vector          *normals[] )
@@ -196,6 +466,20 @@ private  int  get_polygons_normals(
 
     return( get_polygons_ptr(object)->n_points );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadmesh_normals
+@INPUT      : object
+@OUTPUT     : normals
+@RETURNS    : number of normals
+@DESCRIPTION: Passes back the normals of the object and returns the number
+              of normals.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  int  get_quadmesh_normals(
     object_struct   *object,
@@ -206,7 +490,19 @@ private  int  get_quadmesh_normals(
     return( get_quadmesh_ptr(object)->m * get_quadmesh_ptr(object)->n );
 }
 
-/* --------------------- get colours ------------------------ */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_lines_colours
+@INPUT      : object
+@OUTPUT     : colours
+@RETURNS    : colour flag
+@DESCRIPTION: Passes back the colours of the object and returns the colour
+              flag.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Colour_flags  *get_lines_colours(
     object_struct   *object,
@@ -217,6 +513,20 @@ private  Colour_flags  *get_lines_colours(
     return( &get_lines_ptr(object)->colour_flag );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_marker_colours
+@INPUT      : object
+@OUTPUT     : colours
+@RETURNS    : colour flag
+@DESCRIPTION: Passes back the colours of the object and returns the colour
+              flag.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Colour_flags  *get_marker_colours(
     object_struct    *object,
     Colour           *colours[] )
@@ -225,6 +535,20 @@ private  Colour_flags  *get_marker_colours(
 
     return( (Colour_flags *) 0 );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_zero_colours
+@INPUT      : object
+@OUTPUT     : colours
+@RETURNS    : colour flag
+@DESCRIPTION: Passes back the colours of the object and returns the colour
+              flag.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 /* ARGSUSED */
 
@@ -237,6 +561,20 @@ private  Colour_flags  *get_object_zero_colours(
     return( (Colour_flags *) 0 );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygons_colours
+@INPUT      : object
+@OUTPUT     : colours
+@RETURNS    : colour flag
+@DESCRIPTION: Passes back the colours of the object and returns the colour
+              flag.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Colour_flags  *get_polygons_colours(
     object_struct   *object,
     Colour          *colours[] )
@@ -245,6 +583,20 @@ private  Colour_flags  *get_polygons_colours(
 
     return( &get_polygons_ptr(object)->colour_flag );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadmesh_colours
+@INPUT      : object
+@OUTPUT     : colours
+@RETURNS    : colour flag
+@DESCRIPTION: Passes back the colours of the object and returns the colour
+              flag.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Colour_flags  *get_quadmesh_colours(
     object_struct   *object,
@@ -255,6 +607,20 @@ private  Colour_flags  *get_quadmesh_colours(
     return( &get_quadmesh_ptr(object)->colour_flag );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_text_colours
+@INPUT      : object
+@OUTPUT     : colours
+@RETURNS    : colour flag
+@DESCRIPTION: Passes back the colours of the object and returns the colour
+              flag.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Colour_flags  *get_text_colours(
     object_struct   *object,
     Colour          *colours[] )
@@ -264,7 +630,19 @@ private  Colour_flags  *get_text_colours(
     return( (Colour_flags *) 0 );
 }
 
-/* --------------------- set colours ------------------------ */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_lines_colours
+@INPUT      : object
+              colours
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Assigns the colours array of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  set_lines_colours(
     object_struct   *object,
@@ -272,6 +650,21 @@ private  void  set_lines_colours(
 {
     get_lines_ptr(object)->colours = colours;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_object_no_colours
+@INPUT      : object
+              colours
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Assigns the colours array of the object, for objects which
+              have no colours.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 /* ARGSUSED */
 
@@ -281,12 +674,40 @@ private  void  set_object_no_colours(
 {
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_polygons_colours
+@INPUT      : object
+              colours
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Assigns the colours array of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  set_polygons_colours(
     object_struct   *object,
     Colour          colours[] )
 {
     get_polygons_ptr(object)->colours = colours;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_quadmesh_colours
+@INPUT      : object
+              colours
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Assigns the colours array of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  set_quadmesh_colours(
     object_struct   *object,
@@ -295,7 +716,18 @@ private  void  set_quadmesh_colours(
     get_quadmesh_ptr(object)->colours = colours;
 }
 
-/* --------------------- get surfprop ------------------------ */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_no_surfprop
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : pointer to surfprop
+@DESCRIPTION: Returns a null pointer for objects that do not have surfprops.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 /* ARGSUSED */
 
@@ -305,11 +737,37 @@ private  Surfprop  *get_object_no_surfprop(
     return( (Surfprop *) NULL );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygons_surfprop
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : surfprop
+@DESCRIPTION: Returns a pointer to the object's surfprop.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Surfprop  *get_polygons_surfprop(
     object_struct   *object )
 {
     return( &get_polygons_ptr(object)->surfprop );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygons_surfprop
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : surfprop
+@DESCRIPTION: Returns a pointer to the object's surfprop.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Surfprop  *get_quadmesh_surfprop(
     object_struct   *object )
@@ -317,7 +775,18 @@ private  Surfprop  *get_quadmesh_surfprop(
     return( &get_quadmesh_ptr(object)->surfprop );
 }
 
-/* --------------------- get name functions ------------------------ */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_lines_name
+@INPUT      : object
+@OUTPUT     : name
+@RETURNS    : 
+@DESCRIPTION: Gets a name description for the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  get_lines_name(
     object_struct   *object,
@@ -327,6 +796,19 @@ private  void  get_lines_name(
                     get_lines_ptr(object)->n_items,
                     get_lines_ptr(object)->n_points );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_marker_name
+@INPUT      : object
+@OUTPUT     : name
+@RETURNS    : 
+@DESCRIPTION: Gets a name description for the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  get_marker_name(
     object_struct   *object,
@@ -348,12 +830,38 @@ private  void  get_marker_name(
                     Point_z(get_marker_ptr(object)->position) );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_model_name
+@INPUT      : object
+@OUTPUT     : name
+@RETURNS    : 
+@DESCRIPTION: Gets a name description for the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  get_model_name(
     object_struct   *object,
     char            name[] )
 {
     (void) sprintf( name, "Model (%s) ->", get_model_ptr(object)->filename );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_pixels_name
+@INPUT      : object
+@OUTPUT     : name
+@RETURNS    : 
+@DESCRIPTION: Gets a name description for the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  get_pixels_name(
     object_struct   *object,
@@ -364,6 +872,19 @@ private  void  get_pixels_name(
                     get_pixels_ptr(object)->y_size );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_polygons_name
+@INPUT      : object
+@OUTPUT     : name
+@RETURNS    : 
+@DESCRIPTION: Gets a name description for the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  get_polygons_name(
     object_struct   *object,
     char            name[] )
@@ -373,6 +894,19 @@ private  void  get_polygons_name(
                     get_polygons_ptr(object)->n_points );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_quadmesh_name
+@INPUT      : object
+@OUTPUT     : name
+@RETURNS    : 
+@DESCRIPTION: Gets a name description for the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  get_quadmesh_name(
     object_struct   *object,
     char            name[] )
@@ -381,6 +915,19 @@ private  void  get_quadmesh_name(
                     get_quadmesh_ptr(object)->m, get_quadmesh_ptr(object)->n );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_text_name
+@INPUT      : object
+@OUTPUT     : name
+@RETURNS    : 
+@DESCRIPTION: Gets a name description for the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  get_text_name(
     object_struct   *object,
     char            name[] )
@@ -388,13 +935,37 @@ private  void  get_text_name(
     (void) sprintf( name, "Text (%s)", get_text_ptr(object)->string );
 }
 
-/* --------------------- delete functions ------------------------ */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_lines_object
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  delete_lines_object(
     object_struct   *object )
 {
     delete_lines( get_lines_ptr(object) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_marker_object
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 /* ARGSUSED */
 
@@ -403,11 +974,37 @@ private  void  delete_marker_object(
 {
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_model_object
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  delete_model_object(
     object_struct   *object )
 {
     delete_model( get_model_ptr(object) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_pixels_object
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  delete_pixels_object(
     object_struct   *object )
@@ -415,11 +1012,37 @@ private  void  delete_pixels_object(
     delete_pixels( get_pixels_ptr(object) );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_polygons_object
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void  delete_polygons_object(
     object_struct   *object )
 {
     delete_polygons( get_polygons_ptr(object) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_quadmesh_object
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 /* ARGSUSED */
 
@@ -428,6 +1051,19 @@ private  void  delete_quadmesh_object(
 {
     delete_quadmesh( get_quadmesh_ptr(object) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_text_object
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 /* ARGSUSED */
 
@@ -517,12 +1153,38 @@ static  object_functions_list   object_functions[N_OBJECT_TYPES] =
     }                               /* TEXT */
 };
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_object
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  delete_object(
     object_struct  *object )
 {
     object_functions[object->object_type].delete_function( object );
     FREE( object );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_points
+@INPUT      : object
+@OUTPUT     : points
+@RETURNS    : n_points
+@DESCRIPTION: Passes back a pointer to the points of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  get_object_points(
     object_struct   *object,
@@ -532,6 +1194,19 @@ public  int  get_object_points(
                    ( object, points ) );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_normals
+@INPUT      : object
+@OUTPUT     : normals
+@RETURNS    : n_normals
+@DESCRIPTION: Passes back a pointer to the normals of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int  get_object_normals(
     object_struct   *object,
     Vector          *normals[] )
@@ -539,6 +1214,19 @@ public  int  get_object_normals(
     return( object_functions[object->object_type].get_normals_function
                    ( object, normals ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_colours
+@INPUT      : object
+@OUTPUT     : colours
+@RETURNS    : colour_flag
+@DESCRIPTION: Passes back a pointer to the colours array.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Colour_flags  *get_object_colours(
     object_struct   *object,
@@ -548,12 +1236,39 @@ public  Colour_flags  *get_object_colours(
                    ( object, colours ) );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_object_colours
+@INPUT      : object
+              colours
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the colours array of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  set_object_colours(
     object_struct   *object,
     Colour          colours[] )
 {
     object_functions[object->object_type].set_colours_function(object,colours);
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_surfprop
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : surfprop
+@DESCRIPTION: Returns a pointer to the surfprop of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Surfprop  *get_object_surfprop(
     object_struct   *object )
@@ -562,12 +1277,41 @@ public  Surfprop  *get_object_surfprop(
                    ( object ) );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_name
+@INPUT      : object
+@OUTPUT     : name
+@RETURNS    : 
+@DESCRIPTION: Gets the name description of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  get_object_name(
     object_struct  *object,
     char           name[] )
 {
     object_functions[object->object_type].get_name_function( object, name );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : initialize_object_traverse
+@INPUT      : object_traverse
+              n_objects
+              object_list
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Initializes a structure for traversing an object, which could
+              potentially have a hierarchy, if models are present.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  initialize_object_traverse(
     object_traverse_struct  *object_traverse,
@@ -587,6 +1331,19 @@ public  void  initialize_object_traverse(
         PUSH_STACK( object_traverse->stack, push_entry );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_next_object_traverse
+@INPUT      : object_traverse
+@OUTPUT     : object
+@RETURNS    : TRUE if object found
+@DESCRIPTION: Gets the next object from the traversal.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  get_next_object_traverse(
     object_traverse_struct  *object_traverse,
@@ -611,6 +1368,19 @@ public  BOOLEAN  get_next_object_traverse(
 
     return( object_found );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : advance_object_traverse
+@INPUT      : object_traverse
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Advances the object_traverse struct to point to the next object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  advance_object_traverse(
     object_traverse_struct  *object_traverse )
@@ -641,11 +1411,39 @@ private  void  advance_object_traverse(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : terminate_object_traverse
+@INPUT      : object_traverse
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the object traversal structure.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  terminate_object_traverse(
     object_traverse_struct   *object_traverse )
 {
     DELETE_STACK( object_traverse->stack );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_range_of_object
+@INPUT      : object
+              visible_ones_only
+@OUTPUT     : min_corner
+              max_corner
+@RETURNS    : TRUE if range found.
+@DESCRIPTION: Returns the range of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  get_range_of_object(
     object_struct   *object,
@@ -691,6 +1489,19 @@ public  BOOLEAN  get_range_of_object(
     return( found_flag );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : reverse_object_normals
+@INPUT      : object
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Reverses the normals of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  reverse_object_normals(
     object_struct   *object )
 {
@@ -707,6 +1518,19 @@ public  void  reverse_object_normals(
         reverse_vectors( n_normals, normals );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_object_colour
+@INPUT      : object
+@OUTPUT     : colour
+@RETURNS    : TRUE if object has single colour
+@DESCRIPTION: Returns the global colour of the object, if any. 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  BOOLEAN  get_object_colour(
     object_struct  *object,
@@ -732,6 +1556,20 @@ public  BOOLEAN  get_object_colour(
     return( has_single_colour );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_object_colour
+@INPUT      : object
+              col
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the colour of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  set_object_colour(
     object_struct  *object,
     Colour         col )
@@ -756,6 +1594,20 @@ public  void  set_object_colour(
         colours[0] = col;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_object_surfprop
+@INPUT      : object
+              spr
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the surfprop of the object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  set_object_surfprop(
     object_struct  *object,
     Surfprop       *spr )
@@ -767,6 +1619,22 @@ public  void  set_object_surfprop(
     if( object_spr != (Surfprop *) NULL )
         *object_spr = *spr;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : free_colours
+@INPUT      : colour_flag
+              colours
+              n_points
+              n_items
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Frees the colours.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  free_colours(
     Colour_flags   colour_flag,
@@ -797,6 +1665,26 @@ public  void  free_colours(
         FREE( colours );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : objects_are_same_topology
+@INPUT      : n_points1
+              n_items1
+              end_indices1
+              indices1
+              n_points2
+              n_items2
+              end_indices2
+              indices2
+@OUTPUT     : 
+@RETURNS    : TRUE if same topology
+@DESCRIPTION: Tests if two objects are the same topology.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  objects_are_same_topology(
     int    n_points1,
     int    n_items1,
@@ -822,6 +1710,21 @@ public  BOOLEAN  objects_are_same_topology(
 
     return( TRUE );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_n_colours
+@INPUT      : colour_flag
+              n_points
+              n_items
+@OUTPUT     : 
+@RETURNS    : number of colours
+@DESCRIPTION: Returns the number of colours corresponding to the colour_flag.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  get_n_colours(
     Colour_flags  colour_flag,

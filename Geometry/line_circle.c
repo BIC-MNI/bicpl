@@ -1,11 +1,47 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/line_circle.c,v 1.8 1995-07-31 13:44:54 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_line_circle
+@INPUT      : centre
+              plane_axis
+              x_radius
+              y_radius
+              n_points
+@OUTPUT     : lines
+@RETURNS    : 
+@DESCRIPTION: Creates an ellipse with the given centre and x and y radius,
+              as a closed line structure.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  create_line_circle(
     Point            *centre,
     int              plane_axis,
-    Real             x_size,
-    Real             y_size,
+    Real             x_radius,
+    Real             y_radius,
     int              n_points,
     lines_struct     *lines )
 {
@@ -28,9 +64,9 @@ public  void  create_line_circle(
     {
         angle = 2.0 * PI * (Real) i / (Real) n_points;
         Point_coord(lines->points[i],a1) = Point_coord(*centre,a1) +
-                                           x_size * cos( angle );
+                                           x_radius * cos( angle );
         Point_coord(lines->points[i],a2) = Point_coord(*centre,a2) +
-                                           y_size * sin( angle );
+                                           y_radius * sin( angle );
         Point_coord(lines->points[i],plane_axis) =
                                            Point_coord(*centre,plane_axis);
     }
@@ -41,22 +77,4 @@ public  void  create_line_circle(
     lines->indices[n_points] = 0;
 
     lines->end_indices[0] = n_points+1;
-}
-
-public  BOOLEAN  is_circle_topology(
-    lines_struct   *lines )
-{
-    int    i;
-
-    if( lines->n_items != 1 )
-        return( FALSE );
-
-    if( lines->n_points != lines->end_indices[0]-1 )
-        return( FALSE );
-
-    for_less( i, 0, lines->n_points+1 )
-        if( lines->indices[i] != (i % lines->n_points) )
-            return( FALSE );
-
-    return( TRUE );
 }

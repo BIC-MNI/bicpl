@@ -1,10 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.2 1995-07-10 18:02:40 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.3 1995-07-31 13:45:06 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -280,7 +293,7 @@ public   void     reverse_vectors(
 @OUTPUT     : 
 @RETURNS    : angle in radians.
 @DESCRIPTION: Returns the angle between the three points, in the range 0 to
-              2.0 * PI.
+              PI.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 

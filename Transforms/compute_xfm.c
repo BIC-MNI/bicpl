@@ -1,3 +1,19 @@
+
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              Peter Neelin, Louis Collins,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : compute_xfm.c
 @DESCRIPTION: Routine to calculate a General_transform from a pair of tag
@@ -6,9 +22,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.14  1995-07-10 18:02:50  david
+@MODIFIED   : Revision 1.15  1995-07-31 13:46:00  david
 @MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.14  1995/07/10  18:02:50  david
+ * check_in_all
+ *
  * Revision 1.13  1995/07/10  14:36:10  david
  * check_in_all
  *
@@ -68,6 +87,10 @@
 #include <internal_volume_io.h>
 #include <trans.h>
 #include <numerical.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.15 1995-07-31 13:46:00 david Exp $";
+#endif
 
 /* Function declarations */
 

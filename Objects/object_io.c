@@ -1,6 +1,23 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.18 1995-07-31 13:45:09 david Exp $";
+#endif
 
 private  Status  io_points(
     FILE            *file,
@@ -19,6 +36,22 @@ private  Status  io_line_thickness(
     IO_types        io_flag,
     File_formats    format,
     float           *line_thickness );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_lines
+@INPUT      : file
+              io_flag
+              format
+              lines
+@OUTPUT     : (lines)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a lines structure in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  io_lines(
     FILE                *file,
@@ -96,6 +129,22 @@ public  Status  io_lines(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_marker
+@INPUT      : file
+              io_flag
+              format
+              marker
+@OUTPUT     : (marker)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a marker structure in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_marker(
     FILE                *file,
     IO_types            io_flag,
@@ -134,6 +183,26 @@ public  Status  io_marker(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_model
+@INPUT      : file
+              io_flag
+              format
+              model
+@OUTPUT     : (model)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a model structure in ascii or binary format.
+              Rather than writing all the objects in the model, it simply
+              writes the name of the file containing the objects.  A
+              separate call (e.g. output_graphics_file) must be made to
+              input or output the objects in the model.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_model(
     FILE            *file,
     IO_types        io_flag,
@@ -153,6 +222,22 @@ public  Status  io_model(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_pixels
+@INPUT      : file
+              io_flag
+              format
+              pixels
+@OUTPUT     : (pixels)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a pixels structure in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  io_pixels(
     FILE                *file,
@@ -222,6 +307,22 @@ public  Status  io_pixels(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_polygons
+@INPUT      : file
+              io_flag
+              format
+              polygons
+@OUTPUT     : (polygons)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a polygons structure in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  io_polygons(
     FILE                *file,
@@ -311,6 +412,22 @@ public  Status  io_polygons(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_quadmesh
+@INPUT      : file
+              io_flag
+              format
+              quadmesh
+@OUTPUT     : (quadmesh)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a quadmesh structure in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_quadmesh(
     FILE                *file,
     IO_types            io_flag,
@@ -381,6 +498,22 @@ public  Status  io_quadmesh(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_text
+@INPUT      : file
+              io_flag
+              format
+              text
+@OUTPUT     : (text)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a text structure in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_text(
     FILE            *file,
     IO_types        io_flag,
@@ -413,6 +546,22 @@ public  Status  io_text(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_point
+@INPUT      : file
+              io_flag
+              format
+              point
+@OUTPUT     : (point)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a point structure in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_point(
     FILE            *file,
     IO_types        io_flag,
@@ -442,6 +591,22 @@ public  Status  io_point(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_vector
+@INPUT      : file
+              io_flag
+              format
+              vector
+@OUTPUT     : (vector)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a vector structure in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_vector(
     FILE            *file,
     IO_types        io_flag,
@@ -469,6 +634,22 @@ public  Status  io_vector(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_colour
+@INPUT      : file
+              io_flag
+              format
+              colour
+@OUTPUT     : (colour)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a colour in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  io_colour(
     FILE            *file,
@@ -526,6 +707,26 @@ public  Status  io_colour(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_colours
+@INPUT      : file
+              io_flag
+              format
+              colour_flag
+              n_items
+              n_points
+              colours
+@OUTPUT     : (colours)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a colour_flag and list of colours, where the
+              number of colours depends on the colour flag.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_colours(
     FILE            *file,
     IO_types        io_flag,
@@ -571,6 +772,22 @@ public  Status  io_colours(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_surfprop
+@INPUT      : file
+              io_flag
+              format
+              surfprop
+@OUTPUT     : (surfprop)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a surfprop structure in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_surfprop(
     FILE            *file,
     IO_types        io_flag,
@@ -610,6 +827,23 @@ public  Status  io_surfprop(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_points
+@INPUT      : file
+              io_flag
+              format
+              n
+              points
+@OUTPUT     : (points)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a list of points in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Status  io_points(
     FILE            *file,
@@ -653,6 +887,23 @@ private  Status  io_points(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_vectors
+@INPUT      : file
+              io_flag
+              format
+              n
+              vectors
+@OUTPUT     : (vectors)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a list of vectors in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Status  io_vectors(
     FILE            *file,
     IO_types        io_flag,
@@ -692,6 +943,23 @@ private  Status  io_vectors(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_object_type
+@INPUT      : file
+              io_flag
+              format
+              type
+@OUTPUT     : 
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Either writes an object type or if reading, does not read
+              anything.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_object_type(
     FILE           *file,
     IO_types       io_flag,
@@ -714,9 +982,6 @@ public  Status  io_object_type(
         case  POLYGONS:    ch = 'p';    break;
         case  QUADMESH:    ch = 'q';    break;
         case  TEXT:        ch = 't';    break;
-/*
-        case  VOLUME:      ch = 'v';    break;
-*/
         }
 
         if( format == ASCII_FORMAT )
@@ -733,6 +998,22 @@ public  Status  io_object_type(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_object_type
+@INPUT      : file
+@OUTPUT     : type
+              format
+              eof
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads the object type, passing it back, as well as whether
+              it is in ascii or binary format, and an eof flag.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  input_object_type(
     FILE           *file,
@@ -789,6 +1070,23 @@ public  Status  input_object_type(
 
 #define  PIXELS_PER_LINE    1
 #define  BUFFER_SIZE        256
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_pixel_colours
+@INPUT      : file
+              io_flag
+              format
+              n
+              pixel_colours
+@OUTPUT     : (pixel_colours)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a list of pixel colours in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  io_pixel_colours(
     FILE            *file,
@@ -875,6 +1173,22 @@ public  Status  io_pixel_colours(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_pixel_colour
+@INPUT      : file
+              io_flag
+              format
+              pixel_colour
+@OUTPUT     : (pixel_colour)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a pixel colour in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_pixel_colour(
     FILE            *file,
     IO_types        io_flag,
@@ -915,6 +1229,22 @@ public  Status  io_pixel_colour(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_line_thickness
+@INPUT      : file
+              io_flag
+              format
+              line_thickness
+@OUTPUT     : (line_thickness)
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads or writes a line thickness in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Status  io_line_thickness(
     FILE            *file,
     IO_types        io_flag,
@@ -932,7 +1262,21 @@ private  Status  io_line_thickness(
     return( status );
 }
 
-/* ------------------ io -------------------- */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_object
+@INPUT      : directory
+              file
+@OUTPUT     : format
+              object
+              eof
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Inputs an object from a file.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  input_object(
     char           directory[],
@@ -1009,7 +1353,20 @@ public  Status  input_object(
     return( status );
 }
 
-/* ------------------ output -------------------- */
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : output_object
+@INPUT      : file
+              format
+              object
+@OUTPUT     : 
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Writes an object to a file in ascii or binary format.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  output_object(
     FILE           *file,

@@ -1,5 +1,52 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 #include  <internal_volume_io.h>
 #include  <vols.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.2 1995-07-31 13:45:54 david Exp $";
+#endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : interpolate_volume_to_slice
+@INPUT      : volume1
+              n_dims1
+              sizes1
+              origin1
+              x_axis1
+              y_axis1
+              volume2
+              n_dims2
+              sizes2
+              origin2
+              x_axis2
+              y_axis2
+              degrees_continuity
+              cmode_colour_map
+              rgb_colour_map
+              empty_colour
+@OUTPUT     : pixels
+@RETURNS    : 
+@DESCRIPTION: Interpolates the volume to the given slice, using either
+              nearest neighbour, linear or cubic interpolation.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 /* ARGSUSED */
 

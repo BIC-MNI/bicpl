@@ -1,6 +1,20 @@
 #ifndef  _COMPUTE_XFM_H
 #define  _COMPUTE_XFM_H
 
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : compute_xfm.h
 @DESCRIPTION: Header file for compute_transform_from_tags
@@ -8,9 +22,12 @@
 @CALLS      :
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.h,v $
-@MODIFIED   : Revision 1.2  1995-07-12 18:07:27  david
-@MODIFIED   : *** empty log message ***
+@MODIFIED   : Revision 1.3  1995-07-31 13:44:40  david
+@MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.2  1995/07/12  18:07:27  david
+ * *** empty log message ***
+ *
  * Revision 1.1  94/11/04  14:09:05  david
  * Initial revision
  * 
@@ -27,6 +44,10 @@
  * Initial revision
  * 
 ---------------------------------------------------------------------------- */
+
+#ifndef lint
+static char compute_xfm_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/compute_xfm.h,v 1.3 1995-07-31 13:44:40 david Exp $";
+#endif
 
 /* Transformation types */
 typedef enum {
