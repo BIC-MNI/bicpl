@@ -1,5 +1,5 @@
 
-#include  <mni.h>
+#include  <vols.h>
 
 #define  BIG_NUMBER  1.0e10
 

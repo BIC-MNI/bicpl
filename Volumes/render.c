@@ -1,4 +1,4 @@
-#include  <mni.h>
+#include  <vols.h>
 
 private  void  clip(
     Real  left_edge,
