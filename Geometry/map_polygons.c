@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.8 1995-12-13 14:24:20 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.9 1995-12-19 15:45:49 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -160,7 +160,7 @@ private  Real  get_two_d_coordinate(
     Point    *q1,
     Point    *q2 )
 {
-    Real     x, y, coords[4][2], coord[2], intersect[2];
+    Real     coords[4][2], coord[2], intersect[2];
     Real     intersect_point[2], len2, dx, dy, idx, idy, factor;
     Vector   normal, offset, hor, vert;
     int      i;

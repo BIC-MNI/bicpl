@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.40 1995-10-19 15:48:13 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.41 1995-12-19 15:45:52 david Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10
@@ -475,7 +475,7 @@ private  void    clip_viewport_to_volume(
         *y_pixel_end = int_y_max;
 }
 
-private  void  set_pixel_range(
+private  void  create_pixel_mapping(
     Volume          volume1,
     int             n_slices1,
     Real            **origins1,
@@ -494,25 +494,14 @@ private  void  set_pixel_range(
     Real            y_translation2,
     Real            x_scale2,
     Real            y_scale2,
-    int             x_viewport_size,
-    int             y_viewport_size,
     Real            real_x_axis1[],
     Real            real_y_axis1[],
     Real            ***real_origins1,
     Real            real_x_axis2[],
     Real            real_y_axis2[],
-    Real            ***real_origins2,
-    Pixel_types     pixel_type,
-    int             *n_pixels_alloced,
-    pixels_struct   *pixels )
+    Real            ***real_origins2 )
 {
-    int          n_dimensions1, n_dimensions2, s, x_size, y_size;
-    int          x_pixel_start, x_pixel_end, y_pixel_start, y_pixel_end;
-
-    x_pixel_start = 0;
-    x_pixel_end = x_viewport_size - 1;
-    y_pixel_start = 0;
-    y_pixel_end = y_viewport_size - 1;
+    int          n_dimensions1, n_dimensions2, s;
 
     n_dimensions1 = get_volume_n_dimensions( volume1 );
 
@@ -523,11 +512,6 @@ private  void  set_pixel_range(
         get_mapping( volume1, origins1[s], x_axis1, y_axis1,
                      x_translation1, y_translation1, x_scale1, y_scale1,
                      (*real_origins1)[s], real_x_axis1, real_y_axis1 );
-
-        clip_viewport_to_volume( volume1, (*real_origins1)[s],
-                                 real_x_axis1, real_y_axis1,
-                                 &x_pixel_start, &x_pixel_end,
-                                 &y_pixel_start, &y_pixel_end );
     }
 
     if( volume2 != NULL )
@@ -541,8 +525,48 @@ private  void  set_pixel_range(
             get_mapping( volume2, origins2[s], x_axis2, y_axis2,
                          x_translation2, y_translation2, x_scale2, y_scale2,
                          (*real_origins2)[s], real_x_axis2, real_y_axis2 );
+        }
+    }
+}
 
-            clip_viewport_to_volume( volume2, (*real_origins2)[s],
+private  void  set_pixel_range(
+    Volume          volume1,
+    int             n_slices1,
+    Real            **real_origins1,
+    Real            real_x_axis1[],
+    Real            real_y_axis1[],
+    Volume          volume2,
+    int             n_slices2,
+    Real            **real_origins2,
+    Real            real_x_axis2[],
+    Real            real_y_axis2[],
+    int             x_viewport_size,
+    int             y_viewport_size,
+    Pixel_types     pixel_type,
+    int             *n_pixels_alloced,
+    pixels_struct   *pixels )
+{
+    int          s, x_size, y_size;
+    int          x_pixel_start, x_pixel_end, y_pixel_start, y_pixel_end;
+
+    x_pixel_start = 0;
+    x_pixel_end = x_viewport_size - 1;
+    y_pixel_start = 0;
+    y_pixel_end = y_viewport_size - 1;
+
+    for_less( s, 0, n_slices1 )
+    {
+        clip_viewport_to_volume( volume1, real_origins1[s],
+                                 real_x_axis1, real_y_axis1,
+                                 &x_pixel_start, &x_pixel_end,
+                                 &y_pixel_start, &y_pixel_end );
+    }
+
+    if( volume2 != NULL )
+    {
+        for_less( s, 0, n_slices2 )
+        {
+            clip_viewport_to_volume( volume2, real_origins2[s],
                                      real_x_axis2, real_y_axis2,
                                      &x_pixel_start, &x_pixel_end,
                                      &y_pixel_start, &y_pixel_end );
@@ -880,6 +904,7 @@ public  void  create_volume_slice(
     Colour          **rgb_colour_map,
     Colour          empty_colour,
     void            *render_storage,
+    BOOLEAN         clip_pixels_flag,
     int             *n_pixels_alloced,
     pixels_struct   *pixels )
 {
@@ -908,14 +933,22 @@ public  void  create_volume_slice(
         }
     }
 
-    set_pixel_range( volume1, n_slices1, positions1, x_axis1, y_axis1,
-                     x_translation1, y_translation1, x_scale1, y_scale1,
-                     volume2, n_slices2, positions2, x_axis2, y_axis2,
-                     x_translation2, y_translation2, x_scale2, y_scale2,
-                     x_viewport_size, y_viewport_size,
-                     real_x_axis1, real_y_axis1, &real_origins1,
-                     real_x_axis2, real_y_axis2, &real_origins2,
-                     pixel_type, n_pixels_alloced, pixels );
+    create_pixel_mapping( volume1, n_slices1, positions1, x_axis1, y_axis1,
+                          x_translation1, y_translation1, x_scale1, y_scale1,
+                          volume2, n_slices2, positions2, x_axis2, y_axis2,
+                          x_translation2, y_translation2, x_scale2, y_scale2,
+                          real_x_axis1, real_y_axis1, &real_origins1,
+                          real_x_axis2, real_y_axis2, &real_origins2 );
+
+    if( clip_pixels_flag )
+    {
+        set_pixel_range( volume1, n_slices1,
+                         real_origins1, real_x_axis1, real_y_axis1,
+                         volume2, n_slices2,
+                         real_origins2, real_x_axis2, real_y_axis2,
+                         x_viewport_size, y_viewport_size,
+                         pixel_type, n_pixels_alloced, pixels );
+    }
 
     create_weighted_volume_slices( volume1, n_slices1,
                                    real_origins1, real_x_axis1, real_y_axis1,
@@ -994,13 +1027,18 @@ public  void  set_volume_slice_pixel_range(
         }
     }
 
-    set_pixel_range( volume1, n_slices1, positions1, x_axis1, y_axis1,
-                     x_translation1, y_translation1, x_scale1, y_scale1,
-                     volume2, n_slices2, positions2, x_axis2, y_axis2,
-                     x_translation2, y_translation2, x_scale2, y_scale2,
+    create_pixel_mapping( volume1, n_slices1, positions1, x_axis1, y_axis1,
+                          x_translation1, y_translation1, x_scale1, y_scale1,
+                          volume2, n_slices2, positions2, x_axis2, y_axis2,
+                          x_translation2, y_translation2, x_scale2, y_scale2,
+                          real_x_axis1, real_y_axis1, &real_origins1,
+                          real_x_axis2, real_y_axis2, &real_origins2 );
+
+    set_pixel_range( volume1, n_slices1,
+                     real_origins1, real_x_axis1, real_y_axis1,
+                     volume2, n_slices2,
+                     real_origins2, real_x_axis2, real_y_axis2,
                      x_viewport_size, y_viewport_size,
-                     real_x_axis1, real_y_axis1, &real_origins1,
-                     real_x_axis2, real_y_axis2, &real_origins2,
                      pixel_type, n_pixels_alloced, pixels );
 
     if( volume2 != NULL )

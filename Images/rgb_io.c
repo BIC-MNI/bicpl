@@ -4,7 +4,7 @@
 static  void  error_function(
     char  error[] );
 
-#ifdef  sgi
+#ifdef  __sgi
 #include <image.h>
 
 int getrow(IMAGE *image, unsigned short *buffer,
@@ -20,7 +20,7 @@ public  Status  input_rgb_file(
     STRING          filename,
     pixels_struct   *pixels )
 {
-#ifdef  sgi
+#ifdef  __sgi
     IMAGE                 *iimage;
     unsigned int          x_size, y_size, z_size;
     unsigned int          x, y;
@@ -72,7 +72,7 @@ public  Status  output_rgb_file(
     STRING          filename,
     pixels_struct   *pixels )
 {
-#ifdef  sgi
+#ifdef  __sgi
     IMAGE                 *oimage;
     unsigned int          x, y;
     Colour                col;
