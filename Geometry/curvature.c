@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.16 1996-09-10 18:11:18 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.17 1996-10-22 18:21:08 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -51,6 +51,8 @@ public  void  get_polygon_vertex_curvatures(
     Smallest_int     *point_done;
     Point            centroid;
     Vector           normal;
+    float            *distances;
+    BOOLEAN          initialized;
     progress_struct  progress;
 
     check_polygons_neighbours_computed( polygons );
@@ -60,6 +62,12 @@ public  void  get_polygon_vertex_curvatures(
 
     for_less( point_index, 0, polygons->n_points )
         point_done[point_index] = FALSE;
+
+    if( smoothing_distance > 0.0 )
+    {
+        ALLOC( distances, polygons->n_points );
+        initialized = FALSE;
+    }
 
     initialize_progress_report( &progress, FALSE, polygons->n_items,
                                 "Computing Curvatures" );
@@ -87,7 +95,10 @@ public  void  get_polygon_vertex_curvatures(
                 {
                     curvature = get_smooth_surface_curvature( polygons,
                                   n_neighbours, neighbours,
-                                  poly, vertex_index, smoothing_distance );
+                                  poly, vertex_index,
+                                  initialized, distances, smoothing_distance );
+
+                    initialized = TRUE;
                 }
 
                 if( FABS( curvature ) < low_threshold )
@@ -101,4 +112,7 @@ public  void  get_polygon_vertex_curvatures(
     }
 
     terminate_progress_report( &progress );
+
+    if( smoothing_distance > 0.0 )
+        FREE( distances );
 }
