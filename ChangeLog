@@ -1,6 +1,9 @@
 2001-01-28  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
+	* Tagged as release-1_3_3.
+
 	* configure.in: Put BIC libs into variable BIC_LIBS, rather than LIBS.
+	Set VERSION to 1.3.3.
 
 	* Makefile.am (libbicpl_la_LIBADD): Link $(BIC_LIBS) and $(imageio_LIBS).
 
