@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.5 1995-09-19 18:23:56 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.6 1995-09-21 19:01:01 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -146,7 +146,7 @@ public  void  interpolate_volume_to_slice(
                                         FALSE, outside_value1,
                                         &value1, NULL, NULL );
 
-                voxel_value1 = CONVERT_VALUE_TO_VOXEL( volume1, value1 );
+                voxel_value1 = convert_value_to_voxel( volume1, value1 );
             }
 
             for_less( dim, 0, n_dims1 )
@@ -163,7 +163,7 @@ public  void  interpolate_volume_to_slice(
                                             FALSE, outside_value2,
                                             &value2, NULL, NULL );
 
-                    voxel_value2 = CONVERT_VALUE_TO_VOXEL( volume2, value2 );
+                    voxel_value2 = convert_value_to_voxel( volume2, value2 );
                 }
 
                 for_less( dim, 0, n_dims2 )
