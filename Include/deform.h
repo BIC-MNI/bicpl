@@ -66,4 +66,27 @@ typedef struct
     int     n_below[N_DEFORM_HISTOGRAM];
 } deform_stats;
 
+typedef struct
+{
+    int                  axis;
+    Real                 *curvature_factors;
+    Point                *equilibrium_points;
+    Real                 temperature;
+    Real                 temperature_factor;
+    int                  temperature_step;
+    Real                 random_distance;
+    Real                 random_distance_increment;
+    Real                 min_random_distance;
+    int                  try;
+    int                  max_tries;
+    int                  max_successes;
+    int                  n_successes;
+    int                  n_pos_successes;
+    int                  n_no_moves;
+    int                  stop_criteria;
+    Real                 min_delta_energy;
+    Real                 max_delta_energy;
+    Real                 energy;
+} anneal_struct;
+
 #endif
