@@ -17,8 +17,10 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.8 1995-07-31 13:45:31 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.9 1996-04-04 15:07:38 david Exp $";
 #endif
+
+#define  TOLERANCE 1.0e-4
 
 private  void  recursive_intersect_ray(
     Point                 *origin,
@@ -83,7 +85,7 @@ public  int  intersect_ray_with_bintree(
     Real                *distances[] )
 {
     int       n_intersections;
-    Real      t_min, t_max;
+    Real      t_min, t_max, diff;
 
     n_intersections = 0;
     if( obj_index != (int *) NULL )
@@ -92,6 +94,9 @@ public  int  intersect_ray_with_bintree(
     if( ray_intersects_range( &bintree->range, origin, direction,
                               &t_min, &t_max ) )
     {
+        diff = t_max - t_min;
+        t_min -= TOLERANCE * diff;
+        t_max += TOLERANCE * diff;
         recursive_intersect_ray( origin, direction, t_min, t_max,
                                  bintree->root, object, obj_index, dist,
                                  &n_intersections, distances );
@@ -169,9 +174,12 @@ private  void  recursive_intersect_ray(
         {
             t_min_child = t_min;
             t_max_child = t_max;
+
+#ifdef DONT_WANT
             if( obj_index != (int *) NULL &&
                 *obj_index >= 0 && *closest_dist < t_max )
                 t_max_child = *closest_dist;
+#endif
 
             if( searching_left && get_bintree_left_child( node, &left_child ) )
             {
