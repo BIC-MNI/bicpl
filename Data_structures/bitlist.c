@@ -16,7 +16,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bitlist.c,v 1.8 1995-07-31 13:45:32 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bitlist.c,v 1.9 1996-05-17 19:35:42 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -150,7 +150,7 @@ public  BOOLEAN     get_bitlist_bit(
 
     word_bits = bitlist->bits[word_index];
 
-    value = ((word_bits >> bit_sub_index) & 1);
+    value = ((word_bits >> (bitlist_type) bit_sub_index) & 1) != 0;
 
     return( value );
 }
@@ -351,7 +351,7 @@ public  BOOLEAN     get_bitlist_bit_3d(
     if( word == 0 )
         return( FALSE );
     else
-        return( (word >> bit_sub_index) & 1 );
+        return( ((word >> (bitlist_type) bit_sub_index) & 1) != 0 );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -17,7 +17,7 @@
 #include  <prog_utils.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.8 1996-04-29 15:27:06 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.9 1996-05-17 19:35:44 david Exp $";
 #endif
 
 private  int  get_random_level( void );

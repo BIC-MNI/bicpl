@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_polygons.c,v 1.9 1995-07-31 13:44:58 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_polygons.c,v 1.10 1996-05-17 19:35:25 david Exp $";
 #endif
 
 #define  CHECK_INTERVAL     1.0
@@ -232,7 +232,7 @@ private  void  smooth_points(
 
     terminate_progress_report( &progress );
 
-    *avg_moved /= polygons->n_points;
+    *avg_moved /= (Real) polygons->n_points;
 }
 
 #define  MAX_NEIGHBOURS   100
@@ -388,7 +388,7 @@ private  BOOLEAN   point_inside_range(
     vy = ROUND( y );
     vz = ROUND( z );
 
-    val = get_volume_voxel_value( volume, vx, vy, vz, 0, 0 );
+    val = (int) get_volume_voxel_value( volume, vx, vy, vz, 0, 0 );
 
     return( min_value <= val &&  val <= max_value );
 }

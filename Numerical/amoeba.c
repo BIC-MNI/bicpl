@@ -16,7 +16,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.11 1996-04-23 13:40:34 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.12 1996-05-17 19:35:39 david Exp $";
 #endif
 
 #define  FLIP_RATIO      1.0
@@ -268,7 +268,7 @@ public  BOOLEAN  perform_amoeba(
                            amoeba->tolerance ) )
     {
         ++amoeba->n_steps_no_improvement;
-        if( ++amoeba->n_steps_no_improvement == N_STEPS_NO_IMPROVEMENT )
+        if( amoeba->n_steps_no_improvement == N_STEPS_NO_IMPROVEMENT )
             improvement_found = FALSE;
     }
     else

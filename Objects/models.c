@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/models.c,v 1.7 1995-10-19 15:47:59 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/models.c,v 1.8 1996-05-17 19:35:37 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

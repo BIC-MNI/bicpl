@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.9 1996-02-28 16:04:04 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.10 1996-05-17 19:35:52 david Exp $";
 #endif
 
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
@@ -64,7 +64,7 @@ public  int  dilate_voxels_3d(
     int                     x, y, z, delta_x, tx, ty, tz;
     int                     sizes[N_DIMENSIONS];
     int                     dir, n_dirs, *dx, *dy, *dz;
-    Real                    value, label;
+    Real                    value, label, *value_row, *label_row;
     Smallest_int            **voxel_classes[3], **swap;
     progress_struct         progress;
     Voxel_classes           voxel_class;
@@ -106,6 +106,9 @@ public  int  dilate_voxels_3d(
         }
     }
 
+    ALLOC( value_row, sizes[Z] );
+    ALLOC( label_row, sizes[Z] );
+
     initialize_progress_report( &progress, FALSE, sizes[X],
                                 "Expanding labeled voxels" );
 
@@ -123,6 +126,25 @@ public  int  dilate_voxels_3d(
                 voxel_classes[delta_x+1][y+1][0] = (Smallest_int) NOT_INVOLVED;
                 voxel_classes[delta_x+1][y+1][sizes[Z]+1] = NOT_INVOLVED;
 
+                if( !at_edge_y && !at_end )
+                {
+                    if( use_label_volume )
+                    {
+                        get_volume_value_hyperslab_3d( label_volume,
+                                                       x + delta_x, y, 0,
+                                                       1, 1, sizes[Z],
+                                                       label_row );
+                    }
+
+                    if( use_volume )
+                    {
+                        get_volume_value_hyperslab_3d( volume,
+                                                       x + delta_x, y, 0,
+                                                       1, 1, sizes[Z],
+                                                       value_row );
+                    }
+                }
+
                 for_less( z, 0, sizes[Z] )
                 {
                     if( at_edge_y || at_end )
@@ -132,16 +154,10 @@ public  int  dilate_voxels_3d(
                     else
                     {
                         if( use_label_volume )
-                        {
-                            label = get_volume_real_value( label_volume,
-                                                    x + delta_x, y, z, 0, 0 );
-                        }
+                            label = label_row[z];
 
                         if( use_volume )
-                        {
-                            value = get_volume_real_value( volume,
-                                                    x + delta_x, y, z, 0, 0 );
-                        }
+                            value = value_row[z];
 
                         inside = (min_inside_label > max_inside_label ||
                                   min_inside_label <= label &&
@@ -217,6 +233,9 @@ public  int  dilate_voxels_3d(
 
     for_less( x, 0, 3 )
         FREE2D( voxel_classes[x] );
+
+    FREE( value_row );
+    FREE( label_row );
 
     return( n_changed );
 }

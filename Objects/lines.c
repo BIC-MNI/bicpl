@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.14 1996-05-02 14:26:09 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.15 1996-05-17 19:35:32 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -48,6 +48,35 @@ public  void  initialize_lines(
 
     lines->bintree = (bintree_struct_ptr) NULL;
 }
+
+public  void  initialize_lines_with_size(
+    lines_struct    *lines,
+    Colour          col,
+    int             size,
+    BOOLEAN         closed )
+{
+    int  i, n_indices;
+
+    initialize_lines( lines, col );
+
+    if( closed )
+        n_indices = size + 1;
+    else
+        n_indices = size;
+
+    lines->n_points = size;
+    ALLOC( lines->points, size );
+
+    lines->n_items = 1;
+    ALLOC( lines->end_indices, 1 );
+    lines->end_indices[0] = n_indices;
+
+    ALLOC( lines->indices, n_indices );
+
+    for_less( i, 0, n_indices )
+        lines->indices[i] = i % size;
+}
+
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : delete_lines

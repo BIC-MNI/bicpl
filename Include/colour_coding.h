@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char colour_coding_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colour_coding.h,v 1.5 1995-07-31 13:44:40 david Exp $";
+static char colour_coding_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colour_coding.h,v 1.6 1996-05-17 19:35:21 david Exp $";
 #endif
 
 #include  <objects.h>
@@ -28,6 +28,7 @@ typedef enum { GRAY_SCALE,
                GREEN_COLOUR_MAP,
                BLUE_COLOUR_MAP,
                CONTOUR_COLOUR_MAP,
+               SINGLE_COLOUR_SCALE,
                USER_DEFINED }
              Colour_coding_types;
 

@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_lines.c,v 1.8 1995-07-31 13:44:57 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_lines.c,v 1.9 1996-05-17 19:35:24 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -49,6 +49,9 @@ public  void  smooth_lines(
     n_points = 0;
     n_items = 0;
     n_indices = 0;
+    indices = NULL;
+    end_indices = NULL;
+    points = NULL;
 
     ALLOC( new_ids, lines->n_points );
 
@@ -199,7 +202,8 @@ public  void  create_line_spline(
 
                 for_less( c, 0, N_DIMENSIONS )
                 {
-                    Point_coord(point,c) = cubic_interpolate( u,
+                    Point_coord(point,c) = (Point_coord_type)
+                                           cubic_interpolate( u,
                                             (Real) Point_coord(points[0],c),
                                             (Real) Point_coord(points[1],c),
                                             (Real) Point_coord(points[2],c),

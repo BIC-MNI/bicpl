@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/intersect.c,v 1.7 1996-05-17 01:39:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/intersect.c,v 1.8 1996-05-17 19:35:27 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -161,59 +161,140 @@ public  BOOLEAN  clip_line_to_box(
     Real     *t_max )
 {
     BOOLEAN  first;
-    int      c, first_ind;
-    Real     dir, t1, t2, limits[2][N_DIMENSIONS];
+    Real     dir, org, t1, t2, min_t, max_t;
 
-    limits[0][X] = x_min;
-    limits[1][X] = x_max;
-    limits[0][Y] = y_min;
-    limits[1][Y] = y_max;
-    limits[0][Z] = z_min;
-    limits[1][Z] = z_max;
+    dir = (Real) Vector_x( *direction );
+    org = (Real) Point_x(*origin);
 
-    first = TRUE;
-    *t_min = 0.0;
-    *t_max = 0.0;
-
-    for_less( c, 0, 3 )
+    if( dir == 0.0 )
     {
-        dir = (Real) Vector_coord( *direction, c );
+        if( org < x_min || org > x_max )
+            return( FALSE );
 
-        if( dir != 0.0 )
+        dir = (Real) Vector_y( *direction );
+        org = (Real) Point_y(*origin);
+
+        if( dir < 0.0 )
         {
-            if( dir < 0.0 )
-                first_ind = 1;
-            else
-                first_ind = 0;
-
-            t1 = (limits[first_ind][c] - (Real) Point_coord(*origin,c)) / dir;
-            t2 = (limits[1-first_ind][c] - (Real) Point_coord(*origin,c)) / dir;
-
-            if( first )
-            {
-                *t_min = t1;
-                *t_max = t2;
-                first = FALSE;
-            }
-            else
-            {
-                if( t1 > *t_min )
-                    *t_min = t1;
-                if( t2 < *t_max )
-                    *t_max = t2;
-            }
+            first = FALSE;
+            min_t = (y_max - org) / dir;
+            max_t = (y_min - org) / dir;
+        }
+        else if( dir > 0.0 )
+        {
+            first = FALSE;
+            min_t = (y_min - org) / dir;
+            max_t = (y_max - org) / dir;
         }
         else
         {
-            if( (Real) Point_coord(*origin,c) < limits[0][c] ||
-                (Real) Point_coord(*origin,c) > limits[1][c] )
-            {
-                *t_min = 0.0;
-                *t_max = -1.0;
-                break;
-            }
+            if( org < y_min || org > y_max )
+                return( FALSE );
+
+            first = TRUE;
         }
+
+        dir = (Real) Vector_z( *direction );
+        org = (Real) Point_z(*origin);
+
+        if( dir < 0.0 )
+        {
+            t1 = (y_max - org) / dir;
+            t2 = (y_min - org) / dir;
+
+            if( first || t1 > min_t )
+                min_t = t1;
+            if( first || t2 < max_t )
+                max_t = t2;
+        }
+        else if( dir > 0.0 )
+        {
+            t1 = (y_min - org) / dir;
+            t2 = (y_max - org) / dir;
+
+            if( first || t1 > min_t )
+                min_t = t1;
+            if( first || t2 < max_t )
+                max_t = t2;
+        }
+        else
+        {
+            if( org < z_min || org > z_max )
+                return( FALSE );
+        }
+
+        *t_min = min_t;
+        *t_max = max_t;
+        return( min_t <= max_t );
     }
 
-    return( *t_min <= *t_max );
+    if( dir > 0.0 )
+    {
+        min_t = (x_min - org) / dir;
+        max_t = (x_max - org) / dir;
+    }
+    else
+    {
+        min_t = (x_max - org) / dir;
+        max_t = (x_min - org) / dir;
+    }
+
+    dir = (Real) Vector_y( *direction );
+    org = (Real) Point_y( *origin );
+
+    if( dir == 0.0 )
+    {
+        if( org < y_min || org > y_max )
+            return( FALSE );
+    }
+    else
+    {
+        if( dir > 0.0 )
+        {
+            t1 = (y_min - org) / dir;
+            t2 = (y_max - org) / dir;
+        }
+        else
+        {
+            t1 = (y_max - org) / dir;
+            t2 = (y_min - org) / dir;
+        }
+
+        if( t1 > min_t )
+            min_t = t1;
+        if( t2 < max_t )
+            max_t = t2;
+    }
+
+    dir = (Real) Vector_z( *direction );
+    org = (Real) Point_z(*origin);
+
+    if( dir == 0.0 )
+    {
+        if( org < y_min || org > y_max )
+            return( FALSE );
+    }
+    else
+    {
+        if( dir > 0.0 )
+        {
+            t1 = (z_min - org) / dir;
+            t2 = (z_max - org) / dir;
+        }
+        else
+        {
+            t1 = (z_max - org) / dir;
+            t2 = (z_min - org) / dir;
+        }
+
+        if( t1 > min_t )
+            min_t = t1;
+        if( t2 < max_t )
+            max_t = t2;
+    }
+
+    *t_min = min_t;
+    *t_max = max_t;
+
+    return( min_t <= max_t );
 }

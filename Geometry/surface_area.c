@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surface_area.c,v 1.3 1995-07-31 13:45:07 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surface_area.c,v 1.4 1996-05-17 19:35:30 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -45,8 +45,8 @@ public  Real  get_polygon_2d_area(
     for_less( i, 0, n_points )
     {
         next_i = (i + 1) % n_points;
-        area += Point_x(points[i])      * Point_y(points[next_i]) -
-                Point_x(points[next_i]) * Point_y(points[i]);
+        area += (Real) Point_x(points[i])      * (Real) Point_y(points[next_i])-
+                (Real) Point_x(points[next_i]) * (Real) Point_y(points[i]);
     }
 
     return( area / 2.0 );

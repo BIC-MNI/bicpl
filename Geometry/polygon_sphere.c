@@ -17,7 +17,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.13 1995-07-31 13:44:56 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.14 1996-05-17 19:35:23 david Exp $";
 #endif
 
 private  int  get_n_sphere_points(
@@ -334,9 +334,9 @@ private  void  get_sphere_point(
     dy = y_size * sin( (double) up * PI ) * cos( (double) around * 2.0 *PI);
     dz = z_size * sin( (double) up * PI ) * sin( (double) around * 2.0 *PI);
 
-    fill_Point( *point, Point_x(*centre) + dx,
-                        Point_y(*centre) + dy,
-                        Point_z(*centre) + dz );
+    fill_Point( *point, (Real) Point_x(*centre) + dx,
+                        (Real) Point_y(*centre) + dy,
+                        (Real) Point_z(*centre) + dz );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -452,12 +452,12 @@ public  BOOLEAN  get_tessellation_of_polygons_sphere(
         n_around_top = N_AROUND_TOP;
 #else
         size = sqrt( (double) polygons->n_items / 2.0 );
-        n_around_top = 2 * size;
+        n_around_top = 2 * ROUND( size );
 #endif
 
         if( IS_INT(size) )
         {
-            *tess = size;
+            *tess = (int) size;
 
             int_size = (int) size;
             while( (int_size & 1) == 0 )
@@ -508,7 +508,7 @@ public  int  get_tessellation_with_n_points(
 #ifdef  N_AROUND_TOP
     a = 2.0;
     b = -6.0;
-    c = 2.0 * N_AROUND_TOP + 2.0 - (Real) n_points;
+    c = 2.0 * (Real) N_AROUND_TOP + 2.0 - (Real) n_points;
 #else
     a = 2.0;
     b = -2.0;
@@ -546,7 +546,7 @@ public  void  half_sample_sphere_tessellation(
     polygons_struct   *polygons,
     polygons_struct   *half )
 {
-    static Point   centre = { 0.0, 0.0, 0.0 };
+    static Point   centre = { 0.0f, 0.0f, 0.0f };
     int            n_up, n_around, half_n_up, half_n_around;
     int            up, around, n_circum, point_index, half_point_index;
 

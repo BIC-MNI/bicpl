@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_lines.c,v 1.7 1995-07-31 13:44:59 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_lines.c,v 1.8 1996-05-17 19:35:25 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -101,6 +101,7 @@ private  void  general_subdivide_lines(
     new_n_points = lines->n_points;
     new_n_lines = 0;
     new_n_indices = 0;
+    new_points = NULL;
 
     size = 0;
     SET_ARRAY_SIZE( new_points, size, new_n_points, DEFAULT_CHUNK_SIZE );

@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.36 1995-12-19 15:45:53 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.37 1996-05-17 19:35:50 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -119,7 +119,7 @@ render_storage_struct;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   *initialize_render_storage()
+public  void   *initialize_render_storage( void )
 {
     render_storage_struct  *store;
     void                   *void_ptr;
@@ -272,7 +272,7 @@ public  void  render_volume_to_slice(
     total_cases1 = 1;
     for_less( c, 0, n_dims1 )
     {
-        delta = ABS( y_axis1[c] );
+        delta = FABS( y_axis1[c] );
         if( delta == 0.0 )
         {
             n_cases1[c] = MIN( n_slices1, max_cases[n_dims1-1] );
@@ -350,7 +350,7 @@ public  void  render_volume_to_slice(
         total_cases2 = 1;
         for_less( c, 0, n_dims2 )
         {
-            delta = ABS( y_axis2[c] );
+            delta = FABS( y_axis2[c] );
             if( delta == 0.0 )
                 n_cases2[c] = MIN( n_slices2, max_cases[n_dims2-1] );
             else if( delta <= 1.0 / (Real) max_cases[n_dims2-1] )
@@ -485,10 +485,10 @@ public  void  render_volume_to_slice(
                 }
                 else
                 {
-                    remainder = start_c - int_start;
-                    remainder_case = (int) (remainder * n_cases1[c]);
+                    remainder = start_c - (Real) int_start;
+                    remainder_case = (int) (remainder * (Real) n_cases1[c]);
                     remainder_offset = remainder -
-                                       (remainder_case + 0.5)/ n_cases1[c];
+                           ((Real) remainder_case + 0.5)/ (Real) n_cases1[c];
                 }
 
                 case_index += case_multiplier * remainder_case;
@@ -530,10 +530,10 @@ public  void  render_volume_to_slice(
                     }
                     else
                     {
-                        remainder = start_c - int_start;
-                        remainder_case = (int) (remainder * n_cases2[c]);
+                        remainder = start_c - (Real) int_start;
+                        remainder_case = (int) (remainder * (Real) n_cases2[c]);
                         remainder_offset = remainder -
-                                           (remainder_case + 0.5)/ n_cases2[c];
+                             ((Real) remainder_case + 0.5)/ (Real) n_cases2[c];
                     }
 
                     case_index += case_multiplier * remainder_case;

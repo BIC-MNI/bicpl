@@ -17,7 +17,7 @@
 #include  <sys/time.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.9 1995-12-13 14:24:26 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.10 1996-05-17 19:35:57 david Exp $";
 #endif
 
 #define  MAX_RAND  2147483648.0
@@ -42,7 +42,7 @@ public  void  set_random_seed( int seed )
 #ifdef sun
     int  srandom();
 #endif
-    (void) srandom( seed );
+    (void) srandom( (unsigned int) seed );
     initialized = TRUE;
 }
 
@@ -95,7 +95,7 @@ private  int  get_random( void )
 
     check_initialized();
 
-    return( random() );
+    return( (int) random() );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -29,7 +29,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char skiplist_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/skiplist.h,v 1.4 1996-04-29 15:26:59 david Exp $";
+static char skiplist_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/skiplist.h,v 1.5 1996-05-17 19:35:21 david Exp $";
 #endif
 
 #include  <volume_io.h>

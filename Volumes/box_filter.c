@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.15 1996-05-06 19:48:17 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.16 1996-05-17 19:35:46 david Exp $";
 #endif
 
 #define  DEBUG
@@ -205,7 +205,7 @@ public  Volume  create_box_filtered_volume(
 #ifdef DEBUG
     Real               correct_voxel;
 #endif
-    Real               total_volume, value, sum, sample;
+    Real               total_volume, value, sum, sample, *buffer;
     int                start, end;
     int                x_init_recede_index, y_init_recede_index;
     int                z_init_recede_index;
@@ -257,13 +257,17 @@ public  Volume  create_box_filtered_volume(
     for_less( x, 0, n_x_cached )
         ALLOC2D( volume_cache[x], sizes[Y], sizes[Z] );
 
+    ALLOC( buffer, sizes[Z] );
+
     for_less( x, 0, n_x_cached )
     {
         for_less( y, 0, sizes[Y] )
         {
+            get_volume_value_hyperslab_3d( volume, x, y, 0, 1, 1, sizes[Z],
+                                           buffer );
+
             for_less( z, 0, sizes[Z] )
-                volume_cache[x][y][z] = (float)
-                             get_volume_real_value( volume, x, y, z, 0, 0 );
+                volume_cache[x][y][z] = (float) buffer[z];
         }
     }
 
@@ -309,11 +313,10 @@ public  Volume  create_box_filtered_volume(
             {
                 for_less( y, 0, sizes[Y] )
                 {
+                    get_volume_value_hyperslab_3d( volume, i, y, 0,
+                                                   1, 1, sizes[Z], buffer );
                     for_less( z, 0, sizes[Z] )
-                    {
-                        volume_cache[i][y][z] = (float)
-                           get_volume_real_value( volume, i, y, z, 0, 0 );
-                    }
+                        volume_cache[i][y][z] = (float) buffer[z];
                 }
             }
 

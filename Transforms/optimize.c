@@ -18,7 +18,7 @@
 #include <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.12 1995-12-13 14:24:27 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.13 1996-05-17 19:35:58 david Exp $";
 #endif
 
 #define   FUNCTION_TOLERANCE    1e-6
@@ -228,9 +228,9 @@ public  BOOLEAN  optimize_simplex(
     initial_step[4] = INITIAL_SIMPLEX_SIZE * DEG_TO_RAD;
     initial_step[5] = INITIAL_SIMPLEX_SIZE * DEG_TO_RAD;
 
-    initial_step[6] = INITIAL_SIMPLEX_SIZE / 30;
-    initial_step[7] = INITIAL_SIMPLEX_SIZE / 30;
-    initial_step[8] = INITIAL_SIMPLEX_SIZE / 30;
+    initial_step[6] = INITIAL_SIMPLEX_SIZE / 30.0;
+    initial_step[7] = INITIAL_SIMPLEX_SIZE / 30.0;
+    initial_step[8] = INITIAL_SIMPLEX_SIZE / 30.0;
     
     if( ndim == 10 ) 
         initial_step[9] = INITIAL_SIMPLEX_SIZE * DEG_TO_RAD;

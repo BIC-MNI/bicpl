@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.17 1995-10-19 15:48:12 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.18 1996-05-17 19:35:46 david Exp $";
 #endif
 
 typedef struct {
@@ -25,7 +25,13 @@ typedef struct {
     Colour_spaces  interpolation_space;
 } colour_point;
 
-private  Colour  interpolate_colours( colour_point *, colour_point *, Real );
+private  void  interpolate_colours(
+    colour_point   *p1,
+    colour_point   *p2,
+    Real           pos,
+    Real           *r,
+    Real           *g,
+    Real           *b );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_colour_coding
@@ -283,6 +289,7 @@ private  int  get_colour_table_piecewise_function(
     switch( colour_coding->type )
     {
     case  GRAY_SCALE:
+    case  SINGLE_COLOUR_SCALE:
         n_points = SIZEOF_STATIC_ARRAY( gray_scale_points );
         *points = gray_scale_points;
         break;
@@ -345,7 +352,7 @@ public  Colour  get_colour_code(
     colour_coding_struct  *colour_coding,
     Real                  value )
 {
-    Real           pos;
+    Real           pos, r, g, b;
     int            i, n_points;
     colour_point   *points;
 
@@ -375,7 +382,16 @@ public  Colour  get_colour_code(
             break;
     }
 
-    return( interpolate_colours( &points[i], &points[i+1], pos ) );
+    interpolate_colours( &points[i], &points[i+1], pos, &r, &g, &b );
+
+    if( colour_coding->type == SINGLE_COLOUR_SCALE )
+    {
+        r *= get_Colour_r_0_1( colour_coding->over_colour );
+        g *= get_Colour_g_0_1( colour_coding->over_colour );
+        b *= get_Colour_b_0_1( colour_coding->over_colour );
+    }
+
+    return( make_Colour_0_1( r, g, b ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -394,12 +410,15 @@ public  Colour  get_colour_code(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Colour  interpolate_colours(
+private  void  interpolate_colours(
     colour_point   *p1,
     colour_point   *p2,
-    Real           pos )
+    Real           pos,
+    Real           *r,
+    Real           *g,
+    Real           *b )
 {
-    Real  ratio, r,g, b, r0, g0, b0, r1, g1, b1;
+    Real  ratio, r0, g0, b0, r1, g1, b1;
 
     ratio = (pos - p1->position) / (p2->position - p1->position);
 
@@ -422,12 +441,10 @@ private  Colour  interpolate_colours(
             r1 = 0.0;
     }
 
-    r = r0 + (r1 - r0) * ratio;
-    g = g0 + (g1 - g0) * ratio;
-    b = b0 + (b1 - b0) * ratio;
+    *r = r0 + (r1 - r0) * ratio;
+    *g = g0 + (g1 - g0) * ratio;
+    *b = b0 + (b1 - b0) * ratio;
 
     if( p1->interpolation_space == HSL_SPACE )
-        hsl_to_rgb( r, g, b, &r, &g, &b );
-
-    return( make_Colour_0_1( r, g, b ) );
+        hsl_to_rgb( *r, *g, *b, r, g, b );
 }

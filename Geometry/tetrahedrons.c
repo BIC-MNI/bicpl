@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.8 1996-04-25 20:17:49 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.9 1996-05-17 19:35:27 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -41,10 +41,11 @@ public  BOOLEAN  is_this_tetrahedral_topology(
 
     n_polygons = polygons->n_items;
 
-    while( n_polygons > 8 && n_polygons % 4 == 0 )
+    while( n_polygons != 20 && n_polygons > 8 && n_polygons % 4 == 0 )
          n_polygons /= 4;
 
-    return( n_polygons == 4 || n_polygons == 6 || n_polygons == 8 );
+    return( n_polygons == 4 || n_polygons == 6 || n_polygons == 8 ||
+            n_polygons == 20 );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -104,88 +105,46 @@ public  void  create_tetrahedral_sphere(
     polygons_struct  *polygons )
 {
     int             p, start_size;
-    int             n_indices;
     Real            cx, cy, cz, dx, dy, dz, scale;
-    Real            x, z, c;
+    Real            x, y, z;
+    Point           origin;
 
     /*--- determine the base object, either 4, 6, or 8 */
 
     start_size = n_triangles;
 
-    while( start_size > 8 )
+    while( start_size > 8 && start_size != 20 )
         start_size /= 4;
+
+    fill_Point( origin, 0.0, 0.0, 0.0 );
+
+    if( start_size == 6 )  /* create 2 points at poles and 3 around equator */
+    {
+        create_polygons_sphere( &origin, 1.0, 1.0, 1.0, 2, 3, FALSE, polygons );
+    }
+    else if( start_size == 8 ) /* create 2 points at poles and 4 around equat */
+    {
+        create_polygons_sphere( &origin, 1.0, 1.0, 1.0, 2, 4, FALSE, polygons );
+    }
+    else if( start_size == 20 )              /* create icosahedron */
+    {
+        create_unit_icosahedron( polygons );
+    }
+    else                                     /* create a tetrahedron */
+    {
+        create_unit_tetrahedron( polygons );
+    }
 
     cx = (Real) Point_x( *centre );
     cy = (Real) Point_y( *centre );
     cz = (Real) Point_z( *centre );
 
-    if( start_size == 6 )  /* create 2 points at poles and 3 around equator */
+    for_less( p, 0, polygons->n_points )
     {
-        create_polygons_sphere( centre, rx, ry, rz, 2, 3, FALSE, polygons );
-    }
-    else if( start_size == 8 ) /* create 2 points at poles and 4 around equat */
-    {
-        create_polygons_sphere( centre, rx, ry, rz, 2, 4, FALSE, polygons );
-    }
-    else                       /* create a tetrahedron */
-    {
-        initialize_polygons( polygons, WHITE, NULL );
-
-        polygons->n_points = 4;
-        ALLOC( polygons->points, polygons->n_points );
-        ALLOC( polygons->normals, polygons->n_points );
-
-        x = sqrt( 8.0 / 9.0 );
-        z = - 1.0 / 3.0;
-        c = sqrt( 0.75 );
-        fill_Point( polygons->points[0], cx, cy, cz + rz );
-        fill_Point( polygons->points[1], cx + x * rx, cy, cz + z * rz );
-        fill_Point( polygons->points[2], cx - 0.5 * x * rx,
-                                         cy + c * ry,
-                                         cz + z * rz );
-        fill_Point( polygons->points[3], cx - 0.5 * x * rx,
-                                         cy - c * ry,
-                                         cz + z * rz );
-
-        polygons->n_items = 0;
-        n_indices = 0;
-
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 0,
-                              DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 1,
-                              DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 2,
-                              DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
-                              n_indices, DEFAULT_CHUNK_SIZE );
-
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 0,
-                                  DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 2,
-                                  DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 3,
-                                  DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
-                              n_indices,
-                                  DEFAULT_CHUNK_SIZE );
-
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 0,
-                                  DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 3,
-                                  DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 1,
-                                  DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
-                              n_indices, DEFAULT_CHUNK_SIZE );
-
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 1,
-                                  DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 3,
-                                  DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices, 2,
-                                  DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
-                              n_indices, DEFAULT_CHUNK_SIZE );
+        x = cx + rx * (Real) Point_x(polygons->points[p]);
+        y = cy + ry * (Real) Point_y(polygons->points[p]);
+        z = cz + rz * (Real) Point_z(polygons->points[p]);
+        fill_Point( polygons->points[p], x, y, z );
     }
 
     /*--- having created the base object, subdivide it until we have the

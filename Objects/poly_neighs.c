@@ -16,15 +16,10 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.10 1996-04-29 15:08:22 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.11 1996-05-17 19:35:35 david Exp $";
 #endif
 
 #define  INVALID_ID       -1
-
-typedef  struct
-{
-    int   polygon_index;   
-} edge_info_struct;
 
 #define  INITIAL_HASH_TABLE_SIZE   2.0   /* times number of polygons */
 #define  ENLARGE_THRESHOLD         0.25
@@ -39,6 +34,7 @@ private  void  assign_neighbours(
     int       polygon2,
     BOOLEAN   *topology_error );
 private   void   create_polygon_neighbours(
+    int    n_points,
     int    n_polygons,
     int    indices[],
     int    end_indices[],
@@ -64,7 +60,8 @@ public  void  check_polygons_neighbours_computed(
     if( polygons->neighbours == NULL && polygons->n_items > 0 )
     {
         ALLOC( polygons->neighbours,polygons->end_indices[polygons->n_items-1]);
-        create_polygon_neighbours( polygons->n_items, polygons->indices,
+        create_polygon_neighbours( polygons->n_points,
+                                   polygons->n_items, polygons->indices,
                                    polygons->end_indices,
                                    polygons->neighbours );
     }
@@ -86,20 +83,17 @@ public  void  check_polygons_neighbours_computed(
 ---------------------------------------------------------------------------- */
 
 private   void   create_polygon_neighbours(
+    int    n_points,
     int    n_polygons,
     int    indices[],
     int    end_indices[],
     int    neighbours[] )
 {
     int                 keys[2], i, edge, i0, i1, size;
-    int                 start_index, end_index;
+    int                 start_index, end_index, polygon_index;
     BOOLEAN             topology_error;
-    edge_info_struct    *edge_ptr;
     hash_table_struct   edge_table;
-    hash_table_pointer  hash_ptr;
     progress_struct     progress;
-
-    edge_ptr = NULL;
 
     topology_error = FALSE;
 
@@ -109,9 +103,9 @@ private   void   create_polygon_neighbours(
             neighbours[i] = INVALID_ID;
     }
 
-    initialize_hash_table( &edge_table, 2,
+    initialize_hash_table( &edge_table,
                            (int) (INITIAL_HASH_TABLE_SIZE* (Real) n_polygons),
-                           ENLARGE_THRESHOLD, NEW_DENSITY );
+                           sizeof(int), ENLARGE_THRESHOLD, NEW_DENSITY );
 
     end_index = 0;
 
@@ -133,19 +127,19 @@ private   void   create_polygon_neighbours(
             keys[0] = MIN( i0, i1 );
             keys[1] = MAX( i0, i1 );
 
-            if( remove_from_hash_table( &edge_table, keys,
-                                        (void **) &edge_ptr ) )
+            if( remove_from_hash_table( &edge_table,
+                                        IJ(keys[0],keys[1],n_points),
+                                        &polygon_index ) )
             {
                 assign_neighbours( indices, end_indices, neighbours,
-                                   i, edge, edge_ptr->polygon_index,
+                                   i, edge, polygon_index,
                                    &topology_error );
-                FREE( edge_ptr );
             }
             else
             {
-                ALLOC( edge_ptr, 1 );
-                edge_ptr->polygon_index = i;
-                insert_in_hash_table( &edge_table, keys, (void *) edge_ptr );
+                insert_in_hash_table( &edge_table,
+                                      IJ(keys[0],keys[1],n_points),
+                                      (void *) &i );
             }
         }
 
@@ -155,13 +149,6 @@ private   void   create_polygon_neighbours(
     terminate_progress_report( &progress );
 
     end_index = 0;
-
-    initialize_hash_pointer( &hash_ptr );
-
-    while( get_next_hash_entry( &edge_table, &hash_ptr, (void **) &edge_ptr ) )
-    {
-        FREE( edge_ptr );
-    }
 
     delete_hash_table( &edge_table );
 

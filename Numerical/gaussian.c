@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gaussian.c,v 1.5 1995-07-31 13:45:26 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gaussian.c,v 1.6 1996-05-17 19:35:40 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -136,8 +136,8 @@ public  BOOLEAN  invert_square_matrix_float(
     for_less( i, 0, n )
     {
         for_less( j, 0, n )
-            inverse[i][j] = 0.0;
-        inverse[i][i] = 1.0;
+            inverse[i][j] = 0.0f;
+        inverse[i][i] = 1.0f;
     }
 
     success = scaled_maximal_pivoting_gaussian_elimination_float( n, matrix,

@@ -17,7 +17,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.12 1995-10-19 15:48:52 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.13 1996-05-17 19:35:56 david Exp $";
 #endif
 
 static    Status  input_global_variable( int, global_struct [],
@@ -352,6 +352,7 @@ public  Status  set_global_variable(
         case Real_type:
             if( real_is_double() )
             {
+                tmp_real = 0.0;
                 if( sscanf( value, "%lf", (double *) &tmp_real ) == 1 )
                     * (Real *) ptr = tmp_real;
                 else

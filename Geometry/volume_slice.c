@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/volume_slice.c,v 1.8 1995-07-31 13:45:01 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/volume_slice.c,v 1.9 1996-05-17 19:35:26 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -77,7 +77,7 @@ public  void   create_slice_quadmesh(
     voxel[axis_index] = voxel_position;
 
     fill_Vector( normal, 0.0, 0.0, 0.0 );
-    Vector_coord( normal, axis_index ) = 1.0;
+    Vector_coord( normal, axis_index ) = 1.0f;
 
     if( x_min >= x_max )
     {

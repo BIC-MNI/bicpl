@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.19 1995-10-19 15:48:24 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.20 1996-05-17 19:35:50 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -153,7 +153,7 @@ public  Status  output_volume_free_format(
                     GET_VOXEL_PTR_3D( ptr, volume,
                                       indices[X],indices[Y],indices[Z] );
                     status = io_binary_data( file, WRITE_FILE,
-                                             ptr, n_bytes_per_voxel, 1 );
+                                             ptr, (size_t) n_bytes_per_voxel,1);
                 }
 
                 update_progress_report( &progress, indices[a1] * sizes[a2] +

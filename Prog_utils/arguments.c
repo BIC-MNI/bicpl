@@ -16,7 +16,7 @@
 #include  <prog_utils.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.10 1995-10-19 15:48:51 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.11 1996-05-17 19:35:55 david Exp $";
 #endif
 
 typedef struct
@@ -255,7 +255,7 @@ public  BOOLEAN  get_prefix_argument(
     if( arguments_remaining() &&
         string_length(get_current_argument_string()) >= string_length(prefix) &&
         strncmp( get_current_argument_string(), prefix,
-                 string_length(prefix) ) == 0 )
+                 (size_t) string_length(prefix) ) == 0 )
     {
         arguments.current_offset_within_arg += string_length(prefix);
 

@@ -18,7 +18,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.8 1995-12-13 14:24:23 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.9 1996-05-17 19:35:43 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -62,7 +62,7 @@ public  void  delete_the_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  check_install_bintree_delete_function()
+private  void  check_install_bintree_delete_function( void )
 {
     static  BOOLEAN  first = TRUE;
 
@@ -86,7 +86,7 @@ private  void  check_install_bintree_delete_function()
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  *allocate_bintree()
+public  void  *allocate_bintree( void )
 {
     bintree_struct_ptr   bintree;
 
@@ -129,7 +129,7 @@ public  void  create_lines_bintree(
 
     ALLOC( bound_vols, n_segments );
 
-    radius = lines->line_thickness;
+    radius = (Real) lines->line_thickness;
 
     object_id = 0;
     for_less( line, 0, lines->n_items )
@@ -144,12 +144,18 @@ public  void  create_lines_bintree(
                           POINT_INDEX(lines->end_indices,line,seg+1)]];
 
             get_range_points( 2, points, &min_range, &max_range );
-            bound_vols[object_id].limits[X][0] = Point_x(min_range) - radius;
-            bound_vols[object_id].limits[Y][0] = Point_y(min_range) - radius;
-            bound_vols[object_id].limits[Z][0] = Point_z(min_range) - radius;
-            bound_vols[object_id].limits[X][1] = Point_x(max_range) + radius;
-            bound_vols[object_id].limits[Y][1] = Point_y(max_range) + radius;
-            bound_vols[object_id].limits[Z][1] = Point_z(max_range) + radius;
+            bound_vols[object_id].limits[X][0] =
+                                 (float) ((Real) Point_x(min_range) - radius);
+            bound_vols[object_id].limits[Y][0] =
+                                 (float) ((Real) Point_y(min_range) - radius);
+            bound_vols[object_id].limits[Z][0] =
+                                 (float) ((Real) Point_z(min_range) - radius);
+            bound_vols[object_id].limits[X][1] =
+                                 (float) ((Real) Point_x(max_range) + radius);
+            bound_vols[object_id].limits[Y][1] =
+                                 (float) ((Real) Point_y(max_range) + radius);
+            bound_vols[object_id].limits[Z][1] =
+                                 (float) ((Real) Point_z(max_range) + radius);
             ++object_id;
         }
     }

@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bintree.c,v 1.6 1995-07-31 13:45:33 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bintree.c,v 1.7 1996-05-17 19:35:42 david Exp $";
 #endif
 
 private  Status  io_range(
@@ -63,12 +63,12 @@ public  void  initialize_bintree(
     Real                 z_max,
     bintree_struct_ptr   bintree )
 {
-    bintree->range.limits[X][0] = x_min;
-    bintree->range.limits[X][1] = x_max;
-    bintree->range.limits[Y][0] = y_min;
-    bintree->range.limits[Y][1] = y_max;
-    bintree->range.limits[Z][0] = z_min;
-    bintree->range.limits[Z][1] = z_max;
+    bintree->range.limits[X][0] = (float) x_min;
+    bintree->range.limits[X][1] = (float) x_max;
+    bintree->range.limits[Y][0] = (float) y_min;
+    bintree->range.limits[Y][1] = (float) y_max;
+    bintree->range.limits[Z][0] = (float) z_min;
+    bintree->range.limits[Z][1] = (float) z_max;
 
     bintree->n_nodes = 0;
     bintree->root = (bintree_node_struct *) 0;
@@ -135,7 +135,7 @@ private  void  recursive_delete_bintree(
 public  void  delete_bintree(
     bintree_struct_ptr   bintree )
 {
-    if( bintree->root != (bintree_node_struct *) NULL )
+    if( bintree->root != NULL )
         recursive_delete_bintree( bintree->root );
 }
 
@@ -220,12 +220,12 @@ public  bintree_node_struct  *create_bintree_internal_node(
 
     children_bits = 0;
 
-    if( left != (bintree_node_struct *) NULL )
+    if( left != NULL )
     {
         children_bits |= LEFT_CHILD_EXISTS;
         ++n_children;
     }
-    if( right != (bintree_node_struct *) NULL )
+    if( right != NULL )
     {
         children_bits |= RIGHT_CHILD_EXISTS;
         ++n_children;
@@ -234,20 +234,20 @@ public  bintree_node_struct  *create_bintree_internal_node(
     if( n_children == 0 )
     {
         handle_internal_error( "create_bintree_internal_node" );
-        return( (bintree_node_struct *) NULL );
+        return( NULL );
     }
 
     ALLOC_VAR_SIZED_STRUCT( node, bintree_node_struct *, n_children );
 
-    node->node_info = split_coord | children_bits;
+    node->node_info = (unsigned char) (split_coord | children_bits);
     node->split_position = (float) split_position;
 
     /* --- set the children */
 
-    if( left != (bintree_node_struct *) NULL )
+    if( left != NULL )
         set_bintree_child( node, LEFT_CHILD, left );
 
-    if( right != (bintree_node_struct *) NULL )
+    if( right != NULL )
         set_bintree_child( node, RIGHT_CHILD, right );
 
     return( node );
@@ -289,7 +289,8 @@ public  bintree_node_struct  *create_bintree_leaf(
 
     ALLOC_VAR_SIZED_STRUCT( node, int, n_alloc );
 
-    node->node_info = LEAF_SIGNAL | (n_objects_bits << NODE_INFO_OBJECTS_SHIFT);
+    node->node_info = (unsigned char)
+                (LEAF_SIGNAL | (n_objects_bits << NODE_INFO_OBJECTS_SHIFT));
     node->split_position = (float) split_position;
 
     node_list = node->data.object_list;
@@ -522,7 +523,7 @@ public  int  get_node_split_axis(
 public  Real  get_node_split_position(
     bintree_node_struct  *node )
 {
-    return( node->split_position );
+    return( (Real) node->split_position );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -571,9 +572,9 @@ public  BOOLEAN  point_within_range(
 public  Real  range_volume(
     range_struct  *range )
 {
-    return( (range->limits[X][1] - range->limits[X][0]) *
-            (range->limits[Y][1] - range->limits[Y][0]) *
-            (range->limits[Z][1] - range->limits[Z][0]) );
+    return( ((Real) range->limits[X][1] - (Real) range->limits[X][0]) *
+            ((Real) range->limits[Y][1] - (Real) range->limits[Y][0]) *
+            ((Real) range->limits[Z][1] - (Real) range->limits[Z][0]) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -594,9 +595,9 @@ public  Real  range_surface_area(
 {
     Real   dx, dy, dz;
 
-    dx = range->limits[X][1] - range->limits[X][0];
-    dy = range->limits[Y][1] - range->limits[Y][0];
-    dz = range->limits[Z][1] - range->limits[Z][0];
+    dx = (Real) range->limits[X][1] - (Real) range->limits[X][0];
+    dy = (Real) range->limits[Y][1] - (Real) range->limits[Y][0];
+    dz = (Real) range->limits[Z][1] - (Real) range->limits[Z][0];
 
     return( 2.0 * (dx * dy + dy * dz + dz * dx) );
 }
@@ -786,7 +787,7 @@ private  Status  input_bintree_node(
     int                  n_objects, *object_list;
     bintree_node_struct  *left, *right;
 
-    *node = (bintree_node_struct *) NULL;
+    *node = NULL;
 
     status = io_binary_data( file, READ_FILE, &node_info, sizeof(node_info), 1);
 

@@ -16,7 +16,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/histogram.c,v 1.8 1995-07-31 13:45:21 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/histogram.c,v 1.9 1996-05-17 19:35:40 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -164,7 +164,7 @@ public  void  add_to_histogram(
     if( histogram->min_index > histogram->max_index )   /* first box */
     {
         ALLOC( histogram->counts, 1 );
-        histogram->counts[0] = 1;
+        histogram->counts[0] = 0;
         histogram->min_index = ind;
         histogram->max_index = ind;
     }
@@ -174,7 +174,7 @@ public  void  add_to_histogram(
         new_size = histogram->max_index - ind + 1;
         SET_ARRAY_SIZE( histogram->counts, prev_size, new_size, 1 );
 
-        for( i = histogram->max_index;  i >= histogram->min_index;  --i )
+        for_down( i, histogram->max_index, histogram->min_index )
         {
             histogram->counts[i-ind] =
                          histogram->counts[i-histogram->min_index];
@@ -182,8 +182,6 @@ public  void  add_to_histogram(
 
         for_less( i, ind, histogram->min_index )
             histogram->counts[i-ind] = 0;
-
-        histogram->counts[0] = 1;
 
         histogram->min_index = ind;
     }
@@ -196,12 +194,10 @@ public  void  add_to_histogram(
         for_inclusive( i, histogram->max_index + 1, ind )
             histogram->counts[i-histogram->min_index] = 0;
 
-        histogram->counts[ind-histogram->min_index] = 1;
-
         histogram->max_index = ind;
     }
-    else                                     /* box already exists */
-        ++histogram->counts[ind-histogram->min_index];
+
+    ++histogram->counts[ind-histogram->min_index];
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -261,12 +257,12 @@ private  int  get_histogram_max_count(
 @NAME       : box_filter_histogram
 @INPUT      : n
               counts
-              width
+              half_width
 @OUTPUT     : new_counts
 @RETURNS    : 
 @DESCRIPTION: Box filters the histogram boxes into another set of boxes
               which corresponds to the average number of counts in the
-              range i - width to i + width.
+              range i - half_width to i + half_width.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -278,13 +274,13 @@ private  void  box_filter_histogram(
     int          n,
     Real         counts[],
     Real         new_counts[],
-    int          width )
+    int          half_width )
 {
     int    i, window_width, start_index, end_index;
     Real   current_value;
 
-    start_index = - width;
-    end_index   = width;
+    start_index = - half_width;
+    end_index   = half_width;
 
     current_value = 0.0;
     for_inclusive( i, 0, MIN( end_index, n-1 ) )
@@ -508,7 +504,7 @@ public  void  create_histogram_line(
 
     resample_histogram( histogram, x_size, y_size, &x_scale, &x_trans, height );
 
-    width = ROUND( filter_width / histogram->delta / 2.0 );
+    width = ROUND( filter_width / x_scale / 2.0 );
 
     ALLOC( smooth_height, x_size );
 

@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_markers.c,v 1.4 1995-10-19 15:48:47 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_markers.c,v 1.5 1996-05-17 19:35:53 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -48,16 +48,16 @@ public  void  scan_marker_to_voxels(
     int            c, int_voxel[N_DIMENSIONS];
 
     convert_world_to_voxel( volume,
-                            Point_x(marker->position) - marker->size,
-                            Point_y(marker->position) - marker->size,
-                            Point_z(marker->position) - marker->size,
-                            low );
+                       (Real) Point_x(marker->position) - (Real) marker->size,
+                       (Real) Point_y(marker->position) - (Real) marker->size,
+                       (Real) Point_z(marker->position) - (Real) marker->size,
+                       low );
 
     convert_world_to_voxel( volume,
-                            Point_x(marker->position) + marker->size,
-                            Point_y(marker->position) + marker->size,
-                            Point_z(marker->position) + marker->size,
-                            high );
+                       (Real) Point_x(marker->position) + (Real) marker->size,
+                       (Real) Point_y(marker->position) + (Real) marker->size,
+                       (Real) Point_z(marker->position) + (Real) marker->size,
+                       high );
 
     for_less( c, 0, N_DIMENSIONS )
     {
@@ -68,16 +68,15 @@ public  void  scan_marker_to_voxels(
         max_voxel[c] = FLOOR( max_v + 0.5 );
     }
 
-    for_inclusive( voxel[X], min_voxel[X], max_voxel[X] )
+    for_inclusive( int_voxel[X], min_voxel[X], max_voxel[X] )
     {
-        for_inclusive( voxel[Y], min_voxel[Y], max_voxel[Y] )
+        for_inclusive( int_voxel[Y], min_voxel[Y], max_voxel[Y] )
         {
-            for_inclusive( voxel[Z], min_voxel[Z], max_voxel[Z] )
+            for_inclusive( int_voxel[Z], min_voxel[Z], max_voxel[Z] )
             {
+                convert_int_to_real_voxel( N_DIMENSIONS, int_voxel, voxel );
                 if( voxel_is_within_volume( volume, voxel ) )
-
                 {
-                    convert_real_to_int_voxel( N_DIMENSIONS, voxel, int_voxel );
                     set_volume_label_data( label_volume, int_voxel, label );
                 }
             }

@@ -17,7 +17,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.6 1995-10-19 15:48:00 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.7 1996-05-17 19:35:37 david Exp $";
 #endif
 
 private Colour ANTIQUE_WHITE_COL;
@@ -333,7 +333,7 @@ private   BOOLEAN  strings_equivalent( STRING, STRING );
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  check_initialize_colours()
+private  void  check_initialize_colours( void )
 {
     static  BOOLEAN  first = TRUE;
 
@@ -502,11 +502,11 @@ private  void  check_initialize_colours()
 public  void  get_default_surfprop(
     Surfprop  *surfprop )
 {
-    Surfprop_a(*surfprop) = 0.3;
-    Surfprop_d(*surfprop) = 0.3;
-    Surfprop_s(*surfprop) = 0.4;
-    Surfprop_se(*surfprop) = 10.0;
-    Surfprop_t(*surfprop) = 1.0;
+    Surfprop_a(*surfprop) = 0.3f;
+    Surfprop_d(*surfprop) = 0.3f;
+    Surfprop_s(*surfprop) = 0.4f;
+    Surfprop_se(*surfprop) = 10.0f;
+    Surfprop_t(*surfprop) = 1.0f;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -1040,8 +1040,8 @@ public  Colour  scale_colour(
     Colour   colour,
     Real     factor )
 {
-    return( make_rgba_Colour( (int) (get_Colour_r(colour) * factor + 0.5),
-                              (int) (get_Colour_g(colour) * factor + 0.5),
-                              (int) (get_Colour_b(colour) * factor + 0.5),
+    return( make_rgba_Colour( ROUND( (Real) get_Colour_r(colour) * factor ),
+                              ROUND( (Real) get_Colour_g(colour) * factor ),
+                              ROUND( (Real) get_Colour_b(colour) * factor ),
                               get_Colour_a(colour) ) );
 }

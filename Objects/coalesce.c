@@ -29,9 +29,9 @@ private  void  get_box_index(
 
     for_less( dim, 0, N_DIMENSIONS )
     {
-        p = Point_coord(*point,dim);
-        min_p = Point_coord(*min_point,dim);
-        max_p = Point_coord(*max_point,dim);
+        p = (Real) Point_coord(*point,dim);
+        min_p = (Real) Point_coord(*min_point,dim);
+        max_p = (Real) Point_coord(*max_point,dim);
         if( p <= min_p )
             *(coords[dim]) = 0;
         else if( p >= max_p )
@@ -59,6 +59,8 @@ public  void  coalesce_object_points(
     int         cum_index, dim, new_n_points;
     box_struct  ***boxes;
     Point       min_point, max_point, *new_points;
+
+    new_points = NULL;
 
     get_range_points( *n_points, *points, &min_point, &max_point );
 
@@ -158,6 +160,7 @@ public  void  separate_object_points(
     int    point_index, ind;
     Point  *new_points;
 
+    new_points = NULL;
     *new_n_points = 0;
     for_less( ind, 0, n_indices )
     {

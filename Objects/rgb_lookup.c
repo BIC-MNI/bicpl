@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.9 1995-10-19 15:47:56 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.10 1996-05-17 19:35:36 david Exp $";
 #endif
 
 #define  NUM_PIXELS8   256
@@ -52,9 +52,9 @@ public  Colour     *get_8bit_rgb_pixel_lookup( void )
                 {
                     ind = ( r | (g << 3) | (b << 6) );
 
-                    r255 = (int) ((r + 0.5) * 256.0 / 8.0);
-                    g255 = (int) ((g + 0.5) * 256.0 / 8.0);
-                    b255 = (int) ((b + 0.5) * 256.0 / 4.0);
+                    r255 = (int) (((Real) r + 0.5) * 256.0 / 8.0);
+                    g255 = (int) (((Real) g + 0.5) * 256.0 / 8.0);
+                    b255 = (int) (((Real) b + 0.5) * 256.0 / 4.0);
 
                     lookup_table[ind] = make_Colour( r255, g255, b255 );
                 }

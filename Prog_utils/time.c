@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/time.c,v 1.4 1995-10-19 15:48:53 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/time.c,v 1.5 1996-05-17 19:35:56 david Exp $";
 #endif
 
 private  Real  cpu_start_time;
@@ -35,7 +35,7 @@ private  Real  real_start_time;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  start_timing()
+public  void  start_timing( void )
 {
     cpu_start_time = current_cpu_seconds();
     real_start_time = current_realtime_seconds();

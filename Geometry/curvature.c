@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.13 1995-07-31 13:44:54 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.14 1996-05-17 19:35:23 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -86,7 +86,7 @@ public  void  get_polygon_vertex_curvatures(
                                        poly, vertex_index, smoothing_distance );
                 }
 
-                if( ABS( curvature ) < low_threshold )
+                if( FABS( curvature ) < low_threshold )
                     curvature = 0.0;
 
                 curvatures[point_index] = curvature;

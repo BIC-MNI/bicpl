@@ -27,6 +27,8 @@ GEOMETRY_SRC = \
                Geometry/line_circle.c \
                Geometry/map_polygons.c \
                Geometry/path_surface.c \
+               Geometry/platonics.c \
+               Geometry/plane_polygon_intersect.c \
                Geometry/points.c \
                Geometry/poly_dist.c \
                Geometry/polygon_sphere.c \

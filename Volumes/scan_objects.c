@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_objects.c,v 1.3 1995-10-19 15:48:50 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_objects.c,v 1.4 1996-05-17 19:35:55 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -46,7 +46,7 @@ public  void  scan_object_to_volume(
     object_struct           *current_object;
     object_traverse_struct  object_traverse;
 
-    initialize_object_traverse( &object_traverse, 1, &object );
+    initialize_object_traverse( &object_traverse, FALSE, 1, &object );
 
     while( get_next_object_traverse(&object_traverse,&current_object) )
     {

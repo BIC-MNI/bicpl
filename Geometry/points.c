@@ -17,7 +17,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.4 1995-10-19 15:47:44 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.5 1996-05-17 19:35:29 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -36,9 +36,9 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points
 public  BOOLEAN  null_Point(
     Point   *p )
 {
-    return( Point_x(*p) == 0.0 &&
-            Point_y(*p) == 0.0 &&
-            Point_z(*p) == 0.0 );
+    return( Point_x(*p) == 0.0f &&
+            Point_y(*p) == 0.0f &&
+            Point_z(*p) == 0.0f );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -57,9 +57,9 @@ public  BOOLEAN  null_Point(
 public  BOOLEAN  null_Vector(
     Vector   *v )
 {
-    return( Vector_x(*v) == 0.0 &&
-            Vector_y(*v) == 0.0 &&
-            Vector_z(*v) == 0.0 );
+    return( Vector_x(*v) == 0.0f &&
+            Vector_y(*v) == 0.0f &&
+            Vector_z(*v) == 0.0f );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -82,9 +82,9 @@ public  Real  distance_between_points(
 {
     Real   dx, dy, dz;
 
-    dx = Point_x(*p2) - Point_x(*p1);
-    dy = Point_y(*p2) - Point_y(*p1);
-    dz = Point_z(*p2) - Point_z(*p1);
+    dx = (Real) Point_x(*p2) - (Real) Point_x(*p1);
+    dy = (Real) Point_y(*p2) - (Real) Point_y(*p1);
+    dz = (Real) Point_z(*p2) - (Real) Point_z(*p1);
 
     return( sqrt( dx * dx + dy * dy + dz * dz ) );
 }
@@ -112,9 +112,9 @@ public  BOOLEAN  points_within_distance(
 {
     Real  dx, dy, dz;
 
-    dx = Point_x(*p1) - Point_x(*p2);
-    dy = Point_y(*p1) - Point_y(*p2);
-    dz = Point_z(*p1) - Point_z(*p2);
+    dx = (Real) Point_x(*p1) - (Real) Point_x(*p2);
+    dy = (Real) Point_y(*p1) - (Real) Point_y(*p2);
+    dz = (Real) Point_z(*p1) - (Real) Point_z(*p2);
 
     return( dx * dx + dy * dy + dz * dz <= distance * distance );
 }
@@ -244,21 +244,22 @@ public  void  get_points_centroid(
     Point   *centroid )
 {
     int   i;
+    Real  x, y, z;
 
-    Point_x(*centroid) = 0.0;
-    Point_y(*centroid) = 0.0;
-    Point_z(*centroid) = 0.0;
+    x = 0.0;
+    y = 0.0;
+    z = 0.0;
 
     for_less( i, 0, n_points )
     {
-        Point_x(*centroid) += Point_x(points[i]);
-        Point_y(*centroid) += Point_y(points[i]);
-        Point_z(*centroid) += Point_z(points[i]);
+        x += (Real) Point_x(points[i]);
+        y += (Real) Point_y(points[i]);
+        z += (Real) Point_z(points[i]);
     }
 
-    Point_x(*centroid) /= (Real) n_points;
-    Point_y(*centroid) /= (Real) n_points;
-    Point_z(*centroid) /= (Real) n_points;
+    fill_Point( *centroid, x / (Real) n_points,
+                           y / (Real) n_points,
+                           z / (Real) n_points );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -16,20 +16,18 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.8 1995-12-19 15:45:55 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.9 1996-05-17 19:35:54 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : interpolate_volume_to_slice
 @INPUT      : volume1
               n_dims1
-              sizes1
               origin1
               x_axis1
               y_axis1
               volume2
               n_dims2
-              sizes2
               origin2
               x_axis2
               y_axis2
@@ -53,13 +51,11 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpo
 public  void  interpolate_volume_to_slice(
     Volume          volume1,
     int             n_dims1,
-    int             sizes1[],
     Real            origin1[],
     Real            x_axis1[],
     Real            y_axis1[],
     Volume          volume2,
     int             n_dims2,
-    int             sizes2[],
     Real            origin2[],
     Real            x_axis2[],
     Real            y_axis2[],

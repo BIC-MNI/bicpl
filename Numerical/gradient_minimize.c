@@ -16,7 +16,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gradient_minimize.c,v 1.2 1995-09-13 13:24:57 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gradient_minimize.c,v 1.3 1996-05-17 19:35:41 david Exp $";
 #endif
 
 #define  SMALLEST_STEP_SIZE     1.0e-20
@@ -130,37 +130,31 @@ private  Real  take_step(
     int   max_pos[],
     int   pos[] )
 {
-    int   n_fit_dims, dim, fit_dim, changed_from;
+    int   dim, fit_dim, changed_from, n_fit_dims;
     Real  best_value, value;
 
     for_less( dim, 0, n_dims )
         best[dim] = current[dim];
     best_value = current_value;
 
-    if( n_search_dims == 1 )
-        n_fit_dims = n_dims;
-    else
-        n_fit_dims = 1;
+    if( n_search_dims < 1 )
+        n_search_dims = 1;
 
-    for_less( fit_dim, 0, n_fit_dims )
+    for( fit_dim = 0;  fit_dim < n_dims;  fit_dim += n_search_dims )
     {
-        if( n_search_dims == 1 )
+        n_fit_dims = MIN( n_search_dims, n_dims - fit_dim );
+
+        for_less( dim, 0, n_dims )
         {
-            for_less( dim, 0, n_dims )
-            {
-                min_pos[dim] = 0;
-                max_pos[dim] = 0;
-            }
-            min_pos[fit_dim] = -1;
-            max_pos[fit_dim] = 1;
+            min_pos[dim] = 0;
+            max_pos[dim] = 0;
+            parameters[dim] = best[dim];
         }
-        else
+
+        for_less( dim, fit_dim, MAX( n_dims, fit_dim + n_fit_dims ) )
         {
-            for_less( dim, 0, n_dims )
-            {
-                min_pos[dim] = -1;
-                max_pos[dim] = 1;
-            }
+            min_pos[dim] = -1;
+            max_pos[dim] = 1;
         }
 
         for_less( dim, 0, n_dims )
@@ -169,10 +163,10 @@ private  Real  take_step(
         changed_from = 0;
         while( changed_from >= 0 )
         {
-            for_less( dim, changed_from, n_dims )
+            for_less( dim, changed_from, n_fit_dims )
             {
-                parameters[dim] = current[dim] + step_sizes[dim] *
-                                  (Real) pos[dim];
+                parameters[fit_dim+dim] = current[fit_dim+dim] +
+                            step_sizes[fit_dim+dim] * (Real) pos[fit_dim+dim];
             }
 
             value = func( parameters, func_data );
@@ -184,15 +178,15 @@ private  Real  take_step(
                     best[dim] = parameters[dim];
             }
 
-            changed_from = n_dims - 1;
+            changed_from = n_fit_dims - 1;
 
             do
             {
-                ++pos[changed_from];
-                if( pos[changed_from] <= max_pos[changed_from] )
+                ++pos[fit_dim+changed_from];
+                if( pos[fit_dim+changed_from] <= max_pos[fit_dim+changed_from] )
                     break;
 
-                pos[changed_from] = min_pos[changed_from];
+                pos[fit_dim+changed_from] = min_pos[fit_dim+changed_from];
                 --changed_from;
             }
             while( changed_from >= 0 );

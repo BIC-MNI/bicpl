@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/point_bintree.c,v 1.5 1995-10-19 15:48:05 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/point_bintree.c,v 1.6 1996-05-17 19:35:45 david Exp $";
 #endif
 
 private  void  recursive_find_closest_point(
@@ -132,7 +132,8 @@ private  void  recursive_find_closest_point(
         {
             left_limit = get_node_split_position( children[n_to_search] );
             children_ranges[n_to_search] = *range;
-            children_ranges[n_to_search].limits[axis_index][1] = left_limit;
+            children_ranges[n_to_search].limits[axis_index][1] =
+                                               (float) left_limit;
             children_distances[n_to_search] = get_point_range_dist( point,
                                            &children_ranges[n_to_search] );
 
@@ -144,7 +145,8 @@ private  void  recursive_find_closest_point(
         {
             right_limit = get_node_split_position( children[n_to_search] );
             children_ranges[n_to_search] = *range;
-            children_ranges[n_to_search].limits[axis_index][0] = right_limit;
+            children_ranges[n_to_search].limits[axis_index][0] =
+                                                      (float) right_limit;
             children_distances[n_to_search] = get_point_range_dist( point,
                                              &children_ranges[n_to_search] );
 
@@ -196,15 +198,15 @@ private  Real  get_point_range_dist(
 
     for_less( c, 0, N_DIMENSIONS )
     {
-        min_plane = range->limits[c][0];
-        max_plane = range->limits[c][1];
-        point_pos = Point_coord(*point,c);
+        min_plane = (Real) range->limits[c][0];
+        max_plane = (Real) range->limits[c][1];
+        point_pos = (Real) Point_coord(*point,c);
         if( point_pos < min_plane )
-            Vector_coord( offset, c ) = min_plane - point_pos;
+            Vector_coord(offset,c) = (Point_coord_type) (min_plane - point_pos);
         else if( point_pos > max_plane )
-            Vector_coord( offset, c ) = point_pos - max_plane;
+            Vector_coord(offset,c) = (Point_coord_type) (point_pos - max_plane);
         else
-            Vector_coord( offset, c ) = 0.0;
+            Vector_coord(offset,c) = 0.0f;
     }
 
     return( MAGNITUDE( offset ) );
@@ -310,7 +312,8 @@ private  void  recursive_find_closest_vertex(
         {
             left_limit = get_node_split_position( children[n_to_search] );
             children_ranges[n_to_search] = *range;
-            children_ranges[n_to_search].limits[axis_index][1] = left_limit;
+            children_ranges[n_to_search].limits[axis_index][1] =
+                                                   (float) left_limit;
             children_distances[n_to_search] = get_point_range_dist( point,
                                            &children_ranges[n_to_search] );
 
@@ -322,7 +325,8 @@ private  void  recursive_find_closest_vertex(
         {
             right_limit = get_node_split_position( children[n_to_search] );
             children_ranges[n_to_search] = *range;
-            children_ranges[n_to_search].limits[axis_index][0] = right_limit;
+            children_ranges[n_to_search].limits[axis_index][0] =
+                                                   (float) right_limit;
             children_distances[n_to_search] = get_point_range_dist( point,
                                              &children_ranges[n_to_search] );
 

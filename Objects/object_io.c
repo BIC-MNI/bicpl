@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.19 1995-10-19 15:47:47 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.20 1996-05-17 19:35:32 david Exp $";
 #endif
 
 private  Status  io_points(
@@ -404,7 +404,7 @@ public  Status  io_polygons(
         }
 
         if( io_flag == READ_FILE )
-            polygons->line_thickness = 1.0;
+            polygons->line_thickness = 1.0f;
     }
 
     return( status );
@@ -664,10 +664,10 @@ public  Status  io_colour(
     {
         if( io_flag == WRITE_FILE )
         {
-            r = get_Colour_r_0_1( *colour );
-            g = get_Colour_g_0_1( *colour );
-            b = get_Colour_b_0_1( *colour );
-            a = get_Colour_a_0_1( *colour );
+            r = (float) get_Colour_r_0_1( *colour );
+            g = (float) get_Colour_g_0_1( *colour );
+            b = (float) get_Colour_b_0_1( *colour );
+            a = (float) get_Colour_a_0_1( *colour );
         }
 
         status = io_float( file, io_flag, ASCII_FORMAT, &r );
@@ -686,10 +686,10 @@ public  Status  io_colour(
     {
         if( io_flag == WRITE_FILE )
         {
-            comps[3] = get_Colour_r( *colour );
-            comps[2] = get_Colour_g( *colour );
-            comps[1] = get_Colour_b( *colour );
-            comps[0] = get_Colour_a( *colour );
+            comps[3] = (unsigned char) get_Colour_r( *colour );
+            comps[2] = (unsigned char) get_Colour_g( *colour );
+            comps[1] = (unsigned char) get_Colour_b( *colour );
+            comps[0] = (unsigned char) get_Colour_a( *colour );
         }
 
         status = io_binary_data( file, io_flag, (void *) comps,
@@ -697,7 +697,8 @@ public  Status  io_colour(
 
         if( io_flag == READ_FILE )
         {
-            *colour = make_rgba_Colour( comps[3], comps[2], comps[1], comps[0]);
+            *colour = make_rgba_Colour( (int) comps[3], (int) comps[2],
+                                        (int) comps[1], (int) comps[0]);
         }
     }
 
@@ -819,8 +820,8 @@ public  Status  io_surfprop(
                                  sizeof(*surfprop), 1 );
     }
 
-    if( io_flag == READ_FILE && Surfprop_t(*surfprop) == 0.0 )
-        Surfprop_t(*surfprop) = 1.0;
+    if( io_flag == READ_FILE && Surfprop_t(*surfprop) == 0.0f )
+        Surfprop_t(*surfprop) = 1.0f;
 
     return( status );
 }
@@ -1157,9 +1158,9 @@ public  Status  io_pixel_colours(
                 {
                     for_less( i, 0, n_to_do )
                     {
-                        pixel_colour = make_Colour( buffer[3*i+0],
-                                                    buffer[3*i+1],
-                                                    buffer[3*i+2] );
+                        pixel_colour = make_Colour( (int) buffer[3*i+0],
+                                                    (int) buffer[3*i+1],
+                                                    (int) buffer[3*i+2] );
                         (*pixel_colours)[start_pixel_index+i] = pixel_colour;
                     }
                 }
@@ -1248,13 +1249,13 @@ private  Status  io_line_thickness(
     File_formats    format,
     float           *line_thickness )
 {
-    Real   status;
+    Status   status;
 
     status = io_float( file, io_flag, format, line_thickness );
 
     if( status == OK && io_flag == READ_FILE && format == BINARY_FORMAT &&
-        (*line_thickness <= 0.001 || *line_thickness > 20.0) )
-        *line_thickness = 1.0;
+        (*line_thickness <= 0.001f || *line_thickness > 20.0f) )
+        *line_thickness = 1.0f;
 
     return( status );
 }

@@ -29,7 +29,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char hash_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/hash.h,v 1.8 1996-04-29 15:26:59 david Exp $";
+static char hash_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/hash.h,v 1.9 1996-05-17 19:35:20 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -37,12 +37,13 @@ static char hash_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/At
 typedef  struct  hash_entry_struct
 {
     int                          key;
-    char                         *data_ptr;
     struct   hash_entry_struct   *next;
+    char                         data[1];
 } hash_entry_struct;
 
 typedef  struct
 {
+    int                 data_size;
     int                 size;
     int                 n_entries;
     Real                enlarge_threshold;

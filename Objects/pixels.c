@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.23 1995-12-19 18:48:46 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.24 1996-05-17 19:35:34 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -209,7 +209,7 @@ public  void  convert_pixels24_to_pixels8(
         for_less( y, 0, pixels_rgb->y_size )
         {
             PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) =
-                   convert_rgb_pixel_to_8bit_lookup(
+                   (unsigned char) convert_rgb_pixel_to_8bit_lookup(
                                 PIXEL_RGB_COLOUR(*pixels_rgb,x,y) );
         }
     }
@@ -252,7 +252,7 @@ public  void  convert_pixels24_to_index8(
             col = PIXEL_RGB_COLOUR(*pixels_rgb,x,y);
 
             PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) =
-                   find_closest_colour( get_Colour_r(col),
+                   (unsigned char) find_closest_colour( get_Colour_r(col),
                                         get_Colour_g(col),
                                         get_Colour_b(col),
                                         n_colours, colour_table );
@@ -290,7 +290,7 @@ public  void  convert_index8_to_pixels24(
         for_less( y, 0, pixels_rgb->y_size )
         {
             PIXEL_RGB_COLOUR(*pixels_rgb,x,y) = colour_table[
-                            PIXEL_COLOUR_INDEX_8(*pixels_8,x,y)];
+                            (int) PIXEL_COLOUR_INDEX_8(*pixels_8,x,y)];
         }
     }
 }
@@ -322,7 +322,7 @@ public  void  convert_pixels24_to_gray_scale(
     {
         for_less( y, 0, pixels_rgb->y_size )
         {
-            PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) =
+            PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) = (unsigned char)
                    get_Colour_luminance( PIXEL_RGB_COLOUR(*pixels_rgb,x,y) );
         }
     }
@@ -599,21 +599,21 @@ public  void  copy_pixel_region(
         case COLOUR_INDEX_8BIT_PIXEL:
             (void) memcpy( (void *) &PIXEL_COLOUR_INDEX_8(*new_pixels,0,y_dest),
                            (void *) &PIXEL_COLOUR_INDEX_8(*pixels,x_min,y),
-                           x_size *
+                           (size_t) x_size *
                                sizeof(PIXEL_COLOUR_INDEX_8(*new_pixels,0,0)) );
             break;
 
         case COLOUR_INDEX_16BIT_PIXEL:
             (void) memcpy( (void *)&PIXEL_COLOUR_INDEX_16(*new_pixels,0,y_dest),
                            (void *) &PIXEL_COLOUR_INDEX_16(*pixels,x_min,y),
-                           x_size *
+                           (size_t) x_size *
                                sizeof(PIXEL_COLOUR_INDEX_16(*new_pixels,0,0)) );
             break;
 
         case RGB_PIXEL:
             (void) memcpy( (void *) &PIXEL_RGB_COLOUR(*new_pixels,0,y_dest),
                            (void *) &PIXEL_RGB_COLOUR(*pixels,x_min,y),
-                           x_size *
+                           (size_t) x_size *
                                sizeof(PIXEL_RGB_COLOUR(*new_pixels,0,0)) );
             break;
         }

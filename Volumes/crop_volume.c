@@ -16,8 +16,10 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.7 1996-02-28 16:04:05 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.8 1996-05-17 19:35:53 david Exp $";
 #endif
+
+#define  MAX_BUFFER_SIZE  100000
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : find_volume_crop_bounds
@@ -43,6 +45,8 @@ public  BOOLEAN  find_volume_crop_bounds(
 {
     int      dim, n_dims, lim, voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
     int      start, end, step, voxel_pos, new_limits[2];
+    int      start0, start1, start2, start3, start4;
+    int      end0, end1, end2, end3, end4;
     Real     value;
     BOOLEAN  found;
 
@@ -64,6 +68,17 @@ public  BOOLEAN  find_volume_crop_bounds(
         limits[0][dim] = 0;
         limits[1][dim] = 0;
 
+        start0 = limits[0][0];
+        start1 = limits[0][1];
+        start2 = limits[0][2];
+        start3 = limits[0][3];
+        start4 = limits[0][4];
+        end0 = limits[1][0];
+        end1 = limits[1][1];
+        end2 = limits[1][2];
+        end3 = limits[1][3];
+        end4 = limits[1][4];
+
         for_less( lim, 0, 2 )
         {
             if( lim == 0 )
@@ -83,15 +98,15 @@ public  BOOLEAN  find_volume_crop_bounds(
 
             for( voxel_pos = start;  voxel_pos != end;  voxel_pos += step )
             {
-                for_inclusive( voxel[4], limits[0][4], limits[1][4] )
+                for_inclusive( voxel[0], start0, end0 )
                 {
-                 for_inclusive( voxel[3], limits[0][3], limits[1][3] )
+                 for_inclusive( voxel[1], start1, end1 )
                  {
-                  for_inclusive( voxel[2], limits[0][2], limits[1][2] )
+                  for_inclusive( voxel[2], start2, end2 )
                   {
-                   for_inclusive( voxel[1], limits[0][1], limits[1][1] )
+                   for_inclusive( voxel[3], start3, end3 )
                    {
-                    for_inclusive( voxel[0], limits[0][0], limits[1][0] )
+                    for_inclusive( voxel[4], start4, end4 )
                     {
                         voxel[dim] = voxel_pos;
 
@@ -105,8 +120,6 @@ public  BOOLEAN  find_volume_crop_bounds(
                             found = TRUE;
                             break;
                         }
-
-                        voxel[dim] = 0;
                     }
                     if( found )
                         break;

@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.35 1996-04-26 14:31:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.36 1996-05-17 19:35:35 david Exp $";
 #endif
 
 private  void  reverse_polygon_order(
@@ -75,6 +75,32 @@ public  void  initialize_polygons(
     polygons->visibilities = (Smallest_int *) 0;
     polygons->neighbours = (int *) 0;
     polygons->bintree = (bintree_struct_ptr) NULL;
+}
+
+public  void  initialize_polygons_with_size(
+    polygons_struct   *polygons,
+    Colour            col,
+    Surfprop          *spr,
+    int               n_points,
+    int               n_polygons,
+    int               size )
+{
+    int   p;
+
+    initialize_polygons( polygons, col, spr );
+
+    polygons->n_points = n_points;
+    ALLOC( polygons->points, polygons->n_points );
+    ALLOC( polygons->normals, polygons->n_points );
+
+    polygons->n_items = n_polygons;
+
+    ALLOC( polygons->end_indices, polygons->n_items );
+
+    for_less( p, 0, polygons->n_items )
+        polygons->end_indices[p] = (p+1) * size;
+
+    ALLOC( polygons->indices, polygons->end_indices[polygons->n_items-1] );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

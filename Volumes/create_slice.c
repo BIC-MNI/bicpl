@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.41 1995-12-19 15:45:52 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.42 1996-05-17 19:35:47 david Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10
@@ -731,10 +731,10 @@ private  void  create_weighted_volume_slices(
             degrees_continuity != -1 && n_slices1 == 1 &&
             (volume_data2 == NULL || n_slices2 == 1) )
         {
-            interpolate_volume_to_slice( volume1, n_dimensions1, sizes1,
+            interpolate_volume_to_slice( volume1, n_dimensions1,
                                          origins1[0],
                                          x_axis1, y_axis1,
-                                         volume2, n_dimensions2, sizes2,
+                                         volume2, n_dimensions2,
                                          (volume_data2 == NULL) ? NULL :
                                          origins2[0],
                                          x_axis2, y_axis2,
@@ -811,8 +811,8 @@ private  BOOLEAN  get_filter_slices(
             a1 = (c + 1) % N_DIMENSIONS;
             a2 = (c + 2) % N_DIMENSIONS;
             direction[c] = x_axis[a1] * y_axis[a2] - x_axis[a2] * y_axis[a1];
-            direction[c] *= ABS( separations[a1] * separations[a2] /
-                                 separations[c] );
+            direction[c] *= FABS( separations[a1] * separations[a2] /
+                                  separations[c] );
         }
     }
 

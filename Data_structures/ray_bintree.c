@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.11 1996-04-16 13:58:51 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.12 1996-05-17 19:35:41 david Exp $";
 #endif
 
 private  void  recursive_intersect_ray(
@@ -51,8 +51,8 @@ private  int  n_objects_searched = 0;
 public  void  print_bintree_stats(
     int   n_objects )
 {
-    print( "Nodes %g  ", (Real) n_nodes_searched / n_objects );
-    print( "Objects %g\n", (Real) n_objects_searched / n_objects );
+    print( "Nodes %g  ", (Real) n_nodes_searched / (Real) n_objects );
+    print( "Objects %g\n", (Real) n_objects_searched / (Real) n_objects );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -158,7 +158,7 @@ private  void  recursive_intersect_ray(
     else
     {
         axis_index = get_node_split_axis( node );
-        delta = Vector_coord( *direction, axis_index );
+        delta = (Real) Vector_coord( *direction, axis_index );
 
         if( delta > 0.0 )
             searching_left = TRUE;
@@ -182,13 +182,15 @@ private  void  recursive_intersect_ray(
 
                 if( delta == 0.0 )
                 {
-                    test_child = (Point_coord(*origin,axis_index) <=left_limit);
+                    test_child = ((Real) Point_coord(*origin,axis_index) <=
+                                  left_limit);
                 }
                 else
                 {
                     test_child = FALSE;
 
-                    t = (left_limit - Point_coord(*origin,axis_index)) / delta;
+                    t = (left_limit - (Real) Point_coord(*origin,axis_index)) /
+                        delta;
 
                     if( delta < 0.0 && t <= t_max_child )
                     {
@@ -222,13 +224,15 @@ private  void  recursive_intersect_ray(
 
                 if( delta == 0.0 )
                 {
-                    test_child = (Point_coord(*origin,axis_index)>=right_limit);
+                    test_child = ((Real) Point_coord(*origin,axis_index) >=
+                                  right_limit);
                 }
                 else
                 {
                     test_child = FALSE;
 
-                    t = (right_limit - Point_coord(*origin,axis_index)) / delta;
+                    t = (right_limit - (Real) Point_coord(*origin,axis_index)) /
+                        delta;
 
                     if( delta < 0.0 && t >= t_min_child )
                     {
@@ -297,12 +301,13 @@ public  BOOLEAN  ray_intersects_range(
 
     for_less( c, 0, N_DIMENSIONS )
     {
-        x = Point_coord(*origin,c);
-        delta = Vector_coord(*direction,c);
+        x = (Real) Point_coord(*origin,c);
+        delta = (Real) Vector_coord(*direction,c);
 
         if( delta == 0.0 )
         {
-            if( x < range->limits[c][0] || x > range->limits[c][1] )
+            if( x < (Real) range->limits[c][0] ||
+                x > (Real) range->limits[c][1] )
             {
                 intersects = FALSE;
                 break;
@@ -321,7 +326,7 @@ public  BOOLEAN  ray_intersects_range(
                 max_plane = 0;
             }
 
-            t = (range->limits[c][min_plane] - x) / delta;
+            t = ((Real) range->limits[c][min_plane] - x) / delta;
 
             if( !min_hit || t > *t_min )
             {
@@ -329,7 +334,7 @@ public  BOOLEAN  ray_intersects_range(
                 *t_min = t;
             }
 
-            t = (range->limits[c][max_plane] - x) / delta;
+            t = ((Real) range->limits[c][max_plane] - x) / delta;
 
             if( !max_hit || t < *t_max )
             {

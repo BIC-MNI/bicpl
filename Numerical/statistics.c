@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.11 1996-04-10 17:19:49 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.12 1996-05-17 19:35:40 david Exp $";
 #endif
 
 #define  DEFAULT_N_MEDIAN_BOXES    100000
@@ -168,9 +168,9 @@ public  void  add_sample_to_statistics(
             ++stats->n_above_median_range;
         else
         {
-            median_box = stats->n_median_boxes *
-                         (sample - stats->min_median_range)/
-                         (stats->max_median_range - stats->min_median_range);
+            median_box = (int) ((Real) stats->n_median_boxes *
+                           (sample - stats->min_median_range)/
+                           (stats->max_median_range - stats->min_median_range));
 
             ++stats->median_box_counts[median_box];
             if( stats->median_box_counts[median_box] == 1 )

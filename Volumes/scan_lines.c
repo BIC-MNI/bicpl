@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.5 1995-10-19 15:48:33 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.6 1996-05-17 19:35:51 david Exp $";
 #endif
 
 private  void  scan_line_segment_to_voxels(
@@ -137,10 +137,10 @@ private  void  scan_line_segment_to_voxels(
 
     for_less( c, 0, N_DIMENSIONS )
     {
-        Point_coord(min_point,c) = MIN(Point_coord(*p1,c),Point_coord(*p2,c)) -
-                                   radius;
-        Point_coord(max_point,c) = MAX(Point_coord(*p1,c),Point_coord(*p2,c)) +
-                                   radius;
+        Point_coord(min_point,c) = (Point_coord_type)
+                 ((Real) MIN(Point_coord(*p1,c),Point_coord(*p2,c)) - radius);
+        Point_coord(max_point,c) = (Point_coord_type)
+                 ((Real) MAX(Point_coord(*p1,c),Point_coord(*p2,c)) + radius);
     }
 
     convert_world_to_voxel( volume,
@@ -159,8 +159,8 @@ private  void  scan_line_segment_to_voxels(
         min_v = MIN( min_voxel[c], max_voxel[c] );
         max_v = MAX( min_voxel[c], max_voxel[c] );
 
-        int_min_voxel[c] = ROUND( min_v ) - 1.0;
-        int_max_voxel[c] = ROUND( max_v ) + 1.0;
+        int_min_voxel[c] = ROUND( min_v ) - 1;
+        int_max_voxel[c] = ROUND( max_v ) + 1;
 
         if( int_min_voxel[c] < 0 )
             int_min_voxel[c] = 0;

@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/segment_polygons.c,v 1.5 1995-07-31 13:44:57 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/segment_polygons.c,v 1.6 1996-05-17 19:35:24 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -51,6 +51,10 @@ public  void   remove_invisible_polygons(
     n_points = 0;
     n_items = 0;
     n_indices = 0;
+    indices = NULL;
+    end_indices = NULL;
+    points = NULL;
+    normals = NULL;
 
     ALLOC( new_ids, polygons->n_points );
 

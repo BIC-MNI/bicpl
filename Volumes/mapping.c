@@ -17,7 +17,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.27 1995-10-19 15:48:17 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.28 1996-05-17 19:35:49 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -149,7 +149,7 @@ private  Real   dot(
     int   i;
     Real  d;
 
-    d = 0;
+    d = 0.0;
     for_less( i, 0, n )
         d += v1[i] * v2[i];
 
@@ -387,18 +387,24 @@ public  void  resize_volume_slice(
                      (Real) old_used_y_viewport_size;
     scale_factor = MIN( x_scale_factor, y_scale_factor );
 
-    if( used_x_viewport_size != (int *) NULL )
-        *used_x_viewport_size = scale_factor * old_used_x_viewport_size;
-    if( used_y_viewport_size != (int *) NULL )
-        *used_y_viewport_size = scale_factor * old_used_y_viewport_size;
+    if( used_x_viewport_size != NULL )
+    {
+        *used_x_viewport_size = ROUND( scale_factor *
+                                       (Real) old_used_x_viewport_size);
+    }
+    if( used_y_viewport_size != NULL )
+    {
+        *used_y_viewport_size = ROUND( scale_factor *
+                                       (Real) old_used_y_viewport_size );
+    }
 
     scale_slice_about_viewport_centre( scale_factor,
                                        old_x_viewport_size, old_y_viewport_size,
                                        x_translation, y_translation,
                                        x_scale, y_scale );
 
-    *x_translation += (new_x_viewport_size - old_x_viewport_size) / 2.0;
-    *y_translation += (new_y_viewport_size - old_y_viewport_size) / 2.0;
+    *x_translation += (Real) (new_x_viewport_size - old_x_viewport_size) / 2.0;
+    *y_translation += (Real) (new_y_viewport_size - old_y_viewport_size) / 2.0;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -466,16 +472,16 @@ public  void  fit_volume_slice_to_viewport(
     else
         *x_scale = *y_scale;
 
-    if( used_x_viewport_size != (int *) NULL )
+    if( used_x_viewport_size != NULL )
     {
-        *used_x_viewport_size = *x_scale * (x_max - x_min) *
-                                (1.0 + fraction_oversize);
+        *used_x_viewport_size = (int) (*x_scale * (Real) (x_max - x_min) *
+                                       (1.0 + fraction_oversize));
     }
 
-    if( used_y_viewport_size != (int *) NULL )
+    if( used_y_viewport_size != NULL )
     {
-        *used_y_viewport_size = *y_scale * (y_max - y_min) *
-                                (1.0 + fraction_oversize);
+        *used_y_viewport_size = (int) (*y_scale * (Real) (y_max - y_min) *
+                                       (1.0 + fraction_oversize));
     }
 
     *x_translation = ((Real) x_viewport_size - *x_scale * (x_max - x_min))/2.0 -
@@ -620,6 +626,31 @@ public  void  convert_real_to_int_voxel(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_int_to_real_voxel
+@INPUT      : n_dimensions
+              int_voxel
+@OUTPUT     : voxel
+@RETURNS    : 
+@DESCRIPTION: Converts int valued voxel positions to real positions.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Apr. 16, 1996  David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void  convert_int_to_real_voxel(
+    int      n_dimensions,
+    int      int_voxel[],
+    Real     voxel[] )
+{
+    int   i;
+
+    for_less( i, 0, n_dimensions )
+        voxel[i] = (Real) int_voxel[i];
+}
+
+/* ----------------------------- MNI Header -----------------------------------
 @NAME       : voxel_contains_range
 @INPUT      : volume
               int_voxel
@@ -640,55 +671,25 @@ public  BOOLEAN  voxel_contains_range(
     Real     max_value )
 {               
     BOOLEAN  less, greater;
-    int      n_dimensions;
-    int      c, mx, my, mz, ms, mt;
-    int      base_indices[MAX_DIMENSIONS], indices[MAX_DIMENSIONS];
-    Real     value;
-
-    n_dimensions = get_volume_n_dimensions( volume );
-
-    if( n_dimensions >= 1 )
-        mx = 2;
-    else
-        mx = 1;
-
-    if( n_dimensions >= 2 )
-        my = 2;
-    else
-        my = 1;
-
-    if( n_dimensions >= 3 )
-        mz = 2;
-    else
-        mz = 1;
-
-    if( n_dimensions >= 4 )
-        ms = 2;
-    else
-        ms = 1;
-
-    if( n_dimensions >= 5 )
-        mt = 2;
-    else
-        mt = 1;
-
-    for_less( c, 0, n_dimensions )
-        base_indices[c] = int_voxel[c];
-
-    for_less( c, n_dimensions, MAX_DIMENSIONS )
-        base_indices[c] = 0;
+    int      i, n_values, mx, my, mz, ms, mt;
+    Real     value, values[1 << MAX_DIMENSIONS];
 
     less = FALSE;
     greater = FALSE;
 
-    for_less( indices[X], base_indices[X], base_indices[X] + mx )
-    for_less( indices[Y], base_indices[Y], base_indices[Y] + my )
-    for_less( indices[Z], base_indices[Z], base_indices[Z] + mz )
-    for_less( indices[3], base_indices[3], base_indices[3] + ms )
-    for_less( indices[4], base_indices[4], base_indices[4] + mt )
+    get_volume_value_hyperslab( volume,
+                                int_voxel[0],
+                                int_voxel[1],
+                                int_voxel[2],
+                                int_voxel[3],
+                                int_voxel[4],
+                                2, 2, 2, 2, 2, values );
+
+    n_values = 1 << get_volume_n_dimensions( volume );
+
+    for_less( i, 0, n_values )
     {
-        value = get_volume_real_value( volume,
-                   indices[0], indices[1], indices[2], indices[3], indices[4] );
+        value = values[i];
 
         if( value < min_value )
         {

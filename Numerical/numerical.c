@@ -17,7 +17,7 @@
 #include  <limits.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.20 1996-05-13 15:48:01 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.21 1996-05-17 19:35:39 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -232,8 +232,13 @@ public  int  solve_quadratic(
 #define     EQN_EPS     1e-9
 #define	    IsZero(x)	((x) > -EQN_EPS && (x) < EQN_EPS)
 
+#ifdef  NO_CBRT
 #define     cbrt(x)     ((x) > 0.0 ? pow((double)(x), 1.0/3.0) : \
                         ((x) < 0.0 ? -pow((double)-(x), 1.0/3.0) : 0.0))
+#endif
+
+#define  COS_60    0.5
+#define  SIN_60    0.86602540378443864676
 
 
 public  int solve_cubic(
@@ -243,11 +248,10 @@ public  int solve_cubic(
     Real   d,
     Real   s[ 3 ] )
 {
-    int     i, num;
-    double  sub;
-    double  A, B, C;
-    double  sq_A, p, q;
-    double  cb_p, D;
+    int     num;
+    double  A, B, C, a3, cs, sn;
+    double  sq_A3, p, q;
+    double  cb_p, D, phi, t, sr_p, tc;
 
     if( IsZero(a) )
     {
@@ -263,9 +267,10 @@ public  int solve_cubic(
     /*  substitute x = y - A/3 to eliminate quadric term:
 	x^3 +px + q = 0 */
 
-    sq_A = A * A;
-    p = 1.0/3.0 * (- 1.0/3.0 * sq_A + B);
-    q = 1.0/2.0 * (2.0/27.0 * A * sq_A - 1.0/3.0 * A * B + C);
+    a3 = A / 3.0;
+    sq_A3 = a3 * a3;
+    p = B / 3.0 - sq_A3 ;
+    q = a3 * sq_A3 + (C - a3 * B) / 2.0;
 
     /* use Cardano's formula */
 
@@ -276,25 +281,30 @@ public  int solve_cubic(
     {
 	if (IsZero(q)) /* one triple solution */
 	{
-	    s[ 0 ] = 0.0;
+	    s[ 0 ] = -a3;
 	    num = 1;
 	}
 	else /* one single and one double solution */
 	{
 	    double u = cbrt(-q);
-	    s[ 0 ] = 2.0 * u;
-	    s[ 1 ] = - u;
+	    s[ 0 ] = 2.0 * u - a3;
+	    s[ 1 ] = - u - a3;
 	    num = 2;
 	}
     }
     else if (D < 0.0) /* Casus irreducibilis: three real solutions */
     {
-	double phi = 1.0/3.0 * acos(-q / sqrt(-cb_p));
-	double t = 2.0 * sqrt(-p);
+        sr_p = sqrt( -p );
+	phi = acos(-q / (sr_p*sr_p*sr_p) ) / 3.0;
+	t = 2.0 * sr_p;
 
-	s[ 0 ] =   t * cos(phi);
-	s[ 1 ] = - t * cos(phi + M_PI / 3.0);
-	s[ 2 ] = - t * cos(phi - M_PI / 3.0);
+        tc = t * cos( phi );
+        cs = - tc * COS_60 - a3;
+        sn = t * SIN_60 * sin( phi );
+
+	s[ 0 ] = tc - a3;
+	s[ 1 ] = cs + sn;
+	s[ 2 ] = cs - sn;
 	num = 3;
     }
     else /* one real solution */
@@ -303,16 +313,9 @@ public  int solve_cubic(
 	double u = cbrt(sqrt_D - q);
 	double v = - cbrt(sqrt_D + q);
 
-	s[ 0 ] = u + v;
+	s[ 0 ] = u + v - a3;
 	num = 1;
     }
-
-    /* resubstitute */
-
-    sub = 1.0/3.0 * A;
-
-    for (i = 0; i < num; ++i)
-	s[ i ] -= sub;
 
     return num;
 }

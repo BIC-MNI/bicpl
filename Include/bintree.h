@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char bintree_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/bintree.h,v 1.4 1995-07-31 13:44:38 david Exp $";
+static char bintree_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/bintree.h,v 1.5 1996-05-17 19:35:20 david Exp $";
 #endif
 
 #include  <geometry.h>
@@ -63,7 +63,7 @@ typedef  struct  bintree_node_struct
 
 typedef  struct
 {
-    float   limits[N_DIMENSIONS][2];
+    float    limits[N_DIMENSIONS][2];
 } range_struct;
 
 typedef  struct

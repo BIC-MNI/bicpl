@@ -80,7 +80,7 @@ Tue Jun  8 08:44:59 EST 1993 LC
 #include <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.16 1995-08-14 18:08:47 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.17 1996-05-17 19:35:58 david Exp $";
 #endif
 
 #ifdef DEBUG
@@ -111,7 +111,8 @@ public  BOOLEAN  rotmat_to_ang(
     /*--- step one,  find the RZ rotation reqd to bring 
                      the local x into the world XZ plane with a positive X */
 
-    rz = compute_clockwise_rotation( Vector_x(x_axis), Vector_y(x_axis) );
+    rz = compute_clockwise_rotation( (Real) Vector_x(x_axis),
+                                     (Real) Vector_y(x_axis) );
 
     if( rz >= PI )
         rz -= 2.0 * PI;
@@ -121,8 +122,8 @@ public  BOOLEAN  rotmat_to_ang(
 
     make_rotation_transform( -rz, Z, &z_rot );
 
-    transform_vector( &z_rot, Vector_x(x_axis), Vector_y(x_axis),
-                      Vector_z(x_axis), &vx, &vy, &vz );
+    transform_vector( &z_rot, (Real) Vector_x(x_axis), (Real) Vector_y(x_axis),
+                      (Real) Vector_z(x_axis), &vx, &vy, &vz );
 
     ry = - compute_clockwise_rotation( vx, vz );
 
@@ -133,8 +134,8 @@ public  BOOLEAN  rotmat_to_ang(
 
     make_rotation_transform( -ry, Y, &y_rot );
 
-    transform_vector( &z_rot, Vector_x(z_axis), Vector_y(z_axis),
-                      Vector_z(z_axis), &vx, &vy, &vz );
+    transform_vector( &z_rot, (Real) Vector_x(z_axis), (Real) Vector_y(z_axis),
+                      (Real) Vector_z(z_axis), &vx, &vy, &vz );
     transform_vector( &y_rot, vx, vy, vz, &vx, &vy, &vz );
 
     rx = - compute_clockwise_rotation( vz, vy );

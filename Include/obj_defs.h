@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/obj_defs.h,v 1.7 1995-09-13 13:24:53 david Exp $";
+static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/obj_defs.h,v 1.8 1996-05-17 19:35:21 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -202,6 +202,7 @@ typedef  struct
 
 typedef  struct
 {
+    BOOLEAN                    visible_ones_only;
     int                        n_stack_alloced;
     int                        top_of_stack;
     object_stack_struct        *stack;

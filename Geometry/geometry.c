@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.16 1996-05-16 15:36:21 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.17 1996-05-17 19:35:28 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -43,11 +43,28 @@ public  void  find_polygon_normal_no_normalize(
 {
     int     i, next_i;
     Vector  v1, v2, normal;
-    Real    x, y, z, tx, ty, tz;
+    Real    vx, vy, vz, x, y, z, tx, ty, tz, x0, x1, x2, y0, y1, y2, z0, z1, z2;
 
-    *nx = 0.0;
-    *ny = 0.0;
-    *nz = 0.0;
+    if( n_points == 3 )
+    {
+        x0 = (Real) Point_x(points[0]);
+        y0 = (Real) Point_y(points[0]);
+        z0 = (Real) Point_z(points[0]);
+        x1 = (Real) Point_x(points[1]) - x0;
+        y1 = (Real) Point_y(points[1]) - y0;
+        z1 = (Real) Point_z(points[1]) - z0;
+        x2 = (Real) Point_x(points[2]) - x0;
+        y2 = (Real) Point_y(points[2]) - y0;
+        z2 = (Real) Point_z(points[2]) - z0;
+        *nx = y1 * z2 - z1 * y2;
+        *ny = z1 * x2 - x1 * z2;
+        *nz = x1 * y2 - y1 * x2;
+        return;
+    }
+
+    vx = 0.0;
+    vy = 0.0;
+    vz = 0.0;
 
     tx = (Real) Point_x(points[0]);
     ty = (Real) Point_y(points[0]);
@@ -64,28 +81,34 @@ public  void  find_polygon_normal_no_normalize(
         ty = (Real) Point_y(points[next_i]);
         tz = (Real) Point_z(points[next_i]);
 
-        *nx -= (y + ty) * (z - tz);
-        *ny -= (z + tz) * (x - tx);
-        *nz -= (x + tx) * (y - ty);
+        vx -= (y + ty) * (z - tz);
+        vy -= (z + tz) * (x - tx);
+        vz -= (x + tx) * (y - ty);
     }
 
     /*--- if result is null, try to find one vertex for which a normal can
           be computed */
 
-    if( *nx == 0.0 && *ny == 0.0 && *nz == 0.0 )
+    if( vx == 0.0 && vy == 0.0 && vz == 0.0 )
     {
         for_less( i, 0, n_points )
         {
             SUB_POINTS( v1, points[(i+1)%n_points], points[i] );
             SUB_POINTS( v2, points[(i-1)%n_points], points[i] );
             CROSS_VECTORS( normal, v1, v2 );
-            *nx = (Real) Vector_x( normal );
-            *ny = (Real) Vector_y( normal );
-            *nz = (Real) Vector_z( normal );
             if( !null_Vector( &normal ) )
+            {
+                vx = (Real) Vector_x( normal );
+                vy = (Real) Vector_y( normal );
+                vz = (Real) Vector_z( normal );
                 break;
+            }
         }
     }
+
+    *nx = vx;
+    *ny = vy;
+    *nz = vz;
 }
 
 /* ----------------------------- MNI Header -----------------------------------

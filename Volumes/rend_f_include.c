@@ -115,7 +115,7 @@
         for_less( s, 0, n_slices1 )
         {
             real_voxel_data1 += weights1[s] *
-                                start_data1[s][row_offsets1[s][x]];
+                                (Real) start_data1[s][row_offsets1[s][x]];
         }
 
 #ifdef  TWO_VOLUMES
@@ -123,7 +123,7 @@
         for_less( s, 0, n_slices2 )
         {
             real_voxel_data2 += weights2[s] *
-                                start_data2[s][row_offsets2[s][x]];
+                                (Real) start_data2[s][row_offsets2[s][x]];
         }
 
 #ifdef COLOUR_MAP

@@ -16,7 +16,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.10 1996-04-29 15:27:06 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.11 1996-05-17 19:35:44 david Exp $";
 #endif
 
 #define  HASH_FUNCTION_CONSTANT          0.6180339887498948482
@@ -41,12 +41,14 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 public   void  initialize_hash_table(
     hash_table_struct  *hash_table,
     int                size,
+    int                data_size,
     Real               enlarge_threshold,
     Real               new_density )
 {
     int        i;
 
     hash_table->size = size;
+    hash_table->data_size = data_size;
     hash_table->n_entries = 0;
     hash_table->enlarge_threshold = enlarge_threshold;
     hash_table->new_density = new_density;
@@ -166,13 +168,8 @@ private   hash_entry_struct  **lookup(
 
     ptr_to_entry = &hash_table->table[i];
 
-    while( *ptr_to_entry != NULL )
-    {
-        if( (*ptr_to_entry)->key == key )
-            break;
-
+    while( *ptr_to_entry != NULL && (*ptr_to_entry)->key != key )
         ptr_to_entry = &(*ptr_to_entry)->next;
-    }
 
     return( ptr_to_entry );
 }
@@ -206,11 +203,12 @@ public  void  insert_in_hash_table(
 
     if( entry == NULL )
     {
-        ALLOC( entry, 1 );
+        ALLOC_VAR_SIZED_STRUCT( entry, char, hash_table->data_size );
 
         entry->key = key;
-        entry->data_ptr = data_ptr;
         entry->next = *ptr_to_entry;
+        (void) memcpy( (void *) entry->data, data_ptr,
+                       (size_t) hash_table->data_size );
 
         *ptr_to_entry = entry; 
 
@@ -236,9 +234,9 @@ public  void  insert_in_hash_table(
 @NAME       : lookup_in_hash_table
 @INPUT      : hash_table
             : key
-@OUTPUT     : : data_ptr
+@OUTPUT     : data_ptr
 @RETURNS    : TRUE if found
-@DESCRIPTION: Lookups the given key in the hash table, passing back the
+@DESCRIPTION: Lookups the given key in the hash table, copying back the
               data if found.
 @METHOD     : 
 @GLOBALS    : 
@@ -250,7 +248,7 @@ public  void  insert_in_hash_table(
 public  BOOLEAN  lookup_in_hash_table(
     hash_table_struct  *hash_table,
     int                key,
-    void               **data_ptr )
+    void               *data_ptr )
 {
     BOOLEAN             found;
     hash_entry_struct   **ptr_to_entry;
@@ -267,7 +265,10 @@ public  BOOLEAN  lookup_in_hash_table(
     else
     {
         if( data_ptr != NULL )
-            *data_ptr = entry->data_ptr;
+        {
+            (void) memcpy( data_ptr, (void *) entry->data,
+                           (size_t) hash_table->data_size );
+        }
 
         found = TRUE;
     }
@@ -281,7 +282,8 @@ public  BOOLEAN  lookup_in_hash_table(
             : keys
 @OUTPUT     : : data_ptr
 @RETURNS    : TRUE if it existed in the table
-@DESCRIPTION: Finds and removes the given data from the hash table.
+@DESCRIPTION: Finds and removes the given data from the hash table, copying
+              the data back.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -292,7 +294,7 @@ public  BOOLEAN  lookup_in_hash_table(
 public  BOOLEAN  remove_from_hash_table(
     hash_table_struct  *hash_table,
     int                key,
-    void               **data_ptr )
+    void               *data_ptr )
 {
     BOOLEAN             removed;
     hash_entry_struct   **ptr_to_entry;
@@ -309,7 +311,10 @@ public  BOOLEAN  remove_from_hash_table(
     else
     {
         if( data_ptr != NULL )
-            *data_ptr = entry->data_ptr;
+        {
+            (void) memcpy( data_ptr, (void *) entry->data,
+                           (size_t) hash_table->data_size );
+        }
 
         *ptr_to_entry = entry->next;
 
@@ -385,7 +390,7 @@ public   void  increase_hash_table_size(
 {
     hash_table_struct   new_table;
 
-    initialize_hash_table( &new_table, new_size,
+    initialize_hash_table( &new_table, new_size, hash_table->data_size,
                            hash_table->enlarge_threshold,
                            hash_table->new_density );
 
@@ -435,7 +440,7 @@ public  void  initialize_hash_pointer(
 public  BOOLEAN  get_next_hash_entry(
     hash_table_struct   *hash_table,
     hash_table_pointer  *ptr,
-    void                **data_ptr )
+    void                *data_ptr )
 {
     BOOLEAN   found;
 
@@ -458,7 +463,10 @@ public  BOOLEAN  get_next_hash_entry(
     found = (ptr->current_entry != NULL);
 
     if( found && data_ptr != NULL )
-        *data_ptr = ptr->current_entry->data_ptr;
+    {
+        (void) memcpy( data_ptr, (void *) ptr->current_entry->data,
+                       (size_t) hash_table->data_size );
+    }
 
     return( found );
 }

@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.5 1995-10-19 15:48:39 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.6 1996-05-17 19:35:52 david Exp $";
 #endif
 
 #define  MAX_TEMP_STORAGE  100
@@ -112,9 +112,9 @@ private  void  recursive_polygon_scan(
 
     get_range_points( size, vertices, &min_point, &max_point );
 
-    if( Point_x(max_point)-Point_x(min_point) < max_size &&
-        Point_y(max_point)-Point_y(min_point) < max_size &&
-        Point_z(max_point)-Point_z(min_point) < max_size )
+    if( (Real) Point_x(max_point) - (Real) Point_x(min_point) < max_size &&
+        (Real) Point_y(max_point) - (Real) Point_y(min_point) < max_size &&
+        (Real) Point_z(max_point) - (Real) Point_z(min_point) < max_size )
     {
         get_points_centroid( size, vertices, &centre );
         convert_world_to_voxel( volume,

@@ -1,22 +1,6 @@
 #include  <internal_volume_io.h>
 #include  <bicpl.h>
 
-int  compare_function(
-    void  *p1,
-    void  *p2 )
-{
-    int    i1, i2;
-
-    i1 = *((int *) p1);
-    i2 = *((int *) p2);
-    if( i1 < i2 )
-        return( -1 );
-    else if( i1 > i2 )
-        return( 1 );
-    else
-        return( 0 );
-}
-
 #define  N_DATA 1000000
 
 int  main(
@@ -24,9 +8,8 @@ int  main(
     char  *argv[] )
 {
     int                i, ind, n_iters, method;
-    int                *data;
-    Real               density;
-    BOOLEAN            hashing;
+    Real               density, chance_of_delete;
+    BOOLEAN            hashing, removing;
     hash_table_struct  hash_table;
     skiplist_struct    skiplist;
     void               *ptr;
@@ -36,30 +19,39 @@ int  main(
     (void) get_int_argument( 10000, &n_iters );
     (void) get_int_argument( 0, &method );
     (void) get_real_argument( 0.25, &density );
+    (void) get_real_argument( 0.0, &chance_of_delete );
 
     hashing = method == 0;
 
     if( hashing )
-        initialize_hash_table( &hash_table, 1, 10000, 2.0 * density, density );
+        initialize_hash_table( &hash_table, 10000, sizeof(int),
+                               2.0 * density, density );
     else
-        initialize_skiplist( &skiplist, compare_function );
-
-    ALLOC( data, N_DATA );
-    for_less( i, 0, N_DATA )
-        data[i] = i;
+        initialize_skiplist( &skiplist );
 
     for_less( i, 0, n_iters )
     {
         ind = get_random_int( N_DATA );
+        removing = get_random_0_to_1() < chance_of_delete;
         if( hashing )
         {
-            if( !lookup_in_hash_table( &hash_table, &ind, &ptr ) )
-                insert_in_hash_table( &hash_table, &ind, &i );
+            if( !lookup_in_hash_table( &hash_table, ind, (void *) &ind ) )
+            {
+                if( removing )
+                    remove_from_hash_table( &hash_table, ind, &ind );
+                else
+                    insert_in_hash_table( &hash_table, ind, &ind );
+            }
         }
         else
         {
-            if( !search_skiplist( &skiplist, &ind, &ptr ) )
-                insert_in_skiplist( &skiplist, &data[ind] );
+            if( !search_skiplist( &skiplist, ind, &ptr ) )
+            {
+                if( removing )
+                    (void) delete_from_skiplist( &skiplist, ind, &ptr );
+                else
+                    insert_in_skiplist( &skiplist, ind, NULL );
+            }
         }
     }
 

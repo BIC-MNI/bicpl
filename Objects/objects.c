@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.19 1995-10-19 15:47:51 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.20 1996-05-17 19:35:33 david Exp $";
 #endif
 
 private  void  advance_object_traverse(
@@ -1363,11 +1363,13 @@ private  void  push_object_stack(
 
 public  void  initialize_object_traverse(
     object_traverse_struct  *object_traverse,
+    BOOLEAN                 visible_ones_only,
     int                     n_objects,
     object_struct           *object_list[] )
 {
     object_stack_struct   push_entry;
 
+    object_traverse->visible_ones_only = visible_ones_only;
     object_traverse->n_stack_alloced = MAX_OBJECT_TRAVERSE;
     object_traverse->top_of_stack = 0;
     object_traverse->stack = object_traverse->static_stack;
@@ -1378,7 +1380,13 @@ public  void  initialize_object_traverse(
         push_entry.n_objects = n_objects;
         push_entry.object_list = object_list;
 
-        push_object_stack( object_traverse, &push_entry );
+        while( push_entry.index < n_objects &&
+               visible_ones_only &&
+               !get_object_visibility( object_list[push_entry.index] ) )
+            ++push_entry.index;
+
+        if( push_entry.index < n_objects )
+            push_object_stack( object_traverse, &push_entry );
     }
 }
 
@@ -1443,6 +1451,13 @@ private  void  advance_object_traverse(
     object = top_entry->object_list[top_entry->index];
     ++top_entry->index;
 
+    while( top_entry->index < top_entry->n_objects &&
+           object_traverse->visible_ones_only &&
+           !get_object_visibility( top_entry->object_list[top_entry->index]) )
+    {
+        ++top_entry->index;
+    }
+
     if( object->object_type == MODEL )
     {
         model = get_model_ptr( object );
@@ -1450,7 +1465,13 @@ private  void  advance_object_traverse(
         push_entry.n_objects = model->n_objects;
         push_entry.object_list = model->objects;
 
-        push_object_stack( object_traverse, &push_entry );
+        while( push_entry.index < push_entry.n_objects &&
+               object_traverse->visible_ones_only &&
+               !get_object_visibility(push_entry.object_list[push_entry.index]))
+            ++push_entry.index;
+
+        if( push_entry.index < push_entry.n_objects )
+            push_object_stack( object_traverse, &push_entry );
     }
 
     while( object_traverse->top_of_stack > 0 &&
@@ -1510,29 +1531,26 @@ public  BOOLEAN  get_range_of_object(
 
     found_flag = FALSE;
 
-    initialize_object_traverse( &object_traverse, 1, &object );
+    initialize_object_traverse( &object_traverse, visible_ones_only, 1,&object);
 
     while( get_next_object_traverse( &object_traverse, &current_object ) )
     {
-        if( !visible_ones_only || current_object->visibility )
+        n_points = get_object_points( current_object, &points );
+
+        if( n_points > 0 )
         {
-            n_points = get_object_points( current_object, &points );
+            get_range_points( n_points, points, &min_obj, &max_obj );
 
-            if( n_points > 0 )
+            if( !found_flag )
             {
-                get_range_points( n_points, points, &min_obj, &max_obj );
-
-                if( !found_flag )
-                {
-                    found_flag = TRUE;
-                    *min_corner = min_obj;
-                    *max_corner = max_obj;
-                }
-                else
-                {
-                    expand_min_and_max_points( min_corner, max_corner,
-                                               &min_obj, &max_obj );
-                }
+                found_flag = TRUE;
+                *min_corner = min_obj;
+                *max_corner = max_obj;
+            }
+            else
+            {
+                expand_min_and_max_points( min_corner, max_corner,
+                                           &min_obj, &max_obj );
             }
         }
     }
@@ -1561,7 +1579,7 @@ public  void  reverse_object_normals(
     object_struct           *current_object;
     object_traverse_struct  object_traverse;
 
-    initialize_object_traverse( &object_traverse, 1, &object );
+    initialize_object_traverse( &object_traverse, FALSE, 1, &object );
 
     while( get_next_object_traverse( &object_traverse, &current_object ) )
     {

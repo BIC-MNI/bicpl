@@ -17,7 +17,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmark_file.c,v 1.6 1995-10-19 15:47:58 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmark_file.c,v 1.7 1996-05-17 19:35:36 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -33,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmar
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  STRING  get_default_landmark_file_suffix()
+public  STRING  get_default_landmark_file_suffix( void )
 {
     return( "lmk" );
 }

@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/platonics.c,v 1.1 1996-04-29 19:42:01 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/platonics.c,v 1.2 1996-05-17 19:35:29 david Exp $";
 #endif
 
 private  void  fill_in_indices(

@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.17 1996-04-10 17:19:47 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.18 1996-05-17 19:35:28 david Exp $";
 #endif
 
 
@@ -68,9 +68,9 @@ private  BOOLEAN   intersect_ray_polygon_points(
 
     find_polygon_normal_no_normalize( n_points, points, &nx, &ny, &nz );
 
-    n_dot_d = nx * Vector_x(*ray_direction) +
-              ny * Vector_y(*ray_direction) +
-              nz * Vector_z(*ray_direction);
+    n_dot_d = nx * (Real) Vector_x(*ray_direction) +
+              ny * (Real) Vector_y(*ray_direction) +
+              nz * (Real) Vector_z(*ray_direction);
 
     if( n_dot_d != 0.0 )
     {
@@ -80,16 +80,16 @@ private  BOOLEAN   intersect_ray_polygon_points(
 
         for_less( p, 0, n_points )
         {
-            cx += Point_x(points[p]);
-            cy += Point_y(points[p]);
-            cz += Point_z(points[p]);
+            cx += (Real) Point_x(points[p]);
+            cy += (Real) Point_y(points[p]);
+            cz += (Real) Point_z(points[p]);
         }
 
         plane_const = (nx * cx + ny * cy + nz * cz) / (Real) n_points;
 
-        n_dot_o = nx * Point_x(*ray_origin) +
-                  ny * Point_y(*ray_origin) +
-                  nz * Point_z(*ray_origin);
+        n_dot_o = nx * (Real) Point_x(*ray_origin) +
+                  ny * (Real) Point_y(*ray_origin) +
+                  nz * (Real) Point_z(*ray_origin);
 
         t = (plane_const - n_dot_o) / n_dot_d;
 
@@ -276,9 +276,9 @@ private  BOOLEAN  point_within_polygon_2d(
     int      i1, i2;
     int      i;
 
-    nx = ABS( Vector_x(*polygon_normal) );
-    ny = ABS( Vector_y(*polygon_normal) );
-    nz = ABS( Vector_z(*polygon_normal) );
+    nx = FABS( (Real) Vector_x(*polygon_normal) );
+    ny = FABS( (Real) Vector_y(*polygon_normal) );
+    nz = FABS( (Real) Vector_z(*polygon_normal) );
 
     max_val = MAX3( nx, ny, nz );
 
@@ -298,21 +298,21 @@ private  BOOLEAN  point_within_polygon_2d(
         i2 = Y;
     }
 
-    x = Point_coord( *pt, i1 );
-    y = Point_coord( *pt, i2 );
+    x = (Real) Point_coord( *pt, i1 );
+    y = (Real) Point_coord( *pt, i2 );
 
     cross = FALSE;
 
-    x2 = Point_coord(points[n_points-1],i1);
-    y2 = Point_coord(points[n_points-1],i2);
+    x2 = (Real) Point_coord(points[n_points-1],i1);
+    y2 = (Real) Point_coord(points[n_points-1],i2);
 
     for_less( i, 0, n_points )
     {
         x1 = x2;
         y1 = y2;
 
-        x2 = Point_coord(points[i],i1);
-        y2 = Point_coord(points[i],i2);
+        x2 = (Real) Point_coord(points[i],i1);
+        y2 = (Real) Point_coord(points[i],i2);
 
         if( !( (y1 > y && y2 > y ) ||
                (y1 < y && y2 < y ) ||
@@ -356,16 +356,16 @@ private  BOOLEAN  point_within_polygon_2d(
 
     if( !intersects )
     {
-        x2 = Point_coord(points[n_points-1],i1);
-        y2 = Point_coord(points[n_points-1],i2);
+        x2 = (Real) Point_coord(points[n_points-1],i1);
+        y2 = (Real) Point_coord(points[n_points-1],i2);
 
         for_less( i, 0, n_points )
         {
             x1 = x2;
             y1 = y2;
 
-            x2 = Point_coord(points[i],i1);
-            y2 = Point_coord(points[i],i2);
+            x2 = (Real) Point_coord(points[i],i1);
+            y2 = (Real) Point_coord(points[i],i2);
 
             if( x1 - TOLERANCE <= x && x <= x1 + TOLERANCE &&
                 y1 - TOLERANCE <= y && y <= y1 + TOLERANCE )
@@ -477,13 +477,16 @@ public  BOOLEAN  line_intersects_ellipsoid(
     int       n_solutions;
     Real      a, b, c, ox, oy, oz, dx, dy, dz, t1, t2;
 
-    ox = (Point_x(*line_origin) - Point_x(*sphere_centre)) / x_size;
-    oy = (Point_y(*line_origin) - Point_y(*sphere_centre)) / y_size;
-    oz = (Point_z(*line_origin) - Point_z(*sphere_centre)) / z_size;
+    ox = ((Real) Point_x(*line_origin) - (Real) Point_x(*sphere_centre)) /
+         x_size;
+    oy = ((Real) Point_y(*line_origin) - (Real) Point_y(*sphere_centre)) /
+         y_size;
+    oz = ((Real) Point_z(*line_origin) - (Real) Point_z(*sphere_centre)) /
+         z_size;
 
-    dx = Vector_x(*line_direction) / x_size;
-    dy = Vector_y(*line_direction) / y_size;
-    dz = Vector_z(*line_direction) / z_size;
+    dx = (Real) Vector_x(*line_direction) / x_size;
+    dy = (Real) Vector_y(*line_direction) / y_size;
+    dz = (Real) Vector_z(*line_direction) / z_size;
 
     a = dx * dx + dy * dy + dz * dz;
     b = 2.0 * ( ox * dx + oy * dy + oz * dz);
@@ -585,28 +588,28 @@ private  BOOLEAN  ray_intersects_tube(
     int      n_sols;
     Real     a, b, c, sols[2], t_min, t_max;
 
-    vx = Point_x(*p2) - Point_x(*p1);
-    vy = Point_y(*p2) - Point_y(*p1);
-    vz = Point_z(*p2) - Point_z(*p1);
+    vx = (Real) Point_x(*p2) - (Real) Point_x(*p1);
+    vy = (Real) Point_y(*p2) - (Real) Point_y(*p1);
+    vz = (Real) Point_z(*p2) - (Real) Point_z(*p1);
 
     len_v = sqrt( vx*vx + vy*vy + vz*vz );
     if( len_v == 0.0 )
         len_v = 1.0;
 
-    ox = Point_x(*origin) - Point_x(*p1);
-    oy = Point_y(*origin) - Point_y(*p1);
-    oz = Point_z(*origin) - Point_z(*p1);
+    ox = (Real) Point_x(*origin) - (Real) Point_x(*p1);
+    oy = (Real) Point_y(*origin) - (Real) Point_y(*p1);
+    oz = (Real) Point_z(*origin) - (Real) Point_z(*p1);
 
     o_dot_o = ox * ox + oy * oy + oz * oz;
     o_dot_v = (ox * vx + oy * vy + oz * vz) / len_v;
     v_dot_v = 1.0;
     d_dot_d = DOT_VECTORS( *direction, *direction );
-    d_dot_o = Vector_x(*direction) * ox +
-              Vector_y(*direction) * oy +
-              Vector_z(*direction) * oz;
-    d_dot_v = (Vector_x(*direction) * vx +
-               Vector_y(*direction) * vy +
-               Vector_z(*direction) * vz) / len_v;
+    d_dot_o = (Real) Vector_x(*direction) * ox +
+              (Real) Vector_y(*direction) * oy +
+              (Real) Vector_z(*direction) * oz;
+    d_dot_v = ((Real) Vector_x(*direction) * vx +
+               (Real) Vector_y(*direction) * vy +
+               (Real) Vector_z(*direction) * vz) / len_v;
     a = d_dot_d - 2.0 * d_dot_v * d_dot_v + v_dot_v * d_dot_v * d_dot_v;
     b = 2.0 * d_dot_o - 4.0 * o_dot_v * d_dot_v +
         2.0 * v_dot_v * o_dot_v * d_dot_v;
@@ -638,8 +641,9 @@ private  BOOLEAN  ray_intersects_tube(
     {
         GET_POINT_ON_RAY( point, *origin, *direction, *dist );
         SUB_POINTS( offset, point, *p1 );
-        d = (vx * Vector_x(offset) + vy*Vector_y(offset) + vz*Vector_z(offset))
-            / len_v;
+        d = (vx * (Real) Vector_x(offset) +
+             vy * (Real) Vector_y(offset) +
+             vz * (Real) Vector_z(offset)) / len_v;
         if( d < 0.0 || d > distance_between_points( p1, p2 ) )
             *dist = -1.0;
     }
@@ -731,12 +735,12 @@ private  BOOLEAN  intersect_ray_with_cube(
     BOOLEAN   intersects;
 
     intersects = clip_line_to_box( ray_origin, ray_direction,
-                                   Point_x(*centre) - size / 2.0,
-                                   Point_x(*centre) + size / 2.0,
-                                   Point_y(*centre) - size / 2.0,
-                                   Point_y(*centre) + size / 2.0,
-                                   Point_z(*centre) - size / 2.0,
-                                   Point_z(*centre) + size / 2.0,
+                                   (Real) Point_x(*centre) - size / 2.0,
+                                   (Real) Point_x(*centre) + size / 2.0,
+                                   (Real) Point_y(*centre) - size / 2.0,
+                                   (Real) Point_y(*centre) + size / 2.0,
+                                   (Real) Point_z(*centre) - size / 2.0,
+                                   (Real) Point_z(*centre) + size / 2.0,
                                    &t_min, &t_max );
 
     if( intersects )

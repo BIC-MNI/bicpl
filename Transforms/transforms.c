@@ -17,7 +17,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.8 1995-07-31 13:46:04 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.9 1996-05-17 19:35:59 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -134,9 +134,9 @@ public  void  make_origin_transform(
 {
     make_identity_transform( transform );
 
-    Transform_elem( *transform, 0, 3 ) = Point_x(*origin);
-    Transform_elem( *transform, 1, 3 ) = Point_y(*origin);
-    Transform_elem( *transform, 2, 3 ) = Point_z(*origin);
+    Transform_elem( *transform, 0, 3 ) = (Transform_elem_type) Point_x(*origin);
+    Transform_elem( *transform, 1, 3 ) = (Transform_elem_type) Point_y(*origin);
+    Transform_elem( *transform, 2, 3 ) = (Transform_elem_type) Point_z(*origin);
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -280,9 +280,9 @@ public  void  make_rotation_about_axis(
     s = sin( (double) -angle );
     t = 1.0 - c;
 
-    x = Vector_x( *axis );
-    y = Vector_y( *axis );
-    z = Vector_z( *axis );
+    x = (Real) Vector_x( *axis );
+    y = (Real) Vector_y( *axis );
+    z = (Real) Vector_z( *axis );
 
     txy = t * x * y;
     txz = t * x * z;

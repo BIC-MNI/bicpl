@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.11 1996-04-29 15:05:57 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.12 1996-05-17 19:35:26 david Exp $";
 #endif
 
 private  void  subdivide_polygon(
@@ -49,15 +49,13 @@ public  void  subdivide_polygons(
 {
     int                i, new_n_points, new_n_indices, new_n_polygons;
     int                *new_indices, *new_end_indices;
-    int                *index_ptr, size;
+    int                size;
     Point              *new_points;
     Point              dummy;
     Colour             save_colour;
     hash_table_struct  midpoint_table;
-    hash_table_pointer hash_pointer;
     progress_struct    progress;
 
-    index_ptr = NULL;
     new_points = NULL;
 
     if( is_this_sphere_topology( polygons ) )
@@ -79,7 +77,8 @@ public  void  subdivide_polygons(
     for_less( i, 0, new_n_points )
         new_points[i] = polygons->points[i];
 
-    initialize_hash_table( &midpoint_table, 2, polygons->n_points, 0.75, 0.4 );
+    initialize_hash_table( &midpoint_table, polygons->n_points, sizeof(int),
+                           0.75, 0.4 );
 
     initialize_progress_report( &progress, TRUE, polygons->n_items,
                                 "Subdividing Polygon" );
@@ -95,14 +94,6 @@ public  void  subdivide_polygons(
     }
 
     terminate_progress_report( &progress );
-
-    initialize_hash_pointer( &hash_pointer );
-
-    while( get_next_hash_entry(&midpoint_table,&hash_pointer,
-                               (void **) &index_ptr ) )
-    {
-        FREE( index_ptr );
-    }
 
     delete_hash_table( &midpoint_table );
 
@@ -152,9 +143,8 @@ private  void  subdivide_polygon(
     int               *new_indices[],
     hash_table_struct *midpoint_table )
 {
-    int     edge, size, edge_indices[2], point_indices[4], *midpoint_ptr;
+    int     edge, size, edge_indices[2], point_indices[4];
     int     midpoint_indices[4], centre_point_index, p1, p2;
-    void    *data_ptr;
     Point   midpoint;
 
     size = GET_OBJECT_SIZE( *polygons, poly );
@@ -178,10 +168,10 @@ private  void  subdivide_polygon(
         edge_indices[0] = MIN( p1, p2 );
         edge_indices[1] = MAX( p1, p2 );
 
-        if( remove_from_hash_table( midpoint_table, edge_indices, &data_ptr ) )
+        if( remove_from_hash_table( midpoint_table,
+                        IJ(edge_indices[0],edge_indices[1],polygons->n_points),
+                        &midpoint_indices[edge]))
         {
-            midpoint_indices[edge] = * ((int *) data_ptr);
-            FREE( data_ptr );
             if( midpoint_indices[edge] < 0 ||
                 midpoint_indices[edge] >= *new_n_points )
             {
@@ -195,10 +185,9 @@ private  void  subdivide_polygon(
                                 polygons->points[edge_indices[1]], 0.5 );
             ADD_ELEMENT_TO_ARRAY( *new_points, *new_n_points,
                                   midpoint, DEFAULT_CHUNK_SIZE );
-            ALLOC( midpoint_ptr, 1 );
-            midpoint_ptr[0] = midpoint_indices[edge];
-            insert_in_hash_table( midpoint_table, edge_indices,
-                                  (void *) midpoint_ptr );
+            insert_in_hash_table( midpoint_table,
+                     IJ(edge_indices[0],edge_indices[1],polygons->n_points),
+                     (void *) &midpoint_indices[edge] );
         }
     }
 

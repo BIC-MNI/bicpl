@@ -16,7 +16,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/build_bintree.c,v 1.8 1995-07-31 13:45:34 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/build_bintree.c,v 1.9 1996-05-17 19:35:43 david Exp $";
 #endif
 
 #define  NODE_VISIT_COST        0.02
@@ -107,29 +107,29 @@ public  void  create_object_bintree(
     {
         for_less( c, 0, N_DIMENSIONS )
         {
-            size = bound_vols[i].limits[c][1] -
-                   bound_vols[i].limits[c][0];
-            bound_vols[i].limits[c][0] -= size * FACTOR;
-            bound_vols[i].limits[c][1] += size * FACTOR;
+            size = (Real) bound_vols[i].limits[c][1] -
+                   (Real) bound_vols[i].limits[c][0];
+            bound_vols[i].limits[c][0] -= (float) (size * FACTOR);
+            bound_vols[i].limits[c][1] += (float) (size * FACTOR);
         }
 
         if( i == 0 )
         {
-            limits[X][0] = bound_vols[i].limits[X][0];
-            limits[Y][0] = bound_vols[i].limits[Y][0];
-            limits[Z][0] = bound_vols[i].limits[Z][0];
-            limits[X][1] = bound_vols[i].limits[X][1];
-            limits[Y][1] = bound_vols[i].limits[Y][1];
-            limits[Z][1] = bound_vols[i].limits[Z][1];
+            limits[X][0] = (Real) bound_vols[i].limits[X][0];
+            limits[Y][0] = (Real) bound_vols[i].limits[Y][0];
+            limits[Z][0] = (Real) bound_vols[i].limits[Z][0];
+            limits[X][1] = (Real) bound_vols[i].limits[X][1];
+            limits[Y][1] = (Real) bound_vols[i].limits[Y][1];
+            limits[Z][1] = (Real) bound_vols[i].limits[Z][1];
         }
         else
         {
             for_less( c, 0, N_DIMENSIONS )
             {
-                if( bound_vols[i].limits[c][0] < limits[c][0] )
-                    limits[c][0] = bound_vols[i].limits[c][0];
-                if( bound_vols[i].limits[c][1] > limits[c][1] )
-                    limits[c][1] = bound_vols[i].limits[c][1];
+                if( (Real) bound_vols[i].limits[c][0] < limits[c][0] )
+                    limits[c][0] = (Real) bound_vols[i].limits[c][0];
+                if( (Real) bound_vols[i].limits[c][1] > limits[c][1] )
+                    limits[c][1] = (Real) bound_vols[i].limits[c][1];
             }
         }
     }
@@ -275,12 +275,12 @@ private  void   get_planes(
     BOOLEAN    found;
 
     found = FALSE;
-    *left_plane = bound_vols[list[0]].limits[axis_index][0];
+    *left_plane = (Real) bound_vols[list[0]].limits[axis_index][0];
 
     for_less( i, 0, n_objects )
     {
-        left_side = bound_vols[list[i]].limits[axis_index][0];
-        right_side = bound_vols[list[i]].limits[axis_index][1];
+        left_side = (Real) bound_vols[list[i]].limits[axis_index][0];
+        right_side = (Real) bound_vols[list[i]].limits[axis_index][1];
         if( left_side < right_plane &&
             (!found || right_side > *left_plane ) )
         {
@@ -295,8 +295,8 @@ private  void   get_planes(
 
     for_less( i, 0, n_objects )
     {
-        left_side = bound_vols[list[i]].limits[axis_index][0];
-        right_side = bound_vols[list[i]].limits[axis_index][1];
+        left_side = (Real) bound_vols[list[i]].limits[axis_index][0];
+        right_side = (Real) bound_vols[list[i]].limits[axis_index][1];
         if( left_side < right_plane )
             ++(*n_left);
         else if( !found || right_side > *left_plane )
@@ -336,7 +336,8 @@ private  Real  find_best_split_node_for_axis(
     Real                  *best_right_plane )
 {
     int                  i, n_left, n_right, n_overlap, step;
-    Real                 left_plane, right_plane, save_plane;
+    Real                 left_plane, right_plane;
+    float                save_plane;
     Real                 cost, best_cost, size_left, size_right;
 
     best_cost = 0.0;
@@ -349,24 +350,27 @@ private  Real  find_best_split_node_for_axis(
     for( i = 0;   i <= n_objects;  i += step )
     {
         if( n_objects > THRESHOLD )
-            right_plane = (limits->limits[axis_index][0] +
-                           limits->limits[axis_index][1]) / 2.0;
+            right_plane = ((Real) limits->limits[axis_index][0] +
+                           (Real) limits->limits[axis_index][1]) / 2.0;
         else if( i < n_objects )
-            right_plane = bound_vols[object_list[i]].limits[axis_index][0];
+        {
+            right_plane = (Real) bound_vols[object_list[i]].
+                                          limits[axis_index][0];
+        }
         else
-            right_plane = limits->limits[axis_index][1];
+            right_plane = (Real) limits->limits[axis_index][1];
 
         get_planes( axis_index, n_objects, object_list, bound_vols,
                     right_plane, &left_plane,
                     &n_left, &n_overlap, &n_right );
 
         save_plane = limits->limits[axis_index][1];
-        limits->limits[axis_index][1] = left_plane;
+        limits->limits[axis_index][1] = (float) left_plane;
         size_left = node_visit_estimation( limits );
         limits->limits[axis_index][1] = save_plane;
 
         save_plane = limits->limits[axis_index][0];
-        limits->limits[axis_index][0] = right_plane;
+        limits->limits[axis_index][0] = (float) right_plane;
         size_right = node_visit_estimation( limits );
         limits->limits[axis_index][0] = save_plane;
 
@@ -375,7 +379,7 @@ private  Real  find_best_split_node_for_axis(
         else
             n_right += n_overlap;
 
-        cost = size_left * n_left + size_right * n_right;
+        cost = size_left * (Real) n_left + size_right * (Real) n_right;
 
         if( i == 0 || cost < best_cost )
         {
@@ -406,7 +410,7 @@ private  void  check_objects(
     int   i, c;
     for_less( i, 0, n_objects )
         for_less( c, 0, N_DIMENSIONS )
-            if( bound_vols[object_list[i]].limits[c][0] < limits->limits[c][0] ||
+            if( bound_vols[object_list[i]].limits[c][0] < limits->limits[c][0]||
                 bound_vols[object_list[i]].limits[c][1] > limits->limits[c][1] )
                 handle_internal_error( "check_objects" );
 }
@@ -511,8 +515,8 @@ private  void  split_node(
     if( net_change >= NET_CHANGE_THRESHOLD )
         return;
 
-    min_plane = limits->limits[axis_index][0];
-    max_plane = limits->limits[axis_index][1];
+    min_plane = (Real) limits->limits[axis_index][0];
+    max_plane = (Real) limits->limits[axis_index][1];
 
     if( left_plane - min_plane < max_plane - right_plane )
         overlap_in_left = TRUE;
@@ -525,17 +529,17 @@ private  void  split_node(
     while( bottom <= top )
     {
         while( bottom < n_objects &&
-               bound_vols[object_list[bottom]].limits[axis_index][1] <=
+               (Real) bound_vols[object_list[bottom]].limits[axis_index][1] <=
                                                        left_plane &&
                (overlap_in_left ||
-                bound_vols[object_list[bottom]].limits[axis_index][0] <
+                (Real) bound_vols[object_list[bottom]].limits[axis_index][0] <
                                                        right_plane) )
             ++bottom;
         while( top >= 0 &&
-               bound_vols[object_list[top]].limits[axis_index][0] >=
+               (Real) bound_vols[object_list[top]].limits[axis_index][0] >=
                                                      right_plane &&
                (!overlap_in_left ||
-               bound_vols[object_list[top]].limits[axis_index][1] >
+               (Real) bound_vols[object_list[top]].limits[axis_index][1] >
                                                      left_plane) )
             --top;
         if( bottom < top )
@@ -544,16 +548,19 @@ private  void  split_node(
         }
     }
 
-    if( bottom == 0 && right_plane == limits->limits[axis_index][0] ||
-        bottom == n_objects && left_plane == limits->limits[axis_index][1] )
+    if( bottom == 0 && right_plane == (Real) limits->limits[axis_index][0] ||
+        bottom == n_objects &&
+            left_plane == (Real) limits->limits[axis_index][1] )
+    {
         return;
+    }
 
     if( bottom > 0 )
     {
         *left_limits = *limits;
-        left_limits->limits[axis_index][1] = left_plane;
+        left_limits->limits[axis_index][1] = (float) left_plane;
 
-        *left_cost = bottom * node_visit_estimation( left_limits );
+        *left_cost = (Real) bottom * node_visit_estimation( left_limits );
 
         left_child = create_bintree_leaf( left_plane, bottom, object_list );
 
@@ -569,9 +576,9 @@ private  void  split_node(
     if( bottom < n_objects )
     {
         *right_limits = *limits;
-        right_limits->limits[axis_index][0] = right_plane;
+        right_limits->limits[axis_index][0] = (float) right_plane;
 
-        *right_cost = (n_objects - bottom) *
+        *right_cost = (Real) (n_objects - bottom) *
                            node_visit_estimation( right_limits );
 
         right_child = create_bintree_leaf( right_plane, n_objects - bottom,
@@ -696,7 +703,8 @@ private  void  recursive_efficiency_count(
     Real                  *avg_nodes_visited,
     Real                  *avg_objects_visited )
 {
-    Real                  save_limit, node_visit_estimate;
+    float                 save_limit;
+    Real                  node_visit_estimate;
     bintree_node_struct   *left_child, *right_child;
     Real                  left_limit, right_limit;
     int                   *object_list, axis_index;
@@ -708,7 +716,7 @@ private  void  recursive_efficiency_count(
     if( bintree_node_is_leaf( node ) )
     {
         *avg_objects_visited += node_visit_estimate *
-                                 get_bintree_leaf_objects( node, &object_list );
+                     (Real) get_bintree_leaf_objects( node, &object_list );
     }
     else
     {
@@ -719,7 +727,7 @@ private  void  recursive_efficiency_count(
             left_limit = get_node_split_position( left_child );
 
             save_limit = limits->limits[axis_index][1];
-            limits->limits[axis_index][1] = left_limit;
+            limits->limits[axis_index][1] = (float) left_limit;
 
             recursive_efficiency_count( left_child, limits,
                                         avg_nodes_visited,
@@ -732,7 +740,7 @@ private  void  recursive_efficiency_count(
             right_limit = get_node_split_position( right_child );
 
             save_limit = limits->limits[axis_index][0];
-            limits->limits[axis_index][0] = right_limit;
+            limits->limits[axis_index][0] = (float) right_limit;
 
             recursive_efficiency_count( right_child, limits,
                                         avg_nodes_visited,

@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.33 1996-02-28 16:04:04 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.34 1996-05-17 19:35:48 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -128,7 +128,8 @@ public  void  set_all_volume_label_data(
     Data_types      type;
     void            *ptr;
     Real            real_value;
-    int             v0, v1, v2, v3, v4, n_voxels;
+    int             v0, v1, v2, v3, v4;
+    unsigned int    n_voxels;
 
     check_alloc_label_data( volume );
 
@@ -138,7 +139,7 @@ public  void  set_all_volume_label_data(
     {
         GET_VOXEL_PTR( ptr, volume, 0, 0, 0, 0, 0 );
         n_voxels = get_volume_total_n_voxels( volume );
-        (void) memset( ptr, 0, n_voxels * get_type_size(type) );
+        (void)memset( ptr, 0, (size_t) n_voxels * (size_t) get_type_size(type));
     }
     else
     {
@@ -397,7 +398,7 @@ public  BOOLEAN  get_volume_voxel_activity(
     get_volume_sizes( volume, sizes );
 
     for_less( c, 0, get_volume_n_dimensions(volume) )
-        if( voxel[c] < 0.0 || voxel[c] > sizes[c]-1 )
+        if( voxel[c] < 0.0 || voxel[c] > (Real) sizes[c]-1.0 )
             return( FALSE );
 
     for_less( c, 0, get_volume_n_dimensions(volume) )
@@ -823,7 +824,7 @@ public  Status  input_tags_as_labels(
         }
 
         label = structure_id;
-        if( label >= min_label && label <= max_label &&
+        if( (Real) label >= min_label && (Real) label <= max_label &&
             int_voxel_is_within_volume( volume, ind ) )
         {
             set_volume_label_data( label_volume, ind, label);
@@ -1027,7 +1028,7 @@ public  Status  input_landmarks_as_labels(
             ind[c] = ROUND( voxel[c] );
 
         label = marker.structure_id;
-        if( label >= min_label && label <= max_label &&
+        if( (Real) label >= min_label && (Real) label <= max_label &&
             int_voxel_is_within_volume( volume, ind ) )
         {
             set_volume_label_data( label_volume, ind, label );
