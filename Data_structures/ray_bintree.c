@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.12 1996-05-17 19:35:41 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.13 1996-08-07 15:22:58 david Exp $";
 #endif
 
 private  void  recursive_intersect_ray(
@@ -289,67 +289,21 @@ public  BOOLEAN  ray_intersects_range(
     Real          *t_min,
     Real          *t_max )
 {
-    int      c, min_plane, max_plane;
-    Real     t, x, delta;
     BOOLEAN  intersects;
-    BOOLEAN  min_hit, max_hit;
 
-    min_hit = FALSE;
-    max_hit = FALSE;
+    intersects = clip_line_to_box( origin, direction,
+                                   (Real) range->limits[X][0],
+                                   (Real) range->limits[X][1],
+                                   (Real) range->limits[Y][0],
+                                   (Real) range->limits[Y][1],
+                                   (Real) range->limits[Z][0],
+                                   (Real) range->limits[Z][1], t_min, t_max );
 
-    intersects = TRUE;
-
-    for_less( c, 0, N_DIMENSIONS )
-    {
-        x = (Real) Point_coord(*origin,c);
-        delta = (Real) Vector_coord(*direction,c);
-
-        if( delta == 0.0 )
-        {
-            if( x < (Real) range->limits[c][0] ||
-                x > (Real) range->limits[c][1] )
-            {
-                intersects = FALSE;
-                break;
-            }
-        }
-        else
-        {
-            if( delta > 0.0 )
-            {
-                min_plane = 0;
-                max_plane = 1;
-            }
-            else
-            {
-                min_plane = 1;
-                max_plane = 0;
-            }
-
-            t = ((Real) range->limits[c][min_plane] - x) / delta;
-
-            if( !min_hit || t > *t_min )
-            {
-                min_hit = TRUE;
-                *t_min = t;
-            }
-
-            t = ((Real) range->limits[c][max_plane] - x) / delta;
-
-            if( !max_hit || t < *t_max )
-            {
-                max_hit = TRUE;
-                *t_max = t;
-            }
-        }
-    }
 
     if( intersects )
     {
         if( *t_min < 0.0 )
-        {
             *t_min = 0.0;
-        }
 
         intersects = (*t_min <= *t_max);
     }
