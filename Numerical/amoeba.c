@@ -16,8 +16,8 @@ private  Real  get_function_value(
 public  void  initialize_amoeba(
     amoeba_struct     *amoeba,
     int               n_parameters,
-    float             initial_parameters[],
-    float             parameter_delta,
+    Real              initial_parameters[],
+    Real              parameter_delta,
     amoeba_function   function,
     void              *function_data,
     Real              tolerance )
@@ -28,16 +28,23 @@ public  void  initialize_amoeba(
     amoeba->function = function;
     amoeba->function_data = function_data;
     amoeba->tolerance = tolerance;
+    amoeba->n_steps_no_improvement = 0;
     ALLOC2D( amoeba->parameters, n_parameters+1, n_parameters );
     ALLOC( amoeba->values, n_parameters+1 );
+
+    ALLOC( amoeba->sum, n_parameters );
+
+    for_less( j, 0, n_parameters )
+        amoeba->sum[j] = 0.0;
 
     for_less( i, 0, n_parameters+1 )
     {
         for_less( j, 0, n_parameters )
         {
-            amoeba->parameters[i][j] = initial_parameters[j];
+            amoeba->parameters[i][j] = (float) initial_parameters[j];
             if( i > 0 && j == i - 1 )
                 amoeba->parameters[i][j] += parameter_delta;
+            amoeba->sum[j] += amoeba->parameters[i][j];
         }
 
         amoeba->values[i] = get_function_value( amoeba, amoeba->parameters[i] );
@@ -46,7 +53,7 @@ public  void  initialize_amoeba(
 
 public  Real  get_amoeba_parameters(
     amoeba_struct  *amoeba,
-    float          parameters[] )
+    Real           parameters[] )
 {
     int   i, j, low;
 
@@ -58,7 +65,7 @@ public  Real  get_amoeba_parameters(
     }
 
     for_less( j, 0, amoeba->n_parameters )
-        parameters[j] = amoeba->parameters[low][j];
+        parameters[j] = (Real) amoeba->parameters[low][j];
 
     return( amoeba->values[low] );
 }
@@ -68,6 +75,7 @@ public  void  terminate_amoeba(
 {
     FREE2D( amoeba->parameters );
     FREE( amoeba->values );
+    FREE( amoeba->sum );
 }
 
 private  Real  try_amoeba(
@@ -105,11 +113,13 @@ private  Real  try_amoeba(
     return( y_try );
 }
 
+#define  N_STEPS_NO_IMPROVEMENT  10
+
 public  BOOLEAN  perform_amoeba(
     amoeba_struct  *amoeba )
 {
     int     i, j, low, high, next_high;
-    Real    *sum, y_try, y_save;
+    Real    y_try, y_save;
 
     if( amoeba->values[0] > amoeba->values[1] )
     {
@@ -140,26 +150,21 @@ public  BOOLEAN  perform_amoeba(
     if( numerically_close( amoeba->values[low], amoeba->values[high],
                            amoeba->tolerance ) )
     {
-        return( TRUE );
+        ++amoeba->n_steps_no_improvement;
+        if( ++amoeba->n_steps_no_improvement == N_STEPS_NO_IMPROVEMENT )
+            return( FALSE );
     }
+    else
+        amoeba->n_steps_no_improvement = 0;
 
-    ALLOC( sum, amoeba->n_parameters );
-
-    for_less( j, 0, amoeba->n_parameters )
-    {
-        sum[j] = 0.0;
-        for_less( i, 0, amoeba->n_parameters+1 )
-            sum[j] += amoeba->parameters[i][j];
-    }
-
-    y_try = try_amoeba( amoeba, sum, high, -FLIP_RATIO );
+    y_try = try_amoeba( amoeba, amoeba->sum, high, -FLIP_RATIO );
 
     if( y_try <= amoeba->values[low] )
-        y_try = try_amoeba( amoeba, sum, high, STRETCH_RATIO );
+        y_try = try_amoeba( amoeba, amoeba->sum, high, STRETCH_RATIO );
     else if( y_try >= amoeba->values[next_high] )
     {
         y_save = amoeba->values[high];
-        y_try = try_amoeba( amoeba, sum, high, CONTRACT_RATIO );
+        y_try = try_amoeba( amoeba, amoeba->sum, high, CONTRACT_RATIO );
 
         if( y_try >= y_save )
         {
@@ -177,10 +182,15 @@ public  BOOLEAN  perform_amoeba(
                                                   amoeba->parameters[i] );
                 }
             }
+
+            for_less( j, 0, amoeba->n_parameters )
+            {
+                amoeba->sum[j] = 0.0;
+                for_less( i, 0, amoeba->n_parameters+1 )
+                    amoeba->sum[j] += amoeba->parameters[i][j];
+            }
         }
     }
 
-    FREE( sum );
-
-    return( FALSE );
+    return( TRUE );
 }

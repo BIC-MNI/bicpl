@@ -545,7 +545,12 @@ public  Status  io_colours(
         if( format == ASCII_FORMAT )
         {
             for_less( i, 0, n_colours )
+            {
                 status = io_colour( file, io_flag, format, &(*colours)[i] );
+
+                if( status == OK )
+                    status = io_newline( file, io_flag, format );
+            }
         }
         else
             status = io_binary_data( file, io_flag, (void *) (*colours),

@@ -562,11 +562,14 @@ public  void  initialize_object_traverse(
 
     INITIALIZE_STACK( object_traverse->stack );
 
-    push_entry.index = 0;
-    push_entry.n_objects = n_objects;
-    push_entry.object_list = object_list;
+    if( n_objects > 0 )
+    {
+        push_entry.index = 0;
+        push_entry.n_objects = n_objects;
+        push_entry.object_list = object_list;
 
-    PUSH_STACK( object_traverse->stack, push_entry );
+        PUSH_STACK( object_traverse->stack, push_entry );
+    }
 }
 
 public  BOOLEAN  get_next_object_traverse(

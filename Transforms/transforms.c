@@ -1,9 +1,10 @@
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
+#include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.2 1995-02-20 13:13:54 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.3 1995-03-07 18:54:51 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -478,86 +479,6 @@ public  void  transform_point_2d(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : least_squares
-@INPUT      : n
-              x_list
-              y_list
-              trans_list
-@OUTPUT     : a
-              b
-              c
-@RETURNS    : 
-@DESCRIPTION: Performs a linear least squares fit to determine the coefficients
-              that map (x,y) values to trans values (a*x+b*y+c=trans).
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    : 1993            David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-private  void  least_squares(
-    int     n,
-    Real    x_list[],
-    Real    y_list[],
-    Real    trans_list[],
-    Real    *a,
-    Real    *b,
-    Real    *c )
-{
-    int   i;
-    Real  x, y, xp;
-    Real  sumx, sumy, sumxx, sumyy, sumxy, sumxp, sumyxp, sumxxp;
-    Real  denom;
-
-    sumx = 0.0;
-    sumy = 0.0;
-    sumxx = 0.0;
-    sumxy = 0.0;
-    sumyy = 0.0;
-    sumxp = 0.0;
-    sumxxp = 0.0;
-    sumyxp = 0.0;
-
-    for_less( i, 0, n )
-    {
-        x = x_list[i];
-        y = y_list[i];
-        xp = trans_list[i];
-
-        sumx += x;
-        sumy += y;
-        sumxx += x * x;
-        sumxy += x * y;
-        sumyy += y * y;
-        sumxp += xp;
-        sumxxp += x * xp;
-        sumyxp += y * xp;
-    }
-
-    denom = n*sumxx*sumyy - n*sumxy*sumxy - sumx*sumx*sumyy +
-            2.0*sumxy*sumx*sumy - sumxx*sumy*sumy;
-
-    if( denom == 0.0 )
-    {
-        handle_internal_error( "least_squares_transform_2d: division by zero.");
-        *a = 0.0;
-        *b = 0.0;
-        *c = 0.0;
-        return;
-    }
-
-    *a = (n*sumxxp*sumyy - n*sumxy*sumyxp - sumxxp*sumy*sumy +
-          sumxy*sumy*sumxp + sumy*sumx*sumyxp - sumx*sumxp*sumyy) / denom;
-
-    *b = -(-sumxy*sumx*sumxp + sumx*sumx*sumyxp + n*sumxy*sumxxp -
-           n*sumxx*sumyxp - sumy*sumx*sumxxp + sumxx*sumy*sumxp) / denom;
-
-    *c = (-sumx*sumxxp*sumyy + sumx*sumxy*sumyxp + sumy*sumxy*sumxxp -
-           sumy*sumxx*sumyxp + sumxp*sumxx*sumyy - sumxp*sumxy*sumxy) / denom;
-}
-
-/* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_least_squares_transform_2d
 @INPUT      : n_points
               x
@@ -584,15 +505,29 @@ public  void  get_least_squares_transform_2d(
     Real          y_trans[],
     Transform_2d  *transform_2d )
 {
-    Real  a, b, c;
+    int   p;
+    Real  coefs[2+1];
+    Real  **coords;
+
+    ALLOC2D( coords, n_points, 2 );
+
+    for_less( p, 0, n_points )
+    {
+        coords[p][X] = x[p];
+        coords[p][Y] = y[p];
+    }
+
+    least_squares( n_points, 2, coords, x_trans, coefs );
+
+    Transform_2d_elem( *transform_2d, 0, 0 ) = coefs[1];
+    Transform_2d_elem( *transform_2d, 0, 1 ) = coefs[2];
+    Transform_2d_elem( *transform_2d, 0, 2 ) = coefs[0];
     
-    least_squares( n_points, x, y, x_trans, &a, &b, &c );
-    Transform_2d_elem( *transform_2d, 0, 0 ) = a;
-    Transform_2d_elem( *transform_2d, 0, 1 ) = b;
-    Transform_2d_elem( *transform_2d, 0, 2 ) = c;
-    
-    least_squares( n_points, x, y, y_trans, &a, &b, &c );
-    Transform_2d_elem( *transform_2d, 1, 0 ) = a;
-    Transform_2d_elem( *transform_2d, 1, 1 ) = b;
-    Transform_2d_elem( *transform_2d, 1, 2 ) = c;
+    least_squares( n_points, 2, coords, y_trans, coefs );
+
+    Transform_2d_elem( *transform_2d, 1, 0 ) = coefs[1];
+    Transform_2d_elem( *transform_2d, 1, 1 ) = coefs[2];
+    Transform_2d_elem( *transform_2d, 1, 2 ) = coefs[0];
+
+    FREE2D( coords );
 }

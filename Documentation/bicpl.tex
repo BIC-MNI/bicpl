@@ -637,4 +637,21 @@ public  void  make_rotation_transform(
 \desc{Creates a transform which achieves a rotation about one of the
 three axes, (\name{X}, \name{Y}, or \name{Z}).}
 
+{\bf\begin{verbatim}
+public void  get_nonlinear_warp(
+    float **transformed_points,
+    float **original_points,
+    float **displacements,
+    int   n_points,
+    int   n_dimensions )
+\end{verbatim}}
+
+\desc{Fills in the \name{displacements} array with the appropriate
+values to achieve a thin-plate spline transformation.  The mapping
+will provide a smooth transformation of space such that each point in
+the \name{original\_points} array maps exactly to the corresponding point in
+the \name{transformed\_points} array.  These displacements are then
+fed into the function \name{create\-\_thin\-\_plane\-\_transform} to create
+the general transform.}
+
 \end{document}

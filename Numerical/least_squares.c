@@ -3,10 +3,10 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least_squares.c,v 1.1 1995-02-27 17:16:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least_squares.c,v 1.2 1995-03-07 18:54:58 david Exp $";
 #endif
 
-private  void  least_squares(
+public  void  least_squares(
     int     n_points,
     int     n_dims,
     Real    **points,

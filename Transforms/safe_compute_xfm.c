@@ -7,9 +7,12 @@
 @GLOBALS    : 
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : $Log: safe_compute_xfm.c,v $
-@MODIFIED   : Revision 1.2  1994-11-25 14:23:27  david
+@MODIFIED   : Revision 1.3  1995-03-07 18:54:51  david
 @MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.2  94/11/25  14:23:27  david
+ * check_in_all
+ * 
  * Revision 1.1  94/11/04  14:45:55  david
  * Initial revision
  * 
@@ -67,7 +70,7 @@ public void safe_compute_transform_from_tags(int npoints,
    if (fork()) {          /* Parent */
       (void) close(fildes[1]);
       fpin = fdopen(fildes[0], "r");
-      status = input_transform(fpin, transform);
+      status = input_transform(fpin, NULL, transform);
       (void) fclose(fpin);
       do {
          (void) wait(&statptr);
@@ -83,7 +86,7 @@ public void safe_compute_transform_from_tags(int npoints,
       fpout = fdopen(fildes[1], "w");
       compute_transform_from_tags(npoints, tag_list1, tag_list2, trans_type,
                                   transform);
-      status = output_transform(fpout, NULL, transform);
+      status = output_transform(fpout, NULL, NULL, NULL, transform);
       (void) fclose(fpout);
       if (status != OK) {
          exit(EXIT_FAILURE);

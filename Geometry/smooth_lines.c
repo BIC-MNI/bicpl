@@ -2,7 +2,7 @@
 #include  <internal_volume_io.h>
 #include  <geom.h>
 #include  <data_structures.h>
-#include  <splines.h>
+#include  <numerical.h>
 
 public  void  smooth_lines(
     lines_struct  *lines,
@@ -87,7 +87,7 @@ public  void  create_line_spline(
     int           n_curve_segments,
     lines_struct  *new_lines )
 {
-    int       l, p, point_index1, point_index2, pt_index, line_size, segment;
+    int       c, l, p, point_index1, point_index2, pt_index, line_size, segment;
     BOOLEAN   wrap_around;
     Point     points[4], point;
     Real      u;
@@ -152,20 +152,14 @@ public  void  create_line_spline(
             {
                 u = (Real) segment / (Real) n_curve_segments;
 
-                Point_x(point) = CUBIC_UNIVAR( Point_x(points[0]),
-                                               Point_x(points[1]),
-                                               Point_x(points[2]),
-                                               Point_x(points[3]), u );
-
-                Point_y(point) = CUBIC_UNIVAR( Point_y(points[0]),
-                                               Point_y(points[1]),
-                                               Point_y(points[2]),
-                                               Point_y(points[3]), u );
-
-                Point_z(point) = CUBIC_UNIVAR( Point_z(points[0]),
-                                               Point_z(points[1]),
-                                               Point_z(points[2]),
-                                               Point_z(points[3]), u );
+                for_less( c, 0, N_DIMENSIONS )
+                {
+                    Point_coord(point,c) = cubic_interpolate( u,
+                                                Point_coord(points[0],c),
+                                                Point_coord(points[1],c),
+                                                Point_coord(points[2],c),
+                                                Point_coord(points[3],c) );
+                }
 
                 add_point_to_line( new_lines, &point );
             }

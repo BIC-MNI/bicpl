@@ -3,132 +3,6 @@
 #include  <vols.h>
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : clip_one_edge
-@INPUT      : closing
-              edge
-              sizes
-              origin
-              x_axis
-              y_axis
-              point
-              first
-              first_point
-              prev_point
-              prev_dist
-@OUTPUT     : n_clipped_points
-              clipped_points
-@RETURNS    : 
-@DESCRIPTION: Performs clipping against the four edges of a viewport, using
-              recursive edge clipping.  This routine clips against one edge
-              and passes it on to the next edge.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    : 1993            David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-private  void clip_one_edge(
-    BOOLEAN  closing,
-    int      edge,
-    int      sizes[],
-    Real     origin[],
-    Real     x_axis[],
-    Real     y_axis[],
-    Real     point[],
-    BOOLEAN  first[],
-    Real     first_point[][2],
-    Real     prev_point[][2],
-    Real     prev_dist[],
-    int      n_dims,
-    int      *n_clipped_points,
-    Real     clipped_points[][2] )
-{
-    int   axis;
-    Real  dist, ratio, interpolated[2];
-
-    /* --- if done clipping, then record clipped point x and y */
-
-    if( edge == -1 )
-    {
-        if( !closing )
-        {
-            if( *n_clipped_points < 2 * n_dims )
-            {
-                clipped_points[*n_clipped_points][0] = point[0];
-                clipped_points[*n_clipped_points][1] = point[1];
-            }
-
-            ++(*n_clipped_points);
-        }
-        return;
-    }
-
-    /* --- find distance of point from edge */
-
-    axis = edge / 2;
-    if( edge % 2 == 0 )
-    {
-        dist = origin[axis] + point[0] * x_axis[axis] +
-                              point[1] * y_axis[axis] + 0.5;
-    }
-    else
-    {
-        dist = (Real) sizes[axis] - 0.5 -
-               (origin[axis] + point[0] * x_axis[axis] +
-                               point[1] * y_axis[axis]);
-    }
-
-    /* --- if this point and previous point generate an edge crossing,
-           find it and pass it on to the next edge */
-
-    if( !first[edge] &&
-        (dist < 0.0 && prev_dist[edge] > 0.0 ||
-         dist > 0.0 && prev_dist[edge] < 0.0) )
-    {
-        ratio = prev_dist[edge] / (prev_dist[edge] - dist);
-        interpolated[0] = prev_point[edge][0] + ratio *
-                          (point[0] - prev_point[edge][0]);
-        interpolated[1] = prev_point[edge][1] + ratio *
-                          (point[1] - prev_point[edge][1]);
-        clip_one_edge( FALSE, edge-1, sizes, origin, x_axis, y_axis,
-                       interpolated, first, first_point, prev_point, prev_dist,
-                       n_dims, n_clipped_points, clipped_points );
-    }
-
-    /* --- if we are closing, pass along the first point that was given
-           to the next edge */
-
-    if( closing )
-    {
-        if( !first[edge-1] )
-        {
-            clip_one_edge( TRUE, edge-1, sizes, origin, x_axis, y_axis,
-                           first_point[edge-1],
-                           first, first_point, prev_point, prev_dist,
-                           n_dims, n_clipped_points, clipped_points );
-        }
-    }
-    else if( dist >= 0.0 ) /* --- if the point is inside, then pass it on */
-    {
-        clip_one_edge( FALSE, edge-1, sizes, origin, x_axis, y_axis, point,
-                       first, first_point, prev_point, prev_dist,
-                       n_dims, n_clipped_points, clipped_points );
-    }
-
-    if( first[edge] )
-    {
-        first_point[edge][0] = point[0];
-        first_point[edge][1] = point[1];
-        first[edge] = FALSE;
-    }
-
-    prev_point[edge][0] = point[0];
-    prev_point[edge][1] = point[1];
-    prev_dist[edge] = dist;
-}
-
-/* ----------------------------- MNI Header -----------------------------------
 @NAME       : clip_points
 @INPUT      : n_dims
               sizes
@@ -144,7 +18,9 @@ private  void clip_one_edge(
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    : 1993            David MacDonald
-@MODIFIED   : 
+@MODIFIED   : Mar. 6, 1995    D. MacDonald  -- removed complicated recursive
+                              edge clipping, replaced with iterative edge
+                              clipping.
 ---------------------------------------------------------------------------- */
 
 private  int  clip_points(
@@ -157,32 +33,95 @@ private  int  clip_points(
     Real     points[][2],
     Real     clipped_points[][2] )
 {
-    int       i, c, n_clipped_points;
-    BOOLEAN   first[2*MAX_DIMENSIONS];
-    Real      prev_point[2*MAX_DIMENSIONS][2];
-    Real      first_point[MAX_DIMENSIONS][2];
-    Real      prev_dist[2*MAX_DIMENSIONS];
-
-    for_less( c, 0, 2 * n_dims )
-        first[c] = TRUE;
-
-    n_clipped_points = 0;
+    int       i, c, n_input_points, n_output_points, this, lim;
+    Real      prev_dist, dist, ratio, first_dist;
+    Real      input_points[2*MAX_DIMENSIONS][2];
+    Real      output_points[2*MAX_DIMENSIONS][2];
 
     for_less( i, 0, n_points )
     {
-        clip_one_edge( FALSE, 2*n_dims-1, sizes, origin, x_axis, y_axis,
-                       points[i], first, first_point, prev_point, prev_dist,
-                       n_dims, &n_clipped_points, clipped_points );
+        input_points[i][0] = points[i][0];
+        input_points[i][1] = points[i][1];
     }
 
-    if( n_points > 0 )
+    n_input_points = n_points;
+
+    dist = 0.0;
+    first_dist = 0.0;
+
+    for_less( c, 0, n_dims )
     {
-        clip_one_edge( TRUE, 2*n_dims-1, sizes, origin, x_axis, y_axis,
-                       points[0], first, first_point, prev_point, prev_dist,
-                       n_dims, &n_clipped_points, clipped_points );
+        for_less( lim, 0, 2 )
+        {
+            n_output_points = 0;
+            if( n_input_points > 0 )
+            {
+                for_less( i, 0, n_input_points+1 )
+                {
+                    prev_dist = dist;
+                    this = i % n_input_points;
+
+                    if( i < n_input_points )
+                    {
+                        if( lim == 0 )
+                        {
+                            dist = origin[c] + input_points[i][0] * x_axis[c] +
+                                           input_points[i][1] * y_axis[c] + 0.5;
+                        }
+                        else
+                        {
+                            dist = (Real) sizes[c] - 0.5 -
+                               (origin[c] + input_points[i][0] * x_axis[c] +
+                                            input_points[i][1] * y_axis[c]);
+                        }
+                    }
+                    else
+                        dist = first_dist;
+
+                    if( i > 0 )
+                    {
+                        if( dist < 0.0 && prev_dist > 0.0 ||
+                            dist > 0.0 && prev_dist < 0.0 )
+                        {
+                            ratio = prev_dist / (prev_dist - dist);
+                            output_points[n_output_points][0] =
+                               input_points[i-1][0] + ratio *
+                              (input_points[this][0] - input_points[i-1][0]);
+                            output_points[n_output_points][1] =
+                               input_points[i-1][1] + ratio *
+                              (input_points[this][1] - input_points[i-1][1]);
+                            ++n_output_points;
+                        }
+                    }
+                    else
+                        first_dist = dist;
+
+                    if( dist >= 0.0 && i != n_input_points )
+                    {
+                        output_points[n_output_points][0] = input_points[i][0];
+                        output_points[n_output_points][1] = input_points[i][1];
+                        ++n_output_points;
+                    }
+                }
+            }
+
+            for_less( i, 0, n_output_points )
+            {
+                input_points[i][0] = output_points[i][0];
+                input_points[i][1] = output_points[i][1];
+            }
+
+            n_input_points = n_output_points;
+        }
     }
 
-    return( n_clipped_points );
+    for_less( i, 0, n_output_points )
+    {
+        clipped_points[i][0] = output_points[i][0];
+        clipped_points[i][1] = output_points[i][1];
+    }
+
+    return( n_output_points );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -43,7 +43,7 @@ public  BOOLEAN  do_more_resampling(
     BOOLEAN         linear;
     Vector          z_axis;
     int             z;
-    Real            xv, yv, zv;
+    Real            xv, yv, zv, voxel[MAX_DIMENSIONS];
     Real            end_time, real_value;
     int             dest_sizes[MAX_DIMENSIONS], src_sizes[MAX_DIMENSIONS];
 
@@ -87,11 +87,12 @@ public  BOOLEAN  do_more_resampling(
             }
             else
             {
-                evaluate_3D_volume( resample->src_volume, xv, yv, zv,
-                                    0, &real_value,
-                                    (Real *) 0, (Real *) 0, (Real *) 0,
-                                    (Real *) 0, (Real *) 0, (Real *) 0,
-                                    (Real *) 0, (Real *) 0, (Real *) 0 );
+                voxel[X] = xv;
+                voxel[Y] = yv;
+                voxel[Z] = zv;
+                evaluate_volume( resample->src_volume, voxel, NULL,
+                                 0, get_volume_real_min(resample->src_volume),
+                                 &real_value, NULL, NULL );
 
                 value = ROUND( real_value );
             }

@@ -24,170 +24,132 @@
 
 /* prototype definitions: */
 
-private void  makeL(float **bdefor, float **ML, int num_marks, int dim);
+private  void  calculate_coe(
+    Real    **adefor,
+    Real    **INVML,
+    float   **INVMLY,
+    int     n_points,
+    int     n_dims );
 
-private float  return_r(float *cor1, float *cor2, int dim);
-
-private float  FU(float r, int dim);
-
-private void   calculate_coe(float **adefor, float **INVML, float **INVMLY, int num_marks, int dim);
-
-
+private  void  makeL(
+    Real   **bdefor,
+    Real   **ML,
+    int    n_points,
+    int    n_dims );
 
 /* This function will get coefficients of the warping function. */
 
-public void  get_nonlinear_warp(float **bdefor, /* num_marks x dim */
-                                float **adefor, /* num_marks x dim */
-                                float **INVMLY, /* num_marks+1+dim x dim */
-                                int num_marks,
-                                int dim)
+public  void  get_nonlinear_warp(
+   Real     **bdefor,   /* n_points x n_dims */
+   Real     **adefor,   /* n_points x n_dims */
+   float    **INVMLY,   /* n_points+1+n_dims x n_dims */
+   int      n_points,
+   int      n_dims )
 {
+   Real    **ML,**INVML;
 
-  
-   float **ML,**INVML;
-
-   ALLOC2D( ML, num_marks+dim+1, num_marks+dim+1 );
-   ALLOC2D( INVML, num_marks+dim+1, num_marks+dim+1 );
+   ALLOC2D( ML, n_points+n_dims+1, n_points+n_dims+1 );
+   ALLOC2D( INVML, n_points+n_dims+1, n_points+n_dims+1 );
 
    /* This function will build the L matrix */
 
-   makeL(bdefor,ML,num_marks,dim);
+   makeL( bdefor, ML, n_points, n_dims );
 
-   (void) invert_square_matrix_float( num_marks+dim+1, ML, INVML );
+   (void) invert_square_matrix( n_points+n_dims+1, ML, INVML );
 
    /*  build the array of deformation vectors   */
 
-   calculate_coe(adefor,INVML,INVMLY, num_marks, dim);
+   calculate_coe( adefor, INVML, INVMLY, n_points, n_dims );
 
    FREE2D( ML );
    FREE2D( INVML );
 }
 
-				/* this function will build the L matrix for image deformation.
-				 * ML  -   store the L matrix.	
-				 * num_marks - is integer for number of landmarks.
-				 * dim -  This is the dimension of the image.
-				 *        dim = 2 for the 2-D image deformation.
-				 *        dim = 3 for the 3-D image deformation.
-				 */
-private void makeL(float **bdefor, float **ML, int num_marks, int dim)
+		/* this function will build the L matrix for image deformation.
+		 * ML  -   store the L matrix.	
+		 * n_points - is integer for number of landmarks.
+		 * n_dims -  This is the dimension of the image.
+		 *        n_dims = 2 for the 2-D image deformation.
+		 *        n_dims = 3 for the 3-D image deformation.
+		 */
+private  void  makeL(
+    Real   **bdefor,
+    Real   **ML,
+    int    n_points,
+    int    n_dims )
 {
-   int i,j;
-   float r;
+    int    i,j;
+    Real   fu;
  
-   /* initial matrix */
-   for (i=1; i<=num_marks+dim+1; i++){
-      for (j=1; j<=num_marks+dim+1; j++){
-         ML[i-1][j-1]=0;
-      }
-   }
+    /* initialize matrix to zero */
+
+    for_less( i, 0, n_points+n_dims+1 )
+    {
+        for_less( j, 0, n_points+n_dims+1 )
+            ML[i][j]=0;
+    }
     
-   /* set reset of the K matrix as follows */
-   for (i=1;i<=num_marks;i++){
-      for (j=i+1;j<=num_marks;j++){
-         r = return_r(bdefor[i],bdefor[j],dim); 
-         ML[j-1][i-1] = ML[i-1][j-1] = FU(r,dim);
-      }
-   }
+    /* set reset of the K matrix as follows */
+
+    for_less( i, 0, n_points )
+    {
+        for_less( j, i+1, n_points )
+        {
+            fu = thin_plate_spline_U( bdefor[i], bdefor[j], n_dims );
+            ML[j][i] = ML[i][j] = fu;
+        }
+    }
  
-   /* set the rest of the L matrix */
-   for (i=1;i<=num_marks;i++){
-      ML[num_marks+1-1][i-1] = ML[i-1][num_marks+1-1]   = 1;
-      for (j=1;j<=dim;j++){
-         ML[num_marks+j+1-1][i-1] = ML[i-1][num_marks+j+1-1] = bdefor[i][j];
-      }
-   }
+    /* set the rest of the L matrix */
+
+    for_less( i, 0, n_points )
+    {
+        ML[n_points][i] = ML[i][n_points]   = 1.0;
+        for_less( j, 0, n_dims )
+            ML[n_points+1+j][i] = ML[i][n_points+1+j] = bdefor[i][j];
+    }
 }
 
-private float return_r(float *cor1, float *cor2, int dim)
+private  void  calculate_coe(
+    Real    **adefor,
+    Real    **INVML,
+    float   **INVMLY,
+    int     n_points,
+    int     n_dims )
 {
-   float r1,r2,r3;
-
-
-   if (dim == 1){
-      r1 = cor1[1] - cor2[1]; 
-      r1 = fabs(r1);
-      return(r1);
-   } else
-   if (dim == 2){
-      r1 = cor1[1] - cor2[1];
-      r2 = cor1[2] - cor2[2];
-      return(r1*r1+r2*r2);
-   } else
-   if (dim == 3){
-      r1 = cor1[1] - cor2[1];
-      r2 = cor1[2] - cor2[2];
-      r3 = cor1[3] - cor2[3];
-      return((float) sqrt((float) (r1*r1 + r2*r2 + r3*r3)) );
-   } 
-   else { 
-      (void) fprintf(stderr,
-                     " impossible error in mapping.c, dim = %d (return_r)\n",
-                     dim);
-      exit(-1); 
-#ifdef lint
-      return( 0.0 );
-#endif
-   }
-}
-
-private float FU(float r, int dim)
-/* This function will calculate the U(r) function.
- * if dim = 1, the funtion returns |r|^3 
- * if dim = 2, the funtion retruns r^2*log r^2
- * if dim = 3, the funtion returns |r|
- */ 
-{
-   float z;
-
-   if (dim==1){
-      z = r*r*r;
-      return(fabs(z));
-   } else
-   if (dim==2){/* r is stored as r^2 */
-      z = r * log((double) r);
-      return(z);
-   } else
-   if (dim==3){
-      return(fabs(r));
-   } else { 
-      (void) fprintf(stderr,
-                     " impossible error in mapping.c, dim = %d (FU)\n",
-                     dim);
-      exit(-1); 
-#ifdef lint
-      return( 0.0 );
-#endif
-   }
-}
- 
-private void calculate_coe(float **adefor, float **INVML, float **INVMLY, int num_marks, int dim)
-{
-   int i,j,k;
-   float temp,**YM,**matrix();
+    int      i,j,k;
+    Real     temp, **YM;
    
-   /* Y = ( V | 0 0 0)t */
-   YM = matrix(1, num_marks+dim+1, 1, dim);
-   for (i = 1; i<=num_marks; i++){ 
-      for (j=1;j<=dim;j++){
-         YM[i][j] = adefor[i][j];
-      }
-   }
+    /* Y = ( V | 0 0 0)t */
+
+    ALLOC2D( YM, n_points+n_dims+1, n_dims );
+
+    for_less( i, 0, n_points )
+    {
+        for_less( j, 0, n_dims )
+            YM[i][j] = adefor[i][j];
+    }
  
-   for (i = num_marks+1; i<=num_marks+dim+1; i++){
-      for (j=1;j<=dim;j++){
-         YM[i][j] = 0;
-      }
-   }
+    for_less( i, n_points, n_points + n_dims + 1 )
+    {
+        for_less( j, 0, n_dims )
+            YM[i][j] = 0;
+    }
  
-   /* L_{-1} Y = (W|a_{1}, a_{x}, a_{y})^T. */
-   for (i=1;i<=dim;i++){
-      for (j=1;j<= num_marks+dim+1;j++){ /* for one row of matrix */
-         temp = 0;
-         for (k = 1; k<= num_marks+dim+1; k++){
-            temp = INVML[j-1][k-1]*YM[k][i] + temp;
-         }
-         INVMLY[j][i] = temp;
-      }
-   }
-} 
+    /* L_{-1} Y = (W|a_{1}, a_{x}, a_{y})^T. */
+
+    for_less( i, 0, n_dims )
+    {
+        for_less( j, 0, n_points + n_dims + 1 )   /* for one row of matrix */
+        {
+
+            temp = 0;
+            for_less( k, 0,  n_points + n_dims + 1 )
+                temp += INVML[j][k]*YM[k][i];
+
+            INVMLY[j][i] = (float) temp;
+        }
+    }
+
+    FREE2D( YM );
+}

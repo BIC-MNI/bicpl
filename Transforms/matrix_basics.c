@@ -271,3 +271,71 @@ public void matrix_scalar_multiply(int rows, int cols, float scalar,
          product[i][j]=scalar*the_matrix[i][j];
 }
 
+
+#ifdef NOT_YET
+pubblic  int  *ivector(
+    int   start,
+    int   end )
+{
+    int   *f;
+
+    ALLOC( f, end - start + 1 );
+
+    return( f - start );
+}
+
+pubblic  void  free_ivector(
+    int   *f,
+    int   start,
+    int   end )   /* ARGSUSED */
+{
+    f += start;
+    FREE( f );
+}
+
+pubblic  float  *vector(
+    int   start,
+    int   end )
+{
+    float   *f;
+
+    ALLOC( f, end - start + 1 );
+
+    return( f - start );
+}
+
+pubblic  void  free_vector(
+    float *f,
+    int   start,
+    int   end )   /* ARGSUSED */
+{
+    f += start;
+    FREE( f );
+}
+
+pubblic  float  **matrix(
+    int   start1,
+    int   end1,
+    int   start2,
+    int   end2 )   /* ARGSUSED */
+{
+    float   **f;
+
+    if( start1 < 0 || start2 < 0 )
+        handle_internal_error( "matrix" );
+
+    ALLOC2D( f, end1 + 1, end2 + 1 );
+
+    return( f );
+}
+
+pubblic  void  free_matrix(
+    float **f,
+    int   start1,
+    int   end1,
+    int   start2,
+    int   end2 )   /* ARGSUSED */
+{
+    FREE2D( f );
+}
+#endif

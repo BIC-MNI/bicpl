@@ -30,15 +30,16 @@ private  void  colour_code_points(
 
     for_less( i, 0, n_points )
     {
-        evaluate_3D_volume_in_world( volume,
-                                     Point_x(points[i]),
-                                     Point_y(points[i]),
-                                     Point_z(points[i]), continuity,
-                                     &val, (Real *) NULL,
-                                     (Real *) NULL, (Real *) NULL,
-                                     (Real *) NULL, (Real *) NULL,
-                                     (Real *) NULL, (Real *) NULL,
-                                     (Real *) NULL, (Real *) NULL );
+        (void) evaluate_volume_in_world( volume,
+                                  Point_x(points[i]),
+                                  Point_y(points[i]),
+                                  Point_z(points[i]), continuity,
+                                  get_volume_real_min(volume),
+                                  &val, (Real *) NULL,
+                                  (Real *) NULL, (Real *) NULL,
+                                  (Real *) NULL, (Real *) NULL,
+                                  (Real *) NULL, (Real *) NULL,
+                                  (Real *) NULL, (Real *) NULL );
 
         (*colours)[i] = get_colour_code( colour_coding, val );
     }

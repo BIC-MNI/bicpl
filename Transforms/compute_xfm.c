@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.3  1995-02-27 17:20:20  david
-@MODIFIED   : *** empty log message ***
+@MODIFIED   : Revision 1.4  1995-03-07 18:54:49  david
+@MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.3  95/02/27  17:20:20  david
+ * *** empty log message ***
+ * 
  * Revision 1.2  94/11/25  14:23:13  david
  * check_in_all
  * 
@@ -35,6 +38,7 @@
 #include <internal_volume_io.h>
 #include <geom.h>
 #include <recipes.h>
+#include <numerical.h>
 #include <compute_xfm.h>
 
 /* Constants */
@@ -557,104 +561,49 @@ private void compute_12param_transform(int npoints,
                                        Trans_type trans_type,
                                        General_transform *transform)
 {
-   float **points2, *x1, *y1, *z1, *sig, **soln, **covar;
-   float chisq;
-   int *lista;
-   int ndims;
-   int ipoint, idim, irow, icol;
-   Transform linear_transform;
+   Real       *x, *solution;
+   int        ndims, d, dim;
+   int        point;
+   Transform  linear_transform;
 
    /* Check transformation type */
+
    if (trans_type != TRANS_LSQ12) {
       (void) fprintf(stderr, "Internal error in compute_12param_transform!\n");
       exit(EXIT_FAILURE);
    }
 
-   /* Allocate matrices and vectors */
    ndims = NUMBER_OF_DIMENSIONS;
-   points2 = matrix(1,npoints,1,ndims);
-   x1 = vector(1,npoints);
-   y1 = vector(1,npoints);
-   z1 = vector(1,npoints);
-   sig = vector(1,npoints);
-   soln = matrix(1,ndims,1,ndims+1);
-   lista = ivector(1,ndims+1);
-   covar = matrix(1,ndims+1,1,ndims+1);
 
-   /* Copy the data points and set up sig and lista */
-   for (ipoint=1; ipoint<=npoints; ipoint++) {
-      for (idim=1; idim<=ndims; idim++) {
-         points2[ipoint][idim] = tag_list2[ipoint-1][idim-1];
-      }
-      x1[ipoint] = tag_list1[ipoint-1][0];
-      y1[ipoint] = tag_list1[ipoint-1][1];
-      z1[ipoint] = tag_list1[ipoint-1][2];
-      sig[ipoint] = 1.0;
-   }
-   for (idim=1; idim<=ndims+1; idim++) {
-      lista[idim] = idim;
-   }
+   make_identity_transform( &linear_transform );
 
-   /* Do the fit for each dimension */
-   lfit_vector(points2, x1, sig, npoints, soln[1], ndims+1, lista, ndims+1, 
-               covar, &chisq, lfit_func);
-   lfit_vector(points2, y1, sig, npoints, soln[2], ndims+1, lista, ndims+1, 
-               covar, &chisq, lfit_func);
-   lfit_vector(points2, z1, sig, npoints, soln[3], ndims+1, lista, ndims+1, 
-               covar, &chisq, lfit_func);
+   ALLOC( x, npoints );
+   ALLOC( solution, ndims+1 );
 
-   /* Copy data into the linear_transform */
-   make_identity_transform(&linear_transform);
-   for (irow=0; irow<ndims; irow++) {
-      for (icol=0; icol<ndims+1; icol++) {
-         Transform_elem(linear_transform, irow, icol) =
-            soln[irow+1][icol+1];
-      }
+   for_less( dim, 0, ndims )
+   {
+       /* Copy the data points */
+
+       for_less( point, 0, npoints )
+           x[point] = tag_list1[point][dim];
+
+       /*--- find the solution */
+
+       least_squares( npoints, ndims, tag_list2, x, solution );
+
+       Transform_elem( linear_transform, dim, ndims ) = solution[0];
+       for_less( d, 0, ndims )
+           Transform_elem( linear_transform, dim, d ) = solution[1+d];
    }
 
    /* Create general transform */
+
    create_linear_transform(transform, &linear_transform);
 
    /* Free matrices and vectors */
-   free_matrix(points2,1,npoints,1,ndims);
-   free_vector(x1,1,npoints);
-   free_vector(y1,1,npoints);
-   free_vector(z1,1,npoints);
-   free_vector(sig,1,npoints);
-   free_matrix(soln,1,ndims,1,ndims+1);
-   free_ivector(lista,1,ndims+1);
-   free_matrix(covar,1,ndims+1,1,ndims+1);
 
-   return;
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : lfit_func
-@INPUT      : point  - point before transformation
-              npars  - number of fit parameters
-@OUTPUT     : afunc  - stuff needed by lfit_vector
-@RETURNS    : (nothing)
-@DESCRIPTION: 
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    : August 30, 1993 (Peter Neelin)
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-private void lfit_func(float *point, float *afunc, int npars)
-{
-   int ipar;
-
-   /* Check npars */
-   if (npars != NUMBER_OF_DIMENSIONS + 1) {
-      (void) fprintf(stderr, "Wrong number of pars in lfit_func\n");
-      exit(EXIT_FAILURE);
-   }
-
-   for (ipar=1; ipar<=NUMBER_OF_DIMENSIONS; ipar++) {
-      afunc[ipar] = point[ipar];
-   }
-   afunc[NUMBER_OF_DIMENSIONS+1] = 1.0;
+   FREE( x );
+   FREE( solution );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
