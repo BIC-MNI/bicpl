@@ -60,7 +60,7 @@ private  void  read_talairach_coordinate_system( void )
     {
         if( getenv( "PET_ROI" ) == (char *) 0 )
         {
-            print( "You have to setenv PET_ROI.\n" );
+            print_error( "You have to setenv PET_ROI.\n" );
             okay = FALSE;
         }
         else
@@ -75,7 +75,7 @@ private  void  read_talairach_coordinate_system( void )
 
         if( file == (FILE *) 0 )
         {
-            print( "Cannot open %s\n", filename );
+            print_error( "Cannot open %s\n", filename );
             okay = FALSE;
         }
     }
@@ -106,7 +106,7 @@ private  void  read_talairach_coordinate_system( void )
             input_real( file, &tmp_z_dist_0 ) != OK ||
             input_real( file, &tmp_z_dist_1 ) != OK )
         {
-            print( "Error reading info from %s\n", filename );
+            print_error( "Error reading info from %s\n", filename );
             okay = FALSE;
         }
     }
@@ -219,8 +219,7 @@ private  Real  convert_from_mm(
     Real    brain_dist_low,
     Real    brain_dist_high,
     Real    brain_limit_low,
-    Real    brain_limit_high,
-    Real    *tal )
+    Real    brain_limit_high )
 {
     Real  stereotactic;
 
@@ -228,8 +227,8 @@ private  Real  convert_from_mm(
                    (mm - brain_dist_low) * (brain_limit_high - brain_limit_low)
                    / (brain_dist_high - brain_dist_low);
 
-    *tal = (stereotactic - limit_low) * (Real) n_planes /
-           (limit_high - limit_low);
+    return( (stereotactic - limit_low) * (Real) n_planes /
+            (limit_high - limit_low) );
 }
 
 public  void  convert_mm_to_talairach(
@@ -242,10 +241,10 @@ public  void  convert_mm_to_talairach(
 {
     check_initialized();
 
-    convert_from_mm( x_mm, nx, x_low, x_high, x_dist_minus_1, x_dist_1,
-                     -1.0, 1.0, x_tal );
-    convert_from_mm( y_mm + TALAIRACH_OFFSET, ny, y_low, y_high,
-                     y_dist_minus_1, y_dist_1, -1.0, 1.0, y_tal );
-    convert_from_mm( z_mm, nz, z_low, z_high, z_dist_0, z_dist_1,
-                     0.0, 1.0, z_tal );
+    *x_tal = convert_from_mm( x_mm, nx, x_low, x_high, x_dist_minus_1, x_dist_1,
+                              -1.0, 1.0 );
+    *y_tal = convert_from_mm( y_mm + TALAIRACH_OFFSET, ny, y_low, y_high,
+                              y_dist_minus_1, y_dist_1, -1.0, 1.0 );
+    *z_tal = convert_from_mm( z_mm, nz, z_low, z_high, z_dist_0, z_dist_1,
+                              0.0, 1.0 );
 }

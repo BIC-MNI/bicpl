@@ -10,7 +10,7 @@ public  void  scan_marker_to_voxels(
 {
     Real           low[N_DIMENSIONS], high[N_DIMENSIONS];
     int            min_voxel[N_DIMENSIONS], max_voxel[N_DIMENSIONS];
-    Real           voxel[N_DIMENSIONS];
+    Real           voxel[N_DIMENSIONS], min_v, max_v;
     int            c, int_voxel[N_DIMENSIONS];
 
     convert_world_to_voxel( volume,
@@ -27,17 +27,11 @@ public  void  scan_marker_to_voxels(
 
     for_less( c, 0, N_DIMENSIONS )
     {
-        if( IS_INT(low[c]) )
-            min_voxel[c] = (int) low[c];
-        else
-            min_voxel[c] = (int) low[c] + 1;
-        max_voxel[c] = (int) high[c];
+        min_v = MIN( low[c], high[c] );
+        max_v = MAX( low[c], high[c] );
 
-        if( min_voxel[c] > max_voxel[c] )
-        {
-            min_voxel[c] = ROUND( (low[c] + high[c]) / 2.0 );
-            max_voxel[c] = min_voxel[c];
-        }
+        min_voxel[c] = FLOOR( min_v + 0.5 );
+        max_voxel[c] = FLOOR( max_v + 0.5 );
     }
 
     for_inclusive( voxel[X], min_voxel[X], max_voxel[X] )

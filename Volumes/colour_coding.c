@@ -293,7 +293,7 @@ private  int  get_colour_table_piecewise_function(
         break;
 
     default:
-        print( "User defined colour map not implemented\n" );
+        print_error( "User defined colour map not implemented\n" );
         n_points = SIZEOF_STATIC_ARRAY( gray_scale_points );
         *points = gray_scale_points;
         break;

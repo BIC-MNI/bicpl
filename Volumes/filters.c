@@ -46,7 +46,7 @@ public  int  get_slice_weights_for_filter(
                     axis = c;
                 else
                 {
-                    print(
+                    print_error(
                        "Cannot do linear interpolation on non-ortho axis\n" );
                 }
             }

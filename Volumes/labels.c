@@ -1,6 +1,20 @@
 #include  <internal_volume_io.h>
 #include  <vols.h>
 
+public  void  set_label_volume_real_range(
+    Volume  volume )
+{
+    if( get_volume_data_type(volume) != FLOAT &&
+        get_volume_data_type(volume) != DOUBLE )
+    {
+        set_volume_real_range( volume,
+                               get_volume_voxel_min(volume),
+                               get_volume_voxel_max(volume) );
+    }
+    else
+        volume->real_range_set = FALSE;
+}
+
 public  Volume  create_label_volume(
     Volume  volume,
     nc_type type )
@@ -13,7 +27,7 @@ public  Volume  create_label_volume(
     label_volume = copy_volume_definition_no_alloc( volume, type, FALSE,
                                                     0.0, -1.0 );
 
-    label_volume->real_range_set = FALSE;
+    set_label_volume_real_range( label_volume );
 
     return( label_volume );
 }
@@ -319,6 +333,9 @@ public  Status  load_label_volume(
                                type, signed_flag, 0.0, 0.0,
                                FALSE, &label_volume, NULL );
     }
+
+    if( status == OK )
+        set_label_volume_real_range( label_volume );
 
     return( status );
 }

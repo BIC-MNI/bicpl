@@ -28,7 +28,7 @@ public  void  dilate_labeled_voxels_3d(
         min_inside_label > max_inside_label &&
         min_outside_label > max_outside_label )
     {
-        print( "Invalid parameters for dilation.\n" );
+        print_error( "Invalid parameters for dilation.\n" );
         return;
     }
 

@@ -142,9 +142,9 @@ private   int   Dx6[6] = { 1, 0, 0, -1,  0,  0 };
 private   int   Dy6[6] = { 0, 1, 0,  0, -1,  0 };
 private   int   Dz6[6] = { 0, 0, 1,  0,  0, -1 };
 
-private   int   Dx26[26] = { 1, 0, 0, -1,  0,  0 };
-private   int   Dy26[26] = { 0, 1, 0,  0, -1,  0 };
-private   int   Dz26[26] = { 0, 0, 1,  0,  0, -1 };
+private   int   Dx26[26];
+private   int   Dy26[26];
+private   int   Dz26[26];
 
 private  void  create_3D_neighbours()
 {

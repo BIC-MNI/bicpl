@@ -234,7 +234,7 @@ private  int    get_cross_section(
     if( n_points == 1 || n_points == 2 )
     {
 /*
-        print( "N points = %d\n", n_points );
+        print_error( "N points = %d\n", n_points );
         handle_internal_error( "clipping" );
 */
         n_points = 0;
@@ -695,7 +695,7 @@ private  BOOLEAN  get_filter_slices(
     {
         if( get_volume_n_dimensions( volume ) != N_DIMENSIONS )
         {
-            print(
+            print_error(
               "If volume not 3D, can only do nearest neighbour filtering.\n" );
             return( FALSE );
         }

@@ -79,7 +79,7 @@ private  void  scan_line_segment_to_voxels(
 {
     int        c, sizes[MAX_DIMENSIONS];
     Point      min_point, max_point;
-    Real       min_voxel[MAX_DIMENSIONS];
+    Real       min_voxel[MAX_DIMENSIONS], min_v, max_v;
     Real       max_voxel[MAX_DIMENSIONS];
     Real       x_world, y_world, z_world;
     int        int_voxel[MAX_DIMENSIONS];
@@ -108,8 +108,11 @@ private  void  scan_line_segment_to_voxels(
 
     for_less( c, 0, N_DIMENSIONS )
     {
-        int_min_voxel[c] = ROUND( min_voxel[c] ) - 1.0;
-        int_max_voxel[c] = ROUND( max_voxel[c] ) + 1.0;
+        min_v = MIN( min_voxel[c], max_voxel[c] );
+        max_v = MAX( min_voxel[c], max_voxel[c] );
+
+        int_min_voxel[c] = ROUND( min_v ) - 1.0;
+        int_max_voxel[c] = ROUND( max_v ) + 1.0;
 
         if( int_min_voxel[c] < 0 )
             int_min_voxel[c] = 0;

@@ -138,6 +138,8 @@ public  void   delete_render_storage(
     FREE( store );
 }
 
+/* ARGSUSED */
+
 public  void  render_volume_to_slice(
     int             n_dims1,
     int             sizes1[],
@@ -159,7 +161,7 @@ public  void  render_volume_to_slice(
     Real            **origins2,
     Real            x_axis2[],
     Real            y_axis2[],
-    BOOLEAN         interpolation_flag,    /* ARGSUSED */
+    BOOLEAN         interpolation_flag,
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     Colour          empty_colour,
