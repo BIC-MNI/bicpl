@@ -38,6 +38,15 @@ public  void  set_colour_coding_min_max(
     colour_coding->max_value = max_value;
 }
 
+public  void  get_colour_coding_min_max(
+    colour_coding_struct   *colour_coding,
+    Real                   *min_value,
+    Real                   *max_value )
+{
+    *min_value = colour_coding->min_value;
+    *max_value = colour_coding->max_value;
+}
+
 public  Colour  get_colour_coding_under_colour(
     colour_coding_struct   *colour_coding )
 {
