@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.8 1996-08-08 15:26:32 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.9 1996-08-08 15:35:32 david Exp $";
 #endif
 
 private  BOOLEAN  get_vertex_distances(
@@ -323,7 +323,7 @@ private  Real  get_average_curvature(
     Point   smoothing_points[] )
 {
     int      i;
-    Real     curvature, angle, sign_curvature;
+    Real     sum_curvature, curvature, angle, sign_curvature;
     Point    centroid;
     Vector   offset;
 
@@ -335,16 +335,17 @@ private  Real  get_average_curvature(
     else
         sign_curvature = 1.0;
 
-    curvature = 0.0;
+    sum_curvature = 0.0;
     for_less( i, 0, n_smoothing_points )
     {
         angle = RAD_TO_DEG * get_angle_between_points( &smoothing_points[i],
                                                        point, &centroid );
 
-        curvature += 180.0 - 2.0 * angle;
+        curvature = 180.0 - 2.0 * angle;
+        sum_curvature += curvature;
     }
 
-    curvature *= sign_curvature / (Real) n_smoothing_points;
+    curvature = sum_curvature * sign_curvature / (Real) n_smoothing_points;
 
     return( curvature );
 }
