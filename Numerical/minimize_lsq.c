@@ -14,11 +14,12 @@ public  Real   minimize_lsq(
     int              *node_list[],
     Real             constants[],
     Real             *node_weights[],
+    Real             max_step_size,
     int              n_iters,
     Real             node_values[] )
 {
     return( private_minimize_lsq( n_parameters, n_equations,
                                   n_nodes_per_equation, node_list,
-                                  constants, node_weights, n_iters,
-                                  node_values ) );
+                                  constants, node_weights, max_step_size,
+                                  n_iters, node_values ) );
 }

@@ -108,12 +108,13 @@ private  void  minimize_along_line(
     int         *node_list[],
     LSQ_TYPE    constants[],
     LSQ_TYPE    *node_weights[],
+    Real        max_step_size,
     int         n_nodes,
     Real        node_values[],
     Real        line_coefs[] )
 {
     int   node;
-    Real  a, b, t;
+    Real  a, b, t, step_size;
 
     evaluate_fit_along_line( n_equations, n_nodes_per_equation,
                              node_list, constants, node_weights,
@@ -123,6 +124,17 @@ private  void  minimize_along_line(
         return;
 
     t = -b / (2.0 * a);
+
+    if( max_step_size >= 0.0 )
+    {
+        step_size = 0.0;
+        for_less( node, 0, n_nodes )
+            step_size += t * t * line_coefs[node] * line_coefs[node];
+
+        step_size = sqrt( step_size );
+        if( step_size > max_step_size )
+            t *= max_step_size / step_size;
+    }
 
     for_less( node, 0, n_nodes )
         node_values[node] += t * line_coefs[node];
@@ -135,6 +147,7 @@ private  Real   private_minimize_lsq(
     int              *node_list[],
     LSQ_TYPE         constants[],
     LSQ_TYPE         *node_weights[],
+    Real             max_step_size,
     int              n_iters,
     Real             node_values[] )
 {
@@ -174,7 +187,7 @@ private  Real   private_minimize_lsq(
                                  n_parameters, node_values, derivs );
 
         minimize_along_line( n_equations, n_nodes_per_equation,
-                             node_list, constants, node_weights,
+                             node_list, constants, node_weights, max_step_size,
                              n_parameters, node_values, derivs );
 
         s = get_random_int( N_SAVES );
@@ -186,6 +199,7 @@ private  Real   private_minimize_lsq(
 
         minimize_along_line( n_equations, n_nodes_per_equation,
                              node_list, constants, node_weights,
+                             max_step_size,
                              n_parameters, node_values, derivs );
 
         if( ((iter+1) % update_rate) == 0 || iter == n_iters - 1 )
