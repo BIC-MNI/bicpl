@@ -1,9 +1,9 @@
-#include  <def_register.h>
+#include  <def_mni.h>
 
 private  void  render_rgb_flat(
     int           x_size,
     int           y_size,
-    Volume_type   *volume_start,
+    Volume_type   *volume_data,
     int           x_offsets[],
     int           y_offsets[],
     Colour        rgb_colour_map[],
@@ -12,18 +12,20 @@ private  void  render_rgb_flat(
 private  void  render_colour_map_flat(
     int           x_size,
     int           y_size,
-    Volume_type   *volume_start,
+    Volume_type   *volume_data,
     int           x_offsets[],
     int           y_offsets[],
     int           colour_map_offset,
     pixels_struct *pixels );
 
 public  void  render_volume_to_slice(
-    Volume_type   *volume_start,
+    Volume_type   *volume_data,
     int           x_stride,
     int           y_stride,
-    Real          x_thickness,
-    Real          y_thickness,
+    Real          x_start,
+    Real          y_start,
+    Real          x_delta,
+    Real          y_delta,
     Boolean       interpolation_flag,
     Colour        rgb_colour_map[],
     int           colour_index_offset,
@@ -37,6 +39,8 @@ public  void  render_volume_to_slice(
     static  int          x_size_alloced = 0;
     static  int          y_size_alloced = 0;
 
+    status = OK;
+
     x_size = pixels->x_size;
     y_size = pixels->y_size;
 
@@ -49,8 +53,11 @@ public  void  render_volume_to_slice(
 
     if( y_size > y_size_alloced )
     {
-        SET_ARRAY_SIZE( status, y_offsets, y_size_alloced, y_size,
-                        DEFAULT_CHUNK_SIZE );
+        if( status == OK )
+        {
+            SET_ARRAY_SIZE( status, y_offsets, y_size_alloced, y_size,
+                            DEFAULT_CHUNK_SIZE );
+        }
         y_size_alloced = y_size;
     }
 
@@ -62,10 +69,16 @@ public  void  render_volume_to_slice(
     else
     {
         for_less( x, 0, x_size )
-            x_offsets[x] = x_stride * (int) ((Real) x / x_thickness);
+        {
+            x_offsets[x] = x_stride * 
+                           ROUND( x_start + ((Real) x + 0.5) / x_delta );
+        }
 
         for_less( y, 0, y_size )
-            y_offsets[y] = y_stride * (int) ((Real) y / y_thickness);
+        {
+            y_offsets[y] = y_stride * 
+                           ROUND( y_start + ((Real) y + 0.5) / y_delta );
+        }
     }
 
     if( colour_map_mode )
@@ -73,14 +86,14 @@ public  void  render_volume_to_slice(
         if( interpolation_flag )
         {
 /*
-            render_colour_map_interpolated( volume_start, x_stride, y_stride,
+            render_colour_map_interpolated( volume_data, x_stride, y_stride,
                                             thickness, colour_index_offset,
                                             pixels );
 */
         }
         else
         {
-            render_colour_map_flat( x_size, y_size, volume_start,
+            render_colour_map_flat( x_size, y_size, volume_data,
                                     x_offsets, y_offsets, colour_index_offset,
                                     pixels );
         }
@@ -90,20 +103,20 @@ public  void  render_volume_to_slice(
         if( interpolation_flag )
         {
 /*
-            render_rgb_interpolated( volume_start, x_stride, y_stride,
+            render_rgb_interpolated( volume_data, x_stride, y_stride,
                                      thickness, rgb_colour_map, pixels );
 */
         }
         else
         {
-            render_rgb_flat( x_size, y_size, volume_start, x_offsets, y_offsets,
+            render_rgb_flat( x_size, y_size, volume_data, x_offsets, y_offsets,
                              rgb_colour_map, pixels );
         }
     }
 }
 
 private  void  render_colour_map_interpolated(
-    Volume_type   *volume_start,
+    Volume_type   *volume_data,
     int           x_stride,
     int           y_stride,
     Real          thickness[],
@@ -113,7 +126,7 @@ private  void  render_colour_map_interpolated(
 }
 
 private  void  render_rgb_interpolated(
-    Volume_type   *volume_start,
+    Volume_type   *volume_data,
     int           x_stride,
     int           y_stride,
     Real          thickness[],
@@ -125,7 +138,7 @@ private  void  render_rgb_interpolated(
 private  void  render_rgb_flat(
     int           x_size,
     int           y_size,
-    Volume_type   *volume_start,
+    Volume_type   *volume_data,
     int           x_offsets[],
     int           y_offsets[],
     Colour        rgb_colour_map[],
@@ -155,7 +168,7 @@ private  void  render_rgb_flat(
         else
         {
             prev_y_offset = y_offset;
-            voxel_ptr = &volume_start[y_offset];
+            voxel_ptr = &volume_data[y_offset];
 
             prev_x_offset = x_offsets[0] + 1;
             for_less( x, 0, x_size )
@@ -177,7 +190,7 @@ private  void  render_rgb_flat(
 private  void  render_colour_map_flat(
     int           x_size,
     int           y_size,
-    Volume_type   *volume_start,
+    Volume_type   *volume_data,
     int           x_offsets[],
     int           y_offsets[],
     int           colour_map_offset,
@@ -207,7 +220,7 @@ private  void  render_colour_map_flat(
         else
         {
             prev_y_offset = y_offset;
-            voxel_ptr = &volume_start[y_offset];
+            voxel_ptr = &volume_data[y_offset];
 
             prev_x_offset = x_offsets[0] + 1;
             for_less( x, 0, x_size )
