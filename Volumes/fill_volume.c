@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/fill_volume.c,v 1.5 1995-10-19 15:48:43 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/fill_volume.c,v 1.6 1996-05-07 13:50:20 david Exp $";
 #endif
 
 typedef struct
@@ -211,7 +211,7 @@ private   int   Dz26[26];
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  create_3D_neighbours()
+private  void  create_3D_neighbours( void )
 {
     int   x, y, z, n;
 
