@@ -1,0 +1,5 @@
+New in the public releases
+
+* on SGI, use of iris image library is optional;
+  see --with-irisimage-* options
+
