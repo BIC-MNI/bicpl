@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.34 1996-04-25 19:34:59 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.35 1996-04-26 14:31:37 david Exp $";
 #endif
 
 private  void  reverse_polygon_order(
@@ -732,8 +732,12 @@ public  int  get_neighbours_of_point(
     current_index_within_poly = vertex_index;
     neighbour_index_within_poly = (vertex_index-1+size)%size;
 
-    neighbours[0] = polygons->indices[POINT_INDEX(polygons->end_indices,poly,
-                          neighbour_index_within_poly)];
+    if( max_neighbours > 0 )
+    {
+        neighbours[0] = polygons->indices[POINT_INDEX(polygons->end_indices,
+                                          poly,neighbour_index_within_poly)];
+    }
+
     n_neighbours = 1;
 
     do
@@ -751,8 +755,9 @@ public  int  get_neighbours_of_point(
                 neighbours[n_neighbours] = polygons->indices[
                        POINT_INDEX(polygons->end_indices,current_poly,
                                    neighbour_index_within_poly)];
-                ++n_neighbours;
             }
+
+            ++n_neighbours;
         }
     }
     while( found && current_poly != poly );
