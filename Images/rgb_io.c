@@ -14,6 +14,9 @@ int iclose(IMAGE *image);
 
 int putrow(IMAGE *image, unsigned short *buffer,
                 unsigned int y, unsigned int z);
+
+int i_seterror( void (*func)() );
+
 #endif
 
 public  Status  input_rgb_file(
