@@ -84,20 +84,22 @@ private  void  raw_matrix_multiply(
     Real    **Bmat,
     Real    **Cmat )
 {
-    int i, j, k;
-
-    /* Zero the output matrix */
-
-    for_less( i, 0, ldim )
-        for_less( j, 0, ndim )
-            Cmat[i][j] = 0.0;
+    Real   sum;
+    int    i, j, k;
 
     /* Calculate the product */
 
     for_less( i, 0, ldim )
+    {
         for_less( j, 0, ndim )
+        {
+            sum = 0.0;
             for_less( k, 0, mdim )
-                 Cmat[i][j] += Amat[i][k] * Bmat[k][j];
+                sum += Amat[i][k] * Bmat[k][j];
+
+            Cmat[i][j] = sum;
+        }
+    }
 }
 
 

@@ -1,7 +1,7 @@
 #include  <bicpl.h>
 #include  <internal_volume_io.h>
 
-#define   N_DIMS                   1
+#define   N_DIMS                   2
 #define   DEFAULT_STEP_SIZE        1.0
 #define   DEFAULT_TOLERANCE        1.0e-6
 #define   DEFAULT_MAX_ITERATIONS   10000
@@ -57,10 +57,31 @@ private  Real  func(
     float  parameters[] )
 {
     Real   x;
+#if N_DIMS > 1
+    Real   y, x_len, y_len;
+#endif
 
     x = (Real) parameters[0];
 
+#if N_DIMS > 1
+    y = (Real) parameters[1];
+#endif
+
+#if N_DIMS == 1
     return( (x - 5.0) * (x + 4.0 ) * x * (x - 10) );
+#else
+    if( x == 0.0 )
+        x_len = 0.0;
+    else
+        x_len = x;
+
+    if( y == 0.0 )
+        y_len = 0.0;
+    else
+        y_len = y;
+
+    return( sin( x ) / x + sin( y ) / y );
+#endif
 }
 
 private  Real  minimize_function(

@@ -118,8 +118,11 @@ private  Real  try_amoeba(
 public  BOOLEAN  perform_amoeba(
     amoeba_struct  *amoeba )
 {
-    int     i, j, low, high, next_high;
-    Real    y_try, y_save;
+    int      i, j, low, high, next_high;
+    Real     y_try, y_save;
+    BOOLEAN  improvement_found;
+
+    improvement_found = TRUE;
 
     if( amoeba->values[0] > amoeba->values[1] )
     {
@@ -152,7 +155,7 @@ public  BOOLEAN  perform_amoeba(
     {
         ++amoeba->n_steps_no_improvement;
         if( ++amoeba->n_steps_no_improvement == N_STEPS_NO_IMPROVEMENT )
-            return( FALSE );
+            improvement_found = FALSE;
     }
     else
         amoeba->n_steps_no_improvement = 0;
@@ -192,5 +195,5 @@ public  BOOLEAN  perform_amoeba(
         }
     }
 
-    return( TRUE );
+    return( improvement_found );
 }

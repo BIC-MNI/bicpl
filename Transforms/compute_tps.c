@@ -88,7 +88,7 @@ private  void  makeL(
     for_less( i, 0, n_points+n_dims+1 )
     {
         for_less( j, 0, n_points+n_dims+1 )
-            ML[i][j]=0;
+            ML[i][j] = 0.0;
     }
     
     /* set rest of the K matrix as follows */
@@ -98,7 +98,8 @@ private  void  makeL(
         for_less( j, i+1, n_points )
         {
             fu = thin_plate_spline_U( positions[i], positions[j], n_dims );
-            ML[j][i] = ML[i][j] = fu;
+            ML[j][i] = fu;
+            ML[i][j] = fu;
         }
     }
  
@@ -106,46 +107,26 @@ private  void  makeL(
 
     for_less( i, 0, n_points )
     {
-        ML[n_points][i] = ML[i][n_points]   = 1.0;
+        ML[n_points][i] = 1.0;
+        ML[i][n_points] = 1.0;
         for_less( j, 0, n_dims )
-            ML[n_points+1+j][i] = ML[i][n_points+1+j] = positions[i][j];
+        {
+            ML[n_points+1+j][i] = positions[i][j];
+            ML[i][n_points+1+j] = positions[i][j];
+        }
     }
 }
 
 private  void  calculate_coe(
-    Real    **values,
+    Real    **YM,
     Real    **INVML,
     Real    **INVMLY,
     int     n_points,
     int     n_dims,
     int     n_values )
 {
-    int      i, j, v;
-    Real     temp, **YM;
-   
-    /* Y = ( V | 0 0 0)t */
-
-    ALLOC2D( YM, n_points, n_values );
-
-    for_less( i, 0, n_points )
-    {
-        for_less( v, 0, n_values )
-            YM[i][v] = values[i][v];
-    }
- 
     /* L_{-1} Y = (W|a_{1}, a_{x}, a_{y})^T. */
 
-    for_less( v, 0, n_values )
-    {
-        for_less( i, 0, n_points + n_dims + 1 )   /* for one row of matrix */
-        {
-            temp = 0;
-            for_less( j, 0,  n_points )
-                temp += INVML[i][j]*YM[j][v];
-
-            INVMLY[i][v] = temp;
-        }
-    }
-
-    FREE2D( YM );
+    matrix_multiply( n_points + n_dims + 1, n_points, n_values,
+                     INVML, YM, INVMLY );
 }

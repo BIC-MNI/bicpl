@@ -46,6 +46,7 @@ NUMERICAL_OBJ  = \
                  Numerical/gaussian.o \
                  Numerical/histogram.o \
                  Numerical/least_squares.o \
+                 Numerical/matrix_svd.o \
                  Numerical/numerical.o \
                  Numerical/statistics.o
 

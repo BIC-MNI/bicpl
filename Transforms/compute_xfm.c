@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.9  1995-07-07 18:16:45  david
-@MODIFIED   : *** empty log message ***
+@MODIFIED   : Revision 1.10  1995-07-07 18:18:23  david
+@MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.9  1995/07/07  18:16:45  david
+ * *** empty log message ***
+ *
  * Revision 1.8  1995/07/05  14:52:06  david
  * *** empty log message ***
  *

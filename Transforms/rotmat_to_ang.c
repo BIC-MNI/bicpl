@@ -67,15 +67,11 @@ Tue Jun  8 08:44:59 EST 1993 LC
 
 #define EPS  0.00000000001        /* epsilon, should be calculated */
 
-private void print_rot_error(
-    char *s, char * d1, int d2, int d3, int d4, int d5, int d6, int d7);
-
 public  BOOLEAN  rotmat_to_ang(
      Real  **rot_mat,
      Real  *ang )
 {
-    Real       rx,ry,rz, **t,**s, **R, **Rx, **Ry, **Rz, len, i,j,k;
-    Real       vx, vy, vz;
+    Real       rx, ry, rz, vx, vy, vz;
     int        m,n;
     Vector     x_axis, z_axis;
     Transform  rot_trans, z_rot, y_rot;
@@ -137,27 +133,25 @@ public  BOOLEAN  rotmat_to_ang(
     ry = -ry;
     rz = -rz;
 
-#define  DEBUG
 #ifdef DEBUG
+#define  DEBUG
 {
     BOOLEAN  error;
-    Real     **test;
+    Transform  test, Rx, Ry, Rz;
 
-    ALLOC2D( test, 4, 4 );      /* working space matrices */
-    ALLOC2D( Rx, 4, 4 );
-    ALLOC2D( Ry, 4, 4 );
-    ALLOC2D( Rz, 4, 4 );
+    make_rotation_transform( -rx, X, &Rx ) ;
+    make_rotation_transform( -ry, Y, &Ry ) ;
+    make_rotation_transform( -rz, Z, &Rz ) ;
 
-    nr_rotx( Rx, rx );
-    nr_roty( Ry, ry );
-    nr_rotz( Rz, rz );
-    matrix_multiply( 4, 4, 4, Ry, Rx, test );
-    matrix_multiply( 4, 4, 4, Rz, test, test );
+    concat_transforms( &test, &Rx, &Ry );
+    concat_transforms( &test, &test, &Rz );
+
 
     error = FALSE;
     for_less( m, 0, N_DIMENSIONS )
         for_less( n, 0, N_DIMENSIONS )
-            if( !numerically_close( test[m][n], rot_mat[m][n], 1.0e-3 ) )
+            if( !numerically_close( Transform_elem(test,m,n), 
+                                    Transform_elem(rot_trans,m,n), 1.0e-3 ) )
             {
                 error = TRUE;
             }
@@ -167,24 +161,19 @@ public  BOOLEAN  rotmat_to_ang(
         for_less( m, 0, N_DIMENSIONS )
         {
             for_less( n, 0, N_DIMENSIONS )
-                print( " %g", test[m][n] );
+                print( " %g", Transform_elem(test,m,n) );
             print( "\n" );
         }
         print( "\n" );
         for_less( m, 0, N_DIMENSIONS )
         {
             for_less( n, 0, N_DIMENSIONS )
-                print( " %g", rot_mat[m][n] );
+                print( " %g", Transform_elem(rot_trans,m,n) );
             print( "\n" );
         }
 
         handle_internal_error( "rotmat_to_ang" );
     }
-
-    FREE2D( test );
-    FREE2D( Rx );
-    FREE2D( Ry );
-    FREE2D( Rz );
 }
 #endif
 
@@ -314,20 +303,4 @@ public  void  nr_rotz(
 
     M[0][0] = cos(a);   M[0][1] = -sin(a);
     M[1][0] = sin(a);   M[1][1] = cos(a);
-}
-
-private  void  print_rot_error(
-    char   *s,
-    char   *d1,
-    int    d2,
-    int    d3,
-    int    d4,
-    int    d5,
-    int    d6,
-    int    d7 )
-{
-    print_error( "Error in file %s, line %d\n   ",d1,d2 );
-    print_error( s, d3,d4,d5,d6,d7 );
-    print_error( "\n" );
-    exit(EXIT_FAILURE);
 }
