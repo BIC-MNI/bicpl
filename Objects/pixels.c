@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.22 1995-10-19 15:47:52 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.23 1995-12-19 18:48:46 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -597,22 +597,22 @@ public  void  copy_pixel_region(
         switch( pixels->pixel_type )
         {
         case COLOUR_INDEX_8BIT_PIXEL:
-            (void) memcpy( &PIXEL_COLOUR_INDEX_8(*new_pixels,0,y_dest),
-                           &PIXEL_COLOUR_INDEX_8(*pixels,x_min,y),
+            (void) memcpy( (void *) &PIXEL_COLOUR_INDEX_8(*new_pixels,0,y_dest),
+                           (void *) &PIXEL_COLOUR_INDEX_8(*pixels,x_min,y),
                            x_size *
                                sizeof(PIXEL_COLOUR_INDEX_8(*new_pixels,0,0)) );
             break;
 
         case COLOUR_INDEX_16BIT_PIXEL:
-            (void) memcpy( &PIXEL_COLOUR_INDEX_16(*new_pixels,0,y_dest),
-                           &PIXEL_COLOUR_INDEX_16(*pixels,x_min,y),
+            (void) memcpy( (void *)&PIXEL_COLOUR_INDEX_16(*new_pixels,0,y_dest),
+                           (void *) &PIXEL_COLOUR_INDEX_16(*pixels,x_min,y),
                            x_size *
                                sizeof(PIXEL_COLOUR_INDEX_16(*new_pixels,0,0)) );
             break;
 
         case RGB_PIXEL:
-            (void) memcpy( &PIXEL_RGB_COLOUR(*new_pixels,0,y_dest),
-                           &PIXEL_RGB_COLOUR(*pixels,x_min,y),
+            (void) memcpy( (void *) &PIXEL_RGB_COLOUR(*new_pixels,0,y_dest),
+                           (void *) &PIXEL_RGB_COLOUR(*pixels,x_min,y),
                            x_size *
                                sizeof(PIXEL_RGB_COLOUR(*new_pixels,0,0)) );
             break;
