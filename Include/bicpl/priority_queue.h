@@ -15,9 +15,6 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/priority_queue.h,v 1.1 2000-02-06 15:30:36 stever Exp $";
-#endif
 
 #include  <volume_io/arrays.h>
 

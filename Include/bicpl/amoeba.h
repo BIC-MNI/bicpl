@@ -17,9 +17,6 @@
 
 #include  <volume_io.h>
 
-#ifndef lint
-static char amoeba_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/amoeba.h,v 1.1 2000-02-06 15:30:34 stever Exp $";
-#endif
 
 typedef  Real    (*amoeba_function) ( void *, float [] );
 

@@ -15,9 +15,6 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char vols_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/vols.h,v 1.1 2000-02-06 15:30:37 stever Exp $";
-#endif
 
 #include  <volume_io.h>
 #include  <bicpl/colour_coding.h>

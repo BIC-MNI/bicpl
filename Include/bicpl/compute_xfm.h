@@ -22,7 +22,10 @@
 @CALLS      :
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.h,v $
-@MODIFIED   : Revision 1.1  2000-02-06 15:30:35  stever
+@MODIFIED   : Revision 1.2  2002-05-15 13:17:55  stever
+@MODIFIED   : Remove rcsid strings.
+@MODIFIED   :
+@MODIFIED   : Revision 1.1  2000/02/06 15:30:35  stever
 @MODIFIED   : rearranged header file structure; add gcc -Wall fixes
 @MODIFIED   :
 @MODIFIED   : Revision 1.3  1995/07/31 13:44:40  david
@@ -48,9 +51,6 @@
  * 
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char compute_xfm_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/compute_xfm.h,v 1.1 2000-02-06 15:30:35 stever Exp $";
-#endif
 
 /* Transformation types */
 typedef enum {

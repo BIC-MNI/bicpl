@@ -15,9 +15,6 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char minimization_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/minimization.h,v 1.1 2000-02-06 15:30:36 stever Exp $";
-#endif
 
 typedef struct
 {

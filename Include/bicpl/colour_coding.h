@@ -15,9 +15,6 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char colour_coding_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/colour_coding.h,v 1.1 2000-02-06 15:30:35 stever Exp $";
-#endif
 
 #include  <bicpl/objects.h>
 

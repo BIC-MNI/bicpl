@@ -28,9 +28,6 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char statistics_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/statistics.h,v 1.1 2000-02-06 15:30:37 stever Exp $";
-#endif
 
 #include  <volume_io.h>
 

@@ -15,9 +15,6 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char objects_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/objects.h,v 1.1 2000-02-06 15:30:36 stever Exp $";
-#endif
 
 #include  <volume_io.h>
 #include  <bicpl/obj_defs.h>

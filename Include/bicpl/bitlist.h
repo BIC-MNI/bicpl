@@ -29,9 +29,6 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char bitlist_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/bitlist.h,v 1.1 2000-02-06 15:30:35 stever Exp $";
-#endif
 
 #include  <volume_io.h>
 

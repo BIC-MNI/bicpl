@@ -15,9 +15,6 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char bintree_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/bintree.h,v 1.2 2001-01-23 08:55:16 stever Exp $";
-#endif
 
 #include  <volume_io/geometry.h>
 

@@ -15,9 +15,6 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char bicpl_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl.h,v 1.6 2001-04-21 17:06:52 stever Exp $";
-#endif
 
 #include  <bicpl/data_structures.h>
 #include  <bicpl/geom.h>
