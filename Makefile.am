@@ -1,4 +1,4 @@
-SUBDIRS = Include Data_structures Transforms Geometry Numerical Objects \
+SUBDIRS = Include Deform Data_structures Transforms Geometry Numerical Objects \
 	Prog_utils Volumes Marching_cubes Images . tools Documentation \
 	Testing
 
@@ -13,7 +13,7 @@ EXTRA_DIST = README.release \
 
 # version info argument is CURRENT[:REVISION[:AGE]]
 # see README.release for update instructions
-libbicpl_la_LDFLAGS = -version-info 1:1:0
+libbicpl_la_LDFLAGS = -version-info 1:4:0
 
 lib_LTLIBRARIES = libbicpl.la
 
@@ -28,6 +28,7 @@ libbicpl_la_LIBADD = \
 	$(top_builddir)/Marching_cubes/libbicpl_mc.la \
 	$(top_builddir)/Objects/libbicpl_o.la \
 	$(top_builddir)/Transforms/libbicpl_t.la \
+	$(top_builddir)/Deform/libbicpl_deform.la \
 	$(BIC_LIBS) $(imageio_LIBS)
 
 

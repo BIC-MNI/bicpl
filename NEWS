@@ -1,3 +1,7 @@
+New in Release 1.4.0
+
+* added code from the former libdavid for object-volume intersections.
+
 New in Release 1.3.9
 
 * Fixes for build.

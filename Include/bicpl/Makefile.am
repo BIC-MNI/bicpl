@@ -12,6 +12,8 @@ pkginclude_HEADERS = \
 	colours.h \
 	compute_xfm.h \
 	data_structures.h \
+	deform.h \
+	deform_prototypes.h \
 	ds_prototypes.h \
 	geom.h \
 	geom_prototypes.h \
