@@ -14,7 +14,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.7 1996-09-14 15:56:38 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.8 1996-09-14 15:59:29 david Exp $";
 #endif
 
 #include  <internal_volume_io.h>
@@ -125,7 +125,7 @@ private  void  test_solution(
 }
 #endif
 
-private  void   get_two_point_prediction(
+private  BOOLEAN   get_two_point_prediction(
     Real   x,
     Real   y,
     Real   x1,
@@ -150,7 +150,7 @@ private  void   get_two_point_prediction(
 
     s_len = sx * sx + sy * sy;
     if( s_len == 0.0 )
-        handle_internal_error( "get_two_point_prediction" );
+        return( FALSE );
 
     s = (cax * sx + cay * sy) / s_len;
     t = (cax * (-sy) + cay * sx) / s_len;
@@ -163,6 +163,8 @@ private  void   get_two_point_prediction(
     *ywy1 = 1.0 - s;
     *ywx2 = t;
     *ywy2 = s;
+
+    return( TRUE );
 }
 
 public  BOOLEAN  get_prediction_weights_2d(
@@ -196,18 +198,20 @@ public  BOOLEAN  get_prediction_weights_2d(
     {
         for_less( p2, p1+1, n_points )
         {
-            get_two_point_prediction( x, y, xs[p1], ys[p1], xs[p2], ys[p2],
-                                      &xwx1, &xwy1, &xwx2, &xwy2,
-                                      &ywx1, &ywy1, &ywx2, &ywy2 );
-            x_weights[0][p1] += xwx1;
-            x_weights[1][p1] += xwy1;
-            x_weights[0][p2] += xwx2;
-            x_weights[1][p2] += xwy2;
-            y_weights[0][p1] += ywx1;
-            y_weights[1][p1] += ywy1;
-            y_weights[0][p2] += ywx2;
-            y_weights[1][p2] += ywy2;
-            ++n_pairs;
+            if( get_two_point_prediction( x, y, xs[p1], ys[p1], xs[p2], ys[p2],
+                                          &xwx1, &xwy1, &xwx2, &xwy2,
+                                          &ywx1, &ywy1, &ywx2, &ywy2 ) )
+            {
+                x_weights[0][p1] += xwx1;
+                x_weights[1][p1] += xwy1;
+                x_weights[0][p2] += xwx2;
+                x_weights[1][p2] += xwy2;
+                y_weights[0][p1] += ywx1;
+                y_weights[1][p1] += ywy1;
+                y_weights[0][p2] += ywx2;
+                y_weights[1][p2] += ywy2;
+                ++n_pairs;
+            }
         }
     }
 
