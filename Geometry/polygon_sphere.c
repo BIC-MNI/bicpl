@@ -240,9 +240,9 @@ private  void  get_sphere_point(
 {
     Real      dx, dy, dz;
 
-    dx = x_size * sin( (double) up * PI ) * cos( (double) around * 2.0 *PI);
-    dy = y_size * sin( (double) up * PI ) * sin( (double) around * 2.0 *PI);
-    dz = z_size * cos( (double) up * PI );
+    dx = x_size * cos( (double) up * PI );
+    dy = y_size * sin( (double) up * PI ) * cos( (double) around * 2.0 *PI);
+    dz = z_size * sin( (double) up * PI ) * sin( (double) around * 2.0 *PI);
 
     fill_Point( *point, Point_x(*centre) + dx,
                         Point_y(*centre) + dy,
