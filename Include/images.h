@@ -1,7 +1,7 @@
 #ifndef   DEF_IMAGES_H
 #define   DEF_IMAGES_H
 
-#include  <bicpl.h>
+#include  <objects.h>
 
 #ifndef  public
 #define       public   extern

@@ -88,6 +88,8 @@ public  Status  input_rgb_file(
     }
 
     iclose(iimage);
+#else
+    print_error( "input_rgb_file(), missing image library.\n" );
 #endif
     return( OK );
 }
@@ -160,6 +162,8 @@ public  Status  output_rgb_file(
     }
 
     iclose(oimage);
+#else
+    print_error( "output_rgb_file(), missing image library.\n" );
 #endif
 
     return( OK );

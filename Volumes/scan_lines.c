@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.7 1996-05-24 18:42:45 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.8 1997-08-13 13:21:56 david Exp $";
 #endif
 
 private  void  scan_line_segment_to_voxels(
@@ -129,10 +129,12 @@ private  void  scan_line_segment_to_voxels(
     Point      min_point, max_point;
     Real       min_voxel[MAX_DIMENSIONS], min_v, max_v;
     Real       max_voxel[MAX_DIMENSIONS];
+    Real       voxel[MAX_DIMENSIONS];
     Real       x_world, y_world, z_world;
     int        int_voxel[MAX_DIMENSIONS];
     int        int_min_voxel[MAX_DIMENSIONS];
     int        int_max_voxel[MAX_DIMENSIONS];
+    int        tx, ty, tz, dim;
     Point      world_voxel;
 
     for_less( c, 0, N_DIMENSIONS )
@@ -143,24 +145,42 @@ private  void  scan_line_segment_to_voxels(
                  ((Real) MAX(Point_coord(*p1,c),Point_coord(*p2,c)) + radius);
     }
 
-    convert_world_to_voxel( volume,
-                            (Real) Point_x(min_point),
-                            (Real) Point_y(min_point),
-                            (Real) Point_z(min_point), min_voxel );
-    convert_world_to_voxel( volume,
-                            (Real) Point_x(max_point), 
-                            (Real) Point_y(max_point),
-                            (Real) Point_z(max_point), max_voxel );
-
     get_volume_sizes( volume, sizes );
+
+    for_less( tx, 0, 2 )
+    for_less( ty, 0, 2 )
+    for_less( tz, 0, 2 )
+    {
+        convert_world_to_voxel( volume,
+                                (tx == 0) ? RPoint_x(min_point) :
+                                            RPoint_x(max_point),
+                                (ty == 0) ? RPoint_y(min_point) :
+                                            RPoint_y(max_point),
+                                (tz == 0) ? RPoint_z(min_point) :
+                                            RPoint_z(max_point),
+                                voxel );
+
+        for_less( dim, 0, N_DIMENSIONS )
+        {
+            if( tx == 0 && ty == 0 && tz == 0 )
+            {
+                min_voxel[dim] = voxel[dim];
+                max_voxel[dim] = voxel[dim];
+            }
+            else if( voxel[dim] < min_voxel[dim] )
+                 min_voxel[dim] = voxel[dim];
+            else if( voxel[dim] > max_voxel[dim] )
+                 max_voxel[dim] = voxel[dim];
+        }
+    }
 
     for_less( c, 0, N_DIMENSIONS )
     {
         min_v = MIN( min_voxel[c], max_voxel[c] );
         max_v = MAX( min_voxel[c], max_voxel[c] );
 
-        int_min_voxel[c] = ROUND( min_v ) - 1;
-        int_max_voxel[c] = ROUND( max_v ) + 1;
+        int_min_voxel[c] = ROUND( min_v );
+        int_max_voxel[c] = ROUND( max_v );
 
         if( int_min_voxel[c] < 0 )
             int_min_voxel[c] = 0;

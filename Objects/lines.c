@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.16 1996-12-09 20:20:38 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.17 1997-08-13 13:21:53 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -285,4 +285,69 @@ public  Real  get_lines_length(
     }
 
     return( len );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : 
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      :  
+@CREATED    : Jul. 16, 1997    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void  get_lines_arc_point(
+    lines_struct  *lines,
+    Real          arc_length,
+    Point         *point )
+{
+    Real     len, segment_length, ratio;
+    int      line, i, p0, p1, size;
+    BOOLEAN  found;
+
+    if( arc_length < 0.0 )
+    {
+        print_error( "get_lines_arc_point: arc_length < 0.0, using 0.0\n" );
+        arc_length = 0.0;
+    }
+
+    len = 0.0;
+    found = FALSE;
+
+    for_less( line, 0, lines->n_items )
+    {
+        size = GET_OBJECT_SIZE( *lines, line );
+
+        for_less( i, 0, size-1 )
+        {
+            p0 = lines->indices[POINT_INDEX(lines->end_indices,line,i)];
+            p1 = lines->indices[POINT_INDEX(lines->end_indices,line,i+1)];
+            segment_length = distance_between_points( &lines->points[p0],
+                                                      &lines->points[p1] );
+            len += segment_length;
+
+            if( len > arc_length )
+            {
+                found = TRUE;
+                break;
+            }
+        }
+
+        if( found )
+            break;
+    }
+
+    if( !found )
+    {
+        print_error( "get_lines_arc_point: arc_length too large, using end\n" );
+        *point = lines->points[p1];
+        return;
+    }
+
+    ratio = (len - arc_length) / segment_length;
+    INTERPOLATE_POINTS( *point, lines->points[p1], lines->points[p0], ratio );
 }

@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.26 1996-12-09 20:20:30 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.27 1997-08-13 13:21:50 david Exp $";
 #endif
 
 
@@ -34,6 +34,33 @@ private  BOOLEAN  point_within_polygon_2d(
     Point   points[],
     Vector  *polygon_normal );
 
+private  int   n_dirs = 0;
+private  Real  *dirs = NULL;
+
+private   void  initialize_intersect_directions( void )
+{
+    if( n_dirs > 0 )
+    {
+        FREE( dirs );
+        n_dirs = 0;
+    }
+}
+
+public  Real  *get_intersect_directions( void )
+{
+    int  i;
+    Real *d;
+
+    if( n_dirs > 0 )
+    {
+        ALLOC( d, n_dirs );
+        for_less( i, 0, n_dirs )
+            d[i] = dirs[i];
+    }
+
+    return( d );
+}
+
 private  BOOLEAN   intersect_ray_triangle(
     Point            *ray_origin,
     Vector           *ray_direction,
@@ -46,6 +73,7 @@ private  BOOLEAN   intersect_ray_triangle(
     Real     v01x, v01y, v01z, v02x, v02y, v02z, nx, ny, nz, rx, ry, rz;
     Real     vx, vy, vz;
     Real     tx0, ty0, tz0, tx1, ty1, tz1, tx2, ty2, tz2;
+    Real     sign;
 
     tx0 = RPoint_x( *point0 ) - RPoint_x( *ray_origin );
     ty0 = RPoint_y( *point0 ) - RPoint_y( *ray_origin );
@@ -101,6 +129,17 @@ private  BOOLEAN   intersect_ray_triangle(
         return( FALSE );
 
     *dist = (nx * tx0 + ny * ty0 + nz * tz0)/ n_dot_d;
+
+    if( *dist >= 0.0 )
+    {
+        if( n_dot_d < 0.0 )
+            sign = -1.0;
+        else if( n_dot_d == 0.0 )
+            sign = 0.0;
+        else
+            sign = 1.0;
+        ADD_ELEMENT_TO_ARRAY( dirs, n_dirs, sign, DEFAULT_CHUNK_SIZE );
+    }
 
     return( *dist >= 0.0 );
 }
@@ -986,6 +1025,8 @@ public  int  intersect_ray_with_object(
     polygons_struct  *polygons;
     quadmesh_struct  *quadmesh;
     int              i, n_intersections, m, n, n_objects;
+
+    initialize_intersect_directions();
 
     n_intersections = 0;
     if( obj_index != (int *) NULL )

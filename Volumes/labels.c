@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.37 1997-06-07 01:12:58 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.38 1997-08-13 13:21:55 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -535,6 +535,8 @@ private  void  get_input_volume_label_limits(
 @MODIFIED   : May. 6, 1997    D. MacDonald  -  now loads one slice at a time,
                                                and does not overwrite labels
                                                with 0's.
+@MODIFIED   : Jun. 6, 1997    D. MacDonald  -  special case, fast, for matching
+                                               coordinate systems
 ---------------------------------------------------------------------------- */
 
 public  Status  load_label_volume(
@@ -547,14 +549,17 @@ public  Status  load_label_volume(
     int                   limits[2][N_DIMENSIONS];
     int                   file_sizes[N_DIMENSIONS];
     Real                  file_value, xw, yw, zw, amount_done;
+    int                   int_y_voxel[N_DIMENSIONS];
     Real                  y_voxel[N_DIMENSIONS];
     Real                  voxel[N_DIMENSIONS], z_dx, z_dy, z_dz;
     Real                  y_dx, y_dy, y_dz;
+    int                   int_z_dx, int_z_dy, int_z_dz;
+    int                   int_y_dx, int_y_dy, int_y_dz;
     Real                  start_voxel[N_DIMENSIONS];
     Real                  end_voxel[N_DIMENSIONS];
     Volume                file_volume, file_volume_3d;
     Minc_file             file;
-    BOOLEAN               is_linear;
+    BOOLEAN               is_linear, is_integer_step;
     progress_struct       progress;
 
     check_alloc_label_data( label_volume );
@@ -590,6 +595,7 @@ public  Status  load_label_volume(
                 get_voxel_to_world_transform(label_volume) ) == LINEAR &&
                 get_transform_type(
                 get_voxel_to_world_transform(file_volume_3d) ) == LINEAR;
+    is_integer_step = FALSE;
 
     if( is_linear )
     {
@@ -612,6 +618,19 @@ public  Status  load_label_volume(
         y_dx = end_voxel[0] - start_voxel[0];
         y_dy = end_voxel[1] - start_voxel[1];
         y_dz = end_voxel[2] - start_voxel[2];
+
+        is_integer_step = FALSE;
+        if( IS_INT(z_dx) && IS_INT(z_dy) && IS_INT(z_dz) &&
+            IS_INT(y_dx) && IS_INT(y_dy) && IS_INT(y_dz) )
+        {
+            is_integer_step = TRUE;
+            int_z_dx = (int) z_dx;
+            int_z_dy = (int) z_dy;
+            int_z_dz = (int) z_dz;
+            int_y_dx = (int) y_dx;
+            int_y_dy = (int) y_dy;
+            int_y_dz = (int) y_dz;
+        }
     }
 
     /*--- input label slices */
@@ -645,16 +664,42 @@ public  Status  load_label_volume(
                         y_voxel[X] += 0.5;
                         y_voxel[Y] += 0.5;
                         y_voxel[Z] += 0.5;
+
+                        if( is_integer_step )
+                        {
+                            int_y_voxel[X] = FLOOR( y_voxel[X] );
+                            int_y_voxel[Y] = FLOOR( y_voxel[Y] );
+                            int_y_voxel[Z] = FLOOR( y_voxel[Z] );
+                        }
                     }
                     else
                     {
-                        y_voxel[X] += y_dx;
-                        y_voxel[Y] += y_dy;
-                        y_voxel[Z] += y_dz;
+                        if( is_integer_step )
+                        {
+                            int_y_voxel[X] += int_y_dx;
+                            int_y_voxel[Y] += int_y_dy;
+                            int_y_voxel[Z] += int_y_dz;
+                        }
+                        else
+                        {
+                            y_voxel[X] += y_dx;
+                            y_voxel[Y] += y_dy;
+                            y_voxel[Z] += y_dz;
+                        }
                     }
-                    voxel[X] = y_voxel[X];
-                    voxel[Y] = y_voxel[Y];
-                    voxel[Z] = y_voxel[Z];
+
+                    if( is_integer_step )
+                    {
+                        int_voxel[X] = int_y_voxel[X];
+                        int_voxel[Y] = int_y_voxel[Y];
+                        int_voxel[Z] = int_y_voxel[Z];
+                    }
+                    else
+                    {
+                        voxel[X] = y_voxel[X];
+                        voxel[Y] = y_voxel[Y];
+                        voxel[Z] = y_voxel[Z];
+                    }
                 }
 
                 for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
@@ -668,24 +713,39 @@ public  Status  load_label_volume(
                                                    &xw, &yw, &zw );
                         convert_world_to_voxel( file_volume_3d, xw, yw, zw,
                                                 voxel );
+                        voxel[X] += 0.5;
+                        voxel[Y] += 0.5;
+                        voxel[Z] += 0.5;
                     }
-                    else
+                    else if( label_voxel[Z] != limits[0][Z] )
                     {
-                        voxel[X] += z_dx;
-                        voxel[Y] += z_dy;
-                        voxel[Z] += z_dz;
+                        if( is_integer_step )
+                        {
+                            int_voxel[X] += int_z_dx;
+                            int_voxel[Y] += int_z_dy;
+                            int_voxel[Z] += int_z_dz;
+                        }
+                        else
+                        {
+                            voxel[X] += z_dx;
+                            voxel[Y] += z_dy;
+                            voxel[Z] += z_dz;
+                        }
                     }
 
-                    int_voxel[X] = FLOOR( voxel[X] );
-                    int_voxel[Y] = FLOOR( voxel[Y] );
-                    int_voxel[Z] = FLOOR( voxel[Z] );
+                    if( !is_integer_step )
+                    {
+                        int_voxel[X] = FLOOR( voxel[X] );
+                        int_voxel[Y] = FLOOR( voxel[Y] );
+                        int_voxel[Z] = FLOOR( voxel[Z] );
+                    }
 
-                    if( int_voxel[0] == slice &&
-                        int_voxel[1] >= 0 && int_voxel[1] < file_sizes[1] &&
-                        int_voxel[2] >= 0 && int_voxel[2] < file_sizes[2] )
+                    if( int_voxel[X] == slice &&
+                        int_voxel[Y] >= 0 && int_voxel[Y] < file_sizes[Y] &&
+                        int_voxel[Z] >= 0 && int_voxel[Z] < file_sizes[Z] )
                     {
                         file_value = get_volume_real_value( file_volume,
-                                        int_voxel[1], int_voxel[2], 0, 0, 0 );
+                                        int_voxel[Y], int_voxel[Z], 0, 0, 0 );
 
                         if( file_value > 0.0 )
                         {

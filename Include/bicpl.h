@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char bicpl_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl.h,v 1.3 1995-07-31 13:44:50 david Exp $";
+static char bicpl_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl.h,v 1.4 1997-08-13 13:21:48 david Exp $";
 #endif
 
 #include  <data_structures.h>
@@ -26,5 +26,6 @@ static char bicpl_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/b
 #include  <objects.h>
 #include  <prog_utils.h>
 #include  <vols.h>
+#include  <images.h>
 
 #endif

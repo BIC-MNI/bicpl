@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_objects.c,v 1.5 1996-05-24 18:42:49 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_objects.c,v 1.6 1997-08-13 13:21:56 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -54,6 +54,12 @@ public  void  scan_object_to_volume(
         {
         case POLYGONS:
             scan_polygons_to_voxels( get_polygons_ptr(current_object),
+                                     volume, label_volume,
+                                     label, max_distance );
+            break;
+
+        case QUADMESH:
+            scan_quadmesh_to_voxels( get_quadmesh_ptr(current_object),
                                      volume, label_volume,
                                      label, max_distance );
             break;
