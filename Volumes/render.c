@@ -44,19 +44,19 @@ private  void  render_colour_map_flat(
 
 public  void  render_volume_to_slice(
     Volume_type     *volume_data,
-    int             x_stride,
-    int             y_stride,
-    Real            x_start,
-    Real            y_start,
-    Real            x_delta,
-    Real            y_delta,
+    int             x_stride1,
+    int             y_stride1,
+    Real            x_start1,
+    Real            y_start1,
+    Real            x_delta1,
+    Real            y_delta1,
     Volume_type     *second_volume_data,
     int             x_stride2,
     int             y_stride2,
-    Real            x_trans_to_second,
-    Real            y_trans_to_second,
-    Real            x_scale_to_second,
-    Real            y_scale_to_second,
+    Real            x_start2,
+    Real            y_start2,
+    Real            x_delta2,
+    Real            y_delta2,
     Boolean         interpolation_flag,
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
@@ -100,24 +100,24 @@ public  void  render_volume_to_slice(
     {
         for_less( x, 0, x_size )
         {
-            x_voxel = x_start + ((Real) x + 0.5) / x_delta;
-            x_offsets[x] = x_stride * ROUND( x_voxel );
+            x_voxel = x_start1 + ((Real) x + 0.5) / x_delta1;
+            x_offsets[x] = x_stride1 * ROUND( x_voxel );
 
             if( second_volume_data != (Volume_type *) NULL )
             {
-                x_voxel = x_scale_to_second * x_voxel + x_trans_to_second;
+                x_voxel = x_start2 + ((Real) x + 0.5) / x_delta2;
                 second_x_offsets[x] = x_stride2 * ROUND( x_voxel );
             }
         }
 
         for_less( y, 0, y_size )
         {
-            y_voxel = y_start + ((Real) y + 0.5) / y_delta;
-            y_offsets[y] = y_stride * ROUND( y_voxel );
+            y_voxel = y_start1 + ((Real) y + 0.5) / y_delta1;
+            y_offsets[y] = y_stride1 * ROUND( y_voxel );
 
             if( second_volume_data != (Volume_type *) NULL )
             {
-                y_voxel = y_scale_to_second * y_voxel + y_trans_to_second;
+                y_voxel = y_start2 + ((Real) y + 0.5) / y_delta2;
                 second_y_offsets[y] = y_stride2 * ROUND( y_voxel );
             }
         }
