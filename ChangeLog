@@ -1,4 +1,10 @@
-Wed Jan 19 01:52:10 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+Wed Jan 19 02:35:33 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* configure.in: search -lnetcdf for `ncopen' rather than
+	`nc_open', as the latter does not appear in NetCDF 2.3.
+
+	* configure.in: remove AC_PROG_RANLIB; rendered obsolete by
+	AM_PROG_LIBTOOL.
 
 	* */.cvsignore
 	* AUTHORS
