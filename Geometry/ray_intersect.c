@@ -5,7 +5,7 @@
 
 #define  MAX_POINTS    30
 
-#define  TOLERANCE  1.0e-6
+#define  TOLERANCE  1.0e-3
 
 private  BOOLEAN  point_within_triangle_2d(
     Point   *pt,
@@ -128,6 +128,7 @@ private  BOOLEAN  point_within_triangle_2d(
     SUB_VECTORS( edges[1], points[2], points[1] );
     SUB_VECTORS( edges[2], points[0], points[2] );
     CROSS_VECTORS( normal, edges[2], edges[0] );
+    NORMALIZE_VECTOR( normal, normal );
 
     inside = TRUE;
 
@@ -135,6 +136,7 @@ private  BOOLEAN  point_within_triangle_2d(
     {
         SUB_POINTS( offset, *pt, points[i] );
         CROSS_VECTORS( edge_normal, edges[i], normal );
+        NORMALIZE_VECTOR( edge_normal, edge_normal );
         if( DOT_VECTORS( offset, edge_normal ) > TOLERANCE )
         {
             inside = FALSE;
@@ -198,14 +200,18 @@ private  BOOLEAN  point_within_polygon_2d(
         x2 = Point_coord(points[i],i1);
         y2 = Point_coord(points[i],i2);
 
-        if( !( (y1 > y && y2 > y) || (y1 < y && y2 < y) || (x1 > x && x2 > x)) )
+        if( !( (y1 > y + TOLERANCE && y2 > y + TOLERANCE) ||
+               (y1 < y + TOLERANCE && y2 < y + TOLERANCE) ||
+               (x1 > x + TOLERANCE && x2 > x + TOLERANCE)) )
         {
             dy = y2 - y1;
 
-            if( dy == 0.0 )
+            if( dy >= -TOLERANCE && dy <= TOLERANCE )
             {
-                if( y1 == y && ( (x1 <= x && x2 >= x) ||
-                                 (x1 >= x && x2 <= x) ) )
+                if( (y1 >= y - TOLERANCE && y1 <= y + TOLERANCE ||
+                     y2 >= y - TOLERANCE && y2 <= y + TOLERANCE) &&
+                    ( (x1 <= x + TOLERANCE && x2 >= x - TOLERANCE) ||
+                      (x1 >= x - TOLERANCE && x2 <= x + TOLERANCE) ) )
                 {
                     intersects = TRUE;
                     break;
@@ -213,21 +219,21 @@ private  BOOLEAN  point_within_polygon_2d(
             }
             else
             {
-                if( y1 == y )
+                if( y1 >= y - TOLERANCE && y1 <= y + TOLERANCE )
                 {
-                    if( y2 > y )
+                    if( y2 > y1 && x1 <= x + TOLERANCE )
                     {
                         cross = !cross;
                     }
                 }
-                else if( y2 == y )
+                else if( y2 >= y - TOLERANCE && y2 <= y + TOLERANCE )
                 {
-                    if( y1 > y )
+                    if( y1 > y2 && x2 <= x + TOLERANCE )
                     {
                         cross = !cross;
                     }
                 }
-                else if( x1 <= x && x2 <= x )
+                else if( x1 <= x + TOLERANCE && x2 <= x + TOLERANCE )
                 {
                     cross = !cross;
                 }
@@ -235,12 +241,12 @@ private  BOOLEAN  point_within_polygon_2d(
                 {
                     x_inter = x1 + (y - y1) / dy * (x2 - x1);
 
-                    if( x_inter == x )
+                    if( x_inter >= x - TOLERANCE && x_inter <= x + TOLERANCE )
                     {
                         intersects = TRUE;
                         break;
                     }
-                    else if( x_inter < x )
+                    else if( x_inter < x + TOLERANCE )
                     {
                         cross = !cross;
                     }
