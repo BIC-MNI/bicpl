@@ -17,7 +17,7 @@
 #include  <sys/time.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.12 2000-02-06 15:30:47 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.13 2001-02-05 22:03:48 stever Exp $";
 #endif
 
 #define  MAX_RAND  2147483648.0
@@ -39,9 +39,6 @@ private  BOOLEAN  initialized = FALSE;
 
 public  void  set_random_seed( int seed )
 {
-#ifdef sun
-    int  srandom();
-#endif
     (void) srandom( (unsigned int) seed );
     initialized = TRUE;
 }
@@ -89,10 +86,6 @@ private  void  check_initialized( void )
 
 private  int  get_random( void )
 {
-#ifdef sun
-    int  random();
-#endif
-
     check_initialized();
 
     return( (int) random() );

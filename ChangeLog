@@ -1,3 +1,12 @@
+2001-02-05  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* README.release: New.  Recipe for creating a new release.
+
+	* Prog_utils/random.c (set_random_seed, get_random): Removed
+	sun-only prototypes; Gilles Beaudoin
+	<gilles.beaudoin@attglobal.net> reports they are no longer valid
+	for solaris 7.
+
 2001-01-28  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* NEWS: Updated.
