@@ -1,13 +1,13 @@
 
 #include  <def_mni.h>
 
-static    Status  input_global_variable( int, global_struct [],
-                                         FILE *, Boolean * );
+extern  global_struct   globals_lookup[];
+extern  int             n_globals_lookup;
+
+static    Status  input_global_variable( FILE *, Boolean * );
 static    void    extract_string( char [], char [] );
 
 public  Status  input_globals_file(
-    int              n_globals,
-    global_struct    globals_lookup[],
     char             filename[] )
 {
     Status  status;
@@ -21,8 +21,7 @@ public  Status  input_globals_file(
         eof = FALSE;
 
         while( !eof )
-            status = input_global_variable( n_globals, globals_lookup,
-                                            file, &eof );
+            status = input_global_variable( file, &eof );
     }
 
     if( status == OK )
@@ -32,8 +31,6 @@ public  Status  input_globals_file(
 }
 
 private  Status  input_global_variable(
-    int            n_globals,
-    global_struct  global_lookup[],
     FILE           *file,
     Boolean        *eof )
 {
@@ -50,8 +47,7 @@ private  Status  input_global_variable(
         status = input_string( file, value, MAX_STRING_LENGTH, ';' );
 
         if( status == OK )
-            set_status = set_global_variable( n_globals, global_lookup,
-                                              variable_name, value );
+            set_status = set_global_variable( variable_name, value );
         else
             *eof = TRUE;
     }
@@ -63,8 +59,8 @@ private  Status  input_global_variable(
 
     if( set_status != OK || status != OK )
     {
-        PRINT1( "Error inputting global.\n" );
-        PRINT2( "Variable name is %s\n", variable_name );
+        print( "Error inputting global.\n" );
+        print( "Variable name is %s\n", variable_name );
     }
 
     return( status );
@@ -72,7 +68,7 @@ private  Status  input_global_variable(
 
 private  Status  lookup_global(
     int              n_globals,
-    global_struct    globals_lookup[],
+    global_struct    global_lookup[],
     char             variable_name[],
     void             **ptr,
     Variable_types   *type )
@@ -88,7 +84,7 @@ private  Status  lookup_global(
 
     for_less( i, 0, n_globals )
     {
-        global_name = globals_lookup[i].variable_name;
+        global_name = global_lookup[i].variable_name;
         len = strlen( global_name );
         s = 0;
 
@@ -97,8 +93,8 @@ private  Status  lookup_global(
 
         if( strcmp( &global_name[s], stripped ) == 0 )
         {
-            *ptr = globals_lookup[i].ptr_to_global;
-            *type = globals_lookup[i].type;
+            *ptr = global_lookup[i].ptr_to_global;
+            *type = global_lookup[i].type;
             status = OK;
             break;
         }
@@ -108,8 +104,6 @@ private  Status  lookup_global(
 }
 
 public  Status  get_global_variable(
-    int              n_globals,
-    global_struct    globals_lookup[],
     char             variable_name[],
     char             value[] )
 {
@@ -118,7 +112,7 @@ public  Status  get_global_variable(
     Surfprop           *surfprop;
     Variable_types     type;
 
-    status = lookup_global( n_globals, globals_lookup, variable_name,
+    status = lookup_global( n_globals_lookup, globals_lookup, variable_name,
                             &ptr, &type );
 
     if( status == OK )
@@ -182,8 +176,6 @@ public  Status  get_global_variable(
 }
 
 public  Status  set_global_variable(
-    int              n_globals,
-    global_struct    globals_lookup[],
     char             variable_name[],
     char             value_to_set[] )
 {
@@ -200,7 +192,7 @@ public  Status  set_global_variable(
 
     strip_blanks( value_to_set, value );
 
-    status = lookup_global( n_globals, globals_lookup, variable_name,
+    status = lookup_global( n_globals_lookup, globals_lookup, variable_name,
                             &ptr, &type );
 
     if( status == OK )
@@ -299,8 +291,6 @@ public  Status  set_global_variable(
 }
 
 public  Status  set_or_get_global_variable(
-    int              n_globals,
-    global_struct    globals_lookup[],
     char             input_str[],
     char             variable_name[],
     char             value_string[] )
@@ -319,16 +309,14 @@ public  Status  set_or_get_global_variable(
     {
         (void) strcpy( value_to_set, &tmp_var_name[equal_index+1] );
         tmp_var_name[equal_index] = (char) 0;
-        status = set_global_variable( n_globals, globals_lookup,
-                                      tmp_var_name, value_to_set );
+        status = set_global_variable( tmp_var_name, value_to_set );
     }
 
     strip_blanks( tmp_var_name, variable_name );
 
     if( status == OK )
     {
-        status = get_global_variable( n_globals, globals_lookup,
-                                      variable_name, value_string );
+        status = get_global_variable( variable_name, value_string );
     }
 
     return( status );
