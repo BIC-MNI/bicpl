@@ -17,7 +17,7 @@ public  void  initialize_amoeba(
     amoeba_struct     *amoeba,
     int               n_parameters,
     Real              initial_parameters[],
-    Real              parameter_delta,
+    Real              parameter_deltas[],
     amoeba_function   function,
     void              *function_data,
     Real              tolerance )
@@ -43,7 +43,7 @@ public  void  initialize_amoeba(
         {
             amoeba->parameters[i][j] = (float) initial_parameters[j];
             if( i > 0 && j == i - 1 )
-                amoeba->parameters[i][j] += parameter_delta;
+                amoeba->parameters[i][j] += parameter_deltas[j];
             amoeba->sum[j] += amoeba->parameters[i][j];
         }
 
