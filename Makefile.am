@@ -1,4 +1,3 @@
-
 SUBDIRS = Include Data_structures Transforms Geometry Numerical Objects \
 	Prog_utils Volumes Marching_cubes Images .
 

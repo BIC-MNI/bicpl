@@ -78,11 +78,11 @@ Tue Jun  8 08:44:59 EST 1993 LC
                                              systems properly
 ---------------------------------------------------------------------------- */
 
-#include <internal_volume_io.h>
+#include <volume_io/internal_volume_io.h>
 #include <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.18 1996-11-07 14:13:28 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.19 2000-02-05 21:27:21 stever Exp $";
 #endif
 
 #ifdef DEBUG

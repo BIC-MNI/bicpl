@@ -13,12 +13,12 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include <internal_volume_io.h>
+#include <volume_io/internal_volume_io.h>
 #include <trans.h>
 #include <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.13 1996-05-17 19:35:58 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.14 2000-02-05 21:27:20 stever Exp $";
 #endif
 
 #define   FUNCTION_TOLERANCE    1e-6

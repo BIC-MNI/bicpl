@@ -12,13 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 #include  <geom.h>
 #include  <numerical.h>
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Testing/r3.c,v 1.1 1999-06-21 21:00:20 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Testing/r3.c,v 1.2 2000-02-05 21:27:15 stever Exp $";
 #endif
 
 

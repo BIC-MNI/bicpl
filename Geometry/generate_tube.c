@@ -12,11 +12,11 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/generate_tube.c,v 1.4 1995-07-12 19:08:02 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/generate_tube.c,v 1.5 2000-02-05 21:26:51 stever Exp $";
 #endif
 
 private  void  project_vector_to_plane(

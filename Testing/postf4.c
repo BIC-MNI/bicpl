@@ -7,7 +7,7 @@
 
 #else
 
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 
 #define  GLOBALS_LOOKUP_NAME  globals_list
 #include  <globals.h>

@@ -12,11 +12,11 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include <internal_volume_io.h>
+#include <volume_io/internal_volume_io.h>
 #include <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.4 1995-07-31 13:45:27 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.5 2000-02-05 21:27:03 stever Exp $";
 #endif
 
 #define  MAX_ITERATIONS  30

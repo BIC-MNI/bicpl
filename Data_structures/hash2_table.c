@@ -12,11 +12,11 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash2_table.c,v 1.1 1998-06-29 13:12:52 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash2_table.c,v 1.2 2000-02-05 21:26:47 stever Exp $";
 #endif
 
 #define  HASH1_FUNCTION_CONSTANT          0.6180339887498948482

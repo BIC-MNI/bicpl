@@ -1,6 +1,7 @@
-# When installed, bicpl.h is installed into $prefix/install, while the
-# rest are installed into $prefix/include/bicpl.  This allows the library user
-# to code "#include <bicpl.h>", giving "-I$prefix/install" on the command line
+# We install the main header, bicpl.h into $includedir
+# (${prefix}/include), and the rest of the headers into $pkgincludedir
+# (${prefix}/include/bicpl).  This allows the library user to code
+# "#include <bicpl.h>", giving "-I$prefix/include" on the command line
 # to the compiler.
 
 # For the above scheme to work while *building* the library, lots of
@@ -25,6 +26,7 @@ pkginclude_HEADERS = \
 	geom.h \
 	geom_prototypes.h \
 	global_lookup.h \
+	globals.h \
 	hash.h \
 	histogram.h \
 	image_prototypes.h \
@@ -52,7 +54,6 @@ noinst_HEADERS = \
 	compute_tps.h \
 	deform.h \
 	global_variables.h \
-	globals.h \
 	march_prototypes.h \
 	marching.h \
 	marching_cube_data.h \

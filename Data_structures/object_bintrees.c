@@ -12,13 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 #include  <data_structures.h>
 #include  <geom.h>
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.9 1996-05-17 19:35:43 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.10 2000-02-05 21:26:48 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

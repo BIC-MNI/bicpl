@@ -24,11 +24,11 @@
 @MODIFIED   : Jul 6,      1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/matrix_basics.c,v 1.14 1995-08-14 18:08:47 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/matrix_basics.c,v 1.15 2000-02-05 21:27:20 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

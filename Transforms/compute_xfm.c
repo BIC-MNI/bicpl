@@ -22,7 +22,10 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.15  1995-07-31 13:46:00  david
+@MODIFIED   : Revision 1.16  2000-02-05 21:27:20  stever
+@MODIFIED   : change include lines <foo.h> --> <bicpl/foo.h>
+@MODIFIED   :
+@MODIFIED   : Revision 1.15  1995/07/31 13:46:00  david
 @MODIFIED   : check_in_all
 @MODIFIED   :
  * Revision 1.14  1995/07/10  18:02:50  david
@@ -84,12 +87,12 @@
  * 
 ---------------------------------------------------------------------------- */
 
-#include <internal_volume_io.h>
+#include <volume_io/internal_volume_io.h>
 #include <trans.h>
 #include <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.15 1995-07-31 13:46:00 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.16 2000-02-05 21:27:20 stever Exp $";
 #endif
 
 /* Function declarations */

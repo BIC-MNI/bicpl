@@ -1,5 +1,5 @@
 #include  <bicpl.h>
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 
 #define   N_DIMS                   2
 #define   DEFAULT_STEP_SIZE        1.0

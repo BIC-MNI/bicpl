@@ -51,7 +51,7 @@
 
 /*  ----- database of correspondence between globals and string names ----- */
 
-#include  <global_lookup.h>
+#include  <bicpl/global_lookup.h>
 
 #define  START_GLOBALS   static  global_struct  GLOBALS_LOOKUP_NAME[] = {
 #define  END_GLOBALS                                        };

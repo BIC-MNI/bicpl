@@ -12,13 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 #include  <objects.h>
 #include  <geom.h>
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.38 1997-04-17 17:27:15 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.39 2000-02-05 21:27:10 stever Exp $";
 #endif
 
 private  void  reverse_polygon_order(

@@ -1,4 +1,16 @@
-Wed Jan 19 21:46:23 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+Thu Jan 20 01:36:43 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Include/globals.h: fix includes.
+
+	* Include/Makefile.am (pkginclude_HEADERS): add globals.h,
+
+Wed Jan 19 23:31:36 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* *.c: include <volume_io/foo.h> for internal volume_io headers.
+
+Wed Jan 19 21:52:21 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* TODO: new.
 
 	* configure.in: check for SGI's iris image library.
 
@@ -20,9 +32,10 @@ Wed Jan 19 18:05:49 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 	that are named ending in '.c', and hence can't be put into a
 	_SOURCES variable, lest they get compiled.
 
-	* */Makefile.am: put -I$(top_srcdir)/Include into AM_CPPFLAGS rather than
-	AM_CFLAGS, since it gets put on the command line before CPPFLAGS, and the
-	latter might have -I flags that point to *installed* versions of the headers.
+	* */Makefile.am: put -I$(top_srcdir)/Include into AM_CPPFLAGS
+	rather than AM_CFLAGS, since it gets put on the command line
+	before CPPFLAGS, and the latter might have -I flags that point to
+	*installed* versions of the headers.
 
 	* Include/Makefile.am (pkginclude_HEADERS): new.  List all the
 	headers that get installed under include/bicpl.
@@ -31,7 +44,7 @@ Wed Jan 19 18:05:49 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 	that including <bicpl/foo.h> picks up foo.h in the source tree,
 	not the previously-installed copy.
 
-	* Makefile.am (SUBDIRS): put Images first in the list, since the
+	* Makefile.am (SUBDIRS): put Include first in the list, since the
 	Include/bicpl link needs to be done first.
 
 	* AUTHORS: put in Dave's name and mine.

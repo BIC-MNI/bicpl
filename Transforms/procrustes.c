@@ -25,12 +25,12 @@
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-#include <internal_volume_io.h>
+#include <volume_io/internal_volume_io.h>
 #include <trans.h>
 #include <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/procrustes.c,v 1.12 1995-07-31 13:46:02 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/procrustes.c,v 1.13 2000-02-05 21:27:20 stever Exp $";
 #endif
 
 private  Real  trace_of_matrix(

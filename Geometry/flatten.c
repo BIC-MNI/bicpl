@@ -14,12 +14,12 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/flatten.c,v 1.3 1996-12-09 20:20:35 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/flatten.c,v 1.4 2000-02-05 21:26:50 stever Exp $";
 #endif
 
 #include  <geom.h>
 #include  <trans.h>
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 
 public  void  flatten_around_vertex(
     Point     *vertex,

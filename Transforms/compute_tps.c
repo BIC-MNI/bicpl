@@ -29,11 +29,11 @@
 @MODIFIED   : Jul 6 1995,   David MacDonald removed recipes type code, rewrote
 ---------------------------------------------------------------------------- */
 
-#include <internal_volume_io.h>
+#include <volume_io/internal_volume_io.h>
 #include <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.10 1995-07-31 13:45:59 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.11 2000-02-05 21:27:19 stever Exp $";
 #endif
 
 /* prototype definitions: */

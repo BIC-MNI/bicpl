@@ -14,10 +14,10 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/t.c,v 1.1 1999-06-21 21:00:26 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/t.c,v 1.2 2000-02-05 21:26:57 stever Exp $";
 #endif
 
-#include  <internal_volume_io.h>
+#include  <volume_io/internal_volume_io.h>
 #include  <geom.h>
 #include  <trans.h>
 
