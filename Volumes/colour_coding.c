@@ -202,11 +202,35 @@ private  int  get_colour_table_piecewise_function(
                          {0.75, make_Colour_0_1( 1.0, 1.0, 0.5 ), RGB_SPACE },
                          {1.0,  make_Colour_0_1( 1.0, 1.0, 1.0 ), RGB_SPACE } };
     static  colour_point  spectral_points[] =
+                    { { 0.00, make_Colour_0_1(0.0000,0.0000,0.0000), RGB_SPACE},
+                      { 0.05, make_Colour_0_1(0.4667,0.0000,0.5333), RGB_SPACE},
+                      { 0.10, make_Colour_0_1(0.5333,0.0000,0.6000), RGB_SPACE},
+                      { 0.15, make_Colour_0_1(0.0000,0.0000,0.6667), RGB_SPACE},
+                      { 0.20, make_Colour_0_1(0.0000,0.0000,0.8667), RGB_SPACE},
+                      { 0.25, make_Colour_0_1(0.0000,0.4667,0.8667), RGB_SPACE},
+                      { 0.30, make_Colour_0_1(0.0000,0.6000,0.8667), RGB_SPACE},
+                      { 0.35, make_Colour_0_1(0.0000,0.6667,0.6667), RGB_SPACE},
+                      { 0.40, make_Colour_0_1(0.0000,0.6667,0.5333), RGB_SPACE},
+                      { 0.45, make_Colour_0_1(0.0000,0.6000,0.0000), RGB_SPACE},
+                      { 0.50, make_Colour_0_1(0.0000,0.7333,0.0000), RGB_SPACE},
+                      { 0.55, make_Colour_0_1(0.0000,0.8667,0.0000), RGB_SPACE},
+                      { 0.60, make_Colour_0_1(0.0000,1.0000,0.0000), RGB_SPACE},
+                      { 0.65, make_Colour_0_1(0.7333,1.0000,0.0000), RGB_SPACE},
+                      { 0.70, make_Colour_0_1(0.9333,0.9333,0.0000), RGB_SPACE},
+                      { 0.75, make_Colour_0_1(1.0000,0.8000,0.0000), RGB_SPACE},
+                      { 0.80, make_Colour_0_1(1.0000,0.6000,0.0000), RGB_SPACE},
+                      { 0.85, make_Colour_0_1(1.0000,0.0000,0.0000), RGB_SPACE},
+                      { 0.90, make_Colour_0_1(0.8667,0.0000,0.0000), RGB_SPACE},
+                      { 0.95, make_Colour_0_1(0.8000,0.0000,0.0000), RGB_SPACE},
+                      { 1.00, make_Colour_0_1(0.8000,0.8000,0.8000), RGB_SPACE}
+                    };
+#ifdef  OLD
                     { {0.0,     make_Colour_0_1( 0.0, 0.0, 1.0 ), HSL_SPACE },
                       {0.333,   make_Colour_0_1( 0.0, 1.0, 0.0 ), HSL_SPACE },
                       {0.74,    make_Colour_0_1( 1.0, 0.0, 0.0 ), HSL_SPACE },
                       {0.86,    make_Colour_0_1( 1.0, 0.0, 1.0 ), HSL_SPACE },
                       {1.0,     make_Colour_0_1( 1.0, 1.0, 1.0 ), HSL_SPACE } };
+#endif
     static  colour_point  red_points[] =
                              { {0.0, BLACK, RGB_SPACE },
                                {1.0, RED, RGB_SPACE } };

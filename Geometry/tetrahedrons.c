@@ -33,7 +33,6 @@ public  void  create_tetrahedral_sphere(
 {
     int             p, start_size;
     int             n_indices;
-    Surfprop        spr;
     Real            cx, cy, cz, dx, dy, dz, scale;
     Real            x, z, c;
 
@@ -41,9 +40,6 @@ public  void  create_tetrahedral_sphere(
 
     while( start_size > 8 )
         start_size /= 4;
-
-    fill_Surfprop( spr, 0.3, 0.6, 0.6, 60.0, 1.0 );
-    initialize_polygons( polygons, WHITE, &spr );
 
     cx = Point_x( *centre );
     cy = Point_y( *centre );
@@ -59,6 +55,8 @@ public  void  create_tetrahedral_sphere(
     }
     else
     {
+        initialize_polygons( polygons, WHITE, NULL );
+
         polygons->n_points = 4;
         ALLOC( polygons->points, polygons->n_points );
         ALLOC( polygons->normals, polygons->n_points );

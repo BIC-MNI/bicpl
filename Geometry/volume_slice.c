@@ -6,6 +6,10 @@ public  void   create_slice_quadmesh(
     Real             voxel_position,
     int              x_tess,
     int              y_tess,
+    Real             x_min,
+    Real             x_max,
+    Real             y_min,
+    Real             y_max,
     quadmesh_struct  *quadmesh )
 {
     Point            point;
@@ -33,13 +37,24 @@ public  void   create_slice_quadmesh(
     fill_Vector( normal, 0.0, 0.0, 0.0 );
     Vector_coord( normal, axis_index ) = 1.0;
 
+    if( x_min >= x_max )
+    {
+        x_min = 0.0;
+        x_max = (Real) (sizes[x_axis] - 1);
+    }
+
+    if( y_min >= y_max )
+    {
+        y_min = 0.0;
+        y_max = (Real) (sizes[y_axis] - 1);
+    }
+
     for_less( x, 0, x_tess )
     {
-        voxel[x_axis] = (Real) x / (Real) (x_tess-1) * (Real) (sizes[x_axis]-1);
+        voxel[x_axis] = x_min + (x_max - x_min) * (Real) x / (Real) (x_tess-1);
         for_less( y, 0, y_tess )
         {
-            voxel[y_axis] = (Real) y / (Real) (y_tess-1) *
-                            (Real) (sizes[y_axis]-1);
+            voxel[y_axis] = y_min + (y_max - y_min) * (Real)y/(Real)(y_tess-1);
 
             convert_voxel_to_world( volume, voxel, &x_w, &y_w, &z_w );
             fill_Point( point, x_w, y_w, z_w );

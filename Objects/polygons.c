@@ -25,6 +25,8 @@ public  void  initialize_polygons(
 
     if( spr != (Surfprop *) 0 )
         polygons->surfprop = *spr;
+    else
+        get_default_surfprop( &polygons->surfprop );
 
     polygons->n_points = 0;
     polygons->points = (Point *) 0;

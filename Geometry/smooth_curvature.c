@@ -1,7 +1,7 @@
 #include  <module.h>
 #include  <priority_queue.h>
 
-private  void  get_vertex_distances(
+private  BOOLEAN  get_vertex_distances(
     polygons_struct   *polygons,
     int               poly,
     int               vertex,
@@ -32,24 +32,27 @@ public  Real  get_smooth_surface_curvature(
 
     ALLOC( distances, polygons->n_points );
 
-    get_vertex_distances( polygons, poly, vertex, smoothing_distance,
-                          distances );
-
-    n_smoothing_points = get_smoothing_points( polygons, smoothing_distance,
+    if( get_vertex_distances( polygons, poly, vertex, smoothing_distance,
+                              distances ) )
+    {
+        n_smoothing_points = get_smoothing_points( polygons, smoothing_distance,
                                distances, &smoothing_points, &avg_normal );
 
-    if( n_smoothing_points > 0 )
-    {
-        curvature = get_average_curvature(
-              &polygons->points[polygons->indices[
-                     POINT_INDEX( polygons->end_indices, poly, vertex )]],
-              n_smoothing_points, smoothing_points, &avg_normal );
+        if( n_smoothing_points > 0 )
+        {
+            curvature = get_average_curvature(
+                  &polygons->points[polygons->indices[
+                         POINT_INDEX( polygons->end_indices, poly, vertex )]],
+                  n_smoothing_points, smoothing_points, &avg_normal );
+        }
+        else
+            curvature = 0.0;
+
+        if( n_smoothing_points > 0 )
+            FREE( smoothing_points );
     }
     else
-        curvature = 0.0;
-
-    if( n_smoothing_points > 0 )
-        FREE( smoothing_points );
+        curvature = 1.0e30;
 
     FREE( distances );
 
@@ -65,7 +68,7 @@ typedef  struct
 #define   GREATER_THAN_DISTANCE     -1.0
 #define   ALREADY_DONE              -2.0
 
-private  void  get_vertex_distances(
+private  BOOLEAN  get_vertex_distances(
     polygons_struct   *polygons,
     int               poly,
     int               vertex,
@@ -74,6 +77,7 @@ private  void  get_vertex_distances(
 {
     int                    i, p, size, point_index, next_point_index;
     Real                   dist;
+    BOOLEAN                closed_flag;
     queue_struct           entry;
     int                    n_polys, *polys;
     PRIORITY_QUEUE_STRUCT( queue_struct )   queue;
@@ -94,6 +98,8 @@ private  void  get_vertex_distances(
     entry.index_within_poly = vertex;
     INSERT_IN_PRIORITY_QUEUE( queue, entry, 0.0 );
 
+    closed_flag = TRUE;
+
     while( !IS_PRIORITY_QUEUE_EMPTY( queue ) )
     {
         REMOVE_FROM_PRIORITY_QUEUE( queue, entry, dist );
@@ -107,7 +113,10 @@ private  void  get_vertex_distances(
 
         n_polys = get_polygons_around_vertex( polygons, entry.poly_index,
                                               entry.index_within_poly, polys,
-                                              polygons->n_items );
+                                              polygons->n_items, &closed_flag );
+
+        if( !closed_flag )
+            break;
 
         for_less( i, 0, n_polys )
         {
@@ -142,6 +151,8 @@ private  void  get_vertex_distances(
 
     DELETE_PRIORITY_QUEUE( queue );
     FREE( polys );
+
+    return( closed_flag );
 }
 
 private  int  get_smoothing_points(
@@ -151,10 +162,11 @@ private  int  get_smoothing_points(
     Point             *smoothing_points[],
     Vector            *avg_normal )
 {
-    int    poly, vertex, i, p, point_index, next_point_index;
-    int    n_polys, *polys, n_smoothing_points, size;
-    Real   dist, ratio;
-    Point  point;
+    int      poly, vertex, i, p, point_index, next_point_index;
+    int      n_polys, *polys, n_smoothing_points, size, neighbour_size;
+    Real     dist, ratio;
+    Point    point;
+    BOOLEAN  closed_flag;
 
     fill_Vector( *avg_normal, 0.0, 0.0, 0.0 );
     for_less( point_index, 0, polygons->n_points )
@@ -181,13 +193,14 @@ private  int  get_smoothing_points(
             if( distances[point_index] >= 0.0 )
             {
                 n_polys = get_polygons_around_vertex( polygons, poly,
-                                           vertex, polys, polygons->n_items );
+                                           vertex, polys, polygons->n_items,
+                                           &closed_flag );
 
                 for_less( i, 0, n_polys )
                 {
-                    size = GET_OBJECT_SIZE( *polygons, polys[i] );
+                    neighbour_size = GET_OBJECT_SIZE( *polygons, polys[i] );
 
-                    for_less( p, 0, size )
+                    for_less( p, 0, neighbour_size )
                     {
                         next_point_index = polygons->indices[
                              POINT_INDEX( polygons->end_indices, polys[i], p )];

@@ -29,6 +29,11 @@ private  BOOLEAN  arguments_remaining( void )
     return( arguments.current_arg < arguments.argc );
 }
 
+public  int  get_n_arguments_remaining( void )
+{
+    return( arguments.argc - arguments.current_arg );
+}
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_current_argument_string
 @INPUT      : 

@@ -32,12 +32,8 @@ private  Real  get_correct_amount(
         } \
         else \
         { \
-            if( (min_pos) < 0.0 ) \
-                (receding) = (int) ((min_pos) - 0.5); \
-            else \
-                (receding) = (int) ((min_pos) + 0.5); \
- \
-            (advancing) = (int) ((max_pos) + 0.5); \
+            (receding) = ROUND( min_pos ); \
+            (advancing) = ROUND( max_pos ); \
  \
             if( (advancing) == (receding) ) \
                 (left_weight) = 2.0 * (half_width); \
@@ -212,6 +208,10 @@ public  Volume  create_box_filtered_volume(
         HANDLE_INTERNAL_ERROR(
            "create_box_filtered_volume: volume must be 3D.\n" );
     }
+
+    x_width = ABS( x_width );
+    y_width = ABS( y_width );
+    z_width = ABS( z_width );
 
     get_volume_sizes( volume, sizes );
 

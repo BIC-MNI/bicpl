@@ -70,7 +70,93 @@ private  Real   distance_to_segment(
     return( MAGNITUDE( offset ) );
 }
 
-private  void  get_polygon_interpolation_weights(
+private  BOOLEAN  intersect_lines(
+    Point    *p1,
+    Point    *p2,
+    Point    *q1,
+    Point    *q2,
+    Point    *intersect )
+{
+    BOOLEAN  intersects;
+    Real     t, bottom;
+    Vector   dp, dq;
+
+    SUB_POINTS( dp, *p2, *p1 );
+    SUB_POINTS( dq, *q2, *q1 );
+
+    bottom = Vector_x(dp) * Vector_y(dq) - Vector_y(dp) * Vector_x(dq);
+
+    if( bottom == 0.0 )
+    {
+        intersects = FALSE;
+    }
+    else
+    {
+        t = (Vector_x(dq) * (Point_y(*p1) - Point_y(*q1)) +
+             Vector_y(dq) * (Point_x(*q1) - Point_x(*p1))) / bottom;
+        GET_POINT_ON_RAY( *intersect, *p1, dp, t );
+        intersects = TRUE;
+    }
+
+    return( intersects );
+}
+
+private  Real  get_two_d_coordinate(
+    Point    *p,
+    Point    *p1,
+    Point    *p2,
+    Point    *q1,
+    Point    *q2 )
+{
+    Real     factor;
+    Point    intersect, point;
+    Vector   p_p1, p1_q1, rotated;
+
+    SUB_POINTS( p1_q1, *q1, *p1 );
+
+    if( intersect_lines( p1, p2, q1, q2, &intersect ) )
+    {
+        if( !intersect_lines( &intersect, p, p1, q1, &point ) )
+        {
+/*
+            HANDLE_INTERNAL_ERROR( "get_two_d_coordinate" );
+*/
+            return( 0.0 );
+        }
+        SUB_POINTS( p_p1, point, *p1 );
+        factor = DOT_VECTORS( p_p1, p1_q1 ) / DOT_VECTORS( p1_q1, p1_q1 );
+    }
+    else
+    {
+        fill_Vector( rotated, Point_y(*p2) - Point_y(*p1),
+                              Point_x(*p1) - Point_x(*p2), 0.0 );
+        SUB_POINTS( p_p1, *p, *p1 );
+
+        factor = DOT_VECTORS( p_p1, rotated ) / DOT_VECTORS( p1_q1, rotated );
+    }
+
+    return( factor );
+}
+
+private  void  get_quadrilateral_interpolation_weights(
+    Point       *point,
+    Point       points[],
+    Real        weights[] )
+{
+    Real     u, v;
+
+    u = get_two_d_coordinate( point,
+                              &points[0], &points[3], &points[1], &points[2] );
+    v = get_two_d_coordinate( point,
+                              &points[0], &points[1], &points[3], &points[2] );
+
+    weights[0] = (1.0 - u) * (1.0 - v);
+    weights[1] =        u  * (1.0 - v);
+    weights[2] =        u  *        v;
+    weights[3] = (1.0 - u) *        v;
+}
+
+private  void  get_arbitrary_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
     Point       points[],
@@ -109,6 +195,21 @@ private  void  get_polygon_interpolation_weights(
         weights[i] /= sum_weights;
 }
 
+public  void  get_polygon_interpolation_weights(
+    Point       *point,
+    int         n_points,
+    Point       points[],
+    Real        weights[] )
+{
+    if( n_points == 3 )
+        get_triangle_interpolation_weights( point, points, weights );
+    else if( n_points == 4 )
+        get_quadrilateral_interpolation_weights( point, points, weights );
+    else
+        get_arbitrary_polygon_interpolation_weights( point, n_points, points,
+                                                     weights );
+}
+
 public  void  map_point_between_polygons(
     polygons_struct  *p1,
     int              poly_index,
@@ -124,15 +225,10 @@ public  void  map_point_between_polygons(
 
     size = get_polygon_points( p1, poly_index, poly1_points );
 
-    if( size == 3 )
-        get_triangle_interpolation_weights( p1_point, poly1_points, weights );
-    else
-    {
-        get_polygon_interpolation_weights( p1_point, size, poly1_points,
-                                           weights );
-    }
+    get_polygon_interpolation_weights( p1_point, size, poly1_points, weights );
 
-    (void) get_polygon_points( p2, poly_index, poly2_points );
+    if( get_polygon_points( p2, poly_index, poly2_points ) != size )
+        handle_internal_error( "map_point_between_polygons" );
 
     fill_Point( *p2_point, 0.0, 0.0, 0.0 );
 

@@ -500,7 +500,7 @@ public  Status  io_colour(
             status = io_float( file, io_flag, ASCII_FORMAT, &a );
 
         if( io_flag == READ_FILE )
-            *colour = make_Colour_0_1_alpha( r, g, b, a );
+            *colour = make_rgba_Colour_0_1( r, g, b, a );
     }
     else
         status = io_binary_data( file, io_flag, (void *) colour,

@@ -34,6 +34,9 @@ public  BOOLEAN  numerically_close(
 
     avg = (n1 + n2) / 2.0;
 
+    if( avg == 0.0 )
+        return( diff <= (double) threshold_ratio );
+
     if( avg < 0.0 )  avg = -avg;
 
     return( (diff / avg) <= (double) threshold_ratio );

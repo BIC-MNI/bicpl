@@ -16,6 +16,8 @@ public  void  initialize_quadmesh(
 
     if( spr != (Surfprop *) 0 )
         quadmesh->surfprop = *spr;
+    else
+        get_default_surfprop( &quadmesh->surfprop );
 
     quadmesh->m = m;
     quadmesh->n = n;

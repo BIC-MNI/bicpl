@@ -43,7 +43,7 @@ public  void  initialize_amoeba(
     }
 }
 
-public  void  get_amoeba_parameters(
+public  Real  get_amoeba_parameters(
     amoeba_struct  *amoeba,
     float          parameters[] )
 {
@@ -58,6 +58,8 @@ public  void  get_amoeba_parameters(
 
     for_less( j, 0, amoeba->n_parameters )
         parameters[j] = amoeba->parameters[low][j];
+
+    return( amoeba->values[low] );
 }
 
 public  void  terminate_amoeba(
