@@ -8,9 +8,15 @@
 @CALLS      :
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.h,v $
-@MODIFIED   : Revision 1.1  1994-11-04 13:11:36  david
-@MODIFIED   : Initial revision
+@MODIFIED   : Revision 1.2  1995-07-12 18:07:27  david
+@MODIFIED   : *** empty log message ***
 @MODIFIED   :
+ * Revision 1.1  94/11/04  14:09:05  david
+ * Initial revision
+ * 
+ * Revision 1.1  94/11/04  13:11:36  david
+ * Initial revision
+ * 
  * Revision 1.2  93/09/08  15:47:44  neelin
  * Added 9 and 10 parameter linear fitting.
  * 
