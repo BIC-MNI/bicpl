@@ -17,8 +17,465 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.29 1996-05-24 18:42:44 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.30 1996-08-07 16:06:28 david Exp $";
 #endif
+
+#define  DISTANCE_THRESHOLD  1.0e-10
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : clip_points
+@INPUT      : n_dims
+              sizes
+              origin
+              x_axis
+              y_axis
+              n_points
+              points
+@OUTPUT     : clipped_points
+@RETURNS    : number of points output
+@DESCRIPTION: Clips the points against the 2 * n_dims edges of the volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : Mar. 6, 1995    D. MacDonald  -- removed complicated recursive
+                              edge clipping, replaced with iterative edge
+                              clipping.
+---------------------------------------------------------------------------- */
+
+private  int  clip_points(
+    int      n_dims,
+    int      sizes[],
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    int      n_points,
+    Real     points[][2],
+    Real     clipped_points[][2] )
+{
+    int       i, c, n_input_points, n_output_points, this, lim;
+    Real      prev_dist, dist, ratio, first_dist;
+    Real      input_points[2*MAX_DIMENSIONS][2];
+    Real      output_points[2*MAX_DIMENSIONS][2];
+
+    for_less( i, 0, n_points )
+    {
+        input_points[i][0] = points[i][0];
+        input_points[i][1] = points[i][1];
+    }
+
+    n_input_points = n_points;
+
+    dist = 0.0;
+    first_dist = 0.0;
+
+    for_less( c, 0, n_dims )
+    {
+        for_less( lim, 0, 2 )
+        {
+            n_output_points = 0;
+            if( n_input_points > 0 )
+            {
+                for_less( i, 0, n_input_points+1 )
+                {
+                    prev_dist = dist;
+                    this = i % n_input_points;
+
+                    if( i < n_input_points )
+                    {
+                        if( lim == 0 )
+                        {
+                            dist = origin[c] + input_points[i][0] * x_axis[c] +
+                                           input_points[i][1] * y_axis[c] + 0.5;
+                        }
+                        else
+                        {
+                            dist = (Real) sizes[c] - 0.5 -
+                               (origin[c] + input_points[i][0] * x_axis[c] +
+                                            input_points[i][1] * y_axis[c]);
+                        }
+                    }
+                    else
+                        dist = first_dist;
+
+                    if( i > 0 )
+                    {
+                        if( dist < -DISTANCE_THRESHOLD &&
+                            prev_dist > DISTANCE_THRESHOLD ||
+                            dist > DISTANCE_THRESHOLD &&
+                            prev_dist < -DISTANCE_THRESHOLD )
+                        {
+                            ratio = prev_dist / (prev_dist - dist);
+                            if( ratio > DISTANCE_THRESHOLD &&
+                                ratio < 1.0 - DISTANCE_THRESHOLD )
+                            {
+                                output_points[n_output_points][0] =
+                                  input_points[i-1][0] + ratio *
+                                 (input_points[this][0] - input_points[i-1][0]);
+                                output_points[n_output_points][1] =
+                                  input_points[i-1][1] + ratio *
+                                 (input_points[this][1] - input_points[i-1][1]);
+                                ++n_output_points;
+                            }
+                        }
+                    }
+                    else
+                        first_dist = dist;
+
+                    if( dist >= 0.0 && i != n_input_points )
+                    {
+                        output_points[n_output_points][0] = input_points[i][0];
+                        output_points[n_output_points][1] = input_points[i][1];
+                        ++n_output_points;
+                    }
+                }
+            }
+
+            for_less( i, 0, n_output_points )
+            {
+                input_points[i][0] = output_points[i][0];
+                input_points[i][1] = output_points[i][1];
+            }
+
+            n_input_points = n_output_points;
+        }
+    }
+
+    for_less( i, 0, n_output_points )
+    {
+        clipped_points[i][0] = output_points[i][0];
+        clipped_points[i][1] = output_points[i][1];
+    }
+
+    return( n_output_points );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_cross_section
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+@OUTPUT     : clipped_points
+@RETURNS    : number of clipped points
+@DESCRIPTION: Gets the points defining the outline of the cross section of the
+              plane with the volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+private  int    get_cross_section(
+    Volume   volume,
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    Real     clipped_points[][2] )
+{
+    Real    points[4][2], voxel[MAX_DIMENSIONS];
+    int     d, sizes[MAX_DIMENSIONS], n_dims, n_points;
+    int     n_limits[MAX_DIMENSIONS], lim[MAX_DIMENSIONS];
+    Real    x_pixel, y_pixel, x_min, x_max, y_min, y_max, dx, dy;
+    BOOLEAN first;
+
+    get_volume_sizes( volume, sizes );
+    n_dims = get_volume_n_dimensions( volume );
+
+    for_less( d, 0, MAX_DIMENSIONS )
+    {
+        if( d < n_dims )
+            n_limits[d] = 2;
+        else
+        {
+            n_limits[d] = 1;
+            sizes[d] = 1;
+        }
+    }
+
+    first = TRUE;
+
+    for_less( lim[0], 0, n_limits[0] )
+    for_less( lim[1], 0, n_limits[1] )
+    for_less( lim[2], 0, n_limits[2] )
+    for_less( lim[3], 0, n_limits[3] )
+    for_less( lim[4], 0, n_limits[4] )
+    {
+        for_less( d, 0, n_dims )
+            voxel[d] = -0.5 + (Real) (sizes[d] * lim[d]);
+
+        map_voxel_to_pixel( get_volume_n_dimensions(volume),
+                            voxel, origin, x_axis, y_axis, &x_pixel, &y_pixel );
+
+        if( first )
+        {
+            x_min = x_pixel;
+            x_max = x_pixel;
+            y_min = y_pixel;
+            y_max = y_pixel;
+            first = FALSE;
+        }
+        else
+        {
+            if( x_pixel < x_min )
+                x_min = x_pixel;
+            else if( x_pixel > x_max )
+                x_max = x_pixel;
+            if( y_pixel < y_min )
+                y_min = y_pixel;
+            else if( y_pixel > y_max )
+                y_max = y_pixel;
+        }
+    }
+
+    dx = x_max - x_min;
+    dy = y_max - y_min;
+
+    x_min -= dx;
+    x_max += dx;
+    y_min -= dy;
+    y_max += dy;
+
+    points[0][0] = x_min;
+    points[0][1] = y_min;
+    points[1][0] = x_max;
+    points[1][1] = y_min;
+    points[2][0] = x_max;
+    points[2][1] = y_max;
+    points[3][0] = x_min;
+    points[3][1] = y_max;
+
+    n_points = clip_points( n_dims, sizes, origin, x_axis, y_axis,
+                            4, points, clipped_points );
+
+    if( n_points == 1 || n_points == 2 )
+    {
+/*
+        print_error( "N points = %d\n", n_points );
+        handle_internal_error( "clipping" );
+*/
+        n_points = 0;
+    }
+
+    return( n_points );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_volume_cross_section
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+@OUTPUT     : clipped_voxels
+@RETURNS    : number of voxels
+@DESCRIPTION: Gets the cross section of the plane with the volume, in terms
+              of a list of voxels defining the vertices of the polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  int    get_volume_cross_section(
+    Volume   volume,
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    Real     clipped_voxels[][MAX_DIMENSIONS] )
+{
+    Real    clipped_points[2*MAX_DIMENSIONS][2];
+    int     i, c, n_dims, n_points;
+    Real    real_origin[MAX_DIMENSIONS];
+    Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
+
+    get_mapping( volume, origin, x_axis, y_axis,
+                 0.0, 0.0, 1.0, 1.0,
+                 real_origin, real_x_axis, real_y_axis );
+
+    n_points = get_cross_section( volume, real_origin, real_x_axis, real_y_axis,
+                                  clipped_points );
+
+    n_dims = get_volume_n_dimensions( volume );
+
+    for_less( i, 0, n_points )
+    {
+        for_less( c, 0, n_dims )
+        {
+            clipped_voxels[i][c] = real_origin[c] +
+                                   clipped_points[i][0] * real_x_axis[c] +
+                                   clipped_points[i][1] * real_y_axis[c];
+        }
+    }
+
+    return( n_points );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_volume_slice_range
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+@OUTPUT     : x_pixel_start
+              x_pixel_end
+              y_pixel_start
+              y_pixel_end
+@RETURNS    : 
+@DESCRIPTION: Gets the range of the cross section of the volume with the
+              plane.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+private  void    get_volume_slice_range(
+    Volume   volume,
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    Real     *x_pixel_start,
+    Real     *x_pixel_end,
+    Real     *y_pixel_start,
+    Real     *y_pixel_end )
+{
+    Real    clipped_points[2*MAX_DIMENSIONS][2];
+    int     i, n_points;
+
+    n_points = get_cross_section( volume, origin, x_axis, y_axis,
+                                  clipped_points );
+
+    if( n_points == 0 )
+    {
+        *x_pixel_start = 1.0;
+        *x_pixel_end = 0.0;
+        *y_pixel_start = 1.0;
+        *y_pixel_end = 0.0;
+    }
+    else
+    {
+        *x_pixel_start = clipped_points[0][0];
+        *x_pixel_end = clipped_points[0][0];
+        *y_pixel_start = clipped_points[0][1];
+        *y_pixel_end = clipped_points[0][1];
+        for_less( i, 0, n_points )
+        {
+            if( clipped_points[i][0] < *x_pixel_start )
+                *x_pixel_start = clipped_points[i][0];
+            else if( clipped_points[i][0] > *x_pixel_end )
+                *x_pixel_end = clipped_points[i][0];
+            if( clipped_points[i][1] < *y_pixel_start )
+                *y_pixel_start = clipped_points[i][1];
+            else if( clipped_points[i][1] > *y_pixel_end )
+                *y_pixel_end = clipped_points[i][1];
+        }
+    }
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_volume_mapping_range
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+              x_trans
+              y_trans
+              x_scale
+              y_scale
+@OUTPUT     : x_pixel_start
+              x_pixel_end
+              y_pixel_start
+              y_pixel_end
+@RETURNS    : 
+@DESCRIPTION: Gets the pixel limits of the cross section, based on the scale
+              and translation parameters.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void    get_volume_mapping_range(
+    Volume   volume,
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    Real     x_trans,
+    Real     y_trans,
+    Real     x_scale,
+    Real     y_scale,
+    Real     *x_pixel_start,
+    Real     *x_pixel_end,
+    Real     *y_pixel_start,
+    Real     *y_pixel_end )
+{
+    Real    real_origin[MAX_DIMENSIONS];
+    Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
+
+    get_mapping( volume, origin, x_axis, y_axis,
+                 x_trans, y_trans, x_scale, y_scale,
+                 real_origin, real_x_axis, real_y_axis );
+
+    get_volume_slice_range( volume, real_origin, real_x_axis, real_y_axis,
+                            x_pixel_start, x_pixel_end,
+                            y_pixel_start, y_pixel_end );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : clip_viewport_to_volume
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+@OUTPUT     : x_pixel_start
+              x_pixel_end
+              y_pixel_start
+              y_pixel_end
+@RETURNS    : 
+@DESCRIPTION: Finds the pixel range of the volume cross section.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void    clip_viewport_to_volume(
+    Volume   volume,
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    int      *x_pixel_start,
+    int      *x_pixel_end,
+    int      *y_pixel_start,
+    int      *y_pixel_end )
+{
+    int     int_x_min, int_x_max, int_y_min, int_y_max;
+    Real    x_min, x_max, y_min, y_max;
+
+    get_volume_slice_range( volume, origin, x_axis, y_axis,
+                            &x_min, &x_max, &y_min, &y_max );
+
+    int_x_min = CEILING( x_min );
+    int_x_max = FLOOR( x_max );
+    int_y_min = CEILING( y_min );
+    int_y_max = FLOOR( y_max );
+
+    if( int_x_min > *x_pixel_start )
+        *x_pixel_start = int_x_min;
+    if( int_x_max < *x_pixel_end )
+        *x_pixel_end = int_x_max;
+
+    if( int_y_min > *y_pixel_start )
+        *y_pixel_start = int_y_min;
+    if( int_y_max < *y_pixel_end )
+        *y_pixel_end = int_y_max;
+}
+
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_mapping
