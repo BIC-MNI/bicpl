@@ -13,74 +13,70 @@ public  Volume  smooth_resample_volume(
     int                 new_ny,
     int                 new_nz )
 {
-    Volume           resampled_volume;
-    Boolean          activity_present;
-    int              nx, ny, nz;
-    int              x, y, z, xv, yv, zv;
-    Real             x_min, x_max, y_min, y_max, z_min, z_max;
-    Real             dx, dy, dz;
-    Real             voxel;
-    Real             x_weight, xy_weight, weight;
-    Real             *y_weights, *z_weights;
-    Real             val;
-    Boolean          voxel_valid;
-    Transform        scale_transform, translation_transform, transform;
-    progress_struct  progress;
+    Volume             resampled_volume;
+    int                sizes[N_DIMENSIONS], new_sizes[N_DIMENSIONS];
+    int                x, y, z, xv, yv, zv, c;
+    Real               x_min, x_max, y_min, y_max, z_min, z_max;
+    Real               separations[N_DIMENSIONS];
+    Real               dx, dy, dz;
+    Real               voxel;
+    Real               x_weight, xy_weight, weight;
+    Real               *y_weights, *z_weights;
+    Real               val;
+    Boolean            voxel_valid;
+    Transform          scale_transform, translation_transform, transform;
+    General_transform  general_transform;
+    progress_struct    progress;
 
-    nx = volume->sizes[X];
-    ny = volume->sizes[Y];
-    nz = volume->sizes[Z];
+    get_volume_sizes( volume, sizes );
 
-    if( new_nx <= 0 )
-        new_nx = nx;
+    new_sizes[X] = new_nx;
+    new_sizes[Y] = new_ny;
+    new_sizes[Z] = new_nz;
 
-    if( new_ny <= 0 )
-        new_ny = ny;
-
-    if( new_nz <= 0 )
-        new_nz = nz;
+    for_less( c, 0, N_DIMENSIONS )
+        if( new_sizes[c] <= 0 )
+            new_sizes[c] = sizes[c];
 
     resampled_volume = create_volume( 3, volume->dimension_names,
                                       volume->nc_data_type,
-                                      volume->signed_flag, 0.0, 0.0 );
+                                      volume->signed_flag );
 
-    *resampled_volume = *volume;
+    set_volume_size( resampled_volume, volume->nc_data_type,
+                     volume->signed_flag, new_sizes );
 
-    resampled_volume->data = (void *) NULL;
+    set_volume_voxel_range( resampled_volume, get_volume_min_voxel(volume),
+                            get_volume_max_voxel(volume) );
+    set_volume_real_range( resampled_volume, get_volume_real_min(volume),
+                           get_volume_real_max(volume) );
 
-    resampled_volume->value_scale = volume->value_scale;
-    resampled_volume->value_translation = volume->value_translation;
+    dx = (Real) sizes[X] / (Real) new_sizes[X];
+    dy = (Real) sizes[Y] / (Real) new_sizes[Y];
+    dz = (Real) sizes[Z] / (Real) new_sizes[Z];
 
-    resampled_volume->sizes[X] = new_nx;
-    resampled_volume->sizes[Y] = new_ny;
-    resampled_volume->sizes[Z] = new_nz;
+    get_volume_separations( volume, separations );
 
-    dx = (Real) nx / (Real) new_nx;
-    dy = (Real) ny / (Real) new_ny;
-    dz = (Real) nz / (Real) new_nz;
+    separations[X] *= dx;
+    separations[Y] *= dy;
+    separations[Z] *= dz;
 
-    resampled_volume->separation[X] *= dx;
-    resampled_volume->separation[Y] *= dy;
-    resampled_volume->separation[Z] *= dz;
+    set_volume_separations( resampled_volume, separations );
 
     make_translation_transform( dx / 2.0 - 0.5, dy / 2.0 - 0.5, dz / 2.0 - 0.5,
                                 &translation_transform );
     make_scale_transform( dx, dy, dz, &scale_transform );
 
-    concat_transforms( &transform,
-                       &scale_transform, &translation_transform );
+    concat_transforms( &transform, &scale_transform, &translation_transform );
 
-    concat_transforms( &resampled_volume->voxel_to_world_transform,
-                       &transform,
-                       &resampled_volume->voxel_to_world_transform );
-    compute_transform_inverse( &resampled_volume->voxel_to_world_transform,
-                               &resampled_volume->world_to_voxel_transform );
+    create_linear_transform( &general_transform, &transform );
+
+    concat_general_transforms( &general_transform,
+                               get_voxel_to_world_transform(volume),
+                               &general_transform );
+
+    set_voxel_to_world_transform( resampled_volume, &general_transform );
 
     alloc_volume_data( resampled_volume );
-
-    activity_present = (volume->labels != (unsigned char ***) NULL);
-
-    resampled_volume->labels = (unsigned char ***) NULL;
 
     ALLOC( y_weights, (int) dy + 2 );
     ALLOC( z_weights, (int) dz + 2 );
@@ -144,7 +140,7 @@ public  Volume  smooth_resample_volume(
 
                 SET_VOXEL_3D(resampled_volume,x,y,z, val + 0.5 );
 
-                if( !voxel_valid && activity_present )
+                if( !voxel_valid )
                     set_voxel_activity_flag( resampled_volume, x, y, z,
                                              voxel_valid );
             }
