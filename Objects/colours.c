@@ -17,7 +17,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.4 1995-07-31 13:45:19 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.5 1995-09-13 13:24:56 david Exp $";
 #endif
 
 private Colour ANTIQUE_WHITE_COL;
@@ -482,6 +482,7 @@ private  void  check_initialize_colours()
         WHITE_SMOKE_COL = make_Colour_0_1( 0.960784, 0.960784, 0.960784 );
         YELLOW_COL = make_Colour_0_1( 1.0, 1.0, 0.0 );
         YELLOW_GREEN_COL = make_Colour_0_1( 0.603922, 0.803922, 0.196078 );
+        TRANSPARENT_COL = make_rgba_Colour( 0, 0, 0, 0 );
     }
 }
 

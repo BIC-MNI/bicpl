@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/obj_defs.h,v 1.6 1995-07-31 13:44:47 david Exp $";
+static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/obj_defs.h,v 1.7 1995-09-13 13:24:53 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -198,9 +198,15 @@ typedef  struct
     object_struct    **object_list;
 } object_stack_struct;
 
+#define  MAX_OBJECT_TRAVERSE   100
+
 typedef  struct
 {
-    STACK_STRUCT( object_stack_struct )    stack;
+    int                        n_stack_alloced;
+    int                        top_of_stack;
+    object_stack_struct        *stack;
+    object_stack_struct        static_stack[MAX_OBJECT_TRAVERSE];
+    object_stack_struct        *alloced_stack;
 } object_traverse_struct;
 
 #endif

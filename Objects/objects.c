@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.17 1995-07-31 13:45:13 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.18 1995-09-13 13:24:54 david Exp $";
 #endif
 
 private  void  advance_object_traverse(
@@ -1297,6 +1297,33 @@ public  void  get_object_name(
     object_functions[object->object_type].get_name_function( object, name );
 }
 
+private  void   pop_object_stack(
+    object_traverse_struct  *object_traverse )
+{
+    if( object_traverse->top_of_stack > 0 )
+        --object_traverse->top_of_stack;
+    else
+        handle_internal_error( "pop_object_stack" );
+}
+
+private  void  push_object_stack(
+    object_traverse_struct  *object_traverse,
+    object_stack_struct     *entry )
+{
+    if( object_traverse->top_of_stack+1 >= object_traverse->n_stack_alloced )
+    {
+        SET_ARRAY_SIZE( object_traverse->alloced_stack,
+                        object_traverse->top_of_stack,
+                        object_traverse->top_of_stack+1,
+                        DEFAULT_CHUNK_SIZE );
+
+        object_traverse->stack = object_traverse->alloced_stack;
+    }
+
+    object_traverse->stack[object_traverse->top_of_stack] = *entry;
+    ++object_traverse->top_of_stack;
+}
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_object_traverse
 @INPUT      : object_traverse
@@ -1320,7 +1347,9 @@ public  void  initialize_object_traverse(
 {
     object_stack_struct   push_entry;
 
-    INITIALIZE_STACK( object_traverse->stack );
+    object_traverse->n_stack_alloced = MAX_OBJECT_TRAVERSE;
+    object_traverse->top_of_stack = 0;
+    object_traverse->stack = object_traverse->static_stack;
 
     if( n_objects > 0 )
     {
@@ -1328,7 +1357,7 @@ public  void  initialize_object_traverse(
         push_entry.n_objects = n_objects;
         push_entry.object_list = object_list;
 
-        PUSH_STACK( object_traverse->stack, push_entry );
+        push_object_stack( object_traverse, &push_entry );
     }
 }
 
@@ -1352,9 +1381,9 @@ public  BOOLEAN  get_next_object_traverse(
     BOOLEAN               object_found;
     object_stack_struct   *top_entry;
 
-    if( !IS_STACK_EMPTY(object_traverse->stack) )
+    if( object_traverse->top_of_stack > 0 )
     {
-        top_entry = &TOP_OF_STACK( object_traverse->stack );
+        top_entry = &object_traverse->stack[object_traverse->top_of_stack-1];
         *object = top_entry->object_list[top_entry->index];
 
         advance_object_traverse( object_traverse );
@@ -1389,7 +1418,7 @@ private  void  advance_object_traverse(
     object_struct         *object;
     model_struct          *model;
 
-    top_entry = &TOP_OF_STACK( object_traverse->stack );
+    top_entry = &object_traverse->stack[object_traverse->top_of_stack-1];
     object = top_entry->object_list[top_entry->index];
     ++top_entry->index;
 
@@ -1400,14 +1429,14 @@ private  void  advance_object_traverse(
         push_entry.n_objects = model->n_objects;
         push_entry.object_list = model->objects;
 
-        PUSH_STACK( object_traverse->stack, push_entry );
+        push_object_stack( object_traverse, &push_entry );
     }
 
-    while( TOP_OF_STACK(object_traverse->stack).index >=
-           TOP_OF_STACK(object_traverse->stack).n_objects &&
-           !IS_STACK_EMPTY(object_traverse->stack) )
+    while( object_traverse->top_of_stack > 0 &&
+           object_traverse->stack[object_traverse->top_of_stack-1].index >=
+           object_traverse->stack[object_traverse->top_of_stack-1].n_objects )
     {
-        POP_STACK( object_traverse->stack, push_entry );
+        pop_object_stack( object_traverse );
     }
 }
 
@@ -1427,7 +1456,8 @@ private  void  advance_object_traverse(
 public  void  terminate_object_traverse(
     object_traverse_struct   *object_traverse )
 {
-    DELETE_STACK( object_traverse->stack );
+    if( object_traverse->n_stack_alloced > MAX_OBJECT_TRAVERSE )
+        FREE( object_traverse->alloced_stack );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

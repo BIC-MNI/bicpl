@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colours.h,v 1.9 1995-07-31 13:44:41 david Exp $";
+static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colours.h,v 1.10 1995-09-13 13:24:52 david Exp $";
 #endif
 
 #include  <volume_io.h>

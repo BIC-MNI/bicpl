@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.33 1995-07-31 13:45:46 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.34 1995-09-13 13:25:00 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -234,6 +234,10 @@ public  void  render_volume_to_slice(
     Real            **origins2,
     Real            x_axis2[],
     Real            y_axis2[],
+    int             x_pixel_start,
+    int             x_pixel_end,
+    int             y_pixel_start,
+    int             y_pixel_end,
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     Colour          empty_colour,
@@ -248,6 +252,7 @@ public  void  render_volume_to_slice(
     int     ***which_x_offsets1, ***which_x_offsets2;
     int     remainder_case, x_size, y_size;
     int     **row_offsets1, **row_offsets2;
+    int     x_left, x_right;
     void    **start_slices1, **start_slices2;
     Real    start_c, x_start, x_end, remainder, tmp_origin[MAX_DIMENSIONS];
     Real    remainder_offset, left_edge, right_edge, delta;
@@ -418,7 +423,7 @@ public  void  render_volume_to_slice(
             p /= n_cases1[c];
         }
 
-        for_less( x, 0, x_size )
+        for_inclusive( x, x_pixel_start, x_pixel_end )
         {
             offset = 0;
             for_less( c, 0, n_dims1 )
@@ -446,7 +451,7 @@ public  void  render_volume_to_slice(
                 p /= n_cases2[c];
             }
 
-            for_less( x, 0, x_size )
+            for_inclusive( x, x_pixel_start, x_pixel_end )
             {
                 offset = 0;
                 for_less( c, 0, n_dims2 )
@@ -459,7 +464,7 @@ public  void  render_volume_to_slice(
         }
     }
 
-    for_less( y, 0, y_size )
+    for_inclusive( y, y_pixel_start, y_pixel_end )
     {
         x_start = 0.0;
         x_end = (Real) (x_size - 1);
@@ -563,7 +568,7 @@ public  void  render_volume_to_slice(
             start_x[y] = end_x[y] + 1;
     }
 
-    for_less( y, 0, y_size )
+    for_inclusive( y, y_pixel_start, y_pixel_end )
     {
         for_less( s, 0, n_slices1 )
             row_offsets1[s] = which_x_offsets1[s][y];
@@ -574,31 +579,37 @@ public  void  render_volume_to_slice(
                 row_offsets2[s] = which_x_offsets2[s][y];
         }
 
-        render_one_row( volume_data1, volume1_type,
-                        y, start_x[y], end_x[y],
-                        y_offsets1, row_offsets1, start_slices1,
-                        n_slices1, weights1,
-                        volume_data2, volume2_type,
-                        y_offsets2, row_offsets2, start_slices2,
-                        n_slices2, weights2,
-                        cmode_colour_map,
-                        rgb_colour_map,
-                        pixels );
+        x_left = MAX( x_pixel_start, start_x[y] );
+        x_right = MIN( x_pixel_end, end_x[y] );
+
+        if( x_left <= x_right )
+        {
+            render_one_row( volume_data1, volume1_type,
+                            y, x_left, x_right,
+                            y_offsets1, row_offsets1, start_slices1,
+                            n_slices1, weights1,
+                            volume_data2, volume2_type,
+                            y_offsets2, row_offsets2, start_slices2,
+                            n_slices2, weights2,
+                            cmode_colour_map,
+                            rgb_colour_map,
+                            pixels );
+        }
 
         if( pixels->pixel_type == RGB_PIXEL )
         {
             Colour          *pixel_ptr;
 
-            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,0,x_size)];
+            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,x_pixel_start,x_size)];
 
-            for_less( x, 0, start_x[y] )
+            for_less( x, x_pixel_start, start_x[y] )
             {
                 *pixel_ptr = empty_colour;
                 ++pixel_ptr;
             }
 
             pixel_ptr = &pixels->data.pixels_rgb[IJ(y,end_x[y]+1,x_size)];
-            for_less( x, end_x[y]+1, x_size )
+            for_less( x, end_x[y]+1, x_pixel_end+1 )
             {
                 *pixel_ptr = empty_colour;
                 ++pixel_ptr;
@@ -608,15 +619,17 @@ public  void  render_volume_to_slice(
         {
             unsigned short          *pixel_ptr;
 
-            pixel_ptr = &pixels->data.pixels_16bit_colour_index[IJ(y,0,x_size)];
-            for_less( x, 0, start_x[y] )
+            pixel_ptr = &pixels->data.pixels_16bit_colour_index
+                                              [IJ(y,x_pixel_start,x_size)];
+            for_less( x, x_pixel_start, start_x[y] )
             {
                 *pixel_ptr = (unsigned short) empty_colour;
                 ++pixel_ptr;
             }
 
-            pixel_ptr = &pixels->data.pixels_16bit_colour_index[IJ(y,end_x[y]+1,x_size)];
-            for_less( x, end_x[y]+1, x_size )
+            pixel_ptr = &pixels->data.pixels_16bit_colour_index
+                                              [IJ(y,end_x[y]+1,x_size)];
+            for_less( x, end_x[y]+1, x_pixel_end+1 )
             {
                 *pixel_ptr = (unsigned short) empty_colour;
                 ++pixel_ptr;

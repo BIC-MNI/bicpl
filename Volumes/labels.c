@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.28 1995-08-21 14:05:09 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.29 1995-09-13 13:24:59 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -606,7 +606,7 @@ public  Status  load_label_volume(
         initialize_progress_report( &progress, FALSE,
                                     (limits[1][X] - limits[0][X] + 1) *
                                     (limits[1][Y] - limits[0][Y] + 1),
-                                    "Transforming Labels" );
+                                    "Installing Labels" );
 
         for_inclusive( label_voxel[X], limits[0][X], limits[1][X] )
         {

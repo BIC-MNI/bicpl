@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/filters.c,v 1.9 1995-07-31 13:45:44 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/filters.c,v 1.10 1995-09-13 13:24:59 david Exp $";
 #endif
 
 #define  N_STD_DEVIATIONS  3.0

@@ -16,7 +16,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gradient_minimize.c,v 1.1 1995-08-30 14:58:41 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gradient_minimize.c,v 1.2 1995-09-13 13:24:57 david Exp $";
 #endif
 
 #define  SMALLEST_STEP_SIZE     1.0e-20
@@ -49,7 +49,7 @@ public  Real  gradient_steps_minimize_function(
     Real  solution[] )
 {
     BOOLEAN  done;
-    int      iteration, n_fit_dims, dim, *min_pos, *max_pos, *pos;
+    int      iteration, dim, *min_pos, *max_pos, *pos;
     Real     *step_sizes, *parameters, *best, best_value, next_value;
 
     ALLOC( step_sizes, n_dims );
@@ -59,11 +59,6 @@ public  Real  gradient_steps_minimize_function(
         step_sizes[dim] = initial_step_sizes[dim];
         solution[dim] = initial_parameters[dim];
     }
-
-    if( n_search_dims == 1 )
-        n_fit_dims = n_dims;
-    else
-        n_fit_dims = 1;
 
     best_value = func( solution, func_data );
 
