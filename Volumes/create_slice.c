@@ -123,6 +123,68 @@ private  int  clip_points(
     return( n_clipped_points );
 }
 
+private  int    get_cross_section(
+    Volume   volume,
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    Real     clipped_points[][2] )
+{
+    Real    points[4][2];
+    int     sizes[MAX_DIMENSIONS], n_dims, n_points;
+
+    points[0][0] = -BIG_NUMBER;
+    points[0][1] = -BIG_NUMBER;
+    points[1][0] =  BIG_NUMBER;
+    points[1][1] = -BIG_NUMBER;
+    points[2][0] =  BIG_NUMBER;
+    points[2][1] =  BIG_NUMBER;
+    points[3][0] = -BIG_NUMBER;
+    points[3][1] =  BIG_NUMBER;
+
+    get_volume_sizes( volume, sizes );
+    n_dims = get_volume_n_dimensions( volume );
+
+    n_points = clip_points( n_dims, sizes, origin, x_axis, y_axis,
+                            4, points, clipped_points );
+
+    if( n_points == 1 || n_points == 2 || n_points > 2 * n_dims )
+    {
+        HANDLE_INTERNAL_ERROR( "clipping" );
+        n_points = 0;
+    }
+
+    return( n_points );
+}
+
+public  int    get_volume_cross_section(
+    Volume   volume,
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    Real     clipped_voxels[][MAX_DIMENSIONS] )
+{
+    Real    clipped_points[2*MAX_DIMENSIONS][2];
+    int     i, c, n_dims, n_points;
+
+    n_points = get_cross_section( volume, origin, x_axis, y_axis,
+                                  clipped_points );
+
+    n_dims = get_volume_n_dimensions( volume );
+
+    for_less( i, 0, n_points )
+    {
+        for_less( c, 0, n_dims )
+        {
+            clipped_voxels[i][c] = origin[c] +
+                                   clipped_points[i][0] * x_axis[c] +
+                                   clipped_points[i][1] * y_axis[c];
+        }
+    }
+
+    return( n_points );
+}
+
 private  void    get_volume_slice_range(
     Volume   volume,
     Real     origin[],
@@ -133,30 +195,11 @@ private  void    get_volume_slice_range(
     Real     *y_pixel_start,
     Real     *y_pixel_end )
 {
-    Real    points[4][2], clipped_points[2*MAX_DIMENSIONS][2];
-    int     i, n_points, sizes[MAX_DIMENSIONS], n_dims;
+    Real    clipped_points[2*MAX_DIMENSIONS][2];
+    int     i, n_points;
 
-    get_volume_sizes( volume, sizes );
-    points[0][0] = -BIG_NUMBER;
-    points[0][1] = -BIG_NUMBER;
-    points[1][0] =  BIG_NUMBER;
-    points[1][1] = -BIG_NUMBER;
-    points[2][0] =  BIG_NUMBER;
-    points[2][1] =  BIG_NUMBER;
-    points[3][0] = -BIG_NUMBER;
-    points[3][1] =  BIG_NUMBER;
-
-    n_dims = get_volume_n_dimensions( volume );
-
-    n_points = clip_points( n_dims,
-                            sizes, origin, x_axis, y_axis,
-                            4, points, clipped_points );
-
-    if( n_points == 1 || n_points == 2 || n_points > 2 * n_dims )
-    {
-        HANDLE_INTERNAL_ERROR( "clipping" );
-        n_points = 0;
-    }
+    n_points = get_cross_section( volume, origin, x_axis, y_axis,
+                                  clipped_points );
 
     if( n_points == 0 )
     {
