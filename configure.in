@@ -44,7 +44,8 @@ if test "$volumeio_LIBS" = ""; then
 fi
 
 CFLAGS="$volumeio_CFLAGS $minc_CFLAGS $netcdf_CFLAGS"
-LIBS="$volumeio_LIBS $minc_LIBS $netcdf_LIBS"
+BIC_LIBS="$volumeio_LIBS $minc_LIBS $netcdf_LIBS"
+AC_SUBST(BIC_LIBS)
 
 
 dnl Decide which file format is used for images.

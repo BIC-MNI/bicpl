@@ -1,3 +1,11 @@
+2001-01-28  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* configure.in: Put BIC libs into variable BIC_LIBS, rather than LIBS.
+
+	* Makefile.am (libbicpl_la_LIBADD): Link $(BIC_LIBS) and $(imageio_LIBS).
+
+	* Images/Makefile.am: Do not need $(imageio_LIBS).
+
 2001-01-26  Steve ROBBINS  <stever@bic.mni.mcgill.ca>
 
 	* Tagged as release-1_3_2.

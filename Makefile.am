@@ -19,7 +19,8 @@ libbicpl_la_LIBADD = \
 	$(top_builddir)/Geometry/libbicpl_g.la \
 	$(top_builddir)/Marching_cubes/libbicpl_mc.la \
 	$(top_builddir)/Objects/libbicpl_o.la \
-	$(top_builddir)/Transforms/libbicpl_t.la
+	$(top_builddir)/Transforms/libbicpl_t.la \
+	$(BIC_LIBS) $(imageio_LIBS)
 
 
 # The following is taken from the libtool documentation.
