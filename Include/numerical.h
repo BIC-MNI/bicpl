@@ -6,7 +6,6 @@
 #include  <amoeba.h>
 #include  <histogram.h>
 #include  <minimization.h>
-#include  <splines.h>
 
 #ifndef  public
 #define       public   extern

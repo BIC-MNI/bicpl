@@ -3,7 +3,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.1 1994-11-30 15:08:31 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.2 1995-02-20 13:13:54 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -126,65 +126,6 @@ public  void  make_origin_transform(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : compute_inverse_of_orthogonal_transform
-@INPUT      : transform
-@OUTPUT     : inverse
-@RETURNS    : 
-@DESCRIPTION: Computes the inverse of the transform.  The transform
-              must be a unit orthogonal transform.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    : 1993            David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  void   compute_inverse_of_orthogonal_transform(
-    Transform  *transform,
-    Transform  *inverse )
-{
-    Real   x_trans, y_trans, z_trans;
-
-    x_trans = -Transform_elem( *transform, 0, 0 ) *
-               Transform_elem( *transform, 0, 3 ) -
-               Transform_elem( *transform, 0, 1 ) *
-               Transform_elem( *transform, 1, 3 ) -
-               Transform_elem( *transform, 0, 2 ) *
-               Transform_elem( *transform, 2, 3 );
-
-    y_trans = -Transform_elem( *transform, 1, 0 ) *
-               Transform_elem( *transform, 0, 3 ) -
-               Transform_elem( *transform, 1, 1 ) *
-               Transform_elem( *transform, 1, 3 ) -
-               Transform_elem( *transform, 1, 2 ) *
-               Transform_elem( *transform, 2, 3 );
-
-    z_trans = -Transform_elem( *transform, 2, 0 ) *
-               Transform_elem( *transform, 0, 3 ) -
-               Transform_elem( *transform, 2, 1 ) *
-               Transform_elem( *transform, 1, 3 ) -
-               Transform_elem( *transform, 2, 2 ) *
-               Transform_elem( *transform, 2, 3 );
-
-    Transform_elem( *inverse, 0, 0 ) = Transform_elem( *transform, 0, 0 );
-    Transform_elem( *inverse, 0, 1 ) = Transform_elem( *transform, 1, 0 );
-    Transform_elem( *inverse, 0, 2 ) = Transform_elem( *transform, 2, 0 );
-    Transform_elem( *inverse, 0, 3 ) = x_trans;
-    Transform_elem( *inverse, 1, 0 ) = Transform_elem( *transform, 0, 1 );
-    Transform_elem( *inverse, 1, 1 ) = Transform_elem( *transform, 1, 1 );
-    Transform_elem( *inverse, 1, 2 ) = Transform_elem( *transform, 2, 1 );
-    Transform_elem( *inverse, 1, 3 ) = y_trans;
-    Transform_elem( *inverse, 2, 0 ) = Transform_elem( *transform, 0, 2 );
-    Transform_elem( *inverse, 2, 1 ) = Transform_elem( *transform, 1, 2 );
-    Transform_elem( *inverse, 2, 2 ) = Transform_elem( *transform, 2, 2 );
-    Transform_elem( *inverse, 2, 3 ) = z_trans;
-    Transform_elem( *inverse, 3, 0 ) = 0.0;
-    Transform_elem( *inverse, 3, 1 ) = 0.0;
-    Transform_elem( *inverse, 3, 2 ) = 0.0;
-    Transform_elem( *inverse, 3, 3 ) = 1.0;
-}
-
-/* ----------------------------- MNI Header -----------------------------------
 @NAME       : make_rotation_transform
 @INPUT      : radians
               axis
@@ -304,7 +245,7 @@ public  void  make_transform_in_coordinate_system(
 @RETURNS    : 
 @DESCRIPTION: Creates a transform which corresponds to a rotation about an
               arbitrary vector.  Code comes from Graphics Gems book.
-@METHOD     : 
+@METHOD     : Graphics Gems, Page ??
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    : 1993            David MacDonald
@@ -324,9 +265,9 @@ public  void  make_rotation_about_axis(
     s = sin( (double) -angle );
     t = 1.0 - c;
 
-    x = Point_x( *axis );
-    y = Point_y( *axis );
-    z = Point_z( *axis );
+    x = Vector_x( *axis );
+    y = Vector_y( *axis );
+    z = Vector_z( *axis );
 
     txy = t * x * y;
     txz = t * x * z;
@@ -534,93 +475,6 @@ public  void  transform_point_2d(
     *y_trans = Transform_2d_elem(*transform,1,0) * x +
                Transform_2d_elem(*transform,1,1) * y +
                Transform_2d_elem(*transform,1,2);
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : write_transform_file
-@INPUT      : filename
-              comments
-              transform
-@OUTPUT     : 
-@RETURNS    : OK or ERROR
-@DESCRIPTION: Writes the specified transform to the file, in MNI format.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    : 1993            David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  Status  write_transform_file(
-    char       filename[],
-    char       comments[],
-    Transform  *transform )
-{
-    Status              status;
-    FILE                *file;
-    General_transform   gen_transform;
-
-    create_linear_transform( &gen_transform, transform );
-
-    status = open_file_with_default_suffix( filename, "xfm",
-                                 WRITE_FILE, ASCII_FORMAT, &file );
-
-    if( status == OK )
-    {
-        status = output_transform( file, comments, &gen_transform );
-
-        (void) close_file( file );
-    }
-
-    delete_general_transform( &gen_transform );
-
-    return( status );
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : read_transform_file
-@INPUT      : filename
-@OUTPUT     : transform
-@RETURNS    : OK or ERROR
-@DESCRIPTION: Reads a transform from a file.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    : 1993            David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  Status  read_transform_file(
-    char       filename[],
-    Transform  *transform )
-{
-    Status             status;
-    FILE               *file;
-    General_transform  gen_transform;
-
-    status = open_file_with_default_suffix( filename, "xfm",
-                         READ_FILE, ASCII_FORMAT, &file );
-
-    if( status == OK )
-    {
-        if( input_transform( file, &gen_transform ) != OK )
-            status = ERROR;
-
-        (void) close_file( file );
-    }
-
-    if( status == OK && get_transform_type(&gen_transform) != LINEAR )
-    {
-        print( "File %s does not contain a linear transform.\n", filename );
-        status = ERROR;
-    }
-
-    if( status == OK )
-        *transform = *get_linear_transform_ptr(&gen_transform);
-
-    delete_general_transform( &gen_transform );
-
-    return( status );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

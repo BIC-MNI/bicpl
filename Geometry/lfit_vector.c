@@ -10,7 +10,7 @@ public void lfit_vector(float **x, float y[], float sig[], int ndata,
 {
 	int k,kk,j,ihit,i;
 	float ym,wt,sum,sig2i,**beta,*afunc;
-	void gaussj(),covsrt(),nrerror(),free_matrix(),free_vector();
+	void gaussj(),covsrt(),free_matrix(),free_vector();
 	float **matrix(),*vector();
 
 	beta=matrix(1,ma,1,1);
@@ -22,9 +22,9 @@ public void lfit_vector(float **x, float y[], float sig[], int ndata,
 			if (lista[k] == j) ihit++;
 		if (ihit == 0)
 			lista[kk++]=j;
-		else if (ihit > 1) nrerror("Bad LISTA permutation in LFIT-1");
+		else if (ihit > 1) print("Bad LISTA permutation in LFIT-1");
 	}
-	if (kk != (ma+1)) nrerror("Bad LISTA permutation in LFIT-2");
+	if (kk != (ma+1)) print("Bad LISTA permutation in LFIT-2");
 	for (j=1;j<=mfit;j++) {
 		for (k=1;k<=mfit;k++) covar[j][k]=0.0;
 		beta[j][1]=0.0;

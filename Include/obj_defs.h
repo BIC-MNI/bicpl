@@ -63,6 +63,7 @@ typedef  struct
 } marker_struct;
 
 #define  MAX_POINTS_PER_POLYGON     20
+#define  MAX_POLYGON_NEIGHBOURS     2048
 
 typedef  struct
 {

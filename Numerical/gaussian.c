@@ -1,30 +1,28 @@
-#ifndef lint
-static char rcsid[] = "$Header";
-#endif
-
 #include  <internal_volume_io.h>
-#include  <numerical.h>
+#include  <bicpl.h>
 
 private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
-    int   n,
-    float **coefs,
-    int   n_values,
-    float **values )
+    int    n,
+    float  **coefs,
+    int    n_values,
+    float  **values )
 {
-    int       i, j, k, p, v;
-    float     **a, *s, tmp_real, val, best_val, m, *tmp, scale_factor;
+    int       i, j, k, p, v, *row, tmp;
+    float     **a, **solution, *s, val, best_val, m, scale_factor;
     BOOLEAN   success;
 
-    ALLOC( a, n );
-    for_less( i, 0, n )
-        ALLOC( a[i], n );
-
+    ALLOC( row, n );
+    ALLOC2D( a, n, n );
+    ALLOC2D( solution, n, n_values );
     ALLOC( s, n );
 
     for_less( i, 0, n )
     {
+        row[i] = i;
         for_less( j, 0, n )
             a[i][j] = coefs[i][j];
+        for_less( j, 0, n_values )
+            solution[i][j] = values[j][i];
     }
 
     for_less( i, 0, n )
@@ -42,11 +40,11 @@ private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
     for_less( i, 0, n-1 )
     {
         p = i;
-        best_val = a[i][i] / s[i];
+        best_val = a[row[i]][i] / s[row[i]];
         best_val = ABS( best_val );
         for_less( j, i+1, n )
         {
-            val = a[j][i] / s[j];
+            val = a[row[j]][i] / s[row[j]];
             val = ABS( val );
             if( val > best_val )
             {
@@ -55,7 +53,7 @@ private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
             }
         }
 
-        if( a[p][i] == 0.0 )
+        if( a[row[p]][i] == 0.0 )
         {
             success = FALSE;
             break;
@@ -63,25 +61,22 @@ private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
 
         if( i != p )
         {
-            tmp = a[i];
-            a[i] = a[p];
-            a[p] = tmp;
-            tmp_real = s[i];
-            s[i] = s[p];
-            s[p] = tmp_real;
+            tmp = row[i];
+            row[i] = row[p];
+            row[p] = tmp;
         }
 
         for_less( j, i+1, n )
         {
-            m = a[j][i] / a[i][i];
+            m = a[row[j]][i] / a[row[i]][i];
             for_less( k, i+1, n )
-                a[j][k] -= m * a[i][k];
+                a[row[j]][k] -= m * a[row[i]][k];
             for_less( v, 0, n_values )
-                values[v][j] -= m * values[v][i];
+                solution[row[j]][v] -= m * solution[row[i]][v];
         }
     }
 
-    if( success && a[n-1][n-1] == 0.0 )
+    if( success && a[row[n-1]][n-1] == 0.0 )
         success = FALSE;
 
     if( success )
@@ -90,21 +85,28 @@ private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
         {
             for_less( j, i+1, n )
             {
-                scale_factor = a[i][j];
+                scale_factor = a[row[i]][j];
                 for_less( v, 0, n_values )
-                    values[v][i] -= scale_factor * values[v][j];
+                    solution[row[i]][v] -= scale_factor * solution[row[j]][v];
             }
 
             for_less( v, 0, n_values )
-                values[v][i] /= a[i][i];
+                solution[row[i]][v] /= a[row[i]][i];
+        }
+
+        for_less( i, 0, n )
+        {
+            for_less( v, 0, n_values )
+            {
+                values[v][i] = solution[row[i]][v];
+            }
         }
     }
 
-    for_less( i, 0, n )
-        FREE( a[i] );
-    FREE( a );
-
+    FREE2D( a );
+    FREE2D( solution );
     FREE( s );
+    FREE( row );
 
     return( success );
 }

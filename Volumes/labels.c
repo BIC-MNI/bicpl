@@ -275,31 +275,70 @@ public  Status  load_label_volume(
     char     filename[],
     Volume   label_volume )
 {
-    Status   status;
-    nc_type  type;
-    BOOLEAN  signed_flag;
+    Status                status;
+    int                   sizes[MAX_DIMENSIONS], new_sizes[MAX_DIMENSIONS];
+    nc_type               type;
+    BOOLEAN               signed_flag;
+    Volume                new_volume;
+    volume_input_struct   volume_input;
 
     check_alloc_label_data( label_volume );
 
     type = get_volume_nc_data_type( label_volume, &signed_flag );
 
-    status = input_volume( filename, 3, XYZ_dimension_names,
+    status = start_volume_input( filename, 3, XYZ_dimension_names,
                            type, signed_flag, 0.0, 0.0,
-                           FALSE, &label_volume, NULL );
+                           TRUE, &new_volume, NULL, &volume_input );
+
+    if( status == OK )
+    {
+        get_volume_sizes( new_volume, new_sizes );
+        get_volume_sizes( label_volume, sizes );
+
+        if( new_sizes[0] != sizes[0] ||
+            new_sizes[1] != sizes[1] ||
+            new_sizes[2] != sizes[2] )
+        {
+            print( "Volume file %s is not the right size for label volume.\n",
+                   filename );
+            status = ERROR;
+        }
+
+        cancel_volume_input( new_volume, &volume_input );
+    }
+
+    if( status == OK )
+    {
+        status = input_volume( filename, 3, XYZ_dimension_names,
+                               type, signed_flag, 0.0, 0.0,
+                               FALSE, &label_volume, NULL );
+    }
 
     return( status );
 }
 
 public  Status  save_label_volume(
     char     filename[],
+    char     original_filename[],
     Volume   label_volume )
 {
     Status   status;
 
     check_alloc_label_data( label_volume );
 
-    status = output_volume( filename, NC_UNSPECIFIED, FALSE, 0.0, 0.0,
-                            label_volume, "Label volume", NULL );
+    if( original_filename != NULL && strlen(original_filename) > 0 &&
+        file_exists( original_filename ) )
+    {
+        status = output_modified_volume( filename,
+                                NC_UNSPECIFIED, FALSE, 0.0, 0.0,
+                                label_volume, original_filename,
+                                "Label volume", NULL );
+    }
+    else
+    {
+        status = output_volume( filename, NC_UNSPECIFIED, FALSE, 0.0, 0.0,
+                                label_volume, "Label volume", NULL );
+    }
 
     return( status );
 }

@@ -1,3 +1,4 @@
+#include  <internal_volume_io.h>
 #include  <bicpl.h>
 
 public  void  dilate_labeled_voxels_3d(

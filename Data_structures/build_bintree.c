@@ -55,6 +55,8 @@ private  Real  node_visit_estimation(
 
 /* ---------------------------------------------------------- */
 
+#define  FACTOR 1.0e-4
+
 public  void  create_object_bintree(
     int              n_objects,
     range_struct     bound_vols[],
@@ -62,13 +64,21 @@ public  void  create_object_bintree(
     int              max_nodes )
 {
     int       i, c;
-    Real      avg_nodes, avg_objects, limits[N_DIMENSIONS][2];
+    Real      avg_nodes, avg_objects, limits[N_DIMENSIONS][2], size;
 #ifdef  DEBUG
     Real      best_objects;
 #endif
 
     for_less( i, 0, n_objects )
     {
+        for_less( c, 0, N_DIMENSIONS )
+        {
+            size = bound_vols[i].limits[c][1] -
+                   bound_vols[i].limits[c][0];
+            bound_vols[i].limits[c][0] -= size * FACTOR;
+            bound_vols[i].limits[c][1] += size * FACTOR;
+        }
+
         if( i == 0 )
         {
             limits[X][0] = bound_vols[i].limits[X][0];
@@ -84,7 +94,7 @@ public  void  create_object_bintree(
             {
                 if( bound_vols[i].limits[c][0] < limits[c][0] )
                     limits[c][0] = bound_vols[i].limits[c][0];
-                else if( bound_vols[i].limits[c][1] > limits[c][1] )
+                if( bound_vols[i].limits[c][1] > limits[c][1] )
                     limits[c][1] = bound_vols[i].limits[c][1];
             }
         }

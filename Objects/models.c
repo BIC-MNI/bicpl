@@ -60,6 +60,21 @@ public  void  add_object_to_model(
     add_object_to_list( &model->n_objects, &model->objects, new_object );
 }
 
+public  void  insert_object_in_model(
+    model_struct   *model,
+    object_struct  *new_object,
+    int            obj_index )
+{
+    int    i;
+
+    SET_ARRAY_SIZE( model->objects, model->n_objects, model->n_objects+1, 1 );
+    ++model->n_objects;
+
+    for( i = model->n_objects-1;  i > obj_index;  --i )
+        model->objects[i] = model->objects[i-1];
+    model->objects[obj_index] = new_object;
+}
+
 public  int  find_object_index_in_model(
     model_struct   *model,
     object_struct  *object )

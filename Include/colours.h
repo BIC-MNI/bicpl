@@ -3,6 +3,23 @@
 
 #include  <volume_io.h>
 
+#define  COMPOSITE_COLOURS( result, front, back ) \
+         { \
+             Real  rf, gf, bf, af, rb, gb, bb, ab; \
+             rf = get_Colour_r_0_1(front); \
+             gf = get_Colour_g_0_1(front); \
+             bf = get_Colour_b_0_1(front); \
+             af = get_Colour_a_0_1(front); \
+             rb = get_Colour_r_0_1(back); \
+             gb = get_Colour_g_0_1(back); \
+             bb = get_Colour_b_0_1(back); \
+             ab = get_Colour_a_0_1(back); \
+             (result) = make_rgba_Colour_0_1( af * rf + (1.0 - af) * rb, \
+                                              af * gf + (1.0 - af) * gb, \
+                                              af * bf + (1.0 - af) * bb, \
+                                              af * af + (1.0 - af) * ab ); \
+         }
+
 #undef  START_COLOURS
 #undef  END_COLOURS
 #undef  DEF_COLOUR

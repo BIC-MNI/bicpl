@@ -38,6 +38,9 @@ private  void  multiply_matrices(
     }
 }
 
+#define  MAX_DEGREE        4
+#define  MAX_TOTAL_VALUES  4000
+
 public  void  spline_tensor_product(
     int     n_dims,
     Real    positions[],
@@ -49,16 +52,34 @@ public  void  spline_tensor_product(
     Real    results[] )    /* [n_values*n_derivs[0]*n_derivs[1]*...] */
 {
     int     i, deriv, d, k, total_values, src;
-    Real    **us, **weights, *tmp_results[2], *r;
+    int     ind, prev_ind;
+    Real    us[MAX_DEGREE*MAX_DEGREE], weights[MAX_DEGREE*MAX_DEGREE];
+    Real    *tmp_results[2], *r;
+    Real    static_tmp_results[2*MAX_TOTAL_VALUES];
 
     /*--- check arguments */
 
     total_values = n_values;
     for_less( d, 0, n_dims )
+    {
+        if( degrees[d] < 2 || degrees[d] > MAX_DEGREE )
+        {
+            print(
+               "spline_tensor_product: Degree %d is not be between 2 and %d\n",
+               degrees[d], MAX_DEGREE );
+            return;
+        }
         total_values *= degrees[d];
+    }
 
-    ALLOC( tmp_results[0], total_values );
-    ALLOC( tmp_results[1], total_values );
+    if( total_values > MAX_TOTAL_VALUES )
+    {
+        print( "Spline size too large for static memory.\n" );
+        return;
+    }
+
+    tmp_results[0] = &static_tmp_results[0];
+    tmp_results[1] = &static_tmp_results[total_values];
 
     for_less( i, 0, total_values )
         tmp_results[0][i] = coefs[i];
@@ -69,26 +90,31 @@ public  void  spline_tensor_product(
 
     for_less( d, 0, n_dims )
     {
-        ALLOC2D( us, 1 + n_derivs[d], degrees[d] );
-        ALLOC2D( weights, 1 + n_derivs[d], degrees[d] );
-
-        us[0][0] = 1.0;
+        us[0] = 1.0;
         for_less( k, 1, degrees[d] )
-            us[0][k] = us[0][k-1] * positions[d];
+            us[k] = us[k-1] * positions[d];
 
+        ind = degrees[d];
         for_inclusive( deriv, 1, n_derivs[d] )
         {
             for_less( k, 0, deriv )
-                us[deriv][k] = 0.0;
+            {
+                us[ind] = 0.0;
+                ++ind;
+            }
    
+            prev_ind = IJ( deriv-1, deriv-1, degrees[d] );
             for_less( k, deriv, degrees[d] )
-                us[deriv][k] = us[deriv-1][k-1] * (Real) k;
+            {
+                us[ind] = us[prev_ind] * (Real) k;
+                ++ind;
+                ++prev_ind;
+            }
         }
 
-        multiply_matrices( 1 + n_derivs[d], degrees[d], &us[0][0],
-                           degrees[d], 1,
+        multiply_matrices( 1 + n_derivs[d], degrees[d], us, degrees[d], 1,
                            degrees[d], bases[d], degrees[d], 1,
-                           &weights[0][0], degrees[d], 1 );
+                           weights, degrees[d], 1 );
 
         total_values = n_values;
         for_less( i, 0, d )
@@ -101,17 +127,10 @@ public  void  spline_tensor_product(
         else
             r = tmp_results[1-src];
 
-        multiply_matrices( 1 + n_derivs[d], degrees[d], &weights[0][0],
-                           degrees[d], 1,
+        multiply_matrices( 1 + n_derivs[d], degrees[d], weights, degrees[d], 1,
                            total_values, tmp_results[src], total_values, 1,
                            r, 1, 1 + n_derivs[d] );
 
-        FREE2D( us );
-        FREE2D( weights );
-
         src = 1 - src;
     }
-
-    FREE( tmp_results[0] );
-    FREE( tmp_results[1] );
 }

@@ -19,7 +19,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <recipes.h>
 #include <geom.h>
 
 
@@ -47,20 +46,21 @@ public void  get_nonlinear_warp(float **bdefor, /* num_marks x dim */
   
    float **ML,**INVML;
 
-   ML    = matrix(1,num_marks+dim+1,1,num_marks+dim+1);
-   INVML = matrix(1,num_marks+dim+1,1,num_marks+dim+1);
+   ALLOC2D( ML, num_marks+dim+1, num_marks+dim+1 );
+   ALLOC2D( INVML, num_marks+dim+1, num_marks+dim+1 );
 
    /* This function will build the L matrix */
+
    makeL(bdefor,ML,num_marks,dim);
 
-   invertmatrix(num_marks+dim+1, ML, INVML);
+   (void) invert_square_matrix_float( num_marks+dim+1, ML, INVML );
 
    /*  build the array of deformation vectors   */
+
    calculate_coe(adefor,INVML,INVMLY, num_marks, dim);
 
-
-   free_matrix(ML,1,num_marks+dim+1,1,num_marks+dim+1);
-   free_matrix(INVML,1,num_marks+dim+1,1,num_marks+dim+1);
+   FREE2D( ML );
+   FREE2D( INVML );
 }
 
 				/* this function will build the L matrix for image deformation.
@@ -78,7 +78,7 @@ private void makeL(float **bdefor, float **ML, int num_marks, int dim)
    /* initial matrix */
    for (i=1; i<=num_marks+dim+1; i++){
       for (j=1; j<=num_marks+dim+1; j++){
-         ML[i][j]=0;
+         ML[i-1][j-1]=0;
       }
    }
     
@@ -86,15 +86,15 @@ private void makeL(float **bdefor, float **ML, int num_marks, int dim)
    for (i=1;i<=num_marks;i++){
       for (j=i+1;j<=num_marks;j++){
          r = return_r(bdefor[i],bdefor[j],dim); 
-         ML[j][i] = ML[i][j] = FU(r,dim);
+         ML[j-1][i-1] = ML[i-1][j-1] = FU(r,dim);
       }
    }
  
    /* set the rest of the L matrix */
    for (i=1;i<=num_marks;i++){
-      ML[num_marks+1][i] = ML[i][num_marks+1]   = 1;
+      ML[num_marks+1-1][i-1] = ML[i-1][num_marks+1-1]   = 1;
       for (j=1;j<=dim;j++){
-         ML[num_marks+j+1][i] = ML[i][num_marks+j+1] = bdefor[i][j];
+         ML[num_marks+j+1-1][i-1] = ML[i-1][num_marks+j+1-1] = bdefor[i][j];
       }
    }
 }
@@ -164,7 +164,7 @@ private float FU(float r, int dim)
 private void calculate_coe(float **adefor, float **INVML, float **INVMLY, int num_marks, int dim)
 {
    int i,j,k;
-   float temp,**YM;
+   float temp,**YM,**matrix();
    
    /* Y = ( V | 0 0 0)t */
    YM = matrix(1, num_marks+dim+1, 1, dim);
@@ -185,7 +185,7 @@ private void calculate_coe(float **adefor, float **INVML, float **INVMLY, int nu
       for (j=1;j<= num_marks+dim+1;j++){ /* for one row of matrix */
          temp = 0;
          for (k = 1; k<= num_marks+dim+1; k++){
-            temp = INVML[j][k]*YM[k][i] + temp;
+            temp = INVML[j-1][k-1]*YM[k][i] + temp;
          }
          INVMLY[j][i] = temp;
       }
