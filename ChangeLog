@@ -1,3 +1,7 @@
+2002-09-05  Jason Lerch		<jason@bic.mni.mcgill.ca>
+
+	* updated the NEWS file so that make dist works.
+
 2002-05-15  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Include/*.h: Remove rcsid strings from public headers.
