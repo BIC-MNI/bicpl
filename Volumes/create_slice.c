@@ -20,6 +20,12 @@ private  void  get_mapping(
     Real            *y_delta,
     Real            *y_offset )
 {
+    if( volume->flip_axis[x_axis_index] )
+        x_axis_flip_flag = !x_axis_flip_flag;
+
+    if( volume->flip_axis[y_axis_index] )
+        y_axis_flip_flag = !y_axis_flip_flag;
+
     *x_delta = x_scale * volume->thickness[x_axis_index];
     *x_start = -0.5;
     *x_end = (Real) volume->sizes[x_axis_index] - 0.5;
@@ -50,7 +56,8 @@ private  void  get_mapping(
 }
 
 public  void  create_volume_slice(
-    volume_struct   *volume,
+    volume_struct   *volume1,
+    volume_struct   *volume2,
     Real            slice_position,
     int             x_axis_index,
     Boolean         x_axis_flip_flag,
@@ -64,19 +71,22 @@ public  void  create_volume_slice(
     int             y_viewport_size,
     Pixel_types     pixel_type,
     Boolean         interpolation_flag,
-    unsigned short  cmode_colour_map[],
-    Colour          rgb_colour_map[],
+    unsigned short  **cmode_colour_map,
+    Colour          **rgb_colour_map,
     int             *n_pixels_alloced,
     pixels_struct   *pixels )
 {
-    Volume_type  *slice_start;
+    Volume_type  *slice_start1, *slice_start2;
     Boolean      within_viewport;
-    int          axis, strides[3], indices[3], x_size, y_size;
+    int          strides1[N_DIMENSIONS], strides2[N_DIMENSIONS];
+    int          indices1[N_DIMENSIONS], indices2[N_DIMENSIONS];
+    int          axis, x_size, y_size;
     int          x_position, y_position;
     Real         x_delta, x_start, x_end, y_delta, y_start, y_end;
     Real         x_offset, y_offset;
+    Real         trans[N_DIMENSIONS], scale[N_DIMENSIONS];
 
-    get_mapping( volume,
+    get_mapping( volume1,
                  x_translation, x_scale, x_axis_index, x_axis_flip_flag,
                  y_translation, y_scale, y_axis_index, y_axis_flip_flag,
                  &x_start, &x_end, &x_delta, &x_offset,
@@ -97,27 +107,61 @@ public  void  create_volume_slice(
 
     if( within_viewport )
     {
-        indices[X] = ROUND( slice_position );
-        indices[Y] = ROUND( slice_position );
-        indices[Z] = ROUND( slice_position );
-        indices[x_axis_index] = 0;
-        indices[y_axis_index] = 0;
+        indices1[X] = ROUND( slice_position );
+        indices1[Y] = ROUND( slice_position );
+        indices1[Z] = ROUND( slice_position );
+        indices1[x_axis_index] = 0;
+        indices1[y_axis_index] = 0;
 
         for_less( axis, 0, N_DIMENSIONS )
         {
-            if( indices[axis] == volume->sizes[axis] )
-                indices[axis] = volume->sizes[axis] - 1;
+            if( indices1[axis] == volume1->sizes[axis] )
+                indices1[axis] = volume1->sizes[axis] - 1;
         }
 
-        slice_start = &volume->data[indices[X]][indices[Y]][indices[Z]];
+        slice_start1 = &volume1->data[indices1[X]][indices1[Y]][indices1[Z]];
 
-        strides[X] = volume->sizes[Y] * volume->sizes[Z];
-        strides[Y] = volume->sizes[Z];
-        strides[Z] = 1;
+        strides1[X] = volume1->sizes[Y] * volume1->sizes[Z];
+        strides1[Y] = volume1->sizes[Z];
+        strides1[Z] = 1;
 
-        render_volume_to_slice( slice_start,
-                                strides[x_axis_index], strides[y_axis_index],
+        if( volume2 != (volume_struct *) NULL )
+        {
+            scale[X] = (Real) volume2->sizes[X] / (Real) volume1->sizes[X];
+            scale[Y] = (Real) volume2->sizes[Y] / (Real) volume1->sizes[Y];
+            scale[Z] = (Real) volume2->sizes[Z] / (Real) volume1->sizes[Z];
+            trans[X] = scale[X] * 0.5 - 0.5;
+            trans[Y] = scale[Y] * 0.5 - 0.5;
+            trans[Z] = scale[Z] * 0.5 - 0.5;
+            indices2[X] = ROUND( slice_position * scale[X] + trans[X] - 0.5 );
+            indices2[Y] = ROUND( slice_position * scale[Y] + trans[Y] - 0.5 );
+            indices2[Z] = ROUND( slice_position * scale[Z] + trans[Z] - 0.5 );
+            indices2[x_axis_index] = 0;
+            indices2[y_axis_index] = 0;
+
+            for_less( axis, 0, N_DIMENSIONS )
+            {
+                if( indices2[axis] == volume2->sizes[axis] )
+                    indices2[axis] = volume2->sizes[axis] - 1;
+            }
+
+            slice_start2 = &volume2->data[indices2[X]][indices2[Y]]
+                                         [indices2[Z]];
+
+            strides2[X] = volume2->sizes[Y] * volume2->sizes[Z];
+            strides2[Y] = volume2->sizes[Z];
+            strides2[Z] = 1;
+        }
+        else
+            slice_start2 = (Volume_type *) NULL;
+
+        render_volume_to_slice( slice_start1,
+                                strides1[x_axis_index], strides1[y_axis_index],
                                 x_start, y_start, x_delta, y_delta,
+                                slice_start2,
+                                strides2[x_axis_index], strides2[y_axis_index],
+                                trans[x_axis_index], trans[y_axis_index],
+                                scale[x_axis_index], scale[y_axis_index],
                                 interpolation_flag, cmode_colour_map,
                                 rgb_colour_map, pixels );
     }
