@@ -48,7 +48,7 @@ public  void  spline_tensor_product(
     int     n_derivs[],    /* [n_dims] */
     Real    results[] )    /* [n_values*n_derivs[0]*n_derivs[1]*...] */
 {
-    int     i, deriv, d, k, total_values, src, i_step, j_step1, j_step2;
+    int     i, deriv, d, k, total_values, src;
     Real    **us, **weights, *tmp_results[2], *r;
 
     /*--- check arguments */
@@ -67,7 +67,7 @@ public  void  spline_tensor_product(
 
     /*--- do each dimension */
 
-    for( d = n_dims-1;  d >= 0;  --d )
+    for_less( d, 0, n_dims )
     {
         ALLOC2D( us, 1 + n_derivs[d], degrees[d] );
         ALLOC2D( weights, 1 + n_derivs[d], degrees[d] );
@@ -82,7 +82,7 @@ public  void  spline_tensor_product(
                 us[deriv][k] = 0.0;
    
             for_less( k, deriv, degrees[d] )
-                us[deriv][k] = us[deriv-1][k-1] * (Real) (k - deriv + 1);
+                us[deriv][k] = us[deriv-1][k-1] * (Real) k;
         }
 
         multiply_matrices( 1 + n_derivs[d], degrees[d], &us[0][0],
@@ -92,32 +92,19 @@ public  void  spline_tensor_product(
 
         total_values = n_values;
         for_less( i, 0, d )
-            total_values *= degrees[i];
-        i_step = 1;
+            total_values *= 1 + n_derivs[i];
         for_less( i, d+1, n_dims )
-            i_step *= n_derivs[i];
-        total_values *= i_step;
+            total_values *= degrees[i];
 
-        if( d < n_dims-1 )
-        {
-            j_step1 = 1;
-            j_step2 = 1;
-        }
-        else
-        {
-            j_step1 = degrees[d-1];
-            j_step2 = n_derivs[d-1];
-        }
-
-        if( d == 0 )
+        if( d == n_dims-1 )
             r = results;
         else
             r = tmp_results[1-src];
 
         multiply_matrices( 1 + n_derivs[d], degrees[d], &weights[0][0],
                            degrees[d], 1,
-                           total_values, tmp_results[src], i_step, j_step1,
-                           r, i_step, j_step2 );
+                           total_values, tmp_results[src], total_values, 1,
+                           r, 1, 1 + n_derivs[d] );
 
         FREE2D( us );
         FREE2D( weights );
