@@ -15,7 +15,7 @@ public  Status  create_sphere_from_polygons( polygons, sphere, centre,
     Status        create_polygons_sphere();
     Status        check_polygons_neighbours_computed();
     int           n_up, size, point_index, vertex_index, poly;
-    Real          curvature;
+    Real          curvature, base_length;
     Smallest_int  *point_done;
     Point         centroid;
     Vector        normal, offset, sphere_normal;
@@ -68,7 +68,7 @@ public  Status  create_sphere_from_polygons( polygons, sphere, centre,
 
                         compute_polygon_point_centroid( polygons, poly,
                                   vertex_index, point_index, &centroid,
-                                  &normal, TRUE, &curvature );
+                                  &normal, &base_length, &curvature );
 
                         
                         if( offset_flag )
