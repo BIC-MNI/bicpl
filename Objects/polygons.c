@@ -76,6 +76,44 @@ public  void  delete_polygons( polygons_struct *polygons )
     polygons->bintree = (bintree_struct *) 0;
 }
 
+public  void  copy_polygons(
+    polygons_struct   *src,
+    polygons_struct   *dest )
+{
+    int   i, n_indices;
+
+    *dest = *src;
+
+    ALLOC( dest->colours, 1 );
+    dest->colours[0] = src->colours[0];
+
+    ALLOC( dest->points, src->n_points );
+    if( src->normals != (Vector *) NULL )
+        ALLOC( dest->normals, src->n_points )
+
+    for_less( i, 0, src->n_points )
+    {
+        dest->points[i] = src->points[i];
+        if( src->normals != (Vector *) NULL )
+            dest->normals[i] = src->normals[i];
+        
+    }
+
+    ALLOC( dest->end_indices, src->n_items );
+    for_less( i, 0, src->n_items )
+        dest->end_indices[i] = src->end_indices[i];
+
+    n_indices = NUMBER_INDICES( *src );
+    ALLOC( dest->indices, n_indices );
+
+    for_less( i, 0, n_indices )
+        dest->indices[i] = src->indices[i];
+
+    dest->visibilities = (Smallest_int *) 0;
+    dest->neighbours = (int *) 0;
+    dest->bintree = (bintree_struct *) 0;
+}
+
 public  void  set_polygon_per_item_colours(
     polygons_struct   *polygons )
 {
