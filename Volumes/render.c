@@ -31,7 +31,6 @@ public  void  render_volume_to_slice(
     int           colour_index_offset,
     pixels_struct *pixels )
 {
-    Status               status;
     int                  x_size, y_size, x, y;
     Boolean              colour_map_mode;
     static  int          *x_offsets;
@@ -39,25 +38,18 @@ public  void  render_volume_to_slice(
     static  int          x_size_alloced = 0;
     static  int          y_size_alloced = 0;
 
-    status = OK;
-
     x_size = pixels->x_size;
     y_size = pixels->y_size;
 
     if( x_size > x_size_alloced )
     {
-        SET_ARRAY_SIZE( status, x_offsets, x_size_alloced, x_size,
-                        DEFAULT_CHUNK_SIZE );
+        SET_ARRAY_SIZE( x_offsets, x_size_alloced, x_size, DEFAULT_CHUNK_SIZE );
         x_size_alloced = x_size;
     }
 
     if( y_size > y_size_alloced )
     {
-        if( status == OK )
-        {
-            SET_ARRAY_SIZE( status, y_offsets, y_size_alloced, y_size,
-                            DEFAULT_CHUNK_SIZE );
-        }
+        SET_ARRAY_SIZE( y_offsets, y_size_alloced, y_size, DEFAULT_CHUNK_SIZE );
         y_size_alloced = y_size;
     }
 

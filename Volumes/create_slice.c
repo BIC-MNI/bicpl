@@ -69,7 +69,6 @@ public  void  create_volume_slice(
     int             *n_pixels_alloced,
     pixels_struct   *pixels )
 {
-    Status       status;
     Volume_type  *slice_start;
     Boolean      within_viewport;
     int          axis, strides[3], indices[3], x_size, y_size;
@@ -92,12 +91,11 @@ public  void  create_volume_slice(
                                               &x_size, &y_size,
                                               &x_position, &y_position );
 
-    status = modify_pixels_size( n_pixels_alloced, pixels, x_size, y_size,
-                                 pixel_type );
+    modify_pixels_size( n_pixels_alloced, pixels, x_size, y_size, pixel_type );
     pixels->x_position = x_position;
     pixels->y_position = y_position;
 
-    if( status == OK && within_viewport )
+    if( within_viewport )
     {
         indices[X] = ROUND( slice_position );
         indices[Y] = ROUND( slice_position );
@@ -161,14 +159,31 @@ public  Boolean  convert_slice_pixel_to_voxel(
     return( voxel_is_within_volume( volume, pixel_slice_position ) );
 }
 
-public  Boolean  voxel_is_within_volume(
+public  void  convert_voxel_to_slice_pixel(
     volume_struct   *volume,
-    Real            position[N_DIMENSIONS] )
+    Real            voxel_position[N_DIMENSIONS],
+    int             x_axis_index,
+    Boolean         x_axis_flip_flag,
+    int             y_axis_index,
+    Boolean         y_axis_flip_flag,
+    Real            x_translation,
+    Real            y_translation,
+    Real            x_scale,
+    Real            y_scale,
+    int             *x_pixel,
+    int             *y_pixel )
 {
-    return( position[X] >= -0.5 &&
-            position[X] < (Real) volume->sizes[X] - 0.5 &&
-            position[Y] >= -0.5 &&
-            position[Y] < (Real) volume->sizes[Y] - 0.5 &&
-            position[Z] >= -0.5 &&
-            position[Z] < (Real) volume->sizes[Z] - 0.5 );
+    Real         x_delta, x_start, x_end, y_delta, y_start, y_end;
+    Real         x_offset, y_offset;
+
+    get_mapping( volume,
+                 x_translation, x_scale, x_axis_index, x_axis_flip_flag,
+                 y_translation, y_scale, y_axis_index, y_axis_flip_flag,
+                 &x_start, &x_end, &x_delta, &x_offset,
+                 &y_start, &y_end, &y_delta, &y_offset );
+
+    *x_pixel = ROUND( map_slice_to_viewport_1d( voxel_position[x_axis_index],
+                                                x_offset, x_delta ) );
+    *y_pixel = ROUND( map_slice_to_viewport_1d( voxel_position[y_axis_index],
+                                                y_offset, y_delta ) );
 }
