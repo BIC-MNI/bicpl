@@ -101,10 +101,17 @@ public  Status  io_tag_point(
     Point    position;
     int      sizes[MAX_DIMENSIONS];
     int      len, offset;
+    Real     voxel[MAX_DIMENSIONS];
     Real     x, y, z;
     Real     x_w, y_w, z_w;
 
     status = OK;
+
+    if( volume != (Volume) NULL && get_volume_n_dimensions(volume) != 3 )
+    {
+        print( "Error:  volume must be 3d to use for input landmarks.\n" );
+        volume = (Volume) NULL;
+    }
 
     if( io_direction == WRITE_FILE )
     {
@@ -118,11 +125,12 @@ public  Status  io_tag_point(
                                     Point_x(marker->position),
                                     Point_y(marker->position),
                                     Point_z(marker->position),
-                                    &x, &y, &z );
+                                    voxel );
 
             get_volume_sizes( volume, sizes );
 
-            convert_voxel_to_talairach( x, y, z, sizes[X], sizes[Y], sizes[Z],
+            convert_voxel_to_talairach( voxel[X], voxel[Y], voxel[Z],
+                                        sizes[X], sizes[Y], sizes[Z],
                                         &x, &y, &z );
 
             fill_Point( position, x, y, z );
@@ -149,9 +157,9 @@ public  Status  io_tag_point(
                                         Point_y(position),
                                         Point_z(position),
                                         sizes[X], sizes[Y], sizes[Z],
-                                        &x, &y, &z );
+                                        &voxel[X], &voxel[Y], &voxel[Z] );
 
-            convert_voxel_to_world( volume, x, y, z, &x_w, &y_w, &z_w );
+            convert_voxel_to_world( volume, voxel, &x_w, &y_w, &z_w );
             fill_Point( marker->position, x_w, y_w, z_w );
         }
     }
