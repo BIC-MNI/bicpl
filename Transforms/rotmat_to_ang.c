@@ -463,8 +463,10 @@ public void nr_rotzf(float **M, float a)
 
 ---------------------------------------------------------------------------- */
 
+/* ARGSUSED */
+
 public void nr_multd(double **A, int mA1, int mA2, int nA1, int nA2, 
-	 double **B, int mB1, int mB2, int nB1, int nB2,  /*ARGSUSED*/
+	 double **B, int mB1, int mB2, int nB1, int nB2,
 	 double **C )
 {
    int i, j, k;
@@ -481,9 +483,10 @@ public void nr_multd(double **A, int mA1, int mA2, int nA1, int nA2,
    return;
 }
 
+/* ARGSUSED */
 
 public void nr_multf(float **A, int mA1, int mA2, int nA1, int nA2, 
-	 float **B, int mB1, int mB2, int nB1, int nB2,    /*ARGSUSED*/
+	 float **B, int mB1, int mB2, int nB1, int nB2,
 	 float **C)
 {
    int i, j, k;
@@ -503,8 +506,8 @@ public void nr_multf(float **A, int mA1, int mA2, int nA1, int nA2,
 
 private void print_rot_error(char *s, char * d1, int d2, int d3, int d4, int d5, int d6, int d7)
 {
-  (void) fprintf(stderr, "Error in file %s, line %d\n   ",d1,d2);
-  (void) fprintf(stderr, s, d3,d4,d5,d6,d7);
-  (void) fprintf(stderr, "\n");
+  print_error( "Error in file %s, line %d\n   ",d1,d2);
+  print_error( s, d3,d4,d5,d6,d7);
+  print_error( "\n");
   exit(EXIT_FAILURE);
 }
