@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.4 1995-09-13 13:25:00 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.5 1995-09-19 18:23:56 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -147,7 +147,6 @@ public  void  interpolate_volume_to_slice(
                                         &value1, NULL, NULL );
 
                 voxel_value1 = CONVERT_VALUE_TO_VOXEL( volume1, value1 );
-                int_voxel_value1 = ROUND( voxel_value1 );
             }
 
             for_less( dim, 0, n_dims1 )
@@ -165,7 +164,6 @@ public  void  interpolate_volume_to_slice(
                                             &value2, NULL, NULL );
 
                     voxel_value2 = CONVERT_VALUE_TO_VOXEL( volume2, value2 );
-                    int_voxel_value2 = ROUND( voxel_value2 );
                 }
 
                 for_less( dim, 0, n_dims2 )
@@ -175,6 +173,8 @@ public  void  interpolate_volume_to_slice(
                 {
                     if( inside1 && inside2 )
                     {
+                        int_voxel_value1 = ROUND( voxel_value1 );
+                        int_voxel_value2 = ROUND( voxel_value2 );
                         *rgb_ptr = rgb_colour_map[int_voxel_value1]
                                                  [int_voxel_value2];
                     }
@@ -187,6 +187,8 @@ public  void  interpolate_volume_to_slice(
                 {
                     if( inside1 && inside2 )
                     {
+                        int_voxel_value1 = ROUND( voxel_value1 );
+                        int_voxel_value2 = ROUND( voxel_value2 );
                         *cmode_ptr = cmode_colour_map[int_voxel_value1]
                                                      [int_voxel_value2];
                     }
@@ -201,7 +203,15 @@ public  void  interpolate_volume_to_slice(
                 if( pixel_type == RGB_PIXEL )
                 {
                     if( inside1 )
-                        *rgb_ptr = rgb_colour_map[0][int_voxel_value1];
+                    {
+                        if( rgb_colour_map == NULL )
+                            *rgb_ptr = (Colour) voxel_value1;
+                        else
+                        {
+                            int_voxel_value1 = ROUND( voxel_value1 );
+                            *rgb_ptr = rgb_colour_map[0][int_voxel_value1];
+                        }
+                    }
                     else
                         *rgb_ptr = empty_colour;
 
@@ -210,7 +220,15 @@ public  void  interpolate_volume_to_slice(
                 else
                 {
                     if( inside1 )
-                        *cmode_ptr = cmode_colour_map[0][int_voxel_value1];
+                    {
+                        if( cmode_colour_map != NULL )
+                            *cmode_ptr = (unsigned short) voxel_value1;
+                        else
+                        {
+                            int_voxel_value1 = ROUND( voxel_value1 );
+                            *cmode_ptr = cmode_colour_map[0][int_voxel_value1];
+                        }
+                    }
                     else
                         *cmode_ptr = (unsigned short) empty_colour;
 

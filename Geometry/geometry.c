@@ -16,8 +16,70 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.13 1995-07-31 13:45:02 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.14 1995-09-19 18:23:53 david Exp $";
 #endif
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_polygon_normal_no_normalize
+@INPUT      : n_points
+              points
+@OUTPUT     : normal
+@RETURNS    : 
+@DESCRIPTION: Finds the normal to a polygon (convex or not), using Newell's
+              formula.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void  find_polygon_normal_no_normalize(
+    int      n_points,
+    Point    points[],
+    Real     *nx,
+    Real     *ny,
+    Real     *nz )
+{
+    int     i, next_i;
+    Vector  v1, v2, normal;
+
+    *nx = 0.0;
+    *ny = 0.0;
+    *nz = 0.0;
+
+    for_less( i, 0, n_points )
+    {
+        next_i = (i + 1) % n_points;
+
+        *nx -= (Point_y(points[i]) + Point_y(points[next_i])) *
+               (Point_z(points[i]) - Point_z(points[next_i]) );
+
+        *ny -= (Point_z(points[i]) + Point_z(points[next_i])) *
+               (Point_x(points[i]) - Point_x(points[next_i]) );
+
+        *nz -= (Point_x(points[i]) + Point_x(points[next_i])) *
+               (Point_y(points[i]) - Point_y(points[next_i]) );
+    }
+
+    /*--- if result is null, try to find one vertex for which a normal can
+          be computed */
+
+    if( *nx == 0.0 && *ny == 0.0 && *nz == 0.0 )
+    {
+        for_less( i, 0, n_points )
+        {
+            SUB_POINTS( v1, points[(i+1)%n_points], points[i] );
+            SUB_POINTS( v2, points[(i-1)%n_points], points[i] );
+            CROSS_VECTORS( normal, v1, v2 );
+            *nx = Vector_x( normal );
+            *ny = Vector_y( normal );
+            *nz = Vector_z( normal );
+            if( !null_Vector( &normal ) )
+                break;
+        }
+    }
+}
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : find_polygon_normal
@@ -39,43 +101,11 @@ public  void  find_polygon_normal(
     Point    points[],
     Vector   *normal )
 {
-    int     i, next_i;
-    Vector  v1, v2;
+    Real   nx, ny, nz;
 
-    Vector_x(*normal) = 0.0;
-    Vector_y(*normal) = 0.0;
-    Vector_z(*normal) = 0.0;
+    find_polygon_normal_no_normalize( n_points, points, &nx, &ny, &nz );
 
-    for_less( i, 0, n_points )
-    {
-        next_i = (i + 1) % n_points;
-
-        Vector_x(*normal) -= (Point_y(points[i]) + Point_y(points[next_i])) *
-                             (Point_z(points[i]) - Point_z(points[next_i]) );
-
-        Vector_y(*normal) -= (Point_z(points[i]) + Point_z(points[next_i])) *
-                             (Point_x(points[i]) - Point_x(points[next_i]) );
-
-        Vector_z(*normal) -= (Point_x(points[i]) + Point_x(points[next_i])) *
-                             (Point_y(points[i]) - Point_y(points[next_i]) );
-    }
-
-    /*--- if result is null, try to find one vertex for which a normal can
-          be computed */
-
-    if( null_Vector( normal ) )
-    {
-        for_less( i, 0, n_points )
-        {
-            SUB_POINTS( v1, points[(i+1)%n_points], points[i] );
-            SUB_POINTS( v2, points[(i-1)%n_points], points[i] );
-            CROSS_VECTORS( *normal, v1, v2 );
-            if( !null_Vector( normal ) )
-                break;
-        }
-    }
-
-    /*--- make it unit length */
+    fill_Vector( *normal, nx, ny, nz );
 
     NORMALIZE_VECTOR( *normal, *normal );
 }

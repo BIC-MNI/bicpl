@@ -16,7 +16,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.8 1995-07-31 13:45:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.9 1995-09-19 18:23:55 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

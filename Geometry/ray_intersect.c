@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.12 1995-09-13 18:20:00 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.13 1995-09-19 18:23:53 david Exp $";
 #endif
 
 
@@ -59,26 +59,45 @@ private  BOOLEAN   intersect_ray_polygon_points(
 {
     BOOLEAN  intersects;
     Vector   normal;
-    Real     n_dot_d, t, plane_const;
+    Real     n_dot_d, n_dot_o, t, plane_const, nx, ny, nz;
+    Real     cx, cy, cz;
     Point    centroid, pt;
+    int      p;
 
     intersects = FALSE;
 
-    find_polygon_normal_no_normalize( n_points, points, &normal );
+    find_polygon_normal_no_normalize( n_points, points, &nx, &ny, &nz );
 
-    n_dot_d = DOT_VECTORS( normal, *ray_direction );
+    n_dot_d = nx * Vector_x(*ray_direction) +
+              ny * Vector_y(*ray_direction) +
+              nz * Vector_z(*ray_direction);
 
     if( n_dot_d != 0.0 )
     {
-        get_points_centroid( n_points, points, &centroid );
+        cx = 0.0;
+        cy = 0.0;
+        cz = 0.0;
 
-        plane_const = DOT_POINT_VECTOR( centroid, normal );
+        for_less( p, 0, n_points )
+        {
+            cx += Point_x(points[p]);
+            cy += Point_y(points[p]);
+            cz += Point_z(points[p]);
+        }
 
-        t = (plane_const - DOT_POINT_VECTOR(normal,*ray_origin) ) / n_dot_d;
+        plane_const = (nx * cx + ny * cy + nz * cz) / (Real) n_points;
+
+        n_dot_o = nx * Point_x(*ray_origin) +
+                  ny * Point_y(*ray_origin) +
+                  nz * Point_z(*ray_origin);
+
+        t = (plane_const - n_dot_o) / n_dot_d;
 
         if( t >= 0.0 )
         {
             GET_POINT_ON_RAY( pt, *ray_origin, *ray_direction, t );
+
+            fill_Vector( normal, nx, ny, nz );
 
             if( point_within_polygon( &pt, n_points, points, &normal ) )
             {
