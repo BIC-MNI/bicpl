@@ -193,9 +193,11 @@ public  void  render_volume_to_slice(
     total_cases1 = 1;
     for_less( c, 0, n_dims1 )
     {
-        delta = ABS( x_axis1[c] );
+        delta = ABS( y_axis1[c] );
         if( delta == 0.0 )
-            n_cases1[c] = 1;
+        {
+            n_cases1[c] = MIN( n_slices1, max_cases[n_dims1-1] );
+        }
         else if( delta <= 1.0 / (Real) max_cases[n_dims1-1] )
             n_cases1[c] = max_cases[n_dims1-1];
         else
@@ -269,9 +271,9 @@ public  void  render_volume_to_slice(
         total_cases2 = 1;
         for_less( c, 0, n_dims2 )
         {
-            delta = ABS( x_axis2[c] );
+            delta = ABS( y_axis2[c] );
             if( delta == 0.0 )
-                n_cases2[c] = 1;
+                n_cases2[c] = MIN( n_slices2, max_cases[n_dims2-1] );
             else if( delta <= 1.0 / (Real) max_cases[n_dims2-1] )
                 n_cases2[c] = max_cases[n_dims2-1];
             else
@@ -335,8 +337,8 @@ public  void  render_volume_to_slice(
         for_less( c, 0, n_dims1 )
         {
             case_index = p % n_cases1[c];
-            if( x_axis1[c] == 0.0 )
-                tmp_origin[c] = 0.0;
+            if( y_axis1[c] == 0.0 && n_slices1 == n_cases1[c] )
+                tmp_origin[c] = FRACTION( origins1[case_index][c] + 0.5 );
             else
                 tmp_origin[c] = ((Real) case_index + 0.5) / (Real) n_cases1[c];
             p /= n_cases1[c];
@@ -362,8 +364,8 @@ public  void  render_volume_to_slice(
             for_less( c, 0, n_dims2 )
             {
                 case_index = p % n_cases2[c];
-                if( x_axis2[c] == 0.0 )
-                    tmp_origin[c] = 0.0;
+                if( y_axis2[c] == 0.0 && n_slices2 == n_cases2[c] )
+                    tmp_origin[c] = FRACTION( origins2[case_index][c] + 0.5 );
                 else
                     tmp_origin[c] = ((Real) case_index + 0.5) /
                                     (Real) n_cases2[c];
@@ -396,10 +398,20 @@ public  void  render_volume_to_slice(
             {
                 start_c = origins1[s][c] + (Real) y * y_axis1[c] + 0.5;
                 int_start = FLOOR( start_c );
-                remainder = start_c - int_start;
-                remainder_case = (int) (remainder * n_cases1[c]);
-                remainder_offset = remainder -
-                                   (remainder_case + 0.5)/ n_cases1[c];
+
+                if( y_axis1[c] == 0.0 && n_slices1 == n_cases1[c] )
+                {
+                    remainder_case = s;
+                    remainder_offset = 0.0;
+                }
+                else
+                {
+                    remainder = start_c - int_start;
+                    remainder_case = (int) (remainder * n_cases1[c]);
+                    remainder_offset = remainder -
+                                       (remainder_case + 0.5)/ n_cases1[c];
+                }
+
                 case_index += case_multiplier * remainder_case;
                 case_multiplier *= n_cases1[c];
                 offset += strides1[c] * int_start;
@@ -431,10 +443,20 @@ public  void  render_volume_to_slice(
                 {
                     start_c = origins2[s][c] + (Real) y * y_axis2[c] + 0.5;
                     int_start = FLOOR( start_c );
-                    remainder = start_c - int_start;
-                    remainder_case = (int) (remainder * n_cases2[c]);
-                    remainder_offset = remainder -
-                                       (remainder_case + 0.5)/ n_cases2[c];
+
+                    if( y_axis2[c] == 0.0 && n_slices2 == n_cases2[c] )
+                    {
+                        remainder_case = s;
+                        remainder_offset = 0.0;
+                    }
+                    else
+                    {
+                        remainder = start_c - int_start;
+                        remainder_case = (int) (remainder * n_cases2[c]);
+                        remainder_offset = remainder -
+                                           (remainder_case + 0.5)/ n_cases2[c];
+                    }
+
                     case_index += case_multiplier * remainder_case;
                     case_multiplier *= n_cases2[c];
                     offset += strides2[c] * int_start;

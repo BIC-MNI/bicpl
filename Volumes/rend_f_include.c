@@ -34,7 +34,9 @@
     unsigned short  **cmode_colour_map,
     unsigned short  *pixel_ptr
 #else
+#ifndef  NO_COLOUR_TABLE
     Colour          **rgb_colour_map,
+#endif
     Colour          *pixel_ptr
 #endif
 )
@@ -61,7 +63,9 @@
 #ifdef  COLOUR_MAP
     unsigned short   *single_cmode_map = cmode_colour_map[0];
 #else
+#ifndef  NO_COLOUR_TABLE
     Colour           *single_rgb_map = rgb_colour_map[0];
+#endif
 #endif
 #endif
 
@@ -99,7 +103,11 @@
 #ifdef COLOUR_MAP
         *pixel_ptr++ = single_cmode_map[(int) ptr1[*offset_ptr1++]];
 #else
+#ifdef  NO_COLOUR_TABLE
+        *pixel_ptr++ = ptr1[*offset_ptr1++];
+#else
         *pixel_ptr++ = single_rgb_map[(int) ptr1[*offset_ptr1++]];
+#endif
 #endif 
 #endif /* TWO_VOLUMES */
 #else
