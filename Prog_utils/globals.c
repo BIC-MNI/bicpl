@@ -76,11 +76,11 @@ private  Status  input_global_variable(
 
     *eof = FALSE;
 
-    status = input_string( file, variable_name, MAX_STRING_LENGTH, '=' );
+    status = input_string( file, variable_name, MAX_STRING_LENGTH, (char) '=' );
 
     if( status == OK )
     {
-        status = input_string( file, value, MAX_STRING_LENGTH, ';' );
+        status = input_string( file, value, MAX_STRING_LENGTH, (char) ';' );
 
         if( status == OK )
             set_status = set_global_variable( n_globals_lookup, globals_lookup,
@@ -417,7 +417,7 @@ public  Status  set_or_get_global_variable(
 
     (void) strcpy( tmp_var_name, input_str );
 
-    equal_index = find_character( tmp_var_name, '=' );
+    equal_index = find_character( tmp_var_name, (char) '=' );
 
     if( equal_index >= 0 )
     {
@@ -452,9 +452,9 @@ public  Status  set_or_get_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  extract_string( str, extracted )
-    char   str[];
-    char   extracted[];
+private  void  extract_string(
+    char   str[],
+    char   extracted[] )
 {
     int   len_str, start, end, i;
 

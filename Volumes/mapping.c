@@ -243,6 +243,11 @@ public  void  resize_volume_slice(
 {
     Real      x_scale_factor, y_scale_factor, scale_factor;
 
+    if( old_used_x_viewport_size <= 0 )
+        old_used_x_viewport_size = 1;
+    if( old_used_y_viewport_size <= 0 )
+        old_used_y_viewport_size = 1;
+
     x_scale_factor = (Real) new_x_viewport_size /
                      (Real) old_used_x_viewport_size;
     y_scale_factor = (Real) new_y_viewport_size /

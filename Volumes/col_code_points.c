@@ -31,9 +31,9 @@ private  void  colour_code_points(
     for_less( i, 0, n_points )
     {
         (void) evaluate_volume_in_world( volume,
-                                  Point_x(points[i]),
-                                  Point_y(points[i]),
-                                  Point_z(points[i]), continuity, FALSE,
+                                  (Real) Point_x(points[i]),
+                                  (Real) Point_y(points[i]),
+                                  (Real) Point_z(points[i]), continuity, FALSE,
                                   get_volume_real_min(volume),
                                   &val, (Real *) NULL,
                                   (Real *) NULL, (Real *) NULL,

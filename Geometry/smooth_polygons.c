@@ -287,7 +287,8 @@ private  BOOLEAN   point_inside_range(
     Real    x, y, z;
 
     convert_3D_world_to_voxel( volume,
-                            Point_x(*point), Point_y(*point), Point_z(*point),
+                            (Real) Point_x(*point), (Real) Point_y(*point),
+                            (Real) Point_z(*point),
                             &x, &y, &z );
 
     vx = ROUND( x );

@@ -14,10 +14,10 @@ typedef  struct
 typedef     PRIORITY_QUEUE_STRUCT( leaf_queue_type )   leaf_queue_struct;
 
 private  void  subdivide_bintree(
-    bintree_struct   *bintree,
-    int              max_nodes,
-    int              n_objects,
-    range_struct     bound_vols[] );
+    bintree_struct_ptr   bintree,
+    int                  max_nodes,
+    int                  n_objects,
+    range_struct         bound_vols[] );
 private  void  split_node(
     range_struct          bound_vols[],
     bintree_node_struct   **ptr_to_node,
@@ -58,10 +58,10 @@ private  Real  node_visit_estimation(
 #define  FACTOR 1.0e-4
 
 public  void  create_object_bintree(
-    int              n_objects,
-    range_struct     bound_vols[],
-    bintree_struct   *bintree,
-    int              max_nodes )
+    int                  n_objects,
+    range_struct         bound_vols[],
+    bintree_struct_ptr   bintree,
+    int                  max_nodes )
 {
     int       i, c;
     Real      avg_nodes, avg_objects, limits[N_DIMENSIONS][2], size;
@@ -127,10 +127,10 @@ public  void  create_object_bintree(
 }
 
 private  void  subdivide_bintree(
-    bintree_struct   *bintree,
-    int              max_nodes,
-    int              n_objects,
-    range_struct     bound_vols[] )
+    bintree_struct_ptr   bintree,
+    int                  max_nodes,
+    int                  n_objects,
+    range_struct         bound_vols[] )
 {
     bintree_node_struct     **ptr_to_node;
     bintree_node_struct     **ptr_to_left_child, **ptr_to_right_child;
@@ -567,9 +567,9 @@ private  BOOLEAN  node_tightly_bounds_object(
 }
 
 public  void  evaluate_bintree_efficiency(
-    bintree_struct   *bintree,
-    Real             *avg_nodes_visited,
-    Real             *avg_objects_visited )
+    bintree_struct_ptr   bintree,
+    Real                 *avg_nodes_visited,
+    Real                 *avg_objects_visited )
 {
     Real           n_visits_top_level;
     range_struct   limits;

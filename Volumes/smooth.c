@@ -25,7 +25,6 @@ public  Volume  smooth_resample_volume(
     Real               x_weight, xy_weight, weight;
     Real               *y_weights, *z_weights;
     Real               val;
-    BOOLEAN            voxel_valid;
     Transform          scale_transform, translation_transform, transform;
     General_transform  general_transform, tmp;
     progress_struct    progress;
@@ -119,8 +118,6 @@ public  Volume  smooth_resample_volume(
 
                 val = 0.0;
 
-                voxel_valid = FALSE;
-
                 for_inclusive( src_voxel[X], (int) x_min, (int) x_max )
                 {
                     x_weight = calculate_weight( src_voxel[X], dx,
@@ -142,8 +139,6 @@ public  Volume  smooth_resample_volume(
                                               src_voxel[X], src_voxel[Y],
                                               src_voxel[Z], 0, 0 );
                                 val += weight * voxel;
-                                if( get_volume_label_data(volume,src_voxel) ==0)
-                                    voxel_valid = TRUE;
                             }
                         }
                     }
@@ -152,9 +147,6 @@ public  Volume  smooth_resample_volume(
                 set_volume_voxel_value( resampled_volume,
                               dest_voxel[X], dest_voxel[Y], dest_voxel[Z], 0, 0,
                               val + 0.5 );
-
-                if( !voxel_valid )
-                    set_volume_label_data( resampled_volume, dest_voxel, 1 );
             }
 
             update_progress_report( &progress,

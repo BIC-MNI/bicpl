@@ -55,5 +55,6 @@ typedef  struct
     bintree_node_struct  *root;
 } bintree_struct;
 
+typedef  bintree_struct  *bintree_struct_ptr;
 
 #endif

@@ -9,7 +9,9 @@ public  void   initialize_text(
     Font_types      text_font,
     Real            size )
 {
-    text->origin = *position;
+    if( position != NULL )
+        text->origin = *position;
+
     text->colour = colour;
     text->font = text_font;
     text->size = size;

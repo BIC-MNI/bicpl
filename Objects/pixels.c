@@ -57,7 +57,7 @@ public  void  modify_pixels_size(
     Pixel_types    pixel_type )
 {
     int                new_n_pixels;
-    unsigned long      *tmp_int_ptr;
+    Colour             *tmp_int_ptr;
 
     if( pixel_type != pixels->pixel_type )
     {
@@ -78,7 +78,7 @@ public  void  modify_pixels_size(
     switch( pixel_type )
     {
     case COLOUR_INDEX_8BIT_PIXEL:    /* make sure it's word aligned */
-        tmp_int_ptr = (unsigned long *) (void *)
+        tmp_int_ptr = (Colour *) (void *)
                           pixels->data.pixels_8bit_colour_index;
 
         SET_ARRAY_SIZE( tmp_int_ptr, (*n_pixels_alloced + 3) / 4,
@@ -88,7 +88,7 @@ public  void  modify_pixels_size(
         break;
 
     case COLOUR_INDEX_16BIT_PIXEL:    /* make sure it's word aligned */
-        tmp_int_ptr = (unsigned long *) (void *)
+        tmp_int_ptr = (Colour *) (void *)
                           pixels->data.pixels_16bit_colour_index;
         SET_ARRAY_SIZE( tmp_int_ptr, (*n_pixels_alloced + 1) / 2,
                         (new_n_pixels + 1) / 2, DEFAULT_CHUNK_SIZE );
@@ -364,8 +364,9 @@ public  void  resample_pixels(
                     }
                 }
 
-                colour = make_Colour( r_sum * weight, g_sum * weight,
-                                      b_sum * weight );
+                colour = make_Colour( (int) (r_sum * weight),
+                                      (int) (g_sum * weight),
+                                      (int) (b_sum * weight) );
             }
 
             PIXEL_RGB_COLOUR( *new_pixels, x, y ) = colour;

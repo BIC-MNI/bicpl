@@ -501,7 +501,8 @@ public  Status  io_colour(
             status = io_float( file, io_flag, ASCII_FORMAT, &a );
 
         if( io_flag == READ_FILE )
-            *colour = make_rgba_Colour_0_1( r, g, b, a );
+            *colour = make_rgba_Colour_0_1( (Real) r, (Real) g,
+                                            (Real) b, (Real) a );
     }
     else
     {

@@ -26,13 +26,13 @@ public  void  print_bintree_stats(
 }
 
 public  int  intersect_ray_with_bintree(
-    Point           *origin,
-    Vector          *direction,
-    bintree_struct  *bintree,
-    object_struct   *object,
-    int             *obj_index,
-    Real            *dist,
-    Real            *distances[] )
+    Point               *origin,
+    Vector              *direction,
+    bintree_struct_ptr  bintree,
+    object_struct       *object,
+    int                 *obj_index,
+    Real                *dist,
+    Real                *distances[] )
 {
     int       n_intersections;
     Real      t_min, t_max;

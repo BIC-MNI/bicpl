@@ -260,9 +260,9 @@ public  int  find_vertex_index(
     int              poly,
     int              point_index )
 {
-    int   e, index, size, p;
+    int   e, ind, size, p;
 
-    index = -1;
+    ind = -1;
 
     size = GET_OBJECT_SIZE( *polygons, poly );
 
@@ -272,12 +272,12 @@ public  int  find_vertex_index(
 
         if( p == point_index )
         {
-            index = e;
+            ind = e;
             break;
         }
     }
 
-    return( index );
+    return( ind );
 }
 
 public  int  find_edge_index(
@@ -286,9 +286,9 @@ public  int  find_edge_index(
     int              point_index1,
     int              point_index2 )
 {
-    int   e, index, size, p1, p2;
+    int   e, ind, size, p1, p2;
 
-    index = -1;
+    ind = -1;
 
     size = GET_OBJECT_SIZE( *polygons, poly );
 
@@ -302,12 +302,12 @@ public  int  find_edge_index(
         if( p1 == point_index1 && p2 == point_index2 ||
             p1 == point_index2 && p2 == point_index1 )
         {
-            index = e;
+            ind = e;
             break;
         }
     }
 
-    return( index );
+    return( ind );
 }
 
 public  BOOLEAN  find_polygon_with_edge(

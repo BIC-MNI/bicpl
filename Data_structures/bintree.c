@@ -37,13 +37,13 @@ private  Status  input_bintree_node(
 ---------------------------------------------------------------------------- */
 
 public  void  initialize_bintree(
-    Real             x_min,
-    Real             x_max,
-    Real             y_min,
-    Real             y_max,
-    Real             z_min,
-    Real             z_max,
-    bintree_struct   *bintree )
+    Real                 x_min,
+    Real                 x_max,
+    Real                 y_min,
+    Real                 y_max,
+    Real                 z_min,
+    Real                 z_max,
+    bintree_struct_ptr   bintree )
 {
     bintree->range.limits[X][0] = x_min;
     bintree->range.limits[X][1] = x_max;
@@ -89,7 +89,7 @@ private  void  recursive_delete_bintree(
 ---------------------------------------------------------------------------- */
 
 public  void  delete_bintree(
-    bintree_struct   *bintree )
+    bintree_struct_ptr   bintree )
 {
     if( bintree->root != (bintree_node_struct *) NULL )
         recursive_delete_bintree( bintree->root );
@@ -109,7 +109,7 @@ public  void  delete_bintree(
 ---------------------------------------------------------------------------- */
 
 public  void  get_bintree_limits(
-    bintree_struct        *bintree,
+    bintree_struct_ptr    bintree,
     range_struct          *limits )
 {
     *limits = bintree->range;
@@ -492,10 +492,10 @@ public  Real  range_surface_area(
 ---------------------------------------------------------------------------- */
 
 public  Status  io_bintree(
-    FILE             *file,
-    IO_types         direction,
-    File_formats     format,
-    bintree_struct   *bintree )
+    FILE                 *file,
+    IO_types             direction,
+    File_formats         format,
+    bintree_struct_ptr   bintree )
 {
     Status   status;
 
@@ -634,7 +634,7 @@ private  Status  input_bintree_node(
 
         if( status == OK )
         {
-            *node = create_bintree_leaf( split_position,
+            *node = create_bintree_leaf( (Real) split_position,
                                          n_objects, object_list );
             if( n_objects > 0 )
                 FREE( object_list );
@@ -649,7 +649,7 @@ private  Status  input_bintree_node(
         if( status == OK )
             *node = create_bintree_internal_node(
                                    node_info & SUBDIVISION_AXIS_BITS,
-                                   split_position, left, right );
+                                   (Real) split_position, left, right );
     }
 
     return( status );

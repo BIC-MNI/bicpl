@@ -7,6 +7,13 @@
 #include  <histogram.h>
 #include  <minimization.h>
 
+typedef  struct
+{
+    int   n_parameters;
+    Real  **second_derivs;
+    Real  *constants;
+} linear_least_squares;
+
 #ifndef  public
 #define       public   extern
 #define       public_was_defined_here

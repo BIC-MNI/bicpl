@@ -62,7 +62,7 @@ public  Status  output_volume_free_format(
             else
                 trans = 0.0;
 
-            status = output_float( file, trans );
+            status = output_float( file, (float) trans );
         }
     }
 
@@ -78,10 +78,10 @@ public  Status  output_volume_free_format(
             status = output_real( file, separations[axis_ordering[axis]]);
 
         if( status == OK )
-            status = output_character( file, ' ' );
+            status = output_character( file, (char) ' ' );
 
         if( status == OK )
-            status = output_character( file, 'x' + axis_ordering[axis] );
+            status = output_character( file, (char) ('x'+axis_ordering[axis]) );
 
         if( status == OK )
             status = output_newline( file );

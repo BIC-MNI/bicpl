@@ -21,6 +21,8 @@ private float lsq_objective(double lt[3][4],
 			     double **pts1, double **pts2, 
 			     int npoints, int ndim);
 
+extern  void     amoeba();
+
 private float fit_function(float *params);
 
 /* external prototype */

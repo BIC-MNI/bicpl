@@ -124,9 +124,9 @@ public  Status  io_tag_point(
         else
         {
             convert_world_to_voxel( volume,
-                                    Point_x(marker->position),
-                                    Point_y(marker->position),
-                                    Point_z(marker->position),
+                                    (Real) Point_x(marker->position),
+                                    (Real) Point_y(marker->position),
+                                    (Real) Point_z(marker->position),
                                     voxel );
 
             get_volume_sizes( volume, sizes );
@@ -155,9 +155,9 @@ public  Status  io_tag_point(
         {
             get_volume_sizes( volume, sizes );
 
-            convert_talairach_to_voxel( Point_x(position),
-                                        Point_y(position),
-                                        Point_z(position),
+            convert_talairach_to_voxel( (Real) Point_x(position),
+                                        (Real) Point_y(position),
+                                        (Real) Point_z(position),
                                         sizes[X], sizes[Y], sizes[Z],
                                         &voxel[X], &voxel[Y], &voxel[Z] );
 

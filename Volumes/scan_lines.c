@@ -95,10 +95,14 @@ private  void  scan_line_segment_to_voxels(
                                    radius;
     }
 
-    convert_world_to_voxel( volume, Point_x(min_point), Point_y(min_point),
-                            Point_z(min_point), min_voxel );
-    convert_world_to_voxel( volume, Point_x(max_point), Point_y(max_point),
-                            Point_z(max_point), max_voxel );
+    convert_world_to_voxel( volume,
+                            (Real) Point_x(min_point),
+                            (Real) Point_y(min_point),
+                            (Real) Point_z(min_point), min_voxel );
+    convert_world_to_voxel( volume,
+                            (Real) Point_x(max_point), 
+                            (Real) Point_y(max_point),
+                            (Real) Point_z(max_point), max_voxel );
 
     get_volume_sizes( volume, sizes );
 

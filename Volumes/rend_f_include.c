@@ -93,20 +93,20 @@
 #ifdef ONE_SLICE
 #ifdef TWO_VOLUMES
 #ifdef COLOUR_MAP
-        *pixel_ptr++ = cmode_colour_map[(int) ptr1[*offset_ptr1++]]
-                                       [(int) ptr2[*offset_ptr2++]];
+        *pixel_ptr++ = cmode_colour_map[(long) ptr1[*offset_ptr1++]]
+                                       [(long) ptr2[*offset_ptr2++]];
 #else
-        *pixel_ptr++ = rgb_colour_map[(int) ptr1[*offset_ptr1++]]
-                                     [(int) ptr2[*offset_ptr2++]];
+        *pixel_ptr++ = rgb_colour_map[(long) ptr1[*offset_ptr1++]]
+                                     [(long) ptr2[*offset_ptr2++]];
 #endif
 #else
 #ifdef COLOUR_MAP
-        *pixel_ptr++ = single_cmode_map[(int) ptr1[*offset_ptr1++]];
+        *pixel_ptr++ = single_cmode_map[(long) ptr1[*offset_ptr1++]];
 #else
 #ifdef  NO_COLOUR_TABLE
         *pixel_ptr++ = ptr1[*offset_ptr1++];
 #else
-        *pixel_ptr++ = single_rgb_map[(int) ptr1[*offset_ptr1++]];
+        *pixel_ptr++ = single_rgb_map[(long) ptr1[*offset_ptr1++]];
 #endif
 #endif 
 #endif /* TWO_VOLUMES */
@@ -127,18 +127,18 @@
         }
 
 #ifdef COLOUR_MAP
-        *pixel_ptr++ = cmode_colour_map[(int) real_voxel_data1]
-                                       [(int) real_voxel_data2];
+        *pixel_ptr++ = cmode_colour_map[(long) real_voxel_data1]
+                                       [(long) real_voxel_data2];
 #else
-        *pixel_ptr++ = rgb_colour_map[(int) real_voxel_data1]
-                                     [(int) real_voxel_data2];
+        *pixel_ptr++ = rgb_colour_map[(long) real_voxel_data1]
+                                     [(long) real_voxel_data2];
 #endif
 #else
 
 #ifdef COLOUR_MAP
-        *pixel_ptr++ = single_cmode_map[(int) real_voxel_data1];
+        *pixel_ptr++ = single_cmode_map[(long) real_voxel_data1];
 #else
-        *pixel_ptr++ = single_rgb_map[(int) real_voxel_data1];
+        *pixel_ptr++ = single_rgb_map[(long) real_voxel_data1];
 #endif
 #endif /* TWO_VOLUMES */
 #endif /* ONE_SLICE */

@@ -65,6 +65,20 @@ Tue Jun  8 08:44:59 EST 1993 LC
 #include <geom.h>
 #include <recipes.h>
 
+#ifdef dec
+#define  fsin( x )   sinf( x )
+#define  fcos( x )   cosf( x )
+#define  fasin( x )  asinf( x )
+#define  facos( x )  acosf( x )
+#endif
+
+#ifdef linux
+#define  fsin( x )   (float) sin( (double) (x) )
+#define  fcos( x )   (float) cos( (double) (x) )
+#define  fasin( x )  (float) asin( (double) (x) )
+#define  facos( x )  (float) acos( (double) (x) )
+#endif
+
 extern char *prog_name;
 
 #define EPS  0.00000000001	/* epsilon, should be calculated */
@@ -450,8 +464,8 @@ public void nr_rotzf(float **M, float a)
 ---------------------------------------------------------------------------- */
 
 public void nr_multd(double **A, int mA1, int mA2, int nA1, int nA2, 
-	 double **B, int mB1, int mB2, int nB1, int nB2, 
-	 double **C )  /* ARGSUSED */
+	 double **B, int mB1, int mB2, int nB1, int nB2,  /*ARGSUSED*/
+	 double **C )
 {
    int i, j, k;
 
@@ -469,8 +483,8 @@ public void nr_multd(double **A, int mA1, int mA2, int nA1, int nA2,
 
 
 public void nr_multf(float **A, int mA1, int mA2, int nA1, int nA2, 
-	 float **B, int mB1, int mB2, int nB1, int nB2, 
-	 float **C) /* ARGSUSED */
+	 float **B, int mB1, int mB2, int nB1, int nB2,    /*ARGSUSED*/
+	 float **C)
 {
    int i, j, k;
 

@@ -84,15 +84,19 @@ public  void   create_slice_3d(
     create_two_orthogonal_vectors( normal, &v1, &v2 );
 
     convert_world_vector_to_voxel( volume,
-                                   Vector_x(v1), Vector_y(v1), Vector_z(v1),
+                                   (Real) Vector_x(v1),
+                                   (Real) Vector_y(v1),
+                                   (Real) Vector_z(v1),
                                    x_axis );
     convert_world_vector_to_voxel( volume,
-                                   Vector_x(v2), Vector_y(v2), Vector_z(v2),
+                                   (Real) Vector_x(v2),
+                                   (Real) Vector_y(v2),
+                                   (Real) Vector_z(v2),
                                    y_axis );
 
     convert_world_to_voxel( volume,
-                            Point_x(*origin), Point_y(*origin),
-                            Point_z(*origin), origin_voxel );
+                            (Real) Point_x(*origin), (Real) Point_y(*origin),
+                            (Real) Point_z(*origin), origin_voxel );
 
     n_points = get_volume_cross_section( volume, origin_voxel, x_axis, y_axis,
                                          outline );

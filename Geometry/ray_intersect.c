@@ -638,7 +638,7 @@ public  int  intersect_ray_with_object(
             break;
         }
 
-        if( lines->bintree != (bintree_struct *) NULL )
+        if( lines->bintree != (bintree_struct_ptr) NULL )
         {
             return( intersect_ray_with_bintree( origin, direction,
                                                 lines->bintree, object,
@@ -650,7 +650,7 @@ public  int  intersect_ray_with_object(
 
     case POLYGONS:
         polygons = get_polygons_ptr( object );
-        if( polygons->bintree != (bintree_struct *) NULL )
+        if( polygons->bintree != (bintree_struct_ptr) NULL )
         {
             return( intersect_ray_with_bintree( origin, direction,
                                                 polygons->bintree, object,
@@ -661,7 +661,7 @@ public  int  intersect_ray_with_object(
 
     case QUADMESH:
         quadmesh = get_quadmesh_ptr( object );
-        if( quadmesh->bintree != (bintree_struct *) NULL )
+        if( quadmesh->bintree != (bintree_struct_ptr) NULL )
         {
             return( intersect_ray_with_bintree( origin, direction,
                                                 quadmesh->bintree, object,

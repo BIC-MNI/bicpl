@@ -298,8 +298,8 @@ private  int  get_roots_of_cubic(
     Real    u_max,
     Real    roots[] )
 {
-    int      n_roots, i, n_inside;
-    Real     cubic[4];
+    int      n_roots, i, j, k, n_inside;
+    Real     cubic[4], tmp;
 
     for_less( i, 0, 4 )
     {
@@ -317,6 +317,23 @@ private  int  get_roots_of_cubic(
         {
             roots[n_inside] = roots[i];
             ++n_inside;
+        }
+    }
+
+    for_less( i, 0, n_inside-1 )
+    {
+        k = i;
+        for_less( j, i+1, n_inside )
+        {
+            if( roots[j] < roots[k] )
+                k = j;
+        }
+
+        if( k != i )
+        {
+            tmp = roots[i];
+            roots[i] = roots[k];
+            roots[k] = tmp;
         }
     }
 

@@ -3,6 +3,7 @@
 
 #include  <volume_io.h>
 #include  <stack.h>
+#include  <bintree.h>
 
 #define  SET_OBJECT_SIZE( object, n, size ) \
              { \
@@ -29,8 +30,6 @@
              ( START_INDEX(end_indices,n) + (edge) )
 
 typedef enum { ONE_COLOUR, PER_ITEM_COLOURS, PER_VERTEX_COLOURS } Colour_flags;
-
-typedef  void  *bintree_struct_ptr;
 
 typedef  struct
 {

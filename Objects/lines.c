@@ -78,7 +78,7 @@ public  void  get_line_segment_index(
 static  void  (*bintree_delete_function) ( bintree_struct_ptr* ) = NULL;
 
 public  void  set_bintree_delete_function(
-    void  (*func)() )
+    void  (*func)( bintree_struct_ptr * ) )
 {
     bintree_delete_function = func;
 }

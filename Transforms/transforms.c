@@ -4,7 +4,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.3 1995-03-07 18:54:51 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.4 1995-04-28 18:30:19 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -189,11 +189,12 @@ public  void  make_transform_relative_to_point(
 {
     Transform  to_origin, to_point;
 
-    make_translation_transform( Point_x(*point), Point_y(*point),
-                                Point_z(*point), &to_point );
+    make_translation_transform( (Real) Point_x(*point), (Real) Point_y(*point),
+                                (Real) Point_z(*point), &to_point );
 
-    make_translation_transform( -Point_x(*point), -Point_y(*point),
-                                -Point_z(*point), &to_origin );
+    make_translation_transform( -(Real) Point_x(*point),
+                                -(Real) Point_y(*point),
+                                -(Real) Point_z(*point), &to_origin );
 
     concat_transforms( rel_transform, &to_origin, transform );
     concat_transforms( rel_transform, rel_transform, &to_point );

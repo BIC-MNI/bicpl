@@ -66,7 +66,9 @@ public  BOOLEAN  do_more_resampling(
         {
             if( !linear || z == 0 )
                 general_transform_point( &resample->transform,
-                                         resample->x, resample->y, (Real) z,
+                                         (Real) resample->x,
+                                         (Real) resample->y,
+                                         (Real) z,
                                          &xv, &yv, &zv );
 
             if( xv < 0.0 || xv >= (Real) (src_sizes[X]-1) ||
@@ -99,7 +101,8 @@ public  BOOLEAN  do_more_resampling(
             }
 
             set_volume_voxel_value( resample->dest_volume,
-                                    resample->x, resample->y, z, 0, 0, value );
+                                    resample->x, resample->y, z, 0, 0,
+                                    (Real) value );
 
             if( linear )
             {

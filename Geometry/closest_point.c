@@ -162,7 +162,7 @@ public  Real  find_closest_point_on_object(
             break;
         }
 
-        if( lines->bintree != (bintree_struct *) NULL )
+        if( lines->bintree != (bintree_struct_ptr) NULL )
         {
             return( find_closest_point_in_bintree( point, lines->bintree,
                              object, obj_index, point_on_object ) );
@@ -173,7 +173,7 @@ public  Real  find_closest_point_on_object(
 
     case POLYGONS:
         polygons = get_polygons_ptr( object );
-        if( polygons->bintree != (bintree_struct *) NULL )
+        if( polygons->bintree != (bintree_struct_ptr) NULL )
         {
             return( find_closest_point_in_bintree( point, polygons->bintree,
                              object, obj_index, point_on_object ) );
@@ -183,7 +183,7 @@ public  Real  find_closest_point_on_object(
 
     case QUADMESH:
         quadmesh = get_quadmesh_ptr( object );
-        if( quadmesh->bintree != (bintree_struct *) NULL )
+        if( quadmesh->bintree != (bintree_struct_ptr) NULL )
         {
             return( find_closest_point_in_bintree( point, quadmesh->bintree,
                              object, obj_index, point_on_object ) );

@@ -59,8 +59,10 @@ private  void  recursive_polygon_scan(
         Point_z(max_point)-Point_z(min_point) < max_distance )
     {
         get_points_centroid( size, vertices, &centre );
-        convert_world_to_voxel( volume, Point_x(centre), Point_y(centre),
-                                Point_z(centre), voxel );
+        convert_world_to_voxel( volume,
+                                (Real) Point_x(centre),
+                                (Real) Point_y(centre),
+                                (Real) Point_z(centre), voxel );
         fill_Point( centre, voxel[X], voxel[Y], voxel[Z] );
 
         if( voxel_is_within_volume( volume, voxel ) )

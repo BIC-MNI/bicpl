@@ -938,8 +938,8 @@ public  Colour  SCALE_COLOUR(
     Colour   colour,
     Real     factor )
 {
-    return( make_rgba_Colour( get_Colour_r(colour) * factor,
-                              get_Colour_g(colour) * factor,
-                              get_Colour_b(colour) * factor,
+    return( make_rgba_Colour( (int) (get_Colour_r(colour) * factor),
+                              (int) (get_Colour_g(colour) * factor),
+                              (int) (get_Colour_b(colour) * factor),
                               get_Colour_a(colour) ) );
 }

@@ -331,18 +331,17 @@ public  Status  save_label_volume(
 
     check_alloc_label_data( label_volume );
 
-    if( original_filename != NULL && (int) strlen(original_filename) > 0 &&
-        file_exists( original_filename ) )
+    if( original_filename != NULL )
     {
         status = output_modified_volume( filename,
                                 NC_UNSPECIFIED, FALSE, 0.0, 0.0,
                                 label_volume, original_filename,
-                                "Label volume", NULL );
+                                "Label volume\n", NULL );
     }
     else
     {
         status = output_volume( filename, NC_UNSPECIFIED, FALSE, 0.0, 0.0,
-                                label_volume, "Label volume", NULL );
+                                label_volume, "Label volume\n", NULL );
     }
 
     return( status );
@@ -490,9 +489,9 @@ public  Status  input_landmarks_as_labels(
     while( io_tag_point( file, READ_FILE, volume, 1.0, &marker ) == OK )
     {
         convert_world_to_voxel( volume,
-                                Point_x(marker.position),
-                                Point_y(marker.position),
-                                Point_z(marker.position), voxel );
+                                (Real) Point_x(marker.position),
+                                (Real) Point_y(marker.position),
+                                (Real) Point_z(marker.position), voxel );
 
         for_less( c, 0, get_volume_n_dimensions(volume) )
             ind[c] = ROUND( voxel[c] );

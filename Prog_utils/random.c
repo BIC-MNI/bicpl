@@ -22,7 +22,7 @@ private  BOOLEAN  initialized = FALSE;
 
 public  void  set_random_seed( int seed )
 {
-#ifndef sgi
+#ifdef sun
     int  srandom();
 #endif
     (void) srandom( seed );
@@ -72,17 +72,13 @@ private  void  check_initialized( void )
 
 private  int  get_random( void )
 {
+#ifdef sun
+    int  random();
+#endif
+
     check_initialized();
 
-#ifdef sgi
     return( random() );
-#else
-    {
-        long random();
-
-        return( (int) random() );
-    }
-#endif
 }
 
 /* ----------------------------- MNI Header -----------------------------------

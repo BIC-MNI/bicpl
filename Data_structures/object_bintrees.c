@@ -1,16 +1,17 @@
 #include  <internal_volume_io.h>
 #include  <data_structures.h>
 #include  <geom.h>
+#include  <objects.h>
 
 public  void  delete_the_bintree(
-    bintree_struct  **bintree )
+    bintree_struct_ptr  *bintree )
 {
-    if( *bintree != (bintree_struct *) 0 )
+    if( *bintree != (bintree_struct_ptr) NULL )
     {
         delete_bintree( *bintree );
 
         FREE( *bintree );
-        *bintree = (bintree_struct *) 0;
+        *bintree = (bintree_struct_ptr) NULL;
     }
 }
 
@@ -27,7 +28,7 @@ private  void  check_install_bintree_delete_function()
 
 public  void  *allocate_bintree()
 {
-    bintree_struct   *bintree;
+    bintree_struct_ptr   bintree;
 
     ALLOC( bintree, 1 );
 

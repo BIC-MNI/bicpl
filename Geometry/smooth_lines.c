@@ -155,10 +155,10 @@ public  void  create_line_spline(
                 for_less( c, 0, N_DIMENSIONS )
                 {
                     Point_coord(point,c) = cubic_interpolate( u,
-                                                Point_coord(points[0],c),
-                                                Point_coord(points[1],c),
-                                                Point_coord(points[2],c),
-                                                Point_coord(points[3],c) );
+                                            (Real) Point_coord(points[0],c),
+                                            (Real) Point_coord(points[1],c),
+                                            (Real) Point_coord(points[2],c),
+                                            (Real) Point_coord(points[3],c) );
                 }
 
                 add_point_to_line( new_lines, &point );

@@ -171,6 +171,8 @@ public  BOOLEAN  clip_line_to_box(
     limits[1][Z] = z_max;
 
     first = TRUE;
+    *t_min = 0.0;
+    *t_max = 0.0;
 
     for_less( c, 0, 3 )
     {
@@ -198,6 +200,16 @@ public  BOOLEAN  clip_line_to_box(
                     *t_min = t1;
                 if( t2 < *t_max )
                     *t_max = t2;
+            }
+        }
+        else
+        {
+            if( Point_coord(*origin,c) < limits[0][c] ||
+                Point_coord(*origin,c) > limits[1][c] )
+            {
+                *t_min = 0.0;
+                *t_max = -1.0;
+                break;
             }
         }
     }

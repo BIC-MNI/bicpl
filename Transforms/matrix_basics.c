@@ -7,7 +7,7 @@
                  translate_points
                  transpose
                  matrix_multiply
-                 trace
+                 trace_of_matrix
                  matrix_scalar_multiply
                  invertmatrix
 @CALLS      : 
@@ -212,7 +212,7 @@ public void matrix_multiply(int ldim, int mdim, int ndim,
                   
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : trace
+@NAME       : trace_of_matrix
 @INPUT      : size   - size of the_matrix (the_matrix should be square)
               the_matrix - matrix for which trace should be calculated (in 
                  numerical recipes form). Dimensions are 1 to size and 
@@ -228,7 +228,7 @@ public void matrix_multiply(int ldim, int mdim, int ndim,
                  - change to roughly NIL-abiding code and modified calling
                  sequence.
 ---------------------------------------------------------------------------- */
-public float trace(int size, float **the_matrix)
+public float trace_of_matrix(int size, float **the_matrix)
 {
    float sum=0.;
    int i;

@@ -15,11 +15,11 @@ private  Real  get_point_range_dist(
     range_struct  *range );
 
 public  Real  find_closest_point_in_bintree(
-    Point           *point,
-    bintree_struct  *bintree,
-    object_struct   *object,
-    int             *obj_index,
-    Point           *point_on_object )
+    Point               *point,
+    bintree_struct_ptr  bintree,
+    object_struct       *object,
+    int                 *obj_index,
+    Point               *point_on_object )
 {
     Real      dist;
 
