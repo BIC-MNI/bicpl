@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.29 1995-09-13 13:24:59 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.30 1995-10-18 17:16:38 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -549,7 +549,7 @@ private  void  get_input_volume_label_limits(
 ---------------------------------------------------------------------------- */
 
 public  Status  load_label_volume(
-    char     filename[],
+    STRING   filename,
     Volume   label_volume )
 {
     Status                status;
@@ -625,8 +625,8 @@ public  Status  load_label_volume(
                     {
                         convert_real_to_int_voxel( 3, voxel, int_voxel );
                         voxel_value = get_volume_voxel_value( file_volume,
-                                                          voxel[0], voxel[1],
-                                                          voxel[2], 0, 0 );
+                                           int_voxel[0], int_voxel[1],
+                                           int_voxel[2], 0, 0 );
 
                         int_voxel_value = ROUND( voxel_value );
                         if( int_voxel_value > 0 )
@@ -671,8 +671,8 @@ public  Status  load_label_volume(
 ---------------------------------------------------------------------------- */
 
 public  Status  save_label_volume(
-    char     filename[],
-    char     original_filename[],
+    STRING   filename,
+    STRING   original_filename,
     Volume   label_volume,
     Real     crop_threshold )
 {
@@ -748,7 +748,7 @@ public  Status  input_tags_as_labels(
     Real            **tags1, **tags2, *weights;
     int             *structure_ids, *patient_ids;
     Real            min_label, max_label;
-    char            **labels;
+    STRING          *labels;
 
     check_alloc_label_data( label_volume );
 
@@ -871,10 +871,10 @@ public  Status  output_labels_as_tags(
     {
         status = output_tag_points( file, (char *) NULL,
                            1, n_tags, tags, (Real **) NULL, weights,
-                           structure_ids, patient_ids, (char **) NULL );
+                           structure_ids, patient_ids, (STRING *) NULL );
 
         free_tag_points( 1, n_tags, tags, (Real **) NULL,
-                         weights, structure_ids, patient_ids, (char **) NULL );
+                         weights, structure_ids, patient_ids, (STRING *) NULL );
     }
 
     return( status );
