@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.13 1996-09-11 13:30:36 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.14 1996-09-12 15:53:09 david Exp $";
 #endif
 
 #define  INVALID_ID       -1
@@ -84,7 +84,9 @@ public   void   create_polygon_point_neighbours(
     int                 edge, i0, i1, size, poly, total_neighbours, p0, p1;
     int                 *n_point_neighbours, **point_neighbours;
     int                 **point_polygons, point, index0, index1;
-    int                 i, v, indices[MAX_POINTS_PER_POLYGON];
+    int                 i, v, indices[MAX_POINTS_PER_POLYGON], position, ii;
+    int                 n_to_add, points_to_add[MAX_POINTS_PER_POLYGON];
+    BOOLEAN             done;
     progress_struct     progress;
 
     if( across_polygons_flag && point_polygons_ptr != NULL )
@@ -102,45 +104,103 @@ public   void   create_polygon_point_neighbours(
 
     total_neighbours = 0;
 
-    initialize_progress_report( &progress, FALSE, polygons->n_items,
-                                "Neighbour-finding" );
-
-    for_less( poly, 0, polygons->n_items )
+    do
     {
-        size = GET_OBJECT_SIZE( *polygons, poly );
-        for_less( v, 0, size )
-        {
-            indices[v] = polygons->indices[
-                       POINT_INDEX(polygons->end_indices,poly,v)];
-        }
+        done = TRUE;
 
-        for_less( i0, 0, size )
+        initialize_progress_report( &progress, FALSE, polygons->n_items,
+                                    "Neighbour-finding" );
+
+        for_less( poly, 0, polygons->n_items )
         {
-            p0 = indices[i0];
-            for_less( i1, 0, size )
+            size = GET_OBJECT_SIZE( *polygons, poly );
+            for_less( v, 0, size )
             {
-                if( i1 == i0 || !across_polygons_flag && ABS( i0 - i1 ) != 1 )
-                    continue;
-
-                p1 = indices[i1];
-
-                for_less( i, 0, n_point_neighbours[p0] )
-                {
-                    if( point_neighbours[p0][i] == p1 )
-                        break;
-                }
-                if( i < n_point_neighbours[p0] )
-                    continue;
-
-                ADD_ELEMENT_TO_ARRAY( point_neighbours[p0],
-                                      n_point_neighbours[p0],
-                                      p1, 5 );
-                ++total_neighbours;
+                indices[v] = polygons->indices[
+                           POINT_INDEX(polygons->end_indices,poly,v)];
             }
-        }
 
-        update_progress_report( &progress, poly+1 );
+            for_less( i0, 0, size )
+            {
+                p0 = indices[i0];
+                n_to_add = 0;
+                for_less( ii, 0, size-1 )
+                {
+                    i1 = (i0 + 1 + ii) % size;
+                    if( !across_polygons_flag && ii != 0 && ii != size-2 )
+                        continue;
+
+                    p1 = indices[i1];
+                    points_to_add[n_to_add] = p1;
+                    ++n_to_add;
+                }
+
+                for_less( i1, 0, n_to_add )
+                {
+                    p1 = points_to_add[i1];
+
+                    for_less( i, 0, n_point_neighbours[p0] )
+                    {
+                        if( point_neighbours[p0][i] == p1 )
+                            break;
+                    }
+
+                    if( i < n_point_neighbours[p0] )
+                        continue;
+
+                    for_less( position, 0, n_point_neighbours[p0] )
+                    {
+                        if( point_neighbours[p0][position] ==
+                                 points_to_add[(i1-1+n_to_add)%n_to_add] )
+                            break;
+                    }
+
+                    if( position < n_point_neighbours[p0] )
+                    {
+                        ++position;
+                    }
+                    else
+                    {
+                        for_less( position, 0, n_point_neighbours[p0] )
+                        {
+                            if( point_neighbours[p0][position] ==
+                                     points_to_add[(i1+1+n_to_add)%n_to_add] )
+                                break;
+                        }
+
+                        if( position >= n_point_neighbours[p0] )
+                        {
+                            if( n_point_neighbours[p0] == 0 )
+                                position = 0;
+                            else
+                                position = -1;
+                        }
+                    }
+
+                    if( position >= 0 )
+                    {
+                        SET_ARRAY_SIZE( point_neighbours[p0],
+                                        n_point_neighbours[p0],
+                                        n_point_neighbours[p0]+1, 5 );
+                        for_down( i, n_point_neighbours[p0], position+1 )
+                        {
+                            point_neighbours[p0][i] = 
+                                              point_neighbours[p0][i-1];
+                        }
+                        point_neighbours[p0][position] = p1;
+                        ++n_point_neighbours[p0];
+                        ++total_neighbours;
+                        continue;
+                    }
+                    else
+                        done = FALSE;
+                }
+            }
+
+            update_progress_report( &progress, poly+1 );
+        }
     }
+    while( !done );
 
     terminate_progress_report( &progress );
 
