@@ -17,7 +17,7 @@
 #include  <limits.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.21 1996-05-17 19:35:39 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.22 1998-02-20 14:59:42 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -355,7 +355,14 @@ private  int  get_roots_of_cubic(
             cubic[i] = poly[i];
     }
 
-    n_roots = solve_cubic( cubic[3], cubic[2], cubic[1], cubic[0], roots );
+    if( n < 4 || cubic[3] == 0.0 )
+    {
+        n_roots = solve_quadratic( cubic[2], cubic[1], cubic[0],
+                                   &roots[0], &roots[1] );
+    }
+    else
+        n_roots = solve_cubic( cubic[3], cubic[2], cubic[1], cubic[0], roots );
+
     n_inside = 0;
     for_less( i, 0, n_roots )
     {
