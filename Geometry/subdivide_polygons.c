@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.13 1996-09-10 16:06:48 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.14 1996-09-12 16:14:23 david Exp $";
 #endif
 
 private  void  subdivide_polygon(
@@ -80,7 +80,7 @@ public  void  subdivide_polygons(
     for_less( i, 0, new_n_points )
         new_points[i] = polygons->points[i];
 
-    create_polygon_point_neighbours( polygons, &n_point_neighbours,
+    create_polygon_point_neighbours( polygons, FALSE, &n_point_neighbours,
                                      &point_neighbours, NULL );
 
     total_n_point_neighbours = 0;
@@ -112,7 +112,7 @@ public  void  subdivide_polygons(
 
     terminate_progress_report( &progress );
 
-    delete_polygon_point_neighbours( n_point_neighbours,
+    delete_polygon_point_neighbours( polygons, n_point_neighbours,
                                      point_neighbours, NULL );
 
     FREE( midpoints[0] );
