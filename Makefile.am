@@ -15,7 +15,7 @@ EXTRA_DIST = README.release \
 # version info argument is CURRENT[:REVISION[:AGE]]
 # see README.release for update instructions
 # DO NOT SET THIS TO BE THE SAME AS THE PACKAGE VERSION!!!
-libbicpl_la_LDFLAGS = -version-info 2:0:1
+libbicpl_la_LDFLAGS = -version-info 3:0:2
 
 lib_LTLIBRARIES = libbicpl.la
 

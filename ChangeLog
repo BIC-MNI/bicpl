@@ -1,3 +1,11 @@
+2003-06-16  Steve ROBBINS  <stever@bic.mni.mcgill.ca>
+
+	* Include/bicpl/vol_prototypes.h: 
+	* Volumes/scan_polygons.c (scan_a_polygon): Make function public.
+
+	* Makefile.am (libbicpl_la_LDFLAGS): Increment CURRENT and AGE,
+	to account for additional interface.
+
 2003-04-26  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Makefile.am (libbicpl_la_LIBADD): 

@@ -598,6 +598,17 @@ public  void  scan_polygons_to_voxels(
     int                 label,
     Real                max_distance );
 
+public  void  scan_a_polygon(
+    int                 size,
+    Point               vertices[],
+    Point               voxels[],
+    int                 n_output_vertices,
+    Point               output_vertices[],
+    Volume              volume,
+    Volume              label_volume,
+    int                 sizes[],
+    int                 label );
+
 public  void  scan_quadmesh_to_voxels(
     quadmesh_struct     *quadmesh,
     Volume              volume,

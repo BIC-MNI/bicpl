@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.14 2001-08-11 20:09:08 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.15 2003-06-17 15:21:58 stever Exp $";
 #endif
 
 #define  MAX_TEMP_STORAGE  1000
@@ -131,7 +131,7 @@ private  void  recursive_scan_polygon_to_voxels(
  * \param label value to store in label_volume
  */
 
-private  void  scan_a_polygon(
+public  void  scan_a_polygon(
     int                 size,
     Point               vertices[],
     Point               voxels[],
