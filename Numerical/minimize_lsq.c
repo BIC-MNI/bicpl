@@ -40,7 +40,7 @@ private  void  evaluate_fit_derivative(
     Real    node_values[],
     Real    derivatives[] )
 {
-    int   node, p, n, eq;
+    int   p, n, eq;
     Real  diff;
 
     for_less( p, 0, n_nodes )
@@ -54,10 +54,7 @@ private  void  evaluate_fit_derivative(
         diff *= 2.0;
 
         for_less( n, 0, n_nodes_per_equation[eq] )
-        {
-            node = node_list[eq][n];
-            derivatives[node] += diff * node_weights[eq][n];
-        }
+            derivatives[node_list[eq][n]] += diff * node_weights[eq][n];
     }
 }
 
@@ -91,12 +88,12 @@ private  void  evaluate_fit_along_line(
             linear += weight * line_coefs[node];
         }
 
-        b += 2.0 * constant * linear;
+        b += constant * linear;
         a += linear * linear;
     }
 
     *a_ptr = a;
-    *b_ptr = b;
+    *b_ptr = 2.0 * b;
 }
 
 private  void  minimize_along_line(
