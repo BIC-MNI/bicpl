@@ -43,15 +43,27 @@ public  void  set_all_volume_label_data(
     Volume    volume,
     int       value )
 {
-    int             v0, v1, v2, v3, v4;
+    Data_types      type;
+    void            *ptr;
+    int             v0, v1, v2, v3, v4, n_voxels;
 
     check_alloc_label_data( volume );
 
-    BEGIN_ALL_VOXELS( volume, v0, v1, v2, v3, v4 )
+    type = get_volume_data_type( volume );
+    if( value == 0 && type != FLOAT && type != DOUBLE )
+    {
+        GET_VOXEL_PTR( ptr, volume, 0, 0, 0, 0, 0 );
+        n_voxels = get_volume_total_n_voxels( volume );
+        (void) memset( ptr, 0, n_voxels * get_type_size(type) );
+    }
+    else
+    {
+        BEGIN_ALL_VOXELS( volume, v0, v1, v2, v3, v4 )
 
-        SET_VOXEL( volume, v0, v1, v2, v3, v4, value );
+            SET_VOXEL( volume, v0, v1, v2, v3, v4, value );
 
-    END_ALL_VOXELS
+        END_ALL_VOXELS
+    }
 }
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -467,25 +467,6 @@ public  void  render_volume_to_slice(
             start_x[y] = end_x[y] + 1;
     }
 
-{
-    int              voxel_data1;
-    int              voxel_data2;
-    int              *offset_ptr1, *offset_ptr2;
-    Real             real_voxel_data1, real_voxel_data2;
-    unsigned short   *single_cmode_map;
-    Colour           *single_rgb_map;
-    Pixel_types      pixel_type;
-
-    pixel_type = pixels->pixel_type;
-
-    if( volume_data2 == (void *) NULL )
-    {
-        if( pixel_type == RGB_PIXEL )
-            single_rgb_map = rgb_colour_map[0];
-        else
-            single_cmode_map = cmode_colour_map[0];
-    }
-
     for_less( y, 0, y_size )
     {
         for_less( s, 0, n_slices1 )
@@ -497,9 +478,20 @@ public  void  render_volume_to_slice(
                 row_offsets2[s] = which_x_offsets2[s][y];
         }
 
-        if( pixel_type == RGB_PIXEL )
+        render_the_slice( volume_data1, volume1_type,
+                          y, start_x[y], end_x[y],
+                          y_offsets1, row_offsets1, start_slices1,
+                          n_slices1, weights1,
+                          volume_data2, volume2_type,
+                          y_offsets2, row_offsets2, start_slices2,
+                          n_slices2, weights2,
+                          cmode_colour_map,
+                          rgb_colour_map,
+                          pixels );
+
+        if( pixels->pixel_type == RGB_PIXEL )
         {
-            Colour          *pixel_ptr, colour;
+            Colour          *pixel_ptr;
 
             pixel_ptr = &pixels->data.pixels_rgb[IJ(y,0,x_size)];
 
@@ -509,8 +501,7 @@ public  void  render_volume_to_slice(
                 ++pixel_ptr;
             }
 
-#include    "render_include1.c"
-
+            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,end_x[y]+1,x_size)];
             for_less( x, end_x[y]+1, x_size )
             {
                 *pixel_ptr = empty_colour;
@@ -519,19 +510,16 @@ public  void  render_volume_to_slice(
         }
         else
         {
-            unsigned short          *pixel_ptr, colour;
+            unsigned short          *pixel_ptr;
 
             pixel_ptr = &pixels->data.pixels_16bit_colour_index[IJ(y,0,x_size)];
-
             for_less( x, 0, start_x[y] )
             {
                 *pixel_ptr = empty_colour;
                 ++pixel_ptr;
             }
 
-#define     COLOUR_MAP
-#include    "render_include1.c"
-
+            pixel_ptr = &pixels->data.pixels_16bit_colour_index[IJ(y,end_x[y]+1,x_size)];
             for_less( x, end_x[y]+1, x_size )
             {
                 *pixel_ptr = empty_colour;
@@ -539,7 +527,6 @@ public  void  render_volume_to_slice(
             }
         }
     }
-}
 
     if( render_storage == NULL )
         delete_render_storage( (void *) store );
