@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.36 1995-08-21 14:05:08 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.37 1995-08-30 14:07:07 david Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10
@@ -475,6 +475,94 @@ private  void    clip_viewport_to_volume(
         *y_pixel_end = int_y_max;
 }
 
+private  void  set_pixel_range(
+    Volume          volume1,
+    int             n_slices1,
+    Real            **origins1,
+    Real            x_axis1[],
+    Real            y_axis1[],
+    Real            x_translation1,
+    Real            y_translation1,
+    Real            x_scale1,
+    Real            y_scale1,
+    Volume          volume2,
+    int             n_slices2,
+    Real            **origins2,
+    Real            x_axis2[],
+    Real            y_axis2[],
+    Real            x_translation2,
+    Real            y_translation2,
+    Real            x_scale2,
+    Real            y_scale2,
+    int             x_viewport_size,
+    int             y_viewport_size,
+    Real            real_x_axis1[],
+    Real            real_y_axis1[],
+    Real            ***real_origins1,
+    Real            real_x_axis2[],
+    Real            real_y_axis2[],
+    Real            ***real_origins2,
+    Pixel_types     pixel_type,
+    int             *n_pixels_alloced,
+    pixels_struct   *pixels )
+{
+    int          n_dimensions1, n_dimensions2, s, x_size, y_size;
+    int          x_pixel_start, x_pixel_end, y_pixel_start, y_pixel_end;
+
+    x_pixel_start = 0;
+    x_pixel_end = x_viewport_size - 1;
+    y_pixel_start = 0;
+    y_pixel_end = y_viewport_size - 1;
+
+    n_dimensions1 = get_volume_n_dimensions( volume1 );
+
+    ALLOC2D( *real_origins1, n_slices1, n_dimensions1 );
+
+    for_less( s, 0, n_slices1 )
+    {
+        get_mapping( volume1, origins1[s], x_axis1, y_axis1,
+                     x_translation1, y_translation1, x_scale1, y_scale1,
+                     (*real_origins1)[s], real_x_axis1, real_y_axis1 );
+
+        clip_viewport_to_volume( volume1, (*real_origins1)[s],
+                                 real_x_axis1, real_y_axis1,
+                                 &x_pixel_start, &x_pixel_end,
+                                 &y_pixel_start, &y_pixel_end );
+    }
+
+    if( volume2 != NULL )
+    {
+        n_dimensions2 = get_volume_n_dimensions( volume2 );
+
+        ALLOC2D( *real_origins2, n_slices2, n_dimensions2 );
+
+        for_less( s, 0, n_slices2 )
+        {
+            get_mapping( volume2, origins2[s], x_axis2, y_axis2,
+                         x_translation2, y_translation2, x_scale2, y_scale2,
+                         (*real_origins2)[s], real_x_axis2, real_y_axis2 );
+
+            clip_viewport_to_volume( volume2, (*real_origins2)[s],
+                                     real_x_axis2, real_y_axis2,
+                                     &x_pixel_start, &x_pixel_end,
+                                     &y_pixel_start, &y_pixel_end );
+        }
+    }
+
+    x_size = x_pixel_end - x_pixel_start + 1;
+    y_size = y_pixel_end - y_pixel_start + 1;
+    if( x_size < 0 )
+        x_size = 0;
+    if( y_size < 0 )
+        y_size = 0;
+
+    modify_pixels_size( n_pixels_alloced, pixels, x_size, y_size, pixel_type );
+    pixels->x_position = x_pixel_start;
+    pixels->y_position = y_pixel_start;
+    pixels->x_zoom = 1.0;
+    pixels->y_zoom = 1.0;
+}
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_weighted_volume_slices
 @INPUT      : volume1,
@@ -522,103 +610,36 @@ private  void  create_weighted_volume_slices(
     Real            x_axis1[],
     Real            y_axis1[],
     Real            weights1[],
-    Real            x_translation1,
-    Real            y_translation1,
-    Real            x_scale1,
-    Real            y_scale1,
     Volume          volume2,
     int             n_slices2,
     Real            **origins2,
     Real            x_axis2[],
     Real            y_axis2[],
     Real            weights2[],
-    Real            x_translation2,
-    Real            y_translation2,
-    Real            x_scale2,
-    Real            y_scale2,
-    int             x_viewport_size,
-    int             y_viewport_size,
-    Pixel_types     pixel_type,
     int             degrees_continuity,
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     Colour          empty_colour,
     void            *render_storage,
-    int             *n_pixels_alloced,
     pixels_struct   *pixels )
 {
     Data_types   volume1_data_type, volume2_data_type;
     void         *volume_data1, *volume_data2;
-    Real         **real_origins1, **real_origins2;
-    Real         real_x_axis1[MAX_DIMENSIONS], real_y_axis1[MAX_DIMENSIONS];
-    Real         real_x_axis2[MAX_DIMENSIONS], real_y_axis2[MAX_DIMENSIONS];
     int          strides1[MAX_DIMENSIONS], strides2[MAX_DIMENSIONS];
     int          n_dimensions1, n_dimensions2;
-    int          axis, x_size, y_size, s, c;
-    int          x_pixel_start, x_pixel_end, y_pixel_start, y_pixel_end;
+    int          axis, s, c;
     int          sizes1[MAX_DIMENSIONS], sizes2[MAX_DIMENSIONS];
 
-    x_pixel_start = 0;
-    x_pixel_end = x_viewport_size - 1;
-    y_pixel_start = 0;
-    y_pixel_end = y_viewport_size - 1;
-
-    n_dimensions1 = get_volume_n_dimensions( volume1 );
-
-    ALLOC2D( real_origins1, n_slices1, n_dimensions1 );
-
-    for_less( s, 0, n_slices1 )
+    if( pixels->x_size > 0 && pixels->y_size > 0 )
     {
-        get_mapping( volume1, origins1[s], x_axis1, y_axis1,
-                     x_translation1, y_translation1, x_scale1, y_scale1,
-                     real_origins1[s], real_x_axis1, real_y_axis1 );
+        n_dimensions1 = get_volume_n_dimensions( volume1 );
 
-        clip_viewport_to_volume( volume1, real_origins1[s],
-                                 real_x_axis1, real_y_axis1,
-                                 &x_pixel_start, &x_pixel_end,
-                                 &y_pixel_start, &y_pixel_end );
-    }
-
-    if( volume2 != NULL )
-    {
-        n_dimensions2 = get_volume_n_dimensions( volume2 );
-
-        ALLOC2D( real_origins2, n_slices2, n_dimensions2 );
-
-        for_less( s, 0, n_slices2 )
-        {
-            get_mapping( volume2, origins2[s], x_axis2, y_axis2,
-                         x_translation2, y_translation2, x_scale2, y_scale2,
-                         real_origins2[s], real_x_axis2, real_y_axis2 );
-
-            clip_viewport_to_volume( volume2, real_origins2[s],
-                                     real_x_axis2, real_y_axis2,
-                                     &x_pixel_start, &x_pixel_end,
-                                     &y_pixel_start, &y_pixel_end );
-        }
-    }
-
-    x_size = x_pixel_end - x_pixel_start + 1;
-    y_size = y_pixel_end - y_pixel_start + 1;
-    if( x_size < 0 )
-        x_size = 0;
-    if( y_size < 0 )
-        y_size = 0;
-
-    modify_pixels_size( n_pixels_alloced, pixels, x_size, y_size, pixel_type );
-    pixels->x_position = x_pixel_start;
-    pixels->y_position = y_pixel_start;
-    pixels->x_zoom = 1.0;
-    pixels->y_zoom = 1.0;
-
-    if( x_size > 0 && y_size > 0 )
-    {
         for_less( s, 0, n_slices1 )
         {
             for_less( c, 0, n_dimensions1 )
             {
-                real_origins1[s][c] += (Real) x_pixel_start * real_x_axis1[c] +
-                                       (Real) y_pixel_start * real_y_axis1[c];
+                origins1[s][c] += (Real) pixels->x_position * x_axis1[c] +
+                                  (Real) pixels->y_position * y_axis1[c];
             }
         }
 
@@ -629,18 +650,19 @@ private  void  create_weighted_volume_slices(
         get_volume_sizes( volume1, sizes1 );
 
         strides1[n_dimensions1-1] = 1;
-        for( axis = n_dimensions1 - 2;  axis >= 0;  --axis )
+        for_down( axis, n_dimensions1 - 2,  0 )
              strides1[axis] = strides1[axis+1] * sizes1[axis+1];
 
         if( volume2 != NULL )
         {
+            n_dimensions2 = get_volume_n_dimensions( volume2 );
+
             for_less( s, 0, n_slices2 )
             {
                 for_less( c, 0, n_dimensions2 )
                 {
-                    real_origins2[s][c] +=
-                              (Real) x_pixel_start * real_x_axis2[c] +
-                              (Real) y_pixel_start * real_y_axis2[c];
+                    origins2[s][c] += (Real) pixels->x_position * x_axis2[c] +
+                                      (Real) pixels->y_position * y_axis2[c];
                 }
             }
 
@@ -650,7 +672,7 @@ private  void  create_weighted_volume_slices(
             get_volume_sizes( volume2, sizes2 );
 
             strides2[n_dimensions2-1] = 1;
-            for( axis = n_dimensions2 - 2;  axis >= 0;  --axis )
+            for_down( axis, n_dimensions2 - 2, 0 )
                  strides2[axis] = strides2[axis+1] * sizes2[axis+1];
         }
         else
@@ -662,12 +684,12 @@ private  void  create_weighted_volume_slices(
             (volume_data2 == NULL || n_slices2 == 1) )
         {
             interpolate_volume_to_slice( volume1, n_dimensions1, sizes1,
-                                         real_origins1[0],
-                                         real_x_axis1, real_y_axis1,
+                                         origins1[0],
+                                         x_axis1, y_axis1,
                                          volume2, n_dimensions2, sizes2,
                                          (volume_data2 == NULL) ? NULL :
-                                         real_origins2[0],
-                                         real_x_axis2, real_y_axis2,
+                                         origins2[0],
+                                         x_axis2, y_axis2,
                                          degrees_continuity,
                                          cmode_colour_map, rgb_colour_map,
                                          empty_colour, pixels );
@@ -677,22 +699,15 @@ private  void  create_weighted_volume_slices(
         {
             render_volume_to_slice( n_dimensions1, sizes1, volume_data1,
                                     volume1_data_type, n_slices1, weights1,
-                                    strides1, real_origins1,
-                                    real_x_axis1, real_y_axis1,
+                                    strides1, origins1, x_axis1, y_axis1,
                                     n_dimensions2, sizes2, volume_data2,
                                     volume2_data_type, n_slices2, weights2,
-                                    strides2, real_origins2,
-                                    real_x_axis2, real_y_axis2,
+                                    strides2, origins2, x_axis2, y_axis2,
                                     cmode_colour_map,
                                     rgb_colour_map, empty_colour,
                                     render_storage, pixels );
         }
     }
-
-    if( volume2 != NULL )
-        FREE2D( real_origins2 );
-
-    FREE2D( real_origins1 );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -839,6 +854,9 @@ public  void  create_volume_slice(
 {
     int          n_slices1, n_slices2;
     Real         **positions1, **positions2, *weights1, *weights2;
+    Real         **real_origins1, **real_origins2;
+    Real         real_x_axis1[MAX_DIMENSIONS], real_y_axis1[MAX_DIMENSIONS];
+    Real         real_x_axis2[MAX_DIMENSIONS], real_y_axis2[MAX_DIMENSIONS];
 
     if( !get_filter_slices( volume1, slice_position1, x_axis1, y_axis1,
                             filter_type1, filter_width1, &n_slices1,
@@ -859,28 +877,107 @@ public  void  create_volume_slice(
         }
     }
 
+    set_pixel_range( volume1, n_slices1, positions1, x_axis1, y_axis1,
+                     x_translation1, y_translation1, x_scale1, y_scale1,
+                     volume2, n_slices2, positions2, x_axis2, y_axis2,
+                     x_translation2, y_translation2, x_scale2, y_scale2,
+                     x_viewport_size, y_viewport_size,
+                     real_x_axis1, real_y_axis1, &real_origins1,
+                     real_x_axis2, real_y_axis2, &real_origins2,
+                     pixel_type, n_pixels_alloced, pixels );
+
     create_weighted_volume_slices( volume1, n_slices1,
-                                   positions1, x_axis1, y_axis1,
+                                   real_origins1, real_x_axis1, real_y_axis1,
                                    weights1,
-                                   x_translation1, y_translation1,
-                                   x_scale1, y_scale1,
                                    volume2, n_slices2,
-                                   positions2, x_axis2, y_axis2,
+                                   real_origins2, real_x_axis2, real_y_axis2,
                                    weights2,
-                                   x_translation2, y_translation2,
-                                   x_scale2, y_scale2,
-                                   x_viewport_size, y_viewport_size,
-                                   pixel_type, degrees_continuity,
+                                   degrees_continuity,
                                    cmode_colour_map, rgb_colour_map,
                                    empty_colour, render_storage,
-                                   n_pixels_alloced, pixels );
+                                   pixels );
 
     if( volume2 != NULL )
     {
         FREE2D( positions2 );
         FREE( weights2 );
+        FREE( real_origins2 );
     }
 
     FREE2D( positions1 );
     FREE( weights1 );
+    FREE( real_origins1 );
+}
+
+public  void  set_volume_slice_pixel_range(
+    Volume          volume1,
+    Filter_types    filter_type1,
+    Real            filter_width1,
+    Real            slice_position1[],
+    Real            x_axis1[],
+    Real            y_axis1[],
+    Real            x_translation1,
+    Real            y_translation1,
+    Real            x_scale1,
+    Real            y_scale1,
+    Volume          volume2,
+    Filter_types    filter_type2,
+    Real            filter_width2,
+    Real            slice_position2[],
+    Real            x_axis2[],
+    Real            y_axis2[],
+    Real            x_translation2,
+    Real            y_translation2,
+    Real            x_scale2,
+    Real            y_scale2,
+    int             x_viewport_size,
+    int             y_viewport_size,
+    Pixel_types     pixel_type,
+    int             *n_pixels_alloced,
+    pixels_struct   *pixels )
+{
+    int          n_slices1, n_slices2;
+    Real         **positions1, **positions2, *weights1, *weights2;
+    Real         **real_origins1, **real_origins2;
+    Real         real_x_axis1[MAX_DIMENSIONS], real_y_axis1[MAX_DIMENSIONS];
+    Real         real_x_axis2[MAX_DIMENSIONS], real_y_axis2[MAX_DIMENSIONS];
+
+    if( !get_filter_slices( volume1, slice_position1, x_axis1, y_axis1,
+                            filter_type1, filter_width1, &n_slices1,
+                            &positions1, &weights1 ) )
+    {
+        modify_pixels_size( n_pixels_alloced, pixels, 0, 0, pixel_type );
+        return;
+    }
+
+    if( volume2 != NULL )
+    {
+        if( !get_filter_slices( volume2, slice_position2, x_axis2, y_axis2,
+                                filter_type2, filter_width2, &n_slices2,
+                                &positions2, &weights2 ) )
+        {
+            modify_pixels_size( n_pixels_alloced, pixels, 0, 0, pixel_type );
+            return;
+        }
+    }
+
+    set_pixel_range( volume1, n_slices1, positions1, x_axis1, y_axis1,
+                     x_translation1, y_translation1, x_scale1, y_scale1,
+                     volume2, n_slices2, positions2, x_axis2, y_axis2,
+                     x_translation2, y_translation2, x_scale2, y_scale2,
+                     x_viewport_size, y_viewport_size,
+                     real_x_axis1, real_y_axis1, &real_origins1,
+                     real_x_axis2, real_y_axis2, &real_origins2,
+                     pixel_type, n_pixels_alloced, pixels );
+
+    if( volume2 != NULL )
+    {
+        FREE2D( positions2 );
+        FREE( weights2 );
+        FREE( real_origins2 );
+    }
+
+    FREE2D( positions1 );
+    FREE( weights1 );
+    FREE( real_origins1 );
 }
