@@ -167,7 +167,7 @@ public  int  get_volume_label_data(
 {
     int    label;
 
-    if( volume->data == (void *) NULL )
+    if( volume == (Volume) NULL || volume->data == (void *) NULL )
         return( 0 );
     else
     {
@@ -229,6 +229,9 @@ public  BOOLEAN  get_volume_voxel_activity(
     BOOLEAN  active_found, inactive_found;
     int      c, int_index[MAX_DIMENSIONS], ind[MAX_DIMENSIONS];
     int      n[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
+
+    if( volume == (Volume) NULL || volume->data == (void *) NULL )
+        return( TRUE );
 
     get_volume_sizes( volume, sizes );
 

@@ -107,9 +107,6 @@ public  BOOLEAN  voxel_contains_value(
     int      base_indices[MAX_DIMENSIONS], indices[MAX_DIMENSIONS];
     Real     value;
 
-    less = FALSE;
-    greater = FALSE;
-
     n_dimensions = get_volume_n_dimensions( volume );
 
     if( n_dimensions >= 1 )
@@ -140,8 +137,11 @@ public  BOOLEAN  voxel_contains_value(
     for_less( c, 0, n_dimensions )
         base_indices[c] = int_voxel[c];
 
-    for_less( c, n_dimensions-1, MAX_DIMENSIONS )
+    for_less( c, n_dimensions, MAX_DIMENSIONS )
         base_indices[c] = 0;
+
+    less = FALSE;
+    greater = FALSE;
 
     for_less( indices[X], base_indices[X], base_indices[X] + mx )
     for_less( indices[Y], base_indices[Y], base_indices[Y] + my )

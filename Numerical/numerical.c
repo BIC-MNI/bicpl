@@ -1,4 +1,4 @@
-#include  <volume_io.h>
+#include  <mni.h>
 #include  <stack.h>
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -1,5 +1,5 @@
 
-#include  <volume_io.h>
+#include  <mni.h>
 #include  <sys/time.h>
 
 #define  MAX_RAND  2147483648.0

@@ -1,5 +1,5 @@
 
-#include  <volume_io.h>
+#include  <mni.h>
 
 static    Status  input_global_variable( int, global_struct [],
                                          FILE *, BOOLEAN * );
