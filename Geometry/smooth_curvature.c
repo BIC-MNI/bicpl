@@ -17,20 +17,17 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.10 1996-09-10 16:30:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.11 1996-09-10 17:57:55 david Exp $";
 #endif
 
-private  BOOLEAN  get_vertex_distances(
-    polygons_struct   *polygons,
-    int               poly,
-    int               vertex,
-    Real              distance,
-    Real              distances[] );
 private  int  get_smoothing_points(
     polygons_struct   *polygons,
+    int               n_neighbours[],
+    int               *neighbours[],
     Real              smoothing_distance,
-    Real              distances[],
+    float             distances[],
     Point             *smoothing_points[] );
+
 private  Real  get_average_curvature(
     Point   *point,
     Vector  *normal,
@@ -57,154 +54,47 @@ private  Real  get_average_curvature(
 
 public  Real  get_smooth_surface_curvature(
     polygons_struct   *polygons,
+    int               n_neighbours[],
+    int               *neighbours[],
     int               poly,
     int               vertex,
     Real              smoothing_distance )
 {
-    int      n_smoothing_points;
+    int      n_smoothing_points, point_index;
     Point    *smoothing_points;
-    Real     curvature, *distances;
+    float    *distances;
+    Real     curvature;
 
     ALLOC( distances, polygons->n_points );
 
-    if( get_vertex_distances( polygons, poly, vertex, smoothing_distance,
-                              distances ) )
-    {
-        n_smoothing_points = get_smoothing_points( polygons, smoothing_distance,
-                               distances, &smoothing_points );
+    point_index = polygons->indices[
+                  POINT_INDEX(polygons->end_indices,poly,vertex)];
 
-        if( n_smoothing_points > 0 )
-        {
-            curvature = get_average_curvature(
-                  &polygons->points[polygons->indices[
-                         POINT_INDEX( polygons->end_indices, poly, vertex )]],
-                  &polygons->normals[polygons->indices[
-                         POINT_INDEX( polygons->end_indices, poly, vertex )]],
-                  n_smoothing_points, smoothing_points );
-        }
-        else
-            curvature = 0.0;
+    compute_distances_from_point( polygons, n_neighbours, neighbours,
+                                  &polygons->points[point_index], poly,
+                                  smoothing_distance, distances );
 
-        if( n_smoothing_points > 0 )
-            FREE( smoothing_points );
-    }
-    else
-        curvature = 1.0e30;
+    n_smoothing_points = get_smoothing_points( polygons,
+                                               n_neighbours, neighbours,
+                                               smoothing_distance,
+                                               distances, &smoothing_points );
 
     FREE( distances );
 
-    return( curvature );
-}
-
-typedef  struct
-{
-    int   index_within_poly;
-    int   poly_index;
-} queue_struct;
-
-#define   GREATER_THAN_DISTANCE     -1.0
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : get_vertex_distances
-@INPUT      : polygons
-              poly
-              vertex
-              distance
-@OUTPUT     : distances
-@RETURNS    : 
-@DESCRIPTION: 
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    :         1994    David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-private  BOOLEAN  get_vertex_distances(
-    polygons_struct   *polygons,
-    int               poly,
-    int               vertex,
-    Real              distance,
-    Real              distances[] )
-{
-    int                    i, p, size, point_index, next_point_index;
-    Real                   dist;
-    BOOLEAN                closed_flag;
-    queue_struct           entry;
-    int                    n_polys, *polys;
-    PRIORITY_QUEUE_STRUCT( queue_struct )   queue;
-
-    for_less( i, 0, polygons->n_points )
-        distances[i] = GREATER_THAN_DISTANCE;
-
-    point_index = polygons->indices[
-                     POINT_INDEX( polygons->end_indices, poly, vertex )];
-
-    distances[point_index] = 0.0;
-
-    ALLOC( polys, polygons->n_items );
-
-    INITIALIZE_PRIORITY_QUEUE( queue );
-
-    entry.poly_index = poly;
-    entry.index_within_poly = vertex;
-    INSERT_IN_PRIORITY_QUEUE( queue, entry, 0.0 );
-
-    closed_flag = TRUE;
-
-    while( !IS_PRIORITY_QUEUE_EMPTY( queue ) )
+    if( n_smoothing_points > 0 )
     {
-        REMOVE_FROM_PRIORITY_QUEUE( queue, entry, dist );
-
-        point_index = polygons->indices[
-                     POINT_INDEX( polygons->end_indices, entry.poly_index,
-                                  entry.index_within_poly )];
-
-        if( distances[point_index] > distance )
-            break;
-
-        n_polys = get_polygons_around_vertex( polygons, entry.poly_index,
-                                              entry.index_within_poly, polys,
-                                              polygons->n_items, &closed_flag );
-
-        if( !closed_flag )
-            break;
-
-        for_less( i, 0, n_polys )
-        {
-            size = GET_OBJECT_SIZE( *polygons, polys[i] );
-
-            for_less( p, 0, size )
-            {
-                next_point_index = polygons->indices[
-                             POINT_INDEX( polygons->end_indices, polys[i], p )];
-
-                if( distances[next_point_index] == GREATER_THAN_DISTANCE ||
-                    distances[next_point_index] > distances[point_index] )
-                {
-                    dist = distances[point_index] +
-                           distance_between_points(
-                                    &polygons->points[point_index],
-                                    &polygons->points[next_point_index] );
-
-                    if( distances[next_point_index] == GREATER_THAN_DISTANCE &&
-                        dist < distance ||
-                        dist < distances[next_point_index] )
-                    {
-                        distances[next_point_index] = dist;
-                        entry.index_within_poly = p;
-                        entry.poly_index = polys[i];
-                        INSERT_IN_PRIORITY_QUEUE( queue, entry, -dist );
-                    }
-                }
-            }
-        }
+        curvature = get_average_curvature( &polygons->points[point_index],
+                                           &polygons->normals[point_index],
+                                           n_smoothing_points,
+                                           smoothing_points );
     }
+    else
+        curvature = 0.0;
 
-    DELETE_PRIORITY_QUEUE( queue );
-    FREE( polys );
+    if( n_smoothing_points > 0 )
+        FREE( smoothing_points );
 
-    return( closed_flag );
+    return( curvature );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -224,44 +114,42 @@ private  BOOLEAN  get_vertex_distances(
 
 private  int  get_smoothing_points(
     polygons_struct   *polygons,
+    int               n_neighbours[],
+    int               *neighbours[],
     Real              smoothing_distance,
-    Real              distances[],
+    float             distances[],
     Point             *smoothing_points[] )
 {
-    int      poly, vertex, point_index, prev_index, inside, outside, ind;
-    int      n_smoothing_points, size;
+    int      neigh, point_index, prev_index, inside, outside;
+    int      n_smoothing_points;
     Real     dist, ratio;
     Point    point;
 
     n_smoothing_points = 0;
 
-    ind = 0;
-
-    for_less( poly, 0, polygons->n_items )
+    for_less( point_index, 0, polygons->n_points )
     {
-        size = GET_OBJECT_SIZE( *polygons, poly );
+        if( distances[point_index] < 0.0f )
+            continue;
 
-        point_index = polygons->indices[ind+size-1];
-        for_less( vertex, 0, size )
+        for_less( neigh, 0, n_neighbours[point_index] )
         {
-            prev_index = point_index;
-            point_index = polygons->indices[ind];
-            ++ind;
+            prev_index = neighbours[point_index][neigh];
 
-            if( distances[prev_index] > 0.0 &&
-                distances[point_index] == GREATER_THAN_DISTANCE )
+            if( distances[prev_index] < 0.0f )
             {
-                inside = prev_index;
-                outside = point_index;
+                inside = point_index;
+                outside = prev_index;
 
-                dist = distances[inside] + distance_between_points(
-                                               &polygons->points[inside],
-                                               &polygons->points[outside] );
+                dist = (Real) distances[inside] +
+                       distance_between_points(
+                                         &polygons->points[inside],
+                                         &polygons->points[outside] );
 
-                if( dist != distances[inside] )
+                if( dist != (Real) distances[inside] )
                 {
-                    ratio = (smoothing_distance - distances[inside]) /
-                            (dist - distances[inside]);
+                    ratio = (smoothing_distance - (Real) distances[inside]) /
+                            (dist - (Real) distances[inside]);
                     INTERPOLATE_POINTS( point,
                                         polygons->points[inside],
                                         polygons->points[outside],
