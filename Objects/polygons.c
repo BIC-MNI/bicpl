@@ -633,6 +633,66 @@ private  Real  angle_between_points(
     return( angle );
 }
 
+public  void  average_polygon_normals(
+    polygons_struct  *polygons,
+    Real             neighbour_weight )
+{
+    int                e, poly, size, point_index, neigh_index;
+    Vector             *neigh_normal_sum;
+    progress_struct    progress;
+
+    if( polygons->n_points <= 0 || polygons->n_items <= 0 )
+        return;
+
+    ALLOC( neigh_normal_sum, polygons->n_points );
+    for_less( point_index, 0, polygons->n_points )
+        fill_Vector( neigh_normal_sum[point_index], 0.0, 0.0, 0.0 );
+
+    initialize_progress_report( &progress, FALSE, polygons->n_items,
+                                "Averaging Normals" );
+
+    for_less( poly, 0, polygons->n_items )
+    {
+        size = GET_OBJECT_SIZE( *polygons, poly );
+
+        for_less( e, 0, size )
+        {
+            point_index =
+                   polygons->indices[POINT_INDEX(polygons->end_indices,poly,e)];
+            neigh_index =
+                   polygons->indices[POINT_INDEX(polygons->end_indices,poly,
+                                     (e+1)%size)];
+
+            ADD_VECTORS( neigh_normal_sum[point_index],
+                         neigh_normal_sum[point_index],
+                         polygons->normals[neigh_index] );
+            ADD_VECTORS( neigh_normal_sum[neigh_index],
+                         neigh_normal_sum[neigh_index],
+                         polygons->normals[point_index] );
+        }
+
+        update_progress_report( &progress, poly + 1 );
+    }
+
+    terminate_progress_report( &progress );
+
+    for_less( point_index, 0, polygons->n_points )
+    {
+        NORMALIZE_VECTOR( neigh_normal_sum[point_index],
+                          neigh_normal_sum[point_index] );
+
+        INTERPOLATE_VECTORS( polygons->normals[point_index],
+                             polygons->normals[point_index],
+                             neigh_normal_sum[point_index],
+                             neighbour_weight );
+
+        NORMALIZE_VECTOR( polygons->normals[point_index],
+                          polygons->normals[point_index] );
+    }
+
+    FREE( neigh_normal_sum );
+}
+
 public  BOOLEAN  get_plane_polygon_intersection(
     Vector           *normal,
     Real             d,
