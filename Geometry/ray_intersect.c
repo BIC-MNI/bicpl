@@ -18,11 +18,11 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.11 1995-07-31 13:45:05 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.12 1995-09-13 18:20:00 david Exp $";
 #endif
 
 
-#define  TOLERANCE  1.0e-3
+#define  TOLERANCE  1.0e-2
 
 private  BOOLEAN  point_within_triangle_2d(
     Point   *pt,
@@ -64,7 +64,7 @@ private  BOOLEAN   intersect_ray_polygon_points(
 
     intersects = FALSE;
 
-    find_polygon_normal( n_points, points, &normal );
+    find_polygon_normal_no_normalize( n_points, points, &normal );
 
     n_dot_d = DOT_VECTORS( normal, *ray_direction );
 
