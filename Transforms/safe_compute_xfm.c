@@ -22,9 +22,12 @@
 @GLOBALS    : 
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : $Log: safe_compute_xfm.c,v $
-@MODIFIED   : Revision 1.7  1995-07-31 13:46:03  david
-@MODIFIED   : check_in_all
+@MODIFIED   : Revision 1.8  1995-09-29 19:06:37  david
+@MODIFIED   : *** empty log message ***
 @MODIFIED   :
+ * Revision 1.7  1995/07/31  13:46:03  david
+ * check_in_all
+ *
  * Revision 1.6  1995/07/10  18:02:53  david
  * check_in_all
  *
@@ -57,7 +60,7 @@
 #include <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.7 1995-07-31 13:46:03 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.8 1995-09-29 19:06:37 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -86,10 +89,11 @@ public void safe_compute_transform_from_tags(
     Trans_type          trans_type,
     General_transform   *transform )
 {
-    int        fildes[2];
-    FILE       *fpin, *fpout;
-    Status     status;
-    int        statptr;
+    int                 fildes[2];
+    FILE                *fpin, *fpout;
+    Status              status;
+    int                 statptr;
+    General_transform   computed_transform;
 
     /* Create a pipe */
 
@@ -117,8 +121,9 @@ public void safe_compute_transform_from_tags(
         (void) close(fildes[0]);
         fpout = fdopen(fildes[1], "w");
         compute_transform_from_tags(npoints, tag_list1, tag_list2, trans_type,
-                                    transform);
-        status = output_transform(fpout, NULL, NULL, NULL, transform);
+                                    &computed_transform);
+        status = output_transform(fpout, NULL, NULL, NULL, &computed_transform);
+        delete_general_transform( &computed_transform );
         (void) fclose(fpout);
         if (status != OK) {
             exit(EXIT_FAILURE);
