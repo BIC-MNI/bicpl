@@ -2,8 +2,6 @@
 #include  <internal_volume_io.h>
 #include  <vols.h>
 
-#define  BIG_NUMBER  1.0e10
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : clip_one_edge
 @INPUT      : closing
@@ -42,6 +40,7 @@ private  void clip_one_edge(
     Real     first_point[][2],
     Real     prev_point[][2],
     Real     prev_dist[],
+    int      n_dims,
     int      *n_clipped_points,
     Real     clipped_points[][2] )
 {
@@ -54,8 +53,12 @@ private  void clip_one_edge(
     {
         if( !closing )
         {
-            clipped_points[*n_clipped_points][0] = point[0];
-            clipped_points[*n_clipped_points][1] = point[1];
+            if( *n_clipped_points < 2 * n_dims )
+            {
+                clipped_points[*n_clipped_points][0] = point[0];
+                clipped_points[*n_clipped_points][1] = point[1];
+            }
+
             ++(*n_clipped_points);
         }
         return;
@@ -90,7 +93,7 @@ private  void clip_one_edge(
                           (point[1] - prev_point[edge][1]);
         clip_one_edge( FALSE, edge-1, sizes, origin, x_axis, y_axis,
                        interpolated, first, first_point, prev_point, prev_dist,
-                       n_clipped_points, clipped_points );
+                       n_dims, n_clipped_points, clipped_points );
     }
 
     /* --- if the point is inside, then pass it on, otherwise, if we are
@@ -100,14 +103,14 @@ private  void clip_one_edge(
     {
         clip_one_edge( closing, edge-1, sizes, origin, x_axis, y_axis, point,
                        first, first_point, prev_point, prev_dist,
-                       n_clipped_points, clipped_points );
+                       n_dims, n_clipped_points, clipped_points );
     }
     else if( closing && edge > 0 && !first[edge-1] )
     {
         clip_one_edge( TRUE, edge-1, sizes, origin, x_axis, y_axis,
                        first_point[edge-1],
                        first, first_point, prev_point, prev_dist,
-                       n_clipped_points, clipped_points );
+                       n_dims, n_clipped_points, clipped_points );
     }
 
     if( first[edge] )
@@ -166,14 +169,14 @@ private  int  clip_points(
     {
         clip_one_edge( FALSE, 2*n_dims-1, sizes, origin, x_axis, y_axis,
                        points[i], first, first_point, prev_point, prev_dist,
-                       &n_clipped_points, clipped_points );
+                       n_dims, &n_clipped_points, clipped_points );
     }
 
     if( !first[2*n_dims-1] )
     {
         clip_one_edge( TRUE, 2*n_dims-1, sizes, origin, x_axis, y_axis,
                        points[0], first, first_point, prev_point, prev_dist,
-                       &n_clipped_points, clipped_points );
+                       n_dims, &n_clipped_points, clipped_points );
     }
 
     return( n_clipped_points );
@@ -203,27 +206,81 @@ private  int    get_cross_section(
     Real     y_axis[],
     Real     clipped_points[][2] )
 {
-    Real    points[4][2];
-    int     sizes[MAX_DIMENSIONS], n_dims, n_points;
-
-    points[0][0] = -BIG_NUMBER;
-    points[0][1] = -BIG_NUMBER;
-    points[1][0] =  BIG_NUMBER;
-    points[1][1] = -BIG_NUMBER;
-    points[2][0] =  BIG_NUMBER;
-    points[2][1] =  BIG_NUMBER;
-    points[3][0] = -BIG_NUMBER;
-    points[3][1] =  BIG_NUMBER;
+    Real    points[4][2], voxel[MAX_DIMENSIONS];
+    int     d, sizes[MAX_DIMENSIONS], n_dims, n_points;
+    int     n_limits[MAX_DIMENSIONS];
+    Real    x_pixel, y_pixel, x_min, x_max, y_min, y_max;
+    BOOLEAN first;
 
     get_volume_sizes( volume, sizes );
     n_dims = get_volume_n_dimensions( volume );
+
+    for_less( d, 0, MAX_DIMENSIONS )
+    {
+        if( d < n_dims )
+            n_limits[d] = 1;
+        else
+        {
+            n_limits[d] = 0;
+            sizes[d] = 1;
+        }
+    }
+
+    first = TRUE;
+
+    for( voxel[0] = -0.5;  voxel[0] <= n_limits[0] * (Real) sizes[0] - 0.5;
+         voxel[0] += (Real) sizes[0] )
+    for( voxel[1] = -0.5;  voxel[1] <= n_limits[1] * (Real) sizes[1] - 0.5;
+         voxel[1] += (Real) sizes[1] )
+    for( voxel[2] = -0.5;  voxel[2] <= n_limits[2] * (Real) sizes[2] - 0.5;
+         voxel[2] += (Real) sizes[2] )
+    for( voxel[3] = -0.5;  voxel[3] <= n_limits[3] * (Real) sizes[3] - 0.5;
+         voxel[3] += (Real) sizes[3] )
+    for( voxel[4] = -0.5;  voxel[4] <= n_limits[4] * (Real) sizes[4] - 0.5;
+         voxel[4] += (Real) sizes[4] )
+    {
+        map_voxel_to_pixel( get_volume_n_dimensions(volume),
+                            voxel, origin, x_axis, y_axis, &x_pixel, &y_pixel );
+
+        if( first )
+        {
+            x_min = x_pixel;
+            x_max = x_pixel;
+            y_min = y_pixel;
+            y_max = y_pixel;
+            first = FALSE;
+        }
+        else
+        {
+            if( x_pixel < x_min )
+                x_min = x_pixel;
+            if( x_pixel > x_max )
+                x_max = x_pixel;
+            if( y_pixel < y_min )
+                y_min = y_pixel;
+            if( y_pixel > y_max )
+                y_max = y_pixel;
+        }
+    }
+
+    points[0][0] = x_min;
+    points[0][1] = y_min;
+    points[1][0] = x_max;
+    points[1][1] = y_min;
+    points[2][0] = x_max;
+    points[2][1] = y_max;
+    points[3][0] = x_min;
+    points[3][1] = y_max;
 
     n_points = clip_points( n_dims, sizes, origin, x_axis, y_axis,
                             4, points, clipped_points );
 
     if( n_points == 1 || n_points == 2 || n_points > 2 * n_dims )
     {
+        print( "N points = %d\n", n_points );
+/*
         handle_internal_error( "clipping" );
+*/
         n_points = 0;
     }
 
