@@ -156,6 +156,10 @@ private  Real  get_correct_amount(
 
 public  Volume  create_box_filtered_volume(
     Volume   volume,
+    nc_type  nc_data_type,
+    BOOLEAN  sign_flag,
+    Real     real_min_value,
+    Real     real_max_value,
     Real     x_width,
     Real     y_width,
     Real     z_width )
@@ -190,8 +194,8 @@ public  Volume  create_box_filtered_volume(
 
     get_volume_sizes( volume, sizes );
 
-    resampled_volume = copy_volume_definition( volume, NC_UNSPECIFIED, FALSE,
-                                               0.0, 0.0 );
+    resampled_volume = copy_volume_definition( volume, nc_data_type, sign_flag,
+                                               real_min_value, real_max_value );
 
     total_volume = x_width * y_width * z_width;
 
