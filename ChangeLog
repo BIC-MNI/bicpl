@@ -1,4 +1,6 @@
-Wed Jan 19 17:56:14 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+Wed Jan 19 18:05:49 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Include/Makefile.am (all-local): test -e doesn't exist on IRIX5.
 
 	* Volumes/Makefile.am (noinst_HEADERS): 
 	* Numerical/Makefile.am (noinst_HEADERS): include `header' files

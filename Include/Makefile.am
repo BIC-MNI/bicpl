@@ -10,7 +10,7 @@
 # solution is to put these files into an actual bicpl directory.
 #
 all-local:
-	test -e $(srcdir)/bicpl || $(LN_S) . $(srcdir)/bicpl
+	test -d $(srcdir)/bicpl -o -l $(srcdir)/bicpl || $(LN_S) . $(srcdir)/bicpl
 
 include_HEADERS = bicpl.h 
 pkginclude_HEADERS = \
