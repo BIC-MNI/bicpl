@@ -17,18 +17,37 @@ public  void  get_mapping(
     Real            pix_y_axis[] )
 {
     int   c, n_dims;
-    Real  separations[MAX_DIMENSIONS];
+    Real  separations[MAX_DIMENSIONS], x_len, y_len, comp;
 
     n_dims = get_volume_n_dimensions( volume );
     get_volume_separations( volume, separations );
 
+    x_len = 0.0;
+    y_len = 0.0;
     for_less( c, 0, n_dims )
     {
-        pix_x_axis[c] = x_axis[c] / (x_scale * separations[c]);
-        pix_y_axis[c] = y_axis[c] / (y_scale * separations[c]);
-        pix_origin[c] = origin[c]
-                        - pix_x_axis[c] * x_translation
-                        - pix_y_axis[c] * y_translation;
+        comp = x_axis[c] * separations[c];
+        x_len += comp * comp;
+        comp = y_axis[c] * separations[c];
+        y_len += comp * comp;
+    }
+
+    x_len = sqrt( x_len );
+    if( x_len == 0.0 )
+        x_len = 1.0;
+    y_len = sqrt( y_len );
+    if( y_len == 0.0 )
+        y_len = 1.0;
+
+    x_scale *= x_len;
+    y_scale *= y_len;
+
+    for_less( c, 0, n_dims )
+    {
+        pix_x_axis[c] = x_axis[c] / x_scale;
+        pix_y_axis[c] = y_axis[c] / y_scale;
+        pix_origin[c] = origin[c] - pix_x_axis[c] * x_translation
+                                  - pix_y_axis[c] * y_translation;
     }
 }
 
@@ -65,42 +84,6 @@ private  Real   dot(
     return( d );
 }
 
-private  void   cross(
-    int    n,
-    Real   v1[],
-    Real   v2[],
-    Real   cr[] )
-{
-    int   c, a1, a2;
-
-    for_less( c, 0, n )
-    {
-        a1 = (c + 1) % N_DIMENSIONS;
-        a2 = (c + 2) % N_DIMENSIONS;
-        cr[c] = v1[a1] * v2[a2] - v1[a2] * v2[a1];
-    }
-}
-
-private  Real  get_axis_coordinates(
-    int   n,
-    Real  x_axis[],
-    Real  y_axis[],
-    Real  vector[] )
-{
-    Real  pos, x_dot_x, x_dot_v, x_dot_y, y_dot_v, v_dot_v;
-
-    x_dot_x = dot( n, x_axis, x_axis );
-    x_dot_v = dot( n, x_axis, vector );
-    x_dot_y = dot( n, x_axis, y_axis );
-    y_dot_v = dot( n, y_axis, vector );
-    v_dot_v = dot( n, vector, vector );
-
-    pos = (x_dot_x * v_dot_v - x_dot_v * x_dot_v) /
-          (x_dot_x * y_dot_v - x_dot_v * x_dot_y);
-
-    return( pos );
-}
-
 private  void  get_two_axes_coordinates(
     int   n,
     Real  vector[],
@@ -109,8 +92,18 @@ private  void  get_two_axes_coordinates(
     Real  *x_pos,
     Real  *y_pos )
 {
-    *y_pos = get_axis_coordinates( n, x_axis, y_axis, vector );
-    *x_pos = get_axis_coordinates( n, y_axis, x_axis, vector );
+    Real  x_dot_x, x_dot_v, x_dot_y, y_dot_v, y_dot_y;
+
+    x_dot_x = dot( n, x_axis, x_axis );
+    x_dot_v = dot( n, x_axis, vector );
+    x_dot_y = dot( n, x_axis, y_axis );
+    y_dot_y = dot( n, y_axis, y_axis );
+    y_dot_v = dot( n, y_axis, vector );
+
+    *x_pos = (x_dot_v * y_dot_y - x_dot_y * y_dot_v) /
+             (x_dot_x * y_dot_y - x_dot_y * x_dot_y);
+    *y_pos = (y_dot_v * x_dot_x - x_dot_y * x_dot_v) /
+             (y_dot_y * x_dot_x - x_dot_y * x_dot_y);
 }
 
 public  void  map_voxel_to_pixel(
@@ -220,46 +213,17 @@ public  void  convert_voxel_to_slice_pixel(
     Real            *x_pixel,
     Real            *y_pixel )
 {
-    int          c, n_dims;
-    Real         z_mag, factor;
-    Real         vector[MAX_DIMENSIONS];
-    Real         separations[MAX_DIMENSIONS];
+    int          n_dims;
     Real         real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
     Real         real_origin[MAX_DIMENSIONS];
-    Real         z_axis[MAX_DIMENSIONS], used_voxel[MAX_DIMENSIONS];
 
     n_dims = get_volume_n_dimensions( volume );
-
-    for_less( c, 0, n_dims )
-        used_voxel[c] = voxel[c];
-
-    if( n_dims == N_DIMENSIONS )
-    {
-        get_volume_separations( volume, separations );
-
-        cross( N_DIMENSIONS, x_axis, y_axis, z_axis );
-        z_mag = dot( N_DIMENSIONS, z_axis, z_axis );
-        if( z_mag != 0.0 )
-        {
-            for_less( c, 0, N_DIMENSIONS )
-                vector[c] = separations[c] * (voxel[c] - origin[c]);
-
-            factor = dot( N_DIMENSIONS, vector, z_axis ) / z_mag;
-
-            for_less( c, 0, N_DIMENSIONS )
-                used_voxel[c] -= factor * z_axis[c] / separations[c];
-        }
-        else
-            print( "Warning: convert_voxel_to_slice_pixel: z_mag is 0.\n" );
-    }
-    else
-        print( "Not sure if non-3d convert_voxel_to_slice_pixel works.\n" );
 
     get_mapping( volume, origin, x_axis, y_axis,
                  x_translation, y_translation, x_scale, y_scale,
                  real_origin, real_x_axis, real_y_axis );
 
-    map_voxel_to_pixel( n_dims, used_voxel, real_origin,
+    map_voxel_to_pixel( n_dims, voxel, real_origin,
                         real_x_axis, real_y_axis, x_pixel, y_pixel );
 }
 
