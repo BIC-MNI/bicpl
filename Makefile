@@ -17,10 +17,11 @@ LINT_LIBS = $(DEFORM_LINT_LIB) \
             $(SURFACE_LINT_LIB)
 
 DEFORM_OBJ = deform/anneal_line.o \
-             deform/create_sphere.o \
+             deform/curvature_colour.o \
              deform/deform_line.o \
              deform/deform_polygons.o \
              deform/find_in_direction.o \
+             deform/intersect_voxel.o \
              deform/search_utils.o
 
 GEOMETRY_OBJ = geometry/intersect.o \
@@ -31,7 +32,8 @@ GEOMETRY_OBJ = geometry/intersect.o \
                geometry/smooth_lines.o \
                geometry/smooth_polygons.o \
                geometry/subdivide_lines.o \
-               geometry/subdivide_polygons.o
+               geometry/subdivide_polygons.o \
+               geometry/tetrahedrons.o
 
 MARCHING_OBJ = \
                marching_cubes/marching_cubes.o \
@@ -59,7 +61,7 @@ OPT = $(OPT_O)
 OPT_g = -g
 OPT_O = -O
 
-INCLUDE = -I$(C_DEV_DIRECTORY)/Include -IInclude
+INCLUDE = -I$(C_DEV_DIRECTORY)/Include -IInclude -I/usr/local/include
 
 OBJECTS = $(DEFORM_OBJ) \
           $(GEOMETRY_OBJ) \
