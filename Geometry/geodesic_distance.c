@@ -13,7 +13,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.2 1996-09-10 17:55:55 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.3 1996-09-10 18:04:17 david Exp $";
 #endif
 
 #include  <internal_volume_io.h>
@@ -48,10 +48,14 @@ public  void  compute_distances_from_point(
     Point             *point,
     int               poly,
     Real              max_distance,
-    float             distances[] ) 
+    float             distances[],
+    int               *n_found_ptr,
+    int               *list_ptr[] ) 
 {
     int                    i, p, size, point_index, next_point_index, neigh;
+    int                    n_found, *list;
     Real                   dist;
+    float                  next_dist;
     PRIORITY_QUEUE_STRUCT( int )   queue;
 
     if( poly == -1 )
@@ -62,6 +66,12 @@ public  void  compute_distances_from_point(
             print_error( "compute_distances_from_point incorrect arguments.\n");
             return;
         }
+    }
+
+    if( n_found_ptr != NULL )
+    {
+        n_found = 0;
+        list = NULL;
     }
 
     for_less( i, 0, polygons->n_points )
@@ -80,6 +90,8 @@ public  void  compute_distances_from_point(
 
         if( max_distance <= 0.0 || dist < max_distance )
         {
+            ADD_ELEMENT_TO_ARRAY( list, n_found, point_index,
+                                  DEFAULT_CHUNK_SIZE );
             distances[point_index] = (float) dist;
             INSERT_IN_PRIORITY_QUEUE( queue, point_index, -dist );
         }
@@ -103,10 +115,17 @@ public  void  compute_distances_from_point(
                        distance_between_points( &polygons->points[point_index],
                                          &polygons->points[next_point_index] );
 
+                next_dist = distances[next_point_index];
+
                 if( (max_distance < 0.0 || dist <= max_distance) &&
-                    (distances[next_point_index] < 0.0f ||
-                     (float) dist < distances[next_point_index]) )
+                    (next_dist < 0.0f || (float) dist < next_dist) )
                 {
+                    if( n_found_ptr != NULL && next_dist < 0.0f )
+                    {
+                        ADD_ELEMENT_TO_ARRAY( list, n_found, next_point_index,
+                                              DEFAULT_CHUNK_SIZE );
+                    }
+
                     distances[next_point_index] = (float) dist;
                     INSERT_IN_PRIORITY_QUEUE( queue, next_point_index, -dist );
                 }
@@ -115,10 +134,16 @@ public  void  compute_distances_from_point(
     }
 
     DELETE_PRIORITY_QUEUE( queue );
+
+    if( n_found_ptr != NULL )
+    {
+        *n_found_ptr = n_found;
+        *list_ptr = list;
+    }
 }
 #else
 
-public  void  compute_distances_from_point(
+public  void  dcompute_distances_from_point(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
