@@ -156,6 +156,7 @@ private  void  create_marching_cubes_lookup( void )
                            [case_flags[1][1][0]]
                            [case_flags[1][1][1]] );
 
+/*
 {
     case_struct   c;
     int           p;
@@ -179,6 +180,7 @@ private  void  create_marching_cubes_lookup( void )
 
      print( "\n\n" );
 }
+*/
 #endif
     }
 }
@@ -451,7 +453,7 @@ private  void  create_edge_for_face(
     BOOLEAN        face_ambiguity_flag,
     edges_struct   *edges )
 {
-    int   first_edge, second_edge;
+    int   n_edges, edge, pair[2];
 
     edges->edge_used[0] = FALSE;
     edges->edge_used[1] = FALSE;
@@ -497,34 +499,34 @@ private  void  create_edge_for_face(
     }
     else
     {
-        edges->n_edges = 0;
-
-        for_less( first_edge, 0, 4 )
+        n_edges = 0;
+        for_less( edge, 0, 4 )
         {
-            if( surface_edge( face_flags, first_edge ) )
+            if( surface_edge( face_flags, edge ) )
             {
-                for_less( second_edge, first_edge+1, 4 )
-                {
-                    if( surface_edge( face_flags, second_edge ) )
-                    {
-                        if( edges->n_edges > 0 )
-                        {
-                            HANDLE_INTERNAL_ERROR( "create edge" );
-                        }
+                pair[n_edges] = edge;
+                ++n_edges;
+            }
+        }
 
-                        if( face_flags[(first_edge+1) % 4] == PLUS_FLAG )
-                        {
-                            edges->edge_points[0] = first_edge;
-                            edges->edge_points[1] = second_edge;
-                        }
-                        else
-                        {
-                            edges->edge_points[0] = second_edge;
-                            edges->edge_points[1] = first_edge;
-                        }
-                        edges->n_edges = 1;
-                    }
-                }
+        if( n_edges != 0 && n_edges != 2 )
+        {
+            handle_internal_error( "n_edges in marching_cubes" );
+        }
+
+        edges->n_edges = n_edges / 2;
+
+        if( n_edges == 2 )
+        {
+            if( face_flags[(pair[0]+1) % 4] == PLUS_FLAG )
+            {
+                edges->edge_points[0] = pair[0];
+                edges->edge_points[1] = pair[1];
+            }
+            else
+            {
+                edges->edge_points[0] = pair[1];
+                edges->edge_points[1] = pair[0];
             }
         }
     }
@@ -616,46 +618,59 @@ private  void  find_neighbour_face(
     int    *new_face,
     int    *new_edge )
 {
-    private  struct
+    static  BOOLEAN  initialized = FALSE;
+    static  struct
     {
         int   c, face, edge;
-    }        neighbours[3][2][4] =
-     {
-        { { { 1, 0, 3 },
-            { 2, 1, 3 },
-            { 1, 1, 0 },
-            { 2, 0, 0 } },
+    }        neighbours[3][2][4];
+    int          c1, face1, edge1, en1;
+    int          c2, face2, edge2, en2, n_matches;
+    face_struct  face1_ind, face2_ind;
 
-          { { 2, 0, 2 },
-            { 1, 1, 2 },
-            { 2, 1, 1 },
-            { 1, 0, 1 } }
-        },
+    if( !initialized )
+    {
+        initialized = TRUE;
 
+        for_less( c1, 0, N_DIMENSIONS )
+        for_less( face1, 0, 2 )
         {
-          { { 2, 0, 3 },
-            { 0, 1, 3 },
-            { 2, 1, 0 },
-            { 0, 0, 0 } },
-
-          { { 0, 0, 2 },
-            { 2, 1, 2 },
-            { 0, 1, 1 },
-            { 2, 0, 1 } }
-        },
-
-        {
-          { { 0, 0, 3 },
-            { 1, 1, 3 },
-            { 0, 1, 0 },
-            { 1, 0, 0 } },
-
-          { { 1, 0, 2 },
-            { 0, 1, 2 },
-            { 1, 1, 1 },
-            { 0, 0, 1 } }
+            create_face_indices( c1, face1, &face1_ind );
+            for_less( edge1, 0, 4 )
+            {
+                en1 = (edge1 + 1) % 4;
+                n_matches = 0;
+                for_less( c2, 0, N_DIMENSIONS )
+                for_less( face2, 0, 2 )
+                {
+                    create_face_indices( c2, face2, &face2_ind );
+                    for_less( edge2, 0, 4 )
+                    {
+                        en2 = (edge2 + 1) % 4;
+                        if( face1_ind.offsets[edge1][0] ==
+                            face2_ind.offsets[en2][0] &&
+                            face1_ind.offsets[edge1][1] ==
+                            face2_ind.offsets[en2][1] &&
+                            face1_ind.offsets[edge1][2] ==
+                            face2_ind.offsets[en2][2] &&
+                            face1_ind.offsets[en1][0] ==
+                            face2_ind.offsets[edge2][0] &&
+                            face1_ind.offsets[en1][1] ==
+                            face2_ind.offsets[edge2][1] &&
+                            face1_ind.offsets[en1][2] ==
+                            face2_ind.offsets[edge2][2] )
+                        {
+                            neighbours[c1][face1][edge1].c = c2;
+                            neighbours[c1][face1][edge1].face = face2;
+                            neighbours[c1][face1][edge1].edge = edge2;
+                            ++n_matches;
+                        }
+                    }
+                }
+                if( n_matches != 1 )
+                    handle_internal_error( "n_matches" );
+            }
         }
-     };
+    }
 
     *new_c = neighbours[c][face][edge].c;
     *new_face = neighbours[c][face][edge].face;

@@ -17,15 +17,9 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.23 1997-03-26 16:07:00 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.24 1997-04-08 17:23:22 david Exp $";
 #endif
 
-private  Status  io_points(
-    FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
-    int             n,
-    Point           *points[] );
 private  Status  io_vectors(
     FILE            *file,
     IO_types        io_flag,

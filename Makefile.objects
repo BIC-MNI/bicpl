@@ -1,119 +1,119 @@
 DATA_STRUCT_SRC = \
-                  Data_structures/bintree.c \
-                  Data_structures/bitlist.c \
-                  Data_structures/build_bintree.c \
-                  Data_structures/hash_table.c \
-                  Data_structures/object_bintrees.c \
-                  Data_structures/point_bintree.c \
-                  Data_structures/ray_bintree.c \
-                  Data_structures/skiplist.c
+                  Data_structures/$(ARCH_DIR)/bintree.c \
+                  Data_structures/$(ARCH_DIR)/bitlist.c \
+                  Data_structures/$(ARCH_DIR)/build_bintree.c \
+                  Data_structures/$(ARCH_DIR)/hash_table.c \
+                  Data_structures/$(ARCH_DIR)/object_bintrees.c \
+                  Data_structures/$(ARCH_DIR)/point_bintree.c \
+                  Data_structures/$(ARCH_DIR)/ray_bintree.c \
+                  Data_structures/$(ARCH_DIR)/skiplist.c
 
 TRANSFORM_SRC = \
-               Transforms/compute_tps.c \
-               Transforms/compute_xfm.c \
-               Transforms/matrix_basics.c \
-               Transforms/optimize.c \
-               Transforms/procrustes.c \
-               Transforms/rotmat_to_ang.c \
-               Transforms/safe_compute_xfm.c \
-               Transforms/transforms.c \
-               Transforms/transform_io.c
+               Transforms/$(ARCH_DIR)/compute_tps.c \
+               Transforms/$(ARCH_DIR)/compute_xfm.c \
+               Transforms/$(ARCH_DIR)/matrix_basics.c \
+               Transforms/$(ARCH_DIR)/optimize.c \
+               Transforms/$(ARCH_DIR)/procrustes.c \
+               Transforms/$(ARCH_DIR)/rotmat_to_ang.c \
+               Transforms/$(ARCH_DIR)/safe_compute_xfm.c \
+               Transforms/$(ARCH_DIR)/transforms.c \
+               Transforms/$(ARCH_DIR)/transform_io.c
 
 GEOMETRY_SRC = \
-               Geometry/approx_sqrt.c \
-               Geometry/clip_3d.c \
-               Geometry/closest_point.c \
-               Geometry/curvature.c \
-               Geometry/flatten.c \
-               Geometry/geodesic_distance.c \
-               Geometry/geometry.c \
-               Geometry/intersect.c \
-               Geometry/line_circle.c \
-               Geometry/map_polygons.c \
-               Geometry/path_surface.c \
-               Geometry/platonics.c \
-               Geometry/plane_polygon_intersect.c \
-               Geometry/points.c \
-               Geometry/poly_dist.c \
-               Geometry/polygon_sphere.c \
-               Geometry/ray_intersect.c \
-               Geometry/segment_polygons.c \
-               Geometry/smooth_curvature.c \
-               Geometry/smooth_lines.c \
-               Geometry/smooth_polygons.c \
-               Geometry/solve_plane.c \
-               Geometry/subdivide_lines.c \
-               Geometry/subdivide_polygons.c \
-               Geometry/surface_area.c \
-               Geometry/tetrahedrons.c \
-               Geometry/tubes.c \
-               Geometry/volume_slice.c
+               Geometry/$(ARCH_DIR)/approx_sqrt.c \
+               Geometry/$(ARCH_DIR)/clip_3d.c \
+               Geometry/$(ARCH_DIR)/closest_point.c \
+               Geometry/$(ARCH_DIR)/curvature.c \
+               Geometry/$(ARCH_DIR)/flatten.c \
+               Geometry/$(ARCH_DIR)/geodesic_distance.c \
+               Geometry/$(ARCH_DIR)/geometry.c \
+               Geometry/$(ARCH_DIR)/intersect.c \
+               Geometry/$(ARCH_DIR)/line_circle.c \
+               Geometry/$(ARCH_DIR)/map_polygons.c \
+               Geometry/$(ARCH_DIR)/path_surface.c \
+               Geometry/$(ARCH_DIR)/platonics.c \
+               Geometry/$(ARCH_DIR)/plane_polygon_intersect.c \
+               Geometry/$(ARCH_DIR)/points.c \
+               Geometry/$(ARCH_DIR)/poly_dist.c \
+               Geometry/$(ARCH_DIR)/polygon_sphere.c \
+               Geometry/$(ARCH_DIR)/ray_intersect.c \
+               Geometry/$(ARCH_DIR)/segment_polygons.c \
+               Geometry/$(ARCH_DIR)/smooth_curvature.c \
+               Geometry/$(ARCH_DIR)/smooth_lines.c \
+               Geometry/$(ARCH_DIR)/smooth_polygons.c \
+               Geometry/$(ARCH_DIR)/solve_plane.c \
+               Geometry/$(ARCH_DIR)/subdivide_lines.c \
+               Geometry/$(ARCH_DIR)/subdivide_polygons.c \
+               Geometry/$(ARCH_DIR)/surface_area.c \
+               Geometry/$(ARCH_DIR)/tetrahedrons.c \
+               Geometry/$(ARCH_DIR)/tubes.c \
+               Geometry/$(ARCH_DIR)/volume_slice.c
 
 NUMERICAL_SRC  = \
-                 Numerical/amoeba.c \
-                 Numerical/gaussian.c \
-                 Numerical/gradient_minimize.c \
-                 Numerical/histogram.c \
-                 Numerical/least_squares.c \
-                 Numerical/matrix_svd.c \
-                 Numerical/minimize_lsq.c \
-                 Numerical/minimize_lsq_float.c \
-                 Numerical/numerical.c \
-                 Numerical/quadratic.c \
-                 Numerical/real_quadratic.c \
-                 Numerical/statistics.c \
-                 Numerical/t_stat.c
+                 Numerical/$(ARCH_DIR)/amoeba.c \
+                 Numerical/$(ARCH_DIR)/gaussian.c \
+                 Numerical/$(ARCH_DIR)/gradient_minimize.c \
+                 Numerical/$(ARCH_DIR)/histogram.c \
+                 Numerical/$(ARCH_DIR)/least_squares.c \
+                 Numerical/$(ARCH_DIR)/matrix_svd.c \
+                 Numerical/$(ARCH_DIR)/minimize_lsq.c \
+                 Numerical/$(ARCH_DIR)/minimize_lsq_float.c \
+                 Numerical/$(ARCH_DIR)/numerical.c \
+                 Numerical/$(ARCH_DIR)/quadratic.c \
+                 Numerical/$(ARCH_DIR)/real_quadratic.c \
+                 Numerical/$(ARCH_DIR)/statistics.c \
+                 Numerical/$(ARCH_DIR)/t_stat.c
 
 OBJECTS_SRC   = \
-                Objects/coalesce.c \
-                Objects/colours.c \
-                Objects/graphics_io.c \
-                Objects/landmark_file.c \
-                Objects/lines.c \
-                Objects/markers.c \
-                Objects/models.c \
-                Objects/object_io.c \
-                Objects/objects.c \
-                Objects/pixels.c \
-                Objects/poly_neighs.c \
-                Objects/polygons.c \
-                Objects/quadmesh.c \
-                Objects/rgb_lookup.c \
-                Objects/tag_objects.c \
-                Objects/text.c \
-                Objects/texture_values.c
+                Objects/$(ARCH_DIR)/coalesce.c \
+                Objects/$(ARCH_DIR)/colours.c \
+                Objects/$(ARCH_DIR)/graphics_io.c \
+                Objects/$(ARCH_DIR)/landmark_file.c \
+                Objects/$(ARCH_DIR)/lines.c \
+                Objects/$(ARCH_DIR)/markers.c \
+                Objects/$(ARCH_DIR)/models.c \
+                Objects/$(ARCH_DIR)/object_io.c \
+                Objects/$(ARCH_DIR)/objects.c \
+                Objects/$(ARCH_DIR)/pixels.c \
+                Objects/$(ARCH_DIR)/poly_neighs.c \
+                Objects/$(ARCH_DIR)/polygons.c \
+                Objects/$(ARCH_DIR)/quadmesh.c \
+                Objects/$(ARCH_DIR)/rgb_lookup.c \
+                Objects/$(ARCH_DIR)/tag_objects.c \
+                Objects/$(ARCH_DIR)/text.c \
+                Objects/$(ARCH_DIR)/texture_values.c
 
 PROG_UTILS_SRC = \
-                 Prog_utils/arguments.c \
-                 Prog_utils/globals.c \
-                 Prog_utils/random.c \
-                 Prog_utils/time.c
+                 Prog_utils/$(ARCH_DIR)/arguments.c \
+                 Prog_utils/$(ARCH_DIR)/globals.c \
+                 Prog_utils/$(ARCH_DIR)/random.c \
+                 Prog_utils/$(ARCH_DIR)/time.c
 
 VOLUMES_SRC = \
-              Volumes/box_filter.c \
-              Volumes/change_labels.c \
-              Volumes/colour_coding.c \
-              Volumes/col_code_points.c \
-              Volumes/col_code_io.c \
-              Volumes/create_slice.c \
-              Volumes/crop_volume.c \
-              Volumes/dilate.c \
-              Volumes/filters.c \
-              Volumes/fill_volume.c \
-              Volumes/interpolate.c \
-              Volumes/input.c \
-              Volumes/labels.c \
-              Volumes/mapping.c \
-              Volumes/output_free.c \
-              Volumes/render.c \
-              Volumes/rend_f.c \
-              Volumes/resample.c \
-              Volumes/scan_lines.c \
-              Volumes/scan_markers.c \
-              Volumes/scan_objects.c \
-              Volumes/scan_polygons.c \
-              Volumes/smooth.c \
-              Volumes/talairach.c
+              Volumes/$(ARCH_DIR)/box_filter.c \
+              Volumes/$(ARCH_DIR)/change_labels.c \
+              Volumes/$(ARCH_DIR)/colour_coding.c \
+              Volumes/$(ARCH_DIR)/col_code_points.c \
+              Volumes/$(ARCH_DIR)/col_code_io.c \
+              Volumes/$(ARCH_DIR)/create_slice.c \
+              Volumes/$(ARCH_DIR)/crop_volume.c \
+              Volumes/$(ARCH_DIR)/dilate.c \
+              Volumes/$(ARCH_DIR)/filters.c \
+              Volumes/$(ARCH_DIR)/fill_volume.c \
+              Volumes/$(ARCH_DIR)/interpolate.c \
+              Volumes/$(ARCH_DIR)/input.c \
+              Volumes/$(ARCH_DIR)/labels.c \
+              Volumes/$(ARCH_DIR)/mapping.c \
+              Volumes/$(ARCH_DIR)/output_free.c \
+              Volumes/$(ARCH_DIR)/render.c \
+              Volumes/$(ARCH_DIR)/rend_f.c \
+              Volumes/$(ARCH_DIR)/resample.c \
+              Volumes/$(ARCH_DIR)/scan_lines.c \
+              Volumes/$(ARCH_DIR)/scan_markers.c \
+              Volumes/$(ARCH_DIR)/scan_objects.c \
+              Volumes/$(ARCH_DIR)/scan_polygons.c \
+              Volumes/$(ARCH_DIR)/smooth.c \
+              Volumes/$(ARCH_DIR)/talairach.c
 
 BIC_SRC = \
           $(DATA_STRUCT_SRC) \
