@@ -74,13 +74,15 @@ Tue Jun  8 08:44:59 EST 1993 LC
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code,
                                rewrote completely to handle angles from
                                -PI to PI, instead of just -PI/2 to -PI/2
+@MODIFIED   : July   19, 1996 D. MacDonald - now handles left-handed coordinate
+                                             systems properly
 ---------------------------------------------------------------------------- */
 
 #include <internal_volume_io.h>
 #include <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.17 1996-05-17 19:35:58 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.18 1996-11-07 14:13:28 david Exp $";
 #endif
 
 #ifdef DEBUG
@@ -95,8 +97,8 @@ public  BOOLEAN  rotmat_to_ang(
     Transform   *rot_trans,
     Real        *ang )
 {
-    Real       rx, ry, rz, vx, vy, vz;
-    Vector     x_axis, z_axis;
+    Real       rx, ry, rz, vx, vy, vz, d;
+    Vector     x_axis, z_axis, y_axis, cross;
     Transform  z_rot, y_rot;
 
     /*--- get the x and z axis of the transform, these are all we need
@@ -106,7 +108,25 @@ public  BOOLEAN  rotmat_to_ang(
           is the concatenation, in order of the rotations -rx, -ry, -rz */
 
     get_transform_x_axis( rot_trans, &x_axis );
+    get_transform_y_axis( rot_trans, &y_axis );
     get_transform_z_axis( rot_trans, &z_axis );
+
+    /*--- check if it is a left-handed coordinate system, if so
+          switch it to right-handed */
+ 
+    CROSS_VECTORS( cross, x_axis, y_axis );
+    d = DOT_VECTORS( cross, z_axis );
+
+    if( d < 0.0 )
+    {
+        print( "rotmat_to_ang: warning, input transform is left-handed.\n" );
+        SCALE_VECTOR( x_axis, x_axis, -1.0 );
+    }
+    else if( d == 0.0 )
+    {
+        print_error( "rotmat_to_ang: singular system passed in.\n" );
+        return( FALSE );
+    }
    
     /*--- step one,  find the RZ rotation reqd to bring 
                      the local x into the world XZ plane with a positive X */
@@ -151,7 +171,16 @@ public  BOOLEAN  rotmat_to_ang(
     rz = -rz;
 
 #ifdef DEBUG
-    are_rotations_equivalent( rot_trans, rx, ry, rz );
+    {
+        Transform  test;
+
+        make_identity_transform( &test );
+        set_transform_x_axis( &test, &x_axis );
+        set_transform_y_axis( &test, &y_axis );
+        set_transform_z_axis( &test, &z_axis );
+
+        are_rotations_equivalent( &test, rx, ry, rz );
+    }
 #endif
 
     ang[0] = rx;
