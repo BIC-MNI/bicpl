@@ -284,6 +284,9 @@ public  Status  io_polygons(
                               NUMBER_INDICES(*polygons),
                               &polygons->indices );
         }
+
+        if( io_flag == READ_FILE )
+            polygons->line_thickness = 1;
     }
 
     return( status );

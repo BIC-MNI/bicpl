@@ -64,6 +64,7 @@ typedef  struct
     Colour_flags    colour_flag;
     Colour          *colours;
     Surfprop        surfprop;
+    int             line_thickness;
 
     int             n_points;
     Point           *points;

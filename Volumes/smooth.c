@@ -48,6 +48,9 @@ public  Volume  smooth_resample_volume(
 
     resampled_volume->data = (void *) NULL;
 
+    resampled_volume->value_scale = volume->value_scale;
+    resampled_volume->value_translation = volume->value_translation;
+
     resampled_volume->sizes[X] = new_nx;
     resampled_volume->sizes[Y] = new_ny;
     resampled_volume->sizes[Z] = new_nz;
