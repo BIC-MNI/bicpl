@@ -1,5 +1,7 @@
 2001-07-24  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
+	* autogen.sh: Improved ordering; stop on error; use "aclocal -I m4".
+
 	* acinclude.m4: Remove.
 
 	* m4/smr_OPTIONAL_LIB.m4:

@@ -1,16 +1,9 @@
 #! /bin/sh
 
-cat <<EOF
-Ignore the following two warnings:
+set -e
 
-	required file \`./ltconfig' not found
-	required file \`./config.h.in' not found
-
-
-EOF
-
-aclocal
+aclocal -I m4
+autoheader
 automake --add-missing
 autoconf
-autoheader
 
