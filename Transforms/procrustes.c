@@ -111,18 +111,18 @@ private  void  calc_centroid(
 ---------------------------------------------------------------------------- */
 
 public  void  procrustes(
-    int     npoints,
-    int     ndim, 
-    Real    **Apoints,
-    Real    **Bpoints,
-    Real    translation[],
-    Real    centre_of_rotation[],
-    Real    **rotation,
-    Real    *scale_ptr )
+    int         npoints,
+    int         ndim, 
+    Real        **Apoints,
+    Real        **Bpoints,
+    Real        translation[],
+    Real        centre_of_rotation[],
+    Transform   *rotation_transform,
+    Real        *scale_ptr )
 {
-    int   i;
+    int   i, j;
     Real  *Atranslation, *Btranslation, *svd_W;
-    Real  **Ashift, **Bshift, **Atranspose, **Btranspose;
+    Real  **Ashift, **Bshift, **Atranspose, **Btranspose, **rotation;
     Real  **svd_V, **svd_VT;
     Real  **Brotated, **product;
     Real  trace1, trace2;
@@ -136,6 +136,7 @@ public  void  procrustes(
 
     /* Get various matrices */
 
+    ALLOC2D( rotation, ndim, ndim );
     ALLOC2D( Ashift, npoints, ndim );
     ALLOC2D( Bshift, npoints, ndim );
     ALLOC2D( Atranspose, ndim, npoints );
@@ -187,6 +188,12 @@ public  void  procrustes(
     else
         *scale_ptr = 0.0;
 
+    make_identity_transform( rotation_transform );
+
+    for_less( i, 0, N_DIMENSIONS )
+        for_less( j, 0, N_DIMENSIONS )
+            Transform_elem( *rotation_transform, i, j ) = rotation[i][j];
+
     /* Free vectors */
 
     FREE( Atranslation );
@@ -195,6 +202,7 @@ public  void  procrustes(
 
     /* Free matrices */
 
+    FREE2D( rotation );
     FREE2D( Ashift );
     FREE2D( Bshift );
     FREE2D( Atranspose );
@@ -249,16 +257,26 @@ public  void  procrustes(
 public  void  transformations_to_homogeneous(
     int     ndim, 
     Real    translation[],
-    Real    centre_of_rotation[],
-    Real    **rotation,
+    Real        centre_of_rotation[],
+    Transform   *rotation_transform,
     Real    scaling,
-    Real  **transformation )
+    Real    **transformation )
 {
+    Real  **rotation;
     int   i;
     int   size;
     Real  *centre_translate;
     Real  **trans1, **trans2;
     Real  **trans_temp, **rotation_and_scale;
+
+{
+    int  j;
+
+    ALLOC2D( rotation, 3, 3 );
+    for_less( i, 0, 3 )
+    for_less( j, 0, 3 )
+        rotation[i][j] = Transform_elem(*rotation_transform,i,j);
+}
 
     size = ndim + 1;
 
@@ -301,6 +319,8 @@ public  void  transformations_to_homogeneous(
     FREE2D( trans2 );
     FREE2D( trans_temp );
     FREE2D( rotation_and_scale );
+
+    FREE2D( rotation );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
