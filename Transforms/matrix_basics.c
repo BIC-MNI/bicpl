@@ -6,7 +6,7 @@
                  matrix_multiply
 @CALLS      : 
 @CREATED    : January 31, 1992 (Peter Neelin)
-@MODIFIED   : 
+@MODIFIED   : Jul 6,      1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
@@ -18,13 +18,9 @@
 @NAME       : transpose
 @INPUT      : rows    - number of rows
               cols    - number of columns
-              mat     - original matrix (in numerical recipes form).
-                 The dimensions of this matrix should be defined to be 
-                 1 to rows and 1 to cols (when calling the numerical 
-                 recipes routine matrix).
-@OUTPUT     : mat_transpose  - transposed matrix (in numerical recipes form,
-                 with dimensions 1 to cols and 1 to rows). Matrix 
-                 mat_transpose cannot be the original matrix mat.
+              mat     - original matrix
+@OUTPUT     : mat_transpose  - transposed matrix
+                     Matrix mat_transpose can be the original matrix mat.
 @RETURNS    : (nothing)
 @DESCRIPTION: Transposes a matrix.
 @METHOD     : 
@@ -43,11 +39,21 @@ public  void  transpose(
     Real    **mat,
     Real    **mat_transpose )
 {
-    int i, j;
+    Real   swap;
+    int    i, j;
 
     for_less( i, 0, rows )
-        for_less( j, 0, cols )
-            mat_transpose[j][i] = mat[i][j];
+    {
+        mat_transpose[i][i] = mat[i][i];
+        for_less( j, i+1, cols )
+        {
+            /*--- safe transpose, in case mat_transpose == mat */
+
+            swap = mat[i][j];
+            mat_transpose[i][j] = mat[j][i];
+            mat_transpose[j][i] = swap;
+        }
+    }
 }
 
 
@@ -57,12 +63,9 @@ public  void  transpose(
                  dimensions (ldim x mdim), matrix Bmat has dimension
                  (mdim x ndim) and resultant matrix has dimension
                  (ldim x ndim).
-              Amat - First matrix of multiply (in numerical recipes form).
-                 Dimensions are 1 to ldim and 1 to mdim.
-              Bmat - Second matrix of multiply (in numerical recipes form).
-                 Dimensions are 1 to mdim and 1 to ndim.
-@OUTPUT     : Cmat - Resulting matrix (in numerical recipes form).
-                 Dimensions are 1 to ldim and 1 to ndim. This matrix cannot
+              Amat - First matrix of multiply
+              Bmat - Second matrix of multiply
+@OUTPUT     : Cmat - Resulting matrix.  This matrix cannot
                  be either Amat or Bmat.
 @RETURNS    : (nothing)
 @DESCRIPTION: Multiplies two matrices.
@@ -109,13 +112,10 @@ private  void  raw_matrix_multiply(
                  dimensions (ldim x mdim), matrix Bmat has dimension
                  (mdim x ndim) and resultant matrix has dimension
                  (ldim x ndim).
-              Amat - First matrix of multiply (in numerical recipes form).
-                 Dimensions are 1 to ldim and 1 to mdim.
-              Bmat - Second matrix of multiply (in numerical recipes form).
-                 Dimensions are 1 to mdim and 1 to ndim.
-@OUTPUT     : Cmat - Resulting matrix (in numerical recipes form).
-                 Dimensions are 1 to ldim and 1 to ndim. This matrix can
-                 be either matrix Amat or Bmat.
+              Amat - First matrix of multiply
+              Bmat - Second matrix of multiply
+@OUTPUT     : Cmat - Resulting matrix.  This matrix is allowed to be
+                                        matrix Amat or Bmat.
 @RETURNS    : (nothing)
 @DESCRIPTION: Multiplies two matrices.
 @METHOD     : 
@@ -153,7 +153,7 @@ public  void  matrix_multiply(
         for_less( j, 0, ndim )
             Cmat[i][j] = Ctemp[i][j];
 
-    /* Free the matrix */
+    /* Free the temporary matrix */
 
     FREE2D( Ctemp );
 }

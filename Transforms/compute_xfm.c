@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.13  1995-07-10 14:36:10  david
+@MODIFIED   : Revision 1.14  1995-07-10 18:02:50  david
 @MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.13  1995/07/10  14:36:10  david
+ * check_in_all
+ *
  * Revision 1.12  1995/07/08  03:38:04  david
  * *** empty log message ***
  *
@@ -317,7 +320,7 @@ private  void  compute_arb_param_transform(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : make_rots
 @INPUT      : rot_x, rot_y, rot_z - three rotation angles, in radians.
-@OUTPUT     : xmat, a numerical recipes matrix for homogeous transformations
+@OUTPUT     : xmat, a linear transform
 @RETURNS    : nothing
 @DESCRIPTION: to be applied by premultiplication, ie rot*vec = newvec
 @METHOD     : 
@@ -348,7 +351,7 @@ private  void   make_rots(
 @INPUT      : center, translations, scales, rotations
 @OUTPUT     : lt  - a linear transformation matrix
 @RETURNS    : nothing
-@DESCRIPTION: mat = (c)(s*r)(-c)(t),
+@DESCRIPTION: mat = (c)(sh)(s*r)(-c)(t),
                the matrix is to be  PREmultiplied with a vector (mat*vec)
                when used in the application
 @METHOD     : 
@@ -390,8 +393,8 @@ private  void  concat_transformation_matrix(
 
     concat_transforms( lt, &T, rotation );
     concat_transforms( lt, lt, &S );
-    concat_transforms( lt, lt, &C );
     concat_transforms( lt, lt, &SH );
+    concat_transforms( lt, lt, &C );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -437,7 +440,9 @@ public  void  build_transformation_matrix(
 @RETURNS    : (nothing)
 @DESCRIPTION: Routine to calculate a general transform from a pair of lists
               of tag points. The transform is from tag_list2 to tag_list1.
-              Uses 12 parameter linear transformation.
+              Uses 12 parameter linear transformation, and simply solves
+              the linear least squares problem for each of the x, y, and
+              z components independently.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -458,7 +463,7 @@ private  void  compute_12param_transform(
     int        point;
     Transform  linear_transform;
 
-    /* Check transformation type */
+    /*--- Check transformation type */
 
     if( trans_type != TRANS_LSQ12 )
     {
@@ -466,13 +471,17 @@ private  void  compute_12param_transform(
         exit(EXIT_FAILURE);
     }
 
+    /*--- initialize the solution */
+
     make_identity_transform( &linear_transform );
 
     ALLOC( x, npoints );
 
+    /*--- for each dimension, find the linear least squares solution */
+
     for_less( dim, 0, N_DIMENSIONS )
     {
-        /* Copy the data points */
+        /*--- Copy the data points into a 1-D array */
 
         for_less( point, 0, npoints )
             x[point] = tag_list1[point][dim];
@@ -481,12 +490,14 @@ private  void  compute_12param_transform(
 
         least_squares( npoints, N_DIMENSIONS, tag_list2, x, solution );
 
+        /*--- record solution in the linear transform */
+
         Transform_elem( linear_transform, dim, N_DIMENSIONS ) = solution[0];
         for_less( d, 0, N_DIMENSIONS )
             Transform_elem( linear_transform, dim, d ) = solution[1+d];
     }
 
-    /* Create general transform */
+    /*--- Create general transform */
 
     create_linear_transform( transform, &linear_transform );
 

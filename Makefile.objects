@@ -8,26 +8,30 @@ DATA_STRUCT_OBJ = \
                   Data_structures/ray_bintree.o \
                   Data_structures/skiplist.o
 
+TRANSFORM_OBJ = \
+               Transforms/compute_tps.o \
+               Transforms/compute_xfm.o \
+               Transforms/matrix_basics.o \
+               Transforms/optimize.o \
+               Transforms/procrustes.o \
+               Transforms/rotmat_to_ang.o \
+               Transforms/safe_compute_xfm.o \
+               Transforms/transforms.o \
+               Transforms/transform_io.o
+
 GEOMETRY_OBJ = \
                Geometry/closest_point.o \
-               Geometry/compute_tps.o \
-               Geometry/compute_xfm.o \
                Geometry/curvature.o \
                Geometry/generate_tube.o \
                Geometry/geometry.o \
                Geometry/intersect.o \
                Geometry/line_circle.o \
                Geometry/map_polygons.o \
-               Geometry/matrix_basics.o \
-               Geometry/optimize.o \
                Geometry/path_surface.o \
                Geometry/points.o \
                Geometry/poly_dist.o \
                Geometry/polygon_sphere.o \
-               Geometry/procrustes.o \
                Geometry/ray_intersect.o \
-               Geometry/rotmat_to_ang.o \
-               Geometry/safe_compute_xfm.o \
                Geometry/segment_polygons.o \
                Geometry/smooth_curvature.o \
                Geometry/smooth_lines.o \
@@ -36,8 +40,6 @@ GEOMETRY_OBJ = \
                Geometry/subdivide_polygons.o \
                Geometry/surface_area.o \
                Geometry/tetrahedrons.o \
-               Geometry/transforms.o \
-               Geometry/transform_io.o \
                Geometry/tubes.o \
                Geometry/volume_slice.o
 
@@ -99,6 +101,7 @@ VOLUMES_OBJ = \
 BIC_OBJ = \
           $(DATA_STRUCT_OBJ) \
           $(GEOMETRY_OBJ) \
+          $(TRANSFORM_OBJ) \
           $(NUMERICAL_OBJ) \
           $(OBJECTS_OBJ) \
           $(PROG_UTILS_OBJ) \

@@ -2,6 +2,7 @@
 #include  <internal_volume_io.h>
 #include  <objects.h>
 #include  <geom.h>
+#include  <trans.h>
 
 public  void  initialize_pixels(
     pixels_struct  *pixels,

@@ -3,6 +3,7 @@
 
 #include  <data_structures.h>
 #include  <geom.h>
+#include  <trans.h>
 #include  <numerical.h>
 #include  <objects.h>
 #include  <prog_utils.h>

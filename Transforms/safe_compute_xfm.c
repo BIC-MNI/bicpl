@@ -7,9 +7,12 @@
 @GLOBALS    : 
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : $Log: safe_compute_xfm.c,v $
-@MODIFIED   : Revision 1.5  1995-07-10 14:36:11  david
+@MODIFIED   : Revision 1.6  1995-07-10 18:02:53  david
 @MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.5  1995/07/10  14:36:11  david
+ * check_in_all
+ *
  * Revision 1.4  1995/04/28  18:30:19  david
  * check_in_all
  *
@@ -53,11 +56,13 @@
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
-public void safe_compute_transform_from_tags(int npoints, 
-                                             Real **tag_list1, 
-                                             Real **tag_list2, 
-                                             Trans_type trans_type,
-                                             General_transform *transform)
+
+public void safe_compute_transform_from_tags(
+    int                 npoints, 
+    Real                **tag_list1, 
+    Real                **tag_list2, 
+    Trans_type          trans_type,
+    General_transform   *transform )
 {
    int fildes[2];
    FILE *fpin, *fpout;
@@ -102,4 +107,3 @@ public void safe_compute_transform_from_tags(int npoints,
 
    return;
 }
-

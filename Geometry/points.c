@@ -1,9 +1,10 @@
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
+#include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.1 1995-07-08 03:47:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.2 1995-07-10 18:02:40 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

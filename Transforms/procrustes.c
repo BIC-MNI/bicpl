@@ -35,23 +35,17 @@ private  void  calc_centroid(
 @NAME       : procrustes
 @INPUT      : npoints - number of input point pairs
               ndim    - number of dimensions for each point
-              Apoints - Matrix of point set 1 (in numerical recipes
-                 form). The dimensions of this matrix should be defined
-                 to be 1 to npoints and 1 to ndim (when calling the numerical
-                 recipes routine matrix).
-              Bpoints - Matrix of point set 2 (in numerical recipes
-                 form). The dimensions of this matrix should be defined
-                 to be 1 to npoints and 1 to ndim (when calling the numerical
-                 recipes routine matrix).
-@OUTPUT     : translation - Numerical recipes vector (1 to ndim) that 
+              Apoints - Matrix of point set 1, size npoints by ndim
+              Bpoints - Matrix of point set 2, size npoints by ndim
+@OUTPUT     : translation - vector, size ndim,
                  specifies the translation to be applied to Bpoints to line
                  up the centroid with that of Apoints. Calling routine must
                  allocate space for this vector.
-              centre_of_rotation - Numerical recipes vector (1 to ndim) that
+              centre_of_rotation - vector, size ndim, that
                  specifies the centre of rotation and scaling (this is 
                  in fact only the centroid of Apoints). Calling routine must
                  allocate space for this vector.
-              rotation - Numerical recipes matrix (1 to ndim by 1 to ndim) 
+              rotation - matrix, size ndim by ndim,
                  to rotate translated Bpoints so that they line up with 
                  Apoints. Calling routine must allocate space for this 
                  matrix.
@@ -75,8 +69,7 @@ private  void  calc_centroid(
               can be found independently of scale (after the best translation
               has been found). (See Sibson for more).
 @GLOBALS    : (none)
-@CALLS      : numerical recipes stuff
-              calc_centroid
+@CALLS      : calc_centroid
               translate_points
               transpose
               matrix_multiply
@@ -198,12 +191,8 @@ public  void  procrustes(
 @NAME       : calc_centroid
 @INPUT      : npoints - number of points
               ndim    - number of dimensions
-              points  - points matrix (in numerical recipes form).
-                 The dimensions of this matrix should be defined to be 
-                 1 to npoints and 1 to ndim (when calling the numerical 
-                 recipes routine matrix).
-@OUTPUT     : centroid - vector of centroid of points (in num. rec. form)
-                 This vector should run from 1 to ndim.
+              points  - points matrix, ndim by npoints
+@OUTPUT     : centroid - vector of centroid of points, size ndim
 @RETURNS    : (nothing)
 @DESCRIPTION: Calculates the centroid of a number of points in ndim dimensions.
 @METHOD     : 
@@ -223,20 +212,20 @@ private  void  calc_centroid(
     Real    **points, 
     Real    centroid[] )
 {
-    int i, j;
+    int d, p;
 
     /* Loop over each dimension */
 
-    for_less( i, 0, ndim )
+    for_less( d, 0, ndim )
     {
          /* Add up points and divide by number of points */
 
-         centroid[i] = 0.0;
-         for_less( j, 0, npoints )
-             centroid[i] += points[j][i];
+         centroid[d] = 0.0;
+         for_less( p, 0, npoints )
+             centroid[d] += points[p][d];
 
          if( npoints > 0 )
-             centroid[i] /= (Real) npoints;
+             centroid[d] /= (Real) npoints;
     }
 }
 
@@ -245,12 +234,8 @@ private  void  calc_centroid(
 @NAME       : translate_points
 @INPUT      : npoints - number of points
               ndim    - number of dimensions
-              points  - points matrix (in numerical recipes form).
-                 The dimensions of this matrix should be defined to be 
-                 1 to npoints and 1 to ndim (when calling the numerical 
-                 recipes routine matrix).
-              translation - translation vector (in num. rec. form, running
-                 from 1 to ndim).
+              points  - points matrix, size npoints by ndim
+              translation - translation vector, size ndim
 @OUTPUT     : newpoints - translated points matrix (see points). This matrix
                  can be the original points matrix.
 @RETURNS    : (nothing)
@@ -272,12 +257,12 @@ private  void  translate_points(
     Real   translation[],
     Real   **newpoints)
 {
-    int i, j;
+    int p, d;
 
-    for_less( i, 0, npoints )
+    for_less( p, 0, npoints )
     {
-        for_less( j, 0, ndim )
-            newpoints[i][j] = points[i][j] + translation[j];
+        for_less( d, 0, ndim )
+            newpoints[p][d] = points[p][d] + translation[d];
     }
 }
 
@@ -285,12 +270,10 @@ private  void  translate_points(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : trace_of_matrix
 @INPUT      : size   - size of the_matrix (the_matrix should be square)
-              the_matrix - matrix for which trace should be calculated (in 
-                 numerical recipes form). Dimensions are 1 to size and 
-                 1 to size.
+              the_matrix - matrix for which trace should be calculated
 @OUTPUT     : (none)
 @RETURNS    : trace of matrix
-@DESCRIPTION: Calculates the trace of a matrix.
+@DESCRIPTION: Calculates the trace of a matrix, product of diagonal elements.
 @METHOD     : 
 @GLOBALS    : (none)
 @CALLS      : (nothing special)

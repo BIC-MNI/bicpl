@@ -2,6 +2,7 @@
 #include  <internal_volume_io.h>
 #include  <objects.h>
 #include  <geom.h>
+#include  <trans.h>
 
 private  void  reverse_polygon_order(
     polygons_struct   *polygons,

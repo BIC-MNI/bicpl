@@ -2,6 +2,7 @@
 #include  <internal_volume_io.h>
 #include  <vols.h>
 #include  <geom.h>
+#include  <trans.h>
 
 private  Real  calculate_weight(
     int      x,

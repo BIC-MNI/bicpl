@@ -1,12 +1,10 @@
 #include <internal_volume_io.h>
 #include <trans.h>
 #include <numerical.h>
-#include <limits.h>
 
-
-#define   FUNCTION_TOLERANCE   1e-6
+#define   FUNCTION_TOLERANCE    1e-6
 #define   INITIAL_SIMPLEX_SIZE  3.0
-#define   MAX_ITERS            300
+#define   MAX_ITERS             300
 
 typedef struct
 {
@@ -22,7 +20,7 @@ typedef struct
 @INPUT      :  lt - a transformation matrix (with translation on the last column)
 @OUTPUT     : 
 @RETURNS    : 
-@DESCRIPTION:         apply matrix lt to pts 2 and measure distance from pts1.              
+@DESCRIPTION:         apply matrix lt to pts2 and measure distance from pts1.              
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    : 
@@ -37,7 +35,7 @@ private  Real  lsq_objective(
     int        npoints )
 {
     int   i, j;
-    Real  sum, error2;
+    Real  sum, error2, delta;
     Real  newpt[N_DIMENSIONS];
   
     sum = 0.0;
@@ -50,7 +48,10 @@ private  Real  lsq_objective(
         error2 = 0.0;        /* compare it to pts2, summing the squared error */
     
         for_less( j, 0, N_DIMENSIONS )
-            error2 += (newpt[j]-pts1[i][j]) * (newpt[j]-pts1[i][j]);
+        {
+            delta = newpt[j] - pts1[i][j];
+            error2 += delta * delta;
+        }
 
         sum += error2;
     }
@@ -58,7 +59,8 @@ private  Real  lsq_objective(
 #ifdef I_DONT_THINK_THIS_IS_NEEDED
 
       I ifdef'd this out because we are no longer using the Numerical
-       recipes code, so I don't think the new amoeba code will blow up
+      recipes code, so I don't think the new amoeba code will blow up,
+      as hinted by the next comment.
                           -- David MacDonald
 
     /* Add in a constant error so that amoeba doesn't blow up when there is no
@@ -102,7 +104,6 @@ private  Real  lsq_objective(
 
     return( sum);
 }
-
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : fit_function
@@ -211,11 +212,16 @@ public  BOOLEAN  optimize_simplex(
         return( FALSE );
     }
 
+    /*--- initialize the function data for the function to be minimized */
+
     func_data.pts1 = pts1;
     func_data.pts2 = pts2;
     func_data.npoints = npoints;
     func_data.center = center;
     func_data.ndim = ndim;
+
+    /*--- initialize the 9 or 10 parameters of the function, the starting
+          point for the minimization */
 
     initial_guess[0] = translations[0];
     initial_guess[1] = translations[1];
@@ -232,6 +238,8 @@ public  BOOLEAN  optimize_simplex(
     if( ndim == 10 )        /* one rotation about the x-axis (LR-axis) */
         initial_guess[9] = shears[0];
 
+    /*--- initialize the step sizes for the amoeba minimization */
+
     initial_step[0] = INITIAL_SIMPLEX_SIZE;
     initial_step[1] = INITIAL_SIMPLEX_SIZE;
     initial_step[2] = INITIAL_SIMPLEX_SIZE;
@@ -247,6 +255,8 @@ public  BOOLEAN  optimize_simplex(
     if( ndim == 10 ) 
         initial_step[9] = INITIAL_SIMPLEX_SIZE * DEG_TO_RAD;
 
+    /*--- perform the amoeba minimization */
+
     initialize_amoeba( &amoeba, ndim, initial_guess, initial_step,
                        fit_function, (void *) &func_data, FUNCTION_TOLERANCE );
 
@@ -260,7 +270,7 @@ public  BOOLEAN  optimize_simplex(
 
     terminate_amoeba( &amoeba );
     
-                                /* copy optimized results */
+    /*--- copy optimized results */
 
     for_less( i, 0, 3 )
     {

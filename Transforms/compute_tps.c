@@ -11,14 +11,12 @@
 @CREATED    : Dec 2, 1991 LC
 @MODIFIED   : Mon Apr  5 09:00:54 EST 1993 louis 
                 - building new library routines, with prototypes
+@MODIFIED   : Jul 6 1995,   David MacDonald removed recipes type code
 ---------------------------------------------------------------------------- */
 
 
-
 #include <internal_volume_io.h>
-#include <stdlib.h>
 #include <trans.h>
-
 
 /* prototype definitions: */
 

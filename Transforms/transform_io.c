@@ -3,7 +3,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transform_io.c,v 1.2 1995-07-10 14:36:12 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transform_io.c,v 1.3 1995-07-10 18:02:53 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -3,7 +3,6 @@
 
 #include  <volume_io.h>
 #include  <objects.h>
-#include  <compute_xfm.h>
 
 #ifndef  public
 #define       public   extern
