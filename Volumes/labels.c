@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.36 1997-06-07 00:48:03 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.37 1997-06-07 01:12:58 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -547,7 +547,9 @@ public  Status  load_label_volume(
     int                   limits[2][N_DIMENSIONS];
     int                   file_sizes[N_DIMENSIONS];
     Real                  file_value, xw, yw, zw, amount_done;
-    Real                  voxel[N_DIMENSIONS], dx, dy, dz;
+    Real                  y_voxel[N_DIMENSIONS];
+    Real                  voxel[N_DIMENSIONS], z_dx, z_dy, z_dz;
+    Real                  y_dx, y_dy, y_dz;
     Real                  start_voxel[N_DIMENSIONS];
     Real                  end_voxel[N_DIMENSIONS];
     Volume                file_volume, file_volume_3d;
@@ -599,9 +601,17 @@ public  Status  load_label_volume(
                                    &xw, &yw, &zw );
         convert_world_to_voxel( file_volume_3d, xw, yw, zw, end_voxel );
 
-        dx = end_voxel[0] - start_voxel[0];
-        dy = end_voxel[1] - start_voxel[1];
-        dz = end_voxel[2] - start_voxel[2];
+        z_dx = end_voxel[0] - start_voxel[0];
+        z_dy = end_voxel[1] - start_voxel[1];
+        z_dz = end_voxel[2] - start_voxel[2];
+
+        convert_3D_voxel_to_world( label_volume, 0.0, 1.0, 0.0,
+                                   &xw, &yw, &zw );
+        convert_world_to_voxel( file_volume_3d, xw, yw, zw, end_voxel );
+
+        y_dx = end_voxel[0] - start_voxel[0];
+        y_dy = end_voxel[1] - start_voxel[1];
+        y_dz = end_voxel[2] - start_voxel[2];
     }
 
     /*--- input label slices */
@@ -621,9 +631,35 @@ public  Status  load_label_volume(
         {
             for_inclusive( label_voxel[Y], limits[0][Y], limits[1][Y] )
             {
+                if( is_linear )
+                {
+                    if( label_voxel[Y] == limits[0][Y] )
+                    {
+                        convert_3D_voxel_to_world( label_volume,
+                                                   (Real) label_voxel[X],
+                                                   (Real) label_voxel[Y],
+                                                   (Real) limits[0][Z],
+                                                   &xw, &yw, &zw );
+                        convert_world_to_voxel( file_volume_3d, xw, yw, zw,
+                                                y_voxel );
+                        y_voxel[X] += 0.5;
+                        y_voxel[Y] += 0.5;
+                        y_voxel[Z] += 0.5;
+                    }
+                    else
+                    {
+                        y_voxel[X] += y_dx;
+                        y_voxel[Y] += y_dy;
+                        y_voxel[Z] += y_dz;
+                    }
+                    voxel[X] = y_voxel[X];
+                    voxel[Y] = y_voxel[Y];
+                    voxel[Z] = y_voxel[Z];
+                }
+
                 for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
                 {
-                    if( !is_linear || label_voxel[Z] == limits[0][Z] )
+                    if( !is_linear )
                     {
                         convert_3D_voxel_to_world( label_volume,
                                                    (Real) label_voxel[X],
@@ -635,12 +671,14 @@ public  Status  load_label_volume(
                     }
                     else
                     {
-                        voxel[X] += dx;
-                        voxel[Y] += dy;
-                        voxel[Z] += dz;
+                        voxel[X] += z_dx;
+                        voxel[Y] += z_dy;
+                        voxel[Z] += z_dz;
                     }
 
-                    convert_real_to_int_voxel( 3, voxel, int_voxel );
+                    int_voxel[X] = FLOOR( voxel[X] );
+                    int_voxel[Y] = FLOOR( voxel[Y] );
+                    int_voxel[Z] = FLOOR( voxel[Z] );
 
                     if( int_voxel[0] == slice &&
                         int_voxel[1] >= 0 && int_voxel[1] < file_sizes[1] &&
@@ -649,9 +687,9 @@ public  Status  load_label_volume(
                         file_value = get_volume_real_value( file_volume,
                                         int_voxel[1], int_voxel[2], 0, 0, 0 );
 
-                        int_file_value = ROUND( file_value );
-                        if( int_file_value > 0 )
+                        if( file_value > 0.0 )
                         {
+                            int_file_value = ROUND( file_value );
                             set_volume_label_data( label_volume, label_voxel,
                                                    int_file_value );
                         }
