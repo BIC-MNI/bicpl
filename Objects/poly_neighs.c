@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.12 1996-09-10 15:51:33 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.13 1996-09-11 13:30:36 david Exp $";
 #endif
 
 #define  INVALID_ID       -1
@@ -54,12 +54,17 @@ public  void  check_polygons_neighbours_computed(
 }
 
 public  void  delete_polygon_point_neighbours(
+    polygons_struct  *polygons,
     int              n_point_neighbours[],
     int              *point_neighbours[],
     int              *point_polygons[] )
 {
+    int   i;
+
     FREE( n_point_neighbours );
-    FREE( point_neighbours[0] );
+
+    for_less( i, 0, polygons->n_points )
+        FREE( point_neighbours[i] );
     FREE( point_neighbours );
 
     if( point_polygons != NULL )
@@ -71,38 +76,67 @@ public  void  delete_polygon_point_neighbours(
 
 public   void   create_polygon_point_neighbours(
     polygons_struct  *polygons,
+    BOOLEAN          across_polygons_flag,
     int              *n_point_neighbours_ptr[],
     int              **point_neighbours_ptr[],
     int              **point_polygons_ptr[] )
 {
-    int                 edge, i0, i1, size, poly, total_neighbours;
+    int                 edge, i0, i1, size, poly, total_neighbours, p0, p1;
     int                 *n_point_neighbours, **point_neighbours;
     int                 **point_polygons, point, index0, index1;
+    int                 i, v, indices[MAX_POINTS_PER_POLYGON];
     progress_struct     progress;
+
+    if( across_polygons_flag && point_polygons_ptr != NULL )
+    {
+        print_error(
+                "create_polygon_point_neighbours: conflicting argument.\n" );
+        return;
+    }
 
     ALLOC( n_point_neighbours, polygons->n_points );
     for_less( point, 0, polygons->n_points )
         n_point_neighbours[point] = 0;
 
+    ALLOC( point_neighbours, polygons->n_points );
+
     total_neighbours = 0;
 
     initialize_progress_report( &progress, FALSE, polygons->n_items,
-                                "Neighbour-finding step 1" );
+                                "Neighbour-finding" );
 
     for_less( poly, 0, polygons->n_items )
     {
         size = GET_OBJECT_SIZE( *polygons, poly );
-
-        for_less( edge, 0, size )
+        for_less( v, 0, size )
         {
-            i0 = polygons->indices[
-                  POINT_INDEX(polygons->end_indices,poly,edge)];
-            i1 = polygons->indices[
-                  POINT_INDEX(polygons->end_indices,poly,(edge+1)%size)];
+            indices[v] = polygons->indices[
+                       POINT_INDEX(polygons->end_indices,poly,v)];
+        }
 
-            ++n_point_neighbours[i0];
-            ++n_point_neighbours[i1];
-            total_neighbours += 2;
+        for_less( i0, 0, size )
+        {
+            p0 = indices[i0];
+            for_less( i1, 0, size )
+            {
+                if( i1 == i0 || !across_polygons_flag && ABS( i0 - i1 ) != 1 )
+                    continue;
+
+                p1 = indices[i1];
+
+                for_less( i, 0, n_point_neighbours[p0] )
+                {
+                    if( point_neighbours[p0][i] == p1 )
+                        break;
+                }
+                if( i < n_point_neighbours[p0] )
+                    continue;
+
+                ADD_ELEMENT_TO_ARRAY( point_neighbours[p0],
+                                      n_point_neighbours[p0],
+                                      p1, 5 );
+                ++total_neighbours;
+            }
         }
 
         update_progress_report( &progress, poly+1 );
@@ -110,31 +144,26 @@ public   void   create_polygon_point_neighbours(
 
     terminate_progress_report( &progress );
 
-    ALLOC( point_neighbours, polygons->n_points );
-    ALLOC( point_neighbours[0], total_neighbours );
+    for_less( i, 0, polygons->n_points )
+        REALLOC( point_neighbours[i], n_point_neighbours[i] );
 
-    if( point_polygons_ptr != NULL )
-    {
-        ALLOC( point_polygons, polygons->n_points );
-        ALLOC( point_polygons[0], total_neighbours );
+    *n_point_neighbours_ptr = n_point_neighbours;   
+    *point_neighbours_ptr = point_neighbours;   
 
-        for_less( point, 0, total_neighbours )
-            point_polygons[0][point] = -1;
-    }
+    if( point_polygons_ptr == NULL )
+        return;
+
+    ALLOC( point_polygons, polygons->n_points );
+    ALLOC( point_polygons[0], total_neighbours );
+
+    for_less( point, 0, total_neighbours )
+        point_polygons[0][point] = -1;
 
     for_less( point, 1, polygons->n_points )
     {
-        point_neighbours[point] = &point_neighbours[point-1]
+        point_polygons[point] = &point_polygons[point-1]
                                                [n_point_neighbours[point-1]];
-        if( point_polygons_ptr != NULL )
-        {
-            point_polygons[point] = &point_polygons[point-1]
-                                               [n_point_neighbours[point-1]];
-        }
     }
-
-    for_less( point, 0, polygons->n_points )
-        n_point_neighbours[point] = 0;
 
     initialize_progress_report( &progress, FALSE, polygons->n_items,
                                 "Neighbour-finding step 2" );
@@ -156,31 +185,16 @@ public   void   create_polygon_point_neighbours(
                     break;
             }
 
-            if( index0 >= n_point_neighbours[i0] )
-            {
-                point_neighbours[i0][index0] = i1;
-                ++n_point_neighbours[i0];
-            }
-
             for_less( index1, 0, n_point_neighbours[i1] )
             {
                 if( point_neighbours[i1][index1] == i0 )
                     break;
             }
 
-            if( index1 >= n_point_neighbours[i1] )
-            {
-                point_neighbours[i1][index1] = i0;
-                ++n_point_neighbours[i1];
-            }
-
-            if( point_polygons_ptr != NULL )
-            {
-                if( point_polygons[i0][index0] < 0 )
-                    point_polygons[i0][index0] = poly;
-                else
-                    point_polygons[i1][index1] = poly;
-            }
+            if( point_polygons[i0][index0] < 0 )
+                point_polygons[i0][index0] = poly;
+            else
+                point_polygons[i1][index1] = poly;
         }
 
         update_progress_report( &progress, poly+1 );
@@ -188,10 +202,7 @@ public   void   create_polygon_point_neighbours(
 
     terminate_progress_report( &progress );
 
-    *n_point_neighbours_ptr = n_point_neighbours;   
-    *point_neighbours_ptr = point_neighbours;   
-    if( point_polygons_ptr != NULL )
-        *point_polygons_ptr = point_polygons;   
+    *point_polygons_ptr = point_polygons;   
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -222,7 +233,7 @@ private   void   create_polygon_neighbours(
     for_less( i0, 0, polygons->end_indices[polygons->n_items-1] )
         neighbours[i0] = -1;
 
-    create_polygon_point_neighbours( polygons, &n_point_neighbours,
+    create_polygon_point_neighbours( polygons, FALSE, &n_point_neighbours,
                                      &point_neighbours, &point_polygons );
 
     initialize_progress_report( &progress, FALSE, polygons->n_items,
@@ -298,7 +309,8 @@ private   void   create_polygon_neighbours(
 
     terminate_progress_report( &progress );
 
-    delete_polygon_point_neighbours( n_point_neighbours, point_neighbours,
+    delete_polygon_point_neighbours( polygons,
+                                     n_point_neighbours, point_neighbours,
                                      point_polygons );
 
 #ifdef  DEBUG
