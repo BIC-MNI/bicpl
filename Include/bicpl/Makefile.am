@@ -24,6 +24,7 @@ pkginclude_HEADERS = \
 	march_prototypes.h \
 	marching.h \
 	marching_cubes.h \
+	marching_cube_data.h \
 	minimization.h \
 	numeric_prototypes.h \
 	numerical.h \
@@ -35,6 +36,7 @@ pkginclude_HEADERS = \
 	prog_utils.h \
 	queue.h \
 	skiplist.h \
+	splines.h \
 	stack.h \
 	statistics.h \
 	trans.h \

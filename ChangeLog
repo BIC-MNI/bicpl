@@ -1,3 +1,11 @@
+2000-10-07  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Include/bicpl/marching_cube_data.h: moved header from Marching_cubes.
+	* Include/bicpl/splines.h: restored header from Include/Other.
+	These two headers are indeed used by other software packages, notably `Display'.
+
+	* Include/bicpl/Makefile.am (pkginclude_HEADERS): install newly-restored headers.
+
 2000-06-14  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Volumes/render.c (render_volume_to_slice): applied patch from
