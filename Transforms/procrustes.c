@@ -3,9 +3,6 @@
 @DESCRIPTION: File containing routines for doing procrustes calculations.
 @METHOD     : Contains routines :
                  procrustes
-                 transformations_to_homogeneous
-                 translation_to_homogeneous
-                 rotation_to_homogeneous
 @CALLS      : 
 @CREATED    : January 29, 1992 (Peter Neelin)
 @MODIFIED   : February 7, 1992 (Peter Neelin)
@@ -16,23 +13,6 @@
 #include <internal_volume_io.h>
 #include <geom.h>
 #include <numerical.h>
-
-private  void  translation_to_homogeneous(
-    int    ndim,
-    Real   translation[],
-    Real  **transformation );
-
-private   void  rotation_to_homogeneous(
-    int     ndim,
-    Real    **rotation,
-    Real    **transformation );
-
-private  void  matrix_scalar_multiply(
-    int     rows,
-    int     cols,
-    Real    scalar, 
-    Real    **the_matrix,
-    Real    **product );
 
 private  Real  trace_of_matrix(
     int    size,
@@ -192,7 +172,7 @@ public  void  procrustes(
 
     for_less( i, 0, N_DIMENSIONS )
         for_less( j, 0, N_DIMENSIONS )
-            Transform_elem( *rotation_transform, i, j ) = rotation[i][j];
+            Transform_elem( *rotation_transform, i, j ) = rotation[j][i];
 
     /* Free vectors */
 
@@ -212,214 +192,6 @@ public  void  procrustes(
     FREE2D( svd_VT );
     FREE2D( Brotated );
     FREE2D( product );
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : transformations_to_homogeneous
-@INPUT      : ndim    - number of dimensions
-              translation - Numerical recipes vector (1 to ndim) that 
-                 specifies the translation to be applied first.
-              centre_of_rotation - Numerical recipes vector (1 to ndim) that
-                 specifies the centre of rotation and scaling.
-              rotation - Numerical recipes matrix (1 to ndim by 1 to ndim) 
-                 for rotation about centre_of_rotation (applied after 
-                 translation). Note that this matrix need not only specify
-                 rotation/reflexion - any ndim x ndim matrix will work.
-              scale - Scalar value giving global scaling to be applied after
-                 translation and rotation.
-@OUTPUT     : transformation - Numerical recipes matrix (1 to ndim+1 by
-                 1 to ndim+1) specifying the transformation for homogeneous 
-                 coordinates. To apply this transformation, a point
-                 vector should be post-multiplied by this matrix, with the
-                 last coordinate of the ndim+1 point vector having value
-                 one. The calling routine must allocate space for this
-                 matrix.
-@RETURNS    : (nothing)
-@DESCRIPTION: Computes a transformation matrix in homogeneous coordinates
-              given a translation, a rotation matrix (or other 
-              non-homogeneous matrix) and a global scaling factor.
-              Transformations are applied in that order.
-@METHOD     : Apply the following operations (multiply from left to right):
-                 1) Translate by translation
-                 2) Translate by -centre_of_rotation
-                 3) Rotate
-                 4) Scale
-                 5) Translate by centre_of_rotation
-@GLOBALS    : (none)
-@CALLS      : numerical recipes stuff
-              translation_to_homogeneous
-              matrix_multiply
-              matrix_scalar_multiply
-@CREATED    : February 7, 1992 (Peter Neelin)
-@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
----------------------------------------------------------------------------- */
-
-public  void  transformations_to_homogeneous(
-    int     ndim, 
-    Real    translation[],
-    Real        centre_of_rotation[],
-    Transform   *rotation_transform,
-    Real    scaling,
-    Real    **transformation )
-{
-    Real  **rotation;
-    int   i;
-    int   size;
-    Real  *centre_translate;
-    Real  **trans1, **trans2;
-    Real  **trans_temp, **rotation_and_scale;
-
-{
-    int  j;
-
-    ALLOC2D( rotation, 3, 3 );
-    for_less( i, 0, 3 )
-    for_less( j, 0, 3 )
-        rotation[i][j] = Transform_elem(*rotation_transform,i,j);
-}
-
-    size = ndim + 1;
-
-    /* Allocate matrices and vectors */
-
-    ALLOC( centre_translate, ndim );
-    ALLOC2D( trans1, size, size );
-    ALLOC2D( trans2, size, size );
-    ALLOC2D( trans_temp, size, size );
-    ALLOC2D( rotation_and_scale, ndim, ndim );
-
-    /* Construct translation matrix */
-
-    translation_to_homogeneous( ndim, translation, trans1 );
-
-    /* Construct translation matrix for centre of rotation and apply it */
-
-    for_less( i, 0, ndim )
-        centre_translate[i] = -centre_of_rotation[i];
-
-    translation_to_homogeneous( ndim, centre_translate, trans_temp );
-    matrix_multiply( size, size, size, trans1, trans_temp, trans2 );
-
-    /* Scale rotation matrix, then convert it to homogeneous coordinates and
-       apply it */
-
-    matrix_scalar_multiply( ndim, ndim, scaling, rotation, rotation_and_scale );
-    rotation_to_homogeneous( ndim, rotation_and_scale, trans_temp );
-    matrix_multiply( size, size, size, trans2, trans_temp, trans1 );
-
-    /* Return to centre of rotation */
-
-    translation_to_homogeneous( ndim, centre_of_rotation, trans_temp );
-    matrix_multiply( size, size, size, trans1, trans_temp, transformation );
-
-    /* Free matrices */
-
-    FREE( centre_translate );
-    FREE2D( trans1 );
-    FREE2D( trans2 );
-    FREE2D( trans_temp );
-    FREE2D( rotation_and_scale );
-
-    FREE2D( rotation );
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : translation_to_homogeneous
-@INPUT      : ndim    - number of dimensions
-              translation - Numerical recipes vector (1 to ndim) that 
-                 specifies the translation.
-@OUTPUT     : transformation - Numerical recipes matrix (1 to ndim+1 by
-                 1 to ndim+1) specifying the transformation for homogeneous 
-                 coordinates. To apply this transformation, a point
-                 vector should be post-multiplied by this matrix, with the
-                 last coordinate of the ndim+1 point vector having value
-                 one. The calling routine must allocate space for this
-                 matrix.
-@RETURNS    : (nothing)
-@DESCRIPTION: Computes a transformation matrix in homogeneous coordinates
-              given a translation.
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : 
-@CREATED    : February 7, 1992 (Peter Neelin)
-@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
----------------------------------------------------------------------------- */
-
-private  void  translation_to_homogeneous(
-    int    ndim,
-    Real   translation[],
-    Real  **transformation )
-{
-    int  i, j, size;
-
-    size = ndim+1;
-
-    /* Construct translation matrix */
-
-    for_less( i, 0, ndim )
-    {
-        for_less( j, 0, size )
-        {
-            if( i == j )
-                transformation[i][j] = 1.0;
-            else
-                transformation[i][j] = 0.0;
-        }
-    }
-
-    for_less( j, 0, ndim )
-        transformation[size-1][j] = translation[j];
-
-    transformation[size-1][size-1] = 1.0;
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : rotation_to_homogeneous
-@INPUT      : ndim    - number of dimensions
-              rotation - Numerical recipes matrix (1 to ndim by 1 to ndim) 
-                 for rotation about origin. Note that this matrix need not 
-                 only specify rotation/reflexion - any ndim x ndim matrix 
-                 will work.
-@OUTPUT     : transformation - Numerical recipes matrix (1 to ndim+1 by
-                 1 to ndim+1) specifying the transformation for homogeneous 
-                 coordinates. To apply this transformation, a point
-                 vector should be post-multiplied by this matrix, with the
-                 last coordinate of the ndim+1 point vector having value
-                 one. The calling routine must allocate space for this
-                 matrix.
-@RETURNS    : (nothing)
-@DESCRIPTION: Computes a transformation matrix in homogeneous coordinates
-              given a rotation matrix.
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : 
-@CREATED    : February 7, 1992 (Peter Neelin)
-@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
----------------------------------------------------------------------------- */
-
-private   void  rotation_to_homogeneous(
-    int     ndim,
-    Real    **rotation,
-    Real    **transformation )
-{
-    int   i, j, size;
-
-    size = ndim + 1;
-
-    /* Construct  matrix */
-
-    for_less( i, 0, size )
-    {
-        for_less( j, 0, size )
-        {
-            if( i==size-1 || j==size-1 )
-                transformation[i][j] = 0.0;
-            else
-                transformation[i][j] = rotation[i][j];
-        }
-    }
-
-    transformation[size-1][size-1] = 1.0;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -542,40 +314,4 @@ private  Real  trace_of_matrix(
         sum += the_matrix[i][i];
 
     return( sum );
-}
-
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : matrix_scalar_multiply
-@INPUT      : rows    - number of rows of the_matrix.
-              cols    - number of columns of the_matrix
-              scalar  - scalar by which the_matrix should be multiplied.
-              the_matrix  - matrix to be multiplied (in numerical recipes 
-                 form). Dimensions are 1 to rows and 1 to cols.
-@OUTPUT     : product - result of multiply ( in numerical recipes form).
-                 Dimensions are 1 to rows and 1 to cols. This matrix
-                 can be the input matrix.
-@RETURNS    : (nothing)
-@DESCRIPTION: Multiplies a matrix by a scalar.
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Feb. 26, 1990 (Weiqian Dai)
-@MODIFIED   : January 31, 1992 (Peter Neelin)
-                 - change to roughly NIL-abiding code and modified calling
-                 sequence.
----------------------------------------------------------------------------- */
-
-private  void  matrix_scalar_multiply(
-    int     rows,
-    int     cols,
-    Real    scalar, 
-    Real    **the_matrix,
-    Real    **product )
-{
-    int   i, j;
-
-    for_less( i, 0, rows )
-        for_less( j, 0, cols )
-            product[i][j] = scalar * the_matrix[i][j];
 }

@@ -31,46 +31,35 @@ typedef struct
 ---------------------------------------------------------------------------- */
 
 private  Real  lsq_objective(
-    Real     lt[3][4], 
-    Real     **pts1,
-    Real     **pts2, 
-    int      npoints,
-    int      ndim )
+    Transform  *lt,
+    Real       **pts1,
+    Real       **pts2, 
+    int        npoints )
 {
-    int   i, j, k;
+    int   i, j;
     Real  sum, error2;
-    Real  newpt[4], t;
-    Real  max[3], min[3], minimum_error, range;
+    Real  newpt[N_DIMENSIONS];
   
     sum = 0.0;
 
-    for_less( j, 0, ndim )
-    {
-        max[j] = -DBL_MAX;
-        min[j] = DBL_MAX;
-    }
-
     for_less( i, 0, npoints )         /* for all of the points */
     {
-        for_less( j, 0, ndim )          /* multiply lt*pts1  */
-        {
-            t = 0.0;
-            for_less( k, 0, ndim )
-                t += lt[j][k] * pts2[i][k];
-            newpt[j] = t + lt[j][ndim];
-        }
+        transform_point( lt, pts2[i][X], pts2[i][Y], pts2[i][Z],
+                         &newpt[X], &newpt[Y], &newpt[Z] );
 
         error2 = 0.0;        /* compare it to pts2, summing the squared error */
     
-        for_less( j, 0, ndim )
-        {
-            if( pts1[i][j] > max[j] ) max[j] = pts1[i][j];
-            if( pts1[i][j] < min[j] ) min[j] = pts1[i][j];
+        for_less( j, 0, N_DIMENSIONS )
             error2 += (newpt[j]-pts1[i][j]) * (newpt[j]-pts1[i][j]);
-        }
 
         sum += error2;
     }
+
+#ifdef I_DONT_THINK_THIS_IS_NEEDED
+
+      I ifdef'd this out because we are no longer using the Numerical
+       recipes code, so I don't think the new amoeba code will blow up
+                          -- David MacDonald
 
     /* Add in a constant error so that amoeba doesn't blow up when there is no
        error on the points. This is equivalent to having an rms error of 
@@ -80,16 +69,36 @@ private  Real  lsq_objective(
 
 #define FUDGE_FACTOR 250.0
 
-    minimum_error = 0.0;
-    for_less( j, 0, ndim )
     {
-       range = (max[j] - min[j]) / FUDGE_FACTOR;
-       minimum_error += range * range;
+        Real  max[N_DIMENSIONS], min[N_DIMENSIONS], minimum_error, range;
+
+        for_less( j, 0, N_DIMENSIONS )
+        {
+            max[j] = -DBL_MAX;
+            min[j] = DBL_MAX;
+        }
+
+        for_less( i, 0, npoints )         /* for all of the points */
+        {
+            for_less( j, 0, N_DIMENSIONS )
+            {
+                if( pts1[i][j] > max[j] ) max[j] = pts1[i][j];
+                if( pts1[i][j] < min[j] ) min[j] = pts1[i][j];
+            }
+        }
+
+        minimum_error = 0.0;
+        for_less( j, 0, N_DIMENSIONS )
+        {
+           range = (max[j] - min[j]) / FUDGE_FACTOR;
+           minimum_error += range * range;
+        }
+
+        if( minimum_error == 0.0 ) minimum_error = 1.0;
+
+        sum += npoints * minimum_error;
     }
-
-    if( minimum_error == 0.0 ) minimum_error = 1.0;
-
-    sum += npoints * minimum_error;
+#endif
 
     return( sum);
 }
@@ -113,8 +122,8 @@ private  Real  fit_function(
     void   *func_data,
     float  params[] ) 
 {
-    Real           mat[3][4];
-    int            i, dim;
+    Transform      transform;
+    int            i;
     Real           r;
     Real           trans[3];
     Real           cent[3];
@@ -140,12 +149,11 @@ private  Real  fit_function(
     for_less( i, 0, 3 )
         cent[i] = data->center[i];        /* global CENTER used here */
 
-    build_transformation_matrix( mat, cent, trans, scale, shear, rots );
+    build_transformation_matrix( &transform, cent, trans, scale, shear, rots );
 
                                 /* call the needed objective function */
-    dim = 3;
 
-    r = lsq_objective( mat, data->pts1, data->pts2, data->npoints, dim );
+    r = lsq_objective( &transform, data->pts1, data->pts2, data->npoints );
 
     return(r);
 }

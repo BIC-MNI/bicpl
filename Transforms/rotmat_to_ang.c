@@ -68,24 +68,15 @@ Tue Jun  8 08:44:59 EST 1993 LC
 #define EPS  0.00000000001        /* epsilon, should be calculated */
 
 public  BOOLEAN  rotmat_to_ang(
-     Real  **rot_mat,
-     Real  *ang )
+    Transform   *rot_trans,
+    Real        *ang )
 {
     Real       rx, ry, rz, vx, vy, vz;
-    int        m,n;
     Vector     x_axis, z_axis;
-    Transform  rot_trans, z_rot, y_rot;
+    Transform  z_rot, y_rot;
 
-    make_identity_transform( &rot_trans );
-
-    for_less( m, 0, N_DIMENSIONS )
-    {
-        for_less( n, 0, N_DIMENSIONS )
-            Transform_elem(rot_trans,m,n) = rot_mat[m][n];
-    }
-
-    get_transform_x_axis( &rot_trans, &x_axis );
-    get_transform_z_axis( &rot_trans, &z_axis );
+    get_transform_x_axis( rot_trans, &x_axis );
+    get_transform_z_axis( rot_trans, &z_axis );
    
 /* ---------------------------------------------------------------
    step one,  find the RZ rotation reqd to bring 
@@ -151,7 +142,7 @@ public  BOOLEAN  rotmat_to_ang(
     for_less( m, 0, N_DIMENSIONS )
         for_less( n, 0, N_DIMENSIONS )
             if( !numerically_close( Transform_elem(test,m,n), 
-                                    Transform_elem(rot_trans,m,n), 1.0e-3 ) )
+                                    Transform_elem(*rot_trans,m,n), 1.0e-3 ) )
             {
                 error = TRUE;
             }
@@ -168,7 +159,7 @@ public  BOOLEAN  rotmat_to_ang(
         for_less( m, 0, N_DIMENSIONS )
         {
             for_less( n, 0, N_DIMENSIONS )
-                print( " %g", Transform_elem(rot_trans,m,n) );
+                print( " %g", Transform_elem(*rot_trans,m,n) );
             print( "\n" );
         }
 
@@ -182,125 +173,4 @@ public  BOOLEAN  rotmat_to_ang(
     ang[2] = rz;
 
     return(TRUE);
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : nr_ident - make identity matrix
-@INPUT      : A - pointer to matrix
-              m - row limits
-              n - col limits
-              (matrix in numerical recipes form, allocated by calling routine)
-@OUTPUT     : identiy matrix in A
-@RETURNS    : (nothing)
-@DESCRIPTION: 
-@METHOD     : 
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Tue Jun  1 12:49:21 EST 1993 (Louis Collins)
-@MODIFIED   : 
-
----------------------------------------------------------------------------- */
-
-public  void  nr_ident(
-    Real   **A,
-    int    m,
-    int    n )
-{
-    int i, j;
-
-    for_less( i, 0, m )
-    {
-        for_less( j, 0, n )
-        {
-            if( i == j ) 
-                A[i][j] = 1.0;
-            else
-                A[i][j] = 0.0;
-        }
-    }
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : nr_rotx - make rot X matrix
-@INPUT      : M - 4x4 matrix
-              a - rotation angle in radians
-              (matrix in numerical recipes form, allocated by calling routine)
-@OUTPUT     : modified matrix M
-@RETURNS    : (nothing)
-@DESCRIPTION: 
-@METHOD     : 
-   rx =[1   0      0      0 
-        0  cos(a)  -sin(a) 0
-        0 sin(a)  cos(a) 0
-        0   0      0      1];
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Tue Jun  1 12:49:21 EST 1993 (Louis Collins)
-@MODIFIED   : Tue Jun  8 08:44:59 EST 1993 (LC) changed to mat*vec format
----------------------------------------------------------------------------- */
-
-public  void  nr_rotx(
-    Real   **M,
-    Real   a )
-{
-    nr_ident( M, 4, 4 );
-
-    M[1][1] = cos(a);   M[1][2] = -sin(a);
-    M[2][1] = sin(a);   M[2][2] = cos(a);
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : nr_roty - make rot Y matrix
-@INPUT      : M - 4x4 matrix
-              a - rotation angle in radians
-              (matrix in numerical recipes form, allocated by calling routine)
-@RETURNS    : (nothing)
-@DESCRIPTION: 
-@METHOD     : 
-ry = [  cos(a)   0 sin(a)  0 
-        0       1   0       0
-        -sin(a)  0  cos(a)   0
-        0   0      0      1];
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Tue Jun  1 12:49:21 EST 1993 (Louis Collins)
-@MODIFIED   : Tue Jun  8 08:44:59 EST 1993 (LC) changed to mat*vec format
----------------------------------------------------------------------------- */
-
-public  void  nr_roty(
-    Real   **M,
-    Real   a )
-{
-    nr_ident( M, 4, 4 );
-
-    M[0][0] =  cos(a);   M[0][2] = sin(a);
-    M[2][0] = -sin(a);   M[2][2] = cos(a);
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : nr_rotz - make rot Z matrix
-@INPUT      : M - 4x4 matrix
-              a - rotation angle in radians
-              (matrix in numerical recipes form, allocated by calling routine)
-@RETURNS    : (nothing)
-@DESCRIPTION: 
-@METHOD     : 
-rz = [cos(a)  -sin(a) 0  0
-      sin(a) cos(a) 0  0
-        0     0      1  0
-        0     0      0  1];
-@GLOBALS    : (none)
-@CALLS      : (nothing special)
-@CREATED    : Tue Jun  1 12:49:21 EST 1993 (Louis Collins)
-@MODIFIED   : Tue Jun  8 08:44:59 EST 1993 (LC) changed to mat*vec format
----------------------------------------------------------------------------- */
-
-public  void  nr_rotz(
-    Real     **M,
-    Real     a )
-{
-    nr_ident( M, 4, 4 );
-
-    M[0][0] = cos(a);   M[0][1] = -sin(a);
-    M[1][0] = sin(a);   M[1][1] = cos(a);
 }

@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.11  1995-07-07 18:51:24  david
+@MODIFIED   : Revision 1.12  1995-07-08 03:38:04  david
 @MODIFIED   : *** empty log message ***
 @MODIFIED   :
+ * Revision 1.11  1995/07/07  18:51:24  david
+ * *** empty log message ***
+ *
  * Revision 1.10  1995/07/07  18:18:23  david
  * check_in_all
  *
@@ -83,13 +86,14 @@ private void compute_tps_transform(int npoints,
                                    Real **tag_list2, 
                                    Trans_type trans_type,
                                    General_transform *transform);
-private  void  build_homogeneous_from_parameters(
-    Real  **calc_transformation,
-    Real  centre[],
-    Real  translation[],
-    Real  scales[],
-    Real  shears[],
-    Real  angles[] );
+
+private  void  concat_transformation_matrix(
+    Transform   *lt, 
+    Real        center[],
+    Real        translations[],
+    Real        scales[],
+    Real        shears[],
+    Transform   *rotation );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : compute_transform_from_tags
@@ -193,47 +197,36 @@ private  void  compute_procrustes_transform(
     Trans_type          trans_type,
     General_transform   *transform)
 {
+    Transform   rotation;
+    int         i;
     Real        translation[N_DIMENSIONS];
     Real        centre_of_rotation[N_DIMENSIONS];
-    Real        **rotation, scale;
-    Real        **calc_transformation;
-    int         i, j;
+    Real        scale, scales[N_DIMENSIONS];
+    Real        shears[N_DIMENSIONS];
     Transform   linear_transform;
-
-    /* Create needed matrices and vectors */
-
-    ALLOC2D( rotation, N_DIMENSIONS, N_DIMENSIONS );
-    ALLOC2D( calc_transformation, N_DIMENSIONS + 1, N_DIMENSIONS + 1 );
 
     /* Do procrustes fit */
 
     procrustes( npoints, N_DIMENSIONS, tag_list1, tag_list2, translation, 
-                centre_of_rotation, rotation, &scale );
+                centre_of_rotation, &rotation, &scale );
 
     /* Set scale appropriately */
 
     if( trans_type == TRANS_LSQ6 )
         scale = 1.0;
 
-    /* Calculate matrix in homogeneous coordinates */
-
-    transformations_to_homogeneous( N_DIMENSIONS,
-                                    translation, centre_of_rotation,
-                                    rotation, scale, calc_transformation );
-
-    /* Save the transform */
-
-    for_less( i, 0, N_DIMENSIONS + 1 )
+    for_less( i, 0, N_DIMENSIONS )
     {
-        for_less( j, 0, N_DIMENSIONS + 1 )
-            Transform_elem(linear_transform, i, j) = calc_transformation[j][i];
+        scales[i] = scale;
+        shears[i] = 0.0;
     }
 
+    /* Concatenate translation, scale, shear and rotation */
+
+    concat_transformation_matrix( &linear_transform, centre_of_rotation,
+                                  translation, scales, shears, &rotation );
+
     create_linear_transform( transform, &linear_transform );
-
-    /* Free the matrices and vectors */
-
-    FREE2D( calc_transformation );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -261,12 +254,12 @@ private  void  compute_arb_param_transform(
     Trans_type          trans_type,
     General_transform   *transform )
 {
+    Transform  rotation;
     Real       translation[N_DIMENSIONS];
-    Real       centre_of_rotation[N_DIMENSIONS], **rotation, scale;
+    Real       centre_of_rotation[N_DIMENSIONS], scale;
     Real       scales[N_DIMENSIONS];
     Real       shears[N_DIMENSIONS], angles[N_DIMENSIONS];
-    Real       **calc_transformation;
-    int        i, j;
+    int        i;
     Transform  linear_transform;
   
     if( trans_type != TRANS_LSQ9 && trans_type != TRANS_LSQ10 )
@@ -277,17 +270,12 @@ private  void  compute_arb_param_transform(
         exit(EXIT_FAILURE);
     }
 
-    /* Create needed matrices and vectors */
-
-    ALLOC2D( rotation, N_DIMENSIONS, N_DIMENSIONS );
-    ALLOC2D( calc_transformation, N_DIMENSIONS + 1, N_DIMENSIONS + 1 );
-  
     /* Do procrustes fit */
 
     procrustes( npoints, N_DIMENSIONS, tag_list1, tag_list2, translation, 
-                centre_of_rotation, rotation, &scale );
-  
-    if( !rotmat_to_ang( rotation, angles ) )
+                centre_of_rotation, &rotation, &scale );
+
+    if( !rotmat_to_ang( &rotation, angles ) )
     {
         print_error( "Error in compute_arb_param_transform().\n");
         print_error( "Cannot extract angles from rotation matrix.\n");
@@ -313,28 +301,15 @@ private  void  compute_arb_param_transform(
         exit(EXIT_FAILURE);
     }
 
-    /* Calculate matrix in homogeneous coordinates */
+    build_transformation_matrix( &linear_transform,
+                                 centre_of_rotation, 
+                                 translation,
+                                 scales,
+                                 shears,
+                                 angles );
 
-    build_homogeneous_from_parameters( calc_transformation,
-                                       centre_of_rotation, 
-                                       translation,
-                                       scales,
-                                       shears,
-                                       angles );
-
-    /* Save the transform */
-
-    for_less( i, 0, N_DIMENSIONS + 1 )
-    {
-        for_less( j, 0, N_DIMENSIONS + 1 )
-            Transform_elem(linear_transform, i, j) = calc_transformation[j][i];
-    }
 
     create_linear_transform( transform, &linear_transform );
-  
-    /* Free the matrices and vectors */
-
-    FREE2D(calc_transformation );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -367,6 +342,57 @@ private  void   make_rots(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
+@NAME       : concat_transformation_matrix
+@INPUT      : center, translations, scales, rotations
+@OUTPUT     : lt  - a linear transformation matrix
+@RETURNS    : nothing
+@DESCRIPTION: mat = (c)(s*r)(-c)(t),
+               the matrix is to be  PREmultiplied with a vector (mat*vec)
+               when used in the application
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Thu Jun  3 09:37:56 EST 1993 lc
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
+---------------------------------------------------------------------------- */
+
+private  void  concat_transformation_matrix(
+    Transform   *lt, 
+    Real        center[],
+    Real        translations[],
+    Real        scales[],
+    Real        shears[],
+    Transform   *rotation )
+{
+    Transform    T, SH, S, C;
+
+    /* mat = (C)(SH)(S)(R)(-C)(T) */
+
+    /* make (T)(-C) */
+
+    make_translation_transform( translations[X] - center[X],
+                                translations[Y] - center[Y],
+                                translations[Z] - center[Z], &T );
+
+    /* make shear rotation matrix */
+
+    make_rots( &SH, shears[0], shears[1], shears[2] );
+
+    /* make scaling matrix */
+
+    make_scale_transform( scales[X], scales[Y], scales[Z], &S );
+
+    /* make translation back to centre */
+
+    make_translation_transform( center[X], center[Y], center[Z], &C );
+
+    concat_transforms( lt, &T, rotation );
+    concat_transforms( lt, lt, &S );
+    concat_transforms( lt, lt, &C );
+    concat_transforms( lt, lt, &SH );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
 @NAME       : build_transformation_matrix
 @INPUT      : center, translations, scales, rotations
 @OUTPUT     : lt  - a linear transformation matrix
@@ -389,60 +415,14 @@ public  void  build_transformation_matrix(
     Real        shears[],
     Real        rotations[] )
 {
-    Transform    T, SH, S, R, C;
-
-    /* mat = (C)(SH)(S)(R)(-C)(T) */
-
-    /* make (T)(-C) */
-
-    make_translation_transform( translations[X] - center[X],
-                                translations[Y] - center[Y],
-                                translations[Z] - center[Z], &T );
+    Transform    R;
 
     /* make rotation matix */
 
     make_rots( &R, rotations[0], rotations[1], rotations[2] );
 
-    /* make shear rotation matrix */
-
-    make_rots( &SH, shears[0], shears[1], shears[2] );
-
-    /* make scaling matrix */
-
-    make_scale_transform( scales[X], scales[Y], scales[Z], &S );
-
-    /* make translation back to centre */
-
-    make_translation_transform( center[X], center[Y], center[Z], &C );
-
-    concat_transforms( lt, &T, &R );
-    concat_transforms( lt, lt, &S );
-    concat_transforms( lt, lt, &C );
-    concat_transforms( lt, lt, &SH );
-}
-
-private  void  build_homogeneous_from_parameters(
-    Real  **calc_transformation,
-    Real  centre[],
-    Real  translation[],
-    Real  scales[],
-    Real  shears[],
-    Real  angles[] )
-{
-    Transform   mat;
-    int         i, j;
-
-    build_transformation_matrix( &mat, centre, translation, scales, shears,
-                                 angles );
-
-    for_less( i, 0, N_DIMENSIONS )
-        for_less( j, 0, N_DIMENSIONS + 1 )
-            calc_transformation[j][i] = Transform_elem(mat,i,j);
-
-    for_less( i, 0, N_DIMENSIONS )
-        calc_transformation[i][N_DIMENSIONS] = 0.0;
-
-    calc_transformation[N_DIMENSIONS][N_DIMENSIONS] = 1.0;
+    concat_transformation_matrix( lt, center, translations, scales,
+                                  shears, &R );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
