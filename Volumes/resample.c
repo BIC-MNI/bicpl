@@ -32,11 +32,8 @@ public  Boolean  do_more_resampling(
     Real             *fraction_done )
 {
     int             value;
-    int             z, xi, yi, zi;
-    int             v000, v001, v010, v011, v100, v101, v110, v111;
-    Real            v00, v01, v10, v11, v0, v1;
+    int             z;
     Real            xv, yv, zv;
-    Real            u, v, w;
     Real            end_time, real_value;
     Point           point;
     Vector          z_axis;
@@ -80,6 +77,8 @@ public  Boolean  do_more_resampling(
             {
                 (void) evaluate_volume( resample->src_volume, xv, yv, zv,
                                         0, FALSE, &real_value,
+                                        (Real *) 0, (Real *) 0, (Real *) 0,
+                                        (Real *) 0, (Real *) 0, (Real *) 0,
                                         (Real *) 0, (Real *) 0, (Real *) 0 );
 
                 value = ROUND( real_value );
