@@ -1,6 +1,8 @@
 #ifndef  DEF_DEFORM
 #define  DEF_DEFORM
 
+#include  <def_mni.h>
+
 typedef  struct
 {
     Real      min_isovalue;
