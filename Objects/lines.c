@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.13 1995-10-19 15:47:46 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.14 1996-05-02 14:26:09 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -42,7 +42,7 @@ public  void  initialize_lines(
     lines->colour_flag = ONE_COLOUR;
     lines->colours[0] = col;
 
-    lines->line_thickness = 1.0;
+    lines->line_thickness = 1.0f;
     lines->n_points = 0;
     lines->n_items = 0;
 
