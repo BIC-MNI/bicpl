@@ -1,72 +1,53 @@
 #include  <def_mni.h>
 
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : alloc_auxiliary_data
-@INPUT      : volume
-@OUTPUT     : 
-@RETURNS    : 
-@DESCRIPTION: Allocates memory for the auxiliary data, which is used for
-              setting voxels active and inactive, and in general,
-              labeling voxels with an integer value between 0 and 255.
-@CREATED    : Mar   1993           David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
+#define  ACTIVE_BIT                128
+#define  LOWER_AUXILIARY_BITS      127
 
-private  void  alloc_auxiliary_data(
+public  Volume  create_label_volume(
+    int    n_dimensions,
+    int    sizes[] )
+{
+    Volume   volume;
+
+    volume = create_volume( n_dimensions, (char **) NULL, NC_BYTE, FALSE,
+                            0.0, 0.0 );
+
+    set_volume_sizes( volume, sizes );
+
+    return( volume );
+}
+
+private  void  check_alloc_label_data(
     Volume  volume )
 {
-    ALLOC3D( volume->labels, volume->sizes[X], volume->sizes[Y],
-             volume->sizes[Z] );
-    set_all_volume_auxiliary_data( volume, ACTIVE_BIT );
-}
-
-private  void  check_alloc_auxiliary_data(
-    Volume  volume )
-{
-    if( volume->labels == (unsigned char ***) NULL )
-        alloc_auxiliary_data( volume );
+    if( volume->data == (void *) NULL )
+        alloc_volume_data( volume );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : free_auxiliary_data
-@INPUT      : volume
-@OUTPUT     : 
-@RETURNS    : 
-@DESCRIPTION: Frees the memory associated with the auxiliary volume data.
-@CREATED    : Mar   1993           David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  void  free_auxiliary_data(
-    Volume   volume )
-{
-    if( volume->labels != (unsigned char ***) NULL )
-        FREE3D( volume->labels );
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : set_all_volume_auxiliary_data
+@NAME       : set_all_volume_label_data
 @INPUT      : volume
               value
 @OUTPUT     : 
 @RETURNS    : 
-@DESCRIPTION: Sets the auxiliary value of all voxels to the value specified.
+@DESCRIPTION: Sets the label value of all voxels to the value specified.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_all_volume_auxiliary_data(
+public  void  set_all_volume_label_data(
     Volume    volume,
     int       value )
 {
     int             n_voxels, i;
+    void            *void_ptr;
     unsigned char   *label_ptr;
 
-    check_alloc_auxiliary_data( volume );
+    check_alloc_label_data( volume );
 
-    n_voxels = volume->sizes[X] * volume->sizes[Y] * volume->sizes[Z];
-
-    label_ptr = volume->labels[0][0];
+    n_voxels = get_volume_total_n_voxels( volume );
+    GET_VOXEL_PTR( void_ptr, volume, 0, 0, 0, 0, 0 );
+    label_ptr = (unsigned char *) void_ptr;
 
     for_less( i, 0, n_voxels )
     {
@@ -76,31 +57,32 @@ public  void  set_all_volume_auxiliary_data(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : set_all_volume_auxiliary_data_bit
+@NAME       : set_all_volume_label_data_bit
 @INPUT      : volume
               bit
               value - ON or OFF
 @OUTPUT     : 
 @RETURNS    : 
-@DESCRIPTION: Sets just the given bit of all the voxels' auxiliary data to the
+@DESCRIPTION: Sets just the given bit of all the voxels' label data to the
               given value.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_all_volume_auxiliary_data_bit(
+public  void  set_all_volume_label_data_bit(
     Volume         volume,
     int            bit,
     Boolean        value )
 {
     int             n_voxels, i;
+    void            *void_ptr;
     unsigned char   *label_ptr;
 
-    check_alloc_auxiliary_data( volume );
+    check_alloc_label_data( volume );
 
-    n_voxels = volume->sizes[X] * volume->sizes[Y] * volume->sizes[Z];
-
-    label_ptr = volume->labels[0][0];
+    n_voxels = get_volume_total_n_voxels( volume );
+    GET_VOXEL_PTR( void_ptr, volume, 0, 0, 0, 0, 0 );
+    label_ptr = (unsigned char *) void_ptr;
 
     for_less( i, 0, n_voxels )
     {
@@ -128,29 +110,11 @@ public  void  set_all_voxel_activity_flags(
     Volume         volume,
     Boolean        value )
 {
-    set_all_volume_auxiliary_data_bit( volume, ACTIVE_BIT, value );
+    set_all_volume_label_data_bit( volume, ACTIVE_BIT, !value );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : set_all_voxel_label_flags
-@INPUT      : volume
-              value
-@OUTPUT     : 
-@RETURNS    : 
-@DESCRIPTION: Sets the label bit of all auxiliary data to the given value.
-@CREATED    : Mar   1993           David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  void  set_all_voxel_label_flags(
-    Volume         volume,
-    Boolean        value )
-{
-    set_all_volume_auxiliary_data_bit( volume, LABEL_BIT, value );
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : set_volume_auxiliary_data
+@NAME       : set_volume_label_data
 @INPUT      : volume
               x
               y
@@ -158,46 +122,51 @@ public  void  set_all_voxel_label_flags(
               value
 @OUTPUT     : 
 @RETURNS    : 
-@DESCRIPTION: Sets the auxiliary data of the given voxel to the value.
+@DESCRIPTION: Sets the label data of the given voxel to the value.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_volume_auxiliary_data(
+public  void  set_volume_label_data(
     Volume          volume,
     int             x,
     int             y,
     int             z,
     int             value )
 {
-    check_alloc_auxiliary_data( volume );
+    check_alloc_label_data( volume );
 
-    volume->labels[x][y][z] = (unsigned char) value;
+    SET_VOXEL_3D( volume, x, y, z, value );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : get_volume_auxiliary_data
+@NAME       : get_volume_label_data
 @INPUT      : volume
               x
               y
               z
 @OUTPUT     : 
 @RETURNS    : value
-@DESCRIPTION: Returns the auxiliary data of the given voxel.
+@DESCRIPTION: Returns the label data of the given voxel.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_volume_auxiliary_data(
+public  int  get_volume_label_data(
     Volume          volume,
     int             x,
     int             y,
     int             z )
 {
-    if( volume->labels == (unsigned char ***) NULL )
-        return( ACTIVE_BIT );
+    int    label;
+
+    if( volume->data == (void *) NULL )
+        return( 0 );
     else
-        return( (int) (volume->labels[x][y][z]) );
+    {
+        GET_VOXEL_3D( label, volume, x, y, z );
+        return( label );
+    }
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -208,7 +177,7 @@ public  int  get_volume_auxiliary_data(
               z
 @OUTPUT     : 
 @RETURNS    : TRUE if voxel is active
-@DESCRIPTION: Returns the active bit of the voxel, or if no auxiliary data,
+@DESCRIPTION: Returns the active bit of the voxel, or if no label data,
               then all voxels are active.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
@@ -220,10 +189,7 @@ public  Boolean  get_voxel_activity_flag(
     int             y,
     int             z )
 {
-    if( volume->labels == (unsigned char ***) NULL )
-        return( TRUE );
-    else
-        return( (volume->labels[x][y][z] & ACTIVE_BIT) != 0 );
+    return( (get_volume_label_data( volume, x, y, z ) & ACTIVE_BIT) == 0 );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -247,86 +213,91 @@ public  void  set_voxel_activity_flag(
     int             z,
     Boolean         value )
 {
-    unsigned  char  *ptr;
+    void            *void_ptr;
+    unsigned char   *label_ptr;
 
-    check_alloc_auxiliary_data( volume );
+    check_alloc_label_data( volume );
 
-    ptr = &volume->labels[x][y][z];
-    if( value )
-        *ptr |= ACTIVE_BIT;
-    else if( (*ptr & ACTIVE_BIT) != 0 )
-        *ptr ^= ACTIVE_BIT;
+    GET_VOXEL_PTR_3D( void_ptr, volume, x, y, z );
+    label_ptr = (unsigned char *) void_ptr;
+
+    if( !value )
+        *label_ptr |= ACTIVE_BIT;
+    else if( (*label_ptr & ACTIVE_BIT) != 0 )
+        *label_ptr ^= ACTIVE_BIT;
 }
 
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : get_voxel_label_flag
-@INPUT      : 
-@OUTPUT     : 
-@RETURNS    : TRUE if voxel labeled
-@DESCRIPTION: Returns the label bit of the voxel's auxiliary data.
-@CREATED    : Mar   1993           David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  Boolean  get_voxel_label_flag(
-    Volume          volume,
-    int             x,
-    int             y,
-    int             z )
+public  Boolean  get_volume_voxel_activity(
+    Volume     volume,
+    Real       x,
+    Real       y,
+    Real       z,
+    Boolean    activity_if_mixed )
 {
-    if( volume->labels == (unsigned char ***) NULL )
+    int   n_active, x_int, y_int, z_int;
+    int   sizes[MAX_DIMENSIONS];
+
+    get_volume_sizes( volume, sizes );
+
+    if( x < 0.0 || x > sizes[X]-1 ||
+        y < 0.0 || y > sizes[Y]-1 ||
+        z < 0.0 || z > sizes[Z]-1 )
         return( FALSE );
+
+    x_int = (int) x;
+    if( x_int == sizes[X] - 1 )
+        x_int = sizes[X] - 2;
+
+    y_int = (int) y;
+    if( y_int == sizes[Y] - 1 )
+        y_int = sizes[Y] - 2;
+
+    z_int = (int) z;
+    if( z_int == sizes[Z] - 1 )
+        z_int = sizes[Z] - 2;
+
+    n_active = 0;
+
+    if( get_voxel_activity_flag( volume, x, y, z ) )
+        ++n_active;
+    if( get_voxel_activity_flag( volume, x, y, z+1 ) )
+        ++n_active;
+    if( get_voxel_activity_flag( volume, x, y+1, z ) )
+        ++n_active;
+    if( get_voxel_activity_flag( volume, x, y+1, z+1 ) )
+        ++n_active;
+    if( get_voxel_activity_flag( volume, x+1, y, z ) )
+        ++n_active;
+    if( get_voxel_activity_flag( volume, x+1, y, z+1 ) )
+        ++n_active;
+    if( get_voxel_activity_flag( volume, x+1, y+1, z ) )
+        ++n_active;
+    if( get_voxel_activity_flag( volume, x+1, y+1, z+1 ) )
+        ++n_active;
+
+    if( n_active == 0 )
+        return( FALSE );
+    else if( n_active == 8 )
+        return( TRUE );
     else
-        return( (volume->labels[x][y][z] & LABEL_BIT) != 0 );
+        return( activity_if_mixed );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : set_voxel_label_flag
-@INPUT      : volume
-              x
-              y
-              z
-              value
-@OUTPUT     : 
-@RETURNS    : 
-@DESCRIPTION: Sets the label flag for the given voxel.
-@CREATED    : Mar   1993           David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  void  set_voxel_label_flag(
-    Volume          volume,
-    int             x,
-    int             y,
-    int             z,
-    Boolean         value )
-{
-    unsigned  char  *ptr;
-
-    check_alloc_auxiliary_data( volume );
-
-    ptr = &volume->labels[x][y][z];
-    if( value )
-        *ptr |= LABEL_BIT;
-    else if( (*ptr & LABEL_BIT) != 0 )
-        *ptr ^= LABEL_BIT;
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : io_volume_auxiliary_bit
+@NAME       : io_volume_label_bit
 @INPUT      : file
               io_type  - READ_FILE or WRITE_FILE
               volume
               bit
 @OUTPUT     : 
 @RETURNS    : OK if successful
-@DESCRIPTION: Reads or writes the given bit of the auxiliary data for all
+@DESCRIPTION: Reads or writes the given bit of the label data for all
               voxels.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_volume_auxiliary_bit(
+public  Status  io_volume_label_bit(
     FILE           *file,
     IO_types       io_type,
     Volume         volume,
@@ -335,6 +306,7 @@ public  Status  io_volume_auxiliary_bit(
     Status             status;
     bitlist_3d_struct  bitlist;
     int                x, y, z, nx, ny, nz;
+    void               *void_ptr;
     unsigned char      *label_ptr;
 
     status = OK;
@@ -343,13 +315,14 @@ public  Status  io_volume_auxiliary_bit(
     ny = volume->sizes[Y];
     nz = volume->sizes[Z];
 
-    check_alloc_auxiliary_data( volume );
+    check_alloc_label_data( volume );
 
     create_bitlist_3d( nx, ny, nz, &bitlist );
 
     if( io_type == WRITE_FILE )
     {
-        label_ptr = volume->labels[0][0];
+        GET_VOXEL_PTR( void_ptr, volume, 0, 0, 0, 0, 0 );
+        label_ptr = (unsigned char *) void_ptr;
 
         for_less( x, 0, nx )
         {
@@ -370,7 +343,8 @@ public  Status  io_volume_auxiliary_bit(
 
     if( status == OK && io_type == READ_FILE )
     {
-        label_ptr = volume->labels[0][0];
+        GET_VOXEL_PTR( void_ptr, volume, 0, 0, 0, 0, 0 );
+        label_ptr = (unsigned char *) void_ptr;
 
         for_less( x, 0, nx )
         {
@@ -395,9 +369,18 @@ public  Status  io_volume_auxiliary_bit(
     return( status );
 }
 
+public  Status  io_volume_activity_bit(
+    FILE           *file,
+    IO_types       io_type,
+    Volume         volume )
+{
+    return( io_volume_label_bit( file, io_type, volume, ACTIVE_BIT ) );
+}
+
 public  Status  input_tags_as_labels(
     FILE    *file,
-    Volume  volume )
+    Volume  volume,
+    Volume  label_volume )
 {
     int             i, label, ind[N_DIMENSIONS];
     Real            x_voxel, y_voxel, z_voxel;
@@ -406,7 +389,7 @@ public  Status  input_tags_as_labels(
     int             *structure_ids, *patient_ids;
     char            **labels;
 
-    check_alloc_auxiliary_data( volume );
+    check_alloc_label_data( label_volume );
 
     if( input_tag_points( file, &n_volumes, &n_tag_points,
                                &tags1, &tags2, &weights, &structure_ids,
@@ -425,10 +408,9 @@ public  Status  input_tags_as_labels(
 
         label = structure_ids[i];
         if( label >= 0 && label <= LOWER_AUXILIARY_BITS &&
-            cube_is_within_volume( volume, ind ) )
+            int_voxel_is_within_volume( volume, ind ) )
         {
-            set_volume_auxiliary_data( volume, ind[X], ind[Y], ind[Z],
-                                       label | ACTIVE_BIT );
+            set_volume_label_data( label_volume, ind[X], ind[Y], ind[Z], label);
         }
     }
 
@@ -441,6 +423,7 @@ public  Status  input_tags_as_labels(
 public  Status  output_labels_as_tags(
     FILE    *file,
     Volume  volume,
+    Volume  label_volume,
     int     desired_label,
     Real    size,
     int     patient_id )
@@ -452,8 +435,8 @@ public  Status  output_labels_as_tags(
     Real            **tags, *weights;
     int             *structure_ids, *patient_ids;
 
-    check_alloc_auxiliary_data( volume );
-    get_volume_sizes( volume, sizes );
+    check_alloc_label_data( label_volume );
+    get_volume_sizes( label_volume, sizes );
 
     n_tags = 0;
 
@@ -463,7 +446,7 @@ public  Status  output_labels_as_tags(
         {
             for_less( z, 0, sizes[Z] )
             {
-                label = get_volume_auxiliary_data( volume, x, y, z ) &
+                label = get_volume_label_data( label_volume, x, y, z ) &
                         LOWER_AUXILIARY_BITS;
 
                 if( label == desired_label || (desired_label < 0 && label > 0) )
@@ -509,13 +492,14 @@ public  Status  output_labels_as_tags(
 
 public  Status  input_landmarks_as_labels(
     FILE    *file,
-    Volume  volume )
+    Volume  volume,
+    Volume  label_volume )
 {
     int             label, ind[N_DIMENSIONS];
     Real            x_voxel, y_voxel, z_voxel;
     marker_struct   marker;
 
-    check_alloc_auxiliary_data( volume );
+    check_alloc_label_data( label_volume );
 
     while( io_tag_point( file, READ_FILE, volume, 1.0, &marker ) == OK )
     {
@@ -531,10 +515,9 @@ public  Status  input_landmarks_as_labels(
 
         label = marker.structure_id;
         if( label >= 0 && label <= LOWER_AUXILIARY_BITS &&
-            cube_is_within_volume( volume, ind ) )
+            int_voxel_is_within_volume( volume, ind ) )
         {
-            set_volume_auxiliary_data( volume, ind[X], ind[Y], ind[Z],
-                                       label | ACTIVE_BIT );
+            set_volume_label_data( label_volume, ind[X], ind[Y], ind[Z], label);
         }
     }
 

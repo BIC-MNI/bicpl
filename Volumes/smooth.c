@@ -40,13 +40,12 @@ public  Volume  smooth_resample_volume(
 
     resampled_volume = create_volume( 3, volume->dimension_names,
                                       volume->nc_data_type,
-                                      volume->signed_flag );
+                                      volume->signed_flag,
+                                      get_volume_voxel_min(volume),
+                                      get_volume_voxel_max(volume) );
 
-    set_volume_size( resampled_volume, volume->nc_data_type,
-                     volume->signed_flag, new_sizes );
+    set_volume_sizes( resampled_volume, new_sizes );
 
-    set_volume_voxel_range( resampled_volume, get_volume_min_voxel(volume),
-                            get_volume_max_voxel(volume) );
     set_volume_real_range( resampled_volume, get_volume_real_min(volume),
                            get_volume_real_max(volume) );
 

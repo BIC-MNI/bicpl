@@ -46,7 +46,7 @@ public  Boolean  voxel_is_within_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  cube_is_within_volume(
+public  Boolean  int_voxel_is_within_volume(
     Volume   volume,
     int      indices[] )
 {
@@ -135,29 +135,25 @@ public  Boolean  voxel_contains_value(
               x
               y
               z
-              activity_if_mixed
 @OUTPUT     : value
               deriv_x
               deriv_y
               deriv_z
-@RETURNS    : TRUE if point is within active voxel.
+@RETURNS    : 
 @DESCRIPTION: Takes a world space position and evaluates the value within
-              the volume by trilinear interpolation.  If the activities of the
-              8 voxels containing this point agree, then that activity is
-              returned, if not, then activity_if_mixed is returned.  If
-              deriv_x is not a null pointer, then the 3 derivatives are passed
-              back.
+              the volume by trilinear interpolation. 
+              If deriv_x is not a null pointer, then the 3 derivatives are
+              passed back.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean   evaluate_volume_in_world(
+public  void   evaluate_volume_in_world(
     Volume         volume,
     Real           x,
     Real           y,
     Real           z,
     int            degrees_continuity,
-    Boolean        activity_if_mixed,
     Real           *value,
     Real           *deriv_x,
     Real           *deriv_y,
@@ -169,7 +165,6 @@ public  Boolean   evaluate_volume_in_world(
     Real           *deriv_yz,
     Real           *deriv_zz )
 {
-    Boolean   voxel_is_active;
     Real      ignore, dxx, dxy, dxz, dyy, dyz, dzz;
     Real      txx, txy, txz;
     Real      tyx, tyy, tyz;
@@ -177,12 +172,10 @@ public  Boolean   evaluate_volume_in_world(
 
     convert_world_to_voxel( volume, x, y, z, &x, &y, &z );
 
-    voxel_is_active = evaluate_volume( volume, x, y, z, degrees_continuity,
-                                       activity_if_mixed,
-                                       value, deriv_x, deriv_y, deriv_z,
-                                       deriv_xx, deriv_xy, deriv_xz,
-                                       deriv_yy, deriv_yz,
-                                       deriv_zz );
+    evaluate_volume( volume, x, y, z, degrees_continuity,
+                     value, deriv_x, deriv_y, deriv_z,
+                     deriv_xx, deriv_xy, deriv_xz,
+                     deriv_yy, deriv_yz, deriv_zz );
 
     if( deriv_x != (Real *) 0 )
     {
@@ -219,8 +212,6 @@ public  Boolean   evaluate_volume_in_world(
                                               txz, tyz, tzz,
                                               deriv_xz, deriv_yz, deriv_zz );
     }
-
-    return( voxel_is_active );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -229,31 +220,26 @@ public  Boolean   evaluate_volume_in_world(
               x
               y
               z
-              activity_if_mixed
 @OUTPUT     : value
               deriv_x
               deriv_y
               deriv_xx
               deriv_xy
               deriv_yy
-@RETURNS    : TRUE if point is within active voxel.
+@RETURNS    : 
 @DESCRIPTION: Takes a world space position and evaluates the value within
-              the volume by bilinear interpolation within the slice.  If the
-              activities of the 4 voxels containing this point agree, then
-              that activity is
-              returned, if not, then activity_if_mixed is returned.  If
-              deriv_x is not a null pointer, then the derivatives are passed
+              the volume by bilinear interpolation within the slice.
+              If deriv_x is not a null pointer, then the derivatives are passed
               back.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean   evaluate_slice_in_world(
+public  void   evaluate_slice_in_world(
     Volume         volume,
     Real           x,
     Real           y,
     Real           z,
-    Boolean        activity_if_mixed,
     Real           *value,
     Real           *deriv_x,
     Real           *deriv_y,
@@ -261,7 +247,6 @@ public  Boolean   evaluate_slice_in_world(
     Real           *deriv_xy,
     Real           *deriv_yy )
 {
-    Boolean   voxel_is_active;
     Real      ignore, dxx, dxy, dyy;
     Real      txx, txy, txz;
     Real      tyx, tyy, tyz;
@@ -269,10 +254,8 @@ public  Boolean   evaluate_slice_in_world(
 
     convert_world_to_voxel( volume, x, y, z, &x, &y, &z );
 
-    voxel_is_active = evaluate_slice( volume, x, y, z,
-                                      activity_if_mixed,
-                                      value, deriv_x, deriv_y,
-                                      deriv_xx, deriv_xy, deriv_yy );
+    evaluate_slice( volume, x, y, z, value, deriv_x, deriv_y,
+                    deriv_xx, deriv_xy, deriv_yy );
 
     if( deriv_x != (Real *) 0 )
     {
@@ -303,13 +286,9 @@ public  Boolean   evaluate_slice_in_world(
                                               txy, tyy, tzy,
                                               deriv_xy, deriv_yy, &ignore );
     }
-
-    return( voxel_is_active );
 }
 
-typedef enum { NONE_ACTIVE, SOME_ACTIVE, ALL_ACTIVE } Group_activity;
-
-private  Group_activity   triconstant_interpolate_volume(
+private  void   triconstant_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -319,7 +298,6 @@ private  Group_activity   triconstant_interpolate_volume(
     Real           *deriv_y,
     Real           *deriv_z )
 {
-    Group_activity     activity;
     int                i, j, k;
     Real               prev, next, dx, dy, dz, voxel_value;
     int                nx, ny, nz;
@@ -342,11 +320,6 @@ private  Group_activity   triconstant_interpolate_volume(
 
     if( value != (Real *) 0 )
         *value = voxel_value;
-
-    if( get_voxel_activity_flag( volume, i, j, k ) )
-        activity = ALL_ACTIVE;
-    else
-        activity = NONE_ACTIVE;
 
     if( deriv_x != (Real *) NULL )
     {
@@ -422,11 +395,9 @@ private  Group_activity   triconstant_interpolate_volume(
         else
             *deriv_z = (next - prev) / (Real) dz;
     }
-
-    return( activity );
 }
 
-private  Group_activity   trilinear_interpolate_volume(
+private  void   trilinear_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -436,8 +407,6 @@ private  Group_activity   trilinear_interpolate_volume(
     Real           *deriv_y,
     Real           *deriv_z )
 {
-    Group_activity     activity;
-    int                n_inactive;
     int                i, j, k;
     Real               u, v, w;
     Real               c000, c001, c010, c011, c100, c101, c110, c111;
@@ -484,8 +453,6 @@ private  Group_activity   trilinear_interpolate_volume(
         w = FRACTION( z );
     }
 
-    n_inactive = 0;
-
     GET_VALUE_3D( c000, volume, i,   j,   k );
     GET_VALUE_3D( c001, volume, i,   j,   k+1 );
     GET_VALUE_3D( c010, volume, i,   j+1, k );
@@ -495,23 +462,6 @@ private  Group_activity   trilinear_interpolate_volume(
     GET_VALUE_3D( c110, volume, i+1, j+1, k );
     GET_VALUE_3D( c111, volume, i+1, j+1, k+1 );
 
-    if( !get_voxel_activity_flag( volume, i  , j  , k ) )
-        ++n_inactive;
-    if( !get_voxel_activity_flag( volume, i  , j  , k+1 ) )
-        ++n_inactive;
-    if( !get_voxel_activity_flag( volume, i  , j+1, k ) )
-            ++n_inactive;
-    if( !get_voxel_activity_flag( volume, i  , j+1, k+1 ) )
-        ++n_inactive;
-    if( !get_voxel_activity_flag( volume, i+1, j  , k ) )
-        ++n_inactive;
-    if( !get_voxel_activity_flag( volume, i+1, j  , k+1 ) )
-        ++n_inactive;
-    if( !get_voxel_activity_flag( volume, i+1, j+1, k ) )
-        ++n_inactive;
-    if( !get_voxel_activity_flag( volume, i+1, j+1, k+1 ) )
-        ++n_inactive;
-    
     du00 = c100 - c000;
     du01 = c101 - c001;
     du10 = c110 - c010;
@@ -540,18 +490,9 @@ private  Group_activity   trilinear_interpolate_volume(
         *deriv_y = INTERPOLATE( w, dv0, dv1 );
         *deriv_z = (c1 - c0);
     }
-
-    if( n_inactive == 0 )
-        activity = ALL_ACTIVE;
-    else if( n_inactive == 8 )
-        activity = NONE_ACTIVE;
-    else
-        activity = SOME_ACTIVE;
-
-    return( activity );
 }
 
-private  Group_activity   triquadratic_interpolate_volume(
+private  void   triquadratic_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -567,9 +508,7 @@ private  Group_activity   triquadratic_interpolate_volume(
     Real           *deriv_yz,
     Real           *deriv_zz )
 {
-    Group_activity     activity;
-    int                n_inactive;
-    int                i, j, k, di, dj, dk;
+    int                i, j, k;
     int                nx, ny, nz;
     Real               tx, ty, tz, u, v, w;
     Real               c000, c001, c002, c010, c011, c012, c020, c021, c022;
@@ -648,20 +587,6 @@ private  Group_activity   triquadratic_interpolate_volume(
     GET_VALUE_3D( c221, volume, i+1, j+1, k+0 );
     GET_VALUE_3D( c222, volume, i+1, j+1, k+1 );
 
-    n_inactive = 0;
-
-    for_inclusive( di, -1, 1 )
-    {
-        for_inclusive( dj, -1, 1 )
-        {
-            for_inclusive( dk, -1, 1 )
-            {
-                if( !get_voxel_activity_flag( volume, i+di, j+dj, k+dk ) )
-                    ++n_inactive;
-            }
-        }
-    }
-
     if( value != (Real *) 0 )
     {
         QUADRATIC_TRIVAR( c, u, v, w, *value );
@@ -677,18 +602,9 @@ private  Group_activity   triquadratic_interpolate_volume(
         QUADRATIC_TRIVAR_DERIV2( c, u, v, w, *deriv_xx, *deriv_xy, *deriv_xz,
                                  *deriv_yy, *deriv_yz, *deriv_zz );
     }
-
-    if( n_inactive == 0 )
-        activity = ALL_ACTIVE;
-    else if( n_inactive == 27 )
-        activity = NONE_ACTIVE;
-    else
-        activity = SOME_ACTIVE;
-
-    return( activity );
 }
 
-private  Group_activity   tricubic_interpolate_volume(
+private  void   tricubic_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -704,9 +620,7 @@ private  Group_activity   tricubic_interpolate_volume(
     Real           *deriv_yz,
     Real           *deriv_zz )
 {
-    Group_activity     activity;
-    int                n_inactive;
-    int                i, j, k, di, dj, dk;
+    int                i, j, k;
     int                nx, ny, nz;
     Real               u, v, w;
     Real               c000, c001, c002, c003, c010, c011, c012, c013;
@@ -824,20 +738,6 @@ private  Group_activity   tricubic_interpolate_volume(
     GET_VALUE_3D( c332, volume, i+2, j+2, k+1 );
     GET_VALUE_3D( c333, volume, i+2, j+2, k+2 );
 
-    n_inactive = 0;
-
-    for_inclusive( di, -1, 2 )
-    {
-        for_inclusive( dj, -1, 2 )
-        {
-            for_inclusive( dk, -1, 2 )
-            {
-                if( !get_voxel_activity_flag( volume, i+di, j+dj, k+dk ) )
-                    ++n_inactive;
-            }
-        }
-    }
-
     if( deriv_xx != (Real *) 0 )
     {
         CUBIC_TRIVAR_VAL_DERIV2( c, u, v, w, *value,
@@ -857,18 +757,9 @@ private  Group_activity   tricubic_interpolate_volume(
             CUBIC_TRIVAR_DERIV( c, u, v, w, *deriv_x, *deriv_y, *deriv_z );
         }
     }
-
-    if( n_inactive == 0 )
-        activity = ALL_ACTIVE;
-    else if( n_inactive == 64 )
-        activity = NONE_ACTIVE;
-    else
-        activity = SOME_ACTIVE;
-
-    return( activity );
 }
 
-private  Group_activity   bicubic_interpolate_volume(
+private  void   bicubic_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -880,9 +771,7 @@ private  Group_activity   bicubic_interpolate_volume(
     Real           *deriv_xy,
     Real           *deriv_yy )
 {
-    Group_activity     activity;
-    int                n_inactive;
-    int                i, j, k, di, dj;
+    int                i, j, k;
     int                nx, ny, nz;
     Real               u, v;
     Real               c00, c01, c02, c03, c10, c11, c12, c13;
@@ -940,16 +829,6 @@ private  Group_activity   bicubic_interpolate_volume(
     GET_VALUE_3D( c32, volume, i+2, j+1, k );
     GET_VALUE_3D( c33, volume, i+2, j+2, k );
 
-    n_inactive = 0;
-    for_inclusive( di, -1, 2 )
-    {
-        for_inclusive( dj, -1, 2 )
-        {
-            if( !get_voxel_activity_flag( volume, i+di, j+dj, k ) )
-                ++n_inactive;
-        }
-    }
-
     if( deriv_xx != (Real *) 0 )
     {
         CUBIC_BIVAR_VAL_DERIV2( c00, c01, c02, c03, c10, c11, c12, c13,
@@ -972,15 +851,6 @@ private  Group_activity   bicubic_interpolate_volume(
                                u, v, *deriv_x, *deriv_y );
         }
     }
-
-    if( n_inactive == 0 )
-        activity = ALL_ACTIVE;
-    else if( n_inactive == 16 )
-        activity = NONE_ACTIVE;
-    else
-        activity = SOME_ACTIVE;
-
-    return( activity );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -989,29 +859,25 @@ private  Group_activity   bicubic_interpolate_volume(
               x
               y
               z
-              activity_if_mixed
 @OUTPUT     : value
               deriv_x
               deriv_y
               deriv_z
-@RETURNS    : TRUE if point is within active voxel.
+@RETURNS    : 
 @DESCRIPTION: Takes a voxel space position and evaluates the value within
-              the volume by trilinear interpolation.  If the activities of the
-              8 voxels containing this point agree, then that activity is
-              returned, if not, then activity_if_mixed is returned.  If
-              deriv_x is not a null pointer, then the 3 derivatives are passed
+              the volume by trilinear interpolation.
+              If deriv_x is not a null pointer, then the 3 derivatives are passed
               back.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean   evaluate_volume(
+public  void   evaluate_volume(
     Volume         volume,
     Real           x,
     Real           y,
     Real           z,
     int            degrees_continuity,
-    Boolean        activity_if_mixed,
     Real           *value,
     Real           *deriv_x,
     Real           *deriv_y,
@@ -1023,8 +889,6 @@ public  Boolean   evaluate_volume(
     Real           *deriv_yz,
     Real           *deriv_zz )
 {
-    Group_activity   activity;
-    Boolean          voxel_is_active;
     int              nx, ny, nz;
 
     nx = volume->sizes[X];
@@ -1035,7 +899,7 @@ public  Boolean   evaluate_volume(
         y < -0.5 || y > (Real) ny - 0.5 ||
         z < -0.5 || z > (Real) nz - 0.5 )
     {
-        *value = get_volume_min_voxel( volume );
+        *value = get_volume_voxel_min( volume );
         if( deriv_x != (Real *) NULL )
         {
             *deriv_x = 0.0;
@@ -1051,7 +915,7 @@ public  Boolean   evaluate_volume(
             *deriv_yz = 0.0;
             *deriv_zz = 0.0;
         }
-        return( FALSE );
+        return;
     }
 
     if( x < (Real) degrees_continuity * 0.5 ||
@@ -1077,41 +941,32 @@ public  Boolean   evaluate_volume(
     switch( degrees_continuity )
     {
     case -1:
-        activity = triconstant_interpolate_volume( volume, x, y, z, value,
-                                                   deriv_x, deriv_y, deriv_z );
+        triconstant_interpolate_volume( volume, x, y, z, value,
+                                        deriv_x, deriv_y, deriv_z );
         break;
 
     case 0:
-        activity = trilinear_interpolate_volume( volume, x, y, z, value,
-                                                 deriv_x, deriv_y, deriv_z );
+        trilinear_interpolate_volume( volume, x, y, z, value,
+                                      deriv_x, deriv_y, deriv_z );
         break;
 
     case 1:
-        activity = triquadratic_interpolate_volume( volume, x, y, z, value,
-                                               deriv_x, deriv_y, deriv_z,
-                                               deriv_xx, deriv_xy, deriv_xz,
-                                               deriv_yy, deriv_yz, deriv_zz );
+        triquadratic_interpolate_volume( volume, x, y, z, value,
+                                         deriv_x, deriv_y, deriv_z,
+                                         deriv_xx, deriv_xy, deriv_xz,
+                                         deriv_yy, deriv_yz, deriv_zz );
         break;
 
     case 2:
-        activity = tricubic_interpolate_volume( volume, x, y, z, value,
-                                                deriv_x, deriv_y, deriv_z,
-                                                deriv_xx, deriv_xy, deriv_xz,
-                                                deriv_yy, deriv_yz, deriv_zz );
+        tricubic_interpolate_volume( volume, x, y, z, value,
+                                     deriv_x, deriv_y, deriv_z,
+                                     deriv_xx, deriv_xy, deriv_xz,
+                                     deriv_yy, deriv_yz, deriv_zz );
         break;
 
     default:
         HANDLE_INTERNAL_ERROR( "evaluate_volume: invalid continuity" );
     }
-
-    if( activity == ALL_ACTIVE )
-        voxel_is_active = TRUE;
-    else if( activity == NONE_ACTIVE )
-        voxel_is_active = FALSE;
-    else
-        voxel_is_active = activity_if_mixed;
-
-    return( voxel_is_active );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -1120,30 +975,26 @@ public  Boolean   evaluate_volume(
               x
               y
               z
-              activity_if_mixed
 @OUTPUT     : value
               deriv_x
               deriv_y
               deriv_xx
               deriv_xy
               deriv_yy
-@RETURNS    : TRUE if point is within active voxel.
+@RETURNS    : 
 @DESCRIPTION: Takes a voxel position and evaluates the value within
-              the volume by bilinear interpolation within the slice.  If the
-              activities of the 4 voxels containing this point agree, then
-              that activity is returned, if not, then activity_if_mixed is
-              returned.  If deriv_x is not a null pointer, then the
+              the volume by bilinear interpolation within the slice.
+              If deriv_x is not a null pointer, then the
               derivatives are passed back.
 @CREATED    : Mar   1993           David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean   evaluate_slice(
+public  void   evaluate_slice(
     Volume         volume,
     Real           x,
     Real           y,
     Real           z,
-    Boolean        activity_if_mixed,
     Real           *value,
     Real           *deriv_x,
     Real           *deriv_y,
@@ -1151,8 +1002,6 @@ public  Boolean   evaluate_slice(
     Real           *deriv_xy,
     Real           *deriv_yy )
 {
-    Group_activity   activity;
-    Boolean          voxel_is_active;
     int              nx, ny, nz;
 
     nx = volume->sizes[X];
@@ -1163,7 +1012,7 @@ public  Boolean   evaluate_slice(
         y < 1.0 || y > (Real) ny - 2.0 ||
         z < 1.0 || z > (Real) nz - 2.0 )
     {
-        *value = get_volume_min_voxel( volume );
+        *value = get_volume_voxel_min( volume );
         if( deriv_x != (Real *) NULL )
         {
             *deriv_x = 0.0;
@@ -1175,19 +1024,10 @@ public  Boolean   evaluate_slice(
             *deriv_xy = 0.0;
             *deriv_yy = 0.0;
         }
-        return( FALSE );
+        return;
     }
 
-    activity = bicubic_interpolate_volume( volume, x, y, z, value,
-                                           deriv_x, deriv_y,
-                                           deriv_xx, deriv_xy, deriv_yy );
-
-    if( activity == ALL_ACTIVE )
-        voxel_is_active = TRUE;
-    else if( activity == NONE_ACTIVE )
-        voxel_is_active = FALSE;
-    else
-        voxel_is_active = activity_if_mixed;
-
-    return( voxel_is_active );
+    bicubic_interpolate_volume( volume, x, y, z, value,
+                                deriv_x, deriv_y,
+                                deriv_xx, deriv_xy, deriv_yy );
 }

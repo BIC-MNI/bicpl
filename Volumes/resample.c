@@ -75,7 +75,7 @@ public  Boolean  do_more_resampling(
                     yv < -0.5 || yv >= (Real) src_sizes[Y] - 0.5 ||
                     zv < -0.5 || zv >= (Real) src_sizes[Z] - 0.5 )
                 {
-                    value = get_volume_min_voxel( resample->src_volume );
+                    value = get_volume_voxel_min( resample->src_volume );
                 }
                 else
                 {
@@ -85,11 +85,11 @@ public  Boolean  do_more_resampling(
             }
             else
             {
-                (void) evaluate_volume( resample->src_volume, xv, yv, zv,
-                                        0, FALSE, &real_value,
-                                        (Real *) 0, (Real *) 0, (Real *) 0,
-                                        (Real *) 0, (Real *) 0, (Real *) 0,
-                                        (Real *) 0, (Real *) 0, (Real *) 0 );
+                evaluate_volume( resample->src_volume, xv, yv, zv,
+                                 0, &real_value,
+                                 (Real *) 0, (Real *) 0, (Real *) 0,
+                                 (Real *) 0, (Real *) 0, (Real *) 0,
+                                 (Real *) 0, (Real *) 0, (Real *) 0 );
 
                 value = ROUND( real_value );
             }
