@@ -1,5 +1,5 @@
 
-#include  <mni.h>
+#include  <objects.h>
 
 private  Status  io_points(
     FILE            *file,
@@ -445,7 +445,7 @@ public  Status  io_vector(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
-    Vector          *vector )
+    Vector          *v )
 {
     Status   status;
 
@@ -453,18 +453,17 @@ public  Status  io_vector(
 
     if( format == ASCII_FORMAT )
     {
-        status = io_float( file, io_flag, format, &Vector_x(*vector) );
+        status = io_float( file, io_flag, format, &Vector_x(*v) );
 
         if( status == OK )
-            status = io_float( file, io_flag, format, &Vector_y(*vector));
+            status = io_float( file, io_flag, format, &Vector_y(*v));
 
         if( status == OK )
-            status = io_float( file, io_flag, format, &Vector_z(*vector));
+            status = io_float( file, io_flag, format, &Vector_z(*v));
     }
     else
     {
-        status = io_binary_data( file, io_flag, (void *) vector,
-                                 sizeof(*vector), 1 );
+        status = io_binary_data( file, io_flag, (void *) v, sizeof(*v), 1 );
     }
 
     return( status );

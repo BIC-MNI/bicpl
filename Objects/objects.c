@@ -1,4 +1,5 @@
-#include  <mni.h>
+#include  <objects.h>
+#include  <geom.h>
 
 private  void  advance_object_traverse(
     object_traverse_struct  *object_traverse );
@@ -40,7 +41,7 @@ public  lines_struct  *get_lines_ptr(
 {
     if( object->object_type != LINES )
     {
-        HANDLE_INTERNAL_ERROR( "get_lines_ptr" );
+        handle_internal_error( "get_lines_ptr" );
         return( (lines_struct *) NULL );
     }
     else
@@ -52,7 +53,7 @@ public  marker_struct  *get_marker_ptr(
 {
     if( object->object_type != MARKER )
     {
-        HANDLE_INTERNAL_ERROR( "get_marker_ptr" );
+        handle_internal_error( "get_marker_ptr" );
         return( (marker_struct *) NULL );
     }
     else
@@ -64,7 +65,7 @@ public  model_struct  *get_model_ptr(
 {
     if( object->object_type != MODEL )
     {
-        HANDLE_INTERNAL_ERROR( "get_model_ptr" );
+        handle_internal_error( "get_model_ptr" );
         return( (model_struct *) NULL );
     }
     else
@@ -76,7 +77,7 @@ public  pixels_struct  *get_pixels_ptr(
 {
     if( object->object_type != PIXELS )
     {
-        HANDLE_INTERNAL_ERROR( "get_pixels_ptr" );
+        handle_internal_error( "get_pixels_ptr" );
         return( (pixels_struct *) NULL );
     }
     else
@@ -88,7 +89,7 @@ public  polygons_struct  *get_polygons_ptr(
 {
     if( object->object_type != POLYGONS )
     {
-        HANDLE_INTERNAL_ERROR( "get_polygons_ptr" );
+        handle_internal_error( "get_polygons_ptr" );
         return( (polygons_struct *) NULL );
     }
     else
@@ -100,7 +101,7 @@ public  quadmesh_struct  *get_quadmesh_ptr(
 {
     if( object->object_type != QUADMESH )
     {
-        HANDLE_INTERNAL_ERROR( "get_quadmesh_ptr" );
+        handle_internal_error( "get_quadmesh_ptr" );
         return( (quadmesh_struct *) NULL );
     }
     else
@@ -112,7 +113,7 @@ public  text_struct  *get_text_ptr(
 {
     if( object->object_type != TEXT )
     {
-        HANDLE_INTERNAL_ERROR( "get_text_ptr" );
+        handle_internal_error( "get_text_ptr" );
         return( (text_struct *) NULL );
     }
     else
