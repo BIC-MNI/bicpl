@@ -491,148 +491,12 @@ private  void   trilinear_interpolate_volume(
     }
 }
 
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : triquadratic_interpolate_volume
-@INPUT      : volume
-              x
-              y
-              z
-@OUTPUT     : value
-              deriv_x
-              deriv_y
-              deriv_z
-@RETURNS    : 
-@DESCRIPTION: Returns the value within the volume, assuming trilinear
-              interpolation.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    : 1993            David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-private  void   triquadratic_interpolate_volume(
+private  void   trivar_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
     Real           z,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_z,
-    Real           *deriv_xx,
-    Real           *deriv_xy,
-    Real           *deriv_xz,
-    Real           *deriv_yy,
-    Real           *deriv_yz,
-    Real           *deriv_zz )
-{
-    int      i, j, k;
-    Real     tx, ty, tz, u, v, w, dummy;
-    Real     c000, c001, c002, c010, c011, c012, c020, c021, c022;
-    Real     c100, c101, c102, c110, c111, c112, c120, c121, c122;
-    Real     c200, c201, c202, c210, c211, c212, c220, c221, c222;
-    int      sizes[MAX_DIMENSIONS];
-
-    get_volume_sizes( volume, sizes );
-
-    tx = x + 0.5;
-    ty = y + 0.5;
-    tz = z + 0.5;
-
-    if( x == (Real) sizes[X] - 1.5 )
-    {
-        i = sizes[X]-2;
-        u = 1.0;
-    }
-    else
-    {
-        i = (int) tx;
-        u = FRACTION( tx );
-    }
-
-    if( y == (Real) sizes[Y] - 1.5 )
-    {
-        j = sizes[Y]-2;
-        v = 1.0;
-    }
-    else
-    {
-        j = (int) ty;
-        v = FRACTION( ty );
-    }
-
-    if( z == (Real) sizes[Z] - 1.5 )
-    {
-        k = sizes[Z]-2;
-        w = 1.0;
-    }
-    else
-    {
-        k = (int) tz;
-        w = FRACTION( tz );
-    }
-
-    GET_VALUE_3D( c000, volume, i-1, j-1, k-1 );
-    GET_VALUE_3D( c001, volume, i-1, j-1, k+0 );
-    GET_VALUE_3D( c002, volume, i-1, j-1, k+1 );
-    GET_VALUE_3D( c010, volume, i-1, j+0, k-1 );
-    GET_VALUE_3D( c011, volume, i-1, j+0, k+0 );
-    GET_VALUE_3D( c012, volume, i-1, j+0, k+1 );
-    GET_VALUE_3D( c020, volume, i-1, j+1, k-1 );
-    GET_VALUE_3D( c021, volume, i-1, j+1, k+0 );
-    GET_VALUE_3D( c022, volume, i-1, j+1, k+1 );
-
-    GET_VALUE_3D( c100, volume, i+0, j-1, k-1 );
-    GET_VALUE_3D( c101, volume, i+0, j-1, k+0 );
-    GET_VALUE_3D( c102, volume, i+0, j-1, k+1 );
-    GET_VALUE_3D( c110, volume, i+0, j+0, k-1 );
-    GET_VALUE_3D( c111, volume, i+0, j+0, k+0 );
-    GET_VALUE_3D( c112, volume, i+0, j+0, k+1 );
-    GET_VALUE_3D( c120, volume, i+0, j+1, k-1 );
-    GET_VALUE_3D( c121, volume, i+0, j+1, k+0 );
-    GET_VALUE_3D( c122, volume, i+0, j+1, k+1 );
-
-    GET_VALUE_3D( c200, volume, i+1, j-1, k-1 );
-    GET_VALUE_3D( c201, volume, i+1, j-1, k+0 );
-    GET_VALUE_3D( c202, volume, i+1, j-1, k+1 );
-    GET_VALUE_3D( c210, volume, i+1, j+0, k-1 );
-    GET_VALUE_3D( c211, volume, i+1, j+0, k+0 );
-    GET_VALUE_3D( c212, volume, i+1, j+0, k+1 );
-    GET_VALUE_3D( c220, volume, i+1, j+1, k-1 );
-    GET_VALUE_3D( c221, volume, i+1, j+1, k+0 );
-    GET_VALUE_3D( c222, volume, i+1, j+1, k+1 );
-
-    if( value != (Real *) 0 )
-    {
-        QUADRATIC_TRIVAR(c, u, v, w, *value );
-    }
-
-    if( deriv_x != (Real *) 0 )
-    {
-        QUADRATIC_TRIVAR_DERIV(c, u, v, w, dummy, *deriv_x, *deriv_y, *deriv_z );
-    }
-
-    if( deriv_xx != (Real *) 0 )
-    {
-        QUADRATIC_TRIVAR_DERIV2(c, u, v, w,
-                                 dummy, dummy, dummy, dummy,
-                                 *deriv_xx, *deriv_xy, *deriv_xz,
-                                 *deriv_yy, *deriv_yz, *deriv_zz );
-    }
-
-#ifdef  lint
-    if( dummy == 0.0 ) {}
-#endif
-}
-
-#define NEW
-#ifdef  NEW
-private  void   new_tricubic_interpolate_volume(
-    Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
+    int            degree,
     Real           *value,
     Real           *deriv_x,
     Real           *deriv_y,
@@ -645,9 +509,113 @@ private  void   new_tricubic_interpolate_volume(
     Real           *deriv_zz )
 {
     int                i, j, k, tu, tv, tw, ind, n_derivs;
-    Real               u, v, w;
+    Real               u, v, w, bound;
     Real               coefs[4*4*4];
     Real               derivs[3*3*3];
+    int                sizes[MAX_DIMENSIONS];
+
+    get_volume_sizes( volume, sizes );
+
+    bound = (degree - 2) / 2.0;
+
+    if( x >= (Real) sizes[X] - 1.0 - bound )
+    {
+        i = sizes[X] - degree;
+        u = 1.0;
+    }
+    else
+    {
+        if( x < bound )
+            x = bound;
+
+        i = (int) ( x - bound );
+        u = FRACTION( x - bound );
+    }
+
+    if( y >= (Real) sizes[Y] - 1.0 - bound )
+    {
+        j = sizes[Y] - degree;
+        v = 1.0;
+    }
+    else
+    {
+        if( y < bound )
+            y = bound;
+
+        j = (int) ( y - bound );
+        v = FRACTION( y - bound );
+    }
+
+    if( z >= (Real) sizes[Z] - 1.0 - bound )
+    {
+        k = sizes[Z] - degree;
+        w = 1.0;
+    }
+    else
+    {
+        if( z < bound )
+            z = bound;
+
+        k = (int) ( z - bound );
+        w = FRACTION( z - bound );
+    }
+
+    ind = 0;
+    for_less( tu, 0, degree )
+    for_less( tv, 0, degree )
+    for_less( tw, 0, degree )
+    {
+        GET_VALUE_3D( coefs[ind], volume, i+tu, j+tv, k+tw );
+        ++ind;
+    }
+
+    if( deriv_xx != NULL )
+        n_derivs = 2;
+    else if( deriv_x != NULL )
+        n_derivs = 1;
+    else
+        n_derivs = 0;
+
+    evaluate_trivariate_catmull_spline( u, v, w, degree, coefs, n_derivs,
+                                        derivs );
+
+    if( deriv_xx != NULL )
+    {
+        *deriv_xx = derivs[IJK(2,0,0,n_derivs+1,n_derivs+1)];
+        *deriv_xy = derivs[IJK(1,1,0,n_derivs+1,n_derivs+1)];
+        *deriv_xz = derivs[IJK(1,0,1,n_derivs+1,n_derivs+1)];
+        *deriv_yy = derivs[IJK(0,2,0,n_derivs+1,n_derivs+1)];
+        *deriv_yz = derivs[IJK(0,1,1,n_derivs+1,n_derivs+1)];
+        *deriv_zz = derivs[IJK(0,0,2,n_derivs+1,n_derivs+1)];
+    }
+
+    if( deriv_x != NULL )
+    {
+        *deriv_x = derivs[IJK(1,0,0,n_derivs+1,n_derivs+1)];
+        *deriv_y = derivs[IJK(0,1,0,n_derivs+1,n_derivs+1)];
+        *deriv_z = derivs[IJK(0,0,1,n_derivs+1,n_derivs+1)];
+    }
+
+    if( value != NULL )
+        *value = derivs[IJK(0,0,0,n_derivs+1,n_derivs+1)];
+}
+
+private  void   bicubic_interpolate_volume(
+    Volume         volume,
+    Real           x,
+    Real           y,
+    Real           z,
+    Real           *value,
+    Real           *deriv_x,
+    Real           *deriv_y,
+    Real           *deriv_xx,
+    Real           *deriv_xy,
+    Real           *deriv_yy )
+{
+    int                i, j, k, tu, tv, ind, n_derivs;
+    Real               u, v;
+    Real               coefs[4*4];
+    Real               derivs[3*3];
     int                sizes[MAX_DIMENSIONS];
 
     get_volume_sizes( volume, sizes );
@@ -674,23 +642,20 @@ private  void   new_tricubic_interpolate_volume(
         v = FRACTION( y );
     }
 
-    if( z >= (Real) sizes[Z] - 1.5 )
+    if( z == (Real) sizes[Z] - 1.5 )
     {
         k = sizes[Z]-2;
-        w = 1.0;
     }
     else
     {
         k = (int) z;
-        w = FRACTION( z );
     }
 
     ind = 0;
     for_less( tu, 0, 4 )
     for_less( tv, 0, 4 )
-    for_less( tw, 0, 4 )
     {
-        GET_VALUE_3D( coefs[ind], volume, i-1+tu, j-1+tv, k-1+tw );
+        GET_VALUE_3D( coefs[ind], volume, i-1+tu, j-1+tv, k );
         ++ind;
     }
 
@@ -701,329 +666,23 @@ private  void   new_tricubic_interpolate_volume(
     else
         n_derivs = 0;
 
-    evaluate_trivariate_catmull_spline( u, v, w, 4, coefs, n_derivs,
-                                        derivs );
+    evaluate_bivariate_catmull_spline( u, v, 4, coefs, n_derivs, derivs );
 
     if( deriv_xx != NULL )
     {
-        *deriv_xx = derivs[IJK(2,0,0,n_derivs+1,n_derivs+1)];
-        *deriv_xy = derivs[IJK(1,1,0,n_derivs+1,n_derivs+1)];
-        *deriv_xz = derivs[IJK(1,0,1,n_derivs+1,n_derivs+1)];
-        *deriv_yy = derivs[IJK(0,2,0,n_derivs+1,n_derivs+1)];
-        *deriv_yz = derivs[IJK(0,1,1,n_derivs+1,n_derivs+1)];
-        *deriv_zz = derivs[IJK(0,0,2,n_derivs+1,n_derivs+1)];
+        *deriv_xx = derivs[IJ(2,0,n_derivs+1)];
+        *deriv_xy = derivs[IJ(1,1,n_derivs+1)];
+        *deriv_yy = derivs[IJ(0,2,n_derivs+1)];
     }
 
     if( deriv_x != NULL )
     {
-        *deriv_x = derivs[IJK(1,0,0,n_derivs+1,n_derivs+1)];
-        *deriv_y = derivs[IJK(0,1,0,n_derivs+1,n_derivs+1)];
-        *deriv_z = derivs[IJK(0,0,1,n_derivs+1,n_derivs+1)];
+        *deriv_x = derivs[IJ(1,0,n_derivs+1)];
+        *deriv_y = derivs[IJ(0,1,n_derivs+1)];
     }
 
     if( value != NULL )
-        *value = derivs[IJK(0,0,0,n_derivs+1,n_derivs+1)];
-}
-#endif
-
-private  void   tricubic_interpolate_volume(
-    Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_z,
-    Real           *deriv_xx,
-    Real           *deriv_xy,
-    Real           *deriv_xz,
-    Real           *deriv_yy,
-    Real           *deriv_yz,
-    Real           *deriv_zz )
-{
-    int                i, j, k;
-    Real               u, v, w, dummy;
-    Real               c000, c001, c002, c003, c010, c011, c012, c013;
-    Real               c020, c021, c022, c023, c030, c031, c032, c033;
-    Real               c100, c101, c102, c103, c110, c111, c112, c113;
-    Real               c120, c121, c122, c123, c130, c131, c132, c133;
-    Real               c200, c201, c202, c203, c210, c211, c212, c213;
-    Real               c220, c221, c222, c223, c230, c231, c232, c233;
-    Real               c300, c301, c302, c303, c310, c311, c312, c313;
-    Real               c320, c321, c322, c323, c330, c331, c332, c333;
-    int                sizes[MAX_DIMENSIONS];
-
-    get_volume_sizes( volume, sizes );
-
-    if( x == (Real) sizes[X] - 1.5 )
-    {
-        i = sizes[X]-2;
-        u = 1.0;
-    }
-    else
-    {
-        i = (int) x;
-        u = FRACTION( x );
-    }
-
-    if( y == (Real) sizes[Y] - 1.5 )
-    {
-        j = sizes[Y]-2;
-        v = 1.0;
-    }
-    else
-    {
-        j = (int) y;
-        v = FRACTION( y );
-    }
-
-    if( z == (Real) sizes[Z] - 1.5 )
-    {
-        k = sizes[Z]-2;
-        w = 1.0;
-    }
-    else
-    {
-        k = (int) z;
-        w = FRACTION( z );
-    }
-
-    GET_VALUE_3D( c000, volume, i-1, j-1, k-1 );
-    GET_VALUE_3D( c001, volume, i-1, j-1, k+0 );
-    GET_VALUE_3D( c002, volume, i-1, j-1, k+1 );
-    GET_VALUE_3D( c003, volume, i-1, j-1, k+2 );
-    GET_VALUE_3D( c010, volume, i-1, j+0, k-1 );
-    GET_VALUE_3D( c011, volume, i-1, j+0, k+0 );
-    GET_VALUE_3D( c012, volume, i-1, j+0, k+1 );
-    GET_VALUE_3D( c013, volume, i-1, j+0, k+2 );
-    GET_VALUE_3D( c020, volume, i-1, j+1, k-1 );
-    GET_VALUE_3D( c021, volume, i-1, j+1, k+0 );
-    GET_VALUE_3D( c022, volume, i-1, j+1, k+1 );
-    GET_VALUE_3D( c023, volume, i-1, j+1, k+2 );
-    GET_VALUE_3D( c030, volume, i-1, j+2, k-1 );
-    GET_VALUE_3D( c031, volume, i-1, j+2, k+0 );
-    GET_VALUE_3D( c032, volume, i-1, j+2, k+1 );
-    GET_VALUE_3D( c033, volume, i-1, j+2, k+2 );
-
-    GET_VALUE_3D( c100, volume, i+0, j-1, k-1 );
-    GET_VALUE_3D( c101, volume, i+0, j-1, k+0 );
-    GET_VALUE_3D( c102, volume, i+0, j-1, k+1 );
-    GET_VALUE_3D( c103, volume, i+0, j-1, k+2 );
-    GET_VALUE_3D( c110, volume, i+0, j+0, k-1 );
-    GET_VALUE_3D( c111, volume, i+0, j+0, k+0 );
-    GET_VALUE_3D( c112, volume, i+0, j+0, k+1 );
-    GET_VALUE_3D( c113, volume, i+0, j+0, k+2 );
-    GET_VALUE_3D( c120, volume, i+0, j+1, k-1 );
-    GET_VALUE_3D( c121, volume, i+0, j+1, k+0 );
-    GET_VALUE_3D( c122, volume, i+0, j+1, k+1 );
-    GET_VALUE_3D( c123, volume, i+0, j+1, k+2 );
-    GET_VALUE_3D( c130, volume, i+0, j+2, k-1 );
-    GET_VALUE_3D( c131, volume, i+0, j+2, k+0 );
-    GET_VALUE_3D( c132, volume, i+0, j+2, k+1 );
-    GET_VALUE_3D( c133, volume, i+0, j+2, k+2 );
-
-    GET_VALUE_3D( c200, volume, i+1, j-1, k-1 );
-    GET_VALUE_3D( c201, volume, i+1, j-1, k+0 );
-    GET_VALUE_3D( c202, volume, i+1, j-1, k+1 );
-    GET_VALUE_3D( c203, volume, i+1, j-1, k+2 );
-    GET_VALUE_3D( c210, volume, i+1, j+0, k-1 );
-    GET_VALUE_3D( c211, volume, i+1, j+0, k+0 );
-    GET_VALUE_3D( c212, volume, i+1, j+0, k+1 );
-    GET_VALUE_3D( c213, volume, i+1, j+0, k+2 );
-    GET_VALUE_3D( c220, volume, i+1, j+1, k-1 );
-    GET_VALUE_3D( c221, volume, i+1, j+1, k+0 );
-    GET_VALUE_3D( c222, volume, i+1, j+1, k+1 );
-    GET_VALUE_3D( c223, volume, i+1, j+1, k+2 );
-    GET_VALUE_3D( c230, volume, i+1, j+2, k-1 );
-    GET_VALUE_3D( c231, volume, i+1, j+2, k+0 );
-    GET_VALUE_3D( c232, volume, i+1, j+2, k+1 );
-    GET_VALUE_3D( c233, volume, i+1, j+2, k+2 );
-
-    GET_VALUE_3D( c300, volume, i+2, j-1, k-1 );
-    GET_VALUE_3D( c301, volume, i+2, j-1, k+0 );
-    GET_VALUE_3D( c302, volume, i+2, j-1, k+1 );
-    GET_VALUE_3D( c303, volume, i+2, j-1, k+2 );
-    GET_VALUE_3D( c310, volume, i+2, j+0, k-1 );
-    GET_VALUE_3D( c311, volume, i+2, j+0, k+0 );
-    GET_VALUE_3D( c312, volume, i+2, j+0, k+1 );
-    GET_VALUE_3D( c313, volume, i+2, j+0, k+2 );
-    GET_VALUE_3D( c320, volume, i+2, j+1, k-1 );
-    GET_VALUE_3D( c321, volume, i+2, j+1, k+0 );
-    GET_VALUE_3D( c322, volume, i+2, j+1, k+1 );
-    GET_VALUE_3D( c323, volume, i+2, j+1, k+2 );
-    GET_VALUE_3D( c330, volume, i+2, j+2, k-1 );
-    GET_VALUE_3D( c331, volume, i+2, j+2, k+0 );
-    GET_VALUE_3D( c332, volume, i+2, j+2, k+1 );
-    GET_VALUE_3D( c333, volume, i+2, j+2, k+2 );
-
-    if( deriv_xx != (Real *) 0 )
-    {
-        CUBIC_TRIVAR_DERIV2(c, u, v, w, *value,
-                             *deriv_x, *deriv_y, *deriv_z,
-                             *deriv_xx, *deriv_xy, *deriv_xz,
-                             *deriv_yy, *deriv_yz, *deriv_zz );
-    }
-    else
-    {
-        if( value != (Real *) 0 )
-        {
-            CUBIC_TRIVAR(c, u, v, w, *value );
-        }
-
-        if( deriv_x != (Real *) 0 )
-        {
-            CUBIC_TRIVAR_DERIV(c, u, v, w,
-                                dummy, *deriv_x, *deriv_y, *deriv_z );
-        }
-    }
-
-#ifdef  lint
-    if( dummy == 0.0 ) {}
-#endif
-
-#ifdef  NEW
-{
-    Real  test_value, test_dx, test_dy, test_dz;
-    Real  test_dxx, test_dxy, test_dxz;
-    Real  test_dyy, test_dyz;
-    Real  test_dzz;
-
-    new_tricubic_interpolate_volume( volume, x, y, z, &test_value,
-            &test_dx, &test_dy, &test_dz,
-            &test_dxx, &test_dxy, &test_dxz,
-            &test_dyy, &test_dyz, &test_dzz );
-
-#define  TOL  1.0e-3
-
-    if( value != NULL )
-    {
-        if( !numerically_close( test_value, *value, TOL ) )
-        {
-            print( "Value %g %g.\n", test_value, *value );
-        }
-    }
-
-    if( deriv_x != NULL )
-    {
-        if( !numerically_close( test_dx, *deriv_x, TOL ) ||
-            !numerically_close( test_dy, *deriv_y, TOL ) ||
-            !numerically_close( test_dz, *deriv_z, TOL ) )
-        {
-            print( "First deriv %g %g %g %g %g %g.\n",
-                   test_dx, test_dy, test_dz, *deriv_x, *deriv_y, *deriv_z );
-        }
-    }
-
-    if( deriv_xx != NULL )
-    {
-        if( !numerically_close( test_dxx, *deriv_xx, TOL ) ||
-            !numerically_close( test_dxy, *deriv_xy, TOL ) ||
-            !numerically_close( test_dxz, *deriv_xz, TOL ) ||
-            !numerically_close( test_dyy, *deriv_yy, TOL ) ||
-            !numerically_close( test_dyz, *deriv_yz, TOL ) ||
-            !numerically_close( test_dzz, *deriv_zz, TOL ) )
-        {
-            print( "Second d'riv %g %g %g %g %g %g.\n %g %g %g %g %g %g\n",
-                   test_dxx, test_dxy, test_dxz,
-                   test_dyy, test_dyz, test_dzz,
-                   *deriv_xx, *deriv_xy, *deriv_xz,
-                   *deriv_yy, *deriv_yz, *deriv_zz );
-        }
-    }
-}
-#endif
-}
-
-private  void   bicubic_interpolate_volume(
-    Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_xx,
-    Real           *deriv_xy,
-    Real           *deriv_yy )
-{
-    int                i, j, k;
-    Real               u, v, dummy;
-    Real               c00, c01, c02, c03, c10, c11, c12, c13;
-    Real               c20, c21, c22, c23, c30, c31, c32, c33;
-    int                sizes[MAX_DIMENSIONS];
-
-    get_volume_sizes( volume, sizes );
-
-    if( x == (Real) sizes[X] - 1.5 )
-    {
-        i = sizes[X]-2;
-        u = 1.0;
-    }
-    else
-    {
-        i = (int) x;
-        u = FRACTION( x );
-    }
-
-    if( y == (Real) sizes[Y] - 1.5 )
-    {
-        j = sizes[Y]-2;
-        v = 1.0;
-    }
-    else
-    {
-        j = (int) y;
-        v = FRACTION( y );
-    }
-
-    if( z == (Real) sizes[Z] - 1.5 )
-    {
-        k = sizes[Z]-2;
-    }
-    else
-    {
-        k = (int) z;
-    }
-
-    GET_VALUE_3D( c00, volume, i-1, j-1, k );
-    GET_VALUE_3D( c01, volume, i-1, j+0, k );
-    GET_VALUE_3D( c02, volume, i-1, j+1, k );
-    GET_VALUE_3D( c03, volume, i-1, j+2, k );
-    GET_VALUE_3D( c10, volume, i+0, j-1, k );
-    GET_VALUE_3D( c11, volume, i+0, j+0, k );
-    GET_VALUE_3D( c12, volume, i+0, j+1, k );
-    GET_VALUE_3D( c13, volume, i+0, j+2, k );
-    GET_VALUE_3D( c20, volume, i+1, j-1, k );
-    GET_VALUE_3D( c21, volume, i+1, j+0, k );
-    GET_VALUE_3D( c22, volume, i+1, j+1, k );
-    GET_VALUE_3D( c23, volume, i+1, j+2, k );
-    GET_VALUE_3D( c30, volume, i+2, j-1, k );
-    GET_VALUE_3D( c31, volume, i+2, j+0, k );
-    GET_VALUE_3D( c32, volume, i+2, j+1, k );
-    GET_VALUE_3D( c33, volume, i+2, j+2, k );
-
-    if( deriv_xx != (Real *) 0 )
-    {
-        CUBIC_BIVAR_DERIV2(c, u, v, *value, *deriv_x, *deriv_y,
-                            *deriv_xx, *deriv_xy, *deriv_yy );
-    }
-    else
-    {
-        if( value != (Real *) 0 )
-        {
-            CUBIC_BIVAR(c, u, v, *value );
-        }
-
-        if( deriv_x != (Real *) 0 )
-        {
-            CUBIC_BIVAR_DERIV(c, u, v, dummy, *deriv_x, *deriv_y );
-        }
-    }
-
-#ifdef  lint
-    if( dummy == 0.0 ) {}
-#endif
+        *value = derivs[IJ(0,0,n_derivs+1)];
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -1128,17 +787,12 @@ public  void   evaluate_3D_volume(
         break;
 
     case 1:
-        triquadratic_interpolate_volume( volume, x, y, z, value,
-                                         deriv_x, deriv_y, deriv_z,
-                                         deriv_xx, deriv_xy, deriv_xz,
-                                         deriv_yy, deriv_yz, deriv_zz );
-        break;
-
     case 2:
-        tricubic_interpolate_volume( volume, x, y, z, value,
-                                     deriv_x, deriv_y, deriv_z,
-                                     deriv_xx, deriv_xy, deriv_xz,
-                                     deriv_yy, deriv_yz, deriv_zz );
+        trivar_interpolate_volume( volume, x, y, z, degrees_continuity+2,
+                                   value,
+                                   deriv_x, deriv_y, deriv_z,
+                                   deriv_xx, deriv_xy, deriv_xz,
+                                   deriv_yy, deriv_yz, deriv_zz );
         break;
 
     default:
