@@ -1,3 +1,14 @@
+2001-04-02  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Makefile.am (SUBDIRS): Descend into Documentation subdir.
+	* Documentation/Makefile.am: New.
+
+	* Documentation/doxygen.config.in: New.  Generates config
+	file for use with the doxygen document generator.
+
+	* tools/ascii_binary.c: New.  Copied from
+	~david/Source/Batch_processing.
+
 2001-03-27  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* configure.in: Check for PPM library in -lppm

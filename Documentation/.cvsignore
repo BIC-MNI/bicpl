@@ -1,0 +1,4 @@
+*.log *.aux *.dvi *.toc
+Makefile.in
+doxygen.config
+html

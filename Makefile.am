@@ -1,5 +1,5 @@
 SUBDIRS = Include Data_structures Transforms Geometry Numerical Objects \
-	Prog_utils Volumes Marching_cubes Images . tools
+	Prog_utils Volumes Marching_cubes Images . tools Documentation
 
 AUTOMAKE_OPTIONS = check-news
 
