@@ -1,3 +1,14 @@
+2001-08-11  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* INSTALL.bicpl: 
+	* NEWS: Updated.
+
+	* Makefile.am (libbicpl_la_LDFLAGS): Increment current version for
+	library, due to 2001-07-04 change.
+
+	* configure.in: Bump version to 1.3.7.
+	Add AC_PREREQ to force autoconf 2.5x usage.
+
 2001-07-25  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* m4/smr_OPTIONAL_LIB.m4: Define HAVE_libfoo, if library foo is

@@ -1,13 +1,34 @@
 See INSTALL for generic installation instructions.
 
 		Shared or Static libraries?
+		---------------------------
 
 By default, only a static version (i.e. libbicpl.a) will be produced.
 A shared version of the library may be enabled using the configure
 flag "--enabled-shared".  See also "--disable-static".
 
 
+		Finding 3rd Party Libraries
+		---------------------------
+
+Bicpl depends on several libraries not typically available from the OS 
+vendor, e.g. minc and netcdf.  These must be installed before bicpl can
+be configured.  If they are installed in non-standard locations, you
+may need to specify "-I" and "-L" options for the compiler, example:
+
+	./configure CPPFLAGS="-I/foo/include" LDFLAGS="-L/foo/lib"
+
+As a shortcut for the common case of headers in "/foo/include" and
+library in "/foo/lib", you can use the --with-build-path option:
+
+	./configure --with-build-path=/foo
+
+This is equivalent to setting CPPFLAGS and LDFLAGS, as in the previous
+example.
+
+
 		Image I/O
+		---------
 
 The bicpl library includes functions for reading and writing a (2D)
 image file.  The format of this file is fixed at configure time, and
@@ -16,22 +37,8 @@ may be one of:
 	Portable PixMap (PPM) format,
 or	IRIS image format (from SGI)
 
-By default, configure will probe for the netpbm library (PPM format).
-If not found, then IRIS image library will be probed for.  This
-behaviour can be overridden using the following options to configure:
+The configure script will probe for the netpbm library (PPM format).
+If not found, then IRIS image library will be probed for.  
 
-  --with-ppm-library[=PATH]
-                          use ppm library (Portable PixMap library)
-  --with-ppm-includes[=DIR]
-                          set directory for ppm headers
-  --with-irisimage-library[=PATH]
-                          use irisimage library (SGI image library)
-  --with-irisimage-includes[=DIR]
-                          set directory for irisimage headers
-
-
-The library check may be disabled by negating the option, e.g.
-specifying "--without-ppm-library" will suppress checking for
-netpbm.
-
-
+If the library is installed but not found, see the previous section
+on finding 3rd party libraries.

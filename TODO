@@ -1,4 +1,5 @@
 * don't clobber CPPFLAGS, LIBS, and the like
+
 * Images/rgb_io_ppm.c: fill in input_rgb_file() stub.
 
 * replace drand48() calls by rand()

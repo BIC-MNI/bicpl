@@ -7,6 +7,7 @@ Makefile.in
 Makefile
 stamp-h.in
 stamp-h
+stamp-h1
 configure
 config.log
 config.h.in
