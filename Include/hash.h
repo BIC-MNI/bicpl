@@ -39,12 +39,4 @@ typedef  struct
     hash_entry_struct  *current_entry;
 } hash_table_pointer;
 
-Status        initialize_hash_table();
-Status        insert_in_hash_table();
-Boolean       lookup_in_hash_table();
-Boolean       remove_from_hash_table();
-Status        delete_hash_table();
-void          initialize_hash_pointer();
-Boolean       get_next_hash_entry();
-
 #endif

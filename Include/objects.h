@@ -2,7 +2,6 @@
 #define  DEF_OBJECTS
 
 #include  <def_mni.h>
-#include  <def_geom_structs.h>
 
 #define  SET_OBJECT_SIZE( object, n, size ) \
              { \
@@ -130,10 +129,18 @@ typedef  struct
 
 /* ------------------------------------------------------------------------ */
 
-typedef enum  { LINES, MARKER, PIXELS, POLYGONS, QUADMESH, TEXT,
+typedef enum  { LINES, MARKER, MODEL, PIXELS, POLYGONS, QUADMESH, TEXT,
                 N_OBJECT_TYPES } Object_types;
 
-typedef struct
+typedef  struct
+{
+    String                 filename;
+    int                    n_objects;
+    struct  object_struct  **objects;
+    void                   *extra_ptr;
+} model_struct;
+
+typedef struct  object_struct
 {
     Object_types    object_type;
     Boolean         visibility;
@@ -142,6 +149,7 @@ typedef struct
     {
     lines_struct       lines;
     marker_struct      marker;
+    model_struct       model;
     pixels_struct      pixels;
     polygons_struct    polygons;
     quadmesh_struct    quadmesh;
@@ -149,5 +157,18 @@ typedef struct
     } specific;
 
 } object_struct;
+
+
+typedef  struct
+{
+    int              index;
+    int              n_items;
+    object_struct    **object_list;
+} object_stack_struct;
+
+typedef  struct
+{
+    STACK_STRUCT( object_stack_struct )    stack;
+} object_traverse_struct;
 
 #endif

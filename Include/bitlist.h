@@ -29,25 +29,10 @@ typedef  struct
     bitlist_type   *bits;
 }  bitlist_struct;
 
-Status   create_bitlist();
-void     zero_bitlist();
-void     fill_bitlist();
-void     set_bitlist_bit();
-Boolean  get_bitlist_bit();
-Status   delete_bitlist();
-
 typedef  struct
 {
     int            nx, ny, nz;
     bitlist_type   ***bits;
 }  bitlist_3d_struct;
-
-Status   create_bitlist_3d();
-void     zero_bitlist_3d();
-void     fill_bitlist_3d();
-void     set_bitlist_bit_3d();
-Boolean  get_bitlist_bit_3d();
-Status   delete_bitlist_3d();
-Status   io_bitlist_3d();
 
 #endif

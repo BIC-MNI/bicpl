@@ -65,7 +65,7 @@
 @NAME       : INSERT_IN_QUEUE
 @INPUT      : q
             : entry              - element to insert
-@OUTPUT     : status
+@OUTPUT     : 
 @RETURNS    : 
 @DESCRIPTION: Macro to insert an entry in the queue.
 @METHOD     : 
@@ -75,10 +75,10 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#define  INSERT_IN_QUEUE( status, q, entry )                                  \
+#define  INSERT_IN_QUEUE( q, entry )                                          \
          {                                                                    \
-             ADD_ELEMENT_TO_ARRAY_WITH_SIZE( status, (q).n_queue_alloced,     \
-                          (q).head, (q).queue, entry, DEFAULT_CHUNK_SIZE )    \
+             ADD_ELEMENT_TO_ARRAY_WITH_SIZE( (q).queue, (q).n_queue_alloced,  \
+                          (q).head, entry, DEFAULT_CHUNK_SIZE )               \
          }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -156,7 +156,7 @@
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : DELETE_QUEUE
 @INPUT      : q
-@OUTPUT     : status
+@OUTPUT     : 
 @RETURNS    : 
 @DESCRIPTION: Deletes the queue.
 @METHOD     : 
@@ -166,14 +166,12 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#define  DELETE_QUEUE( status, q ) \
-         { \
-             if( (q).n_queue_alloced > 0 ) \
-             { \
-                 FREE( status, (q).queue ) \
-             } \
-             else \
-                 status = OK; \
+#define  DELETE_QUEUE( q )                                                    \
+         {                                                                    \
+             if( (q).n_queue_alloced > 0 )                                    \
+             {                                                                \
+                 FREE( (q).queue )                                            \
+             }                                                                \
          }
 
 
