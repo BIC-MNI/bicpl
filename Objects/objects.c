@@ -1,5 +1,11 @@
 #include  <def_mni.h>
 
+private  void  advance_object_traverse(
+    object_traverse_struct  *object_traverse );
+
+private  void  terminate_object_traverse(
+    object_traverse_struct   *object_traverse );
+
 public  object_struct  *create_object(
     Object_types   object_type )
 {
@@ -183,6 +189,9 @@ private  void  delete_model_object(
 
     for_less( i, 0, model->n_objects )
         delete_object( model->objects[i] );
+
+    if( model->n_objects > 0 )
+        FREE( model->objects );
 }
 
 private  void  delete_pixels_object(
@@ -261,5 +270,191 @@ public  void  delete_object(
 {
     object_functions[object->object_type].delete_function( object );
     FREE( object );
+}
+
+public  void  initialize_object_traverse(
+    object_traverse_struct  *object_traverse,
+    int                     n_objects,
+    object_struct           *object_list[] )
+{
+    object_stack_struct   push_entry;
+
+    INITIALIZE_STACK( object_traverse->stack );
+
+    push_entry.index = 0;
+    push_entry.n_objects = n_objects;
+    push_entry.object_list = object_list;
+
+    PUSH_STACK( object_traverse->stack, push_entry );
+}
+
+public  Boolean  get_next_object_traverse(
+    object_traverse_struct  *object_traverse,
+    object_struct           **object )
+{
+    Boolean               object_found;
+    object_stack_struct   *top_entry;
+
+    if( !IS_STACK_EMPTY(object_traverse->stack) )
+    {
+        top_entry = &TOP_OF_STACK( object_traverse->stack );
+        *object = top_entry->object_list[top_entry->index];
+
+        advance_object_traverse( object_traverse );
+        object_found = TRUE;
+    }
+    else
+    {
+        terminate_object_traverse( object_traverse );
+        object_found = FALSE;
+    }
+
+    return( object_found );
+}
+
+private  void  advance_object_traverse(
+    object_traverse_struct  *object_traverse )
+{
+    object_stack_struct   *top_entry, push_entry;
+    object_struct         *object;
+    model_struct          *model;
+
+    top_entry = &TOP_OF_STACK( object_traverse->stack );
+    object = top_entry->object_list[top_entry->index];
+    ++top_entry->index;
+
+    if( object->object_type == MODEL )
+    {
+        model = get_model_ptr( object );
+        push_entry.index = 0;
+        push_entry.n_objects = model->n_objects;
+        push_entry.object_list = model->objects;
+
+        PUSH_STACK( object_traverse->stack, push_entry );
+    }
+
+    while( TOP_OF_STACK(object_traverse->stack).index >=
+           TOP_OF_STACK(object_traverse->stack).n_objects &&
+           !IS_STACK_EMPTY(object_traverse->stack) )
+    {
+        POP_STACK( object_traverse->stack, push_entry );
+    }
+}
+
+private  void  terminate_object_traverse(
+    object_traverse_struct   *object_traverse )
+{
+    DELETE_STACK( object_traverse->stack );
+}
+
+public  Boolean  get_range_of_object(
+    object_struct   *object,
+    Boolean         visible_ones_only,
+    Point           *min_corner,
+    Point           *max_corner )
+{
+    Boolean                 first_flag, found_flag;
+    Point                   min_obj, max_obj;
+    int                     n_points;
+    object_struct           *current_object;
+    object_traverse_struct  object_traverse;
+
+    first_flag = TRUE;
+
+    initialize_object_traverse( &object_traverse, 1, &object );
+
+    while( get_next_object_traverse( &object_traverse, &current_object ) )
+    {
+        if( !visible_ones_only || current_object->visibility )
+        {
+            found_flag = FALSE;
+
+            switch( current_object->object_type )
+            {
+            case LINES:
+                found_flag = (get_lines_ptr(current_object)->n_points != 0);
+                get_range_points( get_lines_ptr(current_object)->n_points,
+                                  get_lines_ptr(current_object)->points,
+                                  &min_obj, &max_obj );
+                break;
+
+            case MARKER:
+                found_flag = TRUE;
+                min_obj = get_marker_ptr(current_object)->position;
+                max_obj = get_marker_ptr(current_object)->position;
+                break;
+
+            case MODEL:
+                break;
+
+            case PIXELS:
+                break;
+
+            case POLYGONS:
+                found_flag = (get_polygons_ptr(current_object)->n_points != 0);
+                get_range_points( get_polygons_ptr(current_object)->n_points,
+                                  get_polygons_ptr(current_object)->points,
+                                  &min_obj, &max_obj );
+                break;
+
+            case QUADMESH:
+                n_points = get_quadmesh_ptr(current_object)->m *
+                           get_quadmesh_ptr(current_object)->n;
+                found_flag = (n_points != 0);
+                get_range_points( n_points,
+                                  get_quadmesh_ptr(current_object)->points,
+                                  &min_obj, &max_obj );
+                break;
+
+            case TEXT:
+                found_flag = TRUE;
+                get_range_points( 1, &get_text_ptr(current_object)->origin,
+                                  &min_obj, &max_obj );
+                break;
+            }
+
+            if( found_flag )
+            {
+                if( first_flag )
+                {
+                    first_flag = FALSE;
+                    *min_corner = min_obj;
+                    *max_corner = max_obj;
+                }
+                else
+                {
+                    expand_min_and_max_points( min_corner, max_corner,
+                                               &min_obj, &max_obj );
+                }
+            }
+        }
+    }
+
+    return( found_flag );
+}
+
+public  void  reverse_object_normals(
+    object_struct   *object )
+{
+    void                    reverse_vectors();
+    object_struct           *current_object;
+    object_traverse_struct  object_traverse;
+
+    initialize_object_traverse( &object_traverse, 1, &object );
+
+    while( get_next_object_traverse( &object_traverse, &current_object ) )
+    {
+        if( current_object->object_type == POLYGONS )
+        {
+            reverse_normals( get_polygons_ptr(current_object)->n_points,
+                             get_polygons_ptr(current_object)->normals );
+        }
+        else if( current_object->object_type == QUADMESH )
+        {
+            reverse_normals( get_quadmesh_ptr(current_object)->m *
+                             get_quadmesh_ptr(current_object)->n,
+                             get_quadmesh_ptr(current_object)->normals );
+        }
+    }
 }
 
