@@ -105,7 +105,8 @@ typedef enum {
 
 typedef  struct
 {
-
+    int             x_position;
+    int             y_position;
     int             x_size;
     int             y_size;
     Pixel_types     pixel_type;
@@ -126,5 +127,27 @@ typedef  struct
 
 #define  PIXEL_RGB_COLOUR( pixels, x, y )                                     \
            ((pixels).data.pixels_rgb[IJ(y,x,(pixels).x_size)])
+
+/* ------------------------------------------------------------------------ */
+
+typedef enum  { LINES, MARKER, PIXELS, POLYGONS, QUADMESH, TEXT,
+                N_OBJECT_TYPES } Object_types;
+
+typedef struct
+{
+    Object_types    object_type;
+    Boolean         visibility;
+
+    union
+    {
+    lines_struct       lines;
+    marker_struct      marker;
+    pixels_struct      pixels;
+    polygons_struct    polygons;
+    quadmesh_struct    quadmesh;
+    text_struct        text;
+    } specific;
+
+} object_struct;
 
 #endif
