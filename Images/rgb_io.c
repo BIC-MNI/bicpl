@@ -40,10 +40,11 @@ public  Status  input_rgb_file(
     IMAGE                 *iimage;
     int                   x_size, y_size, z_size;
     int                   x, y;
-    int                   r, g, b;
+    int                   r, g, b, a;
     unsigned short        rbuf[8192];
     unsigned short        gbuf[8192];
     unsigned short        bbuf[8192];
+    unsigned short        abuf[8192];
 
     i_seterror( error_function );
 
@@ -58,9 +59,9 @@ public  Status  input_rgb_file(
 
     initialize_pixels( pixels, 0, 0, x_size, y_size, 1.0, 1.0, RGB_PIXEL );
 
-    if( z_size != 3 )
+    if( z_size != 3 || z_size != 4 )
     {
-        print_error( "Error: z_size (%d) != 3\n", z_size );
+        print_error( "Error: z_size (%d) != 3 or 4\n", z_size );
         return( ERROR );
     }
 
@@ -69,13 +70,20 @@ public  Status  input_rgb_file(
         getrow( iimage, rbuf, (unsigned int) y, 0 );
         getrow( iimage, gbuf, (unsigned int) y, 1 );
         getrow( iimage, bbuf, (unsigned int) y, 2 );
+        if( z_size == 4 )
+            getrow( iimage, abuf, (unsigned int) y, 3 );
 
         for_less( x, 0, x_size )
         {
             r = (int) rbuf[x];
             g = (int) gbuf[x];
             b = (int) bbuf[x];
-            PIXEL_RGB_COLOUR( *pixels, x, y ) = make_Colour( r, g, b );
+            if( z_size == 4 )
+                a = (int) abuf[x];
+            else
+                a = 255;
+
+            PIXEL_RGB_COLOUR( *pixels, x, y ) = make_rgba_Colour( r, g, b, a );
         }
     }
 
@@ -90,11 +98,12 @@ public  Status  output_rgb_file(
 {
 #ifdef  HAVE_IMAGE_LIBRARY
     IMAGE                 *oimage;
-    int                   x, y;
+    int                   x, y, n_components;
     Colour                col;
     unsigned short        rbuf[8192];
     unsigned short        gbuf[8192];
     unsigned short        bbuf[8192];
+    unsigned short        abuf[8192];
 
     i_seterror( error_function );
 
@@ -105,8 +114,27 @@ public  Status  output_rgb_file(
         return( ERROR );
     }
 
+    n_components = 3;
+    for_less( y, 0, pixels->y_size )
+    {
+        for_less( x, 0, pixels->x_size )
+        {
+            col = PIXEL_RGB_COLOUR( *pixels, x, y );
+            if( get_Colour_a( col ) != 255 )
+            {
+                n_components = 4;
+                break;
+            }
+        }
+
+        if( n_components == 4 )
+            break;
+    }
+
     oimage = iopen( filename, "w", RLE(1), 3, (unsigned int) pixels->x_size,
-                    (unsigned int) pixels->y_size, 3 );
+                    (unsigned int) pixels->y_size,
+                    (unsigned int) n_components );
+
     if( oimage == NULL )
     {
         return( ERROR );
@@ -120,11 +148,15 @@ public  Status  output_rgb_file(
             rbuf[x] = (unsigned short) get_Colour_r( col );
             gbuf[x] = (unsigned short) get_Colour_g( col );
             bbuf[x] = (unsigned short) get_Colour_b( col );
+            if( n_components == 4 )
+                abuf[x] = (unsigned short) get_Colour_a( col );
         }
 
 	putrow( oimage, rbuf, (unsigned int) y, 0 );
 	putrow( oimage, gbuf, (unsigned int) y, 1 );
 	putrow( oimage, bbuf, (unsigned int) y, 2 );
+        if( n_components == 4 )
+	    putrow( oimage, abuf, (unsigned int) y, 3 );
     }
 
     iclose(oimage);
