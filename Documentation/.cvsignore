@@ -1,4 +1,5 @@
 *.log *.aux *.dvi *.toc
 Makefile.in Makefile
 doxygen.config
+bicpl.ps
 html
