@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.11 1996-05-17 19:35:35 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.12 1996-09-10 15:51:33 david Exp $";
 #endif
 
 #define  INVALID_ID       -1
@@ -25,20 +25,9 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_ne
 #define  ENLARGE_THRESHOLD         0.25
 #define  NEW_DENSITY               0.125
 
-private  void  assign_neighbours(
-    int       indices[],
-    int       end_indices[],
-    int       neighbours[],
-    int       polygon1,
-    int       edge1,
-    int       polygon2,
-    BOOLEAN   *topology_error );
 private   void   create_polygon_neighbours(
-    int    n_points,
-    int    n_polygons,
-    int    indices[],
-    int    end_indices[],
-    int    neighbours[] );
+    polygons_struct  *polygons,
+    int              neighbours[] );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : check_polygons_neighbours_computed
@@ -60,11 +49,149 @@ public  void  check_polygons_neighbours_computed(
     if( polygons->neighbours == NULL && polygons->n_items > 0 )
     {
         ALLOC( polygons->neighbours,polygons->end_indices[polygons->n_items-1]);
-        create_polygon_neighbours( polygons->n_points,
-                                   polygons->n_items, polygons->indices,
-                                   polygons->end_indices,
-                                   polygons->neighbours );
+        create_polygon_neighbours( polygons, polygons->neighbours );
     }
+}
+
+public  void  delete_polygon_point_neighbours(
+    int              n_point_neighbours[],
+    int              *point_neighbours[],
+    int              *point_polygons[] )
+{
+    FREE( n_point_neighbours );
+    FREE( point_neighbours[0] );
+    FREE( point_neighbours );
+
+    if( point_polygons != NULL )
+    {
+        FREE( point_polygons[0] );
+        FREE( point_polygons );
+    }
+}
+
+public   void   create_polygon_point_neighbours(
+    polygons_struct  *polygons,
+    int              *n_point_neighbours_ptr[],
+    int              **point_neighbours_ptr[],
+    int              **point_polygons_ptr[] )
+{
+    int                 edge, i0, i1, size, poly, total_neighbours;
+    int                 *n_point_neighbours, **point_neighbours;
+    int                 **point_polygons, point, index0, index1;
+    progress_struct     progress;
+
+    ALLOC( n_point_neighbours, polygons->n_points );
+    for_less( point, 0, polygons->n_points )
+        n_point_neighbours[point] = 0;
+
+    total_neighbours = 0;
+
+    initialize_progress_report( &progress, FALSE, polygons->n_items,
+                                "Neighbour-finding step 1" );
+
+    for_less( poly, 0, polygons->n_items )
+    {
+        size = GET_OBJECT_SIZE( *polygons, poly );
+
+        for_less( edge, 0, size )
+        {
+            i0 = polygons->indices[
+                  POINT_INDEX(polygons->end_indices,poly,edge)];
+            i1 = polygons->indices[
+                  POINT_INDEX(polygons->end_indices,poly,(edge+1)%size)];
+
+            ++n_point_neighbours[i0];
+            ++n_point_neighbours[i1];
+            total_neighbours += 2;
+        }
+
+        update_progress_report( &progress, poly+1 );
+    }
+
+    terminate_progress_report( &progress );
+
+    ALLOC( point_neighbours, polygons->n_points );
+    ALLOC( point_neighbours[0], total_neighbours );
+
+    if( point_polygons_ptr != NULL )
+    {
+        ALLOC( point_polygons, polygons->n_points );
+        ALLOC( point_polygons[0], total_neighbours );
+
+        for_less( point, 0, total_neighbours )
+            point_polygons[0][point] = -1;
+    }
+
+    for_less( point, 1, polygons->n_points )
+    {
+        point_neighbours[point] = &point_neighbours[point-1]
+                                               [n_point_neighbours[point-1]];
+        if( point_polygons_ptr != NULL )
+        {
+            point_polygons[point] = &point_polygons[point-1]
+                                               [n_point_neighbours[point-1]];
+        }
+    }
+
+    for_less( point, 0, polygons->n_points )
+        n_point_neighbours[point] = 0;
+
+    initialize_progress_report( &progress, FALSE, polygons->n_items,
+                                "Neighbour-finding step 2" );
+
+    for_less( poly, 0, polygons->n_items )
+    {
+        size = GET_OBJECT_SIZE( *polygons, poly );
+
+        for_less( edge, 0, size )
+        {
+            i0 = polygons->indices[
+                  POINT_INDEX(polygons->end_indices,poly,edge)];
+            i1 = polygons->indices[
+                  POINT_INDEX(polygons->end_indices,poly,(edge+1)%size)];
+
+            for_less( index0, 0, n_point_neighbours[i0] )
+            {
+                if( point_neighbours[i0][index0] == i1 )
+                    break;
+            }
+
+            if( index0 >= n_point_neighbours[i0] )
+            {
+                point_neighbours[i0][index0] = i1;
+                ++n_point_neighbours[i0];
+            }
+
+            for_less( index1, 0, n_point_neighbours[i1] )
+            {
+                if( point_neighbours[i1][index1] == i0 )
+                    break;
+            }
+
+            if( index1 >= n_point_neighbours[i1] )
+            {
+                point_neighbours[i1][index1] = i0;
+                ++n_point_neighbours[i1];
+            }
+
+            if( point_polygons_ptr != NULL )
+            {
+                if( point_polygons[i0][index0] < 0 )
+                    point_polygons[i0][index0] = poly;
+                else
+                    point_polygons[i1][index1] = poly;
+            }
+        }
+
+        update_progress_report( &progress, poly+1 );
+    }
+
+    terminate_progress_report( &progress );
+
+    *n_point_neighbours_ptr = n_point_neighbours;   
+    *point_neighbours_ptr = point_neighbours;   
+    if( point_polygons_ptr != NULL )
+        *point_polygons_ptr = point_polygons;   
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -83,170 +210,105 @@ public  void  check_polygons_neighbours_computed(
 ---------------------------------------------------------------------------- */
 
 private   void   create_polygon_neighbours(
-    int    n_points,
-    int    n_polygons,
-    int    indices[],
-    int    end_indices[],
-    int    neighbours[] )
+    polygons_struct  *polygons,
+    int              neighbours[] )
 {
-    int                 keys[2], i, edge, i0, i1, size;
-    int                 start_index, end_index, polygon_index;
-    BOOLEAN             topology_error;
-    hash_table_struct   edge_table;
+    int                 i0, i1, size1, size2, n1, n2;
+    int                 poly1, poly2, point1, point2, edge1, edge2;
+    int                 *n_point_neighbours, **point_neighbours;
+    int                 **point_polygons;
     progress_struct     progress;
 
-    topology_error = FALSE;
+    for_less( i0, 0, polygons->end_indices[polygons->n_items-1] )
+        neighbours[i0] = -1;
 
-    if( n_polygons > 0 )
+    create_polygon_point_neighbours( polygons, &n_point_neighbours,
+                                     &point_neighbours, &point_polygons );
+
+    initialize_progress_report( &progress, FALSE, polygons->n_items,
+                                "Neighbour-finding step 2" );
+
+    for_less( point1, 0, polygons->n_points )
     {
-        for_less( i, 0, end_indices[n_polygons-1] )
-            neighbours[i] = INVALID_ID;
-    }
-
-    initialize_hash_table( &edge_table,
-                           (int) (INITIAL_HASH_TABLE_SIZE* (Real) n_polygons),
-                           sizeof(int), ENLARGE_THRESHOLD, NEW_DENSITY );
-
-    end_index = 0;
-
-    initialize_progress_report( &progress, FALSE, n_polygons,
-                                "Neighbour-finding" );
-
-    for_less( i, 0, n_polygons )
-    {
-        start_index = end_index;
-        end_index = end_indices[i];
-
-        size = end_index - start_index;
-
-        for_less( edge, 0, size )
+        for_less( n1, 0, n_point_neighbours[point1] )
         {
-            i0 = indices[start_index+edge];
-            i1 = indices[start_index+(edge+1) % size];
+            point2 = point_neighbours[point1][n1];
 
-            keys[0] = MIN( i0, i1 );
-            keys[1] = MAX( i0, i1 );
+            if( point2 <= point1 )
+                continue;
 
-            if( remove_from_hash_table( &edge_table,
-                                        IJ(keys[0],keys[1],n_points),
-                                        &polygon_index ) )
+            poly1 = point_polygons[point1][n1];
+            if( poly1 < 0 )
+                continue;
+
+            for_less( n2, 0, n_point_neighbours[point2] )
             {
-                assign_neighbours( indices, end_indices, neighbours,
-                                   i, edge, polygon_index,
-                                   &topology_error );
+                if( point_neighbours[point2][n2] == point1 )
+                    break;
             }
-            else
+
+            if( n2 >= n_point_neighbours[point2] )
+                handle_internal_error( "create_polygon_neighbours" );
+
+            poly2 = point_polygons[point2][n2];
+
+            if( poly2 < 0 )
+                continue;
+
+            size1 = GET_OBJECT_SIZE( *polygons, poly1 );
+            for_less( edge1, 0, size1 )
             {
-                insert_in_hash_table( &edge_table,
-                                      IJ(keys[0],keys[1],n_points),
-                                      (void *) &i );
+                i0 = polygons->indices[POINT_INDEX(polygons->end_indices,
+                                                   poly1,edge1)];
+                i1 = polygons->indices[POINT_INDEX(polygons->end_indices,
+                                                   poly1,(edge1+1)%size1)];
+
+                if( i0 == point1 && i1 == point2 ||
+                    i1 == point1 && i0 == point2 )
+                    break;
             }
+
+            if( edge1 >= size1 )
+                handle_internal_error( "create_polygon_neighbours" );
+
+            size2 = GET_OBJECT_SIZE( *polygons, poly2 );
+            for_less( edge2, 0, size2 )
+            {
+                i0 = polygons->indices[POINT_INDEX(polygons->end_indices,
+                                                   poly2,edge2)];
+                i1 = polygons->indices[POINT_INDEX(polygons->end_indices,
+                                                   poly2,(edge2+1)%size2)];
+
+                if( i0 == point1 && i1 == point2 ||
+                    i1 == point1 && i0 == point2 )
+                    break;
+            }
+
+            if( edge2 >= size2 )
+                handle_internal_error( "create_polygon_neighbours" );
+
+            neighbours[POINT_INDEX( polygons->end_indices, poly1, edge1 )] =
+                                                               poly2;
+            neighbours[POINT_INDEX( polygons->end_indices, poly2, edge2 )] =
+                                                               poly1;
         }
 
-        update_progress_report( &progress, i+1 );
+        update_progress_report( &progress, point1+1 );
     }
 
     terminate_progress_report( &progress );
 
-    end_index = 0;
+    delete_polygon_point_neighbours( n_point_neighbours, point_neighbours,
+                                     point_polygons );
 
-    delete_hash_table( &edge_table );
-
-    if( topology_error )
+#ifdef  DEBUG
+    for_less( i0, 0, polygons->end_indices[polygons->n_items-1] )
     {
-        print(
-          "create_polygon_neighbours():  more than 2 faces share an edge.\n" );
-    }
-
-#ifdef DEBUG_NEIGHBOURS
-    {
-        int   i, n_open;
-
-        n_open = 0;
-        for_less( i, 0, end_indices[n_polygons-1] )
-        {
-            if( neighbours[i] == INVALID_ID )
-                ++n_open;
-        }
-    
-        if( n_open > 0 )
-        {
-            print( "Polygon not closed: %d/%d.\n", n_open,
-                   end_indices[n_polygons-1] );
-        }
-    }
-#endif
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : assign_neighbours
-@INPUT      : indices
-              end_indices
-              polygon1
-              edge1
-              polygon2
-@OUTPUT     : neighbours
-              topology_error
-@RETURNS    : 
-@DESCRIPTION: Assigns the neighbour for edge1 of polygon1 to be polygon2
-              and for the corresponding edge of polygon2 to be polygon1.
-              If either one has already been assigned, then a topology error
-              is flagged.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    :         1993    David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-private  void  assign_neighbours(
-    int       indices[],
-    int       end_indices[],
-    int       neighbours[],
-    int       polygon1,
-    int       edge1,
-    int       polygon2,
-    BOOLEAN   *topology_error )
-{
-    int   i0, i1, edge2, start_index1, size1, start_index2, size2;
-    int   p2_i0, p2_i1;
-
-    if( polygon1 == 0 )
-        start_index1 = 0;
-    else
-        start_index1 = end_indices[polygon1-1];
-    size1 = end_indices[polygon1] - start_index1;
-
-    if( polygon2 == 0 )
-        start_index2 = 0;
-    else
-        start_index2 = end_indices[polygon2-1];
-    size2 = end_indices[polygon2] - start_index2;
-
-    i0 = indices[start_index1 + edge1];
-    i1 = indices[start_index1 + (edge1 + 1) % size1];
-
-    for_less( edge2, 0, size2 )
-    {
-        p2_i0 = indices[start_index2 + edge2];
-        p2_i1 = indices[start_index2 + (edge2 + 1) % size2];
-
-        if( (p2_i0 == i0 && p2_i1 == i1) ||
-            (p2_i0 == i1 && p2_i1 == i0) )
-        {
+        if( neighbours[i0] < 0 )
             break;
-        }
     }
 
-    if( edge2 == size2 )
-        handle_internal_error( "assign neighbours" );
-
-    if( neighbours[POINT_INDEX( end_indices, polygon1, edge1 )] != INVALID_ID ||
-        neighbours[POINT_INDEX( end_indices, polygon2, edge2 )] != INVALID_ID )
-    {
-        *topology_error = TRUE;
-    }
-
-    neighbours[POINT_INDEX( end_indices, polygon1, edge1 )] = polygon2;
-    neighbours[POINT_INDEX( end_indices, polygon2, edge2 )] = polygon1;
+    if( i0 < polygons->end_indices[polygons->n_items-1] )
+        handle_internal_error( "create_polygon_neighbours: topology\n" );
+#endif
 }
