@@ -59,7 +59,7 @@ public  Status  input_rgb_file(
 
     initialize_pixels( pixels, 0, 0, x_size, y_size, 1.0, 1.0, RGB_PIXEL );
 
-    if( z_size != 3 || z_size != 4 )
+    if( z_size != 3 && z_size != 4 )
     {
         print_error( "Error: z_size (%d) != 3 or 4\n", z_size );
         return( ERROR );
