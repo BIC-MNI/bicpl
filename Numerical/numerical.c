@@ -1,5 +1,4 @@
-#include  <mni.h>
-#include  <stack.h>
+#include  <prog_utils.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : numerically_close
