@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.13 2001-07-05 04:13:43 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.14 2001-08-11 20:09:08 stever Exp $";
 #endif
 
 #define  MAX_TEMP_STORAGE  1000
@@ -25,7 +25,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_po
 /*! \brief Helper for scan_a_polygon
  *
  * Assign the label value to each voxel that intersects the
- * polygon.  I suspect the algorithm assumes a planar polygon.
+ * polygon.  I suspect the algorithm assumes a planar, convex polygon.
  * The input parameters min_voxel and max_voxel 
  * specify a bounding box around the polygon,
  * in voxel coordinates
