@@ -10,10 +10,6 @@ typedef  struct
 {
     Real               min_isovalue;
     Real               max_isovalue;
-    Boolean            gradient_flag;
-    Real               gradient_threshold_squared;
-    Boolean            variable_threshold_flag;
-    Real               variable_threshold;
     Normal_directions  normal_direction;
 } boundary_definition_struct;
 
@@ -36,7 +32,9 @@ typedef  enum { POINT_SPHERE_MODEL, SPHERICAL_MODEL, AVERAGE_MODEL,
 typedef  struct
 {
     Deformation_model_types   model_type;
-    Real                      *curvatures;
+    Point                     *model_centroids;
+    Vector                    *model_normals;
+    Point                     *model_points;
     Real                      min_curvature_offset;
     Real                      max_curvature_offset;
     Boolean                   position_constrained;

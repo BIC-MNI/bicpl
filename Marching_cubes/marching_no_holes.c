@@ -318,7 +318,7 @@ private  void  follow_edge(
     int            c,
     int            face,
     int            edge_index );
-private  void  find_edge_index(
+private  void  find_voxel_edge_index(
     int            c,
     int            face,
     int            edge,
@@ -526,7 +526,7 @@ private  void  follow_edge(
 
         find_neighbour_face( c, face, edge, &c, &face, &edge );
 
-        find_edge_index( c, face, edge, edges, &edge_index );
+        find_voxel_edge_index( c, face, edge, edges, &edge_index );
     }
 }
 
@@ -630,7 +630,7 @@ private  void  find_neighbour_face(
     }
 }
 
-private  void  find_edge_index(
+private  void  find_voxel_edge_index(
     int            c,
     int            face,
     int            edge,
