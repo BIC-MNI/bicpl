@@ -7,5 +7,5 @@
 %description File handling and image processing algorithms
 %version 1.4.0
 %requires netcdf 3.5.0 3.6.0
-%requires minc 1.0 1.9
+%requires mni_minc 1.0 1.9
 
