@@ -195,7 +195,9 @@ AC_DEFUN(smr_ARG_WITHINCLUDES,
 
   dnl If the header file smr_header exists, then define
   dnl HAVE_[]smr_header (in all capitals).
-  AC_CHECK_HEADERS([smr_header], , AC_MSG_ERROR([header smr_header not found]))
+  AC_CHECK_HEADERS([smr_header],
+                   smr_have_[]smr_safe_name[]_header=yes,
+                   smr_have_[]smr_safe_name[]_header=no)
 
   if test x"$smr_test_CPPFLAGS" = xset; then
     CPPFLAGS=$smr_save_CPPFLAGS
@@ -225,10 +227,6 @@ AC_DEFUN(smr_CHECK_LIB,
   pushdef([smr_prototype],   $8)
   pushdef([smr_safe_name],   smr_safe_translation(smr_name))
 
-  dnl Using sed here was a little bit easier to code than using
-  dnl patsubst.
-  smr_have_header=HAVE_`echo smr_header | sed 'y%abcdefghijklmnopqrstuvwxyz./+-:%ABCDEFGHIJKLMNOPQRSTUVWXYZ__p__%'`
-
   dnl Give the user (via "configure --help") an interface to specify
   dnl whether we should use the library or not, and possibly where we
   dnl should find it.
@@ -245,13 +243,18 @@ AC_DEFUN(smr_CHECK_LIB,
     dnl isn't found by the compiler by default).
     ifelse(smr_header, , , [smr_ARG_WITHINCLUDES(smr_name, smr_header, smr_extra_flags)])
 
-    AC_CHECK_LIB(smr_libname,
-                 smr_function,
-                 smr_have_[]smr_safe_name[]_library=yes,
-                 smr_have_[]smr_safe_name[]_library=no,
-                 [$]smr_safe_name[]_CFLAGS [smr_extra_flags] [$]smr_safe_name[]_LIBS [smr_extra_libs],
-                 [ifelse(smr_prototype, , , [[#]include <smr_header>])],
-                 smr_prototype)
+    # We need only look for the library if the header has been found
+    # (or no header is needed).
+    if test [$]smr_have_[]smr_safe_name[]_header != no; then
+
+    	AC_CHECK_LIB(smr_libname,
+                     smr_function,
+                     smr_have_[]smr_safe_name[]_library=yes,
+                     smr_have_[]smr_safe_name[]_library=no,
+                     [$]smr_safe_name[]_CFLAGS [smr_extra_flags] [$]smr_safe_name[]_LIBS [smr_extra_libs],
+                     [ifelse(smr_prototype, , , [[#]include <smr_header>])],
+                     smr_prototype)
+    fi
 
     if test x"[$]smr_have_[]smr_safe_name[]_library" = xyes; then
       AC_MSG_RESULT([using smr_name library])
