@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.9 1996-08-08 15:35:32 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.10 1996-09-10 16:30:37 david Exp $";
 #endif
 
 private  BOOLEAN  get_vertex_distances(
@@ -103,7 +103,6 @@ typedef  struct
 } queue_struct;
 
 #define   GREATER_THAN_DISTANCE     -1.0
-#define   ALREADY_DONE              -2.0
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_vertex_distances
@@ -229,73 +228,50 @@ private  int  get_smoothing_points(
     Real              distances[],
     Point             *smoothing_points[] )
 {
-    int      poly, vertex, i, p, point_index, next_point_index, ind;
-    int      n_polys, *polys, n_smoothing_points, size, neighbour_size;
-    int      neigh_ind;
+    int      poly, vertex, point_index, prev_index, inside, outside, ind;
+    int      n_smoothing_points, size;
     Real     dist, ratio;
     Point    point;
-    BOOLEAN  closed_flag;
 
-    ALLOC( polys, polygons->n_items );
     n_smoothing_points = 0;
+
     ind = 0;
 
     for_less( poly, 0, polygons->n_items )
     {
         size = GET_OBJECT_SIZE( *polygons, poly );
 
+        point_index = polygons->indices[ind+size-1];
         for_less( vertex, 0, size )
         {
+            prev_index = point_index;
             point_index = polygons->indices[ind];
             ++ind;
 
-            if( distances[point_index] > 0.0 )
+            if( distances[prev_index] > 0.0 &&
+                distances[point_index] == GREATER_THAN_DISTANCE )
             {
-                n_polys = get_polygons_around_vertex( polygons, poly,
-                                           vertex, polys, polygons->n_items,
-                                           &closed_flag );
+                inside = prev_index;
+                outside = point_index;
 
-                for_less( i, 0, n_polys )
+                dist = distances[inside] + distance_between_points(
+                                               &polygons->points[inside],
+                                               &polygons->points[outside] );
+
+                if( dist != distances[inside] )
                 {
-                    neighbour_size = GET_OBJECT_SIZE( *polygons, polys[i] );
-                    neigh_ind = POINT_INDEX(polygons->end_indices, polys[i],0);
-
-                    for_less( p, 0, neighbour_size )
-                    {
-                        next_point_index = polygons->indices[neigh_ind];
-                        ++neigh_ind;
-
-                        if( distances[next_point_index] ==
-                                      GREATER_THAN_DISTANCE )
-                        {
-                            dist = distances[point_index] +
-                                distance_between_points(
-                                      &polygons->points[point_index],
-                                      &polygons->points[next_point_index] );
-
-                            if( dist != distances[point_index] )
-                            {
-                                ratio = (smoothing_distance -
-                                         distances[point_index]) /
-                                        (dist - distances[point_index]);
-                                INTERPOLATE_POINTS( point,
-                                         polygons->points[point_index],
-                                         polygons->points[next_point_index],
-                                         ratio );
-                                ADD_ELEMENT_TO_ARRAY( *smoothing_points,
-                                      n_smoothing_points, point,
-                                      DEFAULT_CHUNK_SIZE );
-                            }
-                        }
-                    }
+                    ratio = (smoothing_distance - distances[inside]) /
+                            (dist - distances[inside]);
+                    INTERPOLATE_POINTS( point,
+                                        polygons->points[inside],
+                                        polygons->points[outside],
+                                        ratio );
+                    ADD_ELEMENT_TO_ARRAY( *smoothing_points, n_smoothing_points,
+                                          point, DEFAULT_CHUNK_SIZE );
                 }
-
-                distances[point_index] = ALREADY_DONE;
             }
         }
     }
-
-    FREE( polys );
 
     return( n_smoothing_points );
 }
@@ -346,6 +322,30 @@ private  Real  get_average_curvature(
     }
 
     curvature = sum_curvature * sign_curvature / (Real) n_smoothing_points;
+
+#ifdef DEBUG
+{
+static  BOOLEAN  first = TRUE;
+Real  **tags;
+if( first )
+{
+    first = FALSE;
+    ALLOC2D( tags, n_smoothing_points+1, 3 );
+    tags[0][X] = RPoint_x(*point);
+    tags[0][Y] = RPoint_y(*point);
+    tags[0][Z] = RPoint_z(*point);
+    for_less( i, 0, n_smoothing_points )
+    {
+        tags[i+1][X] = RPoint_x(smoothing_points[i]);
+        tags[i+1][Y] = RPoint_y(smoothing_points[i]);
+        tags[i+1][Z] = RPoint_z(smoothing_points[i]);
+    }
+    (void) output_tag_file( "smooth_curvature.tag", "", 1, n_smoothing_points+1,
+                            tags, NULL, NULL, NULL, NULL, NULL );
+    FREE2D( tags );
+}
+}
+#endif
 
     return( curvature );
 }
