@@ -113,7 +113,7 @@ private  void  get_two_axes_coordinates(
     *x_pos = get_axis_coordinates( n, y_axis, x_axis, vector );
 }
 
-private  void  map_voxel_to_pixel(
+public  void  map_voxel_to_pixel(
     int    n,
     Real   voxel[],
     Real   origin[],
@@ -249,6 +249,8 @@ public  void  convert_voxel_to_slice_pixel(
             for_less( c, 0, N_DIMENSIONS )
                 used_voxel[c] -= factor * z_axis[c] / separations[c];
         }
+        else
+            print( "Warning: convert_voxel_to_slice_pixel: z_mag is 0.\n" );
     }
     else
         print( "Not sure if non-3d convert_voxel_to_slice_pixel works.\n" );
@@ -322,8 +324,8 @@ public  void  fit_volume_slice_to_viewport(
     {
         *x_translation = 0.0;
         *y_translation = 0.0;
-        *x_scale = 1.0;
-        *y_scale = 1.0;
+        *x_scale = 0.0;
+        *y_scale = 0.0;
         return;
     }
 
