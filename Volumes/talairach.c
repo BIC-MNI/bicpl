@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.11 1995-07-31 13:45:48 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.12 1995-10-19 15:48:31 david Exp $";
 #endif
 
 #define  TALAIRACH_OFFSET   16.0
@@ -87,8 +87,8 @@ private  void  read_talairach_coordinate_system( void )
 {
     int     i, n_lines, ch;
     FILE    *file;
-    char    *name = "brain_size.dat";
-    char    filename[234];
+    STRING  name = "brain_size.dat";
+    STRING  filename;
     int     okay;
     int     tmp_nx, tmp_ny, tmp_nz;
     Real    tmp_x_low, tmp_x_high, tmp_y_low, tmp_y_high, tmp_z_low;
@@ -99,18 +99,19 @@ private  void  read_talairach_coordinate_system( void )
 
     if( file_exists(name) )
     {
-        (void) strcpy( filename, name );
+        filename = create_string( name );
     }
     else
     {
-        if( getenv( "PET_ROI" ) == (char *) 0 )
+        if( getenv( "PET_ROI" ) == NULL )
         {
             print_error( "You have to setenv PET_ROI.\n" );
+            filename = NULL;
             okay = FALSE;
         }
         else
         {
-            get_absolute_filename( name, getenv("PET_ROI"), filename );
+            filename = get_absolute_filename( name, getenv("PET_ROI") );
         }
     }
 
@@ -178,6 +179,8 @@ private  void  read_talairach_coordinate_system( void )
 
         (void) fclose( file );
     }
+
+    delete_string( filename );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

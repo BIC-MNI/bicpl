@@ -17,7 +17,7 @@
 #include  <sys/time.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.7 1995-07-31 13:45:57 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.8 1995-10-19 15:48:54 david Exp $";
 #endif
 
 #define  MAX_RAND  2147483648.0

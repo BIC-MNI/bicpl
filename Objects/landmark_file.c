@@ -17,7 +17,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmark_file.c,v 1.5 1995-07-31 13:45:17 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmark_file.c,v 1.6 1995-10-19 15:47:58 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -33,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmar
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  char  *get_default_landmark_file_suffix()
+public  STRING  get_default_landmark_file_suffix()
 {
     return( "lmk" );
 }
@@ -58,7 +58,7 @@ public  char  *get_default_landmark_file_suffix()
 
 public  Status   input_landmark_file(
     Volume         volume,
-    char           filename[],
+    STRING         filename,
     Colour         colour,
     Real           size,
     Marker_types   type,
@@ -70,7 +70,9 @@ public  Status   input_landmark_file(
     marker_struct           marker;
     FILE                    *file;
 
-    status = open_file_with_default_suffix( filename, "lmk", READ_FILE,
+    status = open_file_with_default_suffix( filename,
+                                            get_default_landmark_file_suffix(),
+                                            READ_FILE,
                                             ASCII_FORMAT, &file );
 
     *n_objects = 0;
@@ -117,7 +119,7 @@ public  Status  io_tag_point(
     marker_struct   *marker )
 {
     Status   status;
-    STRING   line;
+    STRING   line, stripped;
     Point    position;
     int      sizes[MAX_DIMENSIONS];
     int      len, offset;
@@ -212,30 +214,33 @@ public  Status  io_tag_point(
 
     if( io_direction == WRITE_FILE )
     {
-        if( status == OK && (int) strlen(marker->label) > 0 )
+        if( status == OK && string_length(marker->label) > 0 )
             status = io_quoted_string( file, io_direction, ASCII_FORMAT,
-                                       marker->label, MAX_STRING_LENGTH );
+                                       &marker->label );
     }
     else
     {
         if( status == OK )
-            status = input_line( file, line, MAX_STRING_LENGTH );
+            status = input_line( file, &line );
 
         if( status == OK )
         {
-            strip_outer_blanks( line, line );
+            stripped = strip_outer_blanks( line );
+            delete_string( line );
 
-            if( line[0] == '"' )
+            if( stripped[0] == '"' )
                 offset = 1;
             else
                 offset = 0;
 
-            (void) strcpy( marker->label, &line[offset] );
+            marker->label = create_string( &stripped[offset] );
 
-            len = strlen( marker->label );
+            len = string_length( marker->label );
 
             if( len > 0 && marker->label[len-1] == '"' )
-                 marker->label[len-1] = (char) 0;
+                 marker->label[len-1] = END_OF_STRING;
+
+            delete_string( stripped );
         }
     }
 

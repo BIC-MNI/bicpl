@@ -17,12 +17,12 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.11 1995-07-31 13:45:56 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.12 1995-10-19 15:48:52 david Exp $";
 #endif
 
 static    Status  input_global_variable( int, global_struct [],
                                          FILE *, BOOLEAN * );
-static    void    extract_string( char [], char [] );
+static    STRING    extract_string( STRING );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : input_globals_file
@@ -43,7 +43,7 @@ static    void    extract_string( char [], char [] );
 public  Status  input_globals_file(
     int             n_globals_lookup,
     global_struct   globals_lookup[],
-    char            filename[] )
+    STRING          filename )
 {
     Status  status;
     BOOLEAN eof;
@@ -93,11 +93,13 @@ private  Status  input_global_variable(
 
     *eof = FALSE;
 
-    status = input_string( file, variable_name, MAX_STRING_LENGTH, (char) '=' );
+    value = NULL;
+
+    status = input_string( file, &variable_name, (char) '=' );
 
     if( status == OK )
     {
-        status = input_string( file, value, MAX_STRING_LENGTH, (char) ';' );
+        status = input_string( file, &value, (char) ';' );
 
         if( status == OK )
             set_status = set_global_variable( n_globals_lookup, globals_lookup,
@@ -117,6 +119,9 @@ private  Status  input_global_variable(
         print_error( "Error inputting global.\n" );
         print_error( "Variable name is %s\n", variable_name );
     }
+
+    delete_string( variable_name );
+    delete_string( value );
 
     return( status );
 }
@@ -140,9 +145,10 @@ private  Status  input_global_variable(
 private  Status  lookup_global(
     int              n_globals,
     global_struct    global_lookup[],
-    char             variable_name[],
+    STRING           variable_name,
     void             **ptr,
-    Variable_types   *type )
+    Variable_types   *type,
+    Smallest_int     **set_flag )
 {
     Status  status;
     STRING  stripped;
@@ -151,25 +157,29 @@ private  Status  lookup_global(
 
     status = ERROR;
 
-    strip_outer_blanks( variable_name, stripped );
+    stripped = strip_outer_blanks( variable_name );
 
     for_less( i, 0, n_globals )
     {
         global_name = global_lookup[i].variable_name;
-        len = strlen( global_name );
+        len = string_length( global_name );
         s = 0;
 
         while( s < len && global_name[s] == ' ' )
             ++s;
 
-        if( strcmp( &global_name[s], stripped ) == 0 )
+        if( equal_strings( &global_name[s], stripped ) )
         {
             *ptr = global_lookup[i].ptr_to_global;
             *type = global_lookup[i].type;
+            if( set_flag != NULL )
+                *set_flag = &global_lookup[i].set_flag;
             status = OK;
             break;
         }
     }
+
+    delete_string( stripped );
 
     return( status );
 }
@@ -193,16 +203,19 @@ private  Status  lookup_global(
 public  Status  get_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
-    char             variable_name[],
-    char             value[] )
+    STRING           variable_name,
+    STRING           *value )
 {
     Status             status;
     void               *ptr;
     Surfprop           *surfprop;
     Variable_types     type;
+    char               buffer[EXTREMELY_LARGE_STRING_SIZE];
+    STRING             *string_ptr;
+    STRING             tmp_str;
 
     status = lookup_global( n_globals_lookup, globals_lookup, variable_name,
-                            &ptr, &type );
+                            &ptr, &type, NULL );
 
     if( status == OK )
     {
@@ -210,44 +223,47 @@ public  Status  get_global_variable(
         {
         case BOOLEAN_type:
             if( * ((BOOLEAN *) ptr) )
-                (void) strcpy( value, "True" );
+                (void) strcpy( buffer, "True" );
             else
-                (void) strcpy( value, "False" );
+                (void) strcpy( buffer, "False" );
             break;
 
         case int_type:
-            (void) sprintf( value, "%d", * (int *) ptr );
+            (void) sprintf( buffer, "%d", * (int *) ptr );
             break;
 
         case Real_type:
-            (void) sprintf( value, "%g", * (Real *) ptr );
+            (void) sprintf( buffer, "%g", * (Real *) ptr );
             break;
 
-        case String_type:
-            (void) strcpy( value, ptr );
+        case STRING_type:
+            string_ptr = (STRING *) ptr;
+            (void) strcpy( buffer, *string_ptr );
             break;
 
         case Point_type:
-            (void) sprintf( value, "%g %g %g",
+            (void) sprintf( buffer, "%g %g %g",
                             Point_x(* (Point *) ptr),
                             Point_y(* (Point *) ptr),
                             Point_z(* (Point *) ptr) );
             break;
 
         case Vector_type:
-            (void) sprintf( value, "%g %g %g",
+            (void) sprintf( buffer, "%g %g %g",
                             Vector_x(* (Vector *) ptr),
                             Vector_y(* (Vector *) ptr),
                             Vector_z(* (Vector *) ptr) );
             break;
 
         case Colour_type:
-            convert_colour_to_string( * (Colour *) ptr, value );
+            tmp_str = convert_colour_to_string( * (Colour *) ptr );
+            (void) strcpy( buffer, tmp_str );
+            delete_string( tmp_str );
             break;
 
         case Surfprop_type:
             surfprop = (Surfprop *) ptr;
-            (void) sprintf( value, "%g %g %g %g %g",
+            (void) sprintf( buffer, "%g %g %g %g %g",
                             Surfprop_a(*surfprop),
                             Surfprop_d(*surfprop),
                             Surfprop_s(*surfprop),
@@ -257,9 +273,12 @@ public  Status  get_global_variable(
 
         default:
             handle_internal_error( "get_global_variable\n" );
+            buffer[0] = END_OF_STRING;
             break;
         }
     }
+
+    *value = create_string( buffer );
 
     return( status );
 }
@@ -284,11 +303,11 @@ public  Status  get_global_variable(
 public  Status  set_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
-    char             variable_name[],
-    char             value_to_set[] )
+    STRING           variable_name,
+    STRING           value_to_set )
 {
     Status             status;
-    STRING             value;
+    STRING             value, *string_ptr;
     void               *ptr;
     Variable_types     type;
     int                tmp_int;
@@ -297,11 +316,12 @@ public  Status  set_global_variable(
     Vector             tmp_vector;
     Colour             tmp_colour;
     Surfprop           tmp_surfprop;
+    Smallest_int       *set_flag;
 
-    strip_outer_blanks( value_to_set, value );
+    value = strip_outer_blanks( value_to_set );
 
     status = lookup_global( n_globals_lookup, globals_lookup, variable_name,
-                            &ptr, &type );
+                            &ptr, &type, &set_flag );
 
     if( status == OK )
     {
@@ -346,8 +366,12 @@ public  Status  set_global_variable(
             }
             break;
 
-        case String_type:
-            extract_string( value, (char *) ptr );
+        case STRING_type:
+            string_ptr = (STRING *) ptr;
+            if( *set_flag )
+                delete_string( *string_ptr );
+            *string_ptr = extract_string( value );
+            *set_flag = TRUE;
             break;
 
         case Point_type:
@@ -395,6 +419,8 @@ public  Status  set_global_variable(
         }
     }
 
+    delete_string( value );
+
     return( status );
 }
 
@@ -422,9 +448,9 @@ public  Status  set_global_variable(
 public  Status  set_or_get_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
-    char             input_str[],
-    char             variable_name[],
-    char             value_string[] )
+    STRING           input_str,
+    STRING           *variable_name,
+    STRING           *value_string )
 {
     Status  status;
     STRING  tmp_var_name, value_to_set;
@@ -432,25 +458,28 @@ public  Status  set_or_get_global_variable(
 
     status = OK;
 
-    (void) strcpy( tmp_var_name, input_str );
+    tmp_var_name = create_string( input_str );
 
     equal_index = find_character( tmp_var_name, (char) '=' );
 
     if( equal_index >= 0 )
     {
-        (void) strcpy( value_to_set, &tmp_var_name[equal_index+1] );
-        tmp_var_name[equal_index] = (char) 0;
+        value_to_set = create_string( &tmp_var_name[equal_index+1] );
+        tmp_var_name[equal_index] = END_OF_STRING;
         status = set_global_variable( n_globals_lookup, globals_lookup,
                                       tmp_var_name, value_to_set );
+        delete_string( value_to_set );
     }
 
-    strip_outer_blanks( tmp_var_name, variable_name );
+    *variable_name = strip_outer_blanks( tmp_var_name );
 
     if( status == OK )
     {
         status = get_global_variable( n_globals_lookup, globals_lookup,
-                                      variable_name, value_string );
+                                      *variable_name, value_string );
     }
+
+    delete_string( tmp_var_name );
 
     return( status );
 }
@@ -469,15 +498,15 @@ public  Status  set_or_get_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  extract_string(
-    char   str[],
-    char   extracted[] )
+private  STRING  extract_string(
+    STRING   str )
 {
-    int   len_str, start, end, i;
+    int     len_str, start, end, i;
+    STRING  extracted;
 
     start = 0;
 
-    len_str = strlen( str );
+    len_str = string_length( str );
 
     while( start < len_str && (str[start] == ' ' || str[start] == '\t') )
     {
@@ -497,17 +526,45 @@ private  void  extract_string(
         --end;
     }
 
+    extracted = create_string( NULL );
+
     if( start <= end )
     {
         for_inclusive( i, start, end )
-        {
-            extracted[i-start] = str[i];
-        }
-
-        extracted[end-start+1] = (char) 0;
+            concat_char_to_string( &extracted, str[i] );
     }
-    else
+
+    return( extracted );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_global_variables
+@INPUT      : n_globals_lookup
+              globals_lookup
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Sep. 1, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void  delete_global_variables(
+    int             n_globals_lookup,
+    global_struct   globals_lookup[] )
+{
+    int     i;
+    STRING  *ptr;
+
+    for_less( i, 0, n_globals_lookup )
     {
-        extracted[0] = (char) 0;
+        if( globals_lookup[i].type == STRING_type &&
+            globals_lookup[i].set_flag )
+        {
+            ptr = (STRING *) globals_lookup[i].ptr_to_global;
+            delete_string( *ptr );
+        }
     }
 }

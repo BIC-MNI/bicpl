@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/tag_objects.c,v 1.4 1995-07-31 13:45:18 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/tag_objects.c,v 1.5 1995-10-19 15:48:00 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -37,7 +37,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/tag_obj
 ---------------------------------------------------------------------------- */
 
 public  Status   input_tag_objects_file(
-    char           filename[],
+    STRING         filename,
     Colour         marker_colour,
     Real           default_size,
     Marker_types   default_type,
@@ -48,7 +48,7 @@ public  Status   input_tag_objects_file(
     object_struct      *object;
     marker_struct      *marker;
     int                i, n_volumes, n_tag_points, *structure_ids, *patient_ids;
-    char               **labels;
+    STRING             *labels;
     double             *weights;
     double             **tags1, **tags2;
 
@@ -65,7 +65,7 @@ public  Status   input_tag_objects_file(
             object = create_object( MARKER );
             marker = get_marker_ptr( object );
             fill_Point( marker->position, tags1[i][X], tags1[i][Y],tags1[i][Z]);
-            (void) strcpy( marker->label, labels[i] );
+            marker->label = create_string( labels[i] );
 
             if( structure_ids[i] >= 0 )
                 marker->structure_id = structure_ids[i];

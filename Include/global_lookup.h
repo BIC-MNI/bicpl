@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char global_lookup_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/global_lookup.h,v 1.6 1995-07-31 13:44:47 david Exp $";
+static char global_lookup_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/global_lookup.h,v 1.7 1995-10-19 15:47:35 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -25,7 +25,7 @@ typedef  enum {
                  BOOLEAN_type,
                  int_type,
                  Real_type,
-                 String_type,
+                 STRING_type,
                  Point_type,
                  Vector_type,
                  Colour_type,
@@ -37,6 +37,7 @@ typedef  struct
     void             *ptr_to_global;
     STRING           variable_name;
     Variable_types   type;
+    Smallest_int     set_flag;
 } global_struct;
 
 #endif

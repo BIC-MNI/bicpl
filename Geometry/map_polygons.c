@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.6 1995-07-31 13:45:04 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.7 1995-10-19 15:47:42 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -293,12 +293,18 @@ public  void  get_polygon_interpolation_weights(
     Real        weights[] )
 {
     if( n_points == 3 )
+    {
         get_triangle_interpolation_weights( point, points, weights );
+    }
     else if( n_points == 4 )
+    {
         get_quadrilateral_interpolation_weights( point, points, weights );
+    }
     else
-        get_arbitrary_polygon_interpolation_weights( point, n_points, points,
-                                                     weights );
+    {
+        get_arbitrary_polygon_interpolation_weights( point, n_points,
+                                                     points, weights );
+    }
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -308,7 +314,7 @@ public  void  get_polygon_interpolation_weights(
               p1_point     - a point in the polygon
               p2           - the destination polygons of same topology
 @OUTPUT     : p2_point     - the corresponding point in the second polygon
-@RETURNS    : 
+@RETURNS    : distance of p1_point from the polygons
 @DESCRIPTION: Given two polygons of the same topology and a point in the first
               polygon, finds the corresponding point in the second polygon.
 @METHOD     : 
@@ -353,8 +359,14 @@ public  void  map_point_between_polygons(
               point
               unit_sphere
 @OUTPUT     : unit_sphere_point
-@RETURNS    : 
+@RETURNS    : distance of point from polygons
 @DESCRIPTION: Maps a point on a polygon to the unit sphere of the same topology.
+              Returns the distance of the point from the polygons.  Usually,
+              we are mapping points on the polygon to points on the sphere,
+              so the distance will be 0.  However, we may want map points near
+              the polygons, so we will return the distance so that the
+              calling program may use the distance to determine if mapping this
+              point makes sense.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -362,18 +374,20 @@ public  void  map_point_between_polygons(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  map_point_to_unit_sphere(
+public  Real  map_point_to_unit_sphere(
     polygons_struct  *p,
     Point            *point,
     polygons_struct  *unit_sphere,
     Point            *unit_sphere_point )
 {
-    Real     mag;
+    Real     mag, dist;
     Point    poly_point;
     Vector   offset;
     int      poly;
 
     poly = find_closest_polygon_point( point, p, &poly_point );
+
+    dist = distance_between_points( point, &poly_point );
 
     map_point_between_polygons( p, poly, &poly_point, unit_sphere,
                                 unit_sphere_point );
@@ -388,6 +402,8 @@ public  void  map_point_to_unit_sphere(
     {
         SCALE_POINT( *unit_sphere_point, *unit_sphere_point, 1.0 / mag );
     }
+
+    return( dist );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

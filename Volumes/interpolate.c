@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.6 1995-09-21 19:01:01 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.7 1995-10-19 15:48:49 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -79,6 +79,7 @@ public  void  interpolate_volume_to_slice(
     Real             start_voxel1[MAX_DIMENSIONS], voxel1[MAX_DIMENSIONS];
     Real             start_voxel2[MAX_DIMENSIONS], voxel2[MAX_DIMENSIONS];
     Real             value1, voxel_value1, value2, voxel_value2;
+    Real             min_voxel1, max_voxel1, min_voxel2, max_voxel2;
     unsigned short   *cmode_ptr;
     Colour           *rgb_ptr;
     BOOLEAN          inside1, inside2;
@@ -90,6 +91,8 @@ public  void  interpolate_volume_to_slice(
     if( is_an_rgb_volume( volume1 ) ||
         volume2 != NULL && is_an_rgb_volume( volume2 ) )
         degrees_continuity = -1;
+
+    get_volume_voxel_range( volume1, &min_voxel1, &max_voxel1 );
 
     pixel_type = pixels->pixel_type;
 
@@ -103,6 +106,7 @@ public  void  interpolate_volume_to_slice(
 
     if( volume2 != NULL )
     {
+        get_volume_voxel_range( volume2, &min_voxel2, &max_voxel2 );
         for_less( dim, 0, n_dims2 )
         {
             start_voxel2[dim] = origin2[dim] +
@@ -147,6 +151,11 @@ public  void  interpolate_volume_to_slice(
                                         &value1, NULL, NULL );
 
                 voxel_value1 = convert_value_to_voxel( volume1, value1 );
+
+                if( voxel_value1 < min_voxel1 )
+                    voxel_value1 = min_voxel1;
+                else if( voxel_value1 > max_voxel1 )
+                    voxel_value1 = max_voxel1;
             }
 
             for_less( dim, 0, n_dims1 )
@@ -164,6 +173,11 @@ public  void  interpolate_volume_to_slice(
                                             &value2, NULL, NULL );
 
                     voxel_value2 = convert_value_to_voxel( volume2, value2 );
+
+                    if( voxel_value2 < min_voxel2 )
+                        voxel_value2 = min_voxel2;
+                    else if( voxel_value2 > max_voxel2 )
+                        voxel_value2 = max_voxel2;
                 }
 
                 for_less( dim, 0, n_dims2 )
@@ -221,11 +235,11 @@ public  void  interpolate_volume_to_slice(
                 {
                     if( inside1 )
                     {
-                        if( cmode_colour_map != NULL )
-                            *cmode_ptr = (unsigned short) voxel_value1;
+                        int_voxel_value1 = ROUND( voxel_value1 );
+                        if( cmode_colour_map == NULL )
+                            *cmode_ptr = (unsigned short) int_voxel_value1;
                         else
                         {
-                            int_voxel_value1 = ROUND( voxel_value1 );
                             *cmode_ptr = cmode_colour_map[0][int_voxel_value1];
                         }
                     }

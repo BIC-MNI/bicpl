@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.3 1995-07-31 13:45:50 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.4 1995-10-19 15:48:37 david Exp $";
 #endif
 
 #include  "render_funcs_include.c"

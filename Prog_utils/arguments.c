@@ -16,7 +16,7 @@
 #include  <prog_utils.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.9 1995-07-31 13:45:55 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.10 1995-10-19 15:48:51 david Exp $";
 #endif
 
 typedef struct
@@ -67,9 +67,9 @@ public  int  get_n_arguments_remaining( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  char  *get_current_argument_string( void )
+private  STRING  get_current_argument_string( void )
 {
-    char   *arg;
+    STRING   arg;
 
     arg = arguments.argv[arguments.current_arg];
     return( &arg[arguments.current_offset_within_arg] );
@@ -211,8 +211,8 @@ public  BOOLEAN  get_real_argument(
 ---------------------------------------------------------------------------- */
 
 public  BOOLEAN  get_string_argument(
-    char   default_value[],
-    char   *value[] )
+    STRING   default_value,
+    STRING   *value )
 {
     BOOLEAN   found;
 
@@ -247,22 +247,23 @@ public  BOOLEAN  get_string_argument(
 ---------------------------------------------------------------------------- */
 
 public  BOOLEAN  get_prefix_argument(
-    char  prefix[] )
+    STRING  prefix )
 {
     char      *next_str;
     BOOLEAN   found;
 
     if( arguments_remaining() &&
-        (int) strlen(get_current_argument_string()) >= (int) strlen(prefix) &&
-        strncmp( get_current_argument_string(), prefix, strlen(prefix) ) == 0 )
+        string_length(get_current_argument_string()) >= string_length(prefix) &&
+        strncmp( get_current_argument_string(), prefix,
+                 string_length(prefix) ) == 0 )
     {
-        arguments.current_offset_within_arg += strlen(prefix);
+        arguments.current_offset_within_arg += string_length(prefix);
 
         next_str = get_current_argument_string();
         while( *next_str == ' ' || *next_str == '\t' )
             ++next_str;
 
-        if( *next_str == (char) 0 )
+        if( *next_str == END_OF_STRING )
             advance_argument();
 
         found = TRUE;

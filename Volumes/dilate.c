@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.7 1995-09-26 14:25:20 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.8 1995-10-19 15:48:38 david Exp $";
 #endif
 
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }

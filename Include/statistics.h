@@ -29,7 +29,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char statistics_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/statistics.h,v 1.1 1995-10-11 15:59:09 david Exp $";
+static char statistics_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/statistics.h,v 1.2 1995-10-19 15:47:36 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -37,6 +37,7 @@ static char statistics_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Incl
 typedef  struct
 {
     int    n_samples;
+    Real   *samples;
     Real   min_value;
     Real   max_value;
     Real   min_median_range;

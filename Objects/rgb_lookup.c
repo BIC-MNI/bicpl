@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.8 1995-07-31 13:45:17 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.9 1995-10-19 15:47:56 david Exp $";
 #endif
 
 #define  NUM_PIXELS8   256

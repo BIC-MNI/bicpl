@@ -29,16 +29,13 @@
 #define  END_GLOBALS
 
 #define  DEF_GLOBAL( variable, type, initial ) \
-    type  variable = { initial };
+    type  variable = initial;
 
 #define  DEF_GLOBAL3( variable, type, initial1, initial2, initial3 ) \
     type  variable = { initial1, initial2, initial3 };
 
 #define  DEF_GLOBAL5( variable, type, initial1, initial2, initial3, initial4, initial5 ) \
     type  variable = { initial1, initial2, initial3, initial4, initial5 };
-
-#define  DEF_GLOBAL_STRING( variable, initial ) \
-    DEF_GLOBAL( variable, STRING, initial )
 
 #define  DEF_GLOBAL_COLOUR( variable ) \
     Colour   variable;
@@ -50,7 +47,6 @@
 #undef  DEF_GLOBAL
 #undef  DEF_GLOBAL3
 #undef  DEF_GLOBAL5
-#undef  DEF_GLOBAL_STRING
 #undef  DEF_GLOBAL_COLOUR
 
 /*  ----- database of correspondence between globals and string names ----- */
@@ -62,7 +58,7 @@
 
 #define  DEF_GLOBAL( variable, type, initial ) \
        { \
-           (void *) &variable, CREATE_STRING(variable), GLUE(type,_type) \
+           (void *) &variable, CREATE_STRING(variable), GLUE(type,_type), FALSE\
        },
 
 #define  DEF_GLOBAL3( variable, type, initial1, initial2, initial3 ) \
@@ -70,11 +66,6 @@
 
 #define  DEF_GLOBAL5( variable, type, i1, i2, i3, i4, i5 ) \
          DEF_GLOBAL( variable, type, i1 )
-
-#define  DEF_GLOBAL_STRING( variable, initial ) \
-       { \
-           (void *) variable, CREATE_STRING(variable), String_type \
-       },
 
 #define  DEF_GLOBAL_COLOUR( variable ) \
          DEF_GLOBAL( variable, Colour, 0 )
@@ -86,7 +77,6 @@
 #undef  DEF_GLOBAL
 #undef  DEF_GLOBAL3
 #undef  DEF_GLOBAL5
-#undef  DEF_GLOBAL_STRING
 #undef  DEF_GLOBAL_COLOUR
 
 #else   /* GLOBALS_LOOKUP_NAME */
@@ -105,9 +95,6 @@
 #define  DEF_GLOBAL5( variable, type, i1, i2, i3, i4, i5 ) \
          DEF_GLOBAL( variable, type, i1 )
 
-#define  DEF_GLOBAL_STRING( variable, initial ) \
-         extern  STRING  variable;
-
 #define  DEF_GLOBAL_COLOUR( variable ) \
          extern  Colour  variable;
 
@@ -118,7 +105,6 @@
 #undef  DEF_GLOBAL
 #undef  DEF_GLOBAL3
 #undef  DEF_GLOBAL5
-#undef  DEF_GLOBAL_STRING
 #undef  DEF_GLOBAL_COLOUR
 
 #endif   /* GLOBALS_LOOKUP_NAME */

@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.18 1995-07-31 13:45:09 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.19 1995-10-19 15:47:47 david Exp $";
 #endif
 
 private  Status  io_points(
@@ -174,8 +174,7 @@ public  Status  io_marker(
         status = io_int( file, io_flag, format, &marker->patient_id );
 
     if( status == OK )
-        status = io_quoted_string( file, io_flag, format, marker->label,
-                                   MAX_STRING_LENGTH );
+        status = io_quoted_string( file, io_flag, format, &marker->label );
 
     if( status == OK )
         status = io_newline( file, io_flag, format );
@@ -214,8 +213,7 @@ public  Status  io_model(
     status = io_object_type( file, io_flag, format, MODEL );
 
     if( status == OK )
-        status = io_quoted_string( file, io_flag, format, model->filename,
-                                   MAX_STRING_LENGTH );
+        status = io_quoted_string( file, io_flag, format, &model->filename );
 
     if( status == OK )
         status = io_newline( file, io_flag, format );
@@ -537,8 +535,7 @@ public  Status  io_text(
         status = io_point( file, io_flag, format, &text->origin );
 
     if( status == OK )
-        status = io_quoted_string( file, io_flag, format, text->string,
-                                   MAX_STRING_LENGTH );
+        status = io_quoted_string( file, io_flag, format, &text->string );
 
     if( status == OK )
         status = io_newline( file, io_flag, format );
@@ -1279,7 +1276,7 @@ private  Status  io_line_thickness(
 ---------------------------------------------------------------------------- */
 
 public  Status  input_object(
-    char           directory[],
+    STRING         directory,
     FILE           *file,
     File_formats   *format,
     object_struct  **object,
@@ -1312,8 +1309,9 @@ public  Status  input_object(
             status = io_model( file, READ_FILE, *format,
                                get_model_ptr(*object) );
 
-            get_absolute_filename( get_model_ptr(*object)->filename,
-                                   directory, abs_filename );
+            abs_filename = get_absolute_filename(
+                              get_model_ptr(*object)->filename,
+                              directory );
 
             if( status == OK )
             {
@@ -1321,6 +1319,9 @@ public  Status  input_object(
                                           &get_model_ptr(*object)->n_objects,
                                           &get_model_ptr(*object)->objects );
             }
+
+            delete_string( abs_filename );
+
             break;
 
         case PIXELS:

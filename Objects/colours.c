@@ -17,7 +17,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.5 1995-09-13 13:24:56 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.6 1995-10-19 15:48:00 david Exp $";
 #endif
 
 private Colour ANTIQUE_WHITE_COL;
@@ -166,7 +166,7 @@ private Colour TRANSPARENT_COL;
 
 typedef  struct
 {
-    char     *name;
+    STRING   name;
     Colour   *colour;
 } colours_struct;
 
@@ -317,7 +317,7 @@ private  colours_struct  colour_lookup[] =
     { "YELLOW_GREEN", &YELLOW_GREEN_COL }
 };
 
-private   BOOLEAN  strings_equivalent( char [], char [] );
+private   BOOLEAN  strings_equivalent( STRING, STRING );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : check_initialize_colours
@@ -524,8 +524,8 @@ public  void  get_default_surfprop(
 ---------------------------------------------------------------------------- */
 
 public  BOOLEAN  lookup_colour(
-    char    colour_name[],
-    Colour  *col )
+    STRING    colour_name,
+    Colour    *col )
 {
     BOOLEAN  found;
     int      i;
@@ -563,7 +563,7 @@ public  BOOLEAN  lookup_colour(
 
 public  BOOLEAN  lookup_colour_name(
     Colour  col,
-    char    colour_name[] )
+    STRING  *colour_name )
 {
     BOOLEAN  found;
     int      i;
@@ -576,7 +576,7 @@ public  BOOLEAN  lookup_colour_name(
     {
         if( col == *colour_lookup[i].colour )
         {
-            (void) strcpy( colour_name, colour_lookup[i].name );
+            *colour_name = create_string( colour_lookup[i].name );
             found = TRUE;
             break;
         }
@@ -601,8 +601,8 @@ public  BOOLEAN  lookup_colour_name(
 ---------------------------------------------------------------------------- */
 
 private  BOOLEAN  strings_equivalent(
-    char   str1[],
-    char   str2[] )
+    STRING   str1,
+    STRING   str2 )
 {
     BOOLEAN  equivalent;
     int      i1, i2;
@@ -611,13 +611,13 @@ private  BOOLEAN  strings_equivalent(
     i1 = 0;
     i2 = 0;
 
-    while( str1[i1] != (char) 0 || str2[i2] != (char) 0 )
+    while( str1[i1] != END_OF_STRING || str2[i2] != END_OF_STRING )
     {
         if( str1[i1] == ' ' || str1[i1] == '\t' || str1[i1] == '_' )
             ++i1;
         else if( str2[i2] == ' ' || str2[i2] == '\t' || str2[i2] == '_' )
             ++i2;
-        else if( GET_LOWER_CASE(str1[i1]) == GET_LOWER_CASE(str2[i2]) )
+        else if( get_lower_case(str1[i1]) == get_lower_case(str2[i2]) )
         {
             ++i1;
             ++i2;
@@ -872,17 +872,22 @@ public  BOOLEAN  equal_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_colour_to_string(
-    Colour   col,
-    char     string[] )
+public  STRING  convert_colour_to_string(
+    Colour   col )
 {
-    if( !lookup_colour_name( col, string ) )
+    char       buffer[EXTREMELY_LARGE_STRING_SIZE];
+    STRING     string;
+
+    if( !lookup_colour_name( col, &string ) )
     {
-        (void) sprintf( string, "%g %g %g",
+        (void) sprintf( buffer, "%g %g %g",
                         get_Colour_r_0_1(col),
                         get_Colour_g_0_1(col),
                         get_Colour_b_0_1(col) );
+        string = create_string( buffer );
     }
+
+    return( string );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -902,7 +907,7 @@ public  void  convert_colour_to_string(
 ---------------------------------------------------------------------------- */
 
 public  Colour  convert_string_to_colour(
-    char     string[] )
+    STRING     string )
 {
     Colour   colour;
     double   r, g, b, a;

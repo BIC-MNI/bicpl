@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char numerical_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/numerical.h,v 1.5 1995-07-31 13:44:49 david Exp $";
+static char numerical_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/numerical.h,v 1.6 1995-10-19 15:47:36 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -24,6 +24,7 @@ static char numerical_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Inclu
 #include  <amoeba.h>
 #include  <histogram.h>
 #include  <minimization.h>
+#include  <statistics.h>
 
 typedef  struct
 {

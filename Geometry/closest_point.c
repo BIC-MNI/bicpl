@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/closest_point.c,v 1.5 1995-07-31 13:45:04 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/closest_point.c,v 1.6 1995-10-19 15:47:43 david Exp $";
 #endif
 
 #define  MAX_POINTS    300
@@ -309,6 +309,66 @@ public  Real  get_point_object_distance(
     return( dist );
 }
 
+private  Real   get_point_polygon_vertex_distance(
+    Point            *point,
+    polygons_struct  *polygons,
+    int              poly_index,
+    int              *object_vertex )
+{
+    Point    points[MAX_POINTS];
+    Real     dist, best_dist;
+    int      i, size, point_index;
+
+    if( polygons->visibilities == (Smallest_int *) 0 ||
+        polygons->visibilities[poly_index] )
+    {
+        size = get_polygon_points( polygons, poly_index, points );
+
+        best_dist = 0.0;
+        for_less( i, 0, size )
+        {
+            point_index = polygons->indices[
+                    POINT_INDEX(polygons->end_indices,poly_index,i)];
+
+            dist = distance_between_points( point,
+                                            &polygons->points[point_index] );
+
+            if( i == 0 || dist < best_dist )
+            {
+                best_dist = dist;
+                *object_vertex = point_index;
+            }
+        }
+    }
+    else
+        best_dist = 1.0e30;
+
+    return( best_dist );
+}
+
+public  Real  get_point_object_vertex_distance(
+    Point                 *point,
+    object_struct         *object,
+    int                   obj_index,
+    int                   *object_vertex )
+{
+    Real                  dist;
+
+    if( get_object_type( object ) == POLYGONS )
+    {
+        dist = get_point_polygon_vertex_distance( point,
+                     get_polygons_ptr(object), obj_index, object_vertex );
+    }
+    else
+    {
+        print_error(
+             "not implemented type in get_point_object_vertex_distance()n" );
+        dist = 1.0e30;
+    }
+
+    return( dist );
+}
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : find_closest_point_on_object
 @INPUT      : point
@@ -400,6 +460,41 @@ public  Real  find_closest_point_on_object(
             closest_dist = dist;
             *obj_index = i;
             *point_on_object = obj_point;
+        }
+    }
+
+    return( closest_dist );
+}
+
+public  Real  find_closest_vertex_on_object(
+    Point           *point,
+    object_struct   *object,
+    int             *vertex_on_object )
+{
+    Real             closest_dist, dist;
+    Point            *points;
+    int              i, n_points;
+
+    if( get_object_type( object ) == POLYGONS &&
+        get_polygons_ptr( object )->bintree != (bintree_struct_ptr) NULL )
+    {
+        closest_dist = find_closest_vertex_in_bintree( point,
+                get_polygons_ptr( object )->bintree,
+                object, vertex_on_object );
+    }
+    else
+    {
+        n_points = get_object_points( object, &points );
+        closest_dist = 0.0;
+        for_less( i, 0, n_points )
+        {
+            dist = distance_between_points( point, &points[i] );
+
+            if( i == 0 || dist < closest_dist )
+            {
+                closest_dist = dist;
+                *vertex_on_object = i;
+            }
         }
     }
 

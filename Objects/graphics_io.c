@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/graphics_io.c,v 1.5 1995-07-31 13:45:08 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/graphics_io.c,v 1.6 1995-10-19 15:47:45 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -35,7 +35,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/graphic
 ---------------------------------------------------------------------------- */
 
 public  Status   input_graphics_file(
-    char           filename[],
+    STRING         filename,
     File_formats   *format,
     int            *n_objects,
     object_struct  ***object_list )
@@ -53,7 +53,7 @@ public  Status   input_graphics_file(
 
     if( status == OK )
     {
-        extract_directory( filename, current_directory );
+        current_directory = extract_directory( filename );
 
         do
         {
@@ -64,6 +64,8 @@ public  Status   input_graphics_file(
                 add_object_to_list( n_objects, object_list, object );
 
         } while( status == OK && !eof );
+
+        delete_string( current_directory );
     }
 
     if( status == OK )
@@ -89,7 +91,7 @@ public  Status   input_graphics_file(
 ---------------------------------------------------------------------------- */
 
 public  Status   output_graphics_file(
-    char           filename[],
+    STRING         filename,
     File_formats   format,
     int            n_objects,
     object_struct  *object_list[] )
@@ -137,7 +139,7 @@ public  Status   output_graphics_file(
 
 public  Status   input_objects_any_format(
     Volume         volume,
-    char           filename[],
+    STRING         filename,
     Colour         marker_colour,
     Real           marker_size,
     Marker_types   marker_type,

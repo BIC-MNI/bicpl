@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.18 1995-09-13 13:24:54 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.19 1995-10-19 15:47:51 david Exp $";
 #endif
 
 private  void  advance_object_traverse(
@@ -788,13 +788,16 @@ private  Surfprop  *get_quadmesh_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_lines_name(
-    object_struct   *object,
-    char            name[] )
+private  STRING  get_lines_name(
+    object_struct   *object )
 {
-    (void) sprintf( name, "Lines (%d:%d)",
+    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+
+    (void) sprintf( buffer, "Lines (%d:%d)",
                     get_lines_ptr(object)->n_items,
                     get_lines_ptr(object)->n_points );
+
+    return( create_string( buffer ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -810,24 +813,26 @@ private  void  get_lines_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_marker_name(
-    object_struct   *object,
-    char            name[] )
+private  STRING  get_marker_name(
+    object_struct   *object )
 {
-    char   *label;
+    STRING   label;
+    char     buffer[EXTREMELY_LARGE_STRING_SIZE];
 
-    if( strlen(get_marker_ptr(object)->label) == 0 )
+    if( string_length(get_marker_ptr(object)->label) == 0 )
         label = "Marker";
     else
         label = get_marker_ptr(object)->label;
 
-    (void) sprintf( name, "%s:%d:%d: (%g %g %g)",
+    (void) sprintf( buffer, "%s:%d:%d: (%g %g %g)",
                     label,
                     get_marker_ptr(object)->patient_id,
                     get_marker_ptr(object)->structure_id,
                     Point_x(get_marker_ptr(object)->position),
                     Point_y(get_marker_ptr(object)->position),
                     Point_z(get_marker_ptr(object)->position) );
+
+    return( create_string( buffer ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -843,11 +848,14 @@ private  void  get_marker_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_model_name(
-    object_struct   *object,
-    char            name[] )
+private  STRING  get_model_name(
+    object_struct   *object )
 {
-    (void) sprintf( name, "Model (%s) ->", get_model_ptr(object)->filename );
+    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+
+    (void) sprintf( buffer, "Model (%s) ->", get_model_ptr(object)->filename );
+
+    return( create_string( buffer ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -863,13 +871,16 @@ private  void  get_model_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_pixels_name(
-    object_struct   *object,
-    char            name[] )
+private  STRING  get_pixels_name(
+    object_struct   *object )
 {
-    (void) sprintf( name, "Pixels (%d by %d)",
+    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+
+    (void) sprintf( buffer, "Pixels (%d by %d)",
                     get_pixels_ptr(object)->x_size,
                     get_pixels_ptr(object)->y_size );
+
+    return( create_string( buffer ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -885,13 +896,16 @@ private  void  get_pixels_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_polygons_name(
-    object_struct   *object,
-    char            name[] )
+private  STRING  get_polygons_name(
+    object_struct   *object )
 {
-    (void) sprintf( name, "Polygons (%d:%d)",
+    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+
+    (void) sprintf( buffer, "Polygons (%d:%d)",
                     get_polygons_ptr(object)->n_items,
                     get_polygons_ptr(object)->n_points );
+
+    return( create_string( buffer ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -907,12 +921,15 @@ private  void  get_polygons_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_quadmesh_name(
-    object_struct   *object,
-    char            name[] )
+private  STRING  get_quadmesh_name(
+    object_struct   *object )
 {
-    (void) sprintf( name, "Quadmesh [%d][%d]",
+    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+
+    (void) sprintf( buffer, "Quadmesh [%d][%d]",
                     get_quadmesh_ptr(object)->m, get_quadmesh_ptr(object)->n );
+
+    return( create_string( buffer ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -928,11 +945,14 @@ private  void  get_quadmesh_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_text_name(
-    object_struct   *object,
-    char            name[] )
+private  STRING  get_text_name(
+    object_struct   *object )
 {
-    (void) sprintf( name, "Text (%s)", get_text_ptr(object)->string );
+    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+
+    (void) sprintf( buffer, "Text (%s)", get_text_ptr(object)->string );
+
+    return( create_string( buffer ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -972,6 +992,7 @@ private  void  delete_lines_object(
 private  void  delete_marker_object(
     object_struct   *object )
 {
+    delete_marker( get_marker_ptr(object) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -1070,6 +1091,7 @@ private  void  delete_quadmesh_object(
 private  void  delete_text_object(
     object_struct   *object )
 {
+    delete_text( get_text_ptr(object) );
 }
 
 /* -------------------- function lookup table ------------------- */
@@ -1081,7 +1103,7 @@ typedef  struct
     Colour_flags  *(*get_colours_function)( object_struct *, Colour *[] );
     void          (*set_colours_function)( object_struct *, Colour [] );
     Surfprop      *(*get_surfprop_function)( object_struct * );
-    void          (*get_name_function)( object_struct *, char [] );
+    STRING        (*get_name_function)( object_struct * );
     void          (*delete_function)( object_struct * );
 }
 object_functions_list;
@@ -1290,11 +1312,10 @@ public  Surfprop  *get_object_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_object_name(
-    object_struct  *object,
-    char           name[] )
+public  STRING  get_object_name(
+    object_struct  *object )
 {
-    object_functions[object->object_type].get_name_function( object, name );
+    return( object_functions[object->object_type].get_name_function( object ) );
 }
 
 private  void   pop_object_stack(

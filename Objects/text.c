@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/text.c,v 1.7 1995-07-31 13:45:17 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/text.c,v 1.8 1995-10-19 15:47:57 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -48,4 +48,25 @@ public  void   initialize_text(
     text->colour = colour;
     text->font = text_font;
     text->size = size;
+
+    text->string = create_string( NULL );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : delete_text
+@INPUT      : text
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Deletes the text object.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Sep. 25, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  void   delete_text(
+    text_struct     *text )
+{
+    delete_string( text->string );
 }

@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.30 1995-10-18 17:16:38 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.31 1995-10-19 15:48:16 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -737,40 +737,52 @@ public  Status  save_label_volume(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_tags_as_labels
+@INPUT      : file
+              volume
+@OUTPUT     : label_volume
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Inputs a tag file into a label volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993             David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  input_tags_as_labels(
     FILE    *file,
     Volume  volume,
     Volume  label_volume )
 {
-    int             i, c, label, ind[MAX_DIMENSIONS];
+    Status          status;
+    int             c, label, ind[MAX_DIMENSIONS];
     Real            voxel[MAX_DIMENSIONS];
-    int             n_volumes, n_tag_points;
-    Real            **tags1, **tags2, *weights;
-    int             *structure_ids, *patient_ids;
+    int             n_volumes;
+    Real            tag1[N_DIMENSIONS];
+    int             structure_id;
     Real            min_label, max_label;
-    STRING          *labels;
 
     check_alloc_label_data( label_volume );
 
     get_volume_voxel_range( label_volume, &min_label, &max_label );
 
-    if( input_tag_points( file, &n_volumes, &n_tag_points,
-                          &tags1, &tags2, &weights, &structure_ids,
-                          &patient_ids, &labels ) != OK )
-        return( ERROR );
+    status = initialize_tag_file_input( file, &n_volumes );
 
-    for_less( i, 0, n_tag_points )
+    while( status == OK &&
+           input_one_tag( file, n_volumes,
+                          tag1, NULL, NULL, &structure_id, NULL, NULL,
+                          &status ) )
     {
-        convert_world_to_voxel( volume,
-                                tags1[i][X], tags1[i][Y], tags1[i][Z],
-                                voxel );
+        convert_world_to_voxel( volume, tag1[X], tag1[Y], tag1[Z], voxel );
 
         for_less( c, 0, get_volume_n_dimensions(volume) )
         {
             ind[c] = ROUND( voxel[c] );
         }
 
-        label = structure_ids[i];
+        label = structure_id;
         if( label >= min_label && label <= max_label &&
             int_voxel_is_within_volume( volume, ind ) )
         {
@@ -778,10 +790,7 @@ public  Status  input_tags_as_labels(
         }
     }
 
-    free_tag_points( n_volumes, n_tag_points, tags1, tags2,
-                     weights, structure_ids, patient_ids, labels );
-
-    return( OK );
+    return( status );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -799,7 +808,8 @@ public  Status  input_tags_as_labels(
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   : Oct. 19, 1995   D. MacDonald - now writes tags 1 at a time to
+                                             be more memory efficient.
 ---------------------------------------------------------------------------- */
 
 public  Status  output_labels_as_tags(
@@ -810,12 +820,11 @@ public  Status  output_labels_as_tags(
     Real    size,
     int     patient_id )
 {
-    Status          status;
     int             ind[N_DIMENSIONS];
-    int             n_tags, label, sizes[MAX_DIMENSIONS];
-    Real            x_world, y_world, z_world, real_ind[N_DIMENSIONS];
-    Real            **tags, *weights;
-    int             *structure_ids, *patient_ids;
+    int             label, sizes[MAX_DIMENSIONS];
+    Real            real_ind[N_DIMENSIONS];
+    Real            tags[N_DIMENSIONS];
+    int             n_tags;
 
     if( get_volume_n_dimensions(volume) != 3 )
     {
@@ -842,42 +851,26 @@ public  Status  output_labels_as_tags(
                 if( label == desired_label || (desired_label < 0 && label > 0) )
                 {
                     convert_voxel_to_world( volume, real_ind,
-                                            &x_world, &y_world, &z_world );
+                                            &tags[X], &tags[Y], &tags[Z] );
 
-                    SET_ARRAY_SIZE( tags, n_tags, n_tags+1, DEFAULT_CHUNK_SIZE);
-                    ALLOC( tags[n_tags], N_DIMENSIONS );
-                    SET_ARRAY_SIZE( weights, n_tags, n_tags+1,
-                                    DEFAULT_CHUNK_SIZE);
-                    SET_ARRAY_SIZE( structure_ids, n_tags, n_tags+1,
-                                    DEFAULT_CHUNK_SIZE);
-                    SET_ARRAY_SIZE( patient_ids, n_tags, n_tags+1,
-                                    DEFAULT_CHUNK_SIZE);
+                    if( n_tags == 0 &&
+                        initialize_tag_file_output( file, NULL, 1 ) != OK )
+                        return( ERROR );
 
-                    tags[n_tags][X] = x_world;
-                    tags[n_tags][Y] = y_world;
-                    tags[n_tags][Z] = z_world;
-                    weights[n_tags] = size;
-                    structure_ids[n_tags] = label;
-                    patient_ids[n_tags] = patient_id;
+                    if( output_one_tag( file, 1, tags, NULL,
+                               &size, &label, &patient_id, NULL ) != OK )
+                        return( ERROR );
+
                     ++n_tags;
                 }
             }
         }
     }
 
-    status = OK;
-
     if( n_tags > 0 )
-    {
-        status = output_tag_points( file, (char *) NULL,
-                           1, n_tags, tags, (Real **) NULL, weights,
-                           structure_ids, patient_ids, (STRING *) NULL );
+        terminate_tag_file_output( file );
 
-        free_tag_points( 1, n_tags, tags, (Real **) NULL,
-                         weights, structure_ids, patient_ids, (STRING *) NULL );
-    }
-
-    return( status );
+    return( OK );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -891,7 +884,8 @@ public  Status  output_labels_as_tags(
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   : Oct. 19, 1995   D. MacDonald - now reads tags 1 at a time to
+                                             be more memory efficient.
 ---------------------------------------------------------------------------- */
 
 public  Status  input_landmarks_as_labels(

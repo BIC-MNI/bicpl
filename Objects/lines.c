@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.12 1995-07-31 13:45:09 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.13 1995-10-19 15:47:46 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.4 1995-08-14 18:08:46 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.5 1995-10-19 15:48:48 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -163,7 +163,7 @@ public  Volume  create_cropped_volume(
     Real               xyz[N_DIMENSIONS], voxel_value;
     Real               min_voxel, max_voxel;
     BOOLEAN            signed_flag;
-    char               **dim_names;
+    STRING             *dim_names;
     Volume             cropped_volume;
     General_transform  cropped_transform, offset_transform;
     Transform          translation;
@@ -180,7 +180,7 @@ public  Volume  create_cropped_volume(
                                     nc_data_type, signed_flag,
                                     min_voxel, max_voxel );
 
-    delete_dimension_names( dim_names );
+    delete_dimension_names( volume, dim_names );
 
     for_less( dim, 0, n_dims )
         new_sizes[dim] = limits[1][dim] - limits[0][dim] + 1;

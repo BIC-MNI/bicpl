@@ -14,7 +14,7 @@ int putrow(IMAGE *image, unsigned short *buffer,
 #endif
 
 public  Status  input_rgb_file(
-    char            filename[],
+    STRING          filename,
     pixels_struct   *pixels )
 {
 #ifdef  sgi
@@ -65,7 +65,7 @@ public  Status  input_rgb_file(
 }
 
 public  Status  output_rgb_file(
-    char            filename[],
+    STRING          filename,
     pixels_struct   *pixels )
 {
 #ifdef  sgi

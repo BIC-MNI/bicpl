@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_dist.c,v 1.4 1995-07-31 13:45:03 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_dist.c,v 1.5 1995-10-19 15:47:41 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -180,21 +180,33 @@ public  int  find_closest_polygon_point(
     polygons_struct    *polygons,
     Point              *closest_point )
 {
-    int      poly, size, closest_poly;
-    Real     dist, closest_dist;
-    Point    poly_points[MAX_POINTS_PER_POLYGON], closest;
+    int            poly, size, closest_poly;
+    Real           dist, closest_dist;
+    Point          poly_points[MAX_POINTS_PER_POLYGON], closest;
+    object_struct  object;
 
     closest_dist = 0.0;
 
-    for_less( poly, 0, polygons->n_items )
+    if( polygons->bintree != NULL )
     {
-        size = get_polygon_points( polygons, poly, poly_points );
-        dist = find_point_polygon_distance( point, size, poly_points, &closest);
-        if( poly == 0 || dist < closest_dist )
+        object.object_type = POLYGONS;
+        object.specific.polygons = *polygons;
+        (void) find_closest_point_on_object( point, &object, &closest_poly,
+                                             closest_point );
+    }
+    else
+    {
+        for_less( poly, 0, polygons->n_items )
         {
-            closest_poly = poly;
-            closest_dist = dist;
-            *closest_point = closest;
+            size = get_polygon_points( polygons, poly, poly_points );
+            dist = find_point_polygon_distance( point, size, poly_points,
+                                                &closest);
+            if( poly == 0 || dist < closest_dist )
+            {
+                closest_poly = poly;
+                closest_dist = dist;
+                *closest_point = closest;
+            }
         }
     }
 

@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.39 1995-09-13 13:24:58 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.40 1995-10-19 15:48:13 david Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10

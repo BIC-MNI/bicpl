@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.18 1995-08-21 14:05:10 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.19 1995-10-19 15:48:24 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -36,7 +36,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_
 ---------------------------------------------------------------------------- */
 
 public  Status  output_volume_free_format(
-    char           prefix[],
+    STRING         prefix,
     Volume         volume,
     int            axis_ordering[] )
 {
@@ -54,11 +54,12 @@ public  Status  output_volume_free_format(
     General_transform  *voxel_to_world;
     Transform          *transform;
 
-    (void) sprintf( header_filename, "%s.fre", prefix );
-    (void) sprintf( abs_voxel_filename, "%s.img", prefix );
+    header_filename = concat_strings( prefix, ".fre" );
+    abs_voxel_filename = alloc_string( string_length(prefix) + 10 );
+    abs_voxel_filename = concat_strings( prefix, ".img" );
 
-    remove_directories_from_filename( prefix, filename_no_dirs );
-    (void) sprintf( voxel_filename, "%s.img", filename_no_dirs );
+    filename_no_dirs = remove_directories_from_filename( prefix );
+    voxel_filename = concat_strings( filename_no_dirs, ".img" );
 
     status = open_file( header_filename, WRITE_FILE, ASCII_FORMAT, &file );
 
@@ -162,6 +163,11 @@ public  Status  output_volume_free_format(
 
         terminate_progress_report( &progress );
     }
+
+    delete_string( header_filename );
+    delete_string( voxel_filename );
+    delete_string( abs_voxel_filename );
+    delete_string( filename_no_dirs );
                         
     return( status );
 }

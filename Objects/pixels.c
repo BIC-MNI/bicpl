@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.21 1995-09-13 13:24:55 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.22 1995-10-19 15:47:52 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -147,7 +147,7 @@ public  void  modify_pixels_size(
 
     /*--- if the new size is equal to or smaller than the current size */
 
-    if( new_n_pixels <= *n_pixels_alloced )
+    if( new_n_pixels > 0 && new_n_pixels <= *n_pixels_alloced )
         return;
 
     switch( pixel_type )

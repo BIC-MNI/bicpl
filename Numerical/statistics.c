@@ -17,10 +17,12 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.6 1995-10-11 17:01:13 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.7 1995-10-19 15:48:03 david Exp $";
 #endif
 
 #define  DEFAULT_N_MEDIAN_BOXES    10000
+
+#define  MAX_SAMPLES_RECORDED      10000
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : compute_statistics
@@ -144,7 +146,17 @@ public  void  add_sample_to_statistics(
     else if( sample > stats->max_value )
         stats->max_value = sample;
 
+    if( stats->n_samples < MAX_SAMPLES_RECORDED )
+    {
+        SET_ARRAY_SIZE( stats->samples, stats->n_samples,
+                        stats->n_samples+1, DEFAULT_CHUNK_SIZE );
+        stats->samples[stats->n_samples] = sample;
+    }
+    else if( stats->n_samples == MAX_SAMPLES_RECORDED )
+        FREE( stats->samples );
+
     stats->n_samples += 1;
+
     stats->sum_x += sample;
     stats->sum_xx += sample * sample;
 
@@ -174,13 +186,39 @@ private  void  get_median(
 {
     int   box_index, median_index;
 
+    median_index = stats->n_samples / 2;
+
+    if( stats->n_samples <= MAX_SAMPLES_RECORDED )
+    {
+        int  i, j, best_index;
+        Real tmp;
+
+        for_less( i, 0, stats->n_samples-1 )
+        {
+            best_index = i;
+            for_less( j, i+1, stats->n_samples )
+            {
+                if( stats->samples[j] < stats->samples[best_index] )
+                    best_index = j;
+            }
+
+            tmp = stats->samples[best_index];
+            stats->samples[best_index] = stats->samples[i];
+            stats->samples[i] = tmp;
+        }
+
+        *min_range = stats->samples[median_index];
+        *max_range = stats->samples[median_index];
+
+        return;
+    }
+
     if( stats->min_median_range >= stats->max_median_range )
     {
         *min_range = -1.0e30;
         *max_range = 1.0e30;
+        return;
     }
-
-    median_index = stats->n_samples / 2;
 
     if( median_index < stats->n_below_median_range )
     {
@@ -306,6 +344,9 @@ public  void  get_statistics(
 public  void  terminate_statistics(
     statistics_struct  *stats )
 {
+    if( stats->n_samples > 0 && stats->n_samples <= MAX_SAMPLES_RECORDED )
+        FREE( stats->samples );
+
     if( stats->min_median_range < stats->max_median_range )
     {
         FREE( stats->median_box_counts );

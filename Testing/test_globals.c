@@ -7,9 +7,11 @@ private  void  print_all_globals( void );
 
 main()
 {
-    Status         status;
-    STRING         line, variable_name, value;
-    static   char  filename[] = "globals.input";
+    Status           status;
+    STRING           line, variable_name, value;
+    static   STRING  filename = "globals.input";
+
+    Test_colour = make_Colour( 0, 255, 0 );
 
     print( "Initial global values:\n\n" );
     print_all_globals();
@@ -26,17 +28,22 @@ main()
         print( "   e.g., Test_int\n" );
         print( "   or    Test_int = 3:  " );
 
-        status = input_line( stdin, line, MAX_STRING_LENGTH );
+        status = input_line( stdin, &line );
 
         if( status == OK )
         {
             status = set_or_get_global_variable(
                          SIZEOF_STATIC_ARRAY(globals_list),
-                         globals_list, line, variable_name, value );
+                         globals_list, line, &variable_name, &value );
+
+            if( status == OK )
+                print( "%s has the value: %s\n", variable_name, value );
+
+            delete_string( variable_name );
+            delete_string( value );
         }
 
-        if( status == OK )
-            print( "%s has the value: %s\n", variable_name, value );
+        delete_string( line );
     }
     while( status == OK );
 

@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/smooth.c,v 1.18 1995-07-31 13:45:48 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/smooth.c,v 1.19 1995-10-19 15:48:31 david Exp $";
 #endif
 
 private  Real  calculate_weight(

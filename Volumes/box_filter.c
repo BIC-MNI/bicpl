@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.12 1995-07-31 13:45:41 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.13 1995-10-19 15:48:11 david Exp $";
 #endif
 
 #define  DEBUG

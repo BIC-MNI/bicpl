@@ -16,7 +16,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transform_io.c,v 1.5 1995-08-14 18:08:47 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transform_io.c,v 1.6 1995-10-19 15:48:59 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -35,9 +35,9 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/tran
 ---------------------------------------------------------------------------- */
 
 public  Status  write_transform_file(
-    char       filename[],
-    char       comments[],
-    Transform  *transform )
+    STRING       filename,
+    STRING       comments,
+    Transform    *transform )
 {
     Status              status;
     FILE                *file;
@@ -75,8 +75,8 @@ public  Status  write_transform_file(
 ---------------------------------------------------------------------------- */
 
 public  Status  read_transform_file(
-    char       filename[],
-    Transform  *transform )
+    STRING       filename,
+    Transform    *transform )
 {
     Status             status;
     FILE               *file;

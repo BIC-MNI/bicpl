@@ -17,7 +17,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.3 1995-07-31 13:45:06 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.4 1995-10-19 15:47:44 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -287,9 +287,9 @@ public   void     reverse_vectors(
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_angle_between_points
-@INPUT      : prev
-              this
-              next
+@INPUT      : prev_point
+              this_one
+              next_point
 @OUTPUT     : 
 @RETURNS    : angle in radians.
 @DESCRIPTION: Returns the angle between the three points, in the range 0 to
@@ -302,15 +302,15 @@ public   void     reverse_vectors(
 ---------------------------------------------------------------------------- */
 
 public  Real  get_angle_between_points(
-    Point  *prev,
-    Point  *this,
-    Point  *next )
+    Point  *prev_point,
+    Point  *this_point,
+    Point  *next_point )
 {
     Real    angle, x, y;
     Vector  v1, v2, x_axis, y_axis;
 
-    SUB_POINTS( v1, *prev, *this );
-    SUB_POINTS( v2, *next, *this );
+    SUB_POINTS( v1, *prev_point, *this_point );
+    SUB_POINTS( v2, *next_point, *this_point );
 
     NORMALIZE_VECTOR( v1, v1 );
     NORMALIZE_VECTOR( v2, v2 );

@@ -22,9 +22,12 @@
 @GLOBALS    : 
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : $Log: safe_compute_xfm.c,v $
-@MODIFIED   : Revision 1.8  1995-09-29 19:06:37  david
-@MODIFIED   : *** empty log message ***
+@MODIFIED   : Revision 1.9  1995-10-19 15:48:59  david
+@MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.8  1995/09/29  19:06:37  david
+ * *** empty log message ***
+ *
  * Revision 1.7  1995/07/31  13:46:03  david
  * check_in_all
  *
@@ -60,8 +63,11 @@
 #include <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.8 1995-09-29 19:06:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.9 1995-10-19 15:48:59 david Exp $";
 #endif
+
+#define NO_FORK
+#undef NO_FORK
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : safe_compute_transform_from_tags
@@ -89,6 +95,10 @@ public void safe_compute_transform_from_tags(
     Trans_type          trans_type,
     General_transform   *transform )
 {
+#ifdef  NO_FORK
+        compute_transform_from_tags( npoints, tag_list1, tag_list2, trans_type,
+                                     transform );
+#else
     int                 fildes[2];
     FILE                *fpin, *fpout;
     Status              status;
@@ -112,6 +122,8 @@ public void safe_compute_transform_from_tags(
             (void) wait(&statptr);
         } while (WIFSTOPPED(statptr));
         if (WEXITSTATUS(statptr) || status != OK) {
+           if( status == OK )
+               delete_general_transform( transform );
            create_linear_transform(transform, NULL);
            return;
         }
@@ -134,4 +146,5 @@ public void safe_compute_transform_from_tags(
     }
 
     return;
+#endif
 }

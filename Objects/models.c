@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/models.c,v 1.6 1995-07-31 13:45:18 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/models.c,v 1.7 1995-10-19 15:47:59 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -35,6 +35,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/models.
 public  void  initialize_model(
     model_struct  *model )
 {
+    model->filename = create_string( NULL );
     model->n_objects = 0;
     model->extra_ptr = (void *) NULL;
 }
@@ -56,6 +57,8 @@ public  void  delete_model(
     model_struct   *model )
 {
     int   i;
+
+    delete_string( model->filename );
 
     for_less( i, 0, model->n_objects )
         delete_object( model->objects[i] );
