@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.7 1995-07-31 13:45:01 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.8 1996-04-25 20:17:49 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -115,9 +115,9 @@ public  void  create_tetrahedral_sphere(
     while( start_size > 8 )
         start_size /= 4;
 
-    cx = Point_x( *centre );
-    cy = Point_y( *centre );
-    cz = Point_z( *centre );
+    cx = (Real) Point_x( *centre );
+    cy = (Real) Point_y( *centre );
+    cz = (Real) Point_z( *centre );
 
     if( start_size == 6 )  /* create 2 points at poles and 3 around equator */
     {
@@ -199,9 +199,9 @@ public  void  create_tetrahedral_sphere(
 
         for_less( p, 0, polygons->n_points )
         {
-            dx = Point_x(polygons->points[p]) - cx;
-            dy = Point_y(polygons->points[p]) - cy;
-            dz = Point_z(polygons->points[p]) - cz;
+            dx = (Real) Point_x(polygons->points[p]) - cx;
+            dy = (Real) Point_y(polygons->points[p]) - cy;
+            dz = (Real) Point_z(polygons->points[p]) - cz;
             scale = dx * dx / rx / rx + dy * dy / ry / ry + dz * dz / rz / rz;
             scale = 1.0 / sqrt( scale );
             dx *= scale;
@@ -231,7 +231,7 @@ public  void  half_sample_tetrahedral_tessellation(
     polygons_struct  *half )
 {
     int             i, quarter_n_polygons;
-    static  Point   dummy_centre = { 0.0, 0.0, 0.0 };
+    static  Point   dummy_centre = { 0.0f, 0.0f, 0.0f };
 
     quarter_n_polygons = polygons->n_items / 4;
 
