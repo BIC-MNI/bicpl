@@ -7,6 +7,8 @@ public  void  initialize_pixels(
     int            y_position,
     int            x_size,
     int            y_size,
+    Real           x_zoom,
+    Real           y_zoom,
     Pixel_types    pixel_type )
 {
     int            n_alloced;
@@ -18,6 +20,8 @@ public  void  initialize_pixels(
     pixels->y_size = -1;
     pixels->x_position = x_position;
     pixels->y_position = y_position;
+    pixels->x_zoom = x_zoom;
+    pixels->y_zoom = y_zoom;
 
     modify_pixels_size( &n_alloced, pixels, x_size, y_size, pixel_type );
 }

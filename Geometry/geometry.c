@@ -122,6 +122,31 @@ public  Real  distance_from_plane(
     return( DOT_POINT_VECTOR( *point, *plane_normal ) + plane_constant );
 }
 
+public  Real  distance_from_line(
+    Point    *point,
+    Point    *end_point1,
+    Point    *end_point2 )
+{
+    Vector   v12, v1p, perp;
+    Real     projection, dist, len;
+
+    SUB_POINTS( v12, *end_point2, *end_point1 );
+    SUB_POINTS( v1p, *point, *end_point1 );
+
+    len = DOT_VECTORS( v12, v12 );
+    if( len == 0.0 )
+        len = 1.0;
+
+    projection = DOT_VECTORS( v12, v1p ) / len;
+
+    SCALE_VECTOR( v12, v12, projection );
+    SUB_POINT_VECTOR( perp, v1p, v12 );
+
+    dist = MAGNITUDE( perp );
+
+    return( dist );
+}
+
 public  Boolean  find_closest_line_sphere_intersection(
     Point    *line_origin,
     Vector   *line_direction,

@@ -433,6 +433,54 @@ public  int  get_neighbours_of_point(
     return( n_neighbours );
 }
 
+public  int  get_polygons_around_vertex(
+    polygons_struct   *polygons,
+    int               poly,
+    int               vertex_index,
+    int               poly_indices[],
+    int               n_polys_alloced )
+{
+    int      current_poly, current_index_within_poly;
+    int      size, neighbour_index_within_poly;
+    int      n_polys, dir;
+    Boolean  found;
+
+    size = GET_OBJECT_SIZE( *polygons, poly );
+
+    poly_indices[0] = poly;
+    n_polys = 1;
+
+    for( dir = -1;  dir <= 1;  dir +=2 )
+    {
+        current_poly = poly;
+        current_index_within_poly = vertex_index;
+        neighbour_index_within_poly = (vertex_index + size + dir) % size;
+
+        do
+        {
+            found = find_next_edge_around_point( polygons,
+                            current_poly, current_index_within_poly,
+                            neighbour_index_within_poly,
+                            &current_poly, &current_index_within_poly,
+                            &neighbour_index_within_poly );
+
+            if( found && current_poly != poly )
+            {
+                if( n_polys < n_polys_alloced )
+                {
+                    poly_indices[n_polys] = current_poly;
+                    ++n_polys;
+                }
+            }
+        }
+        while( found && current_poly != poly );
+
+        if( found ) break;
+    }
+
+    return( n_polys );
+}
+
 #define  MAX_TEMP_STORAGE  1000
 
 public  void  compute_polygon_normal(

@@ -112,6 +112,8 @@ typedef  struct
     int             y_position;
     int             x_size;
     int             y_size;
+    Real            x_zoom;      
+    Real            y_zoom;      
     Pixel_types     pixel_type;
     union
     {

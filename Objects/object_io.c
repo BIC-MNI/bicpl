@@ -147,8 +147,8 @@ public  Status  io_pixels(
     File_formats        format,
     pixels_struct       *pixels )
 {
-    Status   status;
-    int      n_pixels;
+    Status       status;
+    int          n_pixels;
 
     status = OK;
 
@@ -169,6 +169,8 @@ public  Status  io_pixels(
         {
             pixels->x_position = 0;
             pixels->y_position = 0;
+            pixels->x_zoom = 1.0;
+            pixels->y_zoom = 1.0;
         }
 
         if( status == OK )
