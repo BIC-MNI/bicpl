@@ -626,6 +626,106 @@ private  void   triquadratic_interpolate_volume(
 #endif
 }
 
+#define NEW
+#ifdef  NEW
+private  void   new_tricubic_interpolate_volume(
+    Volume         volume,
+    Real           x,
+    Real           y,
+    Real           z,
+    Real           *value,
+    Real           *deriv_x,
+    Real           *deriv_y,
+    Real           *deriv_z,
+    Real           *deriv_xx,
+    Real           *deriv_xy,
+    Real           *deriv_xz,
+    Real           *deriv_yy,
+    Real           *deriv_yz,
+    Real           *deriv_zz )
+{
+    int                i, j, k, tu, tv, tw, ind, n_derivs;
+    Real               u, v, w;
+    Real               coefs[4*4*4];
+    Real               derivs[3*3*3];
+    int                sizes[MAX_DIMENSIONS];
+
+    get_volume_sizes( volume, sizes );
+
+    if( x >= (Real) sizes[X] - 1.5 )
+    {
+        i = sizes[X]-2;
+        u = 1.0;
+    }
+    else
+    {
+        i = (int) x;
+        u = FRACTION( x );
+    }
+
+    if( y >= (Real) sizes[Y] - 1.5 )
+    {
+        j = sizes[Y]-2;
+        v = 1.0;
+    }
+    else
+    {
+        j = (int) y;
+        v = FRACTION( y );
+    }
+
+    if( z >= (Real) sizes[Z] - 1.5 )
+    {
+        k = sizes[Z]-2;
+        w = 1.0;
+    }
+    else
+    {
+        k = (int) z;
+        w = FRACTION( z );
+    }
+
+    ind = 0;
+    for_less( tu, 0, 4 )
+    for_less( tv, 0, 4 )
+    for_less( tw, 0, 4 )
+    {
+        GET_VALUE_3D( coefs[ind], volume, i-1+tu, j-1+tv, k-1+tw );
+        ++ind;
+    }
+
+    if( deriv_xx != NULL )
+        n_derivs = 2;
+    else if( deriv_x != NULL )
+        n_derivs = 1;
+    else
+        n_derivs = 0;
+
+    evaluate_trivariate_catmull_spline( u, v, w, 4, coefs, n_derivs,
+                                        derivs );
+
+    if( deriv_xx != NULL )
+    {
+        *deriv_xx = derivs[IJK(2,0,0,n_derivs+1,n_derivs+1)];
+        *deriv_xy = derivs[IJK(1,1,0,n_derivs+1,n_derivs+1)];
+        *deriv_xz = derivs[IJK(1,0,1,n_derivs+1,n_derivs+1)];
+        *deriv_yy = derivs[IJK(0,2,0,n_derivs+1,n_derivs+1)];
+        *deriv_yz = derivs[IJK(0,1,1,n_derivs+1,n_derivs+1)];
+        *deriv_zz = derivs[IJK(0,0,2,n_derivs+1,n_derivs+1)];
+    }
+
+    if( deriv_x != NULL )
+    {
+        *deriv_x = derivs[IJK(1,0,0,n_derivs+1,n_derivs+1)];
+        *deriv_y = derivs[IJK(0,1,0,n_derivs+1,n_derivs+1)];
+        *deriv_z = derivs[IJK(0,0,1,n_derivs+1,n_derivs+1)];
+    }
+
+    if( value != NULL )
+        *value = derivs[IJK(0,0,0,n_derivs+1,n_derivs+1)];
+}
+#endif
+
 private  void   tricubic_interpolate_volume(
     Volume         volume,
     Real           x,
@@ -780,6 +880,58 @@ private  void   tricubic_interpolate_volume(
 
 #ifdef  lint
     if( dummy == 0.0 ) {}
+#endif
+
+#ifdef  NEW
+{
+    Real  test_value, test_dx, test_dy, test_dz;
+    Real  test_dxx, test_dxy, test_dxz;
+    Real  test_dyy, test_dyz;
+    Real  test_dzz;
+
+    new_tricubic_interpolate_volume( volume, x, y, z, &test_value,
+            &test_dx, &test_dy, &test_dz,
+            &test_dxx, &test_dxy, &test_dxz,
+            &test_dyy, &test_dyz, &test_dzz );
+
+#define  TOL  1.0e-3
+
+    if( value != NULL )
+    {
+        if( !numerically_close( test_value, *value, TOL ) )
+        {
+            print( "Value %g %g.\n", test_value, *value );
+        }
+    }
+
+    if( deriv_x != NULL )
+    {
+        if( !numerically_close( test_dx, *deriv_x, TOL ) ||
+            !numerically_close( test_dy, *deriv_y, TOL ) ||
+            !numerically_close( test_dz, *deriv_z, TOL ) )
+        {
+            print( "First deriv %g %g %g %g %g %g.\n",
+                   test_dx, test_dy, test_dz, *deriv_x, *deriv_y, *deriv_z );
+        }
+    }
+
+    if( deriv_xx != NULL )
+    {
+        if( !numerically_close( test_dxx, *deriv_xx, TOL ) ||
+            !numerically_close( test_dxy, *deriv_xy, TOL ) ||
+            !numerically_close( test_dxz, *deriv_xz, TOL ) ||
+            !numerically_close( test_dyy, *deriv_yy, TOL ) ||
+            !numerically_close( test_dyz, *deriv_yz, TOL ) ||
+            !numerically_close( test_dzz, *deriv_zz, TOL ) )
+        {
+            print( "Second d'riv %g %g %g %g %g %g.\n %g %g %g %g %g %g\n",
+                   test_dxx, test_dxy, test_dxz,
+                   test_dyy, test_dyz, test_dzz,
+                   *deriv_xx, *deriv_xy, *deriv_xz,
+                   *deriv_yy, *deriv_yz, *deriv_zz );
+        }
+    }
+}
 #endif
 }
 
