@@ -116,16 +116,30 @@ private  int  get_histogram_max_count(
     return( max_count );
 }
 
-public  void  display_histogram(
+public  int  get_histogram_counts(
+    histogram_struct  *histogram,
+    int               *counts[],
+    Real              *scale,
+    Real              *trans )
+{
+    *counts = histogram->counts;
+
+    *scale = histogram->delta;
+    *trans = convert_index_to_value( histogram, histogram->min_index ) +
+             histogram->delta / 2.0;
+
+    return( histogram->max_index - histogram->min_index + 1 );
+}
+
+private  void  resample_histogram(
     histogram_struct  *histogram,
     int               x_size,
-    int               y_size )
+    int               y_size,
+    Real              height[] )
 {
-    int   x, y, *n_chars, max_count, left_ind, right_ind, ind;
-    Real  min_value, max_value, left, right, left_side, right_side;
-    Real  weight, sum_weight, sum_count;
-
-    ALLOC( n_chars, x_size );
+    int   ind, x, max_count, left_ind, right_ind;
+    Real  weight, sum_count, min_value, max_value;
+    Real  left_side, right_side, left, right;
 
     get_histogram_range( histogram, &min_value, &max_value );
     max_count = get_histogram_max_count( histogram );
@@ -137,9 +151,8 @@ public  void  display_histogram(
                 (max_value - min_value);
 
         left_ind = get_histogram_index( histogram, left );
-        right_ind = get_histogram_index( histogram, left );
+        right_ind = get_histogram_index( histogram, right );
 
-        sum_weight = 0.0;
         sum_count = 0.0;
 
         for_inclusive( ind, left_ind, right_ind )
@@ -151,18 +164,30 @@ public  void  display_histogram(
 
             sum_count += weight *
                          (Real) histogram->counts[ind-histogram->min_index];
-            sum_weight += weight;
         }
 
-        n_chars[x] = ROUND(sum_count / sum_weight *
-                           (Real) y_size / (Real) max_count );
+        height[x] = sum_count / (right - left) * (Real) y_size /
+                    (Real) max_count;
     }
+}
+
+public  void  display_histogram(
+    histogram_struct  *histogram,
+    int               x_size,
+    int               y_size )
+{
+    int   x, y, max_count;
+    Real  min_value, max_value, *n_chars;
+
+    ALLOC( n_chars, x_size );
+
+    resample_histogram( histogram, x_size, y_size, n_chars );
 
     for( y = y_size-1;  y >= 0;  --y )
     {
         for_less( x, 0, x_size )
         {
-            if( y < n_chars[x] )
+            if( y < ROUND(n_chars[x]) )
                  print( "#" );
             else
                  print( " " );
@@ -171,7 +196,35 @@ public  void  display_histogram(
         print( "\n" );
     }
 
+    get_histogram_range( histogram, &min_value, &max_value );
+    max_count = get_histogram_max_count( histogram );
+
     print( "%g to %g with max count = %d\n", min_value, max_value, max_count );
 
     FREE( n_chars );
+}
+
+public  void  create_histogram_line(
+    histogram_struct  *histogram,
+    int               x_size,
+    int               y_size,
+    lines_struct      *lines )
+{
+    int     x;
+    Real    *height;
+    Point   p;
+
+    ALLOC( height, x_size );
+
+    resample_histogram( histogram, x_size, y_size, height );
+
+    initialize_lines( lines, WHITE );
+
+    for_less( x, 0, x_size )
+    {
+        fill_Point( p, (Real) x, height[x], 0.0 );
+        add_point_to_line( lines, &p );
+    }
+
+    FREE( height );
 }
