@@ -9,45 +9,29 @@ private  void  get_mapping(
     Real            y_translation,
     Real            y_scale,
     int             y_axis_index,
-    Real            *x_start,
-    Real            *x_end,
     Real            *x_delta,
     Real            *x_offset,
-    Real            *y_start,
-    Real            *y_end,
     Real            *y_delta,
     Real            *y_offset )
 {
-    *x_delta = x_scale * volume->separation[x_axis_index];
-    if( *x_delta >= 0.0 )
-    {
-        *x_start = -0.5;
-        *x_end = (Real) volume->sizes[x_axis_index] - 0.5;
-        *x_offset = x_translation;
-    }
-    else
-    {
-        *x_end = -0.5;
-        *x_start = (Real) volume->sizes[x_axis_index] - 0.5;
-        *x_offset = x_translation - *x_delta *
-                    (Real) (volume->sizes[x_axis_index] - 1);
-    }
+    int   sizes[MAX_DIMENSIONS];
+    Real  separations[MAX_DIMENSIONS];
 
-    *y_delta = y_scale * volume->separation[y_axis_index];
+    get_volume_sizes( volume, sizes );
+    get_volume_separations( volume, separations );
+
+    *x_delta = x_scale * separations[x_axis_index];
+    if( *x_delta >= 0.0 )
+        *x_offset = x_translation;
+    else
+        *x_offset = x_translation - *x_delta * (Real) (sizes[x_axis_index] - 1);
+
+    *y_delta = y_scale * separations[y_axis_index];
 
     if( *y_delta >= 0.0 )
-    {
-        *y_start = -0.5;
-        *y_end = (Real) volume->sizes[y_axis_index] - 0.5;
         *y_offset = y_translation;
-    }
     else
-    {
-        *y_end = -0.5;
-        *y_start = (Real) volume->sizes[y_axis_index] - 0.5;
-        *y_offset = y_translation - *y_delta *
-                    (Real) (volume->sizes[y_axis_index] - 1);
-    }
+        *y_offset = y_translation - *y_delta * (Real) (sizes[y_axis_index] - 1);
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -90,20 +74,19 @@ public  void  clip_slice_to_viewport(
     int             *y_pixel_start,
     int             *y_pixel_end )
 {
-    Real         x_delta, x_start, x_end, y_delta, y_start, y_end;
-    Real         x_offset, y_offset;
+    Real    x_delta, y_delta, x_offset, y_offset;
+    int     sizes[MAX_DIMENSIONS];
 
     get_mapping( volume,
                  x_translation, x_scale, x_axis_index,
                  y_translation, y_scale, y_axis_index,
-                 &x_start, &x_end, &x_delta, &x_offset,
-                 &y_start, &y_end, &y_delta, &y_offset );
+                 &x_delta, &x_offset, &y_delta, &y_offset );
+
+    get_volume_sizes( volume, sizes );
 
     clip_slice_to_pixel_range( x_viewport_size, y_viewport_size,
-                               x_offset, y_offset,
-                               x_delta, y_delta,
-                               x_start, y_start,
-                               x_end, y_end,
+                               sizes[x_axis_index], sizes[y_axis_index],
+                               x_offset, y_offset, x_delta, y_delta,
                                x_pixel_start, y_pixel_start,
                                x_pixel_end, y_pixel_end );
 }
@@ -142,22 +125,20 @@ private  void  create_weighted_volume_slices(
     int          axis, x_size, y_size, s;
     int          x_pixel_start, x_pixel_end, y_pixel_start, y_pixel_end;
     int          x_pixel_start2, x_pixel_end2, y_pixel_start2, y_pixel_end2;
-    Real         x_delta1, x_start1, x_end1, y_delta1, y_start1, y_end1;
-    Real         x_offset1, y_offset1;
-    Real         x_delta2, x_start2, x_end2, y_delta2, y_start2, y_end2;
-    Real         x_offset2, y_offset2;
+    int          sizes1[MAX_DIMENSIONS], sizes2[MAX_DIMENSIONS];
+    Real         x_delta1, y_delta1, x_offset1, y_offset1;
+    Real         x_delta2, y_delta2, x_offset2, y_offset2;
 
     get_mapping( volume1,
                  x_translation1, x_scale1, x_axis_index,
                  y_translation1, y_scale1, y_axis_index,
-                 &x_start1, &x_end1, &x_delta1, &x_offset1,
-                 &y_start1, &y_end1, &y_delta1, &y_offset1 );
+                 &x_delta1, &x_offset1, &y_delta1, &y_offset1 );
+
+    get_volume_sizes( volume1, sizes1 );
 
     clip_slice_to_pixel_range( x_viewport_size, y_viewport_size,
-                               x_offset1, y_offset1,
-                               x_delta1, y_delta1,
-                               x_start1, y_start1,
-                               x_end1, y_end1,
+                               sizes1[x_axis_index], sizes1[y_axis_index],
+                               x_offset1, y_offset1, x_delta1, y_delta1,
                                &x_pixel_start, &y_pixel_start,
                                &x_pixel_end, &y_pixel_end );
 
@@ -166,14 +147,14 @@ private  void  create_weighted_volume_slices(
         get_mapping( volume2,
                      x_translation2, x_scale2, x_axis_index,
                      y_translation2, y_scale2, y_axis_index,
-                     &x_start2, &x_end2, &x_delta2, &x_offset2,
-                     &y_start2, &y_end2, &y_delta2, &y_offset2 );
+                     &x_delta2, &x_offset2, &y_delta2, &y_offset2 );
+
+        get_volume_sizes( volume2, sizes2 );
 
         clip_slice_to_pixel_range( x_viewport_size, y_viewport_size,
+                                   sizes2[x_axis_index], sizes2[y_axis_index],
                                    x_offset2, y_offset2,
                                    x_delta2, y_delta2,
-                                   x_start2, y_start2,
-                                   x_end2, y_end2,
                                    &x_pixel_start2, &y_pixel_start2,
                                    &x_pixel_end2, &y_pixel_end2 );
 
@@ -219,16 +200,16 @@ private  void  create_weighted_volume_slices(
 
             for_less( axis, 0, N_DIMENSIONS )
             {
-                if( indices[axis] == volume1->sizes[axis] )
-                    indices[axis] = volume1->sizes[axis] - 1;
+                if( indices[axis] == sizes1[axis] )
+                    indices[axis] = sizes1[axis] - 1;
             }
 
             GET_VOXEL_PTR_3D( slice_start1[s], volume1,
                               indices[X], indices[Y], indices[Z] );
         }
 
-        strides1[X] = volume1->sizes[Y] * volume1->sizes[Z];
-        strides1[Y] = volume1->sizes[Z];
+        strides1[X] = sizes1[Y] * sizes1[Z];
+        strides1[Y] = sizes1[Z];
         strides1[Z] = 1;
 
         if( volume2 != (Volume) NULL )
@@ -247,16 +228,16 @@ private  void  create_weighted_volume_slices(
 
                 for_less( axis, 0, N_DIMENSIONS )
                 {
-                    if( indices[axis] == volume2->sizes[axis] )
-                        indices[axis] = volume2->sizes[axis] - 1;
+                    if( indices[axis] == sizes2[axis] )
+                        indices[axis] = sizes2[axis] - 1;
                 }
 
                 GET_VOXEL_PTR_3D( slice_start2[s], volume2,
                                   indices[X], indices[Y], indices[Z] );
             }
 
-            strides2[X] = volume2->sizes[Y] * volume2->sizes[Z];
-            strides2[Y] = volume2->sizes[Z];
+            strides2[X] = sizes2[Y] * sizes2[Z];
+            strides2[Y] = sizes2[Z];
             strides2[Z] = 1;
         }
         else
@@ -443,14 +424,12 @@ public  Boolean  convert_slice_pixel_to_voxel(
     Real            y_scale,
     Real            pixel_slice_position[N_DIMENSIONS] )
 {
-    Real         x_delta, x_start, x_end, y_delta, y_start, y_end;
-    Real         x_offset, y_offset;
+    Real         x_delta, y_delta, x_offset, y_offset;
 
     get_mapping( volume,
                  x_translation, x_scale, x_axis_index,
                  y_translation, y_scale, y_axis_index,
-                 &x_start, &x_end, &x_delta, &x_offset,
-                 &y_start, &y_end, &y_delta, &y_offset );
+                 &x_delta, &x_offset, &y_delta, &y_offset );
 
     pixel_slice_position[X] = slice_position[X];
     pixel_slice_position[Y] = slice_position[Y];
@@ -499,14 +478,12 @@ public  void  convert_voxel_to_slice_pixel(
     Real            *x_pixel,
     Real            *y_pixel )
 {
-    Real         x_delta, x_start, x_end, y_delta, y_start, y_end;
-    Real         x_offset, y_offset;
+    Real         x_delta, y_delta, x_offset, y_offset;
 
     get_mapping( volume,
                  x_translation, x_scale, x_axis_index,
                  y_translation, y_scale, y_axis_index,
-                 &x_start, &x_end, &x_delta, &x_offset,
-                 &y_start, &y_end, &y_delta, &y_offset );
+                 &x_delta, &x_offset, &y_delta, &y_offset );
 
     *x_pixel = map_slice_to_viewport_1d( voxel_position[x_axis_index],
                                          x_offset, x_delta );

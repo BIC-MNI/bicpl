@@ -1,16 +1,47 @@
 #include  <def_mni.h>
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_default_landmark_file_suffix
+@INPUT      : 
+@OUTPUT     : 
+@RETURNS    : "lmk"
+@DESCRIPTION: Returns the default suffix for landmark files.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  char  *get_default_landmark_file_suffix()
 {
     return( "lmk" );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_landmark_file
+@INPUT      : volume
+              filename
+              colour
+              size
+              type
+@OUTPUT     : 
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads a landmark.lmk file and creates an object list consisting
+              of markers, with the given colour, size, and type.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status   input_landmark_file(
     Volume         volume,
     char           filename[],
-    Colour         marker_colour,
-    Real           default_size,
-    Marker_types   default_type,
+    Colour         colour,
+    Real           size,
+    Marker_types   type,
     int            *n_objects,
     object_struct  **object_list[] )
 {
@@ -26,11 +57,10 @@ public  Status   input_landmark_file(
 
     if( status == OK )
     {
-        while( io_tag_point( file, READ_FILE, volume, default_size,
-                             &marker ) == OK )
+        while( io_tag_point( file, READ_FILE, volume, size, &marker ) == OK )
         {
-            marker.colour = marker_colour;
-            marker.type = default_type;
+            marker.colour = colour;
+            marker.type = type;
             object = create_object( MARKER );
             *(get_marker_ptr(object)) = marker;
 
@@ -43,11 +73,27 @@ public  Status   input_landmark_file(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_tag_point
+@INPUT      : file
+              io_direction
+              volume
+              size
+@OUTPUT     : marker
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Inputs one marker in landmark format from the file.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  io_tag_point(
     FILE            *file,
     IO_types        io_direction,
     Volume          volume,
-    Real            default_size,
+    Real            size,
     marker_struct   *marker )
 {
     Status   status;
@@ -120,7 +166,7 @@ public  Status  io_tag_point(
         else
         {
             status = io_real( file, io_direction, ASCII_FORMAT, &marker->size );
-            marker->size = default_size;
+            marker->size = size;
         }
     }
 #else

@@ -1,6 +1,21 @@
 #include  <def_mni.h>
 #include  <def_stack.h>
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : numerically_close
+@INPUT      : n1
+              n2
+              threshold_ratio
+@OUTPUT     : 
+@RETURNS    : TRUE if the numbers are within the threshold ratio
+@DESCRIPTION: Decides if two numbers are close to each other.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Boolean  numerically_close(
     Real  n1,
     Real  n2,
@@ -23,6 +38,20 @@ public  Boolean  numerically_close(
 
     return( (diff / avg) <= (double) threshold_ratio );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_good_round_value
+@INPUT      : value
+@OUTPUT     : 
+@RETURNS    : a similar value
+@DESCRIPTION: Finds an approximation to the value that has fewer digits.
+@METHOD     : Finds the closest power of 10 or 5 times a power of ten less than
+              the value.
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Real  get_good_round_value(
     Real    value )
@@ -51,6 +80,22 @@ public  Real  get_good_round_value(
 
     return( sign * rounded );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : solve_quadratic
+@INPUT      : a
+              b
+              c
+@OUTPUT     : solution1
+              solution2
+@RETURNS    : number of solutions 0, 1, or 2
+@DESCRIPTION: Solves a quadratic equation for its zeroes.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  int  solve_quadratic(
     Real   a,
@@ -213,21 +258,22 @@ public  int solve_cubic(
     return num;
 }
 
-public  Real  evaluate_polynomial(
-    int     n,
-    Real    poly[],
-    Real    u )
-{
-    int     i;
-    Real    val;
-
-    val = 0.0;
-
-    for( i = n-1;  i >= 0;  --i )
-        val = val * u + poly[i];
-
-    return( val );
-}
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_roots_of_cubic
+@INPUT      : n    - degrees  (4 for cubic, 3 for quadratic, 2 for linear)
+              poly - coefficients of polynomial
+              u_min
+              u_max
+@OUTPUT     : roots
+@RETURNS    : number of roots
+@DESCRIPTION: Finds the roots of the up-to-cubic polynomial within the
+              range [u_min,u_max]
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  int  get_roots_of_cubic(
     int     n,
@@ -260,6 +306,58 @@ private  int  get_roots_of_cubic(
 
     return( n_inside );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : evaluate_polynomial
+@INPUT      : n     - n coefficients
+              poly  - coefficients
+              u
+@OUTPUT     : 
+@RETURNS    : value
+@DESCRIPTION: Evaluates the n-th order polynomial at u.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  Real  evaluate_polynomial(
+    int     n,
+    Real    poly[],
+    Real    u )
+{
+    int     i;
+    Real    val;
+
+    val = 0.0;
+
+    for( i = n-1;  i >= 0;  --i )
+        val = val * u + poly[i];
+
+    return( val );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : interval_value_range
+@INPUT      : n
+              poly
+              u_min
+              u_max
+@OUTPUT     : min_val_ptr
+              max_val_ptr
+@RETURNS    : 
+@DESCRIPTION: Finds the min and max value of the given interval.  Actually
+              the range may be a subset of the returned values, but the
+              main thing is that all values of the polynomial within u_min
+              and u_max are guaranteed to be within the values
+              min_val_ptr and max_val_ptr.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  interval_value_range(
     int     n,
@@ -336,7 +434,24 @@ private  void  interval_value_range(
     *max_val_ptr = max_val;
 }
 
-private  Boolean  interval_contains_zero(
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : interval_may_contain_zero
+@INPUT      : n
+              poly
+              u_min
+              u_max
+@OUTPUT     : 
+@RETURNS    : TRUE if the interval may contain zero
+@DESCRIPTION: Checks if the polynomial may have a zero value within the
+              given u range.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+private  Boolean  interval_may_contain_zero(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -348,6 +463,24 @@ private  Boolean  interval_contains_zero(
 
     return( min_val <= 0.0 && max_val >= 0.0 );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : check_interval
+@INPUT      : n
+              poly
+              u_min
+              u_max
+              accuracy
+@OUTPUT     : n_roots
+              roots
+@RETURNS    : 
+@DESCRIPTION: Recursively checks intervals on the polynomial for zeros.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  check_interval(
     int     n,
@@ -361,7 +494,7 @@ private  void  check_interval(
     int    i, which;
     Real   u_mid, min_diff, diff;
 
-    if( interval_contains_zero( n, poly, u_min, u_max ) )
+    if( interval_may_contain_zero( n, poly, u_min, u_max ) )
     {
         u_mid = (u_max + u_min) / 2.0;
         if( u_max - u_min > accuracy )
@@ -396,6 +529,23 @@ private  void  check_interval(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_roots_of_polynomial
+@INPUT      : n
+              poly
+              u_min
+              u_max
+              accuracy
+@OUTPUT     : roots
+@RETURNS    : # roots
+@DESCRIPTION: Finds the roots of the polynomial on the given range.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int  get_roots_of_polynomial(
     int     n,
     Real    poly[],
@@ -416,6 +566,25 @@ public  int  get_roots_of_polynomial(
 
     return( n_roots );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : polynomial_may_include_range
+@INPUT      : n
+              poly
+              u_min
+              u_max
+              min_val
+              max_val
+@OUTPUT     : 
+@RETURNS    : TRUE if polynomial may contain range
+@DESCRIPTION: Checks if the polynomial may evaluate to a value in the given
+              range in the given parameter interval.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Boolean  polynomial_may_include_range(
     int     n,

@@ -452,7 +452,7 @@ public  Status  io_colour(
     File_formats    format,
     Colour          *colour )
 {
-    float    r, g, b;
+    float    r, g, b, a;
     Status   status;
 
     status = OK;
@@ -464,6 +464,7 @@ public  Status  io_colour(
             r = get_Colour_r_0_1( *colour );
             g = get_Colour_g_0_1( *colour );
             b = get_Colour_b_0_1( *colour );
+            a = get_Colour_a_0_1( *colour );
         }
 
         status = io_float( file, io_flag, ASCII_FORMAT, &r );
@@ -471,9 +472,11 @@ public  Status  io_colour(
             status = io_float( file, io_flag, ASCII_FORMAT, &g );
         if( status == OK )
             status = io_float( file, io_flag, ASCII_FORMAT, &b );
+        if( status == OK )
+            status = io_float( file, io_flag, ASCII_FORMAT, &a );
 
         if( io_flag == READ_FILE )
-            *colour = make_Colour_0_1( r, g, b );
+            *colour = make_Colour_0_1_alpha( r, g, b, a );
     }
     else
         status = io_binary_data( file, io_flag, (void *) colour,

@@ -730,26 +730,20 @@ private  void  reverse_polygon_order(
 
 #define  MAX_NEIGHBOURS   1000
 
-public  void  compute_polygon_point_centroid(
+public  void  compute_points_centroid_and_normal(
     polygons_struct  *polygons,
-    int              poly,
-    int              vertex_index,
     int              point_index,
+    int              n_neighbours,
+    int              neighbours[],
     Point            *centroid,
     Vector           *normal,
     Real             *base_length,
     Real             *curvature )
 {
-    int              i, n_neighbours;
-    int              neighbours[MAX_NEIGHBOURS];
+    int              i;
     Point            neigh_points[MAX_NEIGHBOURS];
-    Boolean          interior_point;
 
-    n_neighbours = get_neighbours_of_point( polygons, poly, vertex_index,
-                                            neighbours, MAX_NEIGHBOURS,
-                                            &interior_point );
-
-    if( interior_point && n_neighbours > 2 )
+    if( n_neighbours > 2 )
     {
         for_less( i, 0, n_neighbours )
             neigh_points[i] = polygons->points[neighbours[i]];
@@ -769,6 +763,30 @@ public  void  compute_polygon_point_centroid(
         *base_length = 1.0;
         *curvature = 0.0;
     }
+}
+
+public  void  compute_polygon_point_centroid(
+    polygons_struct  *polygons,
+    int              poly,
+    int              vertex_index,
+    int              point_index,
+    Point            *centroid,
+    Vector           *normal,
+    Real             *base_length,
+    Real             *curvature )
+{
+    int              n_neighbours;
+    int              neighbours[MAX_NEIGHBOURS];
+    Boolean          interior_point;
+
+    n_neighbours = get_neighbours_of_point( polygons, poly, vertex_index,
+                                            neighbours, MAX_NEIGHBOURS,
+                                            &interior_point );
+
+    compute_points_centroid_and_normal( polygons, point_index,
+                                        n_neighbours, neighbours,
+                                        centroid, normal, base_length,
+                                        curvature );
 }
 
 private  Real  estimate_polygon_curvature(

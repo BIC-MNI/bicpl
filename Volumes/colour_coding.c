@@ -8,6 +8,23 @@ typedef struct {
 
 private  Colour  interpolate_colours( colour_point *, colour_point *, Real );
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : initialize_colour_coding
+@INPUT      : type
+              under_colour
+              over_colour
+              min_value
+              max_value
+@OUTPUT     : colour_coding
+@RETURNS    : 
+@DESCRIPTION: Initializes the colour coding struct to the given values.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  initialize_colour_coding(
     colour_coding_struct   *colour_coding,
     Colour_coding_types    type,
@@ -22,12 +39,41 @@ public  void  initialize_colour_coding(
     set_colour_coding_over_colour( colour_coding, over_colour );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_colour_coding_type
+@INPUT      : colour_coding
+              type
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the type of the colour coding (e.g. GRAY_SCALE, HOT_METAL).
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  set_colour_coding_type(
     colour_coding_struct   *colour_coding,
     Colour_coding_types    type )
 {
     colour_coding->type = type;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_colour_coding_min_max
+@INPUT      : colour_coding
+              min_value
+              max_value
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the limits of the colour coding.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  set_colour_coding_min_max(
     colour_coding_struct   *colour_coding,
@@ -38,6 +84,20 @@ public  void  set_colour_coding_min_max(
     colour_coding->max_value = max_value;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_colour_coding_min_max
+@INPUT      : colour_coding
+@OUTPUT     : min_value
+              max_value
+@RETURNS    : 
+@DESCRIPTION: Passes back the limits of the colour coding.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  get_colour_coding_min_max(
     colour_coding_struct   *colour_coding,
     Real                   *min_value,
@@ -47,11 +107,38 @@ public  void  get_colour_coding_min_max(
     *max_value = colour_coding->max_value;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_colour_coding_under_colour
+@INPUT      : colour_coding
+@OUTPUT     : 
+@RETURNS    : Colour
+@DESCRIPTION: Returns the colour used to code values below the min_value.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Colour  get_colour_coding_under_colour(
     colour_coding_struct   *colour_coding )
 {
     return( colour_coding->under_colour );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_colour_coding_under_colour
+@INPUT      : colour_coding
+              under_colour
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the colour used to code values below the min_value.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  set_colour_coding_under_colour(
     colour_coding_struct   *colour_coding,
@@ -60,11 +147,38 @@ public  void  set_colour_coding_under_colour(
     colour_coding->under_colour = under_colour;
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_colour_coding_over_colour
+@INPUT      : colour_coding
+@OUTPUT     : 
+@RETURNS    : Colour
+@DESCRIPTION: Returns the colour used to code values above the max_value.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Colour  get_colour_coding_over_colour(
     colour_coding_struct   *colour_coding )
 {
     return( colour_coding->over_colour );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_colour_coding_over_colour
+@INPUT      : colour_coding
+              over_colour
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Sets the colour used to code values above the max_value.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  set_colour_coding_over_colour(
     colour_coding_struct   *colour_coding,
@@ -162,6 +276,20 @@ private  int  get_colour_table_piecewise_function(
 
     return( n_points );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_colour_code
+@INPUT      : colour_coding
+              value
+@OUTPUT     : 
+@RETURNS    : Colour
+@DESCRIPTION: Returns the colour associated with the value.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Colour  get_colour_code(
     colour_coding_struct  *colour_coding,

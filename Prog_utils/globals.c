@@ -5,6 +5,22 @@ static    Status  input_global_variable( int, global_struct [],
                                          FILE *, Boolean * );
 static    void    extract_string( char [], char [] );
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_globals_file
+@INPUT      : n_globals_lookup
+              globals_lookup
+              filename
+@OUTPUT     : 
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Reads the global variable values from filename, using the
+              globals lookup to find the relevant globals.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  input_globals_file(
     int             n_globals_lookup,
     global_struct   globals_lookup[],
@@ -30,6 +46,21 @@ public  Status  input_globals_file(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : input_global_variable
+@INPUT      : n_globals_lookup
+              globals_lookup
+              file
+@OUTPUT     : eof  - TRUE if end of file
+@RETURNS    : 
+@DESCRIPTION: Inputs a global variable value from the file.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  Status  input_global_variable(
     int             n_globals_lookup,
@@ -71,6 +102,22 @@ private  Status  input_global_variable(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : lookup_global
+@INPUT      : n_globals
+              global_lookup
+              variable_name
+@OUTPUT     : ptr    - pointer to global variable
+              type
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Given a name string, looks up the corresponding global variable.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  Status  lookup_global(
     int              n_globals,
     global_struct    global_lookup[],
@@ -107,6 +154,22 @@ private  Status  lookup_global(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_global_variable
+@INPUT      : n_globals_lookup
+              globals_lookup
+              variable_name
+@OUTPUT     : value
+@RETURNS    : 
+@DESCRIPTION: Looks up the given variable name and places its value in string
+              form in the 'value' parameter.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  get_global_variable(
     int              n_globals_lookup,
@@ -181,6 +244,23 @@ public  Status  get_global_variable(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_global_variable
+@INPUT      : n_globals_lookup
+              globals_lookup
+              variable_name
+              value_to_set
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Looks up the given variable name, converts the value_to_set
+              string to the correct type, and sets the global variable.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Status  set_global_variable(
     int              n_globals_lookup,
@@ -299,6 +379,27 @@ public  Status  set_global_variable(
     return( status );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : set_or_get_global_variable
+@INPUT      : n_globals_lookup
+              globals_lookup
+              input_str
+@OUTPUT     : variable_name
+              value_string
+@RETURNS    : 
+@DESCRIPTION: input_str is of the form "variable_name" or 
+              "variable_name = value".  In both cases the variable name and
+              value of the variable are passed back.  In the second case,
+              the variable is first assigned the value.  This routine is
+              usually used by programs to allow the user to type in input
+              strings to query or modify the values of global variables.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Status  set_or_get_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
@@ -334,6 +435,20 @@ public  Status  set_or_get_global_variable(
 
     return( status );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : extract_string
+@INPUT      : str
+@OUTPUT     : extracted
+@RETURNS    : 
+@DESCRIPTION: Extracts a string from str.  Skips leading and trailing
+              white space.  String can be a quoted string or not.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  extract_string( str, extracted )
     char   str[];
