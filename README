@@ -8,7 +8,7 @@ The following libraries MUST be installed before you can build
 bicpl:
 
   NetCDF and MINC 
-    - requires netcdf version 3.x, and minc version 0.8
+    - requires minc version 0.8
     - available at ftp://ftp.bic.mni.mcgill.ca/pub/minc/
 
 
