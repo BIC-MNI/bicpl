@@ -286,7 +286,7 @@ private  Boolean   point_inside_range(
     int     vx, vy, vz, val;
     Real    x, y, z;
 
-    convert_world_to_voxel( volume,
+    convert_3D_world_to_voxel( volume,
                             Point_x(*point), Point_y(*point), Point_z(*point),
                             &x, &y, &z );
 
