@@ -14,7 +14,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.8 1996-09-14 15:59:29 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.9 1996-09-15 17:15:06 david Exp $";
 #endif
 
 #include  <internal_volume_io.h>
@@ -73,7 +73,9 @@ public  BOOLEAN  get_interpolation_weights_2d(
     return( TRUE );
 }
 
-#ifdef DEBUG
+#define  DEBUG
+#ifdef   DEBUG
+
 #include <prog_utils.h>
 #include <numerical.h>
 
@@ -229,6 +231,179 @@ public  BOOLEAN  get_prediction_weights_2d(
                    *x_constant );
     test_solution( 1, x, y, n_points, xs, ys, y_weights[0], y_weights[1],
                    *y_constant );
+#endif
+
+    return( TRUE );
+}
+
+#ifdef DEBUG
+private  void  test_solution_3d(
+    int    dim,
+    Real   x,
+    Real   y,
+    Real   z,
+    int    n_points,
+    Real   xs[],
+    Real   ys[],
+    Real   zs[],
+    Real   weights[] )
+{
+    int        iter, n_iters, p;
+    Real       y_angle, z_angle, x_trans, y_trans, z_trans;
+    Real       correct, value, ps[3];
+    Transform  transform, y_rotation, z_rotation, translation;
+
+    n_iters = 100;
+
+    for_less( iter, 0, n_iters )
+    {
+        z_angle = 2.0 * PI * get_random_0_to_1();
+        y_angle = 2.0 * PI * get_random_0_to_1();
+        x_trans = 10.0 * get_random_0_to_1() - 5.0;
+        y_trans = 10.0 * get_random_0_to_1() - 5.0;
+        z_trans = 10.0 * get_random_0_to_1() - 5.0;
+
+        make_rotation_transform( y_angle, Y, &y_rotation );
+        make_rotation_transform( z_angle, Z, &z_rotation );
+        make_translation_transform( x_trans, y_trans, z_trans, &translation );
+        concat_transforms( &transform, &translation, &y_rotation );
+        concat_transforms( &transform, &transform, &z_rotation );
+
+        value = 0.0;
+
+        for_less( p, 0, n_points )
+        {
+            transform_point( &transform, xs[p], ys[p], zs[p],
+                             &ps[0], &ps[1], &ps[2] );
+            value += weights[p] * ps[dim];
+        }
+
+        transform_point( &transform, x, y, z, &ps[0], &ps[1], &ps[2] );
+        correct = ps[dim];
+
+        if( !numerically_close( value, correct, 1.0e-6 ) )
+        {
+            print( "get_prediction_weights_3d: %g %g\n", correct, value );
+            break;
+        }
+    }
+}
+#endif
+
+private  BOOLEAN   get_four_point_prediction(
+    Real   ax,
+    Real   ay,
+    Real   az,
+    Real   ax1,
+    Real   ay1,
+    Real   az1,
+    Real   ax2,
+    Real   ay2,
+    Real   az2,
+    Real   ax3,
+    Real   ay3,
+    Real   az3,
+    Real   ax4,
+    Real   ay4,
+    Real   az4,
+    Real   weights[] )
+{
+    Real  x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
+    Real  x12, y12, z12, x23, x24, x34, x13, x14;
+    Real  a, b, c, denom, v1_len, v2_len, max_len;
+
+    x4 = ax - ax1;
+    y4 = ay - ay1;
+    z4 = az - az1;
+    x1 = ax2 - ax1;
+    y1 = ay2 - ay1;
+    z1 = az2 - az1;
+    x2 = ax3 - ax1;
+    y2 = ay3 - ay1;
+    z2 = az3 - az1;
+    x3 = ax4 - ax1;
+    y3 = ay4 - ay1;
+    z3 = az4 - az1;
+
+    v1_len = sqrt( x1 * x1 + y1 * y1 + z1 * z1 );
+    v2_len = sqrt( x2 * x2 + y2 * y2 + z2 * z2 );
+
+    max_len = MAX( v1_len, v2_len );
+
+    x12 = x1 * y2 - x2 * y1;
+    y12 = y1 * z2 - y2 * z1;
+    z12 = z1 * x2 - z2 * x1;
+    denom = x12 * z3 + z12 * y3 + y12 * x3;
+
+    if( v1_len == 0.0 || v2_len == 0.0 ||
+        FABS( denom / v1_len / v2_len / max_len ) < 1.0e-2 )
+        return( FALSE );
+
+    x23 = x2 * y3 - x3 * y2;
+    x24 = x2 * y4 - x4 * y2;
+    x34 = x3 * y4 - x4 * y3;
+    x13 = x1 * y3 - x3 * y1;
+    x14 = x1 * y4 - x4 * y1;
+
+    a = ( z4 * x23 + z3 * (-x24) + z2 * x34) / denom;
+    b = (-z4 * x13 + z3 *   x14  - z1 * x34) / denom;
+    c = ( z4 * x12 + z2 * (-x14) + z1 * x24) / denom;
+
+    weights[0] = 1.0 - a - b - c;
+    weights[1] = a;
+    weights[2] = b;
+    weights[3] = c;
+
+    return( TRUE );
+}
+
+public  BOOLEAN  get_prediction_weights_3d(
+    Real   x,
+    Real   y,
+    Real   z,
+    int    n_points,
+    Real   xs[],
+    Real   ys[],
+    Real   zs[],
+    Real   weights[] )
+{
+    int   p, p1, p2, p3, p4, n_quads;
+    Real  weights4[4];
+
+    for_less( p, 0, n_points )
+        weights[p] = 0.0;
+
+    n_quads = 0;
+    for_less( p1, 0, n_points-3 )
+    for_less( p2, p1+1, n_points-2 )
+    for_less( p3, p2+1, n_points-1 )
+    for_less( p4, p3+1, n_points )
+    {
+        if( get_four_point_prediction( x, y, z,
+                                      xs[p1], ys[p1], zs[p1],
+                                      xs[p2], ys[p2], zs[p2],
+                                      xs[p3], ys[p3], zs[p3],
+                                      xs[p4], ys[p4], zs[p4],
+                                      weights4 ) )
+        {
+            weights[p1] += weights4[0];
+            weights[p2] += weights4[1];
+            weights[p3] += weights4[2];
+            weights[p4] += weights4[3];
+            ++n_quads;
+        }
+    }
+
+    if( n_quads == 0 )
+        return( FALSE );
+
+    for_less( p, 0, n_points )
+        weights[p] /= (Real) n_quads;
+
+#ifdef DEBUG
+    test_solution_3d( 0, x, y, z, n_points, xs, ys, zs, weights );
+    test_solution_3d( 1, x, y, z, n_points, xs, ys, zs, weights );
+    test_solution_3d( 2, x, y, z, n_points, xs, ys, zs, weights );
 #endif
 
     return( TRUE );
