@@ -408,6 +408,7 @@ public  Status  input_landmarks_as_labels(
 public  Status  output_labels_as_landmarks(
     FILE    *file,
     Volume  volume,
+    int     desired_label,
     Real    marker_size,
     int     patient_id,
     Colour  colour_table[] )
@@ -427,7 +428,7 @@ public  Status  output_labels_as_landmarks(
                 label = get_volume_auxiliary_data( volume, x, y, z ) &
                         LOWER_AUXILIARY_BITS;
 
-                if( label != 0 )
+                if( label == desired_label || (desired_label < 0 && label > 0) )
                 {
                     convert_voxel_to_world( volume, (Real) x, (Real) y, (Real)z,
                                             &x_world, &y_world, &z_world );
