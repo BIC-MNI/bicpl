@@ -257,7 +257,7 @@ AC_DEFUN(smr_CHECK_LIB,
     dnl library, then we insist that it exists.  The shell variable
     dnl HAVE_[smr_name] (in all capitals) will be defined if the header
     dnl file was found.
-    ifelse(smr_header, , , [test x"$smr_have_header" = x && AC_MSG_WARN([smr_header for smr_name library not found!])])
+    ifelse(smr_header, , , [test x"$ac_cv_header_[]smr_safe_name[]" = xno && AC_MSG_ERROR([smr_header for smr_name library not found!])])
 
     if test x"[$]smr_have_[]smr_safe_name[]_library" = xyes; then
       AC_MSG_RESULT([using smr_name library])
