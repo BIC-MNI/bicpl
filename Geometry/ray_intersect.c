@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.24 1996-08-27 17:32:30 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.25 1996-10-04 18:30:57 david Exp $";
 #endif
 
 
@@ -37,7 +37,9 @@ private  BOOLEAN  point_within_polygon_2d(
 private  BOOLEAN   intersect_ray_triangle(
     Point            *ray_origin,
     Vector           *ray_direction,
-    Point            points[],
+    Point            *point0,
+    Point            *point1,
+    Point            *point2,
     Real             *dist )
 {
     Real     n_dot_d, d;
@@ -45,17 +47,17 @@ private  BOOLEAN   intersect_ray_triangle(
     Real     vx, vy, vz;
     Real     tx0, ty0, tz0, tx1, ty1, tz1, tx2, ty2, tz2;
 
-    tx0 = RPoint_x( points[0] ) - RPoint_x( *ray_origin );
-    ty0 = RPoint_y( points[0] ) - RPoint_y( *ray_origin );
-    tz0 = RPoint_z( points[0] ) - RPoint_z( *ray_origin );
+    tx0 = RPoint_x( *point0 ) - RPoint_x( *ray_origin );
+    ty0 = RPoint_y( *point0 ) - RPoint_y( *ray_origin );
+    tz0 = RPoint_z( *point0 ) - RPoint_z( *ray_origin );
 
-    tx1 = RPoint_x( points[1] ) - RPoint_x( *ray_origin );
-    ty1 = RPoint_y( points[1] ) - RPoint_y( *ray_origin );
-    tz1 = RPoint_z( points[1] ) - RPoint_z( *ray_origin );
+    tx1 = RPoint_x( *point1 ) - RPoint_x( *ray_origin );
+    ty1 = RPoint_y( *point1 ) - RPoint_y( *ray_origin );
+    tz1 = RPoint_z( *point1 ) - RPoint_z( *ray_origin );
 
-    tx2 = RPoint_x( points[2] ) - RPoint_x( *ray_origin );
-    ty2 = RPoint_y( points[2] ) - RPoint_y( *ray_origin );
-    tz2 = RPoint_z( points[2] ) - RPoint_z( *ray_origin );
+    tx2 = RPoint_x( *point2 ) - RPoint_x( *ray_origin );
+    ty2 = RPoint_y( *point2 ) - RPoint_y( *ray_origin );
+    tz2 = RPoint_z( *point2 ) - RPoint_z( *ray_origin );
 
     v01x = tx1 - tx0;
     v01y = ty1 - ty0;
@@ -217,26 +219,29 @@ private  BOOLEAN   intersect_ray_polygon(
 
         size = end_index - start_index;
 
-        if( size > MAX_POINTS )
-        {
-            print_error( "Warning: awfully big polygon, size = %d\n", size );
-            size = MAX_POINTS;
-            end_index = start_index + size - 1;
-        }
-
-        for_less( p, start_index, end_index )
-        {
-            ind = polygons->indices[p];
-            points[p-start_index] = polygons->points[ind];
-        }
-
         if( size == 3 )
         {
             intersects = intersect_ray_triangle( ray_origin, ray_direction,
-                                                 points, dist );
+                      &polygons->points[polygons->indices[start_index]],
+                      &polygons->points[polygons->indices[start_index+1]],
+                      &polygons->points[polygons->indices[start_index+2]],
+                      dist );
         }
         else
         {
+            if( size > MAX_POINTS )
+            {
+                print_error( "Warning: awfully big polygon, size = %d\n", size);
+                size = MAX_POINTS;
+                end_index = start_index + size - 1;
+            }
+
+            for_less( p, start_index, end_index )
+            {
+                ind = polygons->indices[p];
+                points[p-start_index] = polygons->points[ind];
+            }
+
             intersects = intersect_ray_polygon_points( ray_origin,
                               ray_direction, size, points, dist );
         }
