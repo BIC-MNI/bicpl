@@ -2,6 +2,7 @@
 #include  <mni.h>
 
 private  void clip_one_edge(
+    BOOLEAN  closing,
     int      edge,
     int      sizes[],
     Real     origin[],
@@ -9,6 +10,7 @@ private  void clip_one_edge(
     Real     y_axis[],
     Real     point[],
     BOOLEAN  first[],
+    Real     first_point[][2],
     Real     prev_point[][2],
     Real     prev_dist[],
     int      *n_clipped_points,
@@ -19,9 +21,12 @@ private  void clip_one_edge(
 
     if( edge == -1 )
     {
-        clipped_points[*n_clipped_points][0] = point[0];
-        clipped_points[*n_clipped_points][1] = point[1];
-        ++(*n_clipped_points);
+        if( !closing )
+        {
+            clipped_points[*n_clipped_points][0] = point[0];
+            clipped_points[*n_clipped_points][1] = point[1];
+            ++(*n_clipped_points);
+        }
         return;
     }
 
@@ -47,13 +52,30 @@ private  void clip_one_edge(
                           (point[0] - prev_point[edge][0]);
         interpolated[1] = prev_point[edge][1] + ratio *
                           (point[1] - prev_point[edge][1]);
-        clip_one_edge( edge-1, sizes, origin, x_axis, y_axis, interpolated,
-              first, prev_point, prev_dist, n_clipped_points, clipped_points );
+        clip_one_edge( FALSE, edge-1, sizes, origin, x_axis, y_axis,
+                       interpolated, first, first_point, prev_point, prev_dist,
+                       n_clipped_points, clipped_points );
     }
 
     if( dist >= 0.0 )
-        clip_one_edge( edge-1, sizes, origin, x_axis, y_axis, point,
-              first, prev_point, prev_dist, n_clipped_points, clipped_points );
+    {
+        clip_one_edge( closing, edge-1, sizes, origin, x_axis, y_axis, point,
+                       first, first_point, prev_point, prev_dist,
+                       n_clipped_points, clipped_points );
+    }
+    else if( closing && edge > 0 && !first[edge-1] )
+    {
+        clip_one_edge( TRUE, edge-1, sizes, origin, x_axis, y_axis,
+                       first_point[edge-1],
+                       first, first_point, prev_point, prev_dist,
+                       n_clipped_points, clipped_points );
+    }
+
+    if( first[edge] )
+    {
+        first_point[edge][0] = point[0];
+        first_point[edge][1] = point[1];
+    }
 
     first[edge] = FALSE;
     prev_point[edge][0] = point[0];
@@ -74,6 +96,7 @@ private  int  clip_points(
     int       i, c, n_clipped_points;
     BOOLEAN   first[2*MAX_DIMENSIONS];
     Real      prev_point[2*MAX_DIMENSIONS][2];
+    Real      first_point[MAX_DIMENSIONS][2];
     Real      prev_dist[2*MAX_DIMENSIONS];
 
     for_less( c, 0, 2 * n_dims )
@@ -81,10 +104,17 @@ private  int  clip_points(
 
     n_clipped_points = 0;
 
-    for_less( i, 0, n_points+1 )
+    for_less( i, 0, n_points )
     {
-        clip_one_edge( 2*n_dims-1, sizes, origin, x_axis, y_axis,
-                       points[i%n_points], first, prev_point, prev_dist,
+        clip_one_edge( FALSE, 2*n_dims-1, sizes, origin, x_axis, y_axis,
+                       points[i], first, first_point, prev_point, prev_dist,
+                       &n_clipped_points, clipped_points );
+    }
+
+    if( !first[2*n_dims-1] )
+    {
+        clip_one_edge( TRUE, 2*n_dims-1, sizes, origin, x_axis, y_axis,
+                       points[0], first, first_point, prev_point, prev_dist,
                        &n_clipped_points, clipped_points );
     }
 
@@ -121,7 +151,7 @@ private  void    clip_viewport_to_volume(
                             sizes, origin, x_axis, y_axis,
                             4, points, clipped_points );
 
-    if( n_points > 2 * n_dims )
+    if( n_points == 1 || n_points == 2 || n_points > 2 * n_dims )
     {
         HANDLE_INTERNAL_ERROR( "clipping" );
     }
