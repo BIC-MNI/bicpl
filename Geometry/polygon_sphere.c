@@ -1,6 +1,8 @@
 #include  <def_mni.h>
 #include  <def_module.h>
 
+#define  N_AROUND_TOP   -1
+
 private  int  get_n_sphere_points(
     int   n_up,
     int   n_around );
@@ -31,7 +33,8 @@ public  void  create_polygons_sphere(
 {
     int      point_index, top_point_index, bottom_point_index;
     int      point_index1, point_index2, point_index3, point_index4;
-    int      up, around, n_circum, next_around, n_indices;
+    int      up, around, n_circum, next_around, n_indices, end, start, a;
+    int      n_around_top;
     Point    *input_points;
     Colour   save_colour;
     int      input_n_up;
@@ -99,23 +102,37 @@ public  void  create_polygons_sphere(
         }
     }
 
+    if( subdividing_flag )
+        FREE( input_points );
+
     n_indices = 0;
 
     /* ------ build indices for top ------ */
 
     top_point_index = get_sphere_point_index( 0, 0, n_up, n_around );
 
-    for_less( around, 0, n_around )
-    {
-        point_index1 = get_sphere_point_index( 1, around, n_up, n_around );
-        point_index2 = get_sphere_point_index( 1, (around+1)%n_around, n_up, n_around);
+    if( N_AROUND_TOP > 0 )
+        n_around_top = N_AROUND_TOP;
+    else
+        n_around_top = n_around;
 
+    for_less( a, 0, n_around_top )
+    {
         ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                               top_point_index, DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
-                              point_index1, DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
-                              point_index2, DEFAULT_CHUNK_SIZE );
+
+        start = n_around * a / n_around_top;
+        end = n_around * (a+1) / n_around_top + 1;
+        if( end > n_around + 1 )
+            end = n_around + 1;
+        for_less( around, start, end )
+        {
+            point_index = get_sphere_point_index( 1, around % n_around,
+                                                  n_up, n_around );
+
+            ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
+                                  point_index, DEFAULT_CHUNK_SIZE );
+        }
 
         ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
                               n_indices, DEFAULT_CHUNK_SIZE );
@@ -151,18 +168,23 @@ public  void  create_polygons_sphere(
 
     bottom_point_index = get_sphere_point_index( n_up, 0, n_up, n_around );
 
-    for_less( around, 0, n_around )
+    for_less( a, 0, n_around_top )
     {
-        point_index1 = get_sphere_point_index( n_up-1, around, n_up, n_around );
-        point_index2 = get_sphere_point_index( n_up-1, (around+1)%n_around,
-                                        n_up, n_around);
-
         ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                               bottom_point_index, DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
-                              point_index2, DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
-                              point_index1, DEFAULT_CHUNK_SIZE );
+
+        end = n_around * a / n_around_top;
+        start = n_around * (a+1) / n_around_top;
+        if( start > n_around )
+            start = n_around;
+        for( around = start;  around >= end;  --around )
+        {
+            point_index = get_sphere_point_index( n_up-1, around % n_around,
+                                                  n_up, n_around );
+
+            ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
+                                  point_index, DEFAULT_CHUNK_SIZE );
+        }
 
         ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
                               n_indices, DEFAULT_CHUNK_SIZE );
@@ -289,19 +311,30 @@ public  Boolean  get_tessellation_of_polygons_sphere(
 
     is_sphere = FALSE;
 
-    size = sqrt( (double) polygons->n_items / 2.0 );
-
-    if( IS_INT(size) )
+    if( polygons->n_items > 10 )
     {
-        *tess = size;
-
-        int_size = (int) size;
-        while( (int_size & 1) == 0 )
+        if( N_AROUND_TOP > 0 )
         {
-            int_size >>= 1;
+            size = 1 + sqrt( (double) polygons->n_items / 2.0 + 1.0 -
+                            (double) N_AROUND_TOP );
+        }
+        else
+        {
+           size = sqrt( (double) polygons->n_items / 2.0 );
         }
 
-        is_sphere = (int_size == 1);
+        if( IS_INT(size) )
+        {
+            *tess = size;
+
+            int_size = (int) size;
+            while( (int_size & 1) == 0 )
+            {
+                int_size >>= 1;
+            }
+
+            is_sphere = (int_size == 1);
+        }
     }
 
     return( is_sphere );
