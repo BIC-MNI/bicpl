@@ -14,7 +14,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.2 1996-09-13 13:16:19 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.3 1996-09-13 13:47:22 david Exp $";
 #endif
 
 #include  <geom.h>
@@ -31,36 +31,15 @@ public  BOOLEAN  get_interpolation_weights_2d(
     Real   weights[] )
 {
     int   i;
-    Real  av_fixed[FIXED_SIZE], bv_fixed[FIXED_SIZE], cv_fixed[FIXED_SIZE];
-    Real  aa, ab, ac, bb, bc, cc, *av, *bv, *cv, dx, dy;
-    Real  ab2, acbb, abac, abbc, aabc2, acbb2, aabb4, denom;
-
-    if( n_points > FIXED_SIZE )
-    {
-        ALLOC( av, n_points );
-        ALLOC( bv, n_points );
-        ALLOC( cv, n_points );
-    }
-    else
-    {
-        av = av_fixed;
-        bv = bv_fixed;
-        cv = cv_fixed;
-    }
+    Real  av_fact, bv_fact, constant, n;
+    Real  aa, ab, ac, bb, bc, dx, dy;
+    Real  acbb, abac, aanbb4, denom, aabc, ab2n;
 
     aa = 0.0;
     ab = 0.0;
     ac = 0.0;
     bb = 0.0;
     bc = 0.0;
-    cc = 0.0;
-
-    for_less( i, 0, n_points )
-    {
-        av[i] = 0.0;
-        bv[i] = 0.0;
-        cv[i] = 0.0;
-    }
 
     for_less( i, 0, n_points )
     {
@@ -71,39 +50,26 @@ public  BOOLEAN  get_interpolation_weights_2d(
         ac += 2.0 * dx;
         bb += dy * dy;
         bc += 2.0 * dy;
-        cc += 1.0;
-        av[i] += -2.0 * dx;
-        bv[i] += -2.0 * dy;
-        cv[i] += -2.0;
     }
 
-    ab2 = ab * ab;
+    n = (Real) n_points;
+    aanbb4 = 4.0 * aa * n * bb;
     acbb = ac * bb;
+    aabc = aa * bc;
+    ab2n = ab * ab * n;
     abac = ab * ac;
-    abbc = ab * bc;
-    aabc2 = 2.0 * aa * bc;
-    acbb2 = 2.0 * ac * bb;
-    aabb4 = 4.0 * aa * bb;
-    denom = -2.0 *
-            (-ab2 * cc - ac * acbb + abbc * ac + aabb4 * cc - aa * bc * bc);
+
+    denom = 2.0 * (aanbb4 - ac * acbb - bc * aabc - ab2n + abac * bc);
 
     if( denom == 0.0 )
         return( FALSE );
 
-    for_less( i, 0, n_points )
-    {
-        weights[i] = ((aabb4 - ab2) * cv[i] +
-                      (abac - aabc2) * bv[i] +
-                      (abbc - acbb2) * av[i]) /
-                      denom;
-    }
+    bv_fact = -2.0 * (2.0 * aabc - abac) / denom;
+    av_fact = -2.0 * (2.0 * acbb - ab * bc) / denom;
+    constant = (2.0 * aanbb4 - 2.0 * ab2n) / denom - x * av_fact - y * bv_fact;
 
-    if( n_points > FIXED_SIZE )
-    {
-        FREE( av );
-        FREE( bv );
-        FREE( cv );
-    }
+    for_less( i, 0, n_points )
+        weights[i] = constant + bv_fact * ys[i] + av_fact * xs[i];
 
     return( TRUE );
 }
