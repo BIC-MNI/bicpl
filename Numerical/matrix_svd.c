@@ -15,16 +15,16 @@
 #include <volume_io/internal_volume_io.h>
 #include <bicpl/numerical.h>
 
+
+int bicpl_dgesvd_(char *jobu, char *jobvt, long int *m, long int *n,
+            Real *a, long int *lda, Real *s, Real *u,
+            long int * ldu, Real *vt, long int *ldvt, 
+	    Real *work, long int *lwork, long int *info);
+
+
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.6 2000-02-06 15:30:40 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.7 2004-04-15 19:00:17 vsingh Exp $";
 #endif
-
-#define  MAX_ITERATIONS  30
-
-#define PYTHAG(a,b) ((at=fabs(a)) > (bt=fabs(b)) ? \
-(ct=bt/at,at*sqrt(1.0+ct*ct)) : (bt ? (ct=at/bt,bt*sqrt(1.0+ct*ct)): 0.0))
-
-#define TAKE_SIGN( a, b ) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : singular_value_decomposition
@@ -34,13 +34,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matri
 @OUTPUT     : w
               v
 @RETURNS    : TRUE if successful
-@DESCRIPTION: Performs singular value decomposition of a matrix, based on
-              the numerical recipes algorithms book.
+@DESCRIPTION: Performs singular value decomposition of a matrix, 
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    : Jul  4, 1995    David MacDonald
-@MODIFIED   : 
+@MODIFIED   : 15/04/04 Vivek Singh - changed implementation to use BSD licence/Open Source
+	      compatible code, specifically a routine extracted from the clapack library
 ---------------------------------------------------------------------------- */
 
 public  BOOLEAN  singular_value_decomposition(
@@ -50,315 +50,53 @@ public  BOOLEAN  singular_value_decomposition(
     Real   w[],
     Real   **v )
 {
-    BOOLEAN     flag;
-    int         i, iter, j, jj, k, l, nm;
-    Real        c, f, h, s, x, y, z;
-    Real        anorm, g, scale, t;
-    Real        *rv1;
-    Real        at, bt, ct;
+  
+  int i,j;
+  BOOLEAN val;
+  char jobu = 'O';
+  char jobvt = 'A';
+  long int _m = (long int) m;
+  long int _n = (long int) n;
 
-    if( m < n )
-    {
-        print_error("singular_value_decomposition(): matrix must have zero rows added to it.\n");
-        return( FALSE );
+  long int lda = _m;  
+  long int ldu = _m;
+  long int ldvt = _n;
+  long int lwork = MAX(3*MIN(_m,_n)+MAX(_m,_n),5*MIN(_m,_n));
+  double** _a;
+  double* work;
+  double** _u;
+  double** _v;
+  long int info;
+  double temp;
+
+  ALLOC(work,(int) lwork);
+  ALLOC2D(_a,n,m);
+  ALLOC2D(_u,n,m);
+  ALLOC2D(_v,n,n);
+
+  for (j = 0; j < n; j++) {    
+    for (i = 0; i < m; i++) {
+      _a[j][i] = a[i][j];
     }
+  }
+  
 
-    ALLOC( rv1, n );
-
-    anorm = 0.0;
-    scale = 0.0;
-    g = 0.0;
-
-    for_less( i, 0, n )
-    {
-        l = i + 1;
-        rv1[i] = scale * g;
-        g = 0.0;
-        s = 0.0;
-        scale = 0.0;
-
-        if( i < m )
-        {
-            for_less( k, i, m )
-                scale += fabs( a[k][i] );
-
-            if( scale != 0.0 )
-            {
-                for_less( k, i, m )
-                {
-                    a[k][i] /= scale;
-                    s += a[k][i] * a[k][i];
-                }
-
-                f = a[i][i];
-                g = -TAKE_SIGN( sqrt(s), f );
-                h = f * g - s;
-                a[i][i] = f - g;
-
-                if( i != n-1 )
-                {
-                    for_less( j, l, n )
-                    {
-                        s = 0.0;
-                        for_less( k, i, m )
-                            s += a[k][i] * a[k][j];
-                        f = s / h;
-                        for_less( k, i, m )
-                            a[k][j] += f * a[k][i];
-                    }
-                }
-
-                for_less( k, i, m )
-                    a[k][i] *= scale;
-            }
-        }
-
-        w[i] = scale * g;
-        g = 0.0;
-        s = 0.0;
-        scale = 0.0;
-        if( i < m && i != n-1 )
-        {
-            for_less( k, l, n )
-                scale += fabs( a[i][k] );
-
-            if( scale != 0.0 )
-            {
-                for_less( k, l, n )
-                {
-                    a[i][k] /= scale;
-                    s += a[i][k] * a[i][k];
-                }
-
-                f = a[i][l];
-                g = -TAKE_SIGN( sqrt(s), f );
-                h = f * g - s;
-                a[i][l] = f - g;
-                for_less( k, l, n )
-                    rv1[k] = a[i][k] / h;
-                if( i != m-1 )
-                {
-                    for_less( j, l, m )
-                    {
-                        s = 0.0;
-                        for_less( k, l, n )
-                            s += a[j][k] * a[i][k];
-
-                        for_less( k, l, n )
-                            a[j][k] += s * rv1[k];
-                    }
-                }
-
-                for_less( k, l, n )
-                    a[i][k] *= scale;
-            }
-        }
-
-        t = fabs(w[i] ) + fabs(rv1[i]);
-
-        if( t > anorm )
-            anorm = t;
+  val = bicpl_dgesvd_(&jobu, &jobvt, &_m, &_n, (Real*) *_a, &lda, (Real*) w, 
+		(Real*) *_u, &ldu, (Real*) *_v, &ldvt, 
+		(Real*) work, &lwork, &info);
+      
+  for (j = 0; j < n; j++) {    
+    for (i = 0; i < m; i++) {
+      a[i][j] = _a[j][i];
     }
+  }
 
-    for_down( i, n-1, 0 )
-    {
-        if( i < n-1 )
-        {
-            if( g != 0.0 )
-            {
-                for_less( j, l, n )
-                    v[j][i] = (a[i][j] / a[i][l]) / g;
-
-                for_less( j, l, n )
-                {
-                    s = 0.0;
-                    for_less( k, l, n )
-                        s += a[i][k] * v[k][j];
-
-                    for_less( k, l, n )
-                        v[k][j] += s * v[k][i];
-                }
-            }
-
-            for_less( j, l, n )
-            {
-                v[i][j] = 0.0;
-                v[j][i] = 0.0;
-            }
-        }
-
-        v[i][i] = 1.0;
-        g = rv1[i];
-        l = i;
+  for (j = 0; j < n; j++) {    
+    for (i = 0; i < n; i++) {
+      v[i][j] = _v[i][j];
     }
+  }
 
-    for_down( i, n-1, 0 )
-    {
-        l = i + 1;
-        g = w[i];
-        if( i < n-1 )
-        {
-            for_less( j, l, n )
-                a[i][j] = 0.0;
-        }
+  return val;  
 
-        if( g != 0.0 )
-        {
-            g = 1.0 / g;
-            if( i != n-1 )
-            {
-                for_less( j, l, n )
-                {
-                    s = 0.0;
-                    for_less( k, l, m )
-                        s += a[k][i] * a[k][j];
-                    f = (s / a[i][i]) * g;
-                    for_less( k, i, m )
-                        a[k][j] += f * a[k][i];
-                }
-            }
-
-            for_less( j, i, m )
-                a[j][i] *= g;
-        }
-        else
-        {
-            for_less( j, i, m )
-                a[j][i] = 0.0;
-        }
-
-        a[i][i] += 1.0;
-    }
-
-    for_down( k, n-1, 0 )
-    {
-        for_less( iter, 0, MAX_ITERATIONS )
-        {
-            flag = TRUE;
-            for_down( l, k, 0 )
-            {
-                nm = l - 1;
-                if( fabs(rv1[l]) + anorm == anorm )
-                {
-                    flag = FALSE;
-                    break;
-                }
-
-                if( fabs(w[nm]) + anorm == anorm)
-                    break;
-            }
-
-            if( flag )
-            {
-                c = 0.0;
-                s = 1.0;
-
-                for_less( i, l, k+1 )
-                {
-                    f = s * rv1[i];
-
-                    if( fabs(f)+anorm != anorm )
-                    {
-                        g = w[i];
-                        h = PYTHAG( f, g );
-                        w[i] = h;
-                        h = 1.0 / h;
-                        c = g * h;
-                        s = -f * h;
-                        for_less( j, 0, m )
-                        {
-                            y = a[j][nm];
-                            z = a[j][i];
-                            a[j][nm] = y*c + z*s;
-                            a[j][i] = z*c - y*s;
-                        }
-                    }
-                }
-            }
-
-            z = w[k];
-            if( l == k )
-            {
-                if( z < 0.0 )
-                {
-                    w[k] = -z;
-                    for_less( j, 0, n )
-                        v[j][k] = -v[j][k];
-                }
-                break;
-            }
-
-            if( iter == MAX_ITERATIONS-1 )
-            {
-                print_error( "No convergence in %d SVD iterations.\n",
-                             MAX_ITERATIONS );
-                FREE( rv1 );
-                return( FALSE );
-            }
-
-            x = w[l];
-            nm = k - 1;
-            y = w[nm];
-            g = rv1[nm];
-            h = rv1[k];
-            f = ((y-z)*(y+z)+(g-h)*(g+h)) / (2.0*h*y);
-            g = PYTHAG( f, 1.0 );
-            f = ((x-z)*(x+z)+h*((y/(f+TAKE_SIGN(g,f)))-h)) / x;
-            c =1.0;
-            s =1.0;
-
-            for_less( j, l, nm+1 )
-            {
-                i = j + 1;
-                g = rv1[i];
-                y = w[i];
-                h = s * g;
-                g = c * g;
-                z = PYTHAG( f, h );
-                rv1[j] = z;
-                c = f / z;
-                s = h / z;
-                f = x*c + g*s;
-                g = g*c - x*s;
-                h = y * s;
-                y = y * c;
-                for_less( jj, 0, n )
-                {
-                    x = v[jj][j];
-                    z = v[jj][i];
-                    v[jj][j] = x*c + z*s;
-                    v[jj][i] = z*c - x*s;
-                }
-
-                z = PYTHAG( f, h );
-                w[j] = z;
-
-                if( z )
-                {
-                    z = 1.0 / z;
-                    c = f * z;
-                    s = h * z;
-                }
-
-                f = c*g + s*y;
-                x = c*y - s*g;
-
-                for_less( jj, 0, m )
-                {
-                    y = a[jj][j];
-                    z = a[jj][i];
-                    a[jj][j] = y*c + z*s;
-                    a[jj][i] = z*c - y*s;
-                }
-            }
-
-            rv1[l] = 0.0;
-            rv1[k] = f;
-            w[k] = x;
-        }
-    }
-
-    FREE( rv1 );
-
-    return( TRUE );
 }
