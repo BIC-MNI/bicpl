@@ -18,13 +18,12 @@ public  void  initialize_resample_volume(
     if( dest_to_src_transform != (Transform *) NULL )
     {
         compute_transform_inverse( dest_to_src_transform, &inverse );
-        concat_transforms( &resample->transform, &inverse,
-                           &resample->transform );
+        concat_transforms( &resample->transform, &resample->transform,
+                           &inverse );
     }
 
-    concat_transforms( &resample->transform,
-                       &src_volume->world_to_voxel_transform,
-                       &resample->transform );
+    concat_transforms( &resample->transform, &resample->transform,
+                       &src_volume->world_to_voxel_transform );
 }
 
 public  Boolean  do_more_resampling(
@@ -41,7 +40,7 @@ public  Boolean  do_more_resampling(
     Real            end_time;
     Point           point;
     Vector          z_axis;
-    int             *dest_sizes;
+    int             *dest_sizes, *src_sizes;
 
     if( max_seconds >= 0.0 )
         end_time = current_realtime_seconds() + max_seconds;
@@ -50,6 +49,8 @@ public  Boolean  do_more_resampling(
 
     while( resample->x < dest_sizes[X] )
     {
+        src_sizes = resample->src_volume->sizes;
+
         get_transform_z_axis( &resample->transform, &z_axis );
 
         fill_Point( point, (Real) resample->x, (Real) resample->y, 0.0 );
@@ -59,13 +60,13 @@ public  Boolean  do_more_resampling(
         zv = Point_z(point);
         for_less( z, 0, dest_sizes[Z] )
         {
-            if( xv < 0.0 || xv >= (Real) (dest_sizes[X]-1) ||
-                yv < 0.0 || yv >= (Real) (dest_sizes[Y]-1) ||
-                zv < 0.0 || zv >= (Real) (dest_sizes[Z]-1) )
+            if( xv < 0.0 || xv >= (Real) (src_sizes[X]-1) ||
+                yv < 0.0 || yv >= (Real) (src_sizes[Y]-1) ||
+                zv < 0.0 || zv >= (Real) (src_sizes[Z]-1) )
             {
-                if( xv < -0.5 || xv >= (Real) dest_sizes[X] - 0.5 ||
-                    yv < -0.5 || yv >= (Real) dest_sizes[Y] - 0.5 ||
-                    zv < -0.5 || zv >= (Real) dest_sizes[Z] - 0.5 )
+                if( xv < -0.5 || xv >= (Real) src_sizes[X] - 0.5 ||
+                    yv < -0.5 || yv >= (Real) src_sizes[Y] - 0.5 ||
+                    zv < -0.5 || zv >= (Real) src_sizes[Z] - 0.5 )
                 {
                     value = 0;
                 }
@@ -113,7 +114,7 @@ public  Boolean  do_more_resampling(
         }
 
         ++resample->y;
-        if( resample->y >= resample->dest_volume->sizes[Y] )
+        if( resample->y >= dest_sizes[Y] )
         {
             resample->y = 0;
             ++resample->x;
@@ -123,12 +124,10 @@ public  Boolean  do_more_resampling(
             break;
     }
 
-    *fraction_done = (Real) (resample->x * resample->dest_volume->sizes[Y] +
-                             resample->y) /
-                     (Real) resample->dest_volume->sizes[Y] /
-                     (Real) resample->dest_volume->sizes[X];
+    *fraction_done = (Real) (resample->x * dest_sizes[Y] + resample->y) /
+                     (Real) dest_sizes[Y] / (Real) dest_sizes[X];
 
-    return( resample->x < resample->dest_volume->sizes[X] );
+    return( resample->x < dest_sizes[X] );
 }
 
 public  void  resample_volume(

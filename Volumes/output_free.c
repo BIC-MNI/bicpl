@@ -18,9 +18,6 @@ public  Status  output_volume(
 
     status = open_file( header_filename, WRITE_FILE, ASCII_FORMAT, &file );
 
-    if( status == OK )
-        status = output_string( file, voxel_filename  );
-
     if( volume->data_type == UNSIGNED_BYTE )
         n_bytes_per_voxel = 1;
     else
@@ -35,27 +32,6 @@ public  Status  output_volume(
     for_less( axis, 0, N_DIMENSIONS )
     {
         if( status == OK )
-            status = output_int( file, volume->sizes[axis_ordering[axis]] );
-
-        if( status == OK )
-            status = output_real( file, volume->thickness[axis_ordering[axis]]);
-
-        if( status == OK && volume->flip_axis[axis_ordering[axis]] )
-            status = output_character( file, '-' );
-
-        if( status == OK )
-            status = output_character( file, ' ' );
-
-        if( status == OK )
-            status = output_character( file, 'x' + axis_ordering[axis] );
-
-        if( status == OK )
-            status = output_newline( file );
-    }
-
-    for_less( axis, 0, N_DIMENSIONS )
-    {
-        if( status == OK )
         {
             trans = Transform_elem(volume->voxel_to_world_transform,axis,3);
 
@@ -65,10 +41,36 @@ public  Status  output_volume(
                          volume->thickness[axis];
             }
 
-            status = output_float( file,
-                     Transform_elem(volume->voxel_to_world_transform,axis,3) );
+            status = output_float( file, trans );
         }
     }
+
+    if( status == OK )
+        status = output_newline( file );
+
+    for_less( axis, 0, N_DIMENSIONS )
+    {
+        if( status == OK )
+            status = output_int( file, volume->sizes[axis_ordering[axis]] );
+
+        if( status == OK )
+            status = output_real( file, volume->thickness[axis_ordering[axis]]);
+
+        if( status == OK )
+            status = output_character( file, ' ' );
+
+        if( status == OK && volume->flip_axis[axis_ordering[axis]] )
+            status = output_character( file, '-' );
+
+        if( status == OK )
+            status = output_character( file, 'x' + axis_ordering[axis] );
+
+        if( status == OK )
+            status = output_newline( file );
+    }
+
+    if( status == OK )
+        status = output_string( file, voxel_filename  );
 
     if( status == OK )
         status = output_newline( file );

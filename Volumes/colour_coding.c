@@ -11,11 +11,15 @@ private  Colour  interpolate_colours( colour_point *, colour_point *, Real );
 public  void  initialize_colour_coding(
     colour_coding_struct   *colour_coding,
     Colour_coding_types    type,
+    Colour                 under_colour,
+    Colour                 over_colour,
     Real                   min_value,
     Real                   max_value )
 {
     set_colour_coding_type( colour_coding, type );
     set_colour_coding_min_max( colour_coding, min_value, max_value );
+    set_colour_coding_under_colour( colour_coding, under_colour );
+    set_colour_coding_over_colour( colour_coding, over_colour );
 }
 
 public  void  set_colour_coding_type(
@@ -32,6 +36,20 @@ public  void  set_colour_coding_min_max(
 {
     colour_coding->min_value = min_value;
     colour_coding->max_value = max_value;
+}
+
+public  void  set_colour_coding_under_colour(
+    colour_coding_struct   *colour_coding,
+    Colour                 under_colour )
+{
+    colour_coding->under_colour = under_colour;
+}
+
+public  void  set_colour_coding_over_colour(
+    colour_coding_struct   *colour_coding,
+    Colour                 over_colour )
+{
+    colour_coding->over_colour = over_colour;
 }
 
 private  int  get_colour_table_piecewise_function(
@@ -133,9 +151,9 @@ public  Colour  get_colour_code(
     colour_point   *points;
 
     if( value < colour_coding->min_value )
-        return( colour_coding->colour_below );
+        return( colour_coding->under_colour );
     else if( value > colour_coding->max_value )
-        return( colour_coding->colour_above );
+        return( colour_coding->over_colour );
 
     pos = (value - colour_coding->min_value) /
           (colour_coding->max_value - colour_coding->min_value);
