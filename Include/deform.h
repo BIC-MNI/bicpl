@@ -3,14 +3,18 @@
 
 #include  <def_mni.h>
 
+typedef  enum  { TOWARDS_LOWER, TOWARDS_HIGHER, ANY_DIRECTION }
+               Normal_directions;
+
 typedef  struct
 {
-    Real      min_isovalue;
-    Real      max_isovalue;
-    Boolean   gradient_flag;
-    Real      gradient_threshold_squared;
-    Boolean   variable_threshold_flag;
-    Real      variable_threshold;
+    Real               min_isovalue;
+    Real               max_isovalue;
+    Boolean            gradient_flag;
+    Real               gradient_threshold_squared;
+    Boolean            variable_threshold_flag;
+    Real               variable_threshold;
+    Normal_directions  normal_direction;
 } boundary_definition_struct;
 
 typedef  enum  { SPHERE_DATA, VOLUME_DATA }  Deform_data_types;
