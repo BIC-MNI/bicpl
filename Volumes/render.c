@@ -9,6 +9,15 @@ private  void  render_rgb_flat(
     Colour        rgb_colour_map[],
     pixels_struct *pixels );
 
+private  void  render_colour_map_flat(
+    int           x_size,
+    int           y_size,
+    Volume_type   *volume_start,
+    int           x_offsets[],
+    int           y_offsets[],
+    int           colour_map_offset,
+    pixels_struct *pixels );
+
 public  void  render_volume_to_slice(
     Volume_type   *volume_start,
     int           x_stride,
@@ -61,19 +70,20 @@ public  void  render_volume_to_slice(
 
     if( colour_map_mode )
     {
-/*
         if( interpolation_flag )
         {
+/*
             render_colour_map_interpolated( volume_start, x_stride, y_stride,
                                             thickness, colour_index_offset,
                                             pixels );
+*/
         }
         else
         {
-            render_colour_map_flat( volume_start, x_stride, y_stride,
-                                    thickness, colour_index_offset, pixels );
+            render_colour_map_flat( x_size, y_size, volume_start,
+                                    x_offsets, y_offsets, colour_index_offset,
+                                    pixels );
         }
-*/
     }
     else
     {
@@ -99,16 +109,6 @@ private  void  render_colour_map_interpolated(
     Real          thickness[],
     int           colour_index_offset,
     pixels_struct *pixels )    /* ARGSUSED */
-{
-}
-
-private  void  render_colour_map_flat(
-    Volume_type   *volume_start,
-    int           x_stride,
-    int           y_stride,
-    Real          thickness[],
-    int           colour_index_offset,
-    pixels_struct *pixels )   /* ARGSUSED */
 {
 }
 
@@ -168,6 +168,58 @@ private  void  render_rgb_flat(
                     colour = rgb_colour_map[voxel_data];
                 }
                 *pixel_ptr = colour;
+                ++pixel_ptr;
+            }
+        }
+    }
+}
+
+private  void  render_colour_map_flat(
+    int           x_size,
+    int           y_size,
+    Volume_type   *volume_start,
+    int           x_offsets[],
+    int           y_offsets[],
+    int           colour_map_offset,
+    pixels_struct *pixels )
+{
+    int              x, y;
+    int              prev_y_offset, prev_x_offset;
+    int              y_offset, x_offset;
+    unsigned short   voxel_data, *pixel_ptr;
+    Volume_type      *voxel_ptr;
+
+    pixel_ptr = pixels->data.pixels_16bit_colour_index;
+
+    prev_y_offset = y_offsets[0] + 1;
+
+    for_less( y, 0, y_size )
+    {
+        y_offset = y_offsets[y];
+        if( y_offset == prev_y_offset )
+        {
+            for_less( x, 0, x_size )
+            {
+                *pixel_ptr = pixel_ptr[-x_size];
+                ++pixel_ptr;
+            }
+        }
+        else
+        {
+            prev_y_offset = y_offset;
+            voxel_ptr = &volume_start[y_offset];
+
+            prev_x_offset = x_offsets[0] + 1;
+            for_less( x, 0, x_size )
+            {
+                x_offset = x_offsets[x];
+                if( x_offset != prev_x_offset )
+                {
+                    prev_x_offset = x_offset;
+                    voxel_data = (unsigned short) (voxel_ptr[x_offset] +
+                                                   colour_map_offset);
+                }
+                *pixel_ptr = voxel_data;
                 ++pixel_ptr;
             }
         }
