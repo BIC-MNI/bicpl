@@ -239,8 +239,10 @@ public  void  resize_volume_slice(
                      (Real) old_used_y_viewport_size;
     scale_factor = MIN( x_scale_factor, y_scale_factor );
 
-    *used_x_viewport_size = scale_factor * old_used_x_viewport_size;
-    *used_y_viewport_size = scale_factor * old_used_y_viewport_size;
+    if( used_x_viewport_size != (int *) NULL )
+        *used_x_viewport_size = scale_factor * old_used_x_viewport_size;
+    if( used_y_viewport_size != (int *) NULL )
+        *used_y_viewport_size = scale_factor * old_used_y_viewport_size;
 
     scale_slice_about_viewport_centre( scale_factor,
                                        old_x_viewport_size, old_y_viewport_size,
@@ -291,10 +293,17 @@ public  void  fit_volume_slice_to_viewport(
     else
         *x_scale = *y_scale;
 
-    *used_x_viewport_size = *x_scale * (x_max - x_min) *
-                            (1.0 + fraction_oversize);
-    *used_y_viewport_size = *y_scale * (y_max - y_min) *
-                            (1.0 + fraction_oversize);
+    if( used_x_viewport_size != (int *) NULL )
+    {
+        *used_x_viewport_size = *x_scale * (x_max - x_min) *
+                                (1.0 + fraction_oversize);
+    }
+
+    if( used_y_viewport_size != (int *) NULL )
+    {
+        *used_y_viewport_size = *y_scale * (y_max - y_min) *
+                                (1.0 + fraction_oversize);
+    }
 
     *x_translation = ((Real) x_viewport_size - *x_scale * (x_max - x_min))/2.0 -
                      *x_scale * x_min;
