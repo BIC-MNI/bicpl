@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.2 1995-07-31 13:45:54 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.3 1995-08-30 14:40:22 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -69,16 +69,17 @@ public  void  interpolate_volume_to_slice(
     Colour          empty_colour,
     pixels_struct   *pixels )
 {
-    int             dim, x, y, x_size, y_size;
-    int             int_voxel_value1, int_voxel_value2;
-    Real            outside_value1, outside_value2;
-    Real            start_voxel1[MAX_DIMENSIONS], voxel1[MAX_DIMENSIONS];
-    Real            start_voxel2[MAX_DIMENSIONS], voxel2[MAX_DIMENSIONS];
-    Real            value1, voxel_value1, value2, voxel_value2;
-    unsigned short  *cmode_ptr;
-    Colour          *rgb_ptr;
-    BOOLEAN         inside1, inside2;
-    Pixel_types     pixel_type;
+    int              dim, x, y, x_size, y_size;
+    int              int_voxel_value1, int_voxel_value2;
+    Real             outside_value1, outside_value2;
+    Real             start_voxel1[MAX_DIMENSIONS], voxel1[MAX_DIMENSIONS];
+    Real             start_voxel2[MAX_DIMENSIONS], voxel2[MAX_DIMENSIONS];
+    Real             value1, voxel_value1, value2, voxel_value2;
+    unsigned short   *cmode_ptr;
+    Colour           *rgb_ptr;
+    BOOLEAN          inside1, inside2;
+    Pixel_types      pixel_type;
+    progress_struct  progress;
 
     x_size = pixels->x_size;
     y_size = pixels->y_size;
@@ -94,6 +95,8 @@ public  void  interpolate_volume_to_slice(
             start_voxel2[dim] = origin2[dim];
         outside_value2 = 0.0;
     }
+
+    initialize_progress_report( &progress, FALSE, y_size, "Creating Slice" );
 
     for_less( y, 0, y_size )
     {
@@ -203,5 +206,9 @@ public  void  interpolate_volume_to_slice(
             for_less( dim, 0, n_dims2 )
                 start_voxel2[dim] += y_axis2[dim];
         }
+
+        update_progress_report( &progress, y+1 );
     }
+
+    terminate_progress_report( &progress );
 }
