@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.22 1996-08-27 17:12:59 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.23 1996-08-27 17:23:37 david Exp $";
 #endif
 
 
@@ -40,28 +40,47 @@ private  BOOLEAN   intersect_ray_triangle(
     Point            points[],
     Real             *dist )
 {
-    Real     n_dot_d, d;
-    Vector   t[3], v, v01, v02, normal;
-    int      p;
+    Real     n_dot_d, d, tx[3], ty[3], tz[3];
+    Real     v01x, v01y, v01z, v02x, v02y, v02z, nx, ny, nz, rx, ry, rz;
+    Real     vx, vy, vz;
+    int      p, next;
 
-    SUB_POINTS( v01, points[1], points[0] );
-    SUB_POINTS( v02, points[2], points[0] );
-    CROSS_VECTORS( normal, v01, v02 );
+    v01x = RPoint_x(points[1]) - RPoint_x(points[0]);
+    v01y = RPoint_y(points[1]) - RPoint_y(points[0]);
+    v01z = RPoint_z(points[1]) - RPoint_z(points[0]);
+    v02x = RPoint_x(points[2]) - RPoint_x(points[0]);
+    v02y = RPoint_y(points[2]) - RPoint_y(points[0]);
+    v02z = RPoint_z(points[2]) - RPoint_z(points[0]);
 
-    n_dot_d = DOT_VECTORS( *ray_direction, normal );
+    nx = v01y * v02z - v01z * v02y;
+    ny = v01z * v02x - v01x * v02z;
+    nz = v01x * v02y - v01y * v02x;
+
+    rx = RVector_x(*ray_direction);
+    ry = RVector_y(*ray_direction);
+    rz = RVector_z(*ray_direction);
+
+    n_dot_d = rx * nx + ry * ny + rz * nz;
 
     if( n_dot_d == 0.0 )
         return( FALSE );
 
     for_less( p, 0, 3 )
     {
-        SUB_POINTS( t[p], points[p], *ray_origin );
+        tx[p] = RPoint_x( points[p] ) - RPoint_x( *ray_origin );
+        ty[p] = RPoint_y( points[p] ) - RPoint_y( *ray_origin );
+        tz[p] = RPoint_z( points[p] ) - RPoint_z( *ray_origin );
     }
 
     for_less( p, 0, 3 )
     {
-        CROSS_VECTORS( v, t[(p+1)%3], t[p] );
-        d = DOT_VECTORS( *ray_direction, v );
+        next = (p + 1) % 3;
+        vx = ty[next] * tz[p] - tz[next] * ty[p];
+        vy = tz[next] * tx[p] - tx[next] * tz[p];
+        vz = tx[next] * ty[p] - ty[next] * tx[p];
+
+        d = rx * vx + ry * vy + rz * vz;
+
         if( n_dot_d < 0.0 )
         {
             if( d < 0.0 )
@@ -74,10 +93,7 @@ private  BOOLEAN   intersect_ray_triangle(
         }
     }
 
-    *dist = (RVector_x(normal) * (RPoint_x(points[0]) - RPoint_x(*ray_origin)) +
-             RVector_y(normal) * (RPoint_y(points[0]) - RPoint_y(*ray_origin)) +
-             RVector_z(normal) * (RPoint_z(points[0]) - RPoint_z(*ray_origin)))/
-             n_dot_d;
+    *dist = (nx * tx[0] + ny * ty[0] + nz * tz[0])/ n_dot_d;
 
     return( *dist >= 0.0 );
 }
@@ -123,29 +139,18 @@ private  BOOLEAN   intersect_ray_polygon_points(
 
     if( n_dot_d != 0.0 )
     {
-        if( n_points == 3 )
+        cx = 0.0;
+        cy = 0.0;
+        cz = 0.0;
+
+        for_less( p, 0, n_points )
         {
-            cx = RPoint_x(points[0]);
-            cy = RPoint_y(points[0]);
-            cz = RPoint_z(points[0]);
-
-            plane_const = nx * cx + ny * cy + nz * cz;
+            cx += (Real) Point_x(points[p]);
+            cy += (Real) Point_y(points[p]);
+            cz += (Real) Point_z(points[p]);
         }
-        else
-        {
-            cx = 0.0;
-            cy = 0.0;
-            cz = 0.0;
 
-            for_less( p, 0, n_points )
-            {
-                cx += (Real) Point_x(points[p]);
-                cy += (Real) Point_y(points[p]);
-                cz += (Real) Point_z(points[p]);
-            }
-
-            plane_const = (nx * cx + ny * cy + nz * cz) / (Real) n_points;
-        }
+        plane_const = (nx * cx + ny * cy + nz * cz) / (Real) n_points;
 
         n_dot_o = nx * (Real) Point_x(*ray_origin) +
                   ny * (Real) Point_y(*ray_origin) +
