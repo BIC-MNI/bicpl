@@ -1,5 +1,5 @@
 
-#include  <mni.h>
+#include  <geom.h>
 
 public  BOOLEAN  intersect_lines_3d(
     Point   *origin1,
