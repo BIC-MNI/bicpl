@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/priority_queue.h,v 1.5 1995-07-31 13:44:43 david Exp $";
+static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/priority_queue.h,v 1.6 1995-08-14 18:08:40 david Exp $";
 #endif
 
 #include  <arrays.h>
@@ -236,8 +236,8 @@ static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/
          { \
              if( (q).n_alloced > 0 ) \
              { \
-                 FREE( (q).entries ) \
-                 FREE( (q).priorities ) \
+                 FREE( (q).entries ); \
+                 FREE( (q).priorities ); \
              } \
          }
 

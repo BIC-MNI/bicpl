@@ -16,7 +16,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transform_io.c,v 1.4 1995-07-31 13:46:05 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transform_io.c,v 1.5 1995-08-14 18:08:47 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -80,6 +80,7 @@ public  Status  read_transform_file(
 {
     Status             status;
     FILE               *file;
+    Transform          *lin_trans;
     General_transform  gen_transform;
 
     status = open_file_with_default_suffix( filename, "xfm",
@@ -100,7 +101,10 @@ public  Status  read_transform_file(
     }
 
     if( status == OK )
-        *transform = *get_linear_transform_ptr(&gen_transform);
+    {
+        lin_trans = get_linear_transform_ptr( &gen_transform );
+        *transform = *lin_trans;
+    }
 
     delete_general_transform( &gen_transform );
 

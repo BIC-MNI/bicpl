@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.3 1995-07-31 13:45:53 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.4 1995-08-14 18:08:46 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -31,8 +31,8 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_vo
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
-@CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@CREATED    :         1995    David MacDonald
+@MODIFIED   : Aug. 1, 1995    D. MacDonald   - made it faster
 ---------------------------------------------------------------------------- */
 
 public  BOOLEAN  find_volume_crop_bounds(
@@ -41,32 +41,40 @@ public  BOOLEAN  find_volume_crop_bounds(
     Real            max_crop_threshold,
     int             limits[2][MAX_DIMENSIONS] )
 {
-    int      d, dim, n_dims, lim, voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
-    int      dim_size, start, end, step, voxel_pos;
+    int      dim, n_dims, lim, voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
+    int      start, end, step, voxel_pos, new_limits[2];
     Real     value;
     BOOLEAN  found;
 
     n_dims = get_volume_n_dimensions( volume );
+    get_volume_sizes( volume, sizes );
+
+    for_less( dim, 0, MAX_DIMENSIONS )
+    {
+        limits[0][dim] = 0;
+
+        if( dim < n_dims )
+            limits[1][dim] = sizes[dim]-1;
+        else
+            limits[1][dim] = 0;
+    }
 
     for_less( dim, 0, n_dims )
     {
-        get_volume_sizes( volume, sizes );
-        for_less( d, n_dims, MAX_DIMENSIONS )
-            sizes[d] = 1;
-        dim_size = sizes[dim];
-        sizes[dim] = 1;
+        limits[0][dim] = 0;
+        limits[1][dim] = 0;
 
         for_less( lim, 0, 2 )
         {
             if( lim == 0 )
             {
                 start = 0;
-                end = dim_size;
+                end = sizes[dim];
                 step = 1;
             }
             else
             {
-                start = dim_size-1;
+                start = sizes[dim]-1;
                 end = -1;
                 step = -1;
             }
@@ -75,21 +83,21 @@ public  BOOLEAN  find_volume_crop_bounds(
 
             for( voxel_pos = start;  voxel_pos != end;  voxel_pos += step )
             {
-                for_less( voxel[4], 0, sizes[4] )
+                for_inclusive( voxel[4], limits[0][4], limits[1][4] )
                 {
-                 for_less( voxel[3], 0, sizes[3] )
+                 for_inclusive( voxel[3], limits[0][3], limits[1][3] )
                  {
-                  for_less( voxel[2], 0, sizes[2] )
+                  for_inclusive( voxel[2], limits[0][2], limits[1][2] )
                   {
-                   for_less( voxel[1], 0, sizes[1] )
+                   for_inclusive( voxel[1], limits[0][1], limits[1][1] )
                    {
-                    for_less( voxel[0], 0, sizes[0] )
+                    for_inclusive( voxel[0], limits[0][0], limits[1][0] )
                     {
                         voxel[dim] = voxel_pos;
 
                         value = get_volume_real_value( volume,
-                                           voxel[0], voxel[1],
-                                           voxel[2], voxel[3], voxel[4]);
+                                               voxel[0], voxel[1],
+                                               voxel[2], voxel[3], voxel[4] );
 
                         if( value < min_crop_threshold ||
                             value > max_crop_threshold )
@@ -117,11 +125,14 @@ public  BOOLEAN  find_volume_crop_bounds(
                     break;
             }
 
-            limits[lim][dim] = voxel_pos;
+            new_limits[lim] = voxel_pos;
         }
+
+        limits[0][dim] = new_limits[0];
+        limits[1][dim] = new_limits[1];
     }
 
-    return( limits[0][X] < limits[1][X] );
+    return( limits[0][X] <= limits[1][X] );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

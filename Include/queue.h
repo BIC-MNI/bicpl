@@ -29,7 +29,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/queue.h,v 1.5 1995-07-31 13:44:42 david Exp $";
+static char queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/queue.h,v 1.6 1995-08-14 18:08:40 david Exp $";
 #endif
 
 #include  <arrays.h>
@@ -188,7 +188,7 @@ static char queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/A
          {                                                                    \
              if( (q).n_queue_alloced > 0 )                                    \
              {                                                                \
-                 FREE( (q).queue )                                            \
+                 FREE( (q).queue );                                           \
              }                                                                \
          }
 

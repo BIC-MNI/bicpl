@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.25 1995-07-31 13:45:44 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.26 1995-08-14 18:08:45 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -154,16 +154,28 @@ public  void  set_all_volume_label_data(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+public  void  set_volume_label_data_5d(
+    Volume          volume,
+    int             v0,
+    int             v1,
+    int             v2,
+    int             v3,
+    int             v4,
+    int             value )
+{
+    check_alloc_label_data( volume );
+
+    set_volume_voxel_value( volume, v0, v1, v2, v3, v4, (Real) value );
+}
+
 public  void  set_volume_label_data(
     Volume          volume,
     int             voxel[],
     int             value )
 {
-    check_alloc_label_data( volume );
-
-    set_volume_voxel_value( volume,
-                            voxel[0], voxel[1], voxel[2], voxel[3], voxel[4],
-                            (Real) value );
+    set_volume_label_data_5d( volume,
+                              voxel[0], voxel[1], voxel[2], voxel[3], voxel[4],
+                              value );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -183,14 +195,25 @@ public  int  get_volume_label_data(
     Volume          volume,
     int             voxel[] )
 {
+    return( get_volume_label_data_5d( volume,
+                       voxel[0], voxel[1], voxel[2], voxel[3], voxel[4] ) );
+}
+
+public  int  get_volume_label_data_5d(
+    Volume          volume,
+    int             v0,
+    int             v1,
+    int             v2,
+    int             v3,
+    int             v4 )
+{
     int    label;
 
     if( volume == (Volume) NULL || volume->data == (void *) NULL )
         return( 0 );
     else
     {
-        label = (int) get_volume_voxel_value( volume,
-                       voxel[0], voxel[1], voxel[2], voxel[3], voxel[4] );
+        label = (int) get_volume_voxel_value( volume, v0, v1, v2, v3, v4 );
         return( label );
     }
 }
@@ -412,8 +435,97 @@ public  BOOLEAN  get_volume_voxel_activity(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_input_volume_label_limits
+@INPUT      : volume1
+              volume2
+@OUTPUT     : limits
+@RETURNS    : 
+@DESCRIPTION: Computes the range of overlap of volume2 in volume1.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Aug. 1, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+private  void  get_input_volume_label_limits(
+    Volume   volume1,
+    Volume   volume2,
+    int      limits[2][MAX_DIMENSIONS] )
+{
+    int       sizes1[MAX_DIMENSIONS], sizes2[MAX_DIMENSIONS];
+    int       d, n_dims, range[MAX_DIMENSIONS], t[MAX_DIMENSIONS];
+    Real      voxel1[MAX_DIMENSIONS], voxel2[MAX_DIMENSIONS];
+    int       low[MAX_DIMENSIONS], high[MAX_DIMENSIONS];
+    Real      xw, yw, zw;
+    BOOLEAN   first;
+
+    get_volume_sizes( volume1, sizes1 );
+    get_volume_sizes( volume2, sizes2 );
+
+    n_dims = get_volume_n_dimensions(volume1);
+
+    for_less( d, 0, MAX_DIMENSIONS )
+    {
+        if( d < n_dims )
+            range[d] = 2;
+        else
+            range[d] = 1;
+    }
+
+    first = TRUE;
+
+    for_less( t[0], 0, range[0] )
+    for_less( t[1], 0, range[1] )
+    for_less( t[2], 0, range[2] )
+    for_less( t[3], 0, range[3] )
+    for_less( t[4], 0, range[4] )
+    {
+        for_less( d, 0, n_dims )
+            voxel2[d] = -0.5 + (Real) t[d] * (Real) sizes2[d];
+
+        convert_voxel_to_world( volume2, voxel2, &xw, &yw, &zw );
+        convert_world_to_voxel( volume1, xw, yw, zw, voxel1 );
+
+        for_less( d, 0, n_dims )
+        {
+            low[d] = FLOOR( voxel1[d] ) - 1;
+            high[d] = CEILING( voxel1[d] ) + 1;
+        }
+
+        if( first )
+        {
+            first = FALSE;
+            for_less( d, 0, n_dims )
+            {
+                limits[0][d] = low[d];
+                limits[1][d] = high[d];
+            }
+        }
+        else
+        {
+            for_less( d, 0, n_dims )
+            {
+                if( low[d] < limits[0][d] )
+                    limits[0][d] = low[d];
+                if( high[d] > limits[1][d] )
+                    limits[1][d] = high[d];
+            }
+        }
+    }
+
+    for_less( d, 0, n_dims )
+    {
+        if( limits[0][d] < 0 )
+            limits[0][d] = 0;
+        if( limits[1][d] >= sizes1[d] )
+            limits[1][d] = sizes1[d] - 1;
+    }
+}
+
+/* ----------------------------- MNI Header -----------------------------------
 @NAME       : load_label_volume
-@INPUT      : filename
+@INPUT      : Filename
 @OUTPUT     : label_volume
 @RETURNS    : ERROR or OK
 @DESCRIPTION: Loads the label volume.
@@ -421,7 +533,8 @@ public  BOOLEAN  get_volume_voxel_activity(
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   : Aug. 1, 1995    D. MacDonald  -  loaded volume no longer needs
+                                               to be same grid.
 ---------------------------------------------------------------------------- */
 
 public  Status  load_label_volume(
@@ -429,43 +542,100 @@ public  Status  load_label_volume(
     Volume   label_volume )
 {
     Status                status;
-    int                   sizes[MAX_DIMENSIONS], new_sizes[MAX_DIMENSIONS];
+    int                   n_file_dims;
+    int                   label_voxel[N_DIMENSIONS];
+    int                   int_voxel[N_DIMENSIONS], int_voxel_value;
+    int                   limits[2][MAX_DIMENSIONS];
+    progress_struct       progress;
     nc_type               type;
-    BOOLEAN               signed_flag;
-    Volume                new_volume;
+    Real                  xw, yw, zw, voxel[N_DIMENSIONS];
+    Real                  voxel_value;
+    BOOLEAN               signed_flag, same_grid;
+    Volume                file_volume;
     volume_input_struct   volume_input;
 
     check_alloc_label_data( label_volume );
 
     type = get_volume_nc_data_type( label_volume, &signed_flag );
 
-    status = start_volume_input( filename, 3, XYZ_dimension_names,
-                           type, signed_flag, 0.0, 0.0,
-                           TRUE, &new_volume, NULL, &volume_input );
+    if( start_volume_input( filename, 3, XYZ_dimension_names,
+                            type, signed_flag, 0.0, 0.0,
+                            TRUE, &file_volume, NULL, &volume_input ) != OK )
+        return( ERROR );
 
-    if( status == OK )
+    same_grid = volumes_are_same_grid( label_volume, file_volume );
+    n_file_dims = get_volume_n_dimensions(file_volume);
+    cancel_volume_input( file_volume, &volume_input );
+
+    if( !same_grid && n_file_dims != N_DIMENSIONS )
     {
-        get_volume_sizes( new_volume, new_sizes );
-        get_volume_sizes( label_volume, sizes );
-
-        if( new_sizes[0] != sizes[0] ||
-            new_sizes[1] != sizes[1] ||
-            new_sizes[2] != sizes[2] )
-        {
-            print_error(
-                "Volume file %s is not the right size for label volume.\n",
-                filename );
-            status = ERROR;
-        }
-
-        cancel_volume_input( new_volume, &volume_input );
+        print_error( "%s is not a 3D volume, it has %d dims.\n", filename,
+                     n_file_dims );
+        return( ERROR );
     }
 
-    if( status == OK )
+    if( same_grid )
     {
         status = input_volume( filename, 3, XYZ_dimension_names,
                                type, signed_flag, 0.0, 0.0,
                                FALSE, &label_volume, NULL );
+    }
+    else
+    {
+        status = input_volume( filename, 3, File_order_dimension_names,
+                               type, signed_flag, 0.0, 0.0,
+                               TRUE, &file_volume, NULL );
+
+        if( status != OK )
+            return( ERROR );
+
+        get_input_volume_label_limits( label_volume, file_volume,
+                                       limits );
+
+        initialize_progress_report( &progress, FALSE,
+                                    (limits[1][X] - limits[0][X] + 1) *
+                                    (limits[1][Y] - limits[0][Y] + 1),
+                                    "Transforming Labels" );
+
+        for_inclusive( label_voxel[X], limits[0][X], limits[1][X] )
+        {
+            for_inclusive( label_voxel[Y], limits[0][Y], limits[1][Y] )
+            {
+                for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
+                {
+                    convert_3D_voxel_to_world( label_volume,
+                                               (Real) label_voxel[X],
+                                               (Real) label_voxel[Y],
+                                               (Real) label_voxel[Z],
+                                               &xw, &yw, &zw );
+                    convert_world_to_voxel( file_volume, xw, yw, zw, voxel );
+
+                    if( voxel_is_within_volume( file_volume, voxel ) )
+                    {
+                        convert_real_to_int_voxel( 3, voxel, int_voxel );
+                        voxel_value = get_volume_voxel_value( file_volume,
+                                                          voxel[0], voxel[1],
+                                                          voxel[2], 0, 0 );
+
+                        int_voxel_value = ROUND( voxel_value );
+                        if( int_voxel_value > 0 )
+                        {
+                            set_volume_label_data( label_volume, label_voxel,
+                                                   int_voxel_value );
+                        }
+                    }
+                }
+
+                update_progress_report( &progress,
+                                        (label_voxel[X] - limits[0][X]) *
+                                        (limits[1][Y] - limits[0][Y]) +
+                                        label_voxel[Y] - limits[0][Y] + 1 );
+            }
+        }
+
+        terminate_progress_report( &progress );
+
+        delete_volume( file_volume );
     }
 
     if( status == OK )
@@ -486,30 +656,72 @@ public  Status  load_label_volume(
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   : Aug. 1, 1995    D. MacDonald    - crops the volume on output
 ---------------------------------------------------------------------------- */
 
 public  Status  save_label_volume(
     char     filename[],
     char     original_filename[],
-    Volume   label_volume )
+    Volume   label_volume,
+    Real     crop_threshold )
 {
     Status   status;
+    BOOLEAN  cropping;
+    Volume   cropped_volume;
+    int      n_voxels, n_voxels_cropped;
+    int      c, limits[2][MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
 
     check_alloc_label_data( label_volume );
+
+    if( crop_threshold > 0.0 )
+    {
+        if( find_volume_crop_bounds( label_volume, -1.0, 0.5, limits ) )
+        {
+            get_volume_sizes( label_volume, sizes );
+            n_voxels = 1;
+            n_voxels_cropped = 1;
+            for_less( c, 0, N_DIMENSIONS )
+            {
+                n_voxels *= sizes[c];
+                n_voxels_cropped *= limits[1][c] - limits[0][c] + 1;
+            }
+
+            cropping = ((Real) n_voxels_cropped / (Real) n_voxels <
+                        crop_threshold);
+        }
+        else
+        {
+            for_less( c, 0, N_DIMENSIONS )
+            {
+                limits[0][c] = 0;
+                limits[1][c] = 0;
+            }
+            cropping = TRUE;
+        }
+    }
+    else
+        cropping = FALSE;
+
+    if( cropping )
+        cropped_volume = create_cropped_volume( label_volume, limits );
+    else
+        cropped_volume = label_volume;
 
     if( original_filename != NULL )
     {
         status = output_modified_volume( filename,
                                 NC_UNSPECIFIED, FALSE, 0.0, 0.0,
-                                label_volume, original_filename,
+                                cropped_volume, original_filename,
                                 "Label volume\n", NULL );
     }
     else
     {
         status = output_volume( filename, NC_UNSPECIFIED, FALSE, 0.0, 0.0,
-                                label_volume, "Label volume\n", NULL );
+                                cropped_volume, "Label volume\n", NULL );
     }
+
+    if( cropping )
+        delete_volume( cropped_volume );
 
     return( status );
 }

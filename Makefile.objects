@@ -45,6 +45,7 @@ GEOMETRY_SRC = \
 NUMERICAL_SRC  = \
                  Numerical/amoeba.c \
                  Numerical/gaussian.c \
+                 Numerical/gradient_minimize.c \
                  Numerical/histogram.c \
                  Numerical/least_squares.c \
                  Numerical/matrix_svd.c \

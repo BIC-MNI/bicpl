@@ -29,7 +29,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char stack_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/stack.h,v 1.5 1995-07-31 13:44:42 david Exp $";
+static char stack_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/stack.h,v 1.6 1995-08-14 18:08:40 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -179,7 +179,7 @@ static char stack_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/A
          { \
              if( (s).n_stack_alloced > 0 ) \
              { \
-                 FREE( (s).stack ) \
+                 FREE( (s).stack ); \
              } \
          }
 

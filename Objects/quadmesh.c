@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.10 1995-07-31 13:45:16 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.11 1995-08-14 18:08:43 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -146,7 +146,7 @@ public  void  set_quadmesh_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  get_quadmesh_point(
+public  BOOLEAN  get_quadmesh_point(
     quadmesh_struct  *quadmesh,
     int              i,
     int              j,

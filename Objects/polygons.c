@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.31 1995-07-31 13:45:15 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.32 1995-08-14 18:08:43 david Exp $";
 #endif
 
 private  void  reverse_polygon_order(
@@ -169,7 +169,7 @@ public  void  copy_polygons(
 
     ALLOC( dest->points, src->n_points );
     if( src->normals != (Vector *) NULL )
-        ALLOC( dest->normals, src->n_points )
+        ALLOC( dest->normals, src->n_points );
 
     for_less( i, 0, src->n_points )
     {

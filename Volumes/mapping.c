@@ -17,7 +17,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.25 1995-07-31 13:45:45 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.26 1995-08-14 18:08:45 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -707,4 +707,72 @@ public  BOOLEAN  voxel_contains_range(
     }
 
     return( FALSE );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : volumes_are_same_grid
+@INPUT      : volume1
+              volume2
+@OUTPUT     : 
+@RETURNS    : TRUE or FALSE
+@DESCRIPTION: Tests if the volumes represent the same tessellation, i.e.,
+              the same number of voxels, and the same voxel to world transform.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Aug. 1, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  BOOLEAN  volumes_are_same_grid(
+    Volume    volume1,
+    Volume    volume2 )
+{
+    int                 c, n_dims, i, j;
+    int                 sizes1[MAX_DIMENSIONS], sizes2[MAX_DIMENSIONS];
+    General_transform   *transform1, *transform2;
+    Transform           *lin_transform1, *lin_transform2;
+
+    n_dims = get_volume_n_dimensions( volume1 );
+    if( n_dims != get_volume_n_dimensions( volume2 ) )
+        return( FALSE );
+
+    get_volume_sizes( volume1, sizes1 );
+    get_volume_sizes( volume2, sizes2 );
+
+    for_less( c, 0, n_dims )
+    {
+        if( sizes1[c] != sizes2[c] )
+            return( FALSE );
+    }
+
+    transform1 = get_voxel_to_world_transform( volume1 );
+    transform2 = get_voxel_to_world_transform( volume2 );
+
+    if( get_transform_type(transform1) != get_transform_type(transform2) )
+        return( FALSE );
+
+    /*--- for now, we will not support checking non-linear transforms for
+          equality */
+
+    if( get_transform_type(transform1) != LINEAR ||
+        get_transform_type(transform2) != LINEAR )
+        return( FALSE );
+
+    lin_transform1 = get_linear_transform_ptr( transform1 );
+    lin_transform2 = get_linear_transform_ptr( transform2 );
+
+    for_less( i, 0, 4 )
+    {
+        for_less( j, 0, 4 )
+        {
+            if( Transform_elem(*lin_transform1,i,j) != 
+                Transform_elem(*lin_transform2,i,j) )
+            {
+                return( FALSE );
+            }
+        }
+    }
+
+    return( TRUE );
 }

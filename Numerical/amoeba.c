@@ -16,7 +16,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.9 1995-07-31 13:45:21 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.10 1995-08-14 18:08:44 david Exp $";
 #endif
 
 #define  FLIP_RATIO      1.0
@@ -209,7 +209,7 @@ private  Real  try_amoeba(
     return( y_try );
 }
 
-#define  N_STEPS_NO_IMPROVEMENT  10
+#define  N_STEPS_NO_IMPROVEMENT  20
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : perform_amoeba

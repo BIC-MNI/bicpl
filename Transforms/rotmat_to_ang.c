@@ -80,7 +80,7 @@ Tue Jun  8 08:44:59 EST 1993 LC
 #include <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.15 1995-07-31 13:46:03 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.16 1995-08-14 18:08:47 david Exp $";
 #endif
 
 #ifdef DEBUG

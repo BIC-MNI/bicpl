@@ -28,7 +28,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/matrix_basics.c,v 1.13 1995-07-31 13:46:01 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/matrix_basics.c,v 1.14 1995-08-14 18:08:47 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -57,18 +57,36 @@ public  void  transpose(
     Real    **mat_transpose )
 {
     Real   swap;
-    int    i, j;
+    int    i, j, square;
 
-    for_less( i, 0, rows )
+    if( mat == mat_transpose )
     {
-        mat_transpose[i][i] = mat[i][i];
-        for_less( j, i+1, cols )
-        {
-            /*--- safe transpose, in case mat_transpose == mat */
+        square = MIN( rows, cols );
 
-            swap = mat[i][j];
-            mat_transpose[i][j] = mat[j][i];
-            mat_transpose[j][i] = swap;
+        for_less( i, 0, rows )
+        {
+            for_less( j, 0, cols )
+            {
+                if( i < square && j < square )
+                {
+                    if( i < j )
+                    {
+                        swap = mat[i][j];
+                        mat_transpose[i][j] = mat[j][i];
+                        mat_transpose[j][i] = swap;
+                    }
+                }
+                else
+                    mat_transpose[j][i] = mat[i][j];
+            }
+        }
+    }
+    else
+    {
+        for_less( i, 0, rows )
+        {
+            for_less( j, 0, cols )
+                mat_transpose[j][i] = mat[i][j];
         }
     }
 }
