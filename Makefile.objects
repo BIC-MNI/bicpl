@@ -1,107 +1,107 @@
-DATA_STRUCT_OBJ = \
-                  Data_structures/bintree.o \
-                  Data_structures/bitlist.o \
-                  Data_structures/build_bintree.o \
-                  Data_structures/hash_table.o \
-                  Data_structures/object_bintrees.o \
-                  Data_structures/point_bintree.o \
-                  Data_structures/ray_bintree.o \
-                  Data_structures/skiplist.o
+DATA_STRUCT_SRC = \
+                  Data_structures/bintree.c \
+                  Data_structures/bitlist.c \
+                  Data_structures/build_bintree.c \
+                  Data_structures/hash_table.c \
+                  Data_structures/object_bintrees.c \
+                  Data_structures/point_bintree.c \
+                  Data_structures/ray_bintree.c \
+                  Data_structures/skiplist.c
 
-TRANSFORM_OBJ = \
-               Transforms/compute_tps.o \
-               Transforms/compute_xfm.o \
-               Transforms/matrix_basics.o \
-               Transforms/optimize.o \
-               Transforms/procrustes.o \
-               Transforms/rotmat_to_ang.o \
-               Transforms/safe_compute_xfm.o \
-               Transforms/transforms.o \
-               Transforms/transform_io.o
+TRANSFORM_SRC = \
+               Transforms/compute_tps.c \
+               Transforms/compute_xfm.c \
+               Transforms/matrix_basics.c \
+               Transforms/optimize.c \
+               Transforms/procrustes.c \
+               Transforms/rotmat_to_ang.c \
+               Transforms/safe_compute_xfm.c \
+               Transforms/transforms.c \
+               Transforms/transform_io.c
 
-GEOMETRY_OBJ = \
-               Geometry/closest_point.o \
-               Geometry/curvature.o \
-               Geometry/geometry.o \
-               Geometry/intersect.o \
-               Geometry/line_circle.o \
-               Geometry/map_polygons.o \
-               Geometry/path_surface.o \
-               Geometry/points.o \
-               Geometry/poly_dist.o \
-               Geometry/polygon_sphere.o \
-               Geometry/ray_intersect.o \
-               Geometry/segment_polygons.o \
-               Geometry/smooth_curvature.o \
-               Geometry/smooth_lines.o \
-               Geometry/smooth_polygons.o \
-               Geometry/subdivide_lines.o \
-               Geometry/subdivide_polygons.o \
-               Geometry/surface_area.o \
-               Geometry/tetrahedrons.o \
-               Geometry/tubes.o \
-               Geometry/volume_slice.o
+GEOMETRY_SRC = \
+               Geometry/closest_point.c \
+               Geometry/curvature.c \
+               Geometry/geometry.c \
+               Geometry/intersect.c \
+               Geometry/line_circle.c \
+               Geometry/map_polygons.c \
+               Geometry/path_surface.c \
+               Geometry/points.c \
+               Geometry/poly_dist.c \
+               Geometry/polygon_sphere.c \
+               Geometry/ray_intersect.c \
+               Geometry/segment_polygons.c \
+               Geometry/smooth_curvature.c \
+               Geometry/smooth_lines.c \
+               Geometry/smooth_polygons.c \
+               Geometry/subdivide_lines.c \
+               Geometry/subdivide_polygons.c \
+               Geometry/surface_area.c \
+               Geometry/tetrahedrons.c \
+               Geometry/tubes.c \
+               Geometry/volume_slice.c
 
-NUMERICAL_OBJ  = \
-                 Numerical/amoeba.o \
-                 Numerical/gaussian.o \
-                 Numerical/histogram.o \
-                 Numerical/least_squares.o \
-                 Numerical/matrix_svd.o \
-                 Numerical/numerical.o \
-                 Numerical/statistics.o
+NUMERICAL_SRC  = \
+                 Numerical/amoeba.c \
+                 Numerical/gaussian.c \
+                 Numerical/histogram.c \
+                 Numerical/least_squares.c \
+                 Numerical/matrix_svd.c \
+                 Numerical/numerical.c \
+                 Numerical/statistics.c
 
-OBJECTS_OBJ   = \
-                Objects/colours.o \
-                Objects/graphics_io.o \
-                Objects/landmark_file.o \
-                Objects/lines.o \
-                Objects/models.o \
-                Objects/object_io.o \
-                Objects/objects.o \
-                Objects/pixels.o \
-                Objects/poly_neighs.o \
-                Objects/polygons.o \
-                Objects/quadmesh.o \
-                Objects/rgb_lookup.o \
-                Objects/tag_objects.o \
-                Objects/text.o
+OBJECTS_SRC   = \
+                Objects/colours.c \
+                Objects/graphics_io.c \
+                Objects/landmark_file.c \
+                Objects/lines.c \
+                Objects/models.c \
+                Objects/object_io.c \
+                Objects/objects.c \
+                Objects/pixels.c \
+                Objects/poly_neighs.c \
+                Objects/polygons.c \
+                Objects/quadmesh.c \
+                Objects/rgb_lookup.c \
+                Objects/tag_objects.c \
+                Objects/text.c
 
-PROG_UTILS_OBJ = \
-                 Prog_utils/arguments.o \
-                 Prog_utils/globals.o \
-                 Prog_utils/random.o \
-                 Prog_utils/time.o
+PROG_UTILS_SRC = \
+                 Prog_utils/arguments.c \
+                 Prog_utils/globals.c \
+                 Prog_utils/random.c \
+                 Prog_utils/time.c
 
-VOLUMES_OBJ = \
-              Volumes/box_filter.o \
-              Volumes/change_labels.o \
-              Volumes/colour_coding.o \
-              Volumes/col_code_points.o \
-              Volumes/create_slice.o \
-              Volumes/crop_volume.o \
-              Volumes/dilate.o \
-              Volumes/filters.o \
-              Volumes/fill_volume.o \
-              Volumes/interpolate.o \
-              Volumes/labels.o \
-              Volumes/mapping.o \
-              Volumes/output_free.o \
-              Volumes/render.o \
-              Volumes/rend_f.o \
-              Volumes/resample.o \
-              Volumes/scan_lines.o \
-              Volumes/scan_markers.o \
-              Volumes/scan_objects.o \
-              Volumes/scan_polygons.o \
-              Volumes/smooth.o \
-              Volumes/talairach.o
+VOLUMES_SRC = \
+              Volumes/box_filter.c \
+              Volumes/change_labels.c \
+              Volumes/colour_coding.c \
+              Volumes/col_code_points.c \
+              Volumes/create_slice.c \
+              Volumes/crop_volume.c \
+              Volumes/dilate.c \
+              Volumes/filters.c \
+              Volumes/fill_volume.c \
+              Volumes/interpolate.c \
+              Volumes/labels.c \
+              Volumes/mapping.c \
+              Volumes/output_free.c \
+              Volumes/render.c \
+              Volumes/rend_f.c \
+              Volumes/resample.c \
+              Volumes/scan_lines.c \
+              Volumes/scan_markers.c \
+              Volumes/scan_objects.c \
+              Volumes/scan_polygons.c \
+              Volumes/smooth.c \
+              Volumes/talairach.c
 
-BIC_OBJ = \
-          $(DATA_STRUCT_OBJ) \
-          $(GEOMETRY_OBJ) \
-          $(TRANSFORM_OBJ) \
-          $(NUMERICAL_OBJ) \
-          $(OBJECTS_OBJ) \
-          $(PROG_UTILS_OBJ) \
-          $(VOLUMES_OBJ)
+BIC_SRC = \
+          $(DATA_STRUCT_SRC) \
+          $(GEOMETRY_SRC) \
+          $(TRANSFORM_SRC) \
+          $(NUMERICAL_SRC) \
+          $(OBJECTS_SRC) \
+          $(PROG_UTILS_SRC) \
+          $(VOLUMES_SRC)
