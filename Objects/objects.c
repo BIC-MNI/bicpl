@@ -3,28 +3,20 @@
 public  object_struct  *create_object(
     Object_types   object_type )
 {
-    Status          status;
     object_struct   *object;
 
-    ALLOC( status, object, 1 );
+    ALLOC( object, 1 );
 
-    if( status == OK )
-    {
-        object->object_type = object_type;
-        object->visibility = FALSE;
-    }
+    object->object_type = object_type;
+    object->visibility = TRUE;
 
     return( object );
 }
 
-public  void  delete_object(
+public  Boolean  get_object_visibility(
     object_struct  *object )
 {
-    Status          status;
-
-    FREE( status, object );
-
-    if( status != OK ) {}
+    return( object->visibility );
 }
 
 public  void  set_object_visibility(
@@ -53,6 +45,8 @@ public  void  *get_object_pointer(
 }
 
 /* --------------------- object functions ------------------------ */
+
+/* --------------------- draw functions ------------------------ */
 
 private  void  draw_lines(
     window_struct   *window,
@@ -96,33 +90,75 @@ private  void  draw_text(
     G_draw_text( window, (text_struct *) get_object_pointer(object) );
 }
 
+/* --------------------- delete functions ------------------------ */
+
+private  void  delete_lines_object(
+    object_struct   *object )
+{
+    delete_lines( (lines_struct *) get_object_pointer(object) );
+}
+
+private  void  delete_marker_object(
+    object_struct   *object )    /* ARGSUSED */
+{
+}
+
+private  void  delete_pixels_object(
+    object_struct   *object )
+{
+    delete_pixels( (pixels_struct *) get_object_pointer(object) );
+}
+
+private  void  delete_polygons_object(
+    object_struct   *object )
+{
+    delete_polygons( (polygons_struct *) get_object_pointer(object) );
+}
+
+private  void  delete_quadmesh_object(
+    object_struct   *object )       /* ARGSUSED */
+{
+}
+
+private  void  delete_text_object(
+    object_struct   *object )       /* ARGSUSED */
+{
+}
+
 /* -------------------- function lookup table ------------------- */
 
 typedef  struct
 {
     void   (*draw_function)( window_struct *, object_struct * );
+    void   (*delete_function)( object_struct * );
 }
 object_functions_list;
 
 static  object_functions_list   object_functions[N_OBJECT_TYPES] =
 {
     {
-        draw_lines
+        draw_lines,
+        delete_lines_object
     },                              /* LINES */
     {
-        draw_marker
+        draw_marker,
+        delete_marker_object
     },                              /* MARKER */
     {
-        draw_pixels
+        draw_pixels,
+        delete_pixels_object
     },                              /* PIXELS */
     {
-        draw_polygons
+        draw_polygons,
+        delete_polygons_object
     },                              /* POLYGONS */
     {
-        draw_quadmesh
+        draw_quadmesh,
+        delete_quadmesh_object
     },                              /* QUADMESH */
     {
-        draw_text
+        draw_text,
+        delete_text_object
     }                               /* TEXT */
 };
 
@@ -130,5 +166,14 @@ public  void  draw_object(
     window_struct   *window,
     object_struct   *object )
 {
-    object_functions[object->object_type].draw_function( window, object );
+    if( object->visibility )
+        object_functions[object->object_type].draw_function( window, object );
 }
+
+public  void  delete_object(
+    object_struct  *object )
+{
+    object_functions[object->object_type].delete_function( object );
+    FREE( object );
+}
+
