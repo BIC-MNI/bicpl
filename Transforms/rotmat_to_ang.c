@@ -63,7 +63,7 @@ Tue Jun  8 08:44:59 EST 1993 LC
 ---------------------------------------------------------------------------- */
 
 #include <internal_volume_io.h>
-#include <geom.h>
+#include <trans.h>
 
 #define EPS  0.00000000001        /* epsilon, should be calculated */
 

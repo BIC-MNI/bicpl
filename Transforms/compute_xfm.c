@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.12  1995-07-08 03:38:04  david
-@MODIFIED   : *** empty log message ***
+@MODIFIED   : Revision 1.13  1995-07-10 14:36:10  david
+@MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.12  1995/07/08  03:38:04  david
+ * *** empty log message ***
+ *
  * Revision 1.11  1995/07/07  18:51:24  david
  * *** empty log message ***
  *
@@ -60,9 +63,8 @@
 ---------------------------------------------------------------------------- */
 
 #include <internal_volume_io.h>
-#include <geom.h>
+#include <trans.h>
 #include <numerical.h>
-#include <compute_xfm.h>
 
 /* Function declarations */
 

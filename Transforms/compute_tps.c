@@ -16,15 +16,13 @@
 
 
 #include <internal_volume_io.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <geom.h>
+#include <trans.h>
 
 
 /* prototype definitions: */
 
-private  void  calculate_coe(
+private  void  calculate_weights(
     Real    **values,
     Real    **INVML,
     Real    **INVMLY,
@@ -61,7 +59,7 @@ public  void  get_nonlinear_warp(
 
    /*  build the array of deformation vectors   */
 
-   calculate_coe( values, INVML, INVMLY, n_points, n_dims, n_values );
+   calculate_weights( values, INVML, INVMLY, n_points, n_dims, n_values );
 
    FREE2D( ML );
    FREE2D( INVML );
@@ -117,7 +115,7 @@ private  void  makeL(
     }
 }
 
-private  void  calculate_coe(
+private  void  calculate_weights(
     Real    **YM,
     Real    **INVML,
     Real    **INVMLY,

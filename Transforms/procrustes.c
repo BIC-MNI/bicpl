@@ -11,7 +11,7 @@
 ---------------------------------------------------------------------------- */
 
 #include <internal_volume_io.h>
-#include <geom.h>
+#include <trans.h>
 #include <numerical.h>
 
 private  Real  trace_of_matrix(
