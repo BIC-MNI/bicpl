@@ -14,9 +14,10 @@
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
+#include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.22 1997-03-23 21:11:31 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.23 1997-03-26 16:07:00 david Exp $";
 #endif
 
 private  Status  io_points(
@@ -313,6 +314,32 @@ public  Status  io_pixels(
     return( status );
 }
 
+static  BOOLEAN  use_compressed = FALSE;
+
+private  BOOLEAN   use_compressed_polygons( void )
+{
+    static  BOOLEAN  initialized = FALSE;
+
+    if( !initialized )
+    {
+        initialized = TRUE;
+        use_compressed = getenv( "USE_COMPRESSED_POLYGONS" ) != NULL;
+    }
+
+    return( use_compressed );
+}
+
+public  void  set_use_compressed_polygons_flag(
+    BOOLEAN  value )
+{
+    use_compressed = value;
+}
+
+public  BOOLEAN  get_use_compressed_polygons_flag( void )
+{
+    return( use_compressed_polygons() );
+}
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : io_polygons
 @INPUT      : file
@@ -326,7 +353,7 @@ public  Status  io_pixels(
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   : Mar. 23, 1997   D. MacDonald - added compressed polygons.
 ---------------------------------------------------------------------------- */
 
 public  Status  io_polygons(
@@ -335,7 +362,11 @@ public  Status  io_polygons(
     File_formats        format,
     polygons_struct     *polygons )
 {
+    int      n_items;
     Status   status;
+    Surfprop save_surfprop;
+    Point    centre;
+    BOOLEAN  compressed_format;
 
     status = OK;
 
@@ -353,11 +384,35 @@ public  Status  io_polygons(
         if( status == OK )
             status = io_surfprop( file, io_flag, format, &polygons->surfprop );
 
+        compressed_format = FALSE;
+
         if( status == OK )
-            status = io_int( file, io_flag, format, &polygons->n_points );
+        {
+            if( io_flag == WRITE_FILE && use_compressed_polygons() &&
+                is_this_tetrahedral_topology(polygons) )
+            {
+                n_items = -polygons->n_items;
+                status = io_int( file, io_flag, format, &n_items );
+                compressed_format = TRUE;
+            }
+            else
+                status = io_int( file, io_flag, format, &polygons->n_points );
+        }
 
         if( status == OK )
             status = io_newline( file, io_flag, format );
+
+        if( io_flag == READ_FILE && polygons->n_points < 0 )
+        {
+            n_items = -polygons->n_points;
+            compressed_format = TRUE;
+            fill_Point( centre, 0.0, 0.0, 0.0 );
+            save_surfprop = polygons->surfprop;
+            create_tetrahedral_sphere( &centre, 1.0, 1.0, 1.0, n_items,
+                                       polygons );
+            polygons->surfprop = save_surfprop;
+            FREE( polygons->points );
+        }
 
         if( status == OK )
         {
@@ -368,47 +423,59 @@ public  Status  io_polygons(
         if( status == OK )
             status = io_newline( file, io_flag, format );
 
-        if( status == OK )
+        if( !compressed_format )
         {
-            status = io_vectors( file, io_flag, format,
-                                 polygons->n_points, &polygons->normals );
+            if( status == OK )
+            {
+                status = io_vectors( file, io_flag, format,
+                                     polygons->n_points, &polygons->normals );
+            }
+
+            if( status == OK )
+                status = io_newline( file, io_flag, format );
+
+            if( status == OK )
+                status = io_int( file, io_flag, format, &polygons->n_items );
+
+            if( status == OK )
+                status = io_newline( file, io_flag, format );
         }
-
-        if( status == OK )
-            status = io_newline( file, io_flag, format );
-
-        if( status == OK )
-            status = io_int( file, io_flag, format, &polygons->n_items );
-
-        if( status == OK )
-            status = io_newline( file, io_flag, format );
 
         if( status == OK )
         {
             status = io_colours( file, io_flag, format, &polygons->colour_flag,
                                  polygons->n_items, polygons->n_points,
                                  &polygons->colours );
+
+            if( status == OK )
+                status = io_newline( file, io_flag, format );
         }
 
-        if( status == OK )
-            status = io_newline( file, io_flag, format );
-
-        if( status == OK )
+        if( !compressed_format )
         {
-            status = io_end_indices( file, io_flag, format,
+            if( status == OK )
+            {
+                status = io_end_indices( file, io_flag, format,
                                      polygons->n_items, &polygons->end_indices,
                                      3 );
+            }
+
+            if( status == OK )
+                status = io_newline( file, io_flag, format );
+
+            if( status == OK )
+            {
+                status = io_ints( file, io_flag, format,
+                                  NUMBER_INDICES(*polygons),
+                                  &polygons->indices );
+            }
+
+            if( status == OK )
+                status = io_newline( file, io_flag, format );
         }
 
-        if( status == OK )
-            status = io_newline( file, io_flag, format );
-
-        if( status == OK )
-        {
-            status = io_ints( file, io_flag, format,
-                              NUMBER_INDICES(*polygons),
-                              &polygons->indices );
-        }
+        if( io_flag == READ_FILE && compressed_format )
+            compute_polygon_normals( polygons );
 
         if( io_flag == READ_FILE )
             polygons->line_thickness = 1.0f;
