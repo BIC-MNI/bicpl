@@ -17,7 +17,7 @@
 #include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.28 2001-07-05 04:13:42 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.29 2001-10-19 19:59:23 stever Exp $";
 #endif
 
 
@@ -143,6 +143,20 @@ A QUADMESH object consists of the following data items.
   - newline
   - normals
     - one vector (3 floats) per line
+  - newline
+
+*/
+
+/*! \defgroup grp_file_text Text format
+
+A TEXT object consists of the following data items.
+
+  - 'T'
+  - font type (0 = fixed, 1 = sized)
+  - text size (real)
+  - colour (4 floats: rgba)
+  - point
+  - quoted string
   - newline
 
 */
