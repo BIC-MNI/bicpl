@@ -306,7 +306,7 @@ public  Boolean  get_tessellation_of_polygons_sphere(
     int              *tess )
 {
     Real    size; 
-    int     int_size;
+    int     int_size, n_around_top, n_triangles, i;
     Boolean is_sphere;
 
     is_sphere = FALSE;
@@ -317,10 +317,12 @@ public  Boolean  get_tessellation_of_polygons_sphere(
         {
             size = 1 + sqrt( (double) polygons->n_items / 2.0 + 1.0 -
                             (double) N_AROUND_TOP );
+            n_around_top = N_AROUND_TOP;
         }
         else
         {
            size = sqrt( (double) polygons->n_items / 2.0 );
+           n_around_top = 2 * size;
         }
 
         if( IS_INT(size) )
@@ -334,6 +336,19 @@ public  Boolean  get_tessellation_of_polygons_sphere(
             }
 
             is_sphere = (int_size == 1);
+        }
+
+        if( is_sphere )
+        {
+            n_triangles = 0;
+            for_less( i, 0, polygons->n_items )
+            {
+                if( GET_OBJECT_SIZE( *polygons, i ) == 3 )
+                    ++n_triangles;
+            }
+
+            if( n_triangles != 2 * n_around_top )
+                is_sphere = FALSE;
         }
     }
 

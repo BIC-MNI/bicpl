@@ -26,12 +26,14 @@ typedef  struct
 } deform_data_struct;
 
 typedef  enum { POINT_SPHERE_MODEL, SPHERICAL_MODEL, AVERAGE_MODEL,
-                GENERAL_MODEL }
-              Deformation_model_types;
+                PARAMETRIC_MODEL, GENERAL_MODEL }
+                Deformation_model_types;
 
 typedef  struct
 {
     Deformation_model_types   model_type;
+    Boolean                   sphere_topology;
+    int                       n_points;
     Point                     *model_centroids;
     Vector                    *model_normals;
     Point                     *model_points;

@@ -122,11 +122,12 @@ private  void  subdivide_polygon(
         edge_indices[0] = MIN( p1, p2 );
         edge_indices[1] = MAX( p1, p2 );
 
-        if( lookup_in_hash_table( midpoint_table, edge_indices, &data_ptr ) )
+        if( remove_from_hash_table( midpoint_table, edge_indices, &data_ptr ) )
         {
             midpoint_indices[edge] = * ((int *) data_ptr);
+            FREE( data_ptr );
             if( midpoint_indices[edge] < 0 ||
-                midpoint_indices[edge] < 0 >= *new_n_indices )
+                midpoint_indices[edge] >= *new_n_points )
             {
                 HANDLE_INTERNAL_ERROR( "midpoint_indices" );
             }
