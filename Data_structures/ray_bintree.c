@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.14 1996-08-07 17:28:19 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.15 1996-08-08 19:51:10 david Exp $";
 #endif
 
 private  void  recursive_intersect_ray(
@@ -174,12 +174,6 @@ private  void  recursive_intersect_ray(
             t_min_child = t_min;
             t_max_child = t_max;
 
-#ifdef DONT_WANT
-            if( obj_index != (int *) NULL &&
-                *obj_index >= 0 && *closest_dist < t_max )
-                t_max_child = *closest_dist;
-#endif
-
             if( searching_left && get_bintree_left_child( node, &left_child ) )
             {
                 left_limit = get_node_split_position( left_child );
@@ -219,6 +213,11 @@ private  void  recursive_intersect_ray(
                                              left_child, object,
                                              obj_index, closest_dist,
                                              n_intersections, distances );
+
+                    if( n_intersections == NULL && distances == NULL &&
+                        obj_index != NULL &&
+                        *obj_index >= 0 && *closest_dist < t_min )
+                        return;
                 }
             }
             else if( !searching_left &&
@@ -261,6 +260,11 @@ private  void  recursive_intersect_ray(
                                              right_child, object,
                                              obj_index, closest_dist,
                                              n_intersections, distances );
+
+                    if( n_intersections == NULL && distances == NULL &&
+                        obj_index != NULL &&
+                        *obj_index >= 0 && *closest_dist < t_min )
+                        return;
                 }
             }
 
