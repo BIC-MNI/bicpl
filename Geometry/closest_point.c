@@ -161,38 +161,32 @@ public  Real  find_closest_point_on_object(
             break;
         }
 
-/*
         if( lines->bintree != (bintree_struct *) NULL )
         {
             return( find_closest_point_in_bintree( point, lines->bintree,
-                             object, obj_index, point_on_object, dist ) );
+                             object, obj_index, point_on_object ) );
         }
-*/
    
         n_objects = lines->end_indices[lines->n_items-1] - lines->n_items;
         break;
 
     case POLYGONS:
         polygons = get_polygons_ptr( object );
-/*
         if( polygons->bintree != (bintree_struct *) NULL )
         {
             return( find_closest_point_in_bintree( point, polygons->bintree,
-                             object, obj_index, point_on_object, dist ) );
+                             object, obj_index, point_on_object ) );
         }
-*/
         n_objects = polygons->n_items;
         break;
 
     case QUADMESH:
         quadmesh = get_quadmesh_ptr( object );
-/*
         if( quadmesh->bintree != (bintree_struct *) NULL )
         {
-            return( find_closest_point_in_bintree( point, quadtree->bintree,
-                             object, obj_index, point_on_object, dist ) );
+            return( find_closest_point_in_bintree( point, quadmesh->bintree,
+                             object, obj_index, point_on_object ) );
         }
-*/
         get_quadmesh_n_objects( quadmesh, &m, &n );
         n_objects = m * n;
         break;

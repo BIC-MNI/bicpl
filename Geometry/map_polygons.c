@@ -168,3 +168,48 @@ public  void  map_point_to_unit_sphere(
         SCALE_POINT( *unit_sphere_point, *unit_sphere_point, 1.0 / mag );
     }
 }
+
+private  void  polygon_transform_point(
+    object_struct   *src_object,
+    object_struct   *dest_object,
+    Point           *src_point,
+    Point           *dest_point )
+{
+    int     obj_index;
+    Point   point;
+
+    (void) find_closest_point_on_object( src_point, src_object, &obj_index,
+                                         &point );
+
+    map_point_between_polygons( get_polygons_ptr(src_object), obj_index,
+                                &point, get_polygons_ptr(dest_object),
+                                dest_point );
+}
+
+public  void  polygon_transform_points(
+    polygons_struct   *src_polygons,
+    polygons_struct   *dest_polygons,
+    int               n_points,
+    Point             src_points[],
+    Point             dest_points[] )
+{
+    int             i;
+    object_struct   *src_object, *dest_object;
+
+    if( !polygons_are_same_topology( src_polygons, dest_polygons ) )
+    {
+        print( "polygon_transform_points: polygons are not same topology.\n" );
+        return;
+    }
+
+    src_object = create_object( POLYGONS );
+    *get_polygons_ptr(src_object) = *src_polygons;
+    dest_object = create_object( POLYGONS );
+    *get_polygons_ptr(dest_object) = *dest_polygons;
+
+    for_less( i, 0, n_points )
+    {
+        polygon_transform_point( src_object, dest_object,
+                                 &src_points[i], &dest_points[i] );
+    }
+}

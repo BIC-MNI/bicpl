@@ -1,10 +1,6 @@
 
 #include  <mni.h>
 
-private  Real  angle_between_points(
-    Point  *prev,
-    Point  *this,
-    Point  *next );
 private  void  reverse_polygon_order(
     polygons_struct   *polygons,
     int               poly );
@@ -577,9 +573,13 @@ public  void  compute_polygon_normals(
                   polygons->indices[POINT_INDEX(polygons->end_indices,poly,
                                                 (e+1)%size)];
 
-            scale = angle_between_points( &polygons->points[prev_index],
-                                          &polygons->points[point_index],
-                                          &polygons->points[next_index] );
+            scale = get_angle_between_points( &polygons->points[prev_index],
+                                              &polygons->points[point_index],
+                                              &polygons->points[next_index] );
+
+            scale = ABS( scale );
+            if( scale > PI )
+                scale = scale - PI;
 
             SCALE_VECTOR( normal_scaled, normal, scale );
 
@@ -598,35 +598,6 @@ public  void  compute_polygon_normals(
         NORMALIZE_VECTOR( polygons->normals[point_index],
                           polygons->normals[point_index] );
     }
-}
-
-private  Real  angle_between_points(
-    Point  *prev,
-    Point  *this,
-    Point  *next )
-{
-    Real    angle, x, y;
-    Vector  v1, v2, x_axis, y_axis;
-
-    SUB_POINTS( v1, *prev, *this );
-    SUB_POINTS( v2, *next, *this );
-
-    NORMALIZE_VECTOR( v1, v1 );
-    NORMALIZE_VECTOR( v2, v2 );
-
-    x = DOT_VECTORS( v1, v2 );
-
-    SCALE_VECTOR( x_axis, v1, x );
-
-    SUB_VECTORS( y_axis, v2, x_axis );
-
-    y = MAGNITUDE( y_axis );
-
-    angle = compute_clockwise_rotation( x, y );
-
-    if( angle < 0.0 )  angle = -angle;
-
-    return( angle );
 }
 
 public  void  average_polygon_normals(
@@ -936,6 +907,28 @@ private  Real  estimate_polygon_curvature(
 
     if( DOT_VECTORS( to_point, *normal ) < 0.0 )
         curvature = -curvature;
+
+    return( curvature );
+}
+
+public  Real  compute_polygon_vertex_curvature(
+    polygons_struct  *polygons,
+    int              point_index )
+{
+    Real      curvature, base_length;
+    int       poly, vertex;
+    Point     centroid;
+    Vector    normal;
+
+    if( !find_polygon_with_vertex( polygons, point_index, &poly, &vertex ) )
+    {
+        HANDLE_INTERNAL_ERROR( "compute_polygon_vertex_curvature" );
+        return( 0.0 );
+    }
+
+    compute_polygon_point_centroid( polygons, poly, vertex, point_index,
+                                    &centroid, &normal, &base_length,
+                                    &curvature );
 
     return( curvature );
 }

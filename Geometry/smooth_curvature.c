@@ -1,4 +1,4 @@
-#include  <mni.h>
+#include  <module.h>
 #include  <priority_queue.h>
 
 private  void  get_vertex_distances(
@@ -11,11 +11,13 @@ private  int  get_smoothing_points(
     polygons_struct   *polygons,
     Real              smoothing_distance,
     Real              distances[],
-    Point             *smoothing_points[] );
+    Point             *smoothing_points[],
+    Vector            *avg_normal );
 private  Real  get_average_curvature(
     Point   *point,
     int     n_smoothing_points,
-    Point   smoothing_points[] );
+    Point   smoothing_points[],
+    Vector  *avg_normal );
 
 public  Real  get_smooth_surface_curvature(
     polygons_struct   *polygons,
@@ -26,6 +28,7 @@ public  Real  get_smooth_surface_curvature(
     int      n_smoothing_points;
     Point    *smoothing_points;
     Real     curvature, *distances;
+    Vector   avg_normal;
 
     ALLOC( distances, polygons->n_points );
 
@@ -33,14 +36,14 @@ public  Real  get_smooth_surface_curvature(
                           distances );
 
     n_smoothing_points = get_smoothing_points( polygons, smoothing_distance,
-                                               distances, &smoothing_points );
+                               distances, &smoothing_points, &avg_normal );
 
     if( n_smoothing_points > 0 )
     {
         curvature = get_average_curvature(
               &polygons->points[polygons->indices[
                      POINT_INDEX( polygons->end_indices, poly, vertex )]],
-              n_smoothing_points, smoothing_points );
+              n_smoothing_points, smoothing_points, &avg_normal );
     }
     else
         curvature = 0.0;
@@ -145,12 +148,23 @@ private  int  get_smoothing_points(
     polygons_struct   *polygons,
     Real              smoothing_distance,
     Real              distances[],
-    Point             *smoothing_points[] )
+    Point             *smoothing_points[],
+    Vector            *avg_normal )
 {
     int    poly, vertex, i, p, point_index, next_point_index;
     int    n_polys, *polys, n_smoothing_points, size;
     Real   dist, ratio;
     Point  point;
+
+    fill_Vector( *avg_normal, 0.0, 0.0, 0.0 );
+    for_less( point_index, 0, polygons->n_points )
+    {
+        if( distances[point_index] >= 0.0 )
+        {
+            ADD_VECTORS( *avg_normal, *avg_normal,
+                         polygons->normals[point_index] );
+        }
+    }
 
     ALLOC( polys, polygons->n_items );
     n_smoothing_points = 0;
@@ -216,22 +230,31 @@ private  int  get_smoothing_points(
 private  Real  get_average_curvature(
     Point   *point,
     int     n_smoothing_points,
-    Point   smoothing_points[] )
+    Point   smoothing_points[],
+    Vector  *avg_normal )
 {
     int      i;
     Real     curvature, angle;
     Point    centroid;
+    Vector   offset;
 
     get_points_centroid( n_smoothing_points, smoothing_points, &centroid );
 
     curvature = 0.0;
     for_less( i, 0, n_smoothing_points )
     {
-        angle = get_angle_between_points( &smoothing_points[i], point,
+        angle = 2.0 * PI -
+                get_angle_between_points( &smoothing_points[i], point,
                                           &centroid );
 
-        curvature += angle * RAD_TO_DEG - 180.0;
+        curvature += 180.0 - 2.0 * angle * RAD_TO_DEG;
     }
 
-    return( curvature / (Real) n_smoothing_points );
+    curvature /= (Real) n_smoothing_points;
+
+    SUB_POINTS( offset, *point, centroid );
+    if( DOT_VECTORS( offset, *avg_normal ) < 0.0 )
+        curvature = - curvature;
+
+    return( curvature );
 }

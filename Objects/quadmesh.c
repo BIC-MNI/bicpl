@@ -79,11 +79,31 @@ public  void  get_quadmesh_n_objects(
     else
         *n = quadmesh->n - 1;
 }
+
+private  BOOLEAN  get_quadmesh_point(
+    quadmesh_struct  *quadmesh,
+    int              i,
+    int              j,
+    Point            *point )
+{
+    if( (i == -1 || i == quadmesh->m) && !quadmesh->m_closed )
+        return( FALSE );
+
+    if( (j == -1 || j == quadmesh->n) && !quadmesh->n_closed )
+        return( FALSE );
+
+    i = (i + quadmesh->m) % quadmesh->m;
+    j = (j + quadmesh->n) % quadmesh->n;
+
+    *point = quadmesh->points[IJ(i,j,quadmesh->n)];
+
+    return( TRUE );
+}
     
 public  void  compute_quadmesh_normals(
     quadmesh_struct  *quadmesh )
 {
-    int                i, j, m, n;
+    int                i, j, m, n, n_neighs;
     Point              neighbours[4];
     progress_struct    progress;
 
@@ -98,16 +118,32 @@ public  void  compute_quadmesh_normals(
 
     initialize_progress_report( &progress, FALSE, m, "Computing Normals" );
 
-    for_less( i, 1, m-1 )
+    for_less( i, 0, m )
     {
-        for_less( j, 1, n-1 )
+        for_less( j, 0, n )
         {
-            neighbours[0] = quadmesh->points[IJ(i,j-1,n)];
-            neighbours[1] = quadmesh->points[IJ(i+1,j,n)];
-            neighbours[2] = quadmesh->points[IJ(i,j+1,n)];
-            neighbours[3] = quadmesh->points[IJ(i-1,j,n)];
+            n_neighs = 0;
+            if( get_quadmesh_point( quadmesh, i,   j-1, &neighbours[n_neighs]) )
+                ++n_neighs;
+            if( get_quadmesh_point( quadmesh, i+1, j  , &neighbours[n_neighs]) )
+                ++n_neighs;
+            if( get_quadmesh_point( quadmesh, i,   j+1, &neighbours[n_neighs]) )
+                ++n_neighs;
+            if( get_quadmesh_point( quadmesh, i-1, j  , &neighbours[n_neighs]) )
+                ++n_neighs;
 
-            find_polygon_normal( 4, neighbours, &quadmesh->normals[IJ(i,j,n)] );
+            if( n_neighs < 2 )
+            {
+                HANDLE_INTERNAL_ERROR( "compute_quadmesh_normals" );
+            }
+            else if( n_neighs == 2 )
+            {
+                neighbours[n_neighs] = quadmesh->points[IJ(i,j,n)];
+                ++n_neighs;
+            }
+
+            find_polygon_normal( n_neighs, neighbours,
+                                 &quadmesh->normals[IJ(i,j,n)] );
             NORMALIZE_VECTOR( quadmesh->normals[IJ(i,j,n)],
                               quadmesh->normals[IJ(i,j,n)] );
         }

@@ -141,14 +141,14 @@ private  void  box_filter_histogram(
 
     for_less( i, 0, n )
     {
-        window_width = MIN( end_index, n-1 ) - MAX( start_index, 0 );
+        window_width = MIN( end_index, n-1 ) - MAX( start_index, 0 ) + 1;
         new_counts[i] = (Real) current_value / (Real) window_width;
         if( start_index >= 0 )
             current_value -= counts[start_index];
         ++start_index;
+        ++end_index;
         if( end_index < n )
             current_value += counts[end_index];
-        ++end_index;
     }
 }
 

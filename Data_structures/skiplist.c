@@ -1,5 +1,5 @@
 
-#include  <data_structures.h>
+#include  <module.h>
 
 private  int  get_random_level( void );
 

@@ -1,5 +1,5 @@
 
-#include  <data_structures.h>
+#include  <module.h>
 #include  <priority_queue.h>
 
 #define  NODE_VISIT_COST        0.02
@@ -100,6 +100,7 @@ public  void  create_object_bintree(
         best_objects += node_visit_estimation( &bound_vols[i] );
     best_objects /= node_visit_estimation( &bintree->range );
 
+#ifdef DEBUG
     print( "Est Nodes Visit: %g    Est Objects Visit %g  (Best possible: %g\n",
            avg_nodes, avg_objects, best_objects );
 
@@ -109,6 +110,7 @@ public  void  create_object_bintree(
                n_objects );
         print( "avg_nodes %g, avg_objects %g\n", avg_nodes, avg_objects );
     }
+#endif
 }
 
 private  void  subdivide_bintree(

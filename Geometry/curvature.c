@@ -11,11 +11,12 @@ public  void  get_polygon_vertex_curvatures(
     Real              low_threshold,
     Real              curvatures[] )
 {
-    int           size, point_index, vertex_index, poly;
-    Real          curvature, base_length;
-    Smallest_int  *point_done;
-    Point         centroid;
-    Vector        normal;
+    int              size, point_index, vertex_index, poly;
+    Real             curvature, base_length;
+    Smallest_int     *point_done;
+    Point            centroid;
+    Vector           normal;
+    progress_struct  progress;
 
     check_polygons_neighbours_computed( polygons );
 
@@ -23,6 +24,9 @@ public  void  get_polygon_vertex_curvatures(
 
     for_less( point_index, 0, polygons->n_points )
         point_done[point_index] = FALSE;
+
+    initialize_progress_report( &progress, FALSE, polygons->n_items,
+                                "Computing Curvatures" );
 
     for_less( poly, 0, polygons->n_items )
     {
@@ -55,5 +59,9 @@ public  void  get_polygon_vertex_curvatures(
                 curvatures[point_index] = curvature;
             }
         }
+
+        update_progress_report( &progress, poly + 1 );
     }
+
+    terminate_progress_report( &progress );
 }

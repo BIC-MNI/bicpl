@@ -37,6 +37,7 @@ private  BOOLEAN  is_binary_inside(
 public  int  compute_isosurface_in_voxel(
     Marching_cubes_methods  method,
     Real                    corners[2][2][2],
+    BOOLEAN                 binary_flag,
     Real                    min_value,
     Real                    max_value,
     int                     *sizes[],
@@ -45,7 +46,7 @@ public  int  compute_isosurface_in_voxel(
     int   i, j, k;
     Real  binary_corners[2][2][2];
 
-    if( min_value < max_value )
+    if( binary_flag )
     {
         for_less( i, 0, 2 )
             for_less( j, 0, 2 )
@@ -71,6 +72,7 @@ public  Point_classes  get_isosurface_point(
     Real            val1,
     Point           *point2,
     Real            val2,
+    BOOLEAN         binary_flag,
     Real            min_value,
     Real            max_value,
     Point           *point )
@@ -78,7 +80,7 @@ public  Point_classes  get_isosurface_point(
     Real            alpha;
     Point_classes   point_class;
 
-    if( min_value < max_value )
+    if( binary_flag )
     {
         if( is_binary_inside( val1, min_value, max_value ) !=
             is_binary_inside( val2, min_value, max_value ) )

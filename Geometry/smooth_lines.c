@@ -90,9 +90,8 @@ public  void  create_line_spline(
     Point     points[4], point;
     Real      u;
 
-    ALLOC( new_lines->colours, 1 );
+    initialize_lines( new_lines, lines->colours[0] );
 
-    new_lines->colour_flag = ONE_COLOUR;
     new_lines->colours[0] = lines->colours[0];
     new_lines->line_thickness = lines->line_thickness;
 

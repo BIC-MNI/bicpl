@@ -111,7 +111,7 @@ public  void  convert_real_to_int_voxel(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : voxel_contains_value
+@NAME       : voxel_contains_range
 @INPUT      : volume
               int_voxel
               target_value
@@ -124,10 +124,11 @@ public  void  convert_real_to_int_voxel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  voxel_contains_value(
+public  BOOLEAN  voxel_contains_range(
     Volume   volume,
     int      int_voxel[],
-    Real     target_value )
+    Real     min_value,
+    Real     max_value )
 {               
     BOOLEAN  less, greater;
     int      n_dimensions;
@@ -180,19 +181,20 @@ public  BOOLEAN  voxel_contains_value(
         GET_VALUE( value, volume,
                    indices[0], indices[1], indices[2], indices[3], indices[4] );
 
-        if( value < target_value )
+        if( value < min_value )
         {
             if( greater )
                 return( TRUE );
             less = TRUE;
         }
-
-        if( value > target_value )
+        else if( value > max_value )
         {
             if( less )
                 return( TRUE );
             greater = TRUE;
         }
+        else
+            return( TRUE );
     }
 
     return( FALSE );

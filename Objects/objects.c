@@ -740,10 +740,6 @@ public  Status  input_object(
             break;
 
         case POLYGONS:
-            get_polygons_ptr( *object )->visibilities = (Smallest_int *) NULL;
-            get_polygons_ptr( *object )->neighbours = (int *) NULL;
-            get_polygons_ptr( *object )->bintree = (bintree_struct *) NULL;
-
             status = io_polygons( file, READ_FILE, *format,
                                    get_polygons_ptr( *object ) );
 

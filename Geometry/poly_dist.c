@@ -49,19 +49,20 @@ private  Real  point_segment_sq_distance(
     return( sq_distance_between_points( p, closest_point ) );
 }
 
-private  Real  find_point_polygon_distance(
+public  Real  find_point_polygon_distance(
     Point     *point,
     int       n_points,
     Point     poly_points[],
-    Vector    *normal,
     Point     *closest_point )
 {
     int      i, closest;
     Real     n_dot_n, t, closest_dist, dist, d1, d2;
-    Vector   offset, o_a;
+    Vector   offset, o_a, normal;
     Point    seg1_point, seg2_point;
 
-    n_dot_n = DOT_VECTORS( *normal, *normal );
+    find_polygon_normal( n_points, poly_points, &normal );
+
+    n_dot_n = DOT_VECTORS( normal, normal );
     if( n_dot_n == 0.0 )
     {
         fill_Point( *closest_point, 0.0, 0.0, 0.0 );
@@ -70,12 +71,12 @@ private  Real  find_point_polygon_distance(
 
     SUB_POINTS( o_a, poly_points[0], *point );
 
-    t = DOT_VECTORS( o_a, *normal ) / n_dot_n;
+    t = DOT_VECTORS( o_a, normal ) / n_dot_n;
 
-    SCALE_VECTOR( offset, *normal, t ); 
+    SCALE_VECTOR( offset, normal, t ); 
     ADD_POINT_VECTOR( *closest_point, *point, offset );
 
-    if( point_within_polygon( closest_point, n_points, poly_points, normal ) )
+    if( point_within_polygon( closest_point, n_points, poly_points, &normal ) )
         return( MAGNITUDE( offset ) );
 
     closest = 0;
@@ -121,16 +122,13 @@ public  int  find_closest_polygon_point(
     int      poly, size, closest_poly;
     Real     dist, closest_dist;
     Point    poly_points[MAX_POINTS_PER_POLYGON], closest;
-    Vector  normal;
 
     closest_dist = 0.0;
 
     for_less( poly, 0, polygons->n_items )
     {
         size = get_polygon_points( polygons, poly, poly_points );
-        find_polygon_normal( size, poly_points, &normal );
-        dist = find_point_polygon_distance( point, size, poly_points, &normal,
-                                            &closest );
+        dist = find_point_polygon_distance( point, size, poly_points, &closest);
         if( poly == 0 || dist < closest_dist )
         {
             closest_poly = poly;
