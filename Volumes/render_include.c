@@ -5,40 +5,31 @@
 #define  TWO( x )
 #endif
 
-/* assumes that we have the following variables:
-    x_size
-    y_size
-    n_slices
-    volume_data1
-    weights1
-    x_offsets1
-    y_offsets1
-    [
-     volume_data2
-     weights2
-     x_offsets2
-     y_offsets2]
-    cmmode_colour_map or rgb_colour_map
-    pixels */
+    /* TWO    if needed
+       TYPE1, TYPE2 */
 {
-    int           s, x, y, y_offset1, x_offset1, prev_y_offset1, prev_x_offset1;
-    Real          real_voxel_data;
-    int           voxel_data1;
-
-#ifdef BYTE_DATA
-    unsigned char   **voxel_ptr1;
+    int            s, x, y;
+    TYPE1          **start_data1;
+    int            voxel_data1, **row_offsets1;
+#ifdef TWO_VOLUMES
+    TYPE2          **start_data2;
+    int            voxel_data2, **row_offsets2;
+#endif
+#ifdef ONE_SLICE
+    TYPE1          *ptr1;
+    int            *offset_ptr1;
+    TWO( TYPE2     *ptr2; )
+    TWO( int       *offset_ptr2; )
 #else
-    unsigned short  **voxel_ptr1;
+    Real           real_voxel_data1;
+    TWO( Real      real_voxel_data2; )
 #endif
 
-#ifdef TWO_VOLUMES
-    int             prev_y_offset2, prev_x_offset2;
-    int             y_offset2, x_offset2;
-    int             voxel_data2;
-#ifdef BYTE_DATA2
-    unsigned char   **voxel_ptr2;
+#ifndef  TWO_VOLUMES
+#ifdef  COLOUR_MAP
+    unsigned short     *single_cmode_map = cmode_colour_map[0];
 #else
-    unsigned short  **voxel_ptr2;
+    Colour             *single_rgb_map = rgb_colour_map[0];
 #endif
 #endif
 
@@ -52,121 +43,94 @@
     pixel_ptr = pixels->data.pixels_rgb;
 #endif
 
-    ALLOC( voxel_ptr1, n_slices );
-    TWO( ALLOC( voxel_ptr2, n_slices ) );
-
-    prev_y_offset1 = y_offsets1[0] + 1;
-    TWO( prev_y_offset2 = y_offsets2[0] + 1 );
+    ALLOC( start_data1, n_slices1 );
+    ALLOC( row_offsets1, n_slices1 );
+    TWO( ALLOC( start_data2, n_slices2 ); )
+    TWO( ALLOC( row_offsets2, n_slices2 ); )
 
     for_less( y, 0, y_size )
     {
-        y_offset1 = y_offsets1[y];
-        TWO( y_offset2 = y_offsets2[y] );
-
-        if( y_offset1 == prev_y_offset1 TWO(&& y_offset2 == prev_y_offset2) )
+        for_less( s, 0, n_slices1 )
         {
-            for_less( x, 0, x_size )
-            {
-                *pixel_ptr = pixel_ptr[-x_size];
-                ++pixel_ptr;
-            }
+            start_data1[s] = ((TYPE1 *) volume_data1) + y_offsets1[s][y];
+            row_offsets1[s] = which_x_offsets1[s][y];
         }
-        else
+#ifdef  TWO_VOLUMES
+        for_less( s, 0, n_slices2 )
         {
-            prev_y_offset1 = y_offset1;
-            TWO( prev_y_offset2 = y_offset2 );
+            start_data2[s] = ((TYPE2 *) volume_data2) + y_offsets2[s][y];
+            row_offsets2[s] = which_x_offsets2[s][y];
+        }
+#endif
 
-            for_less( s, 0, n_slices )
+        for_less( x, 0, start_x[y] )
+        {
+            *pixel_ptr = empty_colour;
+            ++pixel_ptr;
+        }
+
+#ifdef ONE_SLICE
+        ptr1 = start_data1[0];
+        offset_ptr1 = &row_offsets1[0][start_x[y]];
+        TWO( ptr2 = start_data2[0]; )
+        TWO( offset_ptr2 = &row_offsets2[0][start_x[y]]; )
+#endif
+
+        for_inclusive( x, start_x[y], end_x[y] )
+        {
+#ifdef ONE_SLICE
+            voxel_data1 = ptr1[*offset_ptr1];
+            ++offset_ptr1;
+            TWO( voxel_data2 = ptr2[*offset_ptr2]; )
+            TWO( ++offset_ptr2; )
+#else
+            real_voxel_data1 = 0.5;
+            for_less( s, 0, n_slices1 )
             {
-                voxel_ptr1[s] = &volume_data1[s][y_offset1];
-                TWO( voxel_ptr2[s] = &volume_data2[s][y_offset2] );
+                real_voxel_data1 += weights1[s] *
+                                    start_data1[s][row_offsets1[s][x]];
             }
 
-            prev_x_offset1 = x_offsets1[0] + 1;
-            TWO( prev_x_offset2 = x_offsets2[0] + 1 );
-
-            for_less( x, 0, x_size )
+            voxel_data1 = (int) real_voxel_data1;
+#ifdef  TWO_VOLUMES
+            real_voxel_data2 = 0.5;
+            for_less( s, 0, n_slices2 )
             {
-                x_offset1 = x_offsets1[x];
-                TWO( x_offset2 = x_offsets2[x] );
-                if( x_offset1 != prev_x_offset1 )
-                {
-                    prev_x_offset1 = x_offset1;
-
-                    if( n_slices == 1 )
-                        voxel_data1 = (int) (voxel_ptr1[0][x_offset1]);
-                    else
-                    {
-                        real_voxel_data = 0.5;   /* --- for rounding */
-                        for_less( s, 0, n_slices )
-                        {
-                            real_voxel_data +=
-                                       weights1[s]*voxel_ptr1[s][x_offset1];
-                        }
-                        voxel_data1 = (int) real_voxel_data;
-                    }
-
-#ifdef TWO_VOLUMES
-                    if( x_offset2 != prev_x_offset2 )
-                    {
-                        prev_x_offset2 = x_offset2;
-                        if( n_slices == 1 )
-                            voxel_data2 = (int) voxel_ptr2[0][x_offset2];
-                        else
-                        {
-                            real_voxel_data = 0.5;   /* --- for rounding */
-                            for_less( s, 0, n_slices )
-                            {
-                                real_voxel_data +=
-                                       weights2[s]*voxel_ptr2[s][x_offset2];
-                            }
-                            voxel_data2 = (int) real_voxel_data;
-                        }
-                    }
-
-#ifdef COLOUR_MAP
-                    colour = cmode_colour_map[voxel_data1][voxel_data2];
-#else
-                    colour = rgb_colour_map[voxel_data1][voxel_data2];
-#endif
-#else
-#ifdef COLOUR_MAP
-                    colour = cmode_colour_map[voxel_data1];
-#else
-                    colour = rgb_colour_map[voxel_data1];
-#endif
-#endif
-                }
-#ifdef TWO_VOLUMES
-                else if( x_offset2 != prev_x_offset2 )
-                {
-                    prev_x_offset2 = x_offset2;
-                    if( n_slices == 1 )
-                        voxel_data2 = (int) voxel_ptr2[0][x_offset2];
-                    else
-                    {
-                        real_voxel_data = 0.5;   /* --- for rounding */
-                        for_less( s, 0, n_slices )
-                        {
-                            real_voxel_data +=
-                                   weights2[s]*voxel_ptr2[s][x_offset2];
-                        }
-                        voxel_data2 = (int) real_voxel_data;
-                    }
-#ifdef COLOUR_MAP
-                    colour = cmode_colour_map[voxel_data1][voxel_data2];
-#else
-                    colour = rgb_colour_map[voxel_data1][voxel_data2];
-#endif
-                }
-#endif
-
-                *pixel_ptr = colour;
-                ++pixel_ptr;
+                real_voxel_data2 += weights2[s] *
+                                    start_data2[s][row_offsets2[s][x]];
             }
+
+            voxel_data2 = (int) real_voxel_data2;
+#endif
+
+#endif
+
+#ifdef  TWO_VOLUMES
+#ifdef COLOUR_MAP
+            colour = cmode_colour_map[voxel_data1][voxel_data2];
+#else
+            colour = rgb_colour_map[voxel_data1][voxel_data2];
+#endif
+#else
+#ifdef COLOUR_MAP
+            colour = single_cmode_map[voxel_data1];
+#else
+            colour = single_rgb_map[voxel_data1];
+#endif
+#endif
+            *pixel_ptr = colour;
+            ++pixel_ptr;
+        }
+
+        for_less( x, end_x[y]+1, x_size )
+        {
+            *pixel_ptr = empty_colour;
+            ++pixel_ptr;
         }
     }
 
-    FREE( voxel_ptr1 );
-    TWO( FREE( voxel_ptr2 ) );
+    FREE( start_data1 );
+    FREE( row_offsets1 );
+    TWO( FREE( start_data1 ); )
+    TWO( FREE( row_offsets1 ); )
 }

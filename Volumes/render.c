@@ -168,13 +168,15 @@ public  void  render_volume_to_slice(
             start_x[y] = end_x[y] + 1;
     }
 
-#define  TYPE1       unsigned char
-#define  ONE_SLICE
-
-#include  "render_include.c"
-
-#undef  TYPE1
-#undef  ONE_SLICE
+    if( pixels->pixel_type == RGB_PIXEL )
+    {
+#include  "render_include1.c"
+    }
+    else
+    {
+#define   COLOUR_MAP
+#include  "render_include1.c"
+    }
 
     FREE2D( y_offsets1 );
     FREE2D( x_offsets1 );
