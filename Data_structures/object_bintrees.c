@@ -19,8 +19,17 @@ private  void  check_install_bintree_delete_function()
     if( first )
     {
         first = FALSE;
-        set_bintree_delete_function( &delete_the_bintree );
+        set_bintree_delete_function( delete_the_bintree );
     }
+}
+
+public  void  *allocate_bintree()
+{
+    bintree_struct   *bintree;
+
+    ALLOC( bintree, 1 );
+
+    return( (void *) bintree );
 }
 
 public  void  create_lines_bintree(
@@ -35,7 +44,7 @@ public  void  create_lines_bintree(
 
     check_install_bintree_delete_function();
 
-    ALLOC( lines->bintree, 1 );
+    lines->bintree = allocate_bintree();
 
     n_segments = 0;
     for_less( line, 0, lines->n_items )
@@ -85,7 +94,7 @@ public  void  create_polygons_bintree(
 
     check_install_bintree_delete_function();
 
-    ALLOC( polygons->bintree, 1 );
+    polygons->bintree = allocate_bintree();
 
     ALLOC( bound_vols, polygons->n_items );
 
@@ -119,7 +128,7 @@ public  void  create_quadmesh_bintree(
 
     check_install_bintree_delete_function();
 
-    ALLOC( quadmesh->bintree, 1 );
+    quadmesh->bintree = allocate_bintree();
 
     get_quadmesh_n_objects( quadmesh, &m, &n );
 

@@ -9,7 +9,7 @@ public  void  colour_polygons_by_curvature(
     polygons_struct   *polygons,
     polygons_struct   *sphere,
     Real              max_curvature,
-    BOOLEAN           set_below_to_zero_flag )
+    Real              low_threshold )
 {
     int           size, point_index, vertex_index, poly;
     Real          curvature, base_length;
@@ -45,7 +45,7 @@ public  void  colour_polygons_by_curvature(
                           vertex_index, point_index, &centroid,
                           &normal, &base_length, &curvature );
 
-                if( set_below_to_zero_flag && ABS( curvature ) < max_curvature )
+                if( ABS( curvature ) < low_threshold )
                     curvature = 0.0;
 
                 get_surface_colour( curvature, max_curvature,

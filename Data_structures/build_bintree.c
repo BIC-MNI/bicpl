@@ -42,12 +42,6 @@ private  void  remove_from_leaf_queue(
     leaf_queue_struct     *leaf_queue,
     bintree_node_struct   ***ptr_to_node,
     range_struct          *limits );
-private  void  get_limits_of_object(
-    Point            points[],
-    int              end_indices[],
-    int              indices[],
-    int              object_index,
-    range_struct     *limits );
 private  BOOLEAN  node_tightly_bounds_object(
     range_struct  *bound_vol,
     range_struct  *limits );
@@ -534,41 +528,6 @@ private  void  remove_from_leaf_queue(
 
     *ptr_to_node = entry.ptr_to_node;
     *limits = entry.limits;
-}
-
-private  void  get_limits_of_object(
-    Point            points[],
-    int              end_indices[],
-    int              indices[],
-    int              object_index,
-    range_struct     *limits )
-{
-    int   i, start_index, end_index, coord;
-    Real  pos;
-
-    start_index = START_INDEX( end_indices, object_index );
-    end_index = end_indices[object_index];
-
-    limits->limits[0][0] = Point_x(points[indices[start_index]]);
-    limits->limits[1][0] = Point_y(points[indices[start_index]]);
-    limits->limits[2][0] = Point_z(points[indices[start_index]]);
-    limits->limits[0][1] = Point_x(points[indices[start_index]]);
-    limits->limits[1][1] = Point_y(points[indices[start_index]]);
-    limits->limits[2][1] = Point_z(points[indices[start_index]]);
-
-    for_less( i, start_index+1, end_index )
-    {
-        for_less( coord, 0, N_DIMENSIONS )
-        {
-            pos = Point_coord( points[indices[i]], coord );
-
-            if( limits->limits[coord][0] > pos )
-                limits->limits[coord][0] = pos;
-
-            if( limits->limits[coord][1] < pos )
-                limits->limits[coord][1] = pos;
-        }
-    }
 }
 
 private  BOOLEAN  node_tightly_bounds_object(

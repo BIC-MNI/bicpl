@@ -67,6 +67,10 @@ typedef  struct
     boundary_definition_struct    boundary_definition;
     int                           max_iterations;
     Real                          stop_threshold;
+
+    int                           n_movements_alloced;
+    float                         *prev_movements;
+    Real                          movement_threshold;
 } deform_struct;
 
 #define  N_DEFORM_HISTOGRAM   7

@@ -3546,7 +3546,7 @@ public  void   create_point(
     Point_classes       *pt_class )
 {
     int       i;
-    Real      u_bar[N_DIMENSIONS], dx, dy, dz;
+    Real      u_bar[N_DIMENSIONS], dx, dy, dz, dummy;
     Real      alpha1, alpha2, val1, val2, val, alpha;
     int       corner[N_DIMENSIONS];
     Real      c000, c001, c002, c003, c010, c011, c012, c013;
@@ -3682,7 +3682,7 @@ public  void   create_point(
     {
         u_bar[edge_intersected] = alpha;
 
-        CUBIC_TRIVAR( c, u_bar[X], u_bar[Y], u_bar[Z], val );
+        CUBIC_TRIVAR(c, u_bar[X], u_bar[Y], u_bar[Z], val );
 
         val = isovalue - val;
 
@@ -3732,8 +3732,7 @@ public  void   create_point(
     u_bar[Y] = FRACTION( Point_y(*point) );
     u_bar[Z] = FRACTION( Point_z(*point) );
   
-    CUBIC_TRIVAR_DERIV( c, u_bar[X], u_bar[Y], u_bar[Z],
-                        dx, dy, dz );
+    CUBIC_TRIVAR_DERIV(c, u_bar[X], u_bar[Y], u_bar[Z], dummy, dx, dy, dz );
 
     fill_Vector( *normal, dx, dy, dz );
 

@@ -343,8 +343,9 @@ private  void  create_case_polygons(
     BOOLEAN        face_ambiguity_flags[3][2],
     polygons_list  *polygons )
 {
-    int            c, face, edge_index, ind, prev_ind;
-    edges_struct   edges[3][2];
+    int               c, face, edge_index, ind, prev_ind, i, size;
+    voxel_point_type  tmp;
+    edges_struct      edges[3][2];
 
     create_edges( case_flags, face_ambiguity_flags, edges );
 
@@ -369,12 +370,22 @@ private  void  create_case_polygons(
 
                     follow_edge( polygons, &ind, edges, c, face, edge_index );
 
-                    polygons->sizes[polygons->n_polygons] = ind - prev_ind;
+                    size = ind - prev_ind;
 
-                    if( (ind-prev_ind < 3) ||
-                        (ind - prev_ind > MAX_INDICES_PER_VOXEL) )
+                    polygons->sizes[polygons->n_polygons] = size;
+
+                    if( (size < 3) ||
+                        (size > MAX_INDICES_PER_VOXEL) )
                     {
                         HANDLE_INTERNAL_ERROR( "n ind" );
+                    }
+
+                    for_less( i, 0, polygons->sizes[polygons->n_polygons]/2 )
+                    {
+                        tmp = polygons->indices[prev_ind + i];
+                        polygons->indices[prev_ind + i] =
+                                     polygons->indices[ind - i - 1];
+                        polygons->indices[ind - i - 1] = tmp;
                     }
 
                     ++polygons->n_polygons;

@@ -41,3 +41,21 @@ public  void  create_line_circle(
 
     lines->end_indices[0] = n_points+1;
 }
+
+public  BOOLEAN  is_circle_topology(
+    lines_struct   *lines )
+{
+    int    i;
+
+    if( lines->n_items != 1 )
+        return( FALSE );
+
+    if( lines->n_points != lines->end_indices[0]-1 )
+        return( FALSE );
+
+    for_less( i, 0, lines->n_points+1 )
+        if( lines->indices[i] != (i % lines->n_points) )
+            return( FALSE );
+
+    return( TRUE );
+}

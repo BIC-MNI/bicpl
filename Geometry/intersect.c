@@ -1,16 +1,11 @@
 
-#include  <mni.h>
+#include  <module.h>
 
 #define  MAX_POINTS    30
 
 private  BOOLEAN  point_within_triangle_2d(
     Point   *pt,
     Point   points[] );
-private  BOOLEAN  point_within_polygon(
-    Point   *pt,
-    int     n_points,
-    Point   points[],
-    Vector  *polygon_normal );
 private  BOOLEAN  point_within_polygon_2d(
     Point   *pt,
     int     n_points,
@@ -43,7 +38,7 @@ private  BOOLEAN   intersect_ray_polygon_points(
 
         t = (plane_const - DOT_POINT_VECTOR(normal,*ray_origin) ) / n_dot_d;
 
-        if( t >= 0.0 && t <= *dist )
+        if( t >= 0.0 )
         {
             GET_POINT_ON_RAY( pt, *ray_origin, *ray_direction, t );
 
@@ -99,7 +94,7 @@ private  BOOLEAN   intersect_ray_polygon(
     return( intersects );
 }
 
-private  BOOLEAN  point_within_polygon(
+public  BOOLEAN  point_within_polygon(
     Point   *pt,
     int     n_points,
     Point   points[],

@@ -27,8 +27,8 @@ public  void  initialize_amoeba(
     amoeba->function = function;
     amoeba->function_data = function_data;
     amoeba->tolerance = tolerance;
-    ALLOC2D( amoeba->parameters, n_parameters, n_parameters );
-    ALLOC( amoeba->values, n_parameters );
+    ALLOC2D( amoeba->parameters, n_parameters+1, n_parameters );
+    ALLOC( amoeba->values, n_parameters+1 );
 
     for_less( i, 0, n_parameters+1 )
     {

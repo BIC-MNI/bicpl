@@ -163,6 +163,10 @@ public  int  get_histogram_counts(
     Real   *tmp_counts;
 
     n = histogram->max_index - histogram->min_index + 1;
+
+    if( n <= 0 )
+        return( 0 );
+
     ALLOC( tmp_counts, n );
     ALLOC( *counts, n );
 
@@ -195,6 +199,16 @@ private  void  resample_histogram(
     Real  left_side, right_side, left, right;
 
     get_histogram_range( histogram, &min_value, &max_value );
+
+    if( max_value <= min_value )
+    {
+        for_less( x, 0, x_size )
+            height[x] = 0.0;
+        *x_scale = 1.0;
+        *x_trans = 0.0;
+        return;
+    }
+
     max_count = get_histogram_max_count( histogram );
 
     *x_scale = 1.0 / (Real) x_size * (max_value - min_value);

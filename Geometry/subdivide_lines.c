@@ -8,9 +8,40 @@ private  void  subdivide_line(
     int               *new_n_lines,
     int               *new_end_indices[],
     int               *new_n_indices,
-    int               *new_indices[] );
+    int               *new_indices[] )
+{
+    int     edge, size, p1, p2, midpoint_index;
+    Point   midpoint;
 
-public  void  subdivide_lines(
+    size = GET_OBJECT_SIZE( *lines, l );
+
+    for_less( edge, 0, size-1 )
+    {
+        p1 = lines->indices[POINT_INDEX(lines->end_indices,l,edge)];
+        p2 = lines->indices[POINT_INDEX(lines->end_indices,l,edge+1)];
+        midpoint_index = *new_n_points;
+        INTERPOLATE_POINTS( midpoint, lines->points[p1],
+                            lines->points[p2], 0.5 );
+        ADD_ELEMENT_TO_ARRAY( *new_points, *new_n_points,
+                              midpoint, DEFAULT_CHUNK_SIZE );
+
+        if( edge == 0 )
+        {
+            ADD_ELEMENT_TO_ARRAY( *new_indices, *new_n_indices,
+                                  p1, DEFAULT_CHUNK_SIZE );
+        }
+
+        ADD_ELEMENT_TO_ARRAY( *new_indices, *new_n_indices,
+                              midpoint_index, DEFAULT_CHUNK_SIZE );
+        ADD_ELEMENT_TO_ARRAY( *new_indices, *new_n_indices,
+                              p2, DEFAULT_CHUNK_SIZE );
+    }
+
+    ADD_ELEMENT_TO_ARRAY( *new_end_indices, *new_n_lines,
+                          *new_n_indices, DEFAULT_CHUNK_SIZE );
+}
+
+private  void  general_subdivide_lines(
     lines_struct  *lines )
 {
     int                i, new_n_points, new_n_indices, new_n_lines;
@@ -45,43 +76,59 @@ public  void  subdivide_lines(
     lines->indices = new_indices;
 }
 
-private  void  subdivide_line(
-    lines_struct      *lines,
-    int               l,
-    int               *new_n_points,
-    Point             *new_points[],
-    int               *new_n_lines,
-    int               *new_end_indices[],
-    int               *new_n_indices,
-    int               *new_indices[] )
+private  void  subdivide_closed_curve(
+    lines_struct      *lines )
 {
-    int     edge, size, p1, p2, midpoint_index;
-    Point   midpoint;
+    int     i;
+    Point   p1, p2, midpoint;
 
-    size = GET_OBJECT_SIZE( *lines, l );
+    REALLOC( lines->points, 2 * lines->n_points );
 
-    for_less( edge, 0, size-1 )
+    for( i = lines->n_points-1;  i >= 0;  --i )
+        lines->points[2*i] = lines->points[i];
+
+    for_less( i, 0, lines->n_points )
     {
-        p1 = lines->indices[POINT_INDEX(lines->end_indices,l,edge)];
-        p2 = lines->indices[POINT_INDEX(lines->end_indices,l,edge+1)];
-        midpoint_index = *new_n_points;
-        INTERPOLATE_POINTS( midpoint, lines->points[p1],
-                            lines->points[p2], 0.5 );
-        ADD_ELEMENT_TO_ARRAY( *new_points, *new_n_points,
-                              midpoint, DEFAULT_CHUNK_SIZE );
+        p1 = lines->points[2* i];
+        p2 = lines->points[2* ((i+1)%lines->n_points)];
+        INTERPOLATE_POINTS( midpoint, p1, p2, 0.5 );
 
-        if( edge == 0 )
-        {
-            ADD_ELEMENT_TO_ARRAY( *new_indices, *new_n_indices,
-                                  p1, DEFAULT_CHUNK_SIZE );
-        }
-
-        ADD_ELEMENT_TO_ARRAY( *new_indices, *new_n_indices,
-                              midpoint_index, DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( *new_indices, *new_n_indices,
-                              p2, DEFAULT_CHUNK_SIZE );
+        lines->points[2*i+1] = midpoint;
     }
 
-    ADD_ELEMENT_TO_ARRAY( *new_end_indices, *new_n_lines,
-                          *new_n_indices, DEFAULT_CHUNK_SIZE );
+    lines->n_points = 2 * lines->n_points;
+    lines->end_indices[0] = lines->n_points + 1;
+
+    REALLOC( lines->indices, lines->n_points + 1 );
+
+    for_less( i, 0, lines->n_points + 1 )
+        lines->indices[i] = i % lines->n_points;
+}
+
+public  void  subdivide_lines(
+    lines_struct  *lines )
+{
+    int      i;
+    BOOLEAN  single_closed_curve;
+
+    single_closed_curve = FALSE;
+
+    if( lines->n_items == 1 &&
+        lines->n_points+1 == lines->end_indices[0] )
+    {
+        single_closed_curve = TRUE;
+        for_less( i, 0, lines->n_points + 1 )
+        {
+            if( lines->indices[i] != i % lines->n_points )
+            {
+                single_closed_curve = FALSE;
+                break;
+            }
+        }
+    }
+
+    if( single_closed_curve )
+        subdivide_closed_curve( lines );
+    else
+        general_subdivide_lines( lines );
 }
