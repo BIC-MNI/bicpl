@@ -16,20 +16,20 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char objects_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/objects.h,v 1.14 1995-07-31 13:44:43 david Exp $";
+static char objects_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/objects.h,v 1.15 2000-01-19 22:59:51 stever Exp $";
 #endif
 
 #include  <volume_io.h>
-#include  <obj_defs.h>
-#include  <colours.h>
-#include  <data_structures.h>
+#include  <bicpl/obj_defs.h>
+#include  <bicpl/colours.h>
+#include  <bicpl/data_structures.h>
 
 #ifndef  public
 #define       public   extern
 #define       public_was_defined_here
 #endif
 
-#include  <object_prototypes.h>
+#include  <bicpl/object_prototypes.h>
 
 #ifdef  public_was_defined_here
 #undef       public

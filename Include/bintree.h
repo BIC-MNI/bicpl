@@ -16,10 +16,10 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char bintree_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/bintree.h,v 1.5 1996-05-17 19:35:20 david Exp $";
+static char bintree_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/bintree.h,v 1.6 2000-01-19 22:59:50 stever Exp $";
 #endif
 
-#include  <geometry.h>
+#include  <volume_io/geometry.h>
 
 typedef  unsigned char   node_info_type;
 

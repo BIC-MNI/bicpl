@@ -16,11 +16,11 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char vols_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/vols.h,v 1.3 1995-08-21 14:05:04 david Exp $";
+static char vols_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/vols.h,v 1.4 2000-01-19 22:59:54 stever Exp $";
 #endif
 
 #include  <volume_io.h>
-#include  <colour_coding.h>
+#include  <bicpl/colour_coding.h>
 
 typedef  enum  { FOUR_NEIGHBOURS, EIGHT_NEIGHBOURS } Neighbour_types;
 
@@ -37,7 +37,7 @@ typedef struct
 #define       public_was_defined_here
 #endif
 
-#include  <vol_prototypes.h>
+#include  <bicpl/vol_prototypes.h>
 
 #ifdef  public_was_defined_here
 #undef       public

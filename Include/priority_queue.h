@@ -16,10 +16,10 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/priority_queue.h,v 1.7 1996-11-25 14:14:34 david Exp $";
+static char priority_queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/priority_queue.h,v 1.8 2000-01-19 22:59:52 stever Exp $";
 #endif
 
-#include  <arrays.h>
+#include  <volume_io/arrays.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : priority_queue.h

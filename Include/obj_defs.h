@@ -16,12 +16,12 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/obj_defs.h,v 1.8 1996-05-17 19:35:21 david Exp $";
+static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/obj_defs.h,v 1.9 2000-01-19 22:59:51 stever Exp $";
 #endif
 
 #include  <volume_io.h>
-#include  <stack.h>
-#include  <bintree.h>
+#include  <bicpl/stack.h>
+#include  <bicpl/bintree.h>
 
 #define  SET_OBJECT_SIZE( object, n, size ) \
              { \

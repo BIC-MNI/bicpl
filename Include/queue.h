@@ -29,10 +29,10 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/queue.h,v 1.6 1995-08-14 18:08:40 david Exp $";
+static char queue_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/queue.h,v 1.7 2000-01-19 22:59:53 stever Exp $";
 #endif
 
-#include  <arrays.h>
+#include  <volume_io/arrays.h>
 
 #define  SHIFT_QUEUE_AT      100
 #define  SHIFT_QUEUE_RATIO     1

@@ -16,18 +16,18 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char prog_utils_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/prog_utils.h,v 1.2 1995-07-31 13:44:51 david Exp $";
+static char prog_utils_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/prog_utils.h,v 1.3 2000-01-19 22:59:52 stever Exp $";
 #endif
 
 #include  <volume_io.h>
-#include  <global_lookup.h>
+#include  <bicpl/global_lookup.h>
 
 #ifndef  public
 #define       public   extern
 #define       public_was_defined_here
 #endif
 
-#include  <prog_prototypes.h>
+#include  <bicpl/prog_prototypes.h>
 
 #ifdef  public_was_defined_here
 #undef       public

@@ -16,16 +16,16 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char bicpl_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl.h,v 1.4 1997-08-13 13:21:48 david Exp $";
+static char bicpl_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl.h,v 1.5 2000-01-19 22:59:49 stever Exp $";
 #endif
 
-#include  <data_structures.h>
-#include  <geom.h>
-#include  <trans.h>
-#include  <numerical.h>
-#include  <objects.h>
-#include  <prog_utils.h>
-#include  <vols.h>
-#include  <images.h>
+#include  <bicpl/data_structures.h>
+#include  <bicpl/geom.h>
+#include  <bicpl/trans.h>
+#include  <bicpl/numerical.h>
+#include  <bicpl/objects.h>
+#include  <bicpl/prog_utils.h>
+#include  <bicpl/vols.h>
+#include  <bicpl/images.h>
 
 #endif

@@ -1,14 +1,14 @@
 #ifndef   DEF_IMAGES_H
 #define   DEF_IMAGES_H
 
-#include  <objects.h>
+#include  <bicpl/objects.h>
 
 #ifndef  public
 #define       public   extern
 #define       public_was_defined_here
 #endif
 
-#include  <image_prototypes.h>
+#include  <bicpl/image_prototypes.h>
 
 #ifdef  public_was_defined_here
 #undef       public

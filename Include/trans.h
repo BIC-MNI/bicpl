@@ -16,18 +16,18 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char trans_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/trans.h,v 1.2 1995-07-31 13:44:51 david Exp $";
+static char trans_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/trans.h,v 1.3 2000-01-19 22:59:53 stever Exp $";
 #endif
 
 #include  <volume_io.h>
-#include  <compute_xfm.h>
+#include  <bicpl/compute_xfm.h>
 
 #ifndef  public
 #define       public   extern
 #define       public_was_defined_here
 #endif
 
-#include  <trans_prototypes.h>
+#include  <bicpl/trans_prototypes.h>
 
 #ifdef  public_was_defined_here
 #undef       public

@@ -1,4 +1,36 @@
-Wed Jan 19 13:12:09 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+Wed Jan 19 17:56:14 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Volumes/Makefile.am (noinst_HEADERS): 
+	* Numerical/Makefile.am (noinst_HEADERS): include `header' files
+	that are named ending in '.c', and hence can't be put into a
+	_SOURCES variable, lest they get compiled.
+
+	* */Makefile.am: put -I$(top_srcdir)/Include into AM_CPPFLAGS rather than
+	AM_CFLAGS, since it gets put on the command line before CPPFLAGS, and the
+	latter might have -I flags that point to *installed* versions of the headers.
+
+	* Include/Makefile.am (pkginclude_HEADERS): new.  List all the
+	headers that get installed under include/bicpl.
+
+	* Include/Makefile.am (all-local): make symlink bicpl -> ., so
+	that including <bicpl/foo.h> picks up foo.h in the source tree,
+	not the previously-installed copy.
+
+	* Makefile.am (SUBDIRS): put Images first in the list, since the
+	Include/bicpl link needs to be done first.
+
+	* AUTHORS: put in Dave's name and mine.
+
+Wed Jan 19 16:32:48 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Include/Makefile.am (pkginclude_HEADERS): install all headers
+	included by including <bicpl.h>.
+
+	* Include/*.h: modify installed headers to include <bicpl/foo.h>
+	rather than just <foo.h>; this avoids problems with common header
+	names, such as stack.h and the like.  Also, some are incestuously
+	including internal volume_io headers, which get modified to
+	include <volume_io/foo.h>.
 
 	* acinclude.m4 (AC_PRETTY_HELP_STRING): remove the occurances of
 	"if ! command" and "while ! command", which isn't supported by

@@ -1,4 +1,4 @@
-AM_CFLAGS = -I$(top_srcdir)/Include
+AM_CPPFLAGS = -I$(top_srcdir)/Include
 
 noinst_LTLIBRARIES = libbicpl_v.la
 libbicpl_v_la_SOURCES = \
@@ -26,4 +26,13 @@ libbicpl_v_la_SOURCES = \
               scan_polygons.c \
               smooth.c \
               talairach.c
+
+# Despite the name ending in '.c', these are #included files!
+noinst_HEADERS = \
+	call_rend_f_include.c \
+	rend_f_include.c \
+	render_funcs_include.c \
+	render_include.c \
+	render_include2.c \
+	render_include3.c
 

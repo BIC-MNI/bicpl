@@ -1,6 +1,6 @@
 
-SUBDIRS = Data_structures Transforms Geometry Numerical Objects \
-	Prog_utils Volumes Marching_cubes Images Include .
+SUBDIRS = Include Data_structures Transforms Geometry Numerical Objects \
+	Prog_utils Volumes Marching_cubes Images .
 
 lib_LTLIBRARIES = libbicpl.la
 

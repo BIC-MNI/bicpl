@@ -16,18 +16,18 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char geom_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/geom.h,v 1.3 1995-07-31 13:44:50 david Exp $";
+static char geom_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/geom.h,v 1.4 2000-01-19 22:59:50 stever Exp $";
 #endif
 
 #include  <volume_io.h>
-#include  <objects.h>
+#include  <bicpl/objects.h>
 
 #ifndef  public
 #define       public   extern
 #define       public_was_defined_here
 #endif
 
-#include  <geom_prototypes.h>
+#include  <bicpl/geom_prototypes.h>
 
 #ifdef  public_was_defined_here
 #undef       public

@@ -16,15 +16,15 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char numerical_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/numerical.h,v 1.7 1996-04-10 17:19:46 david Exp $";
+static char numerical_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/numerical.h,v 1.8 2000-01-19 22:59:51 stever Exp $";
 #endif
 
 #include  <volume_io.h>
-#include  <objects.h>
-#include  <amoeba.h>
-#include  <histogram.h>
-#include  <minimization.h>
-#include  <statistics.h>
+#include  <bicpl/objects.h>
+#include  <bicpl/amoeba.h>
+#include  <bicpl/histogram.h>
+#include  <bicpl/minimization.h>
+#include  <bicpl/statistics.h>
 
 typedef  struct
 {
@@ -47,7 +47,7 @@ typedef struct
 #define       public_was_defined_here
 #endif
 
-#include  <numeric_prototypes.h>
+#include  <bicpl/numeric_prototypes.h>
 
 #ifdef  public_was_defined_here
 #undef       public

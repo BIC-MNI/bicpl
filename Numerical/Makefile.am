@@ -1,4 +1,4 @@
-AM_CFLAGS = -I$(top_srcdir)/Include
+AM_CPPFLAGS = -I$(top_srcdir)/Include
 
 noinst_LTLIBRARIES = libbicpl_n.la
 libbicpl_n_la_SOURCES = \
@@ -16,3 +16,6 @@ libbicpl_n_la_SOURCES = \
                  statistics.c \
                  t_stat.c
 
+
+# Despite the name ending in '.c', this is an #included file.
+noinst_HEADERS = minimize_lsq_include.c

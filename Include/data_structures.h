@@ -16,24 +16,24 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char data_structures_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/data_structures.h,v 1.4 1995-07-31 13:44:39 david Exp $";
+static char data_structures_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/data_structures.h,v 1.5 2000-01-19 22:59:50 stever Exp $";
 #endif
 
-#include  <objects.h>
+#include  <bicpl/objects.h>
 #include  <volume_io.h>
-#include  <bitlist.h>
-#include  <hash.h>
-#include  <priority_queue.h>
-#include  <queue.h>
-#include  <skiplist.h>
-#include  <stack.h>
+#include  <bicpl/bitlist.h>
+#include  <bicpl/hash.h>
+#include  <bicpl/priority_queue.h>
+#include  <bicpl/queue.h>
+#include  <bicpl/skiplist.h>
+#include  <bicpl/stack.h>
 
 #ifndef  public
 #define       public   extern
 #define       public_was_defined_here
 #endif
 
-#include  <ds_prototypes.h>
+#include  <bicpl/ds_prototypes.h>
 
 #ifdef  public_was_defined_here
 #undef       public

@@ -1,4 +1,4 @@
-AM_CFLAGS = -I$(top_srcdir)/Include
+AM_CPPFLAGS = -I$(top_srcdir)/Include
 
 noinst_LTLIBRARIES = libbicpl_pu.la
 libbicpl_pu_la_SOURCES = \

@@ -16,10 +16,10 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char colour_coding_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colour_coding.h,v 1.7 1996-12-09 20:20:23 david Exp $";
+static char colour_coding_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colour_coding.h,v 1.8 2000-01-19 22:59:50 stever Exp $";
 #endif
 
-#include  <objects.h>
+#include  <bicpl/objects.h>
 
 typedef enum { GRAY_SCALE,
                HOT_METAL,
