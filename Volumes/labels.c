@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.35 1996-12-09 20:20:50 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.36 1997-06-07 00:48:03 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -146,7 +146,7 @@ public  void  set_all_volume_label_data(
         real_value = (Real) value;
         BEGIN_ALL_VOXELS( volume, v0, v1, v2, v3, v4 )
 
-            set_volume_voxel_value( volume, v0, v1, v2, v3, v4, real_value );
+            set_volume_real_value( volume, v0, v1, v2, v3, v4, real_value );
 
         END_ALL_VOXELS
     }
@@ -177,7 +177,7 @@ public  void  set_volume_label_data_5d(
 {
     check_alloc_label_data( volume );
 
-    set_volume_voxel_value( volume, v0, v1, v2, v3, v4, (Real) value );
+    set_volume_real_value( volume, v0, v1, v2, v3, v4, (Real) value );
 }
 
 public  void  set_volume_label_data(
@@ -225,7 +225,7 @@ public  int  get_volume_label_data_5d(
         return( 0 );
     else
     {
-        label = (int) get_volume_voxel_value( volume, v0, v1, v2, v3, v4 );
+        label = (int) get_volume_real_value( volume, v0, v1, v2, v3, v4 );
         return( label );
     }
 }
@@ -258,7 +258,7 @@ public  int  get_3D_volume_label_data(
         return( 0 );
     else
     {
-        label = (int) get_volume_voxel_value( volume, x, y, z, 0, 0 );
+        label = (int) get_volume_real_value( volume, x, y, z, 0, 0 );
         return( label );
     }
 }
@@ -317,7 +317,7 @@ public  void  set_voxel_label_bit(
     for_less( i, 0, n_dims )
         v[i] = voxel[i];
 
-    label = (int) get_volume_voxel_value( volume, v[0], v[1], v[2], v[3], v[4]);
+    label = (int) get_volume_real_value( volume, v[0], v[1], v[2], v[3], v[4]);
 
     anded = (label & bit);
 
@@ -326,14 +326,14 @@ public  void  set_voxel_label_bit(
         if( anded != bit )
         {
             new_label = label | bit;
-            set_volume_voxel_value( volume, v[0], v[1], v[2], v[3], v[4],
+            set_volume_real_value( volume, v[0], v[1], v[2], v[3], v[4],
                                     (Real) new_label );
         }
     }
     else if( anded != 0 )
     {
         new_label = label & (~bit);
-        set_volume_voxel_value( volume, v[0], v[1], v[2], v[3], v[4],
+        set_volume_real_value( volume, v[0], v[1], v[2], v[3], v[4],
                                 (Real) new_label );
     }
 }
@@ -450,6 +450,7 @@ public  BOOLEAN  get_volume_voxel_activity(
 @NAME       : get_input_volume_label_limits
 @INPUT      : volume1
               volume2
+              slice
 @OUTPUT     : limits
 @RETURNS    : 
 @DESCRIPTION: Computes the range of overlap of volume2 in volume1.
@@ -457,235 +458,66 @@ public  BOOLEAN  get_volume_voxel_activity(
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    : Aug. 1, 1995    David MacDonald
-@MODIFIED   : 
+@MODIFIED   : May. 6, 1997    D. MacDonald     -  one slice of 3d volume
 ---------------------------------------------------------------------------- */
 
 private  void  get_input_volume_label_limits(
     Volume   volume1,
     Volume   volume2,
-    int      limits[2][MAX_DIMENSIONS] )
+    int      slice,
+    int      limits[2][N_DIMENSIONS] )
 {
-    int       sizes1[MAX_DIMENSIONS], sizes2[MAX_DIMENSIONS];
-    int       d, n_dims, range[MAX_DIMENSIONS], t[MAX_DIMENSIONS];
-    Real      voxel1[MAX_DIMENSIONS], voxel2[MAX_DIMENSIONS];
-    int       low[MAX_DIMENSIONS], high[MAX_DIMENSIONS];
+    int       sizes1[N_DIMENSIONS], sizes2[N_DIMENSIONS];
+    int       d, t[N_DIMENSIONS];
+    Real      voxel1[N_DIMENSIONS], voxel2[N_DIMENSIONS];
+    int       pos;
     Real      xw, yw, zw;
     BOOLEAN   first;
 
     get_volume_sizes( volume1, sizes1 );
     get_volume_sizes( volume2, sizes2 );
 
-    n_dims = get_volume_n_dimensions(volume1);
-
-    for_less( d, 0, MAX_DIMENSIONS )
-    {
-        if( d < n_dims )
-            range[d] = 2;
-        else
-            range[d] = 1;
-    }
-
     first = TRUE;
 
-    for_less( t[0], 0, range[0] )
-    for_less( t[1], 0, range[1] )
-    for_less( t[2], 0, range[2] )
-    for_less( t[3], 0, range[3] )
-    for_less( t[4], 0, range[4] )
+    for_less( t[0], 0, 2 )
+    for_less( t[1], 0, 2 )
+    for_less( t[2], 0, 2 )
     {
-        for_less( d, 0, n_dims )
-            voxel2[d] = -0.5 + (Real) t[d] * (Real) sizes2[d];
+        voxel2[0] = (Real) slice - 0.5 + (Real) t[0];
+        voxel2[1] = -0.5 + (Real) t[1] * (Real) sizes2[1];
+        voxel2[2] = -0.5 + (Real) t[2] * (Real) sizes2[2];
 
         convert_voxel_to_world( volume2, voxel2, &xw, &yw, &zw );
         convert_world_to_voxel( volume1, xw, yw, zw, voxel1 );
 
-        for_less( d, 0, n_dims )
+        for_less( d, 0, N_DIMENSIONS )
         {
-            low[d] = FLOOR( voxel1[d] ) - 1;
-            high[d] = CEILING( voxel1[d] ) + 1;
+            pos = FLOOR( voxel1[d] + 0.5 );
+
+            if( first )
+            {
+                limits[0][d] = pos;
+                limits[1][d] = pos;
+            }
+            else
+            {
+                if( pos < limits[0][d] )
+                    limits[0][d] = pos;
+                else if( pos > limits[1][d] )
+                    limits[1][d] = pos;
+            }
         }
 
-        if( first )
-        {
-            first = FALSE;
-            for_less( d, 0, n_dims )
-            {
-                limits[0][d] = low[d];
-                limits[1][d] = high[d];
-            }
-        }
-        else
-        {
-            for_less( d, 0, n_dims )
-            {
-                if( low[d] < limits[0][d] )
-                    limits[0][d] = low[d];
-                if( high[d] > limits[1][d] )
-                    limits[1][d] = high[d];
-            }
-        }
+        first = FALSE;
     }
 
-    for_less( d, 0, n_dims )
+    for_less( d, 0, N_DIMENSIONS )
     {
         if( limits[0][d] < 0 )
             limits[0][d] = 0;
         if( limits[1][d] >= sizes1[d] )
             limits[1][d] = sizes1[d] - 1;
     }
-}
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : load_partial_label_volume
-@INPUT      : filename
-              label_volume
-@OUTPUT     :
-@RETURNS    : OK or ERROR
-@DESCRIPTION: Loads a label volume from a file which does not necessarily
-              contain the exact topology of the label volume.  Essentially
-              it resamples the volume in the file onto the label volume.
-@METHOD     :
-@GLOBALS    :
-@CALLS      :
-@CREATED    : Dec.  8, 1995    David MacDonald
-@MODIFIED   : Jul. 17, 1996    D. MacDonald   - made faster for linear xforms
----------------------------------------------------------------------------- */
-
-private  Status  load_partial_label_volume(
-    STRING   filename,
-    Volume   label_volume )
-{
-    Status                status;
-    int                   label_voxel[N_DIMENSIONS], dim;
-    int                   int_voxel[N_DIMENSIONS], int_voxel_value;
-    int                   limits[2][MAX_DIMENSIONS];
-    progress_struct       progress;
-    nc_type               type;
-    Real                  xw, yw, zw, voxel[N_DIMENSIONS];
-    Real                  voxel_value;
-    Real                  xyz[N_DIMENSIONS], dx, dy, dz;
-    BOOLEAN               signed_flag;
-    Volume                file_volume;
-    Vector                z_axis;
-    General_transform     inverse_file_transform, label_transform;
-    Transform             all, reorder1, reorder2;
-    BOOLEAN               is_linear;
-
-    check_alloc_label_data( label_volume );
-
-    type = get_volume_nc_data_type( label_volume, &signed_flag );
-
-    status = input_volume( filename, 3, File_order_dimension_names,
-                           type, signed_flag, 0.0, 0.0,
-                           TRUE, &file_volume, NULL );
-
-    if( status != OK )
-        return( ERROR );
-
-    get_input_volume_label_limits( label_volume, file_volume,
-                                   limits );
-
-    create_inverse_general_transform( get_voxel_to_world_transform(file_volume),
-                                      &inverse_file_transform );
-
-    concat_general_transforms( get_voxel_to_world_transform( label_volume ),
-                               &inverse_file_transform, &label_transform );
-
-    is_linear = get_transform_type( &label_transform ) == LINEAR;
-    if( is_linear )
-    {
-        voxel[0] = 0.0;
-        voxel[1] = 1.0;
-        voxel[2] = 2.0;
-        reorder_voxel_to_xyz( label_volume, voxel, xyz );
-        make_identity_transform( &reorder1 );
-        Transform_elem( reorder1, 0, 0 ) = 0.0;
-        Transform_elem( reorder1, 1, 1 ) = 0.0;
-        Transform_elem( reorder1, 2, 2 ) = 0.0;
-
-        for_less( dim, 0, N_DIMENSIONS )
-            Transform_elem( reorder1, ROUND(xyz[dim]), dim ) = 1.0;
-
-        concat_transforms( &all, &reorder1,
-                           get_linear_transform_ptr(&label_transform) );
-
-        xyz[0] = 0.0;
-        xyz[1] = 1.0;
-        xyz[2] = 2.0;
-        reorder_xyz_to_voxel( file_volume, xyz, voxel );
-        make_identity_transform( &reorder2 );
-        Transform_elem( reorder2, 0, 0 ) = 0.0;
-        Transform_elem( reorder2, 1, 1 ) = 0.0;
-        Transform_elem( reorder2, 2, 2 ) = 0.0;
-
-        for_less( dim, 0, N_DIMENSIONS )
-            Transform_elem( reorder2, ROUND(voxel[dim]), dim ) = 1.0;
-
-        concat_transforms( &all, &all, &reorder2 );
-
-        get_transform_z_axis( &all, &z_axis );
-        dx = RVector_x(z_axis);
-        dy = RVector_y(z_axis);
-        dz = RVector_z(z_axis);
-    }
-
-    initialize_progress_report( &progress, FALSE,
-                                (limits[1][X] - limits[0][X] + 1) *
-                                (limits[1][Y] - limits[0][Y] + 1),
-                                "Installing Labels" );
-
-    for_inclusive( label_voxel[X], limits[0][X], limits[1][X] )
-    {
-        for_inclusive( label_voxel[Y], limits[0][Y], limits[1][Y] )
-        {
-            for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
-            {
-                if( !is_linear || label_voxel[Z] == limits[0][Z] )
-                {
-                    convert_3D_voxel_to_world( label_volume,
-                                               (Real) label_voxel[X],
-                                               (Real) label_voxel[Y],
-                                               (Real) label_voxel[Z],
-                                               &xw, &yw, &zw );
-                    convert_world_to_voxel( file_volume, xw, yw, zw, voxel );
-                }
-                else
-                {
-                    voxel[X] += dx;
-                    voxel[Y] += dy;
-                    voxel[Z] += dz;
-                }
-
-                if( voxel_is_within_volume( file_volume, voxel ) )
-                {
-                    convert_real_to_int_voxel( 3, voxel, int_voxel );
-                    voxel_value = get_volume_voxel_value( file_volume,
-                                       int_voxel[0], int_voxel[1],
-                                       int_voxel[2], 0, 0 );
-
-                    int_voxel_value = ROUND( voxel_value );
-                    if( int_voxel_value > 0 )
-                    {
-                        set_volume_label_data( label_volume, label_voxel,
-                                               int_voxel_value );
-                    }
-                }
-            }
-
-            update_progress_report( &progress,
-                                    (label_voxel[X] - limits[0][X]) *
-                                    (limits[1][Y] - limits[0][Y]) +
-                                    label_voxel[Y] - limits[0][Y] + 1 );
-        }
-    }
-
-    terminate_progress_report( &progress );
-
-    delete_general_transform( &inverse_file_transform );
-    delete_general_transform( &label_transform );
-    delete_volume( file_volume );
-
-    return( status );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -700,60 +532,147 @@ private  Status  load_partial_label_volume(
 @CREATED    :         1993    David MacDonald
 @MODIFIED   : Aug. 1, 1995    D. MacDonald  -  loaded volume no longer needs
                                                to be same grid.
+@MODIFIED   : May. 6, 1997    D. MacDonald  -  now loads one slice at a time,
+                                               and does not overwrite labels
+                                               with 0's.
 ---------------------------------------------------------------------------- */
 
 public  Status  load_label_volume(
     STRING   filename,
     Volume   label_volume )
 {
-    Status                status;
-    int                   n_file_dims;
-    int                   n_dims;
-    STRING                *dim_names;
-    nc_type               type;
-    BOOLEAN               signed_flag, same_grid;
-    Volume                file_volume;
+    int                   slice, n_slices;
+    int                   label_voxel[N_DIMENSIONS];
+    int                   int_voxel[N_DIMENSIONS], int_file_value;
+    int                   limits[2][N_DIMENSIONS];
+    int                   file_sizes[N_DIMENSIONS];
+    Real                  file_value, xw, yw, zw, amount_done;
+    Real                  voxel[N_DIMENSIONS], dx, dy, dz;
+    Real                  start_voxel[N_DIMENSIONS];
+    Real                  end_voxel[N_DIMENSIONS];
+    Volume                file_volume, file_volume_3d;
+    Minc_file             file;
+    BOOLEAN               is_linear;
+    progress_struct       progress;
 
     check_alloc_label_data( label_volume );
 
-    n_dims = get_volume_n_dimensions( label_volume );
-    dim_names = get_volume_dimension_names( label_volume );
+    /*--- get 3d transformation in file */
 
-    status = input_volume_header_only( filename, n_dims, dim_names,
-                                       &file_volume, NULL );
-
-    delete_dimension_names( label_volume, dim_names );
-
-    if( status != OK )
-        return( status );
-
-    same_grid = volumes_are_same_grid( label_volume, file_volume );
-    n_file_dims = get_volume_n_dimensions(file_volume);
-
-    if( n_file_dims != n_dims )
-    {
-        print_error( "Label volume n dimensions (%d) does not match\n",
-                     n_file_dims );
-        print_error( "      volume n dimensions (%d).\n", n_dims );
+    if( input_volume_header_only( filename, N_DIMENSIONS,
+                                  File_order_dimension_names,
+                                  &file_volume_3d, NULL ) != OK )
         return( ERROR );
-    }
 
-    if( same_grid )
+    get_volume_sizes( file_volume_3d, file_sizes );
+
+    file_volume = create_volume( 2, File_order_dimension_names,
+                                 NC_UNSPECIFIED, FALSE, 0.0, 0.0 );
+
+    file = initialize_minc_input( filename, file_volume, NULL );
+
+    if( file == NULL )
+        return( ERROR );
+
+    n_slices = get_n_input_volumes( file );
+
+    if( n_slices != file_sizes[0] )
     {
-        type = get_volume_nc_data_type( label_volume, &signed_flag );
-
-        status = input_volume( filename, 3, XYZ_dimension_names,
-                               type, signed_flag, 0.0, 0.0,
-                               FALSE, &label_volume, NULL );
-
-        set_label_volume_real_range( label_volume );
+        print_error( "load_label_volume(): error in sizes: %d %d\n",
+                     n_slices, file_sizes[0] );
     }
-    else
+
+    /*--- check if the voxel1-to-voxel2 transform is linear */
+
+    is_linear = get_transform_type(
+                get_voxel_to_world_transform(label_volume) ) == LINEAR &&
+                get_transform_type(
+                get_voxel_to_world_transform(file_volume_3d) ) == LINEAR;
+
+    if( is_linear )
     {
-        status = load_partial_label_volume( filename, label_volume );
+        convert_3D_voxel_to_world( label_volume, 0.0, 0.0, 0.0,
+                                   &xw, &yw, &zw );
+        convert_world_to_voxel( file_volume_3d, xw, yw, zw, start_voxel );
+
+        convert_3D_voxel_to_world( label_volume, 0.0, 0.0, 1.0,
+                                   &xw, &yw, &zw );
+        convert_world_to_voxel( file_volume_3d, xw, yw, zw, end_voxel );
+
+        dx = end_voxel[0] - start_voxel[0];
+        dy = end_voxel[1] - start_voxel[1];
+        dz = end_voxel[2] - start_voxel[2];
     }
 
-    return( status );
+    /*--- input label slices */
+
+    initialize_progress_report( &progress, FALSE, n_slices,
+                                "Reading Labels" );
+
+    for_less( slice, 0, n_slices )
+    {
+        while( input_more_minc_file( file, &amount_done ) )
+        {}
+
+        get_input_volume_label_limits( label_volume, file_volume_3d,
+                                       slice, limits );
+
+        for_inclusive( label_voxel[X], limits[0][X], limits[1][X] )
+        {
+            for_inclusive( label_voxel[Y], limits[0][Y], limits[1][Y] )
+            {
+                for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
+                {
+                    if( !is_linear || label_voxel[Z] == limits[0][Z] )
+                    {
+                        convert_3D_voxel_to_world( label_volume,
+                                                   (Real) label_voxel[X],
+                                                   (Real) label_voxel[Y],
+                                                   (Real) label_voxel[Z],
+                                                   &xw, &yw, &zw );
+                        convert_world_to_voxel( file_volume_3d, xw, yw, zw,
+                                                voxel );
+                    }
+                    else
+                    {
+                        voxel[X] += dx;
+                        voxel[Y] += dy;
+                        voxel[Z] += dz;
+                    }
+
+                    convert_real_to_int_voxel( 3, voxel, int_voxel );
+
+                    if( int_voxel[0] == slice &&
+                        int_voxel[1] >= 0 && int_voxel[1] < file_sizes[1] &&
+                        int_voxel[2] >= 0 && int_voxel[2] < file_sizes[2] )
+                    {
+                        file_value = get_volume_real_value( file_volume,
+                                        int_voxel[1], int_voxel[2], 0, 0, 0 );
+
+                        int_file_value = ROUND( file_value );
+                        if( int_file_value > 0 )
+                        {
+                            set_volume_label_data( label_volume, label_voxel,
+                                                   int_file_value );
+                        }
+                    }
+                }
+            }
+        }
+
+        (void) advance_input_volume( file );
+
+        update_progress_report( &progress, slice+1 );
+    }
+
+    terminate_progress_report( &progress );
+
+    delete_volume( file_volume );
+    delete_volume( file_volume_3d );
+
+    (void) close_minc_input( file );
+
+    return( OK );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -867,7 +786,7 @@ public  Status  input_tags_as_labels(
 
     check_alloc_label_data( label_volume );
 
-    get_volume_voxel_range( label_volume, &min_label, &max_label );
+    get_volume_real_range( label_volume, &min_label, &max_label );
 
     status = initialize_tag_file_input( file, &n_volumes );
 
@@ -947,7 +866,7 @@ public  Status  create_label_volume_from_file(
         else
         {
             *label_volume = create_label_volume( volume, NC_UNSPECIFIED );
-            status = load_partial_label_volume( filename, *label_volume );
+            status = load_label_volume( filename, *label_volume );
         }
 
         delete_dimension_names( volume, dim_names );
@@ -1075,7 +994,7 @@ public  Status  input_landmarks_as_labels(
 
     check_alloc_label_data( label_volume );
 
-    get_volume_voxel_range( label_volume, &min_label, &max_label );
+    get_volume_real_range( label_volume, &min_label, &max_label );
 
     while( io_tag_point( file, READ_FILE, volume, 1.0, &marker ) == OK )
     {
