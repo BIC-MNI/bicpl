@@ -14,6 +14,16 @@ public  Boolean  is_this_tetrahedral_topology(
     return( n_polygons == 4 || n_polygons == 6 || n_polygons == 8 );
 }
 
+public  int  get_tetra_tessellation_with_n_points(
+    int   n_points )
+{
+    int  n_polygons;
+
+    n_polygons = 2 * (n_points - 2);
+
+    return( n_polygons );
+}
+
 public  void  create_tetrahedral_sphere(
     Point            *centre,
     Real             rx,

@@ -355,6 +355,38 @@ public  Boolean  get_tessellation_of_polygons_sphere(
     return( is_sphere );
 }
 
+public  int  get_tessellation_with_n_points(
+    int   n_points )
+{
+    Real  a, b, c, s1, s2;
+    int   n_sol;
+
+    if( N_AROUND_TOP > 0 )
+    {
+        a = 2.0;
+        b = -6.0;
+        c = 2.0 * N_AROUND_TOP + 2.0 - (Real) n_points;
+    }
+    else
+    {
+        a = 2.0;
+        b = -2.0;
+        c = 2.0 - (Real) n_points;
+    }
+
+    n_sol = solve_quadratic( a, b, c, &s1, &s2 );
+
+    if( n_sol == 1 || n_sol == 2 && s2 <= 0.0 )
+    {
+        if( s1 > 0.0 )
+            return( ROUND( s1 ) );
+    }
+    else if( n_sol == 2 )
+        return( ROUND( s2 ) );
+
+    return( 0 );
+}
+
 public  void  half_sample_sphere_tessellation(
     polygons_struct   *polygons,
     polygons_struct   *half )

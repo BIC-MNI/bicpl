@@ -22,7 +22,8 @@ typedef  enum  { VOLUME_DATA }  Deform_data_types;
 typedef  struct
 {
     Deform_data_types   type;
-    volume_struct       *volume;
+    Volume              volume;
+    Volume              label_volume;
 } deform_data_struct;
 
 typedef  enum { FLAT_MODEL, AVERAGE_MODEL,
