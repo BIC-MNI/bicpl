@@ -16,7 +16,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.10 1995-08-14 18:08:44 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.11 1996-04-23 13:40:34 david Exp $";
 #endif
 
 #define  FLIP_RATIO      1.0
@@ -93,8 +93,8 @@ public  void  initialize_amoeba(
         {
             amoeba->parameters[i][j] = (float) initial_parameters[j];
             if( i > 0 && j == i - 1 )
-                amoeba->parameters[i][j] += parameter_deltas[j];
-            amoeba->sum[j] += amoeba->parameters[i][j];
+                amoeba->parameters[i][j] = (float) parameter_deltas[j];
+            amoeba->sum[j] += (Real) amoeba->parameters[i][j];
         }
 
         amoeba->values[i] = get_function_value( amoeba, amoeba->parameters[i] );
@@ -186,11 +186,12 @@ private  Real  try_amoeba(
 
     ALLOC( parameters, amoeba->n_parameters );
 
-    fac1 = (1.0 - fac) / amoeba->n_parameters;
+    fac1 = (1.0 - fac) / (Real) amoeba->n_parameters;
     fac2 = fac - fac1;
 
     for_less( j, 0, amoeba->n_parameters )
-        parameters[j] = sum[j] * fac1 + amoeba->parameters[high][j] * fac2;
+        parameters[j] = (float) (sum[j] * fac1 +
+                                 (Real) amoeba->parameters[high][j] * fac2);
 
     y_try = get_function_value( amoeba, parameters );
 
@@ -199,7 +200,7 @@ private  Real  try_amoeba(
         amoeba->values[high] = y_try;
         for_less( j, 0, amoeba->n_parameters )
         {
-            sum[j] += parameters[j] - amoeba->parameters[high][j];
+            sum[j] += (Real) parameters[j] - (Real) amoeba->parameters[high][j];
             amoeba->parameters[high][j] = parameters[j];
         }
     }
@@ -291,7 +292,7 @@ public  BOOLEAN  perform_amoeba(
                     for_less( j, 0, amoeba->n_parameters )
                     {
                         amoeba->parameters[i][j] = (amoeba->parameters[i][j] +
-                                            amoeba->parameters[low][j]) / 2.0;
+                                            amoeba->parameters[low][j]) / 2.0f;
                     }
 
                     amoeba->values[i] = get_function_value( amoeba,
@@ -303,7 +304,7 @@ public  BOOLEAN  perform_amoeba(
             {
                 amoeba->sum[j] = 0.0;
                 for_less( i, 0, amoeba->n_parameters+1 )
-                    amoeba->sum[j] += amoeba->parameters[i][j];
+                    amoeba->sum[j] += (Real) amoeba->parameters[i][j];
             }
         }
     }
