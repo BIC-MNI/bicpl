@@ -26,7 +26,6 @@ public  Status   input_landmark_file(
         {
             marker.colour = marker_colour;
             marker.type = default_type;
-
             object = create_object( MARKER );
             *(get_marker_ptr(object)) = marker;
 
@@ -84,6 +83,9 @@ public  Status  io_tag_point(
 
     if( io_direction == READ_FILE )
     {
+        marker->colour = WHITE;
+        marker->type = BOX_MARKER;
+
         if( volume == (Volume) NULL )
         {
             marker->position = position;

@@ -524,7 +524,7 @@ public  Colour_flags  *get_object_colours(
                    ( object, colours ) );
 }
 
-private  void  set_object_colours(
+public  void  set_object_colours(
     object_struct   *object,
     Colour          colours[] )
 {
@@ -752,18 +752,6 @@ public  Status  input_object(
             status = io_text( file, READ_FILE, *format,
                               get_text_ptr( *object ) );
             break;
-
-/*
-
-            if( status == OK )
-            {
-                get_absolute_filename( (*object)->ptr.volume->filename,
-                                       directory,
-                                       (*object)->ptr.volume->filename );
-                status = input_volume( (*object)->ptr.volume );
-            }
-            break;
-*/
 
         default:
             print( "Unrecognized object type %d\n", type );

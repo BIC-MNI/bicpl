@@ -261,6 +261,7 @@ private  int  get_roots_of_cubic(
     return( n_inside );
 }
 
+#ifdef OLD
 private  void  check_interval(
     int     n,
     Real    poly[],
@@ -349,3 +350,145 @@ public  int  get_roots_of_polynomial(
 
     return( n_roots );
 }
+#else
+
+private  Boolean  interval_contains_zero(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    u_max )
+{
+    int    i;
+    Real   min_val, max_val, t1, t2, t3, t4;
+
+    min_val = 0.0;
+    max_val = 0.0;
+
+    if( u_min >= 0.0 )
+    {
+        for( i = n-1;  i >= 0;  --i )
+        {
+            if( i != n-1 )
+            {
+                if( min_val < 0.0 )
+                {
+                    min_val *= u_max;
+                    if( max_val < 0.0 )
+                        max_val *= u_min;
+                    else
+                        max_val *= u_max;
+                }
+                else
+                {
+                    min_val *= u_min;
+                    max_val *= u_max;
+                }
+
+                min_val += poly[i];
+                max_val += poly[i];
+            }
+            else
+            {
+                min_val = poly[i];
+                max_val = poly[i];
+            }
+        }
+    }
+    else
+    {
+        for( i = n-1;  i >= 0;  --i )
+        {
+            t1 = min_val * u_min;
+            t2 = max_val * u_min;
+            t3 = min_val * u_max;
+            t4 = max_val * u_max;
+            min_val = t1;
+            max_val = t1;
+            if( t2 < min_val )
+                min_val = t2;
+            else if( t2 > max_val )
+                max_val = t2;
+            if( t3 < min_val )
+                min_val = t3;
+            else if( t3 > max_val )
+                max_val = t3;
+            if( t4 < min_val )
+                min_val = t4;
+            else if( t4 > max_val )
+                max_val = t4;
+            min_val += poly[i];
+            max_val += poly[i];
+        }
+    }
+
+    return( min_val <= 0.0 && max_val >= 0.0 );
+}
+
+private  void  check_interval(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    u_max,
+    Real    accuracy,
+    int     *n_roots,
+    Real    roots[] )
+{
+    int    i, which;
+    Real   u_mid, min_diff, diff;
+
+    if( interval_contains_zero( n, poly, u_min, u_max ) )
+    {
+        u_mid = (u_max + u_min) / 2.0;
+        if( u_max - u_min > accuracy )
+        {
+            check_interval( n, poly, u_min, u_mid, accuracy, n_roots, roots );
+            check_interval( n, poly, u_mid, u_max, accuracy, n_roots, roots );
+        }
+        else
+        {
+            if( *n_roots == n-1 )
+            {
+                which = 0;
+                min_diff = 0.0;
+                for_less( i, 0, *n_roots-1 )
+                {
+                    diff = roots[i+1] - roots[i];
+                    if( which == 0 || diff < min_diff )
+                    {
+                        min_diff = diff;
+                        which = i;
+                    }
+                }
+
+                for_less( i, which+1, *n_roots-1 )
+                    roots[i] = roots[i+1];
+                --(*n_roots);
+            }
+
+            roots[*n_roots] = u_mid;
+            ++(*n_roots);
+        }
+    }
+}
+
+public  int  get_roots_of_polynomial(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    u_max,
+    Real    step,
+    Real    accuracy,
+    Real    roots[] )
+{
+    int        n_roots;
+
+    if( n <= 4 )
+        return( get_roots_of_cubic( n, poly, u_min, u_max, roots ) );
+
+    n_roots = 0;
+
+    check_interval( n, poly, u_min, u_max, accuracy, &n_roots, roots );
+
+    return( n_roots );
+}
+#endif

@@ -17,32 +17,32 @@
 
 /* ------------------ QUADRATIC INTERPOLATING SPLINES ----------------------- */
 
-#define  QUADRATIC_COEF_00   0.375
-#define  QUADRATIC_COEF_01   0.75
-#define  QUADRATIC_COEF_02  -0.125
-#define  QUADRATIC_COEF_10  -1.0
-#define  QUADRATIC_COEF_11   1.0
-#define  QUADRATIC_COEF_12   0.0
-#define  QUADRATIC_COEF_20   0.5
-#define  QUADRATIC_COEF_21  -1.0
-#define  QUADRATIC_COEF_22   0.5
+#define  QUADRATIC_COEF_00   0.5
+#define  QUADRATIC_COEF_01   0.5
+#define  QUADRATIC_COEF_02   0.0
+#define  QUADRATIC_COEF_10  -1.5
+#define  QUADRATIC_COEF_11   2.0
+#define  QUADRATIC_COEF_12  -0.5
+#define  QUADRATIC_COEF_20   1.0
+#define  QUADRATIC_COEF_21  -2.0
+#define  QUADRATIC_COEF_22   1.0
 
 #define  QUADRATIC_COEF_0( v0, v1, v2 ) \
-          (0.375*(v0) + 0.75 * (v1) - 0.125 * (v2))
+          (QUADRATIC_COEF_00*(v0) + QUADRATIC_COEF_01*(v1))
 #define  QUADRATIC_COEF_1( v0, v1, v2 ) \
-           ( (v1) - (v0) )
+          (QUADRATIC_COEF_10*(v0)+QUADRATIC_COEF_11*(v1)+QUADRATIC_COEF_12*(v2))
 #define  QUADRATIC_COEF_2( v0, v1, v2 ) \
-           ( 0.5*(v0) - (v1) + 0.5 * (v2) )
+          ((v0)+QUADRATIC_COEF_21*(v1)+(v2))
 
 #define  QUADRATIC_UNIVAR( v0, v1, v2, u )                               \
      ( QUADRATIC_COEF_0(v0,v1,v2) + (u) * \
        (QUADRATIC_COEF_1( v0, v1, v2 ) + (u) * QUADRATIC_COEF_2(v0,v1,v2)) )
 
 #define  QUADRATIC_UNIVAR_DERIV( v0, v1, v2, u ) \
-     ( 0.5 * (v1) - 0.5 * (v0) + (u) * ((v0) - 2.0 *(v1) + (v2)) )
+     ( QUADRATIC_COEF_1(v0,v1,v2) + (u) * 2.0 * QUADRATIC_COEF_2(v0,v1,v2) )
 
 #define  QUADRATIC_UNIVAR_DERIV2( v0, v1, v2, u ) \
-     ( (v0) - 2.0 *(v1) + (v2) )
+     ( 2.0 * QUADRATIC_COEF_2(v0,v1,v2) )
 
 #define  QUADRATIC_BIVAR( v00, v01, v02, v10, v11, v12, v20, v21, v22, u, v, val ) \
      { \
@@ -241,7 +241,7 @@
  \
         dvw0 = QUADRATIC_UNIVAR_DERIV( dw00, dw01, dw02, v ); \
         dvw1 = QUADRATIC_UNIVAR_DERIV( dw10, dw11, dw12, v ); \
-        dvw2 = QUADRATIC_UNIVAR_DERIV( dw20, dw21, dw22, , v ); \
+        dvw2 = QUADRATIC_UNIVAR_DERIV( dw20, dw21, dw22, v ); \
  \
         dww0 = QUADRATIC_UNIVAR( dww00, dww01, dww02, v ); \
         dww1 = QUADRATIC_UNIVAR( dww10, dww11, dww12, v ); \
@@ -339,7 +339,7 @@
          du = CUBIC_UNIVAR_DERIV( cu0, cu1, cu2, cu3, u ); \
      }
 
-#define  CUBIC_BIVAR_DERIV2( v00, v01, v02, v03, v10, v11, v12, v13, v20, v21, v22, v23, v30, v31, v32, v33, u, v, val, du, dv, duu, duv, dvv ) \
+#define  CUBIC_BIVAR_DERIV2( v00, v01, v02, v03, v10, v11, v12, v13, v20, v21, v22, v23, v30, v31, v32, v33, u, v, duu, duv, dvv ) \
      { \
          double  cu0, cu1, cu2, cu3; \
          double  dv0, dv1, dv2, dv3; \
@@ -355,7 +355,6 @@
          dvv2 = CUBIC_UNIVAR_DERIV2( v20, v21, v22, v23, v ); \
          dvv3 = CUBIC_UNIVAR_DERIV2( v30, v31, v32, v33, v ); \
  \
-         dv = CUBIC_UNIVAR( dv0, dv1, dv2, dv3, u ); \
          dvv = CUBIC_UNIVAR( dvv0, dvv1, dvv2, dvv3, u ); \
  \
          duv = CUBIC_UNIVAR_DERIV( dv0, dv1, dv2, dv3, u ); \
@@ -364,9 +363,6 @@
          cu1 = CUBIC_UNIVAR( v10, v11, v12, v13, v ); \
          cu2 = CUBIC_UNIVAR( v20, v21, v22, v23, v ); \
          cu3 = CUBIC_UNIVAR( v30, v31, v32, v33, v ); \
- \
-         val = CUBIC_UNIVAR( cu0, cu1, cu2, cu3, u ); \
-         du = CUBIC_UNIVAR_DERIV( cu0, cu1, cu2, cu3, u ); \
          duu = CUBIC_UNIVAR_DERIV2( cu0, cu1, cu2, cu3, u ); \
      }
 

@@ -86,14 +86,17 @@ private  void  get_mapping(
 ---------------------------------------------------------------------------- */
 
 public  void  create_volume_slice(
+    int             n_slices,
     Volume          volume1,
-    Real            slice_position1,
+    Real            slice_positions1[],
+    Real            weights1[],
     Real            x_translation1,
     Real            y_translation1,
     Real            x_scale1,
     Real            y_scale1,
     Volume          volume2,
-    Real            slice_position2,
+    Real            slice_positions2[],
+    Real            weights2[],
     Real            x_translation2,
     Real            y_translation2,
     Real            x_scale2,
@@ -110,10 +113,10 @@ public  void  create_volume_slice(
     pixels_struct   *pixels )
 {
     Data_types   volume2_data_type;
-    void         *slice_start1, *slice_start2;
+    void         **slice_start1, **slice_start2;
     int          strides1[N_DIMENSIONS], strides2[N_DIMENSIONS];
-    int          indices1[N_DIMENSIONS], indices2[N_DIMENSIONS];
-    int          axis, x_size, y_size;
+    int          indices[N_DIMENSIONS];
+    int          axis, x_size, y_size, s;
     int          x_pixel_start, x_pixel_end, y_pixel_start, y_pixel_end;
     int          x_pixel_start2, x_pixel_end2, y_pixel_start2, y_pixel_end2;
     Real         x_delta1, x_start1, x_end1, y_delta1, y_start1, y_end1;
@@ -188,20 +191,25 @@ public  void  create_volume_slice(
         pixels->x_position = x_pixel_start;
         pixels->y_position = y_pixel_start;
 
-        indices1[X] = ROUND( slice_position1 );
-        indices1[Y] = ROUND( slice_position1 );
-        indices1[Z] = ROUND( slice_position1 );
-        indices1[x_axis_index] = 0;
-        indices1[y_axis_index] = 0;
+        ALLOC( slice_start1, n_slices );
 
-        for_less( axis, 0, N_DIMENSIONS )
+        for_less( s, 0, n_slices )
         {
-            if( indices1[axis] == volume1->sizes[axis] )
-                indices1[axis] = volume1->sizes[axis] - 1;
-        }
+            indices[X] = ROUND( slice_positions1[s] );
+            indices[Y] = ROUND( slice_positions1[s] );
+            indices[Z] = ROUND( slice_positions1[s] );
+            indices[x_axis_index] = 0;
+            indices[y_axis_index] = 0;
 
-        GET_VOXEL_PTR_3D( slice_start1, volume1,
-                          indices1[X], indices1[Y], indices1[Z] );
+            for_less( axis, 0, N_DIMENSIONS )
+            {
+                if( indices[axis] == volume1->sizes[axis] )
+                    indices[axis] = volume1->sizes[axis] - 1;
+            }
+
+            GET_VOXEL_PTR_3D( slice_start1[s], volume1,
+                              indices[X], indices[Y], indices[Z] );
+        }
 
         strides1[X] = volume1->sizes[Y] * volume1->sizes[Z];
         strides1[Y] = volume1->sizes[Z];
@@ -210,36 +218,48 @@ public  void  create_volume_slice(
         if( volume2 != (Volume) NULL )
         {
             volume2_data_type = volume2->data_type;
-            indices2[X] = ROUND( slice_position2 );
-            indices2[Y] = ROUND( slice_position2 );
-            indices2[Z] = ROUND( slice_position2 );
-            indices2[x_axis_index] = 0;
-            indices2[y_axis_index] = 0;
 
-            for_less( axis, 0, N_DIMENSIONS )
+            ALLOC( slice_start2, n_slices );
+
+            for_less( s, 0, n_slices )
             {
-                if( indices2[axis] == volume2->sizes[axis] )
-                    indices2[axis] = volume2->sizes[axis] - 1;
-            }
+                indices[X] = ROUND( slice_positions2[s] );
+                indices[Y] = ROUND( slice_positions2[s] );
+                indices[Z] = ROUND( slice_positions2[s] );
+                indices[x_axis_index] = 0;
+                indices[y_axis_index] = 0;
 
-            GET_VOXEL_PTR_3D( slice_start2, volume2,
-                              indices2[X], indices2[Y], indices2[Z] );
+                for_less( axis, 0, N_DIMENSIONS )
+                {
+                    if( indices[axis] == volume2->sizes[axis] )
+                        indices[axis] = volume2->sizes[axis] - 1;
+                }
+
+                GET_VOXEL_PTR_3D( slice_start2[s], volume2,
+                                  indices[X], indices[Y], indices[Z] );
+            }
 
             strides2[X] = volume2->sizes[Y] * volume2->sizes[Z];
             strides2[Y] = volume2->sizes[Z];
             strides2[Z] = 1;
         }
         else
-            slice_start2 = (void *) NULL;
+            slice_start2 = (void **) NULL;
 
-        render_volume_to_slice( slice_start1, volume1->data_type,
+        render_volume_to_slice( n_slices,
+                                slice_start1, volume1->data_type, weights1,
                                 strides1[x_axis_index], strides1[y_axis_index],
                                 x_start1, y_start1, x_delta1, y_delta1,
-                                slice_start2, volume2_data_type,
+                                slice_start2, volume2_data_type, weights2,
                                 strides2[x_axis_index], strides2[y_axis_index],
                                 x_start2, y_start2, x_delta2, y_delta2,
                                 interpolation_flag, cmode_colour_map,
                                 rgb_colour_map, pixels );
+
+        FREE( slice_start1 );
+
+        if( volume2 != (Volume) NULL )
+            FREE( slice_start2 );
     }
 }
 

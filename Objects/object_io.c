@@ -457,23 +457,27 @@ public  Status  io_colour(
 
     status = OK;
 
-    if( io_flag == WRITE_FILE )
+    if( format == ASCII_FORMAT )
     {
-        r = get_Colour_r_0_1( *colour );
-        g = get_Colour_g_0_1( *colour );
-        b = get_Colour_b_0_1( *colour );
-    }
+        if( io_flag == WRITE_FILE )
+        {
+            r = get_Colour_r_0_1( *colour );
+            g = get_Colour_g_0_1( *colour );
+            b = get_Colour_b_0_1( *colour );
+        }
 
-    status = io_float( file, io_flag, format, &r );
-    if( status == OK )
-        status = io_float( file, io_flag, format, &g );
-    if( status == OK )
-        status = io_float( file, io_flag, format, &b );
+        status = io_float( file, io_flag, ASCII_FORMAT, &r );
+        if( status == OK )
+            status = io_float( file, io_flag, ASCII_FORMAT, &g );
+        if( status == OK )
+            status = io_float( file, io_flag, ASCII_FORMAT, &b );
 
-    if( io_flag == READ_FILE )
-    {
-        *colour = make_Colour_0_1( r, g, b );
+        if( io_flag == READ_FILE )
+            *colour = make_Colour_0_1( r, g, b );
     }
+    else
+        status = io_binary_data( file, io_flag, (void *) colour,
+                                 sizeof(*colour), 1 );
 
     return( status );
 }
@@ -511,14 +515,14 @@ public  Status  io_colours(
 
     if( status == OK )
     {
-        if( TRUE || format == ASCII_FORMAT )
+        if( format == ASCII_FORMAT )
         {
             for_less( i, 0, n_colours )
                 status = io_colour( file, io_flag, format, &(*colours)[i] );
         }
         else
             status = io_binary_data( file, io_flag, (void *) (*colours),
-                                 sizeof((*colours)[0]), n_colours );
+                                     sizeof((*colours)[0]), n_colours );
     }
 
     return( status );

@@ -84,13 +84,21 @@ public  int  get_slice_weights_for_filter(
         min_limit = pos - half_width;
         max_limit = pos + half_width;
         first_slice = (int) (min_limit + 0.5);
+        if( first_slice < 0 )
+            first_slice = 0;
+        else if( first_slice >= size )
+            first_slice = size-1;
+
         last_slice = (int) (max_limit + 0.5);
-        if( IS_INT(max_limit+0.5) )
+        if( last_slice < 0 )
+            last_slice = 0;
+        else if( last_slice >= size )
+            last_slice = size-1;
+
+        if( IS_INT(max_limit+0.5) && last_slice > first_slice )
             --last_slice;
 
         n_slices = last_slice - first_slice + 1;
-        if( n_slices < 1 )
-            n_slices = 1;
         ALLOC( *positions, n_slices );
         ALLOC( *weights, n_slices );
 

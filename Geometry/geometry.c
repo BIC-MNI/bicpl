@@ -200,3 +200,61 @@ public  Boolean  find_closest_line_sphere_intersection(
 
     return( intersects );
 }
+
+public  Boolean  clip_line_to_box(
+    Point    *origin,
+    Vector   *direction,
+    Real     x_min,
+    Real     x_max,
+    Real     y_min,
+    Real     y_max,
+    Real     z_min,
+    Real     z_max,
+    Real     *t_min,
+    Real     *t_max )
+{
+    Boolean  first;
+    int      c, first_ind;
+    Real     dir, t1, t2, limits[2][N_DIMENSIONS];
+
+    limits[0][X] = x_min;
+    limits[1][X] = x_max;
+    limits[0][Y] = y_min;
+    limits[1][Y] = y_max;
+    limits[0][Z] = z_min;
+    limits[1][Z] = z_max;
+
+    first = TRUE;
+
+    for_less( c, 0, 3 )
+    {
+        dir = Vector_coord( *direction, c );
+
+        if( dir != 0.0 )
+        {
+            if( dir < 0.0 )
+                first_ind = 1;
+            else
+                first_ind = 0;
+
+            t1 = (limits[first_ind][c] - Point_coord(*origin,c)) / dir;
+            t2 = (limits[1-first_ind][c] - Point_coord(*origin,c)) / dir;
+
+            if( first )
+            {
+                *t_min = t1;
+                *t_max = t2;
+                first = FALSE;
+            }
+            else
+            {
+                if( t1 > *t_min )
+                    *t_min = t1;
+                if( t2 < *t_max )
+                    *t_max = t2;
+            }
+        }
+    }
+
+    return( *t_min <= *t_max );
+}

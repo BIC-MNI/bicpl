@@ -35,7 +35,6 @@ public  Boolean  do_more_resampling(
     int             z;
     Real            xv, yv, zv;
     Real            end_time, real_value;
-    Point           point;
     Vector          z_axis;
     int             *dest_sizes, *src_sizes;
 
@@ -50,11 +49,8 @@ public  Boolean  do_more_resampling(
 
         get_transform_z_axis( &resample->transform, &z_axis );
 
-        fill_Point( point, (Real) resample->x, (Real) resample->y, 0.0 );
-        transform_point( &resample->transform, &point, &point );
-        xv = Point_x(point);
-        yv = Point_y(point);
-        zv = Point_z(point);
+        transform_point( &resample->transform, resample->x, resample->y, 0.0,
+                         &xv, &yv, &zv );
         for_less( z, 0, dest_sizes[Z] )
         {
             if( xv < 0.0 || xv >= (Real) (src_sizes[X]-1) ||

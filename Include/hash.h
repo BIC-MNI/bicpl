@@ -28,8 +28,8 @@ typedef  struct
     int                 n_keys;
     int                 size;
     int                 n_entries;
-    float               enlarge_threshold;
-    float               new_density;
+    Real                enlarge_threshold;
+    Real                new_density;
     hash_entry_struct   **table;
 } hash_table_struct;
 

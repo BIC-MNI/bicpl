@@ -3,7 +3,9 @@
 private  void  render_byte_volume_colour_map_flat(
     int             x_size,
     int             y_size,
-    unsigned char   *volume_data1,
+    int             n_slices,
+    unsigned char   **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
     unsigned short  cmode_colour_map[],
@@ -19,7 +21,9 @@ private  void  render_byte_volume_colour_map_flat(
 private  void  render_short_volume_colour_map_flat(
     int             x_size,
     int             y_size,
-    unsigned short  *volume_data1,
+    int             n_slices,
+    unsigned short  **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
     unsigned short  cmode_colour_map[],
@@ -33,7 +37,9 @@ private  void  render_short_volume_colour_map_flat(
 private  void  render_byte_volume_rgb_flat(
     int             x_size,
     int             y_size,
-    unsigned char   *volume_data1,
+    int             n_slices,
+    unsigned char   **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
     Colour          rgb_colour_map[],
@@ -47,7 +53,9 @@ private  void  render_byte_volume_rgb_flat(
 private  void  render_short_volume_rgb_flat(
     int             x_size,
     int             y_size,
-    unsigned short  *volume_data1,
+    int             n_slices,
+    unsigned short  **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
     Colour          rgb_colour_map[],
@@ -61,10 +69,13 @@ private  void  render_short_volume_rgb_flat(
 private  void  render_byte_byte_volumes_colour_map_flat(
     int             x_size,
     int             y_size,
-    unsigned char   *volume_data1,
+    int             n_slices,
+    unsigned char   **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
-    unsigned char   *volume_data2,
+    unsigned char   **volume_data2,
+    Real            weights2[],
     int             x_offsets2[],
     int             y_offsets2[],
     unsigned short  **cmode_colour_map,
@@ -84,10 +95,13 @@ private  void  render_byte_byte_volumes_colour_map_flat(
 private  void  render_short_short_volumes_colour_map_flat(
     int             x_size,
     int             y_size,
-    unsigned short  *volume_data1,
+    int             n_slices,
+    unsigned short  **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
-    unsigned short  *volume_data2,
+    unsigned short  **volume_data2,
+    Real            weights2[],
     int             x_offsets2[],
     int             y_offsets2[],
     unsigned short  **cmode_colour_map,
@@ -103,10 +117,13 @@ private  void  render_short_short_volumes_colour_map_flat(
 private  void  render_short_byte_volumes_colour_map_flat(
     int             x_size,
     int             y_size,
-    unsigned short  *volume_data1,
+    int             n_slices,
+    unsigned short  **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
-    unsigned char   *volume_data2,
+    unsigned char   **volume_data2,
+    Real            weights2[],
     int             x_offsets2[],
     int             y_offsets2[],
     unsigned short  **cmode_colour_map,
@@ -124,10 +141,13 @@ private  void  render_short_byte_volumes_colour_map_flat(
 private  void  render_byte_short_volumes_colour_map_flat(
     int             x_size,
     int             y_size,
-    unsigned char   *volume_data1,
+    int             n_slices,
+    unsigned char   **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
-    unsigned short  *volume_data2,
+    unsigned short  **volume_data2,
+    Real            weights2[],
     int             x_offsets2[],
     int             y_offsets2[],
     unsigned short  **cmode_colour_map,
@@ -147,10 +167,13 @@ private  void  render_byte_short_volumes_colour_map_flat(
 private  void  render_byte_byte_volumes_rgb_flat(
     int             x_size,
     int             y_size,
-    unsigned char   *volume_data1,
+    int             n_slices,
+    unsigned char   **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
-    unsigned char   *volume_data2,
+    unsigned char   **volume_data2,
+    Real            weights2[],
     int             x_offsets2[],
     int             y_offsets2[],
     Colour          **rgb_colour_map,
@@ -168,10 +191,13 @@ private  void  render_byte_byte_volumes_rgb_flat(
 private  void  render_short_short_volumes_rgb_flat(
     int             x_size,
     int             y_size,
-    unsigned short  *volume_data1,
+    int             n_slices,
+    unsigned short  **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
-    unsigned short  *volume_data2,
+    unsigned short  **volume_data2,
+    Real            weights2[],
     int             x_offsets2[],
     int             y_offsets2[],
     Colour          **rgb_colour_map,
@@ -185,10 +211,13 @@ private  void  render_short_short_volumes_rgb_flat(
 private  void  render_short_byte_volumes_rgb_flat(
     int             x_size,
     int             y_size,
-    unsigned short  *volume_data1,
+    int             n_slices,
+    unsigned short  **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
-    unsigned char   *volume_data2,
+    unsigned char   **volume_data2,
+    Real            weights2[],
     int             x_offsets2[],
     int             y_offsets2[],
     Colour          **rgb_colour_map,
@@ -204,10 +233,13 @@ private  void  render_short_byte_volumes_rgb_flat(
 private  void  render_byte_short_volumes_rgb_flat(
     int             x_size,
     int             y_size,
-    unsigned char   *volume_data1,
+    int             n_slices,
+    unsigned char   **volume_data1,
+    Real            weights1[],
     int             x_offsets1[],
     int             y_offsets1[],
-    unsigned short  *volume_data2,
+    unsigned short  **volume_data2,
+    Real            weights2[],
     int             x_offsets2[],
     int             y_offsets2[],
     Colour          **rgb_colour_map,
@@ -221,8 +253,10 @@ private  void  render_byte_short_volumes_rgb_flat(
 }
 
 public  void  render_volume_to_slice(
-    void            *volume_data,
+    int             n_slices,
+    void            **volume_data,
     Data_types      volume1_type,
+    Real            weights1[],
     int             x_stride1,
     int             y_stride1,
     Real            x_start1,
@@ -231,6 +265,7 @@ public  void  render_volume_to_slice(
     Real            y_delta1,
     void            *second_volume_data,
     Data_types      volume2_type,
+    Real            weights2[],
     int             x_stride2,
     int             y_stride2,
     Real            x_start2,
@@ -245,30 +280,21 @@ public  void  render_volume_to_slice(
     int                  x_size, y_size, x, y;
     Real                 x_voxel, y_voxel;
     Boolean              colour_map_mode;
-    static  int          *x_offsets;
-    static  int          *y_offsets;
-    static  int          x_size_alloced = 0;
-    static  int          y_size_alloced = 0;
-    static  int          *second_x_offsets;
-    static  int          *second_y_offsets;
+    int                  *x_offsets;
+    int                  *y_offsets;
+    int                  *second_x_offsets;
+    int                  *second_y_offsets;
 
     x_size = pixels->x_size;
     y_size = pixels->y_size;
 
-    if( x_size > x_size_alloced )
-    {
-        SET_ARRAY_SIZE( x_offsets, x_size_alloced, x_size, DEFAULT_CHUNK_SIZE );
-        SET_ARRAY_SIZE( second_x_offsets, x_size_alloced, x_size,
-                        DEFAULT_CHUNK_SIZE );
-        x_size_alloced = x_size;
-    }
+    ALLOC( x_offsets, x_size );
+    ALLOC( y_offsets, y_size );
 
-    if( y_size > y_size_alloced )
+    if( second_volume_data != (void **) NULL )
     {
-        SET_ARRAY_SIZE( y_offsets, y_size_alloced, y_size, DEFAULT_CHUNK_SIZE );
-        SET_ARRAY_SIZE( second_y_offsets, y_size_alloced, y_size,
-                        DEFAULT_CHUNK_SIZE );
-        y_size_alloced = y_size;
+        ALLOC( second_x_offsets, x_size );
+        ALLOC( second_y_offsets, y_size );
     }
 
     colour_map_mode = (pixels->pixel_type != RGB_PIXEL);
@@ -278,7 +304,7 @@ public  void  render_volume_to_slice(
         x_voxel = x_start1 + ((Real) x + 0.5) / x_delta1;
         x_offsets[x] = x_stride1 * ROUND( x_voxel );
 
-        if( second_volume_data != (void *) NULL )
+        if( second_volume_data != (void **) NULL )
         {
             x_voxel = x_start2 + ((Real) x + 0.5) / x_delta2;
             second_x_offsets[x] = x_stride2 * ROUND( x_voxel );
@@ -290,23 +316,24 @@ public  void  render_volume_to_slice(
         y_voxel = y_start1 + ((Real) y + 0.5) / y_delta1;
         y_offsets[y] = y_stride1 * ROUND( y_voxel );
 
-        if( second_volume_data != (void *) NULL )
+        if( second_volume_data != (void **) NULL )
         {
             y_voxel = y_start2 + ((Real) y + 0.5) / y_delta2;
             second_y_offsets[y] = y_stride2 * ROUND( y_voxel );
         }
     }
 
-    if( second_volume_data != (void *) NULL )
+    if( second_volume_data != (void **) NULL )
     {
         if( colour_map_mode )
         {
             if( volume1_type == UNSIGNED_BYTE && volume2_type == UNSIGNED_BYTE )
             {
                 render_byte_byte_volumes_colour_map_flat(
-                          x_size, y_size, (unsigned char *) volume_data,
+                          x_size, y_size, n_slices,
+                          (unsigned char **) volume_data, weights1,
                           x_offsets, y_offsets,
-                          (unsigned char *) second_volume_data,
+                          (unsigned char **) second_volume_data, weights2,
                           second_x_offsets, second_y_offsets,
                           cmode_colour_map, pixels );
             }
@@ -314,9 +341,10 @@ public  void  render_volume_to_slice(
                      volume2_type == UNSIGNED_SHORT )
             {
                 render_short_short_volumes_colour_map_flat(
-                          x_size, y_size, (unsigned short *) volume_data,
+                          x_size, y_size, n_slices,
+                          (unsigned short **) volume_data, weights1,
                           x_offsets, y_offsets,
-                          (unsigned short *) second_volume_data,
+                          (unsigned short **) second_volume_data, weights2,
                           second_x_offsets, second_y_offsets,
                           cmode_colour_map, pixels );
             }
@@ -324,18 +352,20 @@ public  void  render_volume_to_slice(
                      volume2_type == UNSIGNED_SHORT )
             {
                 render_byte_short_volumes_colour_map_flat(
-                          x_size, y_size, (unsigned char *) volume_data,
+                          x_size, y_size, n_slices,
+                          (unsigned char **) volume_data, weights1,
                           x_offsets, y_offsets,
-                          (unsigned short *) second_volume_data,
+                          (unsigned short **) second_volume_data, weights2,
                           second_x_offsets, second_y_offsets,
                           cmode_colour_map, pixels );
             }
             else
             {
                 render_short_byte_volumes_colour_map_flat(
-                          x_size, y_size, (unsigned short *) volume_data,
+                          x_size, y_size, n_slices,
+                          (unsigned short **) volume_data, weights1,
                           x_offsets, y_offsets,
-                          (unsigned char *) second_volume_data,
+                          (unsigned char **) second_volume_data, weights2,
                           second_x_offsets, second_y_offsets,
                           cmode_colour_map, pixels );
             }
@@ -345,9 +375,10 @@ public  void  render_volume_to_slice(
             if( volume1_type == UNSIGNED_BYTE && volume2_type == UNSIGNED_BYTE )
             {
                 render_byte_byte_volumes_rgb_flat(
-                          x_size, y_size, (unsigned char *) volume_data,
+                          x_size, y_size, n_slices,
+                          (unsigned char **) volume_data, weights1,
                           x_offsets, y_offsets,
-                          (unsigned char *) second_volume_data,
+                          (unsigned char **) second_volume_data, weights2,
                           second_x_offsets, second_y_offsets,
                           rgb_colour_map, pixels );
             }
@@ -355,9 +386,10 @@ public  void  render_volume_to_slice(
                      volume2_type == UNSIGNED_SHORT )
             {
                 render_short_short_volumes_rgb_flat(
-                          x_size, y_size, (unsigned short *) volume_data,
+                          x_size, y_size, n_slices,
+                          (unsigned short **) volume_data, weights1,
                           x_offsets, y_offsets,
-                          (unsigned short *) second_volume_data,
+                          (unsigned short **) second_volume_data, weights2,
                           second_x_offsets, second_y_offsets,
                           rgb_colour_map, pixels );
             }
@@ -365,18 +397,20 @@ public  void  render_volume_to_slice(
                      volume2_type == UNSIGNED_SHORT )
             {
                 render_byte_short_volumes_rgb_flat(
-                          x_size, y_size, (unsigned char *) volume_data,
+                          x_size, y_size, n_slices,
+                          (unsigned char **) volume_data, weights1,
                           x_offsets, y_offsets,
-                          (unsigned short *) second_volume_data,
+                          (unsigned short **) second_volume_data, weights2,
                           second_x_offsets, second_y_offsets,
                           rgb_colour_map, pixels );
             }
             else
             {
                 render_short_byte_volumes_rgb_flat(
-                          x_size, y_size, (unsigned short *) volume_data,
+                          x_size, y_size, n_slices,
+                          (unsigned short **) volume_data, weights1,
                           x_offsets, y_offsets,
-                          (unsigned char *) second_volume_data,
+                          (unsigned char **) second_volume_data, weights2,
                           second_x_offsets, second_y_offsets,
                           rgb_colour_map, pixels );
             }
@@ -387,28 +421,33 @@ public  void  render_volume_to_slice(
         if( colour_map_mode )
         {
             if( volume1_type == UNSIGNED_BYTE )
-                render_byte_volume_colour_map_flat( x_size, y_size,
-                                        (unsigned char *) volume_data,
-                                        x_offsets, y_offsets, *cmode_colour_map,
-                                        pixels );
+                render_byte_volume_colour_map_flat( x_size, y_size, n_slices,
+                             (unsigned char **) volume_data, weights1,
+                             x_offsets, y_offsets, *cmode_colour_map, pixels );
             else
-                render_short_volume_colour_map_flat( x_size, y_size,
-                                        (unsigned short *) volume_data,
-                                        x_offsets, y_offsets, *cmode_colour_map,
-                                        pixels );
+                render_short_volume_colour_map_flat( x_size, y_size, n_slices,
+                             (unsigned short **) volume_data, weights1,
+                             x_offsets, y_offsets, *cmode_colour_map, pixels );
         }
         else
         {
             if( volume1_type == UNSIGNED_BYTE )
-                render_byte_volume_rgb_flat( x_size, y_size,
-                                        (unsigned char *) volume_data,
-                                        x_offsets, y_offsets,
-                                        *rgb_colour_map, pixels );
+                render_byte_volume_rgb_flat( x_size, y_size, n_slices,
+                             (unsigned char **) volume_data, weights1,
+                             x_offsets, y_offsets, *rgb_colour_map, pixels );
             else
-                render_short_volume_rgb_flat( x_size, y_size,
-                                        (unsigned short *) volume_data,
-                                        x_offsets, y_offsets,
-                                        *rgb_colour_map, pixels );
+                render_short_volume_rgb_flat( x_size, y_size, n_slices,
+                             (unsigned short **) volume_data, weights1,
+                             x_offsets, y_offsets, *rgb_colour_map, pixels );
         }
+    }
+
+    FREE( x_offsets );
+    FREE( y_offsets );
+
+    if( second_volume_data != (void **) NULL )
+    {
+        FREE( second_x_offsets );
+        FREE( second_y_offsets );
     }
 }

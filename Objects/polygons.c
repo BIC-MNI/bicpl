@@ -884,3 +884,23 @@ public  Real  get_polygon_edge_angle(
 
     return( angle );
 }
+
+public  Boolean  polygons_are_same_topology(
+    polygons_struct  *p1,
+    polygons_struct  *p2 )
+{
+    int   p;
+
+    if( p1->n_points != p2->n_points || p1->n_items != p2->n_items )
+        return( FALSE );
+
+    for_less( p, 0, p1->n_items )
+        if( p1->end_indices[p] != p2->end_indices[p] )
+            return( FALSE );
+
+    for_less( p, 0, p1->end_indices[p1->n_items-1] )
+        if( p1->indices[p] != p2->indices[p] )
+            return( FALSE );
+
+    return( TRUE );
+}
