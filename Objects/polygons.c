@@ -802,3 +802,83 @@ private  Real  estimate_polygon_curvature(
 
     return( curvature );
 }
+
+private  void  get_opposite_point(
+    polygons_struct  *polygons,
+    int              poly,
+    int              edge,
+    Point            *point )
+{
+    int  v, size;
+
+    size = GET_OBJECT_SIZE( *polygons, poly );
+
+    if( size == 3 )
+        v = (edge + 2) % size;
+    else
+        v = (edge + size/2) % size;
+
+    *point = polygons->points[polygons->indices[
+                         POINT_INDEX( polygons->end_indices, poly, v)]];
+}
+
+public  Real  get_polygon_edge_angle(
+    polygons_struct  *polygons,
+    int              poly,
+    int              edge )
+{
+    int     size, i, point_index1, point_index2, neighbour_poly;
+    Real    angle, edge_len_squared, scale, x, y;
+    Point   p1, p2, poly1_point, poly2_point;
+    Vector  v1, v2, normal, diff, edge_vec;
+
+    neighbour_poly = polygons->neighbours[POINT_INDEX( polygons->end_indices,
+                                                       poly, edge )];
+
+    if( neighbour_poly < 0 )
+        return( PI );
+
+    size = GET_OBJECT_SIZE( *polygons, poly );
+
+    point_index1 = polygons->indices[ POINT_INDEX( polygons->end_indices,
+                                                   poly, edge )];
+    point_index2 = polygons->indices[ POINT_INDEX( polygons->end_indices,
+                                                   poly, (edge+1)%size )];
+    p1 = polygons->points[point_index1];
+    p2 = polygons->points[point_index2];
+
+    get_opposite_point( polygons, poly, edge, &poly1_point );
+
+    i = find_edge_index( polygons, neighbour_poly, point_index1, point_index2 );
+    get_opposite_point( polygons, neighbour_poly, i, &poly2_point );
+
+    SUB_POINTS( edge_vec, p2, p1 );
+    SUB_POINTS( v1, poly1_point, p1 );
+    SUB_POINTS( v2, poly2_point, p1 );
+
+    edge_len_squared = DOT_VECTORS( edge_vec, edge_vec );
+    if( edge_len_squared == 0.0 )
+        edge_len_squared = 1.0;
+
+    scale = DOT_VECTORS( v1, edge_vec ) / edge_len_squared;
+    SCALE_VECTOR( diff, edge_vec, scale );
+    SUB_VECTORS( v1, v1, diff );
+    NORMALIZE_VECTOR( v1, v1 );
+
+    CROSS_VECTORS( normal, edge_vec, v1 );
+    NORMALIZE_VECTOR( normal, normal );
+
+    scale = DOT_VECTORS( v2, edge_vec ) / edge_len_squared;
+    SCALE_VECTOR( diff, edge_vec, scale );
+    SUB_VECTORS( v2, v2, diff );
+
+    x = DOT_VECTORS( v2, v1 );
+    y = -DOT_VECTORS( v2, normal );
+
+    angle = compute_clockwise_rotation( x, y );
+
+    if( angle < 0.0 )
+        angle += 2.0 * PI;
+
+    return( angle );
+}
