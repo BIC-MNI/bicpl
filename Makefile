@@ -12,6 +12,9 @@ BIC_LINT_LIB = llib-lbicpl.ln
 
 include Makefile.objects
 
+#Numerical/minimize_lsq.c  Numerical/minimize_lsq_float.c: \
+#                               Numerical/minimize_lsq_include.c
+
 INCLUDE = $(VOLUME_IO_INCLUDE) -IInclude $(RECIPES_INCLUDE)
 
 #-----------------------------------------------------------------------------
