@@ -1,7 +1,7 @@
 
 #include  <def_mni.h>
 
-public  Status  initialize_text(
+public  void   initialize_text(
     text_struct     *text,
     Point           *position,
     Colour          colour,
@@ -12,6 +12,4 @@ public  Status  initialize_text(
     text->colour = colour;
     text->font = text_font;
     text->size = size;
-
-    return( OK );
 }

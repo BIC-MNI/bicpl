@@ -1,7 +1,9 @@
 #ifndef  DEF_OBJECTS
 #define  DEF_OBJECTS
 
-#include  <def_mni.h>
+#include  <def_basic.h>
+#include  <def_stack.h>
+#include  <def_bintree.h>
 
 #define  SET_OBJECT_SIZE( object, n, size ) \
              { \
@@ -72,6 +74,8 @@ typedef  struct
     int             *indices;
 
     Smallest_int    *visibilities;
+    int             *neighbours;
+    bintree_struct  *bintree;
 } polygons_struct;
 
 typedef  struct
@@ -162,7 +166,7 @@ typedef struct  object_struct
 typedef  struct
 {
     int              index;
-    int              n_items;
+    int              n_objects;
     object_struct    **object_list;
 } object_stack_struct;
 

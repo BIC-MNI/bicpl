@@ -58,6 +58,7 @@ private  Status  input_global_variable(
     else
     {
         status = OK;
+        set_status = OK;
         *eof = TRUE;
     }
 
@@ -267,7 +268,7 @@ public  Status  set_global_variable(
             break;
 
         case Colour_type:
-            status = convert_string_to_colour( value, &tmp_colour );
+            tmp_colour = convert_string_to_colour( value );
 
             if( status == OK )
             {

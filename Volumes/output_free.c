@@ -10,11 +10,15 @@ public  Status  output_volume(
     int      a1, a2, a3;
     int      n_bytes_per_voxel, indices[N_DIMENSIONS];
     FILE     *file;
-    String   header_filename, voxel_filename;
+    String   header_filename, voxel_filename, abs_voxel_filename;
+    String   filename_no_dirs;
     int      axis;
 
     (void) sprintf( header_filename, "%s.fre", prefix );
-    (void) sprintf( voxel_filename, "%s.img", prefix );
+    (void) sprintf( abs_voxel_filename, "%s.fre", prefix );
+
+    remove_directories_from_filename( prefix, filename_no_dirs );
+    (void) sprintf( voxel_filename, "%s.img", filename_no_dirs );
 
     status = open_file( header_filename, WRITE_FILE, ASCII_FORMAT, &file );
 
@@ -76,7 +80,8 @@ public  Status  output_volume(
         status = close_file( file );
 
     if( status == OK )
-        status = open_file( voxel_filename, WRITE_FILE, BINARY_FORMAT, &file );
+        status = open_file( abs_voxel_filename, WRITE_FILE, BINARY_FORMAT,
+                            &file );
 
     if( status == OK )
     {

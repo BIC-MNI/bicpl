@@ -1,7 +1,7 @@
 #ifndef  DEF_GLOBAL_LOOKUP
 #define  DEF_GLOBAL_LOOKUP
 
-#include  <def_mni.h>
+#include  <def_basic.h>
 
 typedef  enum {
                  Boolean_type,

@@ -1,5 +1,7 @@
 
 #include  <def_mni.h>
+#include  <def_splines.h>
+#include  <def_module.h>
 
 public  void  smooth_lines(
     lines_struct  *lines,
@@ -108,7 +110,7 @@ public  void  create_line_spline(
 
         wrap_around = (point_index1 == point_index2);
 
-        begin_adding_points_to_line( new_lines );
+        start_new_line( new_lines );
 
         add_point_to_line( new_lines, &lines->points[point_index1] );
 

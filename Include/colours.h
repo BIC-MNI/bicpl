@@ -1,7 +1,7 @@
 #ifndef  DEF_COLOURS
 #define  DEF_COLOURS
 
-#include  <def_mni.h>
+#include  <def_basic.h>
 
 #undef  START_COLOURS
 #undef  END_COLOURS

@@ -14,7 +14,7 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-#include  <def_mni.h>
+#include  <def_basic.h>
 
 typedef  struct  hash_entry_struct
 {

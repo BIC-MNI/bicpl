@@ -1,26 +1,26 @@
 
-#include  <def_string.h>
-#include  <def_files.h>
 #include  <def_mni.h>
-#include  <def_objects.h>
-#include  <def_alloc.h>
 
-Status   io_object_type();
-static    Status   io_points();
-static    Status   io_vectors();
-Status   io_surfprop();
+private  Status  io_points(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    int             n,
+    Point           *points[] );
+private  Status  io_vectors(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    int             n,
+    Vector          *vectors[] );
 
-public  Status  io_lines( file, io_flag, format, lines )
-    FILE                *file;
-    IO_types            io_flag;
-    File_formats        format;
-    lines_struct        *lines;
+public  Status  io_lines(
+    FILE                *file,
+    IO_types            io_flag,
+    File_formats        format,
+    lines_struct        *lines )
 {
     Status   status;
-    Status   io_colours();
-    Status   io_newline();
-    Status   io_int();
-    Status   io_ints();
 
     status = OK;
 
@@ -83,19 +83,13 @@ public  Status  io_lines( file, io_flag, format, lines )
     return( status );
 }
 
-public  Status  io_marker( file, io_flag, format, marker )
-    FILE                *file;
-    IO_types            io_flag;
-    File_formats        format;
-    marker_struct       *marker;
+public  Status  io_marker(
+    FILE                *file,
+    IO_types            io_flag,
+    File_formats        format,
+    marker_struct       *marker )
 {
     Status   status;
-    Status   io_object_type();
-    Status   io_real();
-    Status   io_colour();
-    Status   io_newline();
-    Status   io_point();
-    Status   io_quoted_string();
 
     status = io_object_type( file, io_flag, format, MARKER );
 
@@ -127,16 +121,13 @@ public  Status  io_marker( file, io_flag, format, marker )
     return( status );
 }
 
-public  Status  io_model( file, io_flag, format, model )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    model_struct    *model;
+public  Status  io_model(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    model_struct    *model )
 {
     Status   status;
-    Status   io_object_type();
-    Status   io_quoted_string();
-    Status   io_newline();
 
     status = io_object_type( file, io_flag, format, MODEL );
 
@@ -150,63 +141,66 @@ public  Status  io_model( file, io_flag, format, model )
     return( status );
 }
 
-public  Status  io_pixels( file, io_flag, format, pixels )
-    FILE                *file;
-    IO_types            io_flag;
-    File_formats        format;
-    pixels_struct       *pixels;
+public  Status  io_pixels(
+    FILE                *file,
+    IO_types            io_flag,
+    File_formats        format,
+    pixels_struct       *pixels )
 {
     Status   status;
-    int      n_pixels, x_size, y_size;
-    Status   io_object_type();
-    Status   io_newline();
-    Status   io_int();
-    Status   io_unsigned_chars();
-    Status   io_pixel_colours();
+    int      n_pixels;
 
     status = OK;
 
-    if( io_flag == READ_FILE ||
-        (pixels->x_max >= pixels->x_min && pixels->y_max >= pixels->y_min) )
+    if( io_flag == READ_FILE || (pixels->x_size > 0 && pixels->y_size > 0) )
     {
         status = io_object_type( file, io_flag, format, PIXELS );
 
         if( status == OK )
             status = io_int( file, io_flag, format, (int *)&pixels->pixel_type);
 
-        if( status == OK && io_flag == WRITE_FILE )
-        {
-            x_size = pixels->x_max - pixels->x_min + 1;
-            y_size = pixels->y_max - pixels->y_min + 1;
-        }
+        if( status == OK )
+            status = io_int( file, io_flag, format, &pixels->x_size );
 
         if( status == OK )
-            status = io_int( file, io_flag, format, &x_size );
-
-        if( status == OK )
-            status = io_int( file, io_flag, format, &y_size );
+            status = io_int( file, io_flag, format, &pixels->y_size );
 
         if( status == OK && io_flag == READ_FILE )
         {
-            pixels->x_min = 0;
-            pixels->x_max = x_size-1;
-            pixels->y_min = 0;
-            pixels->y_max = y_size-1;
+            pixels->x_position = 0;
+            pixels->y_position = 0;
         }
 
         if( status == OK )
         {
-            n_pixels = x_size * y_size;
+            n_pixels = pixels->x_size * pixels->y_size;
 
-            if( pixels->pixel_type == Pixel8 )
+            switch( pixels->pixel_type )
             {
+            case COLOUR_INDEX_8BIT_PIXEL:
                 status = io_unsigned_chars( file, io_flag, format, n_pixels,
-                                            &pixels->data.pixels8 );
-            }
-            else
-            {
+                                  &pixels->data.pixels_8bit_colour_index );
+                break;
+
+            case COLOUR_INDEX_16BIT_PIXEL:
+                if( io_flag == READ_FILE )
+                    ALLOC( pixels->data.pixels_16bit_colour_index, n_pixels );
+
+                status = io_binary_data( file, io_flag,
+                          (void *) (&pixels->data.pixels_16bit_colour_index),
+                          sizeof(pixels->data.pixels_16bit_colour_index[0]),
+                          n_pixels );
+                break;
+
+            case RGB_PIXEL:
                 status = io_pixel_colours( file, io_flag, format, n_pixels,
-                                           &pixels->data.pixels24 );
+                                           &pixels->data.pixels_rgb );
+                break;
+
+            default:
+                print( "Error, unrecognized pixel type %d.\n",
+                       pixels->pixel_type );
+                status = ERROR;
             }
         }
     }
@@ -214,21 +208,13 @@ public  Status  io_pixels( file, io_flag, format, pixels )
     return( status );
 }
 
-public  Status  io_polygons( file, io_flag, format, polygons )
-    FILE                *file;
-    IO_types            io_flag;
-    File_formats        format;
-    polygons_struct     *polygons;
+public  Status  io_polygons(
+    FILE                *file,
+    IO_types            io_flag,
+    File_formats        format,
+    polygons_struct     *polygons )
 {
     Status   status;
-    Status   io_object_type();
-    Status   io_colours();
-    Status   io_surfprop();
-    Status   io_newline();
-    Status   io_int();
-    Status   io_ints();
-    Status   io_points();
-    Status   io_vectors();
 
     status = OK;
 
@@ -301,21 +287,13 @@ public  Status  io_polygons( file, io_flag, format, polygons )
     return( status );
 }
 
-public  Status  io_quadmesh( file, io_flag, format, quadmesh )
-    FILE                *file;
-    IO_types            io_flag;
-    File_formats        format;
-    quadmesh_struct     *quadmesh;
+public  Status  io_quadmesh(
+    FILE                *file,
+    IO_types            io_flag,
+    File_formats        format,
+    quadmesh_struct     *quadmesh )
 {
     Status   status;
-    Status   io_object_type();
-    Status   io_colours();
-    Status   io_boolean();
-    Status   io_surfprop();
-    Status   io_newline();
-    Status   io_int();
-    Status   io_points();
-    Status   io_vectors();
 
     status = OK;
 
@@ -373,20 +351,13 @@ public  Status  io_quadmesh( file, io_flag, format, quadmesh )
     return( status );
 }
 
-public  Status  io_text( file, io_flag, format, text )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    text_struct     *text;
+public  Status  io_text(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    text_struct     *text )
 {
     Status   status;
-    Status   io_object_type();
-    Status   io_colour();
-    Status   io_int();
-    Status   io_real();
-    Status   io_point();
-    Status   io_quoted_string();
-    Status   io_newline();
 
     status = io_object_type( file, io_flag, format, TEXT );
 
@@ -403,7 +374,7 @@ public  Status  io_text( file, io_flag, format, text )
         status = io_point( file, io_flag, format, &text->origin );
 
     if( status == OK )
-        status = io_quoted_string( file, io_flag, format, text->text,
+        status = io_quoted_string( file, io_flag, format, text->string,
                                    MAX_STRING_LENGTH );
 
     if( status == OK )
@@ -412,190 +383,40 @@ public  Status  io_text( file, io_flag, format, text )
     return( status );
 }
 
-public  Status  io_volume( file, io_flag, format, volume )
-    FILE                *file;
-    IO_types            io_flag;
-    File_formats        format;
-    volume_struct       *volume;
+public  Status  io_point(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    Point           *point )
 {
     Status   status;
-    Status   io_object_type();
-    Status   io_int();
-    Status   io_real();
-    Status   io_newline();
-    Status   io_volume_mapping();
-    int      dummy_int = 0;
-    Real     dummy_real = 0.0;
-
-    status = OK;
-
-    if( io_flag == READ_FILE ||
-        (volume->sizes[X] > 0 &&
-         volume->sizes[Y] > 0 &&
-         volume->sizes[Z] > 0) )
-    {
-        status = io_object_type( file, io_flag, format, VOLUME );
-
-        if( status == OK )
-        {
-            status = io_quoted_string( file, io_flag, format,
-                                       volume->filename, MAX_STRING_LENGTH );
-        }
-
-        if( status == OK )
-        {
-            status = io_quoted_string( file, io_flag, format,
-                                       volume->activity_filename,
-                                       MAX_STRING_LENGTH );
-        }
-
-        if( status == OK )
-            status = io_int( file, io_flag, format, &volume->sizes[X] );
-
-        if( status == OK )
-            status = io_int( file, io_flag, format, &volume->sizes[Y] );
-
-        if( status == OK )
-            status = io_int( file, io_flag, format, &volume->sizes[Z] );
-
-        if( status == OK )
-        {
-            status = io_volume_mapping( file, io_flag, format,
-                                        volume->axis_map, volume->axis_flip );
-        }
-
-        if( status == OK )
-        {
-            status = io_real( file, io_flag, format,
-                              &volume->slice_thickness[X] );
-        }
-
-        if( status == OK )
-        {
-            status = io_real( file, io_flag, format,
-                              &volume->slice_thickness[Y] );
-        }
-
-        if( status == OK )
-        {
-            status = io_real( file, io_flag, format,
-                              &volume->slice_thickness[Z] );
-        }
-
-        if( status == OK )
-            status = io_real( file, io_flag, format,
-                              &volume->activity_threshold );
-
-        if( status == OK )
-            status = io_real( file, io_flag, format, &dummy_real );
-
-        if( status == OK )
-            status = io_newline( file, io_flag, format );
-    }
-
-    return( status );
-}
-
-public  Status  io_volume_mapping( file, io_flag, format, axis_map, axis_flip )
-    FILE                *file;
-    IO_types            io_flag;
-    File_formats        format;
-    int                 axis_map[N_DIMENSIONS];
-    Boolean             axis_flip[N_DIMENSIONS];
-{
-    Status         status;
-    int            axis, axis_index;
-    char           ch;
-    static   char  axis_names[N_DIMENSIONS] = { 'x', 'y', 'z' };
-    Status         input_nonwhite_character();
-    Status         output_character();
-
-    status = OK;
-
-    if( io_flag == WRITE_FILE )
-    {
-        for_less( axis, 0, N_DIMENSIONS )
-        {
-            if( axis_flip[axis] )
-                status = output_character( file, '-' );
-
-            if( status == OK )
-                status = output_character( file, axis_names[axis_map[axis]] );
-
-            if( status == OK && format == ASCII_FORMAT )
-                status = output_character( file, ' ' );
-        }
-    }
-    else
-    {
-        for_less( axis, 0, N_DIMENSIONS )
-        {
-            axis_flip[axis] = FALSE;
-
-            status = input_nonwhite_character( file, &ch );
-
-            if( ch == '-' )
-            {
-                status = input_nonwhite_character( file, &ch );
-                axis_flip[axis] = TRUE;
-            }
-
-            if( ch >= 'X' && ch <= 'Z' )
-                axis_index = ch - 'X';
-            else
-                axis_index = ch - 'x';
-
-            if( axis_index < 0 || axis_index >= N_DIMENSIONS )
-            {
-                PRINT_ERROR( "Error in axis name.\n" );
-                status = ERROR;
-                axis_index = 0;
-                break;
-            }
-
-            axis_map[axis] = axis_index;
-        }
-    }
-
-    return( status );
-}
-
-public  Status  io_point( file, io_flag, format, point )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    Point           *point;
-{
-    Status   status;
-    Status   io_real();
-    Status   io_binary_data();
 
     status = OK;
 
     if( format == ASCII_FORMAT )
     {
-        status = io_real( file, io_flag, format, &Point_x(*point) );
+        status = io_float( file, io_flag, format, &Point_x(*point) );
 
         if( status == OK )
-            status = io_real( file, io_flag, format, &Point_y(*point) );
+            status = io_float( file, io_flag, format, &Point_y(*point) );
 
         if( status == OK )
-            status = io_real( file, io_flag, format, &Point_z(*point) );
+            status = io_float( file, io_flag, format, &Point_z(*point) );
     }
     else
     {
-        status = io_binary_data( file, io_flag, (VOID *) point,
+        status = io_binary_data( file, io_flag, (void *) point,
                                  sizeof(*point), 1 );
     }
 
     return( status );
 }
 
-public  Status  io_vector( file, io_flag, format, vector )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    Vector          *vector;
+public  Status  io_vector(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    Vector          *vector )
 {
     Status   status;
 
@@ -603,61 +424,63 @@ public  Status  io_vector( file, io_flag, format, vector )
 
     if( format == ASCII_FORMAT )
     {
-        status = io_real( file, io_flag, format, &Vector_x(*vector) );
+        status = io_float( file, io_flag, format, &Vector_x(*vector) );
 
         if( status == OK )
-            status = io_real( file, io_flag, format, &Vector_y(*vector));
+            status = io_float( file, io_flag, format, &Vector_y(*vector));
 
         if( status == OK )
-            status = io_real( file, io_flag, format, &Vector_z(*vector));
+            status = io_float( file, io_flag, format, &Vector_z(*vector));
     }
     else
     {
-        status = io_binary_data( file, io_flag, (VOID *) vector,
+        status = io_binary_data( file, io_flag, (void *) vector,
                                  sizeof(*vector), 1 );
     }
 
     return( status );
 }
 
-public  Status  io_colour( file, io_flag, format, colour )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    Colour          *colour;
+public  Status  io_colour(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    Colour          *colour )
 {
+    float    r, g, b;
     Status   status;
 
     status = OK;
 
-    if( format == ASCII_FORMAT )
+    if( io_flag == WRITE_FILE )
     {
-        status = io_real( file, io_flag, format, &Colour_r(*colour) );
-
-        if( status == OK )
-            status = io_real( file, io_flag, format, &Colour_g(*colour));
-
-        if( status == OK )
-            status = io_real( file, io_flag, format, &Colour_b(*colour));
+        r = get_Colour_r_0_1( *colour );
+        g = get_Colour_g_0_1( *colour );
+        b = get_Colour_b_0_1( *colour );
     }
-    else
+
+    status = io_float( file, io_flag, format, &r );
+    if( status == OK )
+        status = io_float( file, io_flag, format, &g );
+    if( status == OK )
+        status = io_float( file, io_flag, format, &b );
+
+    if( io_flag == READ_FILE )
     {
-        status = io_binary_data( file, io_flag, (VOID *) colour,
-                                 sizeof(*colour), 1 );
+        *colour = make_Colour_0_1( r, g, b );
     }
 
     return( status );
 }
 
-public  Status  io_colours( file, io_flag, format, colour_flag, n_items,
-                            n_points, colours )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    Colour_flags    *colour_flag;
-    int             n_items;
-    int             n_points;
-    Colour          **colours;
+public  Status  io_colours(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    Colour_flags    *colour_flag,
+    int             n_items,
+    int             n_points,
+    Colour          **colours )
 {
     int      i, n_colours;
     Status   status;
@@ -672,35 +495,35 @@ public  Status  io_colours( file, io_flag, format, colour_flag, n_items,
         case PER_ITEM_COLOURS:    n_colours = n_items;   break;
         case PER_VERTEX_COLOURS:  n_colours = n_points;   break;
         default:
-            PRINT_ERROR( "Error inputting colour flag.\n" );
+            print( "Error inputting colour flag.\n" );
             status = ERROR;
             break;
         }
     }
 
     if( status == OK && io_flag == READ_FILE )
-        ALLOC( status, *colours, n_colours );
+        ALLOC( *colours, n_colours );
 
     if( status == OK )
     {
-        if( format == ASCII_FORMAT )
+        if( TRUE || format == ASCII_FORMAT )
         {
             for_less( i, 0, n_colours )
                 status = io_colour( file, io_flag, format, &(*colours)[i] );
         }
         else
-            status = io_binary_data( file, io_flag, (VOID *) (*colours),
+            status = io_binary_data( file, io_flag, (void *) (*colours),
                                  sizeof((*colours)[0]), n_colours );
     }
 
     return( status );
 }
 
-public  Status  io_surfprop( file, io_flag, format, surfprop )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    Surfprop        *surfprop;
+public  Status  io_surfprop(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    Surfprop        *surfprop )
 {
     Status   status;
 
@@ -708,25 +531,25 @@ public  Status  io_surfprop( file, io_flag, format, surfprop )
 
     if( format == ASCII_FORMAT )
     {
-        status = io_real( file, io_flag, format,
+        status = io_float( file, io_flag, format,
                           &Surfprop_a(*surfprop) );
 
         if( status == OK )
-            status = io_real( file, io_flag, format, &Surfprop_d(*surfprop) );
+            status = io_float( file, io_flag, format, &Surfprop_d(*surfprop) );
 
         if( status == OK )
-            status = io_real( file, io_flag, format, &Surfprop_s(*surfprop) );
+            status = io_float( file, io_flag, format, &Surfprop_s(*surfprop) );
 
         if( status == OK )
-            status = io_real( file, io_flag, format, &Surfprop_se(*surfprop) );
+            status = io_float( file, io_flag, format, &Surfprop_se(*surfprop) );
 
         if( status == OK )
-            status = io_real( file, io_flag, format, &Surfprop_t(*surfprop) );
+            status = io_float( file, io_flag, format, &Surfprop_t(*surfprop) );
 
     }
     else
     {
-        status = io_binary_data( file, io_flag, (VOID *) surfprop,
+        status = io_binary_data( file, io_flag, (void *) surfprop,
                                  sizeof(*surfprop), 1 );
     }
 
@@ -736,12 +559,12 @@ public  Status  io_surfprop( file, io_flag, format, surfprop )
     return( status );
 }
 
-private  Status  io_points( file, io_flag, format, n, points )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    int             n;
-    Point           *points[];
+private  Status  io_points(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    int             n,
+    Point           *points[] )
 {
     Status   status;
     int      i;
@@ -750,7 +573,7 @@ private  Status  io_points( file, io_flag, format, n, points )
 
     if( io_flag == READ_FILE )
     {
-        ALLOC( status, *points, n );
+        ALLOC( *points, n );
     }
 
     if( status == OK )
@@ -770,7 +593,7 @@ private  Status  io_points( file, io_flag, format, n, points )
         }
         else
         {
-            status = io_binary_data( file, io_flag, (VOID *) (*points),
+            status = io_binary_data( file, io_flag, (void *) (*points),
                                      sizeof((*points)[0]), n );
         }
     }
@@ -778,12 +601,12 @@ private  Status  io_points( file, io_flag, format, n, points )
     return( status );
 }
 
-private  Status  io_vectors( file, io_flag, format, n, vectors )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    int             n;
-    Vector          *vectors[];
+private  Status  io_vectors(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    int             n,
+    Vector          *vectors[] )
 {
     Status   status;
     int      i;
@@ -792,7 +615,7 @@ private  Status  io_vectors( file, io_flag, format, n, vectors )
 
     if( io_flag == READ_FILE )
     {
-        ALLOC( status, *vectors, n );
+        ALLOC( *vectors, n );
     }
 
     if( format == ASCII_FORMAT )
@@ -810,17 +633,18 @@ private  Status  io_vectors( file, io_flag, format, n, vectors )
     }
     else
     {
-        status = io_binary_data( file, io_flag, (VOID *) (*vectors),
+        status = io_binary_data( file, io_flag, (void *) (*vectors),
                                  sizeof((*vectors)[0]), n );
     }
 
     return( status );
 }
 
-public  Status  io_object_type( file, io_flag, format, type )
-    FILE           *file;
-    int            io_flag, format;
-    object_types   type;
+public  Status  io_object_type(
+    FILE           *file,
+    IO_types       io_flag,
+    File_formats   format,
+    Object_types   type )
 {
     int      ch;
     Status   status;
@@ -838,7 +662,9 @@ public  Status  io_object_type( file, io_flag, format, type )
         case  POLYGONS:    ch = 'p';    break;
         case  QUADMESH:    ch = 'q';    break;
         case  TEXT:        ch = 't';    break;
+/*
         case  VOLUME:      ch = 'v';    break;
+*/
         }
 
         if( format == ASCII_FORMAT )
@@ -848,7 +674,7 @@ public  Status  io_object_type( file, io_flag, format, type )
 
         if( fputc( ch, file ) == EOF )
         {
-            PRINT_ERROR( "Error outputting char.\n" );
+            print( "Error outputting char.\n" );
             status = ERROR;
         }
     }
@@ -856,15 +682,14 @@ public  Status  io_object_type( file, io_flag, format, type )
     return( status );
 }
 
-public  Status  input_object_type( file, type, format, eof )
-    FILE           *file;
-    object_types   *type;
-    File_formats   *format;
-    Boolean        *eof;
+public  Status  input_object_type(
+    FILE           *file,
+    Object_types   *type,
+    File_formats   *format,
+    Boolean        *eof )
 {
     char     ch;
     Status   status;
-    Status   input_nonwhite_character();
 
     status = OK;
     *eof = FALSE;
@@ -892,10 +717,12 @@ public  Status  input_object_type( file, type, format, eof )
         case  'p':   *type = POLYGONS;     break;
         case  'q':   *type = QUADMESH;     break;
         case  't':   *type = TEXT;         break;
+/*
         case  'v':   *type = VOLUME;       break;
+*/
 
         default:
-            PRINT_ERROR( "Unrecognized object type in file.\n" );
+            print( "Unrecognized object type in file.\n" );
             status = ERROR;
         }
     }
@@ -911,23 +738,22 @@ public  Status  input_object_type( file, type, format, eof )
 #define  PIXELS_PER_LINE    1
 #define  BUFFER_SIZE        256
 
-public  Status  io_pixel_colours( file, io_flag, format, n, pixel_colours )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    int             n;
-    Pixel_colour    *pixel_colours[];
+public  Status  io_pixel_colours(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    int             n,
+    Colour          *pixel_colours[] )
 {
     Status         status;
-    Status         io_pixel_colour();
     unsigned char  buffer[3*BUFFER_SIZE];
-    Pixel_colour   pixel_colour;
+    Colour         pixel_colour;
     int            i, block, n_blocks, n_to_do, start_pixel_index;
 
     status = OK;
 
     if( io_flag == READ_FILE )
-        ALLOC( status, *pixel_colours, n );
+        ALLOC( *pixel_colours, n );
 
     if( status == OK )
     {
@@ -969,24 +795,24 @@ public  Status  io_pixel_colours( file, io_flag, format, n, pixel_colours )
                     {
                         pixel_colour = (*pixel_colours)[start_pixel_index+i];
                         buffer[3*i+0] = (unsigned char)
-                                        Pixel_colour_r(pixel_colour);
+                                        get_Colour_r(pixel_colour);
                         buffer[3*i+1] = (unsigned char)
-                                        Pixel_colour_g(pixel_colour);
+                                        get_Colour_g(pixel_colour);
                         buffer[3*i+2] = (unsigned char)
-                                        Pixel_colour_b(pixel_colour);
+                                        get_Colour_b(pixel_colour);
                     }
                 }
 
-                status = io_binary_data( file, io_flag, (VOID *) buffer,
+                status = io_binary_data( file, io_flag, (void *) buffer,
                                      sizeof(buffer[0]), 3 * n_to_do );
 
                 if( io_flag == READ_FILE )
                 {
                     for_less( i, 0, n_to_do )
                     {
-                        pixel_colour = RGB_255_TO_PIXEL( buffer[3*i+0],
-                                                         buffer[3*i+1],
-                                                         buffer[3*i+2] );
+                        pixel_colour = make_Colour( buffer[3*i+0],
+                                                    buffer[3*i+1],
+                                                    buffer[3*i+2] );
                         (*pixel_colours)[start_pixel_index+i] = pixel_colour;
                     }
                 }
@@ -997,11 +823,11 @@ public  Status  io_pixel_colours( file, io_flag, format, n, pixel_colours )
     return( status );
 }
 
-public  Status  io_pixel_colour( file, io_flag, format, pixel_colour )
-    FILE            *file;
-    IO_types        io_flag;
-    File_formats    format;
-    Pixel_colour    *pixel_colour;
+public  Status  io_pixel_colour(
+    FILE            *file,
+    IO_types        io_flag,
+    File_formats    format,
+    Colour          *pixel_colour )
 {
     int      r, g, b;
     Status   status;
@@ -1012,9 +838,9 @@ public  Status  io_pixel_colour( file, io_flag, format, pixel_colour )
     {
         if( io_flag == WRITE_FILE )
         {
-            r = Pixel_colour_r( *pixel_colour );
-            g = Pixel_colour_g( *pixel_colour );
-            b = Pixel_colour_b( *pixel_colour );
+            r = get_Colour_r( *pixel_colour );
+            g = get_Colour_g( *pixel_colour );
+            b = get_Colour_b( *pixel_colour );
         }
 
         status = io_int( file, io_flag, format, &r );
@@ -1026,14 +852,13 @@ public  Status  io_pixel_colour( file, io_flag, format, pixel_colour )
             status = io_int( file, io_flag, format, &b );
 
         if( io_flag == READ_FILE && status == OK )
-            *pixel_colour = RGB_255_TO_PIXEL( r, g, b );
+            *pixel_colour = make_Colour( r, g, b );
     }
     else
     {
-        status = io_binary_data( file, io_flag, (VOID *) pixel_colour,
+        status = io_binary_data( file, io_flag, (void *) pixel_colour,
                                  sizeof(*pixel_colour), 1 );
     }
 
     return( status );
 }
-

@@ -38,11 +38,23 @@ public  void  set_colour_coding_min_max(
     colour_coding->max_value = max_value;
 }
 
+public  Colour  get_colour_coding_under_colour(
+    colour_coding_struct   *colour_coding )
+{
+    return( colour_coding->under_colour );
+}
+
 public  void  set_colour_coding_under_colour(
     colour_coding_struct   *colour_coding,
     Colour                 under_colour )
 {
     colour_coding->under_colour = under_colour;
+}
+
+public  Colour  get_colour_coding_over_colour(
+    colour_coding_struct   *colour_coding )
+{
+    return( colour_coding->over_colour );
 }
 
 public  void  set_colour_coding_over_colour(

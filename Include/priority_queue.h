@@ -76,41 +76,33 @@
 @MODIFIED   :
 ---------------------------------------------------------------------------- */
 
-#define  INSERT_IN_PRIORITY_QUEUE( status, q, entry, priority ) \
+#define  INSERT_IN_PRIORITY_QUEUE( q, entry, priority ) \
          { \
-             int  save_n_alloced; \
-             save_n_alloced = (q).n_alloced; \
-             SET_ARRAY_SIZE( status, (q).entries, (q).n_alloced, \
+             int  _index, _next_index; \
+\
+             SET_ARRAY_SIZE( (q).entries, (q).n_alloced, \
                              (q).n_entries+1, DEFAULT_CHUNK_SIZE ); \
-             if( status == OK ) \
+             SET_ARRAY_SIZE( (q).priorities, (q).n_alloced, \
+                             (q).n_entries+1, DEFAULT_CHUNK_SIZE ); \
+\
+             _index = (q).n_entries; \
+\
+             while( _index > 1 ) \
              { \
-                 SET_ARRAY_SIZE( status, (q).priorities, save_n_alloced, \
-                                 (q).n_entries+1, DEFAULT_CHUNK_SIZE ); \
+                 _next_index = _index >> 1; \
+                 if( (q).priorities[_next_index] > priority ) \
+                     break; \
+                 (q).priorities[_index] = (q).priorities[_next_index]; \
+                 (q).entries[_index] = (q).entries[_next_index]; \
+                 _index = _next_index; \
              } \
-\
-             if( status == OK ) \
-             { \
-                 int  _index, _next_index; \
-\
-                 _index = (q).n_entries; \
-\
-                 while( _index > 1 ) \
-                 { \
-                     _next_index = _index >> 1; \
-                     if( (q).priorities[_next_index] > priority ) \
-                         break; \
-                     (q).priorities[_index] = (q).priorities[_next_index]; \
-                     (q).entries[_index] = (q).entries[_next_index]; \
-                     _index = _next_index; \
-                 } \
  \
-                 (q).priorities[_index] = priority; \
-                 (q).entries[_index] = entry; \
+             (q).priorities[_index] = priority; \
+             (q).entries[_index] = entry; \
          \
-                 ++(q).n_entries; \
+             ++(q).n_entries; \
  \
-                 (q).n_alloced = (q).n_entries; \
-             } \
+             (q).n_alloced = (q).n_entries; \
          }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -219,20 +211,12 @@
 @MODIFIED   :
 ---------------------------------------------------------------------------- */
 
-#define  DELETE_PRIORITY_QUEUE( status, q ) \
+#define  DELETE_PRIORITY_QUEUE( q ) \
          { \
              if( (q).n_alloced > 0 ) \
              { \
-                 FREE( status, (q).entries ) \
- \
-                 if( status == OK ) \
-                 { \
-                     FREE( status, (q).priorities ) \
-                 } \
-             } \
-             else \
-             { \
-                 status = OK; \
+                 FREE( (q).entries ) \
+                 FREE( (q).priorities ) \
              } \
          }
 

@@ -1,20 +1,39 @@
-#include  <def_objects.h>
-#include  <def_math.h>
-#include  <def_colours.h>
+#include  <def_mni.h>
+#include  <def_module.h>
 
-public  Status  create_polygons_sphere( centre, x_size, y_size, z_size,
-                                        n_up, n_around, subdividing_flag,
-                                        polygons )
-    Point            *centre;
-    Real             x_size;
-    Real             y_size;
-    Real             z_size;
-    int              n_up;
-    int              n_around;
-    Boolean          subdividing_flag;
-    polygons_struct  *polygons;
+private  int  get_point_index(
+    int   up,
+    int   around,
+    int   n_up,
+    int   n_around );
+private  int  get_n_sphere_points(
+    int   n_up,
+    int   n_around );
+private  void  get_sphere_point(
+    Real     up,
+    Real     around,
+    Point    *centre,
+    Real     x_size,
+    Real     y_size,
+    Real     z_size,
+    Point    *point );
+private  void  get_subdivided_point(
+    int      up,
+    int      around,
+    Point    input_points[],
+    int      input_n_up,
+    Point    *point );
+
+public  void  create_polygons_sphere(
+    Point            *centre,
+    Real             x_size,
+    Real             y_size,
+    Real             z_size,
+    int              n_up,
+    int              n_around,
+    Boolean          subdividing_flag,
+    polygons_struct  *polygons )
 {
-    Status   status;
     int      point_index, top_point_index, bottom_point_index;
     int      point_index1, point_index2, point_index3, point_index4;
     int      up, around, n_circum, next_around, n_indices;
@@ -22,19 +41,13 @@ public  Status  create_polygons_sphere( centre, x_size, y_size, z_size,
     Colour   save_colour;
     int      input_n_up;
     Real     up_pos, around_pos;
-    Status   delete_polygons();
-    void     empty_polygons_struct();
-    void     get_sphere_point();
-    void     get_subdivided_point();
-
-    status = OK;
 
     if( subdividing_flag )
     {
         if( !get_tessellation_of_polygons_sphere( polygons, &input_n_up ))
         {
-            (void) printf( "Not a sphere topology polygon.\n" );
-            return( ERROR );
+            print( "Not a sphere topology polygon.\n" );
+            return;
         }
 
         n_up = 2 * input_n_up;
@@ -46,28 +59,20 @@ public  Status  create_polygons_sphere( centre, x_size, y_size, z_size,
 
         /* so delete polygons frees a valid pointer */
 
-        ALLOC( status, polygons->points, 1 );
+        ALLOC( polygons->points, 1 );
 
-        if( status == OK )
-            status = delete_polygons( polygons );
+        delete_polygons( polygons );
     }
 
-    empty_polygons_struct( polygons );
+    initialize_polygons( polygons, WHITE, (Surfprop *) NULL );
 
-    if( status == OK )
-        ALLOC( status, polygons->colours, 1 );
-
-    if( status == OK )
-        polygons->colours[0] = WHITE;
-
-    if( status == OK && subdividing_flag )
+    if( subdividing_flag )
         polygons->colours[0] = save_colour;
 
     polygons->n_points = get_n_sphere_points( n_up, n_around );
-    ALLOC( status, polygons->points, polygons->n_points );
 
-    if( status == OK )
-        ALLOC( status, polygons->normals, polygons->n_points );
+    ALLOC( polygons->points, polygons->n_points );
+    ALLOC( polygons->normals, polygons->n_points );
 
     /* ------ build points ------ */
 
@@ -110,14 +115,14 @@ public  Status  create_polygons_sphere( centre, x_size, y_size, z_size,
         point_index1 = get_point_index( 1, around, n_up, n_around );
         point_index2 = get_point_index( 1, (around+1)%n_around, n_up, n_around);
 
-        ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                               top_point_index, DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                               point_index1, DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                               point_index2, DEFAULT_CHUNK_SIZE );
 
-        ADD_ELEMENT_TO_ARRAY( status, polygons->n_items, polygons->end_indices,
+        ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
                               n_indices, DEFAULT_CHUNK_SIZE );
     }
 
@@ -133,17 +138,16 @@ public  Status  create_polygons_sphere( centre, x_size, y_size, z_size,
             point_index3 = get_point_index( up+1, next_around, n_up, n_around );
             point_index4 = get_point_index( up, next_around, n_up, n_around );
 
-            ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+            ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                                   point_index1, DEFAULT_CHUNK_SIZE );
-            ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+            ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                                   point_index2, DEFAULT_CHUNK_SIZE );
-            ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+            ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                                   point_index3, DEFAULT_CHUNK_SIZE );
-            ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+            ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                                   point_index4, DEFAULT_CHUNK_SIZE );
 
-            ADD_ELEMENT_TO_ARRAY( status, polygons->n_items,
-                                  polygons->end_indices,
+            ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
                                   n_indices, DEFAULT_CHUNK_SIZE );
         }
     }
@@ -158,25 +162,23 @@ public  Status  create_polygons_sphere( centre, x_size, y_size, z_size,
         point_index2 = get_point_index( n_up-1, (around+1)%n_around,
                                         n_up, n_around);
 
-        ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                               bottom_point_index, DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                               point_index2, DEFAULT_CHUNK_SIZE );
-        ADD_ELEMENT_TO_ARRAY( status, n_indices, polygons->indices,
+        ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                               point_index1, DEFAULT_CHUNK_SIZE );
 
-        ADD_ELEMENT_TO_ARRAY( status, polygons->n_items, polygons->end_indices,
+        ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
                               n_indices, DEFAULT_CHUNK_SIZE );
     }
-
-    return( status );
 }
 
-private  int  get_point_index( up, around, n_up, n_around )
-    int   up;
-    int   around;
-    int   n_up;
-    int   n_around;
+private  int  get_point_index(
+    int   up,
+    int   around,
+    int   n_up,
+    int   n_around )
 {
     int   point_index;
 
@@ -203,22 +205,21 @@ private  int  get_point_index( up, around, n_up, n_around )
     return( point_index );
 }
 
-private  int  get_n_sphere_points( n_up, n_around )
-    int   n_up;
-    int   n_around;
+private  int  get_n_sphere_points(
+    int   n_up,
+    int   n_around )
 {
     return( 2 + (n_up-1) * n_around );
 }
 
-private  void  get_sphere_point( up, around, centre, x_size, y_size, z_size,
-                                 point )
-    Real     up;
-    Real     around;
-    Point    *centre;
-    Real     x_size;
-    Real     y_size;
-    Real     z_size;
-    Point    *point;
+private  void  get_sphere_point(
+    Real     up,
+    Real     around,
+    Point    *centre,
+    Real     x_size,
+    Real     y_size,
+    Real     z_size,
+    Point    *point )
 {
     Real      dx, dy, dz;
 
@@ -231,13 +232,12 @@ private  void  get_sphere_point( up, around, centre, x_size, y_size, z_size,
                         Point_z(*centre) + dz );
 }
 
-private  void  get_subdivided_point( up, around, input_points,
-                                     input_n_up, point )
-    int      up;
-    int      around;
-    Point    input_points[];
-    int      input_n_up;
-    Point    *point;
+private  void  get_subdivided_point(
+    int      up,
+    int      around,
+    Point    input_points[],
+    int      input_n_up,
+    Point    *point )
 {
     int       input_up, input_around;
     Boolean   up_midpoint_flag, around_midpoint_flag;
@@ -276,17 +276,17 @@ private  void  get_subdivided_point( up, around, input_points,
     }
 }
 
-public  Boolean  is_this_sphere_topology( polygons )
-    polygons_struct  *polygons;
+public  Boolean  is_this_sphere_topology(
+    polygons_struct  *polygons )
 {
     int     tess;
 
     return( get_tessellation_of_polygons_sphere( polygons, &tess ) );
 }
 
-public  Boolean  get_tessellation_of_polygons_sphere( polygons, tess )
-    polygons_struct  *polygons;
-    int              *tess;
+public  Boolean  get_tessellation_of_polygons_sphere(
+    polygons_struct  *polygons,
+    int              *tess )
 {
     Real    size; 
     int     int_size;

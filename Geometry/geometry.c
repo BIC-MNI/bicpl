@@ -1,13 +1,12 @@
 
-#include  <def_geometry.h>
+#include  <def_mni.h>
 
-public  Boolean  intersect_lines_3d( origin1, delta1, origin2, delta2,
-                                     intersection_pt )
-    Point   *origin1;
-    Vector  *delta1;
-    Point   *origin2;
-    Vector  *delta2;
-    Point   *intersection_pt;
+public  Boolean  intersect_lines_3d(
+    Point   *origin1,
+    Vector  *delta1,
+    Point   *origin2,
+    Vector  *delta2,
+    Point   *intersection_pt )
 {
     Boolean   intersects;
     Real      t, bottom;
@@ -37,10 +36,10 @@ public  Boolean  intersect_lines_3d( origin1, delta1, origin2, delta2,
     return( intersects );
 }
 
-public  void  find_polygon_normal( n_points, points, normal )
-    int      n_points;
-    Point    points[];
-    Vector   *normal;
+public  void  find_polygon_normal(
+    int      n_points,
+    Point    points[],
+    Vector   *normal )
 {
     int    i, next_i;
 
@@ -63,9 +62,9 @@ public  void  find_polygon_normal( n_points, points, normal )
     }
 }
 
-public  Real  get_polygon_2d_area( n_points, points )
-    int      n_points;
-    Point    points[];
+public  Real  get_polygon_2d_area(
+    int      n_points,
+    Point    points[] )
 {
     int    i, next_i;
     Real   area;
@@ -82,9 +81,9 @@ public  Real  get_polygon_2d_area( n_points, points )
     return( area / 2.0 );
 }
 
-public  void  get_noncolinear_vector( v, non_colinear )
-    Vector   *v;
-    Vector   *non_colinear;
+public  void  get_noncolinear_vector(
+    Vector   *v,
+    Vector   *non_colinear )
 {
     *non_colinear = *v;
 
@@ -98,16 +97,13 @@ public  void  get_noncolinear_vector( v, non_colinear )
         Vector_z(*non_colinear) = 0.0;
 }
 
-public  void   get_plane_through_points( n_points, points, normal, 
-                                         plane_constant )
-    int      n_points;
-    Point    points[];
-    Vector   *normal;
-    Real     *plane_constant;
+public  void   get_plane_through_points(
+    int      n_points,
+    Point    points[],
+    Vector   *normal,
+    Real     *plane_constant )
 {
     Point   centroid;
-    void    get_points_centroid();
-    Real    distance_from_plane();
 
     find_polygon_normal( n_points, points, normal );
 
@@ -118,24 +114,22 @@ public  void   get_plane_through_points( n_points, points, normal,
     *plane_constant = - distance_from_plane( &centroid, normal, 0.0 );
 }
 
-public  Real  distance_from_plane( point, plane_normal, plane_constant )
-    Point    *point;
-    Vector   *plane_normal;
-    Real     plane_constant;
+public  Real  distance_from_plane(
+    Point    *point,
+    Vector   *plane_normal,
+    Real     plane_constant )
 {
     return( DOT_POINT_VECTOR( *point, *plane_normal ) + plane_constant );
 }
 
-public  Boolean  find_closest_line_sphere_intersection( line_origin,
-                     line_direction, sphere_centre, x_size, y_size, z_size,
-                     intersection )
-    Point    *line_origin;
-    Vector   *line_direction;
-    Point    *sphere_centre;
-    Real     x_size;
-    Real     y_size;
-    Real     z_size;
-    Point    *intersection;
+public  Boolean  find_closest_line_sphere_intersection(
+    Point    *line_origin,
+    Vector   *line_direction,
+    Point    *sphere_centre,
+    Real     x_size,
+    Real     y_size,
+    Real     z_size,
+    Point    *intersection )
 {
     Boolean   intersects;
     int       n_solutions;

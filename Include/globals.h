@@ -5,7 +5,7 @@
 #ifndef  DEF_GLOBALS
 #define  DEF_GLOBALS
 
-#include  <def_mni.h>
+#include  <def_basic.h>
 
 /*  ----------------- globals are being defined --------------------- */
 

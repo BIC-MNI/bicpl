@@ -1,6 +1,4 @@
-#include  <stdio.h>
-#include  <def_alloc.h>
-#include  <def_hash.h>
+#include  <def_mni.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_hash_table
@@ -19,15 +17,13 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   Status  initialize_hash_table( hash_table, n_keys, size,
-                                        enlarge_threshold, new_density )
-    hash_table_struct  *hash_table;
-    int                n_keys;
-    int                size;
-    Real               enlarge_threshold;
-    Real               new_density;
+public   void  initialize_hash_table(
+    hash_table_struct  *hash_table,
+    int                n_keys,
+    int                size,
+    Real               enlarge_threshold,
+    Real               new_density )
 {
-    Status     status;
     int        i;
 
     if( n_keys < 1 )
@@ -39,15 +35,10 @@ public   Status  initialize_hash_table( hash_table, n_keys, size,
     hash_table->enlarge_threshold = enlarge_threshold;
     hash_table->new_density = new_density;
 
-    ALLOC( status, hash_table->table, size );
+    ALLOC( hash_table->table, size );
 
-    if( status == OK )
-    {
-        for( i = 0;  i < size;  ++i )
-            hash_table->table[i] = (hash_entry_struct *) 0;
-    }
-
-    return( status );
+    for( i = 0;  i < size;  ++i )
+        hash_table->table[i] = (hash_entry_struct *) 0;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -63,17 +54,11 @@ public   Status  initialize_hash_table( hash_table, n_keys, size,
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   Status  delete_hash_table_list( hash_table )
-    hash_table_struct  *hash_table;
+private   void  delete_hash_table_list(
+    hash_table_struct  *hash_table )
 {
-    Status              status;
-
-    status = OK;
-
     if( hash_table->size > 0 )
-        FREE( status, hash_table->table );
-
-    return( status );
+        FREE( hash_table->table );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -89,34 +74,25 @@ private   Status  delete_hash_table_list( hash_table )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   Status  delete_hash_table( hash_table )
-    hash_table_struct  *hash_table;
+public   void  delete_hash_table(
+    hash_table_struct  *hash_table )
 {
-    Status              status;
     int                 i;
     hash_entry_struct   *entry, *next;
-
-    status = OK;
 
     for( i = 0;  i < hash_table->size;  ++i )
     {
         entry = hash_table->table[i];
 
-        while( status == OK && entry != (hash_entry_struct *) 0 )
+        while( entry != (hash_entry_struct *) 0 )
         {
             next = entry->next;
-            FREE( status, entry );
+            FREE( entry );
             entry = next;
         }
-
-        if( status != OK )
-            break;
     }
 
-    if( status == OK )
-        status = delete_hash_table_list( hash_table );
-
-    return( status );
+    delete_hash_table_list( hash_table );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -133,9 +109,9 @@ public   Status  delete_hash_table( hash_table )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   int  hash_function( hash_table, keys )
-    hash_table_struct   *hash_table;
-    int                 keys[];
+private   int  hash_function(
+    hash_table_struct   *hash_table,
+    int                 keys[] )
 {
     int           i;
     unsigned int  single_hash;
@@ -164,10 +140,10 @@ private   int  hash_function( hash_table, keys )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Boolean  keys_equal( n_keys, keys1, keys2 )
-    int   n_keys;
-    int   keys1[];
-    int   keys2[];
+private  Boolean  keys_equal(
+    int   n_keys,
+    int   keys1[],
+    int   keys2[] )
 {
     Boolean  equal;
     int      i;
@@ -200,9 +176,9 @@ private  Boolean  keys_equal( n_keys, keys1, keys2 )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   hash_entry_struct  **lookup( hash_table, keys )
-    hash_table_struct  *hash_table;
-    int                keys[];
+private   hash_entry_struct  **lookup(
+    hash_table_struct  *hash_table,
+    int                keys[] )
 {
     int                 i;
     hash_entry_struct   **ptr_to_entry;
@@ -237,16 +213,14 @@ private   hash_entry_struct  **lookup( hash_table, keys )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  insert_in_hash_table( hash_table, keys, data_ptr )
-    hash_table_struct  *hash_table;
-    int                keys[];
-    void               *data_ptr;
+public  void  insert_in_hash_table(
+    hash_table_struct  *hash_table,
+    int                keys[],
+    void               *data_ptr )
 {
-    Status              status;
     int                 i;
     hash_entry_struct   **ptr_to_entry;
     hash_entry_struct   *entry;
-    Status              increase_hash_table_size();
 
     ptr_to_entry = lookup( hash_table, keys );
 
@@ -254,38 +228,32 @@ public  Status  insert_in_hash_table( hash_table, keys, data_ptr )
 
     if( entry == (hash_entry_struct *) 0 )
     {
-        ALLOC_VAR_SIZED_STRUCT( status, entry, int, hash_table->n_keys );
+        ALLOC_VAR_SIZED_STRUCT( entry, int, hash_table->n_keys );
 
-        if( status == OK )
+        for_less( i, 0, hash_table->n_keys )
+            entry->keys[i] = keys[i];
+
+        entry->data_ptr = data_ptr;
+        entry->next = *ptr_to_entry;
+
+        *ptr_to_entry = entry; 
+
+        ++hash_table->n_entries;
+
+        if( (Real) hash_table->n_entries / (Real) hash_table->size >
+            hash_table->enlarge_threshold )
         {
-            for_less( i, 0, hash_table->n_keys )
-                entry->keys[i] = keys[i];
+            int   new_size;
 
-            entry->data_ptr = data_ptr;
-            entry->next = *ptr_to_entry;
-
-            *ptr_to_entry = entry; 
-
-            ++hash_table->n_entries;
-
-            if( (Real) hash_table->n_entries / (Real) hash_table->size >
-                hash_table->enlarge_threshold )
-            {
-                int   new_size;
-
-                new_size = (int) (
-                        hash_table->n_entries / hash_table->new_density + 0.5);
-                status = increase_hash_table_size( hash_table, new_size );
-            }
+            new_size = (int) (
+                    hash_table->n_entries / hash_table->new_density + 0.5);
+            increase_hash_table_size( hash_table, new_size );
         }
     }
     else
     {
         HANDLE_INTERNAL_ERROR( "Insert in hash table" );
-        status = ERROR;
     }
-
-    return( status );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -303,10 +271,10 @@ public  Status  insert_in_hash_table( hash_table, keys, data_ptr )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  lookup_in_hash_table( hash_table, keys, data_ptr )
-    hash_table_struct  *hash_table;
-    int                keys[];
-    void               **data_ptr;
+public  Boolean  lookup_in_hash_table(
+    hash_table_struct  *hash_table,
+    int                keys[],
+    void               **data_ptr )
 {
     Boolean             found;
     hash_entry_struct   **ptr_to_entry;
@@ -346,12 +314,11 @@ public  Boolean  lookup_in_hash_table( hash_table, keys, data_ptr )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  remove_from_hash_table( hash_table, keys, data_ptr )
-    hash_table_struct  *hash_table;
-    int                keys[];
-    void               **data_ptr;
+public  Boolean  remove_from_hash_table(
+    hash_table_struct  *hash_table,
+    int                keys[],
+    void               **data_ptr )
 {
-    Status              status;
     Boolean             removed;
     hash_entry_struct   **ptr_to_entry;
     hash_entry_struct   *entry;
@@ -371,13 +338,10 @@ public  Boolean  remove_from_hash_table( hash_table, keys, data_ptr )
 
         *ptr_to_entry = entry->next;
 
-        FREE( status, entry );
+        FREE( entry );
 
-        if( status == OK )
-        {
-            removed = TRUE;
-            --hash_table->n_entries;
-        }
+        removed = TRUE;
+        --hash_table->n_entries;
     }
 
     return( removed );
@@ -397,9 +361,9 @@ public  Boolean  remove_from_hash_table( hash_table, keys, data_ptr )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   void  move_hash_entries_to_new_table( dest, src )
-    hash_table_struct  *dest;
-    hash_table_struct  *src;
+private   void  move_hash_entries_to_new_table(
+    hash_table_struct  *dest,
+    hash_table_struct  *src )
 {
     int                 i, hash;
     hash_entry_struct   *entry, *next;
@@ -440,28 +404,21 @@ private   void  move_hash_entries_to_new_table( dest, src )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   Status  increase_hash_table_size( hash_table, new_size )
-    hash_table_struct   *hash_table;
-    int                 new_size;
+public   void  increase_hash_table_size(
+    hash_table_struct   *hash_table,
+    int                 new_size )
 {
     hash_table_struct   new_table;
-    Status              status;
 
-    status = initialize_hash_table( &new_table, hash_table->n_keys, new_size,
-                                    hash_table->enlarge_threshold,
-                                    hash_table->new_density );
+    initialize_hash_table( &new_table, hash_table->n_keys, new_size,
+                           hash_table->enlarge_threshold,
+                           hash_table->new_density );
 
-    if( status == OK )
-    {
-        move_hash_entries_to_new_table( &new_table, hash_table );
+    move_hash_entries_to_new_table( &new_table, hash_table );
 
-        status = delete_hash_table_list( hash_table );
-    }
+    delete_hash_table_list( hash_table );
 
-    if( status == OK )
-        *hash_table = new_table;
-
-    return( status );
+    *hash_table = new_table;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -478,8 +435,8 @@ public   Status  increase_hash_table_size( hash_table, new_size )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_hash_pointer( ptr )
-    hash_table_pointer  *ptr;
+public  void  initialize_hash_pointer(
+    hash_table_pointer  *ptr )
 {
     ptr->current_index = -1;
     ptr->current_entry = (hash_entry_struct *) 0;
@@ -500,10 +457,10 @@ public  void  initialize_hash_pointer( ptr )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Boolean  get_next_hash_entry( hash_table, ptr, data_ptr )
-    hash_table_struct   *hash_table;
-    hash_table_pointer  *ptr;
-    void                **data_ptr;
+public  Boolean  get_next_hash_entry(
+    hash_table_struct   *hash_table,
+    hash_table_pointer  *ptr,
+    void                **data_ptr )
 {
     Boolean   found;
 

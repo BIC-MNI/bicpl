@@ -1,8 +1,6 @@
 #ifndef  DEF_MINIMIZATION
 #define  DEF_MINIMIZATION
 
-#include  <def_geometry.h>
-
 typedef struct
 {
     void            *evaluation_ptr;
@@ -14,6 +12,6 @@ typedef struct
 } downhill_simplex_struct;
 
 typedef  enum  { DOWNHILL_SIMPLEX, ONE_PARAMETER_MINIMIZATION }
-               Minimization_methods;
+                 Minimization_methods;
 
 #endif
