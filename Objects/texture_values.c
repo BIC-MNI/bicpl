@@ -13,9 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.2 1997-03-23 21:11:32 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.3 2000-01-19 06:59:51 stever Exp $";
 #endif
 
+#include  <netcdf.h>
 #include  <internal_volume_io.h>
 #include  <objects.h>
 

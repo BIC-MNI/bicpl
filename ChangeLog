@@ -1,0 +1,13 @@
+Wed Jan 19 01:52:10 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* */.cvsignore
+	* AUTHORS
+	* ChangeLog
+	* */Makefile.am
+	* NEWS
+	* README
+	* acinclude.m4
+	* configure.in: new.  Set up for automake, autoconf, and libtool.
+
+	* version.c: new.  It seems that libtool requires at least one
+	real object file in a library to be happy.
