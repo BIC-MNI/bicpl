@@ -18,7 +18,7 @@
 #include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.17 2001-06-06 18:59:07 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.18 2001-06-06 19:13:46 stever Exp $";
 #endif
 
 
@@ -438,8 +438,6 @@ public  void  get_quadmesh_patch(
  * 
  * Flip the quadmesh about its middle column, swapping point and
  * normal information in column 0 with column n-1, etc.
- *
- * \bug I can't imagine what use this function has.
  */
 public  void  reverse_quadmesh_vertices(
     quadmesh_struct  *quadmesh )
