@@ -1,6 +1,29 @@
+/* ----------------------------------------------------------------------------
+@COPYRIGHT  :
+              Copyright 1993,1994,1995 David MacDonald,
+              McConnell Brain Imaging Centre,
+              Montreal Neurological Institute, McGill University.
+              Permission to use, copy, modify, and distribute this
+              software and its documentation for any purpose and without
+              fee is hereby granted, provided that the above copyright
+              notice appear in all copies.  The author and McGill University
+              make no representations about the suitability of this
+              software for any purpose.  It is provided "as is" without
+              express or implied warranty.
+---------------------------------------------------------------------------- */
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/generate_tube.c,v 1.4 1995-07-12 19:08:02 david Exp $";
+#endif
+
+private  void  project_vector_to_plane(
+    Vector   *v,
+    Vector   *direction,
+    Vector   *normal,
+    Vector   *projected );
 
 private  void   fill_in_ellipse_points(
     Point   tube_points[],
@@ -11,6 +34,23 @@ private  void   fill_in_ellipse_points(
     Real    y[],
     Vector  *hor,
     Vector  *vert );
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_direction
+@INPUT      : n_points
+              points
+              i
+              wrap_around
+@OUTPUT     : dir
+@RETURNS    : 
+@DESCRIPTION: Gets the direction of the line segment from i to i+1 of the
+              points, with or without wraparound.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  get_direction(
     int      n_points,
@@ -42,6 +82,23 @@ private  void  get_direction(
         NORMALIZE_VECTOR( *dir, *dir );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : generate_tube
+@INPUT      : n_points
+              points
+              n_around
+              radius
+@OUTPUT     : tube_points
+              tube_normals
+@RETURNS    : 
+@DESCRIPTION: Generates a tube quadmesh from a set of points.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  generate_tube(
     int    n_points,
@@ -107,6 +164,27 @@ public  void  generate_tube(
     FREE( y );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : fill_in_ellipse_points
+@INPUT      : centre
+              n_around
+              x
+              y
+              hor
+              vert
+@OUTPUT     : tube_points
+              tube_normals
+@RETURNS    : 
+@DESCRIPTION: Given x,y positions in 2D space and a horizontal and vertical
+              vector, fills in the 3D ellipse points into the tube points
+              and normals
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void   fill_in_ellipse_points(
     Point   tube_points[],
     Vector  tube_normals[],
@@ -132,8 +210,25 @@ private  void   fill_in_ellipse_points(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : project_vector_to_plane
+@INPUT      : v
+              direction
+              normal
+@OUTPUT     : projected
+@RETURNS    : 
+@DESCRIPTION: Projects a vector onto a plane, along the direction.  Finds the
+              point on the line through v in the direction direction, which
+              is on the plane perpendicular to normal.  Solves the equation 
+              (V + t * Direction) dot Normal = 0
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
-public  void  project_vector_to_plane(
+private  void  project_vector_to_plane(
     Vector   *v,
     Vector   *direction,
     Vector   *normal,
