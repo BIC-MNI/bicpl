@@ -18,7 +18,7 @@
 #include  <bicpl/objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.11 2000-02-06 15:30:11 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.12 2005-04-03 00:39:41 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -86,13 +86,13 @@ private  void  check_install_bintree_delete_function( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  *allocate_bintree( void )
+public  bintree_struct_ptr allocate_bintree( void )
 {
     bintree_struct_ptr   bintree;
 
     ALLOC( bintree, 1 );
 
-    return( (void *) bintree );
+    return( bintree );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

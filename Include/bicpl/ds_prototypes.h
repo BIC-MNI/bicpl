@@ -228,7 +228,7 @@ public  BOOLEAN  get_next_hash2_entry(
 public  void  delete_the_bintree(
     bintree_struct_ptr  *bintree );
 
-public  void  *allocate_bintree( void );
+public  bintree_struct_ptr allocate_bintree( void );
 
 public  void  create_lines_bintree(
     lines_struct   *lines,
