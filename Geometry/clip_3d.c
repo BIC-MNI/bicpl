@@ -12,6 +12,7 @@ public  int  clip_polygon_against_box(
     Real    y_max,
     Real    z_min,
     Real    z_max,
+    int     n_output_points,
     Point   output_points[] )
 {
     int     p, n_planes, n_out, n, i;
@@ -103,6 +104,11 @@ public  int  clip_polygon_against_box(
                 n = n_input[p];
                 for_down( n, n_input[p]-1, 0 )
                 {
+		    if ( n_out >= n_output_points )
+		    {
+			handle_internal_error( "too many points generated in clip_polygon_against_box()" );
+			return( n_out );
+		    }
                     output_points[n_out] = input[p][n];
                     ++n_out;
                 }

@@ -18,7 +18,7 @@
 #include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.18 2001-06-06 19:13:46 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.19 2001-07-05 04:13:42 stever Exp $";
 #endif
 
 
@@ -218,7 +218,7 @@ public  void  set_quadmesh_point(
  * only if (i,j) is a valid location.
  */
 public  BOOLEAN  get_quadmesh_point(
-    quadmesh_struct  *quadmesh,
+    const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     Point            *point )
@@ -260,7 +260,7 @@ public  BOOLEAN  get_quadmesh_point(
  * \param np location in which to store np
  */
 public  void  get_quadmesh_n_objects(
-    quadmesh_struct  *quadmesh,
+    const quadmesh_struct  *quadmesh,
     int              *mp,
     int              *np )
 {
@@ -382,7 +382,7 @@ public  void  compute_quadmesh_normals(
  * order: (i,j), (i+1,j), (i+1,j+1), (i,j+1).
  */
 public  void  get_quadmesh_patch_indices(
-    quadmesh_struct  *quadmesh,
+    const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     int              indices[] )
@@ -420,7 +420,7 @@ public  void  get_quadmesh_patch_indices(
  * \points location in which to write coordinates for the 4 points
  */
 public  void  get_quadmesh_patch(
-    quadmesh_struct  *quadmesh,
+    const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     Point            points[] )

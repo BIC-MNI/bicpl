@@ -16,11 +16,27 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.12 2000-02-05 21:27:29 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.13 2001-07-05 04:13:43 stever Exp $";
 #endif
 
 #define  MAX_TEMP_STORAGE  1000
 
+
+/*! \brief Helper for scan_a_polygon
+ *
+ * Assign the label value to each voxel that intersects the
+ * polygon.  I suspect the algorithm assumes a planar polygon.
+ * The input parameters min_voxel and max_voxel 
+ * specify a bounding box around the polygon,
+ * in voxel coordinates
+ *
+ * \param size number of points in polygon
+ * \param points array of polygon vertex coordinates
+ * \param label_volume output volume
+ * \param label value to store in label_volume
+ * \param min_voxel array of minimum voxel values
+ * \param max_voxel array of maximum voxel values
+ */
 private  void  recursive_scan_polygon_to_voxels(
     int                 size,
     Point               points[],
@@ -101,10 +117,25 @@ private  void  recursive_scan_polygon_to_voxels(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Label all voxels of a single polygon.
+ *
+ * \param size number of vertices in the polygon
+ * \param vertices array of vertex coordinates
+ * \param voxels array of vertex coordinates in voxel space
+ * \param n_output_vertices size of output_vertices array
+ * \param output_vertices array of vertex coordinates (in voxel space)
+ *                        after clipping input polygon to volume boundaries
+ * \param volume specifies world-to-volume transformation
+ * \param label_volume output volume
+ * \param sizes number of voxels in each dimension of volume
+ * \param label value to store in label_volume
+ */
+
 private  void  scan_a_polygon(
     int                 size,
     Point               vertices[],
     Point               voxels[],
+    int                 n_output_vertices,
     Point               output_vertices[],
     Volume              volume,
     Volume              label_volume,
@@ -167,6 +198,7 @@ private  void  scan_a_polygon(
                                        (Real) max_iv[Y] + 0.5,
                                        (Real) min_iv[Z] - 0.5,
                                        (Real) max_iv[Z] + 0.5,
+				       n_output_vertices,
                                        output_vertices );
 
     if( n_clip > 0 )
@@ -197,6 +229,14 @@ private  void  scan_a_polygon(
 @MODIFIED   : Jul. 27, 1997   D. MacDonald  - broke into 2 parts
 ---------------------------------------------------------------------------- */
 
+/*! \brief Add label to all voxels that intersect polygons.
+ *
+ * \param polygons list of polygons to scan
+ * \param volume specifies world-to-volume transformation
+ * \param label_volume output volume
+ * \param label value to store in label_volume
+ * \param max_distance ignored
+ */
 public  void  scan_polygons_to_voxels(
     polygons_struct     *polygons,
     Volume              volume,
@@ -219,6 +259,9 @@ public  void  scan_polygons_to_voxels(
 
     ALLOC( vertices, max_size );
     ALLOC( voxels, max_size );
+    /* Possible bug here: a triangle can be cut into a 7-gon after
+     * clipping against a box.  What is true upper limit on output_vertices?
+     */
     ALLOC( output_vertices, 2 * max_size );
 
     for_less( poly, 0, polygons->n_items )
@@ -232,7 +275,8 @@ public  void  scan_polygons_to_voxels(
             vertices[vertex] = polygons->points[point_index];
         }
 
-        scan_a_polygon( size, vertices, voxels, output_vertices,
+        scan_a_polygon( size, vertices, voxels, 
+			2*max_size, output_vertices,
                         volume, label_volume, sizes, label );
 
     }
@@ -259,6 +303,14 @@ public  void  scan_polygons_to_voxels(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Add label to all voxels that intersect a quadmesh.
+ *
+ * \param quadmesh the mesh to scan
+ * \param volume specifies world-to-volume transformation
+ * \param label_volume output volume
+ * \param label value to store in label_volume
+ * \param max_distance ignored
+ */
 public  void  scan_quadmesh_to_voxels(
     quadmesh_struct     *quadmesh,
     Volume              volume,
@@ -280,7 +332,8 @@ public  void  scan_quadmesh_to_voxels(
         {
             get_quadmesh_patch( quadmesh, i, j, vertices );
 
-            scan_a_polygon( 4, vertices, voxels, output_vertices,
+            scan_a_polygon( 4, vertices, voxels, 
+			    4, output_vertices,
                             volume, label_volume, sizes, label );
 
         }

@@ -17,8 +17,140 @@
 #include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.27 2000-02-06 15:30:44 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.28 2001-07-05 04:13:42 stever Exp $";
 #endif
+
+
+/*! \defgroup grp_file File Format
+
+A BIC OBJ file stores one or more geometrical objects with
+associated data like colour, and patient identifiers.  The
+file name typically ends with ".obj".
+
+The list of objects is stored in the file one after
+the other.  There are no separator bytes between objects.
+
+The first charcter signals the type of the next object.  If the object
+is stored in BINARY_FORMAT, the type byte is a lower-case character.
+If the object is in ASCII_FORMAT, the type is the corresponding
+upper-case character.  The following table maps the type byte to its
+object type.
+
+- L = LINES
+- M = MARKER   
+- F = MODEL    
+- X = PIXELS   
+- P = POLYGONS 
+- Q = QUADMESH 
+- T = TEXT     
+
+  @{
+*/
+
+/*! \defgroup grp_file_lines Lines format
+
+A LINES object file follows the following sequence of data items.
+
+  - 'L'
+  - (float) thickness
+  - (int) n_points
+  - (newline)
+  - points 
+    - three floats per line
+  - (newline)
+  - (int) n_items (#lines)
+  - (newline)
+  - colours
+    - (int) colour_flag 0=ONE_COLOUR, 1=PER_ITEM, 2=PER_VERTEX
+    - the specified number of colours, one per line
+  - (newline)
+  - end_indices
+  - (newline)
+  - indices
+
+*/
+
+/*! \defgroup grp_file_marker Marker format
+
+A MARKER object consists of the following data items.
+
+  - 'M'
+  - (int) type    0=box, 1=sphere
+  - (real) size
+  - (colour) colour
+  - (point) position
+  - (int) structure_id
+  - (int) patient_id
+  - (quoted_string) label
+  - (newline)
+
+*/
+
+/*! \defgroup grp_file_polygons Polygons format
+
+A POLYGONS object consists of the following data items.
+
+  - 'P'
+  - five floats representing 'surfprop'
+  - n_points if normal format,
+    or -n_items (#polygons) if compressed format
+  - newline
+  - table of point coordinate, one point per line
+  - newline (blank line)
+  - if not compressed
+    - table of point normals, one per line 
+    - newline (blank line)
+    - n_items (#polygons)
+    - newline
+  - colour flag
+  - for each allocated colour (1, n_points, or n_items)
+    - colour and newline
+  - newline (blank line)
+  - if not compressed
+    - end_indices (two formats, see Objects/o.c)
+    - newline (blank line)
+    - indices
+    - newline (blank line)
+
+
+In compressed format, the polygons form either a tetrahedron (4
+polygons), two tetrahedrons glued together (6 polygons), two pyramids
+glued together (8 polygons) or a regular subdivision of one of these.
+Surface normals for each point are computed, after reading file.
+
+*/
+
+
+/*! \defgroup grp_file_quadmesh Quadmesh format
+
+A QUADMESH object consists of the following data items.
+
+  - 'Q'
+  - surface properties
+    - five floats: a, d, s, se, t
+  - (integer) m
+  - (integer) n
+  - (T or F) m_closed
+  - (T or F) n_closed
+  - newline
+  - colours
+    - (integer) colour_flag 0=ONE_COLOUR, 1=PER_ITEM, 2=PER_VERTEX
+    - the specified number of colours, one colour per line
+    - each colour is four floats: r g b a
+  - newline
+  - points
+    - one point (3 floats) per line
+  - newline
+  - normals
+    - one vector (3 floats) per line
+  - newline
+
+*/
+
+/*! 
+  @} 
+*/
+
 
 private  Status  io_vectors(
     FILE            *file,
@@ -500,6 +632,11 @@ public  Status  io_polygons(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Read or write quadmesh structure.
+ *
+ * \param io_flag one of READ_FILE or WRITE_FILE
+ * \param format one of ASCII_FORMAT or BINARY_FORMAT
+ */
 public  Status  io_quadmesh(
     FILE                *file,
     IO_types            io_flag,

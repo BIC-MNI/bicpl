@@ -1,4 +1,4 @@
-EXTRA_DOX = file_formats.dox
+EXTRA_DOX = groups.dox
 EXTRA_DIST = Changes.list bicpl.tex frank.obj lines_format.txt \
 	polygons_format.txt t1.obj t2.obj \
 	doxygen.config.in $(EXTRA_DOX)

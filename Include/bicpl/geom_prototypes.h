@@ -17,6 +17,7 @@ public  int  clip_polygon_against_box(
     Real    y_max,
     Real    z_min,
     Real    z_max,
+    int     n_output_points,
     Point   output_points[] );
 
 public  int  clip_polygon_against_plane(

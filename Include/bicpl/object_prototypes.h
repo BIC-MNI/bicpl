@@ -713,13 +713,13 @@ public  void  set_quadmesh_point(
     Vector           *normal );
 
 public  BOOLEAN  get_quadmesh_point(
-    quadmesh_struct  *quadmesh,
+    const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     Point            *point );
 
 public  void  get_quadmesh_n_objects(
-    quadmesh_struct  *quadmesh,
+    const quadmesh_struct  *quadmesh,
     int              *m,
     int              *n );
 
@@ -727,13 +727,13 @@ public  void  compute_quadmesh_normals(
     quadmesh_struct  *quadmesh );
 
 public  void  get_quadmesh_patch_indices(
-    quadmesh_struct  *quadmesh,
+    const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     int              indices[] );
 
 public  void  get_quadmesh_patch(
-    quadmesh_struct  *quadmesh,
+    const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     Point            points[] );

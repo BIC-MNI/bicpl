@@ -1,3 +1,21 @@
+2001-07-04  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Volumes/scan_polygons.c (scan_a_polygon): Add extra parameter
+	specifying size of output_vertices array.
+
+	* Include/bicpl/geom_prototypes.h: 
+	* Geometry/clip_3d.c (clip_polygon_against_box): Add extra
+	parameter specifying size of output_points array.  Abort if
+	too many points generated.
+
+2001-06-13  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Include/bicpl/object_prototypes.h:
+	* Objects/quadmesh.c (get_quadmesh_point): 
+	(get_quadmesh_n_objects): 
+	(get_quadmesh_patch_indices): 
+	(get_quadmesh_patch): Declare quadmesh_struct* as const.
+
 2001-06-06  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Objects/quadmesh.c (set_quadmesh_point): Assert that
