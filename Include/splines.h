@@ -2,6 +2,231 @@
 #ifndef  DEF_SPLINES
 #define  DEF_SPLINES
 
+/* ------------------ QUADRATIC INTERPOLATING SPLINES ----------------------- */
+
+#define  QUADRATIC_UNIVAR( v0, v1, v2, u )                               \
+     ( 0.375 * (v0) + 0.75 * (v1) - 0.125 * (v2) + (u) *                 \
+        ( (v1) - (v0) + (u) * (0.5*(v0) - (v1) + 0.5 * (v2)) ) )
+
+#define  QUADRATIC_UNIVAR_DERIV( v0, v1, v2, u ) \
+     ( 0.5 * (v1) - 0.5 * (v0) + (u) * ((v0) - 2.0 *(v1) + (v2)) )
+
+#define  QUADRATIC_UNIVAR_DERIV2( v0, v1, v2, u ) \
+     ( (v0) - 2.0 *(v1) + (v2) )
+
+#define  QUADRATIC_BIVAR( v00, v01, v02, v10, v11, v12, v20, v21, v22, u, v, val ) \
+     { \
+         double  cu0, cu1, cu2; \
+ \
+         cu0 = QUADRATIC_UNIVAR( v00, v01, v02, v ); \
+         cu1 = QUADRATIC_UNIVAR( v10, v11, v12, v ); \
+         cu2 = QUADRATIC_UNIVAR( v20, v21, v22, v ); \
+ \
+         val = QUADRATIC_UNIVAR( cu0, cu1, cu2, u ); \
+     }
+
+#define  QUADRATIC_BIVAR_DERIV( v00, v01, v02, v10, v11, v12, v20, v21, v22, u, v, du, dv ) \
+     { \
+         double  cu0, cu1, cu2; \
+         double  dv0, dv1, dv2; \
+ \
+         dv0 = QUADRATIC_UNIVAR_DERIV( v00, v01, v02, v ); \
+         dv1 = QUADRATIC_UNIVAR_DERIV( v10, v11, v12, v ); \
+         dv2 = QUADRATIC_UNIVAR_DERIV( v20, v21, v22, v ); \
+ \
+         dv = QUADRATIC_UNIVAR( dv0, dv1, dv2, u ); \
+ \
+         cu0 = QUADRATIC_UNIVAR( v00, v01, v02, v ); \
+         cu1 = QUADRATIC_UNIVAR( v10, v11, v12, v ); \
+         cu2 = QUADRATIC_UNIVAR( v20, v21, v22, v ); \
+ \
+         du = QUADRATIC_UNIVAR_DERIV( cu0, cu1, cu2, u ); \
+     }
+
+#define  QUADRATIC_BIVAR_DERIV2( v00, v01, v02, v10, v11, v12, v20, v21, v22, u, v, val, du, dv, duu, duv, dvv ) \
+     { \
+         double  cu0, cu1, cu2; \
+         double  dv0, dv1, dv2; \
+         double  dvv0, dvv1, dvv2; \
+ \
+         dv0 = QUADRATIC_UNIVAR_DERIV( v00, v01, v02, v ); \
+         dv1 = QUADRATIC_UNIVAR_DERIV( v10, v11, v12, v ); \
+         dv2 = QUADRATIC_UNIVAR_DERIV( v20, v21, v22, v ); \
+ \
+         dvv0 = QUADRATIC_UNIVAR_DERIV2( v00, v01, v02, v ); \
+         dvv1 = QUADRATIC_UNIVAR_DERIV2( v10, v11, v12, v ); \
+         dvv2 = QUADRATIC_UNIVAR_DERIV2( v20, v21, v22, v ); \
+ \
+         dv = QUADRATIC_UNIVAR( dv0, dv1, dv2, u ); \
+         dvv = QUADRATIC_UNIVAR( dvv0, dvv1, dvv2, u ); \
+ \
+         duv = QUADRATIC_UNIVAR_DERIV( dv0, dv1, dv2, u ); \
+ \
+         cu0 = QUADRATIC_UNIVAR( v00, v01, v02, v ); \
+         cu1 = QUADRATIC_UNIVAR( v10, v11, v12, v ); \
+         cu2 = QUADRATIC_UNIVAR( v20, v21, v22, v ); \
+ \
+         val = QUADRATIC_UNIVAR( cu0, cu1, cu2, u ); \
+         du = QUADRATIC_UNIVAR_DERIV( cu0, cu1, cu2, u ); \
+         duu = QUADRATIC_UNIVAR_DERIV2( cu0, cu1, cu2, u ); \
+     }
+
+#define  QUADRATIC_TRIVAR( c, u, v, w, val ) \
+    { \
+        double  c00, c01, c02, c10, c11, c12, c20, c21, c22; \
+        double  c0, c1, c2; \
+ \
+        c00 = QUADRATIC_UNIVAR(GLUE(c,000),GLUE(c,001),GLUE(c,002), w ); \
+        c01 = QUADRATIC_UNIVAR(GLUE(c,010),GLUE(c,011),GLUE(c,012), w ); \
+        c02 = QUADRATIC_UNIVAR(GLUE(c,020),GLUE(c,021),GLUE(c,022), w ); \
+ \
+        c10 = QUADRATIC_UNIVAR(GLUE(c,100),GLUE(c,101),GLUE(c,102), w ); \
+        c11 = QUADRATIC_UNIVAR(GLUE(c,110),GLUE(c,111),GLUE(c,112), w ); \
+        c12 = QUADRATIC_UNIVAR(GLUE(c,120),GLUE(c,121),GLUE(c,122), w ); \
+ \
+        c20 = QUADRATIC_UNIVAR(GLUE(c,200),GLUE(c,201),GLUE(c,202), w ); \
+        c21 = QUADRATIC_UNIVAR(GLUE(c,210),GLUE(c,211),GLUE(c,212), w ); \
+        c22 = QUADRATIC_UNIVAR(GLUE(c,220),GLUE(c,221),GLUE(c,222), w ); \
+ \
+        c0 = QUADRATIC_UNIVAR( c00, c01, c02, v ); \
+        c1 = QUADRATIC_UNIVAR( c10, c11, c12, v ); \
+        c2 = QUADRATIC_UNIVAR( c20, c21, c22, v ); \
+ \
+        (val) = QUADRATIC_UNIVAR( c0, c1, c2, u ); \
+    }
+
+#define  QUADRATIC_TRIVAR_DERIV( c, u, v, w, du, dv, dw ) \
+    { \
+        double  c00, c01, c02, c10, c11, c12, c20, c21, c22; \
+        double  dw00, dw01, dw02, dw10, dw11, dw12, dw20, dw21, dw22; \
+        double  dv0, dv1, dv2; \
+        double  dw0, dw1, dw2; \
+        double  c0, c1, c2; \
+ \
+        c00 = QUADRATIC_UNIVAR(GLUE(c,000),GLUE(c,001),GLUE(c,002), w ); \
+        c01 = QUADRATIC_UNIVAR(GLUE(c,010),GLUE(c,011),GLUE(c,012), w ); \
+        c02 = QUADRATIC_UNIVAR(GLUE(c,020),GLUE(c,021),GLUE(c,022), w ); \
+ \
+        c10 = QUADRATIC_UNIVAR(GLUE(c,100),GLUE(c,101),GLUE(c,102), w ); \
+        c11 = QUADRATIC_UNIVAR(GLUE(c,110),GLUE(c,111),GLUE(c,112), w ); \
+        c12 = QUADRATIC_UNIVAR(GLUE(c,120),GLUE(c,121),GLUE(c,122), w ); \
+ \
+        c20 = QUADRATIC_UNIVAR(GLUE(c,200),GLUE(c,201),GLUE(c,202), w ); \
+        c21 = QUADRATIC_UNIVAR(GLUE(c,210),GLUE(c,211),GLUE(c,212), w ); \
+        c22 = QUADRATIC_UNIVAR(GLUE(c,220),GLUE(c,221),GLUE(c,222), w ); \
+ \
+        dw00 = QUADRATIC_UNIVAR_DERIV(GLUE(c,000),GLUE(c,001),GLUE(c,002), w ); \
+        dw01 = QUADRATIC_UNIVAR_DERIV(GLUE(c,010),GLUE(c,011),GLUE(c,012), w ); \
+        dw02 = QUADRATIC_UNIVAR_DERIV(GLUE(c,020),GLUE(c,021),GLUE(c,022), w ); \
+ \
+        dw10 = QUADRATIC_UNIVAR_DERIV(GLUE(c,100),GLUE(c,101),GLUE(c,102), w ); \
+        dw11 = QUADRATIC_UNIVAR_DERIV(GLUE(c,110),GLUE(c,111),GLUE(c,112), w ); \
+        dw12 = QUADRATIC_UNIVAR_DERIV(GLUE(c,120),GLUE(c,121),GLUE(c,122), w ); \
+ \
+        dw20 = QUADRATIC_UNIVAR_DERIV(GLUE(c,200),GLUE(c,201),GLUE(c,202), w ); \
+        dw21 = QUADRATIC_UNIVAR_DERIV(GLUE(c,210),GLUE(c,211),GLUE(c,212), w ); \
+        dw22 = QUADRATIC_UNIVAR_DERIV(GLUE(c,220),GLUE(c,221),GLUE(c,222), w ); \
+ \
+        c0 = QUADRATIC_UNIVAR( c00, c01, c02, v ); \
+        c1 = QUADRATIC_UNIVAR( c10, c11, c12, v ); \
+        c2 = QUADRATIC_UNIVAR( c20, c21, c22, v ); \
+ \
+        dv0 = QUADRATIC_UNIVAR_DERIV( c00, c01, c02, v ); \
+        dv1 = QUADRATIC_UNIVAR_DERIV( c10, c11, c12, v ); \
+        dv2 = QUADRATIC_UNIVAR_DERIV( c20, c21, c22, v ); \
+ \
+        dw0 = QUADRATIC_UNIVAR( dw00, dw01, dw02, v ); \
+        dw1 = QUADRATIC_UNIVAR( dw10, dw11, dw12, v ); \
+        dw2 = QUADRATIC_UNIVAR( dw20, dw21, dw22, v ); \
+ \
+        (du) = QUADRATIC_UNIVAR_DERIV( c0, c1, c2, u ); \
+        (dv) = QUADRATIC_UNIVAR( dv0, dv1, dv2, u ); \
+        (dw) = QUADRATIC_UNIVAR( dw0, dw1, dw2, u ); \
+    }
+
+#define  QUADRATIC_TRIVAR_DERIV2( c, u, v, w, duu, duv, duw, dvv, dvw, dww ) \
+    { \
+        double  c00, c01, c02, c10, c11, c12, c20, c21, c22; \
+        double  c0, c1, c2; \
+        double  dw00, dw01, dw02, dw10, dw11, dw12, dw20, dw21, dw22; \
+        double  dww00, dww01, dww02, dww10, dww11, dww12, dww20, dww21, dww22; \
+        double  dww0, dww1, dww2; \
+        double  dv0, dv1, dv2; \
+        double  dvv0, dvv1, dvv2; \
+        double  dvw0, dvw1, dvw2; \
+        double  dw0, dw1, dw2; \
+ \
+        c00 = QUADRATIC_UNIVAR(GLUE(c,000),GLUE(c,001),GLUE(c,002),w); \
+        c01 = QUADRATIC_UNIVAR(GLUE(c,010),GLUE(c,011),GLUE(c,012),w); \
+        c02 = QUADRATIC_UNIVAR(GLUE(c,020),GLUE(c,021),GLUE(c,022),w); \
+ \
+        c10 = QUADRATIC_UNIVAR(GLUE(c,100),GLUE(c,101),GLUE(c,102),w); \
+        c11 = QUADRATIC_UNIVAR(GLUE(c,110),GLUE(c,111),GLUE(c,112),w); \
+        c12 = QUADRATIC_UNIVAR(GLUE(c,120),GLUE(c,121),GLUE(c,122),w); \
+ \
+        c20 = QUADRATIC_UNIVAR(GLUE(c,200),GLUE(c,201),GLUE(c,202),w); \
+        c21 = QUADRATIC_UNIVAR(GLUE(c,210),GLUE(c,211),GLUE(c,212),w); \
+        c22 = QUADRATIC_UNIVAR(GLUE(c,220),GLUE(c,221),GLUE(c,222),w); \
+ \
+        dw00 = QUADRATIC_UNIVAR_DERIV(GLUE(c,000),GLUE(c,001),GLUE(c,002),w);\
+        dw01 = QUADRATIC_UNIVAR_DERIV(GLUE(c,010),GLUE(c,011),GLUE(c,012),w);\
+        dw02 = QUADRATIC_UNIVAR_DERIV(GLUE(c,020),GLUE(c,021),GLUE(c,022),w);\
+\
+        dw10 = QUADRATIC_UNIVAR_DERIV(GLUE(c,100),GLUE(c,101),GLUE(c,102),w);\
+        dw11 = QUADRATIC_UNIVAR_DERIV(GLUE(c,110),GLUE(c,111),GLUE(c,112),w);\
+        dw12 = QUADRATIC_UNIVAR_DERIV(GLUE(c,120),GLUE(c,121),GLUE(c,122),w);\
+\
+        dw20 = QUADRATIC_UNIVAR_DERIV(GLUE(c,200),GLUE(c,201),GLUE(c,202),w);\
+        dw21 = QUADRATIC_UNIVAR_DERIV(GLUE(c,210),GLUE(c,211),GLUE(c,212),w);\
+        dw22 = QUADRATIC_UNIVAR_DERIV(GLUE(c,220),GLUE(c,221),GLUE(c,222),w);\
+ \
+ \
+        dww00 = QUADRATIC_UNIVAR_DERIV2(GLUE(c,000),GLUE(c,001),GLUE(c,002),w);\
+        dww01 = QUADRATIC_UNIVAR_DERIV2(GLUE(c,010),GLUE(c,011),GLUE(c,012),w);\
+        dww02 = QUADRATIC_UNIVAR_DERIV2(GLUE(c,020),GLUE(c,021),GLUE(c,022),w);\
+\
+        dww10 = QUADRATIC_UNIVAR_DERIV2(GLUE(c,100),GLUE(c,101),GLUE(c,102),w);\
+        dww11 = QUADRATIC_UNIVAR_DERIV2(GLUE(c,110),GLUE(c,111),GLUE(c,112),w);\
+        dww12 = QUADRATIC_UNIVAR_DERIV2(GLUE(c,120),GLUE(c,121),GLUE(c,122),w);\
+\
+        dww20 = QUADRATIC_UNIVAR_DERIV2(GLUE(c,200),GLUE(c,201),GLUE(c,202),w);\
+        dww21 = QUADRATIC_UNIVAR_DERIV2(GLUE(c,210),GLUE(c,211),GLUE(c,212),w);\
+        dww22 = QUADRATIC_UNIVAR_DERIV2(GLUE(c,220),GLUE(c,221),GLUE(c,222),w);\
+\
+        c0 = QUADRATIC_UNIVAR( c00, c01, c02, v ); \
+        c1 = QUADRATIC_UNIVAR( c10, c11, c12, v ); \
+        c2 = QUADRATIC_UNIVAR( c20, c21, c22, v ); \
+ \
+        dv0 = QUADRATIC_UNIVAR_DERIV( c00, c01, c02, v ); \
+        dv1 = QUADRATIC_UNIVAR_DERIV( c10, c11, c12, v ); \
+        dv2 = QUADRATIC_UNIVAR_DERIV( c20, c21, c22, v ); \
+ \
+        dvv0 = QUADRATIC_UNIVAR_DERIV2( c00, c01, c02, v ); \
+        dvv1 = QUADRATIC_UNIVAR_DERIV2( c10, c11, c12, v ); \
+        dvv2 = QUADRATIC_UNIVAR_DERIV2( c20, c21, c22, v ); \
+ \
+        dw0 = QUADRATIC_UNIVAR( dw00, dw01, dw02, v ); \
+        dw1 = QUADRATIC_UNIVAR( dw10, dw11, dw12, v ); \
+        dw2 = QUADRATIC_UNIVAR( dw20, dw21, dw22, v ); \
+ \
+        dvw0 = QUADRATIC_UNIVAR_DERIV( dw00, dw01, dw02, v ); \
+        dvw1 = QUADRATIC_UNIVAR_DERIV( dw10, dw11, dw12, v ); \
+        dvw2 = QUADRATIC_UNIVAR_DERIV( dw20, dw21, dw22, , v ); \
+ \
+        dww0 = QUADRATIC_UNIVAR( dww00, dww01, dww02, v ); \
+        dww1 = QUADRATIC_UNIVAR( dww10, dww11, dww12, v ); \
+        dww2 = QUADRATIC_UNIVAR( dww20, dww21, dww22, v ); \
+ \
+        (duu) = QUADRATIC_UNIVAR_DERIV2( c0, c1, c2, u ); \
+        (duv) = QUADRATIC_UNIVAR_DERIV( dv0, dv1, dv2, u ); \
+        (duw) = QUADRATIC_UNIVAR_DERIV( dw0, dw1, dw2, u ); \
+        (dvv) = QUADRATIC_UNIVAR( dvv0, dvv1, dvv2, u ); \
+        (dvw) = QUADRATIC_UNIVAR( dvw0, dvw1, dvw2, u ); \
+        (dww) = QUADRATIC_UNIVAR( dww0, dww1, dww2, u ); \
+    }
+
+/* -------------------- CUBIC INTERPOLATING SPLINES ----------------------- */
+
 #define  CUBIC_UNIVAR( v0, v1, v2, v3, u ) \
      ( (v1) + (u) * ( \
        0.5 * ((v2)-(v0)) + (u) * ( \
