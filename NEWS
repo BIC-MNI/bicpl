@@ -1,3 +1,7 @@
+New in Release 1.4.0-1
+
+* added epm header for binary packaging purposes.
+
 New in Release 1.4.0
 
 * added code from the former libdavid for object-volume intersections.

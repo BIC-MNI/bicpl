@@ -1,8 +1,14 @@
+2003-02-16  Jason Lerch		<jason@bic.mni.mcgill.ca>
+
+	* added mni_bicpl.epm.header
+	* bumped version to 1.4.0-1
+
 2003-02-10  Jason Lerch		<jason@bic.mni.mcgill.ca>
 
 	* added Deform directory, taking sources from
 	/home/bic/david/Source/David/Deform/.
 	* added deform.h and friends to Include directory
+	* bumped version to 1.4.0
 	
 
 2003-01-25  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>

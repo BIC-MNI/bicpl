@@ -1,0 +1,11 @@
+%product BICPL
+%copyright 1993-2002 David MacDonald
+%vendor McConnell Brain Imaging Centre
+%packager Jason Lerch <jason@bic.mni.mcgill.ca>
+%license LICENSE
+%readme README
+%description File handling and image processing algorithms
+%version 1.4.0
+%requires netcdf 3.5.0 3.6.0
+%requires minc 1.0 1.9
+
