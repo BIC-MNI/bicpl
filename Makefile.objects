@@ -116,10 +116,22 @@ VOLUMES_SRC = \
               Volumes/$(ARCH_DIR)/smooth.c \
               Volumes/$(ARCH_DIR)/talairach.c
 
+MARCHING_SRC = \
+               Marching_cubes/$(ARCH_DIR)/isosurfaces.c \
+               Marching_cubes/$(ARCH_DIR)/marching_cubes.c \
+               Marching_cubes/$(ARCH_DIR)/marching_no_holes.c \
+               Marching_cubes/$(ARCH_DIR)/marching_tetra.c
+
+IMAGE_SRC = \
+               Images/$(ARCH_DIR)/crop_image.c \
+               Images/$(ARCH_DIR)/rgb_io.c
+
 BIC_SRC = \
           $(DATA_STRUCT_SRC) \
           $(GEOMETRY_SRC) \
+          $(IMAGE_SRC) \
           $(TRANSFORM_SRC) \
+          $(MARCHING_SRC) \
           $(NUMERICAL_SRC) \
           $(OBJECTS_SRC) \
           $(PROG_UTILS_SRC) \
