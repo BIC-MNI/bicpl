@@ -17,7 +17,7 @@
 #include  <bicpl/data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.14 2000-02-06 15:30:17 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.15 2002-11-27 22:48:11 stever Exp $";
 #endif
 
 private  int  get_smoothing_points(
@@ -81,6 +81,13 @@ public  Real  get_smooth_surface_curvature(
     point_index = polygons->indices[
                   POINT_INDEX(polygons->end_indices,poly,vertex)];
 
+    /* If !distances_initialized, this routine sets them all to -1.
+       Then the mesh distances from point_index are computed, up to 
+       smoothing_distance.  However, if distances_initialized is TRUE,
+       the distances are not reset.  It seems to me that distances from
+       a previous call to get_smooth_surface_curvature() with a different
+       point may not be properly updated.
+    */
     n_found = compute_distances_from_point( polygons, n_neighbours, neighbours,
                                        &polygons->points[point_index], poly,
                                        smoothing_distance,
@@ -163,6 +170,9 @@ private  int  get_smoothing_points(
         {
             prev_index = neighbours[point_index][neigh];
 
+	    /* This seems to indicate that the distances are expected to
+	       be initialized to -1 in compute_distance_from_point().
+	    */
             if( distances[prev_index] < 0.0f )
             {
                 inside = point_index;

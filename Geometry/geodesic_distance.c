@@ -13,13 +13,20 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.6 2000-02-06 15:30:14 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.7 2002-11-27 22:48:11 stever Exp $";
 #endif
 
 #include  <volume_io/internal_volume_io.h>
 #include  <bicpl/geom.h>
 #include  <bicpl/priority_queue.h>
 
+
+/*! \brief Compute distance in mesh structure.
+ *
+ * Compute single-source shortest path distances in the graph using 
+ * Dijkstra's algorithm.  If the upper bound (max_distance) is positive,
+ * then the search is terminated once this bound is reached.
+ */
 public  int  compute_distances_from_point(
     polygons_struct   *polygons,
     int               n_neighbours[],
@@ -92,6 +99,16 @@ public  int  compute_distances_from_point(
         for_less( neigh, 0, n_neighbours[point_index] )
         {
             next_point_index = neighbours[point_index][neigh];
+
+	    /* It is certainly possible that
+	       distances[next_point_index] is a small nonnegative
+	       value when we enter this routine.  If
+	       distances_initialized == TRUE, then it won't have been
+	       reset to -1 (above).  With the following test,
+	       distances[next_point_index] may never be updated.
+
+	       Is this not a bug?
+	    */
 
             if( distances[next_point_index] < 0.0f ||
                 distances[next_point_index] > distances[point_index] )

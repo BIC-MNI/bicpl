@@ -16,7 +16,7 @@
 #include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.20 2000-02-06 15:30:13 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.21 2002-11-27 22:48:11 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -95,6 +95,10 @@ public  void  get_polygon_vertex_curvatures(
                 }
                 else
                 {
+		    /* There is some state being carried around in
+		       the "distances" list.  Negative numbers are being
+		       used as markers in some manner.
+		    */
                     curvature = get_smooth_surface_curvature( polygons,
                                   n_neighbours, neighbours,
                                   poly, vertex_index,
