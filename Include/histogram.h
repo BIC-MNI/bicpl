@@ -1,7 +1,7 @@
 #ifndef  DEF_HISTOGRAM_H
 #define  DEF_HISTOGRAM_H
 
-#include  <mni.h>
+#include  <volume_io.h>
 
 typedef struct
 {
