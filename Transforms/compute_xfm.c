@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.8  1995-07-05 14:52:06  david
+@MODIFIED   : Revision 1.9  1995-07-07 18:16:45  david
 @MODIFIED   : *** empty log message ***
 @MODIFIED   :
+ * Revision 1.8  1995/07/05  14:52:06  david
+ * *** empty log message ***
+ *
  * Revision 1.7  1995/06/23  14:24:37  david
  * check_in_all
  *
@@ -52,10 +55,6 @@
 #include <numerical.h>
 #include <compute_xfm.h>
 
-/* Constants */
-
-#define NUMBER_OF_DIMENSIONS 3
-
 /* Function declarations */
 
 private void compute_procrustes_transform(int npoints, 
@@ -80,13 +79,11 @@ private void compute_tps_transform(int npoints,
                                    General_transform *transform);
 private  void  build_homogeneous_from_parameters(
     Real  **calc_transformation,
-    int   ndim, 
     Real  centre[],
     Real  translation[],
     Real  scales[],
     Real  shears[],
     Real  angles[] );
-
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : compute_transform_from_tags
@@ -190,25 +187,21 @@ private  void  compute_procrustes_transform(
     Trans_type          trans_type,
     General_transform   *transform)
 {
-    Real        *the_centre;
-    Real        *translation, *centre_of_rotation, **rotation, scale;
+    Real        translation[N_DIMENSIONS];
+    Real        centre_of_rotation[N_DIMENSIONS];
+    Real        **rotation, scale;
     Real        **calc_transformation;
-    int         i, j, ndim, size;
+    int         i, j;
     Transform   linear_transform;
 
     /* Create needed matrices and vectors */
 
-    ndim = NUMBER_OF_DIMENSIONS;
-    size = ndim+1;
-    ALLOC( translation, ndim );
-    ALLOC( centre_of_rotation, ndim );
-    ALLOC( the_centre, ndim );
-    ALLOC2D( rotation, ndim, ndim );
-    ALLOC2D( calc_transformation, size, size );
+    ALLOC2D( rotation, N_DIMENSIONS, N_DIMENSIONS );
+    ALLOC2D( calc_transformation, N_DIMENSIONS + 1, N_DIMENSIONS + 1 );
 
     /* Do procrustes fit */
 
-    procrustes( npoints, ndim, tag_list1, tag_list2, translation, 
+    procrustes( npoints, N_DIMENSIONS, tag_list1, tag_list2, translation, 
                 centre_of_rotation, rotation, &scale );
 
     /* Set scale appropriately */
@@ -218,14 +211,15 @@ private  void  compute_procrustes_transform(
 
     /* Calculate matrix in homogeneous coordinates */
 
-    transformations_to_homogeneous( ndim, translation, centre_of_rotation,
+    transformations_to_homogeneous( N_DIMENSIONS,
+                                    translation, centre_of_rotation,
                                     rotation, scale, calc_transformation );
 
     /* Save the transform */
 
-    for_less( i, 0, size )
+    for_less( i, 0, N_DIMENSIONS + 1 )
     {
-        for_less( j, 0, size )
+        for_less( j, 0, N_DIMENSIONS + 1 )
             Transform_elem(linear_transform, i, j) = calc_transformation[j][i];
     }
 
@@ -233,9 +227,6 @@ private  void  compute_procrustes_transform(
 
     /* Free the matrices and vectors */
 
-    FREE( translation );
-    FREE( centre_of_rotation );
-    FREE( the_centre );
     FREE2D( calc_transformation );
 }
 
@@ -264,10 +255,12 @@ private  void  compute_arb_param_transform(
     Trans_type          trans_type,
     General_transform   *transform )
 {
-    Real       *the_centre, *translation;
-    Real       *centre_of_rotation, **rotation, scale, *scales;
-    Real       *shears, *angles, **calc_transformation;
-    int        i, j, ndim, size;
+    Real       translation[N_DIMENSIONS];
+    Real       centre_of_rotation[N_DIMENSIONS], **rotation, scale;
+    Real       scales[N_DIMENSIONS];
+    Real       shears[N_DIMENSIONS], angles[N_DIMENSIONS];
+    Real       **calc_transformation;
+    int        i, j;
     Transform  linear_transform;
   
     if( trans_type != TRANS_LSQ9 && trans_type != TRANS_LSQ10 )
@@ -280,20 +273,12 @@ private  void  compute_arb_param_transform(
 
     /* Create needed matrices and vectors */
 
-    ndim = NUMBER_OF_DIMENSIONS;
-    size = ndim+1;
-    ALLOC( translation, ndim );
-    ALLOC( centre_of_rotation, ndim );
-    ALLOC( angles, ndim );
-    ALLOC( shears, ndim );
-    ALLOC( scales, ndim );
-    ALLOC( the_centre, ndim );
-    ALLOC2D( rotation, ndim, ndim );
-    ALLOC2D( calc_transformation, size, size );
+    ALLOC2D( rotation, N_DIMENSIONS, N_DIMENSIONS );
+    ALLOC2D( calc_transformation, N_DIMENSIONS + 1, N_DIMENSIONS + 1 );
   
     /* Do procrustes fit */
 
-    procrustes( npoints, ndim, tag_list1, tag_list2, translation, 
+    procrustes( npoints, N_DIMENSIONS, tag_list1, tag_list2, translation, 
                 centre_of_rotation, rotation, &scale );
   
     if( !rotmat_to_ang( rotation, angles ) )
@@ -303,7 +288,7 @@ private  void  compute_arb_param_transform(
         exit(EXIT_FAILURE);
     }
   
-    for_less( i, 0, ndim )
+    for_less( i, 0, N_DIMENSIONS )
     {
         shears[i] = 0.0;
         scales[i] = scale;
@@ -325,7 +310,6 @@ private  void  compute_arb_param_transform(
     /* Calculate matrix in homogeneous coordinates */
 
     build_homogeneous_from_parameters( calc_transformation,
-                                       ndim, 
                                        centre_of_rotation, 
                                        translation,
                                        scales,
@@ -334,9 +318,9 @@ private  void  compute_arb_param_transform(
 
     /* Save the transform */
 
-    for_less( i, 0, size )
+    for_less( i, 0, N_DIMENSIONS + 1 )
     {
-        for_less( j, 0, size )
+        for_less( j, 0, N_DIMENSIONS + 1 )
             Transform_elem(linear_transform, i, j) = calc_transformation[j][i];
     }
 
@@ -344,12 +328,6 @@ private  void  compute_arb_param_transform(
   
     /* Free the matrices and vectors */
 
-    FREE(angles );
-    FREE(shears );
-    FREE(scales );
-    FREE(translation );
-    FREE(centre_of_rotation );
-    FREE(the_centre );
     FREE2D(calc_transformation );
 }
 
@@ -483,7 +461,6 @@ public  void  build_transformation_matrix(
 
 private  void  build_homogeneous_from_parameters(
     Real  **calc_transformation,
-    int   ndim, 
     Real  centre[],
     Real  translation[],
     Real  scales[],
@@ -496,14 +473,14 @@ private  void  build_homogeneous_from_parameters(
     build_transformation_matrix( mat, centre, translation, scales, shears,
                                  angles );
 
-    for_less( i, 0, ndim )
-        for_less( j, 0, ndim+1 )
+    for_less( i, 0, N_DIMENSIONS )
+        for_less( j, 0, N_DIMENSIONS + 1 )
             calc_transformation[j][i] = mat[i][j];
 
-    for_less( i, 0, ndim )
-        calc_transformation[i][ndim] = 0.0;
+    for_less( i, 0, N_DIMENSIONS )
+        calc_transformation[i][N_DIMENSIONS] = 0.0;
 
-    calc_transformation[ndim][ndim] = 1.0;
+    calc_transformation[N_DIMENSIONS][N_DIMENSIONS] = 1.0;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -532,8 +509,8 @@ private  void  compute_12param_transform(
     Trans_type          trans_type,
     General_transform   *transform)
 {
-    Real       *x, *solution;
-    int        ndims, d, dim;
+    Real       *x, solution[N_DIMENSIONS + 1];
+    int        d, dim;
     int        point;
     Transform  linear_transform;
 
@@ -545,14 +522,11 @@ private  void  compute_12param_transform(
         exit(EXIT_FAILURE);
     }
 
-    ndims = NUMBER_OF_DIMENSIONS;
-
     make_identity_transform( &linear_transform );
 
     ALLOC( x, npoints );
-    ALLOC( solution, ndims+1 );
 
-    for_less( dim, 0, ndims )
+    for_less( dim, 0, N_DIMENSIONS )
     {
         /* Copy the data points */
 
@@ -561,10 +535,10 @@ private  void  compute_12param_transform(
 
         /*--- find the solution */
 
-        least_squares( npoints, ndims, tag_list2, x, solution );
+        least_squares( npoints, N_DIMENSIONS, tag_list2, x, solution );
 
-        Transform_elem( linear_transform, dim, ndims ) = solution[0];
-        for_less( d, 0, ndims )
+        Transform_elem( linear_transform, dim, N_DIMENSIONS ) = solution[0];
+        for_less( d, 0, N_DIMENSIONS )
             Transform_elem( linear_transform, dim, d ) = solution[1+d];
     }
 
@@ -575,7 +549,6 @@ private  void  compute_12param_transform(
     /* Free matrices and vectors */
 
     FREE( x );
-    FREE( solution );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -607,7 +580,6 @@ private  void  compute_tps_transform(
     General_transform   *transform)
 {
     Real               **displacements;
-    int                ndim;
     General_transform  inv_transform;
 
     /* Check trans_type */
@@ -620,16 +592,14 @@ private  void  compute_tps_transform(
 
     /* Allocate matrices */
 
-    ndim = NUMBER_OF_DIMENSIONS;
-
-    ALLOC2D( displacements, npoints+1+ndim, ndim );
+    ALLOC2D( displacements, npoints+1+N_DIMENSIONS, N_DIMENSIONS );
 
     get_nonlinear_warp( tag_list1, tag_list2, displacements, npoints,
-                        ndim, ndim );
+                        N_DIMENSIONS, N_DIMENSIONS );
 
     /* ---- Create general transform */
 
-    create_thin_plate_transform_real( &inv_transform, ndim, npoints, 
+    create_thin_plate_transform_real( &inv_transform, N_DIMENSIONS, npoints, 
                                       tag_list1, displacements );
 
     /* ---- Invert general transform */
