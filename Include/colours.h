@@ -1,7 +1,7 @@
 #ifndef  DEF_COLOURS
 #define  DEF_COLOURS
 
-#include  <basic.h>
+#include  <volume_io.h>
 
 #undef  START_COLOURS
 #undef  END_COLOURS
