@@ -28,7 +28,7 @@ typedef  struct
 typedef  enum  { PLUS_FLAG, MINUS_FLAG, MAX_CASES /*, ZERO_FLAG */ }
                Case_types;
 
-private  case_struct   cases[3][3][3][3][3][3][3][3];
+private  case_struct   cases[2][2][2][2][2][2][2][2];
 
 private   BOOLEAN  initialized = FALSE;
 
@@ -88,6 +88,41 @@ private  void  check_initialized( void )
     }
 }
 
+#ifdef DEBUG
+private  void  test_case(
+    case_struct  *c )
+{
+    int   p, n_sets, ind, poly, size, v, v1;
+
+    n_sets = 1 << c->n_ambiguities;
+    for_less( p, 0, n_sets )
+    {
+        ind = 0;
+        for_less( poly, 0, c->polygons[p].n_polygons )
+        {
+            size = c->polygons[p].sizes[poly];
+            for_less( v, 0, size-1 )
+            {
+                for_less( v1, v+1, size )
+                {
+                    if( c->polygons[p].indices[ind+v].coord[0] ==
+                        c->polygons[p].indices[ind+v1].coord[0] &&
+                        c->polygons[p].indices[ind+v].coord[1] ==
+                        c->polygons[p].indices[ind+v1].coord[1] &&
+                        c->polygons[p].indices[ind+v].coord[2] ==
+                        c->polygons[p].indices[ind+v1].coord[2] &&
+                        c->polygons[p].indices[ind+v].edge_intersected ==
+                        c->polygons[p].indices[ind+v1].edge_intersected )
+                        handle_internal_error( "test_case" );
+                }
+            }
+
+            ind += size;
+        }
+    }
+}
+#endif
+
 private  void  create_marching_cubes_lookup( void )
 {
     Case_types   case_flags[2][2][2];
@@ -112,6 +147,15 @@ private  void  create_marching_cubes_lookup( void )
                            [case_flags[1][1][1]] );
 
 #ifdef DEBUG
+        test_case( &cases[case_flags[0][0][0]]
+                           [case_flags[0][0][1]]
+                           [case_flags[0][1][0]]
+                           [case_flags[0][1][1]]
+                           [case_flags[1][0][0]]
+                           [case_flags[1][0][1]]
+                           [case_flags[1][1][0]]
+                           [case_flags[1][1][1]] );
+
 {
     case_struct   c;
     int           p;
@@ -241,16 +285,16 @@ private  void  create_face_indices(
     face_indices->offsets[0][a2] = 0;
     face_indices->offsets[0][c]  = face;
 
-    face_indices->offsets[1][a1] = 0;
-    face_indices->offsets[1][a2] = 1;
+    face_indices->offsets[1][a1] = 1;
+    face_indices->offsets[1][a2] = 0;
     face_indices->offsets[1][c]  = face;
 
     face_indices->offsets[2][a1] = 1;
     face_indices->offsets[2][a2] = 1;
     face_indices->offsets[2][c]  = face;
 
-    face_indices->offsets[3][a1] = 1;
-    face_indices->offsets[3][a2] = 0;
+    face_indices->offsets[3][a1] = 0;
+    face_indices->offsets[3][a2] = 1;
     face_indices->offsets[3][c]  = face;
 }
 
@@ -339,8 +383,7 @@ private  void  create_case_polygons(
     BOOLEAN        face_ambiguity_flags[3][2],
     polygons_list  *polygons )
 {
-    int               c, face, edge_index, ind, prev_ind, i, size;
-    voxel_point_type  tmp;
+    int               c, face, edge_index, ind, prev_ind, size;
     edges_struct      edges[3][2];
 
     create_edges( case_flags, face_ambiguity_flags, edges );
@@ -374,14 +417,6 @@ private  void  create_case_polygons(
                         (size > MAX_INDICES_PER_VOXEL) )
                     {
                         HANDLE_INTERNAL_ERROR( "n ind" );
-                    }
-
-                    for_less( i, 0, polygons->sizes[polygons->n_polygons]/2 )
-                    {
-                        tmp = polygons->indices[prev_ind + i];
-                        polygons->indices[prev_ind + i] =
-                                     polygons->indices[ind - i - 1];
-                        polygons->indices[ind - i - 1] = tmp;
                     }
 
                     ++polygons->n_polygons;
@@ -462,7 +497,6 @@ private  void  create_edge_for_face(
     }
     else
     {
-
         edges->n_edges = 0;
 
         for_less( first_edge, 0, 4 )
@@ -555,21 +589,21 @@ private  void  get_edge_point(
     switch( edge )
     {
     case 0:
-        edge_point->edge_intersected = a2;
-        break;
-
-    case 1:
-        ++edge_point->coord[a2];
         edge_point->edge_intersected = a1;
         break;
 
-    case 2:
+    case 1:
         ++edge_point->coord[a1];
         edge_point->edge_intersected = a2;
         break;
 
-    case 3:
+    case 2:
+        ++edge_point->coord[a2];
         edge_point->edge_intersected = a1;
+        break;
+
+    case 3:
+        edge_point->edge_intersected = a2;
         break;
     }
 }
@@ -587,39 +621,39 @@ private  void  find_neighbour_face(
         int   c, face, edge;
     }        neighbours[3][2][4] =
      {
-        { { { 2, 0, 3 },
-            { 1, 1, 3 },
-            { 2, 1, 0 },
-            { 1, 0, 0 } },
+        { { { 1, 0, 3 },
+            { 2, 1, 3 },
+            { 1, 1, 0 },
+            { 2, 0, 0 } },
 
-          { { 1, 0, 2 },
+          { { 2, 0, 2 },
+            { 1, 1, 2 },
+            { 2, 1, 1 },
+            { 1, 0, 1 } }
+        },
+
+        {
+          { { 2, 0, 3 },
+            { 0, 1, 3 },
+            { 2, 1, 0 },
+            { 0, 0, 0 } },
+
+          { { 0, 0, 2 },
             { 2, 1, 2 },
-            { 1, 1, 1 },
+            { 0, 1, 1 },
             { 2, 0, 1 } }
         },
 
         {
           { { 0, 0, 3 },
-            { 2, 1, 3 },
+            { 1, 1, 3 },
             { 0, 1, 0 },
-            { 2, 0, 0 } },
+            { 1, 0, 0 } },
 
-          { { 2, 0, 2 },
+          { { 1, 0, 2 },
             { 0, 1, 2 },
-            { 2, 1, 1 },
+            { 1, 1, 1 },
             { 0, 0, 1 } }
-        },
-
-        {
-          { { 1, 0, 3 },
-            { 0, 1, 3 },
-            { 1, 1, 0 },
-            { 0, 0, 0 } },
-
-          { { 0, 0, 2 },
-            { 1, 1, 2 },
-            { 0, 1, 1 },
-            { 1, 0, 1 } }
         }
      };
 
@@ -699,10 +733,8 @@ public  int  get_holeless_isosurface_polygons(
     if( voxel_case->n_ambiguities > 0 )
     {
         amb_index = 0;
-        for( amb = voxel_case->n_ambiguities-1;  amb >= 0;  --amb )
+        for_less( amb, 0, voxel_case->n_ambiguities )
         {
-            amb_index <<= 1;
-
             face = &voxel_case->ambiguity_faces[amb];
 
             if( corner_values[face->offsets[0][0]][face->offsets[0][1]]
@@ -738,9 +770,7 @@ public  int  get_holeless_isosurface_polygons(
             }
 
             if( (p2 - m2) * m1 > (m1 - p1) * p2 )
-            {
-                amb_index |= 1;
-            }
+                amb_index |= (1 << amb);
         }
     }
     else
