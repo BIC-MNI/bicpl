@@ -1,5 +1,9 @@
 #include  <internal_volume_io.h>
 #include  <numerical.h>
+#include  <prog_utils.h>
+
+#define   N_SAVES          3
+#define   N_BETWEEN_SAVES  30
 
 private  Real  evaluate_fit(
     int     n_equations,
@@ -24,6 +28,37 @@ private  Real  evaluate_fit(
     }
 
     return( fit );
+}
+
+private  void  evaluate_fit_derivative(
+    int     n_equations,
+    int     n_nodes_per_equation[],
+    int     *node_list[],
+    Real    constants[],
+    Real    *node_weights[],
+    int     n_nodes,
+    Real    node_values[],
+    Real    derivatives[] )
+{
+    int   node, p, n, eq;
+    Real  diff;
+
+    for_less( p, 0, n_nodes )
+        derivatives[p] = 0.0;
+
+    for_less( eq, 0, n_equations )
+    {
+        diff = constants[eq];
+        for_less( n, 0, n_nodes_per_equation[eq] )
+            diff += node_weights[eq][n] * node_values[node_list[eq][n]];
+        diff *= 2.0;
+
+        for_less( n, 0, n_nodes_per_equation[eq] )
+        {
+            node = node_list[eq][n];
+            derivatives[node] += diff * node_weights[eq][n];
+        }
+    }
 }
 
 private  void  evaluate_fit_along_line(
@@ -90,86 +125,6 @@ private  void  minimize_along_line(
         node_values[node] += t * line_coefs[node];
 }
 
-private  void  evaluate_fit_derivative(
-    int     n_equations,
-    int     n_nodes_per_equation[],
-    int     *node_list[],
-    Real    constants[],
-    Real    *node_weights[],
-    int     n_nodes,
-    Real    node_values[],
-    Real    derivatives[] )
-{
-    int   node, p, n, eq;
-    Real  diff;
-
-    for_less( p, 0, n_nodes )
-        derivatives[p] = 0.0;
-
-    for_less( eq, 0, n_equations )
-    {
-        diff = constants[eq];
-        for_less( n, 0, n_nodes_per_equation[eq] )
-            diff += node_weights[eq][n] * node_values[node_list[eq][n]];
-        diff *= 2.0;
-
-        for_less( n, 0, n_nodes_per_equation[eq] )
-        {
-            node = node_list[eq][n];
-            derivatives[node] += diff * node_weights[eq][n];
-        }
-    }
-}
-
-private  void  minimize_cost(
-    int     n_equations,
-    int     n_nodes_per_equation[],
-    int     *node_list[],
-    Real    constants[],
-    Real    *node_weights[],
-    int     n_nodes,
-    Real    node_values[] )
-{
-    int     n, iter, n_iters;
-    Real    *next_values, *derivs;
-
-    ALLOC( derivs, n_nodes );
-    ALLOC( next_values, n_nodes );
-    for_less( n, 0, n_nodes )
-        next_values[n] = node_values[n];
-
-    if( getenv( "N_ITERS" ) == NULL ||
-        sscanf( getenv("N_ITERS"), "%d", &n_iters ) != 1 )
-        n_iters = 50;
-
-    for_less( iter, 0, n_iters )
-    {
-        evaluate_fit_derivative( n_equations, n_nodes_per_equation,
-                                 node_list, constants, node_weights,
-                                 n_nodes, next_values, derivs );
-
-        minimize_along_line( n_equations, n_nodes_per_equation,
-                             node_list, constants, node_weights,
-                             n_nodes, next_values, derivs );
-
-        for_less( n, 0, n_nodes )
-        {
-            derivs[n] = next_values[n] - node_values[n];
-            next_values[n] = node_values[n];
-        }
-
-        minimize_along_line( n_equations, n_nodes_per_equation,
-                             node_list, constants, node_weights,
-                             n_nodes, next_values, derivs );
-    }
-
-    for_less( n, 0, n_nodes )
-        node_values[n] = next_values[n];
-
-    FREE( next_values );
-    FREE( derivs );
-}
-
 public  Real   minimize_lsq(
     int              n_parameters,
     int              n_equations,
@@ -181,8 +136,19 @@ public  Real   minimize_lsq(
     Real             node_values[] )
 {
     Real              fit;
-    int               iter;
-    int               next_change, update_rate;
+    int               iter, s, p;
+    int               update_rate;
+    Real              *saves[N_SAVES], *swap, *derivs;
+    Real              last_update_time, current_time;
+
+    for_less( s, 0, N_SAVES )
+    {
+        ALLOC( saves[s], n_parameters );
+        for_less( p, 0, n_parameters )
+            saves[s][p] = node_values[p];
+    }
+
+    ALLOC( derivs, n_parameters );
 
     fit = evaluate_fit( n_equations, n_nodes_per_equation,
                         node_list, constants, node_weights, node_values );
@@ -190,27 +156,55 @@ public  Real   minimize_lsq(
     print( "Initial  %g\n", fit );
 
     update_rate = 1;
-    next_change = 10;
+    last_update_time = current_cpu_seconds();
+
     for_less( iter, 0, n_iters )
     {
-        minimize_cost( n_equations, n_nodes_per_equation,
-                       node_list, constants, node_weights,
-                       n_parameters, node_values );
+        evaluate_fit_derivative( n_equations, n_nodes_per_equation,
+                                 node_list, constants, node_weights,
+                                 n_parameters, node_values, derivs );
 
-        fit =  evaluate_fit( n_equations, n_nodes_per_equation,
-                             node_list, constants, node_weights, node_values );
+        minimize_along_line( n_equations, n_nodes_per_equation,
+                             node_list, constants, node_weights,
+                             n_parameters, node_values, derivs );
 
-        if( ((iter+1) % update_rate) == 0 )
+        s = get_random_int( N_SAVES );
+        for_less( p, 0, n_parameters )
         {
-            print( "%d: %g\n", iter+1, fit );
+            derivs[p] = node_values[p] - saves[s][p];
+            node_values[p] = saves[s][p];
         }
 
-        if( iter+1 == next_change )
+        minimize_along_line( n_equations, n_nodes_per_equation,
+                             node_list, constants, node_weights,
+                             n_parameters, node_values, derivs );
+
+        if( ((iter+1) % update_rate) == 0 || iter == n_iters - 1 )
         {
-            update_rate *= 10;
-            next_change *= 100;
+            fit =  evaluate_fit( n_equations, n_nodes_per_equation,
+                             node_list, constants, node_weights, node_values );
+            print( "%d: %g\n", iter+1, fit );
+            current_time = current_cpu_seconds();
+            if( current_time - last_update_time < 1.0 )
+                update_rate *= 10;
+            last_update_time = current_time;
+        }
+
+        if( (iter % N_BETWEEN_SAVES) == 0 )
+        {
+            swap = saves[0];
+            for_less( s, 0, N_SAVES-1 )
+                saves[s] = saves[s+1];
+            saves[N_SAVES-1] = swap;
+            for_less( p, 0, n_parameters )
+                saves[s][p] = node_values[p];
         }
     }
+
+    for_less( s, 0, N_SAVES )
+        FREE( saves[s] );
+
+    FREE( derivs );
 
     return( fit );
 }
