@@ -14,6 +14,11 @@
 #include "ParseArgv.h"
 
 
+/* Size of structure */
+int n_points = -1;
+int n_cells = -1;
+
+
 /* Array of string pairs specifying the data attributes. 
    I'm being lazy and using static-sized arrays.  
    The standard C++ vector<> would be so helpful here ...
@@ -68,6 +73,7 @@ int append_att_array( char* dst, char* key, int argc, char** argv )
 
     if ( aa->count >= MAX_ATTRIBUTES ) {
 	fprintf( stderr, "too many attributes of type %s\n", key );
+	fprintf( stderr, "Ask a wizard to expand me.\n" );
 	return -1;
     }
 
@@ -144,22 +150,57 @@ void copy_vectors( FILE* out,
 }
 
 
+void write_points_section( FILE* out, int n_points, Point* points )
+{
+    int i;
+
+    fprintf( out, "POINTS %d float\n", n_points );
+    for( i = 0; i < n_points; ++i ) {
+	fprintf( out, "%f %f %f\n", 
+		 Point_x( points[i] ), 
+		 Point_y( points[i] ), 
+		 Point_z( points[i] ) );
+    }
+}
+
+
+void lines_to_vtk( FILE* out, const lines_struct* l )
+{
+    int e, size_cell_list = 0;
+
+    n_points = l->n_points;
+    n_cells = l->n_items;
+
+    write_points_section( out, l->n_points, l->points );
+
+    for( e = 0; e < n_cells; ++e ) 
+	size_cell_list += 1 + GET_OBJECT_SIZE( *l, e );
+
+    fprintf( out, "LINES %d %d\n", n_cells, size_cell_list );
+    for ( e = 0; e < n_cells; ++e ) {
+	int n_line_points = GET_OBJECT_SIZE( *l, e );
+	int p;
+
+	fprintf( out, "%d", n_line_points );
+	for ( p = 0; p < n_line_points; ++p ) {
+	    int index = l->indices[POINT_INDEX(l->end_indices, e, p )];
+	    fprintf( out," %d", index );
+	}
+	fprintf( out, "\n");
+    }
+
+}
+
 
 void polygons_to_vtk( FILE* out, const polygons_struct* p )
 {
-    int n_vertices = p->n_points;
-    int n_facets = p->n_items;
     int size_cell_list = 0;
-    int v,f;
+    int f;
 
-    fprintf( out, "POINTS %d float\n", n_vertices );
-    for( v = 0; v < n_vertices; ++v ) {
-	fprintf( out, "%f %f %f\n", 
-		 Point_x( p->points[v] ), 
-		 Point_y( p->points[v] ), 
-		 Point_z( p->points[v] ) );
-    }
-    fprintf( out, "\n");
+    n_points = p->n_points;
+    n_cells = p->n_items;
+
+    write_points_section( out, p->n_points, p->points );
 
     /* The cell list is the list of vertices of each cell, i.e.
        it is a face cycle.  For each cell, the list is given using
@@ -168,11 +209,11 @@ void polygons_to_vtk( FILE* out, const polygons_struct* p )
 
        We need to compute the total size of this cell list.
     */
-    for( f = 0; f < n_facets; ++f ) 
+    for( f = 0; f < n_cells; ++f ) 
 	size_cell_list += 1 + GET_OBJECT_SIZE( *p, f );
 
-    fprintf( out, "POLYGONS %d %d\n", n_facets, size_cell_list );
-    for ( f = 0; f < n_facets; ++f ) {
+    fprintf( out, "POLYGONS %d %d\n", n_cells, size_cell_list );
+    for ( f = 0; f < n_cells; ++f ) {
 	int n_facet_edges = GET_OBJECT_SIZE( *p, f );
 	int e;
 
@@ -182,44 +223,6 @@ void polygons_to_vtk( FILE* out, const polygons_struct* p )
 	    fprintf( out," %d", index );
 	}
 	fprintf( out, "\n");
-    }
-    fprintf( out, "\n");
-
-    /* Add attributes, if given. */
-    if ( vertex_scalars.count > 0 || vertex_vectors.count > 0 ) {
-	int a;
-
-	fprintf( out, "POINT_DATA %d\n", n_vertices );
-
-	for( a = 0; a < vertex_scalars.count; ++a )
-	    copy_scalars( out, 
-			  vertex_scalars.data_name[a],
-			  vertex_scalars.file_name[a],
-			  n_vertices );
-
-	for( a = 0; a < vertex_vectors.count; ++a )
-	    copy_vectors( out, 
-			  vertex_vectors.data_name[a],
-			  vertex_vectors.file_name[a],
-			  n_vertices );
-    }
-
-    if ( facet_scalars.count > 0 || facet_vectors.count > 0 ) {
-	int a;
-
-	fprintf( out, "CELL_DATA %d\n", n_facets );
-
-	for( a = 0; a < facet_scalars.count; ++a )
-	    copy_scalars( out, 
-			  facet_scalars.data_name[a],
-			  facet_scalars.file_name[a],
-			  n_vertices );
-
-	for( a = 0; a < facet_vectors.count; ++a )
-	    copy_vectors( out, 
-			  facet_vectors.data_name[a],
-			  facet_vectors.file_name[a],
-			  n_vertices );
     }
 }
 
@@ -243,10 +246,12 @@ void process_file( FILE* out, char* filename )
     }
 
     for ( i = 0; i < num_objects; ++i ) {
-	Object_types ot = (object_list[i])->object_type;
+	Object_types ot = get_object_type(object_list[i]);
 
-	if ( ot == POLYGONS )
-	    polygons_to_vtk( out, &((object_list[i])->specific.polygons) );
+	if ( ot == LINES )
+	    lines_to_vtk( out, get_lines_ptr(object_list[i]) );
+	else if ( ot == POLYGONS )
+	    polygons_to_vtk( out, get_polygons_ptr(object_list[i]) );
 	else
 	    fprintf( stderr, "*** Unable to handle object type %d\n", ot );
     }
@@ -288,11 +293,49 @@ int main( int ac, char** av )
 
     /* Spit out the header */
     fprintf( out, "# vtk DataFile Version 2.0\n" );
-    fprintf( out, "File '%s' (converted by bicobj2vtk $Id: bicobj2vtk.c,v 1.2 2002-04-29 18:31:06 stever Exp $\n", av[1] );
+    fprintf( out, "File '%s' (converted by bicobj2vtk $Id: bicobj2vtk.c,v 1.3 2002-11-27 22:48:44 stever Exp $\n", av[1] );
     fprintf( out, "ASCII\n" );
     fprintf( out, "DATASET POLYDATA\n" );
     
     process_file( out, av[1] );
+
+    /* Add attributes, if given. */
+    if ( vertex_scalars.count > 0 || vertex_vectors.count > 0 ) {
+	int a;
+
+	fprintf( out, "POINT_DATA %d\n", n_points );
+
+	for( a = 0; a < vertex_scalars.count; ++a )
+	    copy_scalars( out, 
+			  vertex_scalars.data_name[a],
+			  vertex_scalars.file_name[a],
+			  n_points );
+
+	for( a = 0; a < vertex_vectors.count; ++a )
+	    copy_vectors( out, 
+			  vertex_vectors.data_name[a],
+			  vertex_vectors.file_name[a],
+			  n_points );
+    }
+
+    if ( facet_scalars.count > 0 || facet_vectors.count > 0 ) {
+	int a;
+
+	fprintf( out, "CELL_DATA %d\n", n_cells );
+
+	for( a = 0; a < facet_scalars.count; ++a )
+	    copy_scalars( out, 
+			  facet_scalars.data_name[a],
+			  facet_scalars.file_name[a],
+			  n_cells );
+
+	for( a = 0; a < facet_vectors.count; ++a )
+	    copy_vectors( out, 
+			  facet_vectors.data_name[a],
+			  facet_vectors.file_name[a],
+			  n_cells );
+    }
+
 
     return 0;
 }
