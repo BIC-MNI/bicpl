@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.33 1995-10-19 15:47:54 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.34 1996-04-25 19:34:59 david Exp $";
 #endif
 
 private  void  reverse_polygon_order(
@@ -66,7 +66,7 @@ public  void  initialize_polygons(
     polygons->points = (Point *) 0;
     polygons->normals = (Vector *) 0;
 
-    polygons->line_thickness = 1.0;
+    polygons->line_thickness = 1.0f;
 
     polygons->n_items = 0;
     polygons->end_indices = (int *) 0;
@@ -930,7 +930,7 @@ public  void  compute_polygon_normals(
                                               &polygons->points[point_index],
                                               &polygons->points[next_index] );
 
-            scale = ABS( scale );
+            scale = FABS( scale );
             if( scale > PI )
                 scale = scale - PI;
 
