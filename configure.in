@@ -20,6 +20,11 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AM_PROG_LIBTOOL
 
+smr_CHECK_LIB(irisimage, image,
+[SGI image library], iopen, image.h)
+AC_SUBST(irisimage_CFLAGS)
+AC_SUBST(irisimage_LIBS)
+
 smr_CHECK_LIB(netcdf,,
 [NetCDF library], ncopen, netcdf.h)
 if test "$netcdf_LIBS" = ""; then
@@ -35,7 +40,7 @@ fi
 
 smr_CHECK_LIB(volumeio,volume_io,
 [MNI Volume IO library], input_volume, volume_io.h,
-[$netcdf_LIBS $minc_LIBS],[$netcdf_CFLAGS $minc_CFLAGS])
+[$netcdf_LIBS $minc_LIBS -lm],[$netcdf_CFLAGS $minc_CFLAGS])
 if test "$volumeio_LIBS" = ""; then
     AC_MSG_ERROR([Required library volume_io not found!])
 fi

@@ -1,4 +1,13 @@
-Wed Jan 19 19:42:52 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+Wed Jan 19 21:46:23 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* configure.in: check for SGI's iris image library.
+
+	* Images/Makefile.am (AM_CPPFLAGS, _LIBADD): include flags for
+	finding the iris image library and headers.
+
+	* Images/rgb_io.c: do not test OS-dependent symbols (__sgi) for
+	the image library; now the code is controlled by HAVE_IMAGE_H
+	symbol.
 
 	* Include/Makefile.am (all-local): test -l doesn't exist on linux.
 
