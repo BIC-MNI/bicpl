@@ -27,6 +27,36 @@ private  void  do_yz_slice(
     Real     y_half_width,
     Real     z_half_width );
 
+private  void  get_voxel_range(
+    int      size,
+    Real     min_pos,
+    Real     max_pos,
+    int      *min_voxel,
+    int      *max_voxel,
+    Real     *start_weight,
+    Real     *end_weight )
+{
+    if( min_pos < -0.5 )
+        min_pos = -0.5;
+    if( max_pos > (Real) size - 0.5 )
+        max_pos = (Real) size - 0.5;
+
+    *min_voxel = ROUND( min_pos );
+    *max_voxel = ROUND( max_pos );
+
+    if( (Real) (*max_voxel) - 0.5 == max_pos )
+        --(*max_voxel);
+
+    if( *min_voxel == *max_voxel )
+        *start_weight = max_pos - min_pos;
+    else
+    {
+        *start_weight = ((Real) (*min_voxel) + 0.5) - min_pos;
+        *end_weight = max_pos - ((Real) (*max_voxel) - 0.5);
+    }
+}
+    
+
 public  Volume  create_box_filtered_volume(
     Volume   volume,
     Real     x_width,
@@ -38,7 +68,7 @@ public  Volume  create_box_filtered_volume(
     int                sizes[MAX_DIMENSIONS];
     Real               separations[MAX_DIMENSIONS];
     int                x_min_voxel, x_max_voxel, start;
-    Real               x_min, x_max;
+    Real               x_weight_start, x_weight_end;
     float              ***volume_cache;
     progress_struct    progress;
 
@@ -74,19 +104,9 @@ public  Volume  create_box_filtered_volume(
 
     for_less( x, 0, sizes[X] )
     {
-        x_min = x - x_width;
-        x_max = x + x_width;
-
-        if( x_min < -0.5 )
-            x_min = -0.5;
-        if( x_max > sizes[X]-0.5 )
-            x_max = sizes[X]-0.5;
-
-        x_min_voxel = ROUND( x_min );
-        x_max_voxel = ROUND( x_max );
-
-        if( (Real) x_max_voxel - 0.5 == x_max )
-            --x_max_voxel;
+        get_voxel_range( sizes[X], x - x_width, x + x_width,
+                         &x_min_voxel, &x_max_voxel,
+                         &x_weight_start, &x_weight_end );
 
         if( x_max_voxel > x_cache_end )
         {
@@ -110,7 +130,7 @@ public  Volume  create_box_filtered_volume(
         }
 
         do_yz_slice( resampled_volume, volume_cache, x,
-                     x_min_voxel, x_max_voxel, x_min, x_max,
+                     x_min_voxel, x_max_voxel, x_weight_start, x_weight_end,
                      x_width, y_width, z_width );
 
         update_progress_report( &progress, x + 1 );
@@ -132,8 +152,8 @@ private  void  do_yz_slice(
     int      x,
     Real     x_min_voxel,
     Real     x_max_voxel,
-    Real     x_min,
-    Real     x_max,
+    Real     x_weight_start,
+    Real     x_weight_end,
     Real     x_half_width,
     Real     y_half_width,
     Real     z_half_width )
@@ -141,15 +161,15 @@ private  void  do_yz_slice(
     int                y, z;
     int                sizes[MAX_DIMENSIONS];
     int                y_min_voxel, y_max_voxel;
-    int                z_min_voxel, z_max_voxel;
-    Real               y_min, y_max, z_min, z_max;
+    Real               z_min, z_max;
     Real               sum, voxel, sample_volume;
+    Real               y_weight_start, y_weight_end;
     BOOLEAN            short_cut;
-    Real               *z_mins_add, *z_maxs_add, *z_mins_sub, *z_maxs_sub;
+    Real               *z_weight_start_add, *z_weight_end_add;
+    Real               *z_weight_start_sub, *z_weight_end_sub;
     int                *z_min_voxels_add, *z_max_voxels_add;
     int                *z_min_voxels_sub, *z_max_voxels_sub;
     Real               prev_z_min, prev_z_max, added, removed;
-    int                prev_z_min_voxel, prev_z_max_voxel;
 
     get_volume_sizes( resampled_volume, sizes );
 
@@ -163,115 +183,81 @@ private  void  do_yz_slice(
 
     ALLOC( z_min_voxels_add, sizes[Z] );
     ALLOC( z_max_voxels_add, sizes[Z] );
-    ALLOC( z_mins_add, sizes[Z] );
-    ALLOC( z_maxs_add, sizes[Z] );
+    ALLOC( z_weight_start_add, sizes[Z] );
+    ALLOC( z_weight_end_add, sizes[Z] );
 
     if( short_cut )
     {
         ALLOC( z_min_voxels_sub, sizes[Z] );
         ALLOC( z_max_voxels_sub, sizes[Z] );
-        ALLOC( z_mins_sub, sizes[Z] );
-        ALLOC( z_maxs_sub, sizes[Z] );
+        ALLOC( z_weight_start_sub, sizes[Z] );
+        ALLOC( z_weight_end_sub, sizes[Z] );
     }
 
 #ifdef lint
     z_min = 0.0;
     z_max = 0.0;
-    z_min_voxel = 0;
-    z_max_voxel = 0;
 #endif
 
     for_less( z, 0, sizes[Z] )
     {
         prev_z_min = z_min;
         prev_z_max = z_max;
-        prev_z_min_voxel = z_min_voxel;
-        prev_z_max_voxel = z_max_voxel;
 
         z_min = z - z_half_width;
         z_max = z + z_half_width;
 
-        if( z_min < -0.5 )
-            z_min = -0.5;
-        if( z_max > sizes[Z]-0.5 )
-            z_max = sizes[Z]-0.5;
-
-        z_min_voxel = ROUND( z_min );
-        z_max_voxel = ROUND( z_max );
-
-        if( (Real) z_max_voxel - 0.5 == z_max )
-            --z_max_voxel;
-
         if( !short_cut || z == 0 )
         {
-            z_mins_add[z] = z_min;
-            z_maxs_add[z] = z_max;
-            z_min_voxels_add[z] = z_min_voxel;
-            z_max_voxels_add[z] = z_max_voxel;
+            get_voxel_range( sizes[Z], z_min, z_max,
+                             &z_min_voxels_add[z], &z_max_voxels_add[z],
+                             &z_weight_start_add[z], &z_weight_end_add[z] );
         }
         else
         {
-            z_mins_add[z] = prev_z_max;
-            z_min_voxels_add[z] = prev_z_max_voxel;
-            if( z_mins_add[z] - 0.5 == prev_z_max )
-                ++z_mins_add[z];
-
-            z_maxs_add[z] = z_max;
-            z_max_voxels_add[z] = z_max_voxel;
-
-            z_mins_sub[z] = prev_z_min;
-            z_min_voxels_sub[z] = prev_z_min_voxel;
-            if( z_mins_sub[z] - 0.5 == prev_z_min )
-                ++z_mins_sub[z];
-            z_maxs_sub[z] = z_min;
-            z_max_voxels_sub[z] = z_min_voxel;
+            get_voxel_range( sizes[Z], prev_z_max, z_max,
+                             &z_min_voxels_add[z], &z_max_voxels_add[z],
+                             &z_weight_start_add[z], &z_weight_end_add[z] );
+            get_voxel_range( sizes[Z], prev_z_min, z_min,
+                             &z_min_voxels_sub[z], &z_max_voxels_sub[z],
+                             &z_weight_start_sub[z], &z_weight_end_sub[z] );
         }
     }
 
     for_less( y, 0, sizes[Y] )
     {
-        y_min = y - y_half_width;
-        y_max = y + y_half_width;
-
-        if( y_min < -0.5 )
-            y_min = -0.5;
-        if( y_max > sizes[Y]-0.5 )
-            y_max = sizes[Y]-0.5;
-
-        y_min_voxel = ROUND( y_min );
-        y_max_voxel = ROUND( y_max );
-
-        if( (Real) y_max_voxel - 0.5 == y_max )
-            --y_max_voxel;
+        get_voxel_range( sizes[Y], y - y_half_width, y + y_half_width,
+                         &y_min_voxel, &y_max_voxel,
+                         &y_weight_start, &y_weight_end );
 
         for_less( z, 0, sizes[Z] )
         {
             if( !short_cut || z == 0 )
             {
                 sum = get_amount_in_box( volume_cache,
-                                     x_min_voxel,         x_max_voxel,
-                                     y_min_voxel,         y_max_voxel,
-                                     z_min_voxels_add[z], z_max_voxels_add[z],
-                                     x_min,               x_max,
-                                     y_min,               y_max,
-                                     z_mins_add[z],       z_maxs_add[z] );
+                                 x_min_voxel,           x_max_voxel,
+                                 y_min_voxel,           y_max_voxel,
+                                 z_min_voxels_add[z],   z_max_voxels_add[z],
+                                 x_weight_start,        x_weight_end,
+                                 y_weight_start,        y_weight_end,
+                                 z_weight_start_add[z], z_weight_end_add[z] );
             }
             else
             {
                 removed = get_amount_in_box( volume_cache,
-                                     x_min_voxel,         x_max_voxel,
-                                     y_min_voxel,         y_max_voxel,
-                                     z_min_voxels_sub[z], z_max_voxels_sub[z],
-                                     x_min,               x_max,
-                                     y_min,               y_max,
-                                     z_mins_sub[z],       z_maxs_sub[z] );
+                                 x_min_voxel,           x_max_voxel,
+                                 y_min_voxel,           y_max_voxel,
+                                 z_min_voxels_sub[z],   z_max_voxels_sub[z],
+                                 x_weight_start,        x_weight_end,
+                                 y_weight_start,        y_weight_end,
+                                 z_weight_start_sub[z], z_weight_end_sub[z] );
                 added = get_amount_in_box( volume_cache,
-                                     x_min_voxel,         x_max_voxel,
-                                     y_min_voxel,         y_max_voxel,
-                                     z_min_voxels_add[z], z_max_voxels_add[z],
-                                     x_min,               x_max,
-                                     y_min,               y_max,
-                                     z_mins_add[z],       z_maxs_add[z] );
+                                 x_min_voxel,           x_max_voxel,
+                                 y_min_voxel,           y_max_voxel,
+                                 z_min_voxels_add[z],   z_max_voxels_add[z],
+                                 x_weight_start,        x_weight_end,
+                                 y_weight_start,        y_weight_end,
+                                 z_weight_start_add[z], z_weight_end_add[z] );
 
                 sum += added - removed;
             }
@@ -284,15 +270,15 @@ private  void  do_yz_slice(
 
     FREE( z_min_voxels_add );
     FREE( z_max_voxels_add );
-    FREE( z_mins_add );
-    FREE( z_maxs_add );
+    FREE( z_weight_start_add );
+    FREE( z_weight_end_add );
 
     if( short_cut )
     {
         FREE( z_min_voxels_sub );
         FREE( z_max_voxels_sub );
-        FREE( z_mins_sub );
-        FREE( z_maxs_sub );
+        FREE( z_weight_start_sub );
+        FREE( z_weight_end_sub );
     }
 }
 
@@ -304,42 +290,16 @@ private  Real  get_amount_in_box(
     int       y_max_voxel,
     int       z_min_voxel,
     int       z_max_voxel,
-    Real      x_min,
-    Real      x_max,
-    Real      y_min,
-    Real      y_max,
-    Real      z_min,
-    Real      z_max )
+    Real      x_weight_start,
+    Real      x_weight_end,
+    Real      y_weight_start,
+    Real      y_weight_end,
+    Real      z_weight_start,
+    Real      z_weight_end )
 {
     int     x, y, z;
-    Real    x_weight_start, x_weight_end, y_weight_start, y_weight_end;
-    Real    z_weight_start, z_weight_end;
     Real    sum, z_sum, x_sum, voxel;
     float   *column;
-
-    if( x_min_voxel == x_max_voxel )
-        x_weight_start = x_max - x_min;
-    else
-    {
-        x_weight_start = (Real) x_min_voxel + 0.5 - x_min;
-        x_weight_end = x_max - ((Real) x_max_voxel - 0.5);
-    }
-
-    if( y_min_voxel == y_max_voxel )
-        y_weight_start = y_max - y_min;
-    else
-    {
-        y_weight_start = (Real) y_min_voxel + 0.5 - y_min;
-        y_weight_end = y_max - ((Real) y_max_voxel - 0.5);
-    }
-
-    if( z_min_voxel == z_max_voxel )
-        z_weight_start = z_max - z_min;
-    else
-    {
-        z_weight_start = (Real) z_min_voxel + 0.5 - z_min;
-        z_weight_end = z_max - ((Real) z_max_voxel - 0.5);
-    }
 
     sum = 0.0;
 
