@@ -14,7 +14,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.6 1996-09-13 19:59:06 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.7 1996-09-14 15:56:38 david Exp $";
 #endif
 
 #include  <internal_volume_io.h>
@@ -73,6 +73,7 @@ public  BOOLEAN  get_interpolation_weights_2d(
     return( TRUE );
 }
 
+#ifdef DEBUG
 #include <prog_utils.h>
 #include <numerical.h>
 
@@ -122,95 +123,46 @@ private  void  test_solution(
         }
     }
 }
+#endif
 
-private  BOOLEAN  get_prediction_weights_2d_for_1_coord(
-    int    dim,
+private  void   get_two_point_prediction(
     Real   x,
     Real   y,
-    int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   x_weights[],
-    Real   y_weights[],
-    Real   *constant )
+    Real   x1,
+    Real   y1,
+    Real   x2,
+    Real   y2,
+    Real   *xwx1,
+    Real   *xwy1,
+    Real   *xwx2,
+    Real   *xwy2,
+    Real   *ywx1,
+    Real   *ywy1,
+    Real   *ywx2,
+    Real   *ywy2 )
 {
-    int        p, eq;
-    Real       **coefs, *values, *solution, angle;
-    Real       xt, yt, zt, x_centre, y_centre, x_min, x_max, inc;
-    Real       x_trans, y_trans;
-    Transform  transform, rotation, translation;
-    BOOLEAN    solved;
+    Real   sx, sy, s, t, cax, cay, s_len;
 
-    ALLOC2D( coefs, 2 * n_points+1, 2 * n_points+1 );
-    ALLOC( values, 2 * n_points+1 );
-    ALLOC( solution, 2 * n_points+1 );
+    sx = x2 - x1;
+    sy = y2 - y1;
+    cax = x - x1;
+    cay = y - y1;
 
-    x_min = 0.0;
-    x_max = 0.0;
-    for_less( p, 0, n_points )
-    {
-        if( p == 0 || xs[p] < x_min )
-            x_min = xs[p];
-        if( p == 0 || xs[p] > x_max )
-            x_max = xs[p];
-    }
+    s_len = sx * sx + sy * sy;
+    if( s_len == 0.0 )
+        handle_internal_error( "get_two_point_prediction" );
 
-    x_centre = x_min - 2.0 * (x_max - x_min);
-    y_centre = 0.0;
+    s = (cax * sx + cay * sy) / s_len;
+    t = (cax * (-sy) + cay * sx) / s_len;
 
-    x_centre = 0.0;
-
-    inc = 0.1133422127;
-    angle = 0.0;
-    for_less( eq, 0, 2 * n_points+1 )
-    {
-        angle += inc;
-        make_rotation_transform( angle, Z, &transform );
-
-        angle = 2.0 * PI * get_random_0_to_1();
-        x_trans = 10.0 * get_random_0_to_1() - 5.0;
-        y_trans = 10.0 * get_random_0_to_1() - 5.0;
-
-        make_rotation_transform( angle, Z, &rotation );
-        make_translation_transform( x_trans, y_trans, 0.0, &translation );
-        concat_transforms( &transform, &translation, &rotation );
-
-        transform_point( &transform, x - x_centre, y - y_centre, 0.0,
-                         &xt, &yt, &zt );
-        xt += x_centre;
-        yt += y_centre;
-
-        values[eq] = (dim==0) ? xt : yt;
-
-        for_less( p, 0, n_points )
-        {
-            transform_point( &transform, xs[p] - x_centre, ys[p] - y_centre,
-                             0.0, &xt, &yt, &zt );
-            xt += x_centre;
-            yt += y_centre;
-            coefs[eq][2*p+0] = xt;
-            coefs[eq][2*p+1] = yt;
-        }
-        coefs[eq][2*n_points] = 1.0;
-    }
-
-    solved = solve_linear_system( 2 * n_points+1, coefs, values, solution );
-
-    for_less( p, 0, n_points )
-    {
-        x_weights[p] = solution[2*p+0];
-        y_weights[p] = solution[2*p+1];
-    }
-    *constant = solution[2*n_points];
-
-    FREE2D( coefs );
-    FREE( values );
-    FREE( solution );
-
-    test_solution( dim, x, y, n_points, xs, ys, x_weights, y_weights,
-                   *constant );
-
-    return( solved );
+    *xwx1 = 1.0 - s;
+    *xwy1 = t;
+    *xwx2 = s;
+    *xwy2 = -t;
+    *ywx1 = -t;
+    *ywy1 = 1.0 - s;
+    *ywx2 = t;
+    *ywy2 = s;
 }
 
 public  BOOLEAN  get_prediction_weights_2d(
@@ -224,8 +176,56 @@ public  BOOLEAN  get_prediction_weights_2d(
     Real   *y_weights[2],
     Real   *y_constant )
 {
-    return( get_prediction_weights_2d_for_1_coord( 0, x, y, n_points, xs, ys,
-                          x_weights[0], x_weights[1], x_constant ) &&
-            get_prediction_weights_2d_for_1_coord( 1, x, y, n_points, xs, ys,
-                          y_weights[0], y_weights[1], y_constant ) );
+    int   dim, p, p1, p2, n_pairs;
+    Real  xwx1, xwy1, xwx2, xwy2, ywx1, ywy1, ywx2, ywy2;
+
+    *x_constant = 0.0;
+    *y_constant = 0.0;
+
+    for_less( dim, 0, 2 )
+    {
+        for_less( p, 0, n_points )
+        {
+            x_weights[dim][p] = 0.0;
+            y_weights[dim][p] = 0.0;
+        }
+    }
+
+    n_pairs = 0;
+    for_less( p1, 0, n_points-1 )
+    {
+        for_less( p2, p1+1, n_points )
+        {
+            get_two_point_prediction( x, y, xs[p1], ys[p1], xs[p2], ys[p2],
+                                      &xwx1, &xwy1, &xwx2, &xwy2,
+                                      &ywx1, &ywy1, &ywx2, &ywy2 );
+            x_weights[0][p1] += xwx1;
+            x_weights[1][p1] += xwy1;
+            x_weights[0][p2] += xwx2;
+            x_weights[1][p2] += xwy2;
+            y_weights[0][p1] += ywx1;
+            y_weights[1][p1] += ywy1;
+            y_weights[0][p2] += ywx2;
+            y_weights[1][p2] += ywy2;
+            ++n_pairs;
+        }
+    }
+
+    for_less( dim, 0, 2 )
+    {
+        for_less( p, 0, n_points )
+        {
+            x_weights[dim][p] /= (Real) n_pairs;
+            y_weights[dim][p] /= (Real) n_pairs;
+        }
+    }
+
+#ifdef DEBUG
+    test_solution( 0, x, y, n_points, xs, ys, x_weights[0], x_weights[1],
+                   *x_constant );
+    test_solution( 1, x, y, n_points, xs, ys, y_weights[0], y_weights[1],
+                   *y_constant );
+#endif
+
+    return( TRUE );
 }
