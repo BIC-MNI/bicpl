@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.26 1995-08-14 18:08:45 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.27 1995-08-20 05:05:25 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -93,7 +93,7 @@ public  Volume  create_label_volume(
 private  void  check_alloc_label_data(
     Volume  volume )
 {
-    if( volume->data == (void *) NULL )
+    if( !volume_is_alloced( volume ) )
     {
         alloc_volume_data( volume );
         set_all_volume_label_data( volume, 0 );
@@ -123,7 +123,8 @@ public  void  set_all_volume_label_data(
     check_alloc_label_data( volume );
 
     type = get_volume_data_type( volume );
-    if( value == 0 && type != FLOAT && type != DOUBLE )
+    if( !volume->is_cached_volume && value == 0 &&
+        type != FLOAT && type != DOUBLE )
     {
         GET_VOXEL_PTR( ptr, volume, 0, 0, 0, 0, 0 );
         n_voxels = get_volume_total_n_voxels( volume );
@@ -209,7 +210,7 @@ public  int  get_volume_label_data_5d(
 {
     int    label;
 
-    if( volume == (Volume) NULL || volume->data == (void *) NULL )
+    if( volume == (Volume) NULL || !volume_is_alloced( volume ) )
         return( 0 );
     else
     {
@@ -242,7 +243,7 @@ public  int  get_3D_volume_label_data(
 {
     int    label;
 
-    if( volume == (Volume) NULL || volume->data == (void *) NULL )
+    if( volume == (Volume) NULL || !volume_is_alloced( volume ) )
         return( 0 );
     else
     {
@@ -380,7 +381,7 @@ public  BOOLEAN  get_volume_voxel_activity(
     int      c, int_index[MAX_DIMENSIONS], ind[MAX_DIMENSIONS];
     int      n[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
 
-    if( volume == (Volume) NULL || volume->data == (void *) NULL )
+    if( volume == (Volume) NULL || !volume_is_alloced( volume ) )
         return( TRUE );
 
     get_volume_sizes( volume, sizes );
