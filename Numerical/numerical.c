@@ -17,7 +17,7 @@
 #include  <limits.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.18 1995-07-31 13:45:20 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.19 1996-02-28 16:04:02 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -35,21 +35,23 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numer
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+#define  SMALLEST  1.0e-20
+
 public  BOOLEAN  numerically_close(
     Real  n1,
     Real  n2,
     Real  threshold_ratio )
 {
-    double  avg, diff;
+    double  avg, diff, abs_n1, abs_n2;
 
     diff = n1 - n2;
     if( diff < 0.0 )  diff = -diff;
 
-    if( n1 <= threshold_ratio && n1 >= -threshold_ratio &&
-        n2 <= threshold_ratio && n2 >= -threshold_ratio )
-    {
-        return( diff <= threshold_ratio );
-    }
+    abs_n1 = ABS( n1 );
+    abs_n2 = ABS( n2 );
+
+    if( abs_n1 < SMALLEST || abs_n2 < SMALLEST )
+        return( abs_n1 < threshold_ratio && abs_n2 < threshold_ratio );
 
     avg = (n1 + n2) / 2.0;
 

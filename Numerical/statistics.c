@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.9 1996-02-23 20:45:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.10 1996-02-28 16:04:02 david Exp $";
 #endif
 
 #define  DEFAULT_N_MEDIAN_BOXES    100000
@@ -52,9 +52,9 @@ public  void  compute_statistics(
     Real     *median )
 {
     int                   i;
-    Real                  x, min_median, max_median;
+    Real                  x, min_median, max_median, median_error;
     statistics_struct     stats;
-    BOOLEAN               median_is_exact, done;
+    BOOLEAN               done;
 
     if( median != NULL )
     {
@@ -90,10 +90,10 @@ public  void  compute_statistics(
         for_less( i, 0, n )
             add_sample_to_statistics( &stats, samples[i] );
 
-        get_statistics( &stats, NULL, mean_value, median, &median_is_exact,
+        get_statistics( &stats, NULL, mean_value, median, &median_error,
                         min_value, max_value, std_dev );
 
-        if( median != NULL && !median_is_exact )
+        if( median != NULL && median_error > 0.0 )
             restart_statistics_with_narrower_median_range( &stats );
         else
             done = TRUE;
@@ -285,7 +285,7 @@ public  void  get_statistics(
     int                *n_samples,
     Real               *mean,
     Real               *median,
-    BOOLEAN            *median_is_exact,
+    Real               *median_error,
     Real               *min_value,
     Real               *max_value,
     Real               *std_deviation )
@@ -299,8 +299,8 @@ public  void  get_statistics(
 
     if( stats->n_samples <= 0 )
     {
-        if( median_is_exact != NULL )
-            *median_is_exact = TRUE;
+        if( median_error != NULL )
+            *median_error = 0.0;
         return;
     }
 
@@ -308,15 +308,18 @@ public  void  get_statistics(
     {
         get_median( stats, &min_median_range, &max_median_range );
 
-        exact = (min_median_range == max_median_range);
-
-        if( median_is_exact != NULL )
-            *median_is_exact = exact;
-
-        if( exact )
+        if( min_median_range == max_median_range )
+        {
             *median = min_median_range;
+            if( median_error != NULL )
+                *median_error = 0.0;
+        }
         else
+        {
             *median = (min_median_range + max_median_range) / 2.0;
+            if( median_error != NULL )
+                *median_error = (max_median_range - min_median_range) / 2.0;
+        }
     }
 
     if( min_value != NULL )

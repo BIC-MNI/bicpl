@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tubes.c,v 1.3 1995-07-31 13:45:06 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tubes.c,v 1.4 1996-02-28 16:04:00 david Exp $";
 #endif
 
 private  void  generate_tube(
@@ -300,7 +300,7 @@ private  void  generate_tube(
     wrap_around = EQUAL_POINTS( points[0], points[n_points-1] );
 
     get_direction( n_points, points, 0, wrap_around, &dir );
-    create_noncolinear_vector( &dir, &hor );
+    create_orthogonal_vector( &dir, &hor );
 
     if( wrap_around )
         get_direction( n_points, points, n_points-2, wrap_around, &prev_dir );

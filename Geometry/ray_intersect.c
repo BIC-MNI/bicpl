@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.14 1995-09-26 14:25:17 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.15 1996-02-28 16:04:00 david Exp $";
 #endif
 
 
@@ -828,7 +828,7 @@ public  void  intersect_ray_object(
                                            get_marker_ptr(object), &dist );
     }
 
-    if( found && dist >= t_min )
+    if( found && dist >= t_min - TOLERANCE )
     {
         if( distances != (Real **) NULL )
         {

@@ -68,9 +68,9 @@ public  void  crop_pixels(
     y_min = MAX( 0,                   y_min - border );
 
     if( x_max < x_min )
-        x_max = x_min - 1;
+        x_max = x_min;
     if( y_max < y_min )
-        y_max = y_min - 1;
+        y_max = y_min;
 
     initialize_pixels( out_pixels, in_pixels->x_position + x_min,
                        in_pixels->y_position + y_min,

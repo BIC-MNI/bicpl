@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.6 1995-12-13 14:24:25 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.7 1996-02-28 16:04:05 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -156,13 +156,13 @@ public  Volume  create_cropped_volume(
     int                dim, n_dims;
     int                sizes[MAX_DIMENSIONS], new_sizes[MAX_DIMENSIONS];
     int                v0, v1, v2, v3, v4, offset[MAX_DIMENSIONS];
-    int                offset0, offset1, offset2, offset3, offset4;
+    int                start[MAX_DIMENSIONS], end[MAX_DIMENSIONS];
     nc_type            nc_data_type;
     Real               separations[MAX_DIMENSIONS];
     Real               start_voxel[MAX_DIMENSIONS];
     Real               xyz[N_DIMENSIONS], voxel_value;
     Real               min_voxel, max_voxel;
-    BOOLEAN            signed_flag;
+    BOOLEAN            signed_flag, is_fully_inside;
     STRING             *dim_names;
     Volume             cropped_volume;
     General_transform  cropped_transform, offset_transform;
@@ -182,8 +182,15 @@ public  Volume  create_cropped_volume(
 
     delete_dimension_names( volume, dim_names );
 
+    is_fully_inside = TRUE;
+
     for_less( dim, 0, n_dims )
+    {
         new_sizes[dim] = limits[1][dim] - limits[0][dim] + 1;
+
+        if( limits[0][dim] < 0 || limits[1][dim] >= sizes[dim] )
+            is_fully_inside = FALSE;
+    }
 
     set_volume_sizes( cropped_volume, new_sizes );
     alloc_volume_data( cropped_volume );
@@ -211,24 +218,39 @@ public  Volume  create_cropped_volume(
     delete_general_transform( &offset_transform );
 
     for_less( dim, 0, n_dims )
+    {
         offset[dim] = limits[0][dim];
+        start[dim] = MAX( 0, -limits[0][dim] );
+        end[dim] = MIN( new_sizes[dim]-1, sizes[dim] - 1 - limits[0][dim] );
+    }
 
     for_less( dim, n_dims, MAX_DIMENSIONS )
+    {
+        start[dim] = 0;
+        end[dim] = 0;
         offset[dim] = 0;
+    }
 
-    offset0 = offset[0];
-    offset1 = offset[1];
-    offset2 = offset[2];
-    offset3 = offset[3];
-    offset4 = offset[4];
+    if( !is_fully_inside )
+    {
+        BEGIN_ALL_VOXELS( cropped_volume, v0, v1, v2, v3, v4 )
+            set_volume_real_value( cropped_volume, v0, v1, v2, v3, v4, 0.0 );
+        END_ALL_VOXELS
+    }
 
-    BEGIN_ALL_VOXELS( cropped_volume, v0, v1, v2, v3, v4 )
+    for_inclusive( v0, start[0], end[0] )
+    for_inclusive( v1, start[1], end[1] )
+    for_inclusive( v2, start[2], end[2] )
+    for_inclusive( v3, start[3], end[3] )
+    for_inclusive( v4, start[4], end[4] )
+    {
         voxel_value = get_volume_voxel_value( volume,
-                                    v0 + offset0, v1 + offset1,
-                                    v2 + offset2, v3 + offset3, v4 + offset4 );
+                                    v0 + offset[0], v1 + offset[1],
+                                    v2 + offset[2], v3 + offset[3],
+                                    v4 + offset[4] );
         set_volume_voxel_value( cropped_volume, v0, v1, v2, v3, v4,
                                 voxel_value );
-    END_ALL_VOXELS
+    }
 
     return( cropped_volume );
 }

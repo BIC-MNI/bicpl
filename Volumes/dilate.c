@@ -16,14 +16,14 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.8 1995-10-19 15:48:38 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.9 1996-02-28 16:04:04 david Exp $";
 #endif
 
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
              Voxel_classes;
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : dilate_labeled_voxels_3d
+@NAME       : dilate_voxels_3d
 @INPUT      : volume
               label_volume
               min_inside_label
@@ -46,25 +46,25 @@ typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  dilate_labeled_voxels_3d(
+public  int  dilate_voxels_3d(
     Volume          volume,
     Volume          label_volume,
-    int             min_inside_label,
-    int             max_inside_label,
+    Real            min_inside_label,
+    Real            max_inside_label,
     Real            min_inside_value,
     Real            max_inside_value,
-    int             min_outside_label,
-    int             max_outside_label,
+    Real            min_outside_label,
+    Real            max_outside_label,
     Real            min_outside_value,
     Real            max_outside_value,
-    int             new_label,
+    Real            new_label,
     Neighbour_types connectivity )
 {
     int                     n_changed;
     int                     x, y, z, delta_x, tx, ty, tz;
     int                     sizes[N_DIMENSIONS];
-    int                     dir, n_dirs, label, *dx, *dy, *dz;
-    Real                    value;
+    int                     dir, n_dirs, *dx, *dy, *dz;
+    Real                    value, label;
     Smallest_int            **voxel_classes[3], **swap;
     progress_struct         progress;
     Voxel_classes           voxel_class;
@@ -133,7 +133,7 @@ public  int  dilate_labeled_voxels_3d(
                     {
                         if( use_label_volume )
                         {
-                            label = get_volume_label_data_5d( label_volume,
+                            label = get_volume_real_value( label_volume,
                                                     x + delta_x, y, z, 0, 0 );
                         }
 
@@ -195,9 +195,8 @@ public  int  dilate_labeled_voxels_3d(
 
                         if( voxel_classes[tx][ty][tz] == INSIDE_REGION )
                         {
-                            set_volume_label_data_5d( label_volume,
-                                                      x, y, z, 0, 0,
-                                                      new_label );
+                            set_volume_real_value( label_volume, x, y, z, 0, 0,
+                                                   new_label );
                             ++n_changed;
                             break;
                         }

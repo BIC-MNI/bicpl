@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.32 1995-12-13 14:24:24 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.33 1996-02-28 16:04:04 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -93,7 +93,7 @@ public  Volume  create_label_volume(
 private  void  check_alloc_label_data(
     Volume  volume )
 {
-    if( !volume_is_alloced( volume ) )
+    if( !volume_is_alloced( volume ) && !volume_is_cached(volume) )
     {
         alloc_volume_data( volume );
         set_all_volume_label_data( volume, 0 );

@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/markers.c,v 1.1 1996-02-05 19:17:51 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/markers.c,v 1.2 1996-02-28 16:04:01 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -41,6 +41,9 @@ public  void   initialize_marker(
     marker->type = type;
     marker->colour = colour;
     marker->label = NULL;
+    marker->size = 1.0;
+    marker->structure_id = 0;
+    marker->patient_id = 0;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
