@@ -1,3 +1,7 @@
+New in Release 1.4.2
+
+* Minor bug fixes
+
 New in Release 1.4.1
 
 * Raster I/O library must be chosen at build time; see INSTALL.bicpl.
