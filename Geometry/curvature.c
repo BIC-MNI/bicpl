@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.14 1996-05-17 19:35:23 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.15 1996-09-10 16:42:38 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -52,6 +52,7 @@ public  void  get_polygon_vertex_curvatures(
     progress_struct  progress;
 
     check_polygons_neighbours_computed( polygons );
+    compute_polygon_normals( polygons );
 
     ALLOC( point_done, polygons->n_points );
 
