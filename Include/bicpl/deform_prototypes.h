@@ -1,6 +1,10 @@
 #ifndef  DEF_deform_prototypes
 #define  DEF_deform_prototypes
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 public  void  deform_lines(
     lines_struct      *lines,
     deform_struct     *deform_parms );
@@ -264,4 +268,10 @@ public  void  lookup_volume_coeficients(
 
 public  void  delete_lookup_volume_coeficients(
     voxel_coef_struct  *lookup );
+
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

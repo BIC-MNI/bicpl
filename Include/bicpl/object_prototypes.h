@@ -1,6 +1,11 @@
 #ifndef  DEF_object_prototypes
 #define  DEF_object_prototypes
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 public  void  coalesce_object_points(
     int      *n_points,
     Point    *points[],
@@ -774,4 +779,9 @@ public  Status  input_texture_values(
     STRING         filename,
     int            *n_values,
     Real           *values[] );
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

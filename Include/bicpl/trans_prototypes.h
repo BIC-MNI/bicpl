@@ -1,6 +1,10 @@
 #ifndef  DEF_trans_prototypes
 #define  DEF_trans_prototypes
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 public  void  get_nonlinear_warp(
    Real     **positions,   /* n_points x n_dims */
    Real     **values,   /* n_points x n_values */
@@ -155,4 +159,9 @@ public  Status  write_transform_file(
 public  Status  read_transform_file(
     STRING       filename,
     Transform    *transform );
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

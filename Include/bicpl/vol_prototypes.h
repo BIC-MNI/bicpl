@@ -1,6 +1,10 @@
 #ifndef  DEF_vol_prototypes
 #define  DEF_vol_prototypes
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 public  Volume  create_box_filtered_volume(
     Volume   volume,
     nc_type  nc_data_type,
@@ -659,4 +663,9 @@ public  void  convert_mm_to_talairach(
     Real   *x_tal,
     Real   *y_tal,
     Real   *z_tal );
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

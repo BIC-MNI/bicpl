@@ -15,6 +15,9 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include  <bicpl/data_structures.h>
 #include  <bicpl/geom.h>
@@ -62,5 +65,8 @@ file by using -I and -L options, respectively.  For example,
 
 */
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,10 @@
 #ifndef  DEF_geom_prototypes
 #define  DEF_geom_prototypes
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 public  double  fast_approx_sqrt(
     double  y );
 
@@ -525,4 +529,9 @@ public  void   create_slice_3d(
     Point            *origin,
     Vector           *normal,
     polygons_struct  *polygons );
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

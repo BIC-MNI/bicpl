@@ -1,6 +1,10 @@
 #ifndef  DEF_march_prototypes
 #define  DEF_march_prototypes
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 public  int  compute_isosurface_in_voxel(
     Marching_cubes_methods  method,
     int                     x,
@@ -64,4 +68,9 @@ public  int  get_tetra_isosurface_polygons(
     voxel_point_type  *points[] );
 
 public  void  delete_tetra_marching_cubes_table( void );
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

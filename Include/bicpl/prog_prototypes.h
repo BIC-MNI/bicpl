@@ -1,6 +1,10 @@
 #ifndef  DEF_prog_prototypes
 #define  DEF_prog_prototypes
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 public  int  get_n_arguments_remaining( void );
 
 public  void  initialize_argument_processing(
@@ -61,4 +65,9 @@ public  void  start_timing( void );
 public  void  end_timing(
     STRING   title,
     int      n );
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

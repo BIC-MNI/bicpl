@@ -1,6 +1,10 @@
 #ifndef  DEF_numeric_prototypes
 #define  DEF_numeric_prototypes
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 public  void  initialize_amoeba(
     amoeba_struct     *amoeba,
     int               n_parameters,
@@ -467,4 +471,9 @@ public  void  delete_cumulative_t_stat(
 public  Real  get_cumulative_t_stat(
     t_stat_struct  *stat,
     Real           t );
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

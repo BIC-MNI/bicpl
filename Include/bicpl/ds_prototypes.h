@@ -1,6 +1,10 @@
 #ifndef  DEF_ds_prototypes
 #define  DEF_ds_prototypes
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 public  void  initialize_bintree(
     Real                 x_min,
     Real                 x_max,
@@ -311,4 +315,10 @@ public  BOOLEAN  get_next_skiplist_entry(
     skip_struct       **entry_ptr,
     float             *key,
     void              **data_ptr );
+
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
