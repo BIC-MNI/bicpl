@@ -1,3 +1,17 @@
+2001-06-06  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Objects/quadmesh.c (set_quadmesh_point): Assert that
+	(i,j) is a valid location.
+
+	* Documentation/groups.dox: New.  Define groups for
+	Doxygen documentation here.
+
+	* Documentation/doxygen.config.in: Set QUIET = YES.
+
+	* Objects/quadmesh.c: 
+	* Include/bicpl/obj_defs.h: Add doxygen comment blocks for
+	quadmesh structure and functions.
+
 2001-06-05  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* tools/bicobj2oogl.c: Allow optional second argument to specify

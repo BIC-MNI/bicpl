@@ -12,13 +12,44 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
+#include  <assert.h>
 #include  <volume_io/internal_volume_io.h>
 #include  <bicpl/objects.h>
 #include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.16 2000-02-06 15:30:45 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.17 2001-06-06 18:59:07 stever Exp $";
 #endif
+
+
+/*! \defgroup grp_quadmesh Quadmeshes
+ *  \ingroup grp_bicobj
+ *
+ * A quadmesh consists of \em m rows and \em n columns of points.
+ * Neighbouring points along a row and along a column are joined with
+ * an edge.  Think of a piece of graph paper.  The first and last
+ * points of each row (or of each column) may optionally have an edge
+ * between them.  Think of a piece of graph paper rolled into a
+ * cylinder.  If both the rows and the columns are closed in this
+ * manner, you end up with a toroidal topology.
+ *
+ * Point locations in a quadmesh are addressed using integer pairs
+ * (i,j) with 0 <= i < m, and 0 <= j < n.
+ *
+ * Each quadrilateral of the mesh, or \em patch, is defined by the
+ * four points at its corners.  The points comprising the interior of
+ * the patch are undefined.  Four points are not planar, in general.
+ *
+ * Patches are addressed using integer pairs (i,j) with 0 <= i < mp,
+ * and 0 <= j < np.  Use get_quadmesh_n_objects() to compute \c mp and
+ * \c np.
+ * 
+ * Routines dealing with quadmeshes generally take a pointer
+ * to a quadmesh_struct as their first argument.  
+ *
+ * @{
+ */
+
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_quadmesh
@@ -36,6 +67,20 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmes
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Initialize a quadmesh to given size.
+ *
+ * The resulting quadmesh uses a single colour, and is
+ * open along the row and column directions.
+ * Space is allocated for points and normals, but not
+ * initialized.
+ *
+ * \param quadmesh pointer to structure to fill in
+ * \param col colour for mesh
+ * \param spr surface properties of mesh; set to NULL
+ *            for default properties
+ * \param m number of rows in mesh
+ * \param n number of columns in mesh
+ */
 public  void  initialize_quadmesh(
     quadmesh_struct   *quadmesh,
     Colour            col,
@@ -80,6 +125,8 @@ public  void  initialize_quadmesh(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Delete quadmesh structure.
+ */
 public  void  delete_quadmesh(
     quadmesh_struct *quadmesh )
 {
@@ -115,6 +162,17 @@ public  void  delete_quadmesh(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Set one point and normal in quadmesh.
+ *
+ * \param i row number 
+ * \param j column number
+ * \param point the point assigned to location (i,j)
+ * \param normal the normal assigned to location (i,j)
+ *               use NULL to avoid setting the normal
+ *
+ * \note The normal is ignored if the quadmesh does not already
+ * have normals for each point.
+ */
 public  void  set_quadmesh_point(
     quadmesh_struct  *quadmesh,
     int              i,
@@ -123,6 +181,9 @@ public  void  set_quadmesh_point(
     Vector           *normal )
 {
     int  ind;
+
+    assert( 0 <= i && i < quadmesh->m );
+    assert( 0 <= j && j < quadmesh->n );
 
     ind = IJ( i, j, quadmesh->n );
 
@@ -146,6 +207,16 @@ public  void  set_quadmesh_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Get coordinates of one point in quadmesh.
+ *
+ * \param i row number 
+ * \param j column number
+ * \param point to which coordinates are copied
+ * \return TRUE if (i,j) is a valid location
+ *
+ * \note The coordinates are written into \c point
+ * only if (i,j) is a valid location.
+ */
 public  BOOLEAN  get_quadmesh_point(
     quadmesh_struct  *quadmesh,
     int              i,
@@ -164,8 +235,8 @@ public  BOOLEAN  get_quadmesh_point(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_quadmesh_n_objects
 @INPUT      : quadmesh
-@OUTPUT     : m
-              n
+@OUTPUT     : mp
+              np
 @RETURNS    : 
 @DESCRIPTION: Passes back the number of patches in the quadmesh.
 @METHOD     : 
@@ -175,20 +246,33 @@ public  BOOLEAN  get_quadmesh_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! Compute the number of patches in the quadmesh.
+ *
+ * If the quadmesh has \c m rows and \c n columns of
+ * points, there will be \c np rows and \c np columns
+ * of patches in the quadmesh.  The value of \c mp will
+ * be m or m-1, depending upon whether the mesh is open or
+ * closed in the row direction.
+ *
+ * The mesh has mp*np patches, in total.
+ *
+ * \param mp location in which to store mp
+ * \param np location in which to store np
+ */
 public  void  get_quadmesh_n_objects(
     quadmesh_struct  *quadmesh,
-    int              *m,
-    int              *n )
+    int              *mp,
+    int              *np )
 {
     if( quadmesh->m_closed )
-        *m = quadmesh->m;
+        *mp = quadmesh->m;
     else
-        *m = quadmesh->m - 1;
+        *mp = quadmesh->m - 1;
 
     if( quadmesh->n_closed )
-        *n = quadmesh->n;
+        *np = quadmesh->n;
     else
-        *n = quadmesh->n - 1;
+        *np = quadmesh->n - 1;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -204,6 +288,14 @@ public  void  get_quadmesh_n_objects(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! Compute all normal vectors in quadmesh.
+ *
+ * Use find_polygon_normal() to set normal from location of
+ * the point's 4-neighbours.
+ *
+ * \bug Does not take into account the closed flags when 
+ * computing the 4-neighbourhood.
+ */
 public  void  compute_quadmesh_normals(
     quadmesh_struct  *quadmesh )
 {
@@ -274,6 +366,21 @@ public  void  compute_quadmesh_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Compute the indices of points for patch.
+ *
+ * A patch is addressed by a pair of integers (i,j) for
+ * 0 <= i < mp, and 0 <= j < np, where \c mp and \c np are the
+ * numbers of patches in each row and column, respectively.
+ * Use get_quadmesh_n_objects() to compute \c mp and \c np.
+ *
+ * \param i row number of the patch
+ * \param j column number of the patch
+ * \indices location in which to write the 4 point indices
+ *
+ * The four indices returned are in cyclic order around the 
+ * patch.  The point indices are returned in the following
+ * order: (i,j), (i+1,j), (i+1,j+1), (i,j+1).
+ */
 public  void  get_quadmesh_patch_indices(
     quadmesh_struct  *quadmesh,
     int              i,
@@ -301,6 +408,17 @@ public  void  get_quadmesh_patch_indices(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Get coordinates of patch corners.
+ *
+ * A patch is addressed by a pair of integers (i,j) for
+ * 0 <= i < mp, and 0 <= j < np, where \c mp and \c np are the
+ * numbers of patches in each row and column, respectively.
+ * Use get_quadmesh_n_objects() to compute \c mp and \c np.
+ *
+ * \param i row number of the patch
+ * \param j column number of the patch
+ * \points location in which to write coordinates for the 4 points
+ */
 public  void  get_quadmesh_patch(
     quadmesh_struct  *quadmesh,
     int              i,
@@ -315,6 +433,14 @@ public  void  get_quadmesh_patch(
         points[p] = quadmesh->points[indices[p]];
 }
 
+
+/*! \brief Flip columns around centre.
+ * 
+ * Flip the quadmesh about its middle column, swapping point and
+ * normal information in column 0 with column n-1, etc.
+ *
+ * \bug I can't imagine what use this function has.
+ */
 public  void  reverse_quadmesh_vertices(
     quadmesh_struct  *quadmesh )
 {
@@ -342,3 +468,9 @@ public  void  reverse_quadmesh_vertices(
         }
     }
 }
+
+
+/*!
+ * @}
+ * End of grp_quadmesh.
+ */

@@ -1,0 +1,14 @@
+
+/*! \defgroup grp_bicobj  Geometrical Objects in BICPL
+
+BICPL structures and file formats for geometry and associated
+data.
+
+*/
+
+/* \defgroup grp_file_format File Formats of the BIC
+
+There are several home grown formats used in files to store
+geometric and other information.
+
+*/

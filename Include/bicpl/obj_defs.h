@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/obj_defs.h,v 1.2 2001-01-23 08:55:16 stever Exp $";
+static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/obj_defs.h,v 1.3 2001-06-06 18:59:06 stever Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -47,8 +47,18 @@ static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Includ
 #define  POINT_INDEX( end_indices, n, edge ) \
              ( START_INDEX(end_indices,n) + (edge) )
 
+
+/*! \brief Colour style of compound geometrical object.
+ * Objects such as lines, polygons, and quadmeshes that are comprised 
+ * of many smaller objects may have one colour for the whole compound,
+ * or the colours may be set for individual elements of the compound.
+ */
 typedef enum { ONE_COLOUR, PER_ITEM_COLOURS, PER_VERTEX_COLOURS } Colour_flags;
 
+
+/*! \brief In-memory structure for polygonal lines.
+ * \ingroup grp_bicobj
+ */
 typedef  struct
 {
     Colour_flags   colour_flag;
@@ -65,9 +75,14 @@ typedef  struct
     bintree_struct_ptr  bintree;
 } lines_struct;
 
+
+
 typedef  enum  { BOX_MARKER, SPHERE_MARKER,
                  N_MARKER_TYPES } Marker_types;
 
+/*! \brief In-memory structure for a marker.
+ * \ingroup grp_bicobj
+ */
 typedef  struct
 {
     Marker_types   type;
@@ -83,25 +98,25 @@ typedef  struct
 #define  MAX_POLYGON_NEIGHBOURS     2048
 
 
-/* Set of polygons.
-   Code in Objects/polygons.c
-*/
+/*! \brief In-memory structure for polygons.
+ * \ingroup grp_bicobj
+ */
 typedef  struct
 {
-    /* Colours may be specified for entire set (colour_flag == ONE_COLOUR)
+    /*! Colours may be specified for entire set (colour_flag == ONE_COLOUR)
        or per item.  The colour array is dynamically resized to match */
     Colour_flags    colour_flag;
     Colour          *colours;
     Surfprop        surfprop;
     float           line_thickness;
 
-    /* points is a dynamic array.  normals may be either NULL
+    /*! points is a dynamic array.  normals may be either NULL
        (no normal information kept) or a dynamic array. */
     int             n_points;
     Point           *points;
     Vector          *normals;
 
-    /* "items" are the polygons themselves; they appear to be stored in
+    /*! "items" are the polygons themselves; they appear to be stored in
        the following manner.  
        Each polygon is specified by a list of points, stored as indices
        into the "points" array.  Polygon 0's list of indices is 
@@ -117,14 +132,24 @@ typedef  struct
     bintree_struct_ptr  bintree;
 } polygons_struct;
 
+
+/*! \brief In-memory structure for a quadrilateral mesh.
+ * \ingroup grp_bicobj
+ * \ingroup grp_quadmesh
+ */
 typedef  struct
 {
     Colour_flags    colour_flag;
     Colour          *colours;
     Surfprop        surfprop;
 
+    /*! These fields set whether the rows (m_closed) or the columns
+     * (n_closed) have their extreme points joined by an edge.
+     */
     BOOLEAN         m_closed, n_closed;
 
+    /*! The number of rows (m) and columns (n).
+     */
     int             m, n;
     Point           *points;
     Vector          *normals;
@@ -134,6 +159,10 @@ typedef  struct
 
 typedef enum { FIXED_FONT, SIZED_FONT } Font_types;
 
+
+/*! \brief In-memory structure for text.
+ * \ingroup grp_bicobj
+ */
 typedef  struct
 {
     Point       origin;
@@ -143,10 +172,15 @@ typedef  struct
     STRING      string;
 } text_struct;
 
+
 typedef enum {
                  COLOUR_INDEX_8BIT_PIXEL, COLOUR_INDEX_16BIT_PIXEL, RGB_PIXEL
              } Pixel_types;
 
+
+/*! \brief In-memory structure for ???
+ * \ingroup grp_bicobj
+ */
 typedef  struct
 {
     int             x_position;
@@ -179,6 +213,12 @@ typedef  struct
 typedef enum  { LINES, MARKER, MODEL, PIXELS, POLYGONS, QUADMESH, TEXT,
                 N_OBJECT_TYPES } Object_types;
 
+
+/*! \brief In-memory structure for a model.
+ * \ingroup grp_bicobj
+ * A model is a set of objects with associated data,
+ * stored together in a file.
+ */
 typedef  struct
 {
     STRING                 filename;
@@ -187,6 +227,10 @@ typedef  struct
     void                   *extra_ptr;
 } model_struct;
 
+
+/*! \brief In-memory structure for an object.
+ * \ingroup grp_bicobj
+ */
 typedef struct  object_struct
 {
     Object_types    object_type;
@@ -206,6 +250,9 @@ typedef struct  object_struct
 } object_struct;
 
 
+/*! \brief In-memory structure for a stack of objects.
+ * \ingroup grp_bicobj
+ */
 typedef  struct
 {
     int              index;
@@ -215,6 +262,10 @@ typedef  struct
 
 #define  MAX_OBJECT_TRAVERSE   100
 
+
+/*! \brief In-memory structure for ???
+ * \ingroup grp_bicobj
+ */
 typedef  struct
 {
     BOOLEAN                    visible_ones_only;
