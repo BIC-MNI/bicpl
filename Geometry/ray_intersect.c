@@ -5,6 +5,8 @@
 
 #define  MAX_POINTS    30
 
+#define  TOLERANCE  1.0e-6
+
 private  BOOLEAN  point_within_triangle_2d(
     Point   *pt,
     Point   points[] );
@@ -78,7 +80,7 @@ private  BOOLEAN   intersect_ray_polygon(
 
         if( size > MAX_POINTS )
         {
-            print( "Warning: awfully big polygon, size = %d\n", size );
+            print_error( "Warning: awfully big polygon, size = %d\n", size );
             size = MAX_POINTS;
             end_index = start_index + size - 1;
         }
@@ -133,7 +135,7 @@ private  BOOLEAN  point_within_triangle_2d(
     {
         SUB_POINTS( offset, *pt, points[i] );
         CROSS_VECTORS( edge_normal, edges[i], normal );
-        if( DOT_VECTORS( offset, edge_normal ) > 0.0 )
+        if( DOT_VECTORS( offset, edge_normal ) > TOLERANCE )
         {
             inside = FALSE;
             break;
