@@ -223,6 +223,31 @@ public  Boolean   evaluate_volume_in_world(
     return( voxel_is_active );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : evaluate_slice_in_world
+@INPUT      : volume
+              x
+              y
+              z
+              activity_if_mixed
+@OUTPUT     : value
+              deriv_x
+              deriv_y
+              deriv_xx
+              deriv_xy
+              deriv_yy
+@RETURNS    : TRUE if point is within active voxel.
+@DESCRIPTION: Takes a world space position and evaluates the value within
+              the volume by bilinear interpolation within the slice.  If the
+              activities of the 4 voxels containing this point agree, then
+              that activity is
+              returned, if not, then activity_if_mixed is returned.  If
+              deriv_x is not a null pointer, then the derivatives are passed
+              back.
+@CREATED    : Mar   1993           David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Boolean   evaluate_slice_in_world(
     Volume         volume,
     Real           x,
@@ -1088,6 +1113,30 @@ public  Boolean   evaluate_volume(
 
     return( voxel_is_active );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : evaluate_slice
+@INPUT      : volume
+              x
+              y
+              z
+              activity_if_mixed
+@OUTPUT     : value
+              deriv_x
+              deriv_y
+              deriv_xx
+              deriv_xy
+              deriv_yy
+@RETURNS    : TRUE if point is within active voxel.
+@DESCRIPTION: Takes a voxel position and evaluates the value within
+              the volume by bilinear interpolation within the slice.  If the
+              activities of the 4 voxels containing this point agree, then
+              that activity is returned, if not, then activity_if_mixed is
+              returned.  If deriv_x is not a null pointer, then the
+              derivatives are passed back.
+@CREATED    : Mar   1993           David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  Boolean   evaluate_slice(
     Volume         volume,
