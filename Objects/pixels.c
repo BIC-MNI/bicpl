@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.17 1995-07-31 13:45:14 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.18 1995-08-07 14:33:15 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -351,7 +351,7 @@ public  void  convert_pixels24_to_dithered(
                        1.0, 1.0,
                        COLOUR_INDEX_8BIT_PIXEL );
 
-    ALLOC3D( errors, 2, 3, pixels_rgb->x_size )
+    ALLOC3D( errors, 2, 3, pixels_rgb->x_size );
 
     for_less( x, 0, pixels_rgb->x_size )
     {
