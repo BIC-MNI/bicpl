@@ -14,11 +14,13 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.1 1996-09-11 13:05:42 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.2 1996-09-13 13:16:19 david Exp $";
 #endif
 
 #include  <geom.h>
 #include  <internal_volume_io.h>
+
+#define  FIXED_SIZE  20
 
 public  BOOLEAN  get_interpolation_weights_2d(
     Real   x,
@@ -29,8 +31,22 @@ public  BOOLEAN  get_interpolation_weights_2d(
     Real   weights[] )
 {
     int   i;
+    Real  av_fixed[FIXED_SIZE], bv_fixed[FIXED_SIZE], cv_fixed[FIXED_SIZE];
     Real  aa, ab, ac, bb, bc, cc, *av, *bv, *cv, dx, dy;
     Real  ab2, acbb, abac, abbc, aabc2, acbb2, aabb4, denom;
+
+    if( n_points > FIXED_SIZE )
+    {
+        ALLOC( av, n_points );
+        ALLOC( bv, n_points );
+        ALLOC( cv, n_points );
+    }
+    else
+    {
+        av = av_fixed;
+        bv = bv_fixed;
+        cv = cv_fixed;
+    }
 
     aa = 0.0;
     ab = 0.0;
@@ -38,10 +54,6 @@ public  BOOLEAN  get_interpolation_weights_2d(
     bb = 0.0;
     bc = 0.0;
     cc = 0.0;
-
-    ALLOC( av, n_points );
-    ALLOC( bv, n_points );
-    ALLOC( cv, n_points );
 
     for_less( i, 0, n_points )
     {
@@ -86,9 +98,12 @@ public  BOOLEAN  get_interpolation_weights_2d(
                       denom;
     }
 
-    FREE( av );
-    FREE( bv );
-    FREE( cv );
+    if( n_points > FIXED_SIZE )
+    {
+        FREE( av );
+        FREE( bv );
+        FREE( cv );
+    }
 
     return( TRUE );
 }
