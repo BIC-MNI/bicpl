@@ -2,8 +2,9 @@
 #include  <numerical.h>
 #include  <prog_utils.h>
 
-#define   N_SAVES          3
-#define   N_BETWEEN_SAVES  30
+#define   MAX_SAVES        100
+#define   N_SAVES            3
+#define   N_BETWEEN_SAVES    3
 
 private  Real  evaluate_fit(
     int              n_parameters,
@@ -165,18 +166,25 @@ private  Real   private_minimize_lsq(
 {
     Real              fit, len;
     int               iter, s, p, n_between_saves;
-    int               update_rate;
-    Real              *saves[N_SAVES], *swap, *derivs;
+    int               update_rate, n_saves;
+    Real              *saves[MAX_SAVES], *swap, *derivs;
     Real              last_update_time, current_time;
 
-    for_less( s, 0, N_SAVES )
+    if( getenv( "N_SAVES" ) == NULL ||
+        sscanf( getenv( "N_SAVES" ), "%d", &n_saves ) != 1 )
+        n_saves = N_SAVES;
+
+    for_less( s, 0, n_saves )
     {
         ALLOC( saves[s], n_parameters );
         for_less( p, 0, n_parameters )
             saves[s][p] = parm_values[p];
     }
 
-    n_between_saves = n_iters / N_SAVES;
+    if( getenv( "N_BETWEEN_SAVES" ) == NULL ||
+        sscanf( getenv( "N_BETWEEN_SAVES" ), "%d", &n_between_saves ) != 1 )
+        n_between_saves = n_iters / n_saves;
+
     n_between_saves = MAX( n_between_saves, 1 );
     n_between_saves = MIN( n_between_saves, N_BETWEEN_SAVES );
 
@@ -212,7 +220,7 @@ private  Real   private_minimize_lsq(
                              cross_terms,
                              max_step_size, parm_values, derivs );
 
-        s = get_random_int( N_SAVES );
+        s = get_random_int( n_saves );
         len = 0.0;
         for_less( p, 0, n_parameters )
         {
@@ -229,41 +237,6 @@ private  Real   private_minimize_lsq(
                              square_terms, n_cross_terms, cross_parms,
                              cross_terms,
                              max_step_size, parm_values, derivs );
-
-#ifdef DEBUG
-{
-int  p, n;
-static Real sum, prev_sum;
-
-sum = constant_term;
-for_less( p, 0, n_parameters )
-{
-    sum += (Real) linear_terms[p];
-    sum += (Real) square_terms[p];
-    for_less( n, 0, n_cross_terms[p] )
-    {
-        sum += (Real) cross_parms[p][n];
-        sum += (Real) cross_terms[p][n];
-    }
-}
-
-fit =  evaluate_fit( n_parameters, constant_term, linear_terms,
-square_terms, n_cross_terms, cross_parms,
-cross_terms, parm_values );
-
-if( fit < 0.0 )
-{
-    handle_internal_error( "fit < 0" );
-fit =  evaluate_fit( n_parameters, constant_term, linear_terms,
-square_terms, n_cross_terms, cross_parms,
-cross_terms, parm_values );
-}
-if( iter > 0 && sum != prev_sum )
-    print( "Found it:   " );
-print( "%d: %g %g\n", iter+1, fit, sum );
-prev_sum = sum;
-}
-#endif
 
         if( ((iter+1) % update_rate) == 0 || iter == n_iters - 1 )
         {
@@ -282,15 +255,15 @@ prev_sum = sum;
         if( (iter % n_between_saves) == 0 )
         {
             swap = saves[0];
-            for_less( s, 0, N_SAVES-1 )
+            for_less( s, 0, n_saves-1 )
                 saves[s] = saves[s+1];
-            saves[N_SAVES-1] = swap;
+            saves[n_saves-1] = swap;
             for_less( p, 0, n_parameters )
                 saves[s][p] = parm_values[p];
         }
     }
 
-    for_less( s, 0, N_SAVES )
+    for_less( s, 0, n_saves )
         FREE( saves[s] );
 
     FREE( derivs );
