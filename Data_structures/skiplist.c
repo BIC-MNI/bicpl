@@ -331,15 +331,20 @@ public  BOOLEAN  insert_in_skiplist(
 
 public  BOOLEAN  delete_from_skiplist(
     skiplist_struct  *skiplist,
-    void             *data_ptr )
+    void             *key_ptr,
+    void             **data_ptr )
 {
     BOOLEAN        in_skiplist;
     update_struct  update_ptrs;
 
-    in_skiplist = find_data_position( skiplist, data_ptr, &update_ptrs );
+    in_skiplist = find_data_position( skiplist, key_ptr, &update_ptrs );
 
     if( in_skiplist )
+    {
+        *data_ptr = update_ptrs.update[0]->forward[0]->data_ptr;
+
         delete_entry_from_skiplist( skiplist, &update_ptrs );
+    }
 
     return( in_skiplist );
 }

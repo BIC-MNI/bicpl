@@ -141,9 +141,11 @@ private  int  get_marker_points(
     return( 1 );
 }
 
+/* ARGSUSED */
+
 private  int  get_object_zero_points(
     object_struct   *object,
-    Point           *points[] )       /* ARGSUSED */
+    Point           *points[] )
 {
     return( 0 );
 }
@@ -177,9 +179,11 @@ private  int  get_text_points(
 
 /* --------------------- get normals ------------------------ */
 
+/* ARGSUSED */
+
 private  int  get_object_zero_normals(
     object_struct   *object,
-    Vector          *normals[] )        /* ARGSUSED */
+    Vector          *normals[] )
 {
     return( 0 );
 }
@@ -222,9 +226,11 @@ private  Colour_flags  *get_marker_colours(
     return( (Colour_flags *) 0 );
 }
 
+/* ARGSUSED */
+
 private  Colour_flags  *get_object_zero_colours(
     object_struct   *object,
-    Colour          *colours[] )       /* ARGSUSED */
+    Colour          *colours[] )
 {
     *colours = (Colour *) NULL;
 
@@ -267,9 +273,11 @@ private  void  set_lines_colours(
     get_lines_ptr(object)->colours = colours;
 }
 
+/* ARGSUSED */
+
 private  void  set_object_no_colours(
     object_struct    *object,
-    Colour           colours[] )    /* ARGSUSED */
+    Colour           colours[] )
 {
 }
 
@@ -289,8 +297,10 @@ private  void  set_quadmesh_colours(
 
 /* --------------------- get surfprop ------------------------ */
 
+/* ARGSUSED */
+
 private  Surfprop  *get_object_no_surfprop(
-    object_struct   *object )                     /* ARGSUSED */
+    object_struct   *object )
 {
     return( (Surfprop *) NULL );
 }
@@ -386,8 +396,10 @@ private  void  delete_lines_object(
     delete_lines( get_lines_ptr(object) );
 }
 
+/* ARGSUSED */
+
 private  void  delete_marker_object(
-    object_struct   *object )    /* ARGSUSED */
+    object_struct   *object )
 {
 }
 
@@ -409,14 +421,18 @@ private  void  delete_polygons_object(
     delete_polygons( get_polygons_ptr(object) );
 }
 
+/* ARGSUSED */
+
 private  void  delete_quadmesh_object(
-    object_struct   *object )       /* ARGSUSED */
+    object_struct   *object )
 {
     delete_quadmesh( get_quadmesh_ptr(object) );
 }
 
+/* ARGSUSED */
+
 private  void  delete_text_object(
-    object_struct   *object )       /* ARGSUSED */
+    object_struct   *object )
 {
 }
 
@@ -829,7 +845,7 @@ public  int  get_n_colours(
         break;
 
     default:
-        print( "invalid colour flag\n" );
+        print_error( "invalid colour flag\n" );
         n_colours = 0;
         break;
     }

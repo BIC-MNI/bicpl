@@ -483,7 +483,7 @@ private  void    clip_viewport_to_volume(
               x_viewport_size
               y_viewport_size
               pixel_type
-              interpolation_flag
+              degrees_continuity
               cmode_colour_map
               rgb_colour_map
               empty_colour
@@ -522,7 +522,7 @@ private  void  create_weighted_volume_slices(
     int             x_viewport_size,
     int             y_viewport_size,
     Pixel_types     pixel_type,
-    BOOLEAN         interpolation_flag,
+    int             degrees_continuity,
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     Colour          empty_colour,
@@ -562,7 +562,7 @@ private  void  create_weighted_volume_slices(
                                  &y_pixel_start, &y_pixel_end );
     }
 
-    if( volume2 != (Volume) NULL )
+    if( volume2 != NULL )
     {
         n_dimensions2 = get_volume_n_dimensions( volume2 );
 
@@ -614,7 +614,7 @@ private  void  create_weighted_volume_slices(
         for( axis = n_dimensions1 - 2;  axis >= 0;  --axis )
              strides1[axis] = strides1[axis+1] * sizes1[axis+1];
 
-        if( volume2 != (Volume) NULL )
+        if( volume2 != NULL )
         {
             for_less( s, 0, n_slices2 )
             {
@@ -635,22 +635,40 @@ private  void  create_weighted_volume_slices(
                  strides2[axis] = strides2[axis+1] * sizes2[axis+1];
         }
         else
-            volume_data2 = (void *) NULL;
+            volume_data2 = NULL;
 
-        render_volume_to_slice( n_dimensions1, sizes1, volume_data1,
-                                volume1_data_type, n_slices1, weights1,
-                                strides1, real_origins1,
-                                real_x_axis1, real_y_axis1,
-                                n_dimensions2, sizes2, volume_data2,
-                                volume2_data_type, n_slices2, weights2,
-                                strides2, real_origins2,
-                                real_x_axis2, real_y_axis2,
-                                interpolation_flag, cmode_colour_map,
-                                rgb_colour_map, empty_colour,
-                                render_storage, pixels );
+        if( degrees_continuity != -1 && n_slices1 == 1 &&
+            (volume_data2 == NULL || n_slices2 == 1) )
+        {
+            interpolate_volume_to_slice( volume1, n_dimensions1, sizes1,
+                                         real_origins1[0],
+                                         real_x_axis1, real_y_axis1,
+                                         volume2, n_dimensions2, sizes2,
+                                         (volume_data2 == NULL) ? NULL :
+                                         real_origins2[0],
+                                         real_x_axis2, real_y_axis2,
+                                         degrees_continuity,
+                                         cmode_colour_map, rgb_colour_map,
+                                         empty_colour, pixels );
+
+        }
+        else
+        {
+            render_volume_to_slice( n_dimensions1, sizes1, volume_data1,
+                                    volume1_data_type, n_slices1, weights1,
+                                    strides1, real_origins1,
+                                    real_x_axis1, real_y_axis1,
+                                    n_dimensions2, sizes2, volume_data2,
+                                    volume2_data_type, n_slices2, weights2,
+                                    strides2, real_origins2,
+                                    real_x_axis2, real_y_axis2,
+                                    cmode_colour_map,
+                                    rgb_colour_map, empty_colour,
+                                    render_storage, pixels );
+        }
     }
 
-    if( volume2 != (Volume) NULL )
+    if( volume2 != NULL )
         FREE2D( real_origins2 );
 
     FREE2D( real_origins1 );
@@ -790,7 +808,7 @@ public  void  create_volume_slice(
     int             x_viewport_size,
     int             y_viewport_size,
     Pixel_types     pixel_type,
-    BOOLEAN         interpolation_flag,
+    int             degrees_continuity,
     unsigned short  **cmode_colour_map,
     Colour          **rgb_colour_map,
     Colour          empty_colour,
@@ -809,7 +827,7 @@ public  void  create_volume_slice(
         return;
     }
 
-    if( volume2 != (Volume) NULL )
+    if( volume2 != NULL )
     {
         if( !get_filter_slices( volume2, slice_position2, x_axis2, y_axis2,
                                 filter_type2, filter_width2, &n_slices2,
@@ -831,12 +849,12 @@ public  void  create_volume_slice(
                                    x_translation2, y_translation2,
                                    x_scale2, y_scale2,
                                    x_viewport_size, y_viewport_size,
-                                   pixel_type, interpolation_flag,
+                                   pixel_type, degrees_continuity,
                                    cmode_colour_map, rgb_colour_map,
                                    empty_colour, render_storage,
                                    n_pixels_alloced, pixels );
 
-    if( volume2 != (Volume) NULL )
+    if( volume2 != NULL )
     {
         FREE2D( positions2 );
         FREE( weights2 );

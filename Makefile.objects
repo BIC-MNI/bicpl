@@ -81,6 +81,7 @@ VOLUMES_OBJ = \
               Volumes/dilate.o \
               Volumes/filters.o \
               Volumes/fill_volume.o \
+              Volumes/interpolate.o \
               Volumes/labels.o \
               Volumes/mapping.o \
               Volumes/output_free.o \

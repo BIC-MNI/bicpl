@@ -194,7 +194,7 @@ public  void  add_point_to_polygon(
         if( normal != (Vector *) 0 && polygons->normals == (Vector *) 0 ||
             normal == (Vector *) 0 && polygons->normals != (Vector *) 0 )
         {
-            print(
+            print_error(
               "Error: be consistent with normals in add_point_to_polygon.\n" );
         }
     }

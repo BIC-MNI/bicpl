@@ -27,7 +27,7 @@ public  void  subdivide_polygons(
 
     if( is_this_sphere_topology( polygons ) )
     {
-        (void) printf( "Subdividing assuming sphere topology.\n" );
+        print( "Subdividing assuming sphere topology.\n" );
         create_polygons_sphere( &dummy, 0.0, 0.0, 0.0, 0, 0, TRUE, polygons );
         return;
     }
@@ -106,7 +106,7 @@ private  void  subdivide_polygon(
 
     if( size < 3 || size > 4 )
     {
-        print( "Polygon size %d in subdivide polygons\n", size );
+        print_error( "Polygon size %d in subdivide polygons\n", size );
         return;
     }
 

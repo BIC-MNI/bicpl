@@ -237,7 +237,7 @@ private  void   get_planes(
 
 #define  THRESHOLD  30
 
-private  double  find_best_split_node_for_axis(
+private  Real  find_best_split_node_for_axis(
     int                   axis_index,
     int                   n_objects,
     int                   object_list[],

@@ -3,6 +3,14 @@
 
 #ifdef  sgi
 #include <image.h>
+
+int getrow(IMAGE *image, unsigned short *buffer,
+                unsigned int y, unsigned int z);
+
+int iclose(IMAGE *image);
+
+int putrow(IMAGE *image, unsigned short *buffer,
+                unsigned int y, unsigned int z);
 #endif
 
 public  Status  input_rgb_file(
@@ -10,17 +18,17 @@ public  Status  input_rgb_file(
     pixels_struct   *pixels )
 {
 #ifdef  sgi
-    IMAGE        *iimage;
-    unsigned int x_size, y_size, z_size;
-    unsigned int x, y;
-    int          r, g, b;
-    short        rbuf[8192];
-    short        gbuf[8192];
-    short        bbuf[8192];
+    IMAGE                 *iimage;
+    unsigned int          x_size, y_size, z_size;
+    unsigned int          x, y;
+    int                   r, g, b;
+    unsigned short        rbuf[8192];
+    unsigned short        gbuf[8192];
+    unsigned short        bbuf[8192];
 
     if( (iimage = iopen(filename,"r")) == NULL )
     {
-        print( "Error: can't open input file %s\n", filename );
+        print_error( "Error: can't open input file %s\n", filename );
         return( ERROR );
     }
 
@@ -32,7 +40,7 @@ public  Status  input_rgb_file(
 
     if( z_size != 3 )
     {
-        print( "Error: z_size (%d) != 3\n", z_size );
+        print_error( "Error: z_size (%d) != 3\n", z_size );
         return( ERROR );
     }
 
@@ -61,17 +69,17 @@ public  Status  output_rgb_file(
     pixels_struct   *pixels )
 {
 #ifdef  sgi
-    IMAGE        *oimage;
-    unsigned int x, y;
-    Colour       col;
-    short        rbuf[8192];
-    short        gbuf[8192];
-    short        bbuf[8192];
+    IMAGE                 *oimage;
+    unsigned int          x, y;
+    Colour                col;
+    unsigned short        rbuf[8192];
+    unsigned short        gbuf[8192];
+    unsigned short        bbuf[8192];
 
     oimage = iopen( filename, "w", RLE(1), 3, pixels->x_size, pixels->y_size,3);
     if( oimage == NULL )
     {
-        print( "Error: can't open output file %s\n", filename );
+        print_error( "Error: can't open output file %s\n", filename );
         return( ERROR );
     }
 

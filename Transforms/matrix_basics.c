@@ -228,9 +228,9 @@ public void matrix_multiply(int ldim, int mdim, int ndim,
                  - change to roughly NIL-abiding code and modified calling
                  sequence.
 ---------------------------------------------------------------------------- */
-public float trace_of_matrix(int size, float **the_matrix)
+public Real trace_of_matrix(int size, float **the_matrix)
 {
-   float sum=0.;
+   Real sum=0.;
    int i;
 
    for (i=1; i <= size; ++i) {

@@ -373,3 +373,69 @@ public  void  resample_pixels(
         }
     }
 }
+
+public  void  copy_pixel_region(
+    pixels_struct   *pixels,
+    int             x_min,
+    int             x_max,
+    int             y_min,
+    int             y_max,
+    pixels_struct   *new_pixels )
+{
+    int           y, y_dest, x_size, y_size;
+
+    x_min -= pixels->x_position;
+    y_min -= pixels->y_position;
+    x_max -= pixels->x_position;
+    y_max -= pixels->y_position;
+
+    if( x_min < 0 )
+        x_min = 0;
+    if( x_max >= pixels->x_size )
+        x_max = pixels->x_size-1;
+
+    if( y_min < 0 )
+        y_min = 0;
+    if( y_max >= pixels->y_size )
+        y_max = pixels->y_size-1;
+
+    x_size = MAX( 0, x_max - x_min + 1 );
+    y_size = MAX( 0, y_max - y_min + 1 );
+
+    initialize_pixels( new_pixels, pixels->x_position + x_min,
+                       pixels->y_position + y_min,
+                       x_size, y_size, pixels->x_zoom,
+                       pixels->y_zoom, pixels->pixel_type );
+
+    if( x_size == 0 || y_size == 0 )
+        return;
+
+    for_inclusive( y, y_min, y_max )
+    {
+        y_dest = y - y_min;
+
+        switch( pixels->pixel_type )
+        {
+        case COLOUR_INDEX_8BIT_PIXEL:
+            (void) memcpy( &PIXEL_COLOUR_INDEX_8(*new_pixels,0,y_dest),
+                           &PIXEL_COLOUR_INDEX_8(*pixels,x_min,y),
+                           x_size *
+                               sizeof(PIXEL_COLOUR_INDEX_8(*new_pixels,0,0)) );
+            break;
+
+        case COLOUR_INDEX_16BIT_PIXEL:
+            (void) memcpy( &PIXEL_COLOUR_INDEX_16(*new_pixels,0,y_dest),
+                           &PIXEL_COLOUR_INDEX_16(*pixels,x_min,y),
+                           x_size *
+                               sizeof(PIXEL_COLOUR_INDEX_16(*new_pixels,0,0)) );
+            break;
+
+        case RGB_PIXEL:
+            (void) memcpy( &PIXEL_RGB_COLOUR(*new_pixels,0,y_dest),
+                           &PIXEL_RGB_COLOUR(*pixels,x_min,y),
+                           x_size *
+                               sizeof(PIXEL_RGB_COLOUR(*new_pixels,0,0)) );
+            break;
+        }
+    }
+}

@@ -295,7 +295,8 @@ public  void  polygon_transform_points(
 
     if( !polygons_are_same_topology( src_polygons, dest_polygons ) )
     {
-        print( "polygon_transform_points: polygons are not same topology.\n" );
+        print_error(
+             "polygon_transform_points: polygons are not same topology.\n" );
         return;
     }
 

@@ -27,7 +27,7 @@
 private  void  calculate_coe(
     Real    **values,
     Real    **INVML,
-    float   **INVMLY,
+    Real    **INVMLY,
     int     n_points,
     int     n_dims,
     int     n_values );
@@ -43,7 +43,7 @@ private  void  makeL(
 public  void  get_nonlinear_warp(
    Real     **positions,   /* n_points x n_dims */
    Real     **values,   /* n_points x n_values */
-   float    **INVMLY,   /* n_points+1+n_dims x n_values */
+   Real     **INVMLY,   /* n_points+1+n_dims x n_values */
    int      n_points,
    int      n_dims,
    int      n_values )
@@ -91,7 +91,7 @@ private  void  makeL(
             ML[i][j]=0;
     }
     
-    /* set reset of the K matrix as follows */
+    /* set rest of the K matrix as follows */
 
     for_less( i, 0, n_points )
     {
@@ -115,41 +115,35 @@ private  void  makeL(
 private  void  calculate_coe(
     Real    **values,
     Real    **INVML,
-    float   **INVMLY,
+    Real    **INVMLY,
     int     n_points,
     int     n_dims,
     int     n_values )
 {
-    int      i,j,k;
+    int      i, j, v;
     Real     temp, **YM;
    
     /* Y = ( V | 0 0 0)t */
 
-    ALLOC2D( YM, n_points+n_dims+1, n_values );
+    ALLOC2D( YM, n_points, n_values );
 
     for_less( i, 0, n_points )
     {
-        for_less( j, 0, n_values )
-            YM[i][j] = values[i][j];
-    }
- 
-    for_less( i, n_points, n_points + n_dims + 1 )
-    {
-        for_less( j, 0, n_values )
-            YM[i][j] = 0.0;
+        for_less( v, 0, n_values )
+            YM[i][v] = values[i][v];
     }
  
     /* L_{-1} Y = (W|a_{1}, a_{x}, a_{y})^T. */
 
-    for_less( i, 0, n_values )
+    for_less( v, 0, n_values )
     {
-        for_less( j, 0, n_points + n_dims + 1 )   /* for one row of matrix */
+        for_less( i, 0, n_points + n_dims + 1 )   /* for one row of matrix */
         {
             temp = 0;
-            for_less( k, 0,  n_points + n_dims + 1 )
-                temp += INVML[j][k]*YM[k][i];
+            for_less( j, 0,  n_points )
+                temp += INVML[i][j]*YM[j][v];
 
-            INVMLY[j][i] = (float) temp;
+            INVMLY[i][v] = temp;
         }
     }
 

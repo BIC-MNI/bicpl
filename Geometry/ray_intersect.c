@@ -153,12 +153,11 @@ private  BOOLEAN  point_within_polygon_2d(
     Point   points[],
     Vector  *polygon_normal )
 {
-    BOOLEAN  intersects;
-    Real     x, y, x1, y1, x2, y2, x_inter, dy;
+    BOOLEAN  intersects, cross;
+    Real     x, y, x1, y1, x2, y2, x_inter, dx, dy, tx, ty, len, t;
     Real     nx, ny, nz, max_val;
     int      i1, i2;
     int      i;
-    BOOLEAN  cross;
 
     nx = ABS( Vector_x(*polygon_normal) );
     ny = ABS( Vector_y(*polygon_normal) );
@@ -187,8 +186,6 @@ private  BOOLEAN  point_within_polygon_2d(
 
     cross = FALSE;
 
-    intersects = FALSE;
-
     x2 = Point_coord(points[n_points-1],i1);
     y2 = Point_coord(points[n_points-1],i2);
 
@@ -200,40 +197,28 @@ private  BOOLEAN  point_within_polygon_2d(
         x2 = Point_coord(points[i],i1);
         y2 = Point_coord(points[i],i2);
 
-        if( !( (y1 > y + TOLERANCE && y2 > y + TOLERANCE) ||
-               (y1 < y + TOLERANCE && y2 < y + TOLERANCE) ||
-               (x1 > x + TOLERANCE && x2 > x + TOLERANCE)) )
+        if( !( (y1 > y && y2 > y ) ||
+               (y1 < y && y2 < y ) ||
+               (x1 > x && x2 > x )) )
         {
             dy = y2 - y1;
-
-            if( dy >= -TOLERANCE && dy <= TOLERANCE )
+            if( dy != 0.0 )
             {
-                if( (y1 >= y - TOLERANCE && y1 <= y + TOLERANCE ||
-                     y2 >= y - TOLERANCE && y2 <= y + TOLERANCE) &&
-                    ( (x1 <= x + TOLERANCE && x2 >= x - TOLERANCE) ||
-                      (x1 >= x - TOLERANCE && x2 <= x + TOLERANCE) ) )
+                if( y1 == y )
                 {
-                    intersects = TRUE;
-                    break;
-                }
-            }
-            else
-            {
-                if( y1 >= y - TOLERANCE && y1 <= y + TOLERANCE )
-                {
-                    if( y2 > y1 && x1 <= x + TOLERANCE )
+                    if( y2 > y1 && x1 <= x )
                     {
                         cross = !cross;
                     }
                 }
-                else if( y2 >= y - TOLERANCE && y2 <= y + TOLERANCE )
+                else if( y2 == y )
                 {
-                    if( y1 > y2 && x2 <= x + TOLERANCE )
+                    if( y1 > y2 && x2 <= x )
                     {
                         cross = !cross;
                     }
                 }
-                else if( x1 <= x + TOLERANCE && x2 <= x + TOLERANCE )
+                else if( x1 <= x && x2 <= x )
                 {
                     cross = !cross;
                 }
@@ -241,12 +226,7 @@ private  BOOLEAN  point_within_polygon_2d(
                 {
                     x_inter = x1 + (y - y1) / dy * (x2 - x1);
 
-                    if( x_inter >= x - TOLERANCE && x_inter <= x + TOLERANCE )
-                    {
-                        intersects = TRUE;
-                        break;
-                    }
-                    else if( x_inter < x + TOLERANCE )
+                    if( x_inter < x )
                     {
                         cross = !cross;
                     }
@@ -255,8 +235,52 @@ private  BOOLEAN  point_within_polygon_2d(
         }
     }
 
+    intersects = cross;
+
     if( !intersects )
-        intersects = cross;
+    {
+        x2 = Point_coord(points[n_points-1],i1);
+        y2 = Point_coord(points[n_points-1],i2);
+
+        for_less( i, 0, n_points )
+        {
+            x1 = x2;
+            y1 = y2;
+
+            x2 = Point_coord(points[i],i1);
+            y2 = Point_coord(points[i],i2);
+
+            if( x1 - TOLERANCE <= x && x <= x1 + TOLERANCE &&
+                y1 - TOLERANCE <= y && y <= y1 + TOLERANCE )
+            {
+                intersects = TRUE;
+                break;
+            }
+
+            dx = x2 - x1;
+            dy = y2 - y1;
+            tx = x - x1;
+            ty = y - y1;
+
+            len = dx * dx + dy * dy;
+            if( len == 0.0 )
+                continue;
+
+            t = (tx * dx + ty * dy) / len;
+
+            if( t < 0.0 || t > 1.0 )
+                continue;
+
+            tx = tx - t * dx;
+            ty = ty - t * dy;
+
+            if( tx * tx + ty * ty < TOLERANCE * TOLERANCE )
+            {
+                intersects = TRUE;
+                break;
+            }
+        }
+    }
 
     return( intersects );
 }

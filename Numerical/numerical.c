@@ -1,5 +1,6 @@
 #include  <internal_volume_io.h>
 #include  <numerical.h>
+#include  <limits.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : numerically_close
@@ -89,12 +90,20 @@ public  Real  round_to_nearest_multiple(
     Real    multiple_value )
 {
     int      i;
+    Real     factor, nearest;
 
     multiple_value = ABS( multiple_value );
 
-    i = ROUND( value / multiple_value );
+    factor = value / multiple_value;
+    if( factor > (Real) INT_MAX || factor < (Real) INT_MIN )
+        nearest = value;
+    else
+    {
+        i = ROUND( value / multiple_value );
+        nearest = (Real) i * multiple_value;
+    }
 
-    return( (Real) i * multiple_value );
+    return( nearest );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

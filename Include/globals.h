@@ -43,7 +43,7 @@
 
 #include  <global_lookup.h>
 
-#define  START_GLOBALS   private  global_struct  GLOBALS_LOOKUP_NAME[] = {
+#define  START_GLOBALS   static  global_struct  GLOBALS_LOOKUP_NAME[] = {
 #define  END_GLOBALS                                        };
 
 #define  DEF_GLOBAL( variable, type, initial ) \

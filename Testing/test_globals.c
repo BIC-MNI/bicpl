@@ -1,15 +1,14 @@
 #include  <internal_volume_io.h>
-#include  <volume_io.h>
 
 #define  GLOBALS_LOOKUP_NAME  globals_list
-#include  <def_globals.h>
+#include  <globals.h>
 
 private  void  print_all_globals( void );
 
 main()
 {
     Status         status;
-    String         line, variable_name, value;
+    STRING         line, variable_name, value;
     static   char  filename[] = "globals.input";
 
     print( "Initial global values:\n\n" );

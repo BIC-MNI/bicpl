@@ -1,6 +1,7 @@
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
+#include  <geom.h>
 
 public  void  initialize_lines(
     lines_struct    *lines,
@@ -88,4 +89,28 @@ public  void  delete_bintree_if_any(
 {
     if( bintree_delete_function != NULL )
         (*bintree_delete_function) ( bintree );
+}
+
+public  Real  get_lines_length(
+    lines_struct  *lines )
+{
+    Real  len;
+    int   line, i, p0, p1, size;
+
+    len = 0.0;
+
+    for_less( line, 0, lines->n_items )
+    {
+        size = GET_OBJECT_SIZE( *lines, line );
+
+        for_less( i, 0, size )
+        {
+            p0 = lines->indices[POINT_INDEX(lines->end_indices,line,i)];
+            p1 = lines->indices[POINT_INDEX(lines->end_indices,line,i+1)];
+            len += distance_between_points( &lines->points[p0],
+                                            &lines->points[p1] );
+        }
+    }
+
+    return( len );
 }

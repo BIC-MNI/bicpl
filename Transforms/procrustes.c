@@ -133,9 +133,9 @@ public void procrustes(int npoints, int ndim,
    matrix_multiply(npoints, ndim, ndim, Bshift, rotation, Brotated);
    transpose(npoints, ndim, Ashift, Atranspose);
    matrix_multiply(npoints, ndim, npoints, Brotated, Atranspose, product);
-   trace1 = trace_of_matrix(npoints, product);
+   trace1 = (float) trace_of_matrix(npoints, product);
    matrix_multiply(npoints, ndim, npoints, Bshift, Btranspose, product);
-   trace2 = trace_of_matrix(npoints, product);
+   trace2 = (float) trace_of_matrix(npoints, product);
    if (trace2 != 0.0) {
       *scale_ptr = trace1 / trace2;
    }

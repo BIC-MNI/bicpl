@@ -43,7 +43,7 @@ public  void  create_polygons_sphere(
     {
         if( !get_tessellation_of_polygons_sphere( polygons, &input_n_up ))
         {
-            print( "Not a sphere topology polygon.\n" );
+            print_error( "Not a sphere topology polygon.\n" );
             return;
         }
 
@@ -201,8 +201,8 @@ public  int  get_sphere_point_index(
 
     if( up < 0 || up > n_up || around < 0 || around >= n_around )
     {
-        (void) printf( "up %d/%d     around %d/%d\n", up, n_up,
-                       around, n_around );
+        print_error( "up %d/%d     around %d/%d\n", up, n_up,
+                      around, n_around );
         handle_internal_error( "get_sphere_point_index" );
     }
 

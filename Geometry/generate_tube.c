@@ -61,7 +61,7 @@ public  void  generate_tube(
 
     for_less( i, 0, n_around )
     {
-        angle = (double) (n_around - 1 - i) / (double) n_around * 2.0 * PI;
+        angle = (Real) (n_around - 1 - i) / (Real) n_around * 2.0 * PI;
         x[i] = radius * cos( angle );
         y[i] = radius * sin( angle );
     }
@@ -146,7 +146,7 @@ public  void  project_vector_to_plane(
 
     if( n_dot_d == 0.0 )
     {
-        print( "Error in project_vector_to_plane\n" );
+        print_error( "Error in project_vector_to_plane\n" );
     }
     else
     {

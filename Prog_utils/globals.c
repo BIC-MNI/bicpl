@@ -97,8 +97,8 @@ private  Status  input_global_variable(
 
     if( set_status != OK || status != OK )
     {
-        print( "Error inputting global.\n" );
-        print( "Variable name is %s\n", variable_name );
+        print_error( "Error inputting global.\n" );
+        print_error( "Variable name is %s\n", variable_name );
     }
 
     return( status );

@@ -4,7 +4,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.4 1995-04-28 18:30:19 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.5 1995-06-23 14:24:42 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.6  1995-05-19 21:51:21  david
-@MODIFIED   : *** empty log message ***
+@MODIFIED   : Revision 1.7  1995-06-23 14:24:37  david
+@MODIFIED   : check_in_all
 @MODIFIED   :
+ * Revision 1.6  1995/05/19  21:51:21  david
+ * *** empty log message ***
+ *
  * Revision 1.5  1995/04/04  03:42:05  david
  * check_in_all
  *
@@ -422,12 +425,12 @@ private void   make_rots(float **xmat, float rot_x, float rot_y, float rot_z)
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public void build_transformation_matrix(double lt[3][4], 
-					double *center,
-					double *translations,
-					double *scales,
-					double *shears,
-					double *rotations)
+public void build_transformation_matrix(Real lt[3][4], 
+					Real *center,
+					Real *translations,
+					Real *scales,
+					Real *shears,
+					Real *rotations)
 {
   
   float
@@ -512,21 +515,21 @@ private void  build_homogeneous_from_parameters(float **calc_transformation,
 						float *shears,
 						float *angles)
 {
-  double cent[3];
-  double trans[3];
-  double sc[3];
-  double sh[3];
-  double ang[3];
-  double mat[3][4];
+  Real cent[3];
+  Real trans[3];
+  Real sc[3];
+  Real sh[3];
+  Real ang[3];
+  Real mat[3][4];
 
   int i,j;
   
   for(i=0; i<ndim; i++) {
-    cent[i]  = (double)centre[i+1];
-    trans[i] = (double)translation[i+1];
-    sc[i]    = (double)scales[i+1];
-    sh[i]    = (double)shears[i+i];
-    ang[i]   = (double)angles[i+1];
+    cent[i]  = (Real)centre[i+1];
+    trans[i] = (Real)translation[i+1];
+    sc[i]    = (Real)scales[i+1];
+    sh[i]    = (Real)shears[i+i];
+    ang[i]   = (Real)angles[i+1];
   }
 
   build_transformation_matrix(mat,cent, trans, sc, sh, ang);
@@ -636,8 +639,8 @@ private  void  compute_tps_transform(int npoints,
                                      Trans_type trans_type,
                                      General_transform *transform)
 {
-   float              **points, **displacements;
-   int                ndim, i, j;
+   Real               **displacements;
+   int                ndim;
    General_transform  inv_transform;
 
    /* Check trans_type */
@@ -651,35 +654,25 @@ private  void  compute_tps_transform(int npoints,
 
    ndim = NUMBER_OF_DIMENSIONS;
 
-   ALLOC2D( points, npoints, ndim );
    ALLOC2D( displacements, npoints+1+ndim, ndim );
 
-   /* Copy points (we calculate transformation from vol 1 to vol 2 and
-      then invert it so that resampling is faster) */
+   get_nonlinear_warp( tag_list1, tag_list2, displacements, npoints,
+                       ndim, ndim );
 
-   get_nonlinear_warp( tag_list1, tag_list2, displacements, npoints, ndim );
+   /* ---- Create general transform */
 
-   for_less( i, 0, npoints )
-   {
-       for_less( j, 0, ndim )
-           points[i][j] = (float) tag_list1[i][j];
-   }
+   create_thin_plate_transform_real( &inv_transform, ndim, npoints, 
+                                     tag_list1, displacements);
 
-   /* Create general transform */
-
-   create_thin_plate_transform( &inv_transform, ndim, npoints, 
-                                points, displacements);
-
-   /* Invert general transform */
+   /* ---- Invert general transform */
 
    create_inverse_general_transform( &inv_transform, transform );
 
-   /* Free inverse transform */
+   /* ---- Free inverse transform */
 
    delete_general_transform(&inv_transform);
 
-   /* Free points and displacements */
+   /* ---- Free displacements */
 
-   FREE2D( points );
    FREE2D( displacements );
 }

@@ -213,8 +213,8 @@ public  Status  io_pixels(
                 break;
 
             default:
-                print( "Error, unrecognized pixel type %d.\n",
-                       pixels->pixel_type );
+                print_error( "Error, unrecognized pixel type %d.\n",
+                             pixels->pixel_type );
                 status = ERROR;
             }
         }
@@ -548,7 +548,7 @@ public  Status  io_colours(
         case PER_ITEM_COLOURS:    n_colours = n_items;   break;
         case PER_VERTEX_COLOURS:  n_colours = n_points;   break;
         default:
-            print( "Error inputting colour flag.\n" );
+            print_error( "Error inputting colour flag.\n" );
             status = ERROR;
             break;
         }
@@ -726,7 +726,7 @@ public  Status  io_object_type(
 
         if( fputc( ch, file ) == EOF )
         {
-            print( "Error outputting char.\n" );
+            print_error( "Error outputting char.\n" );
             status = ERROR;
         }
     }
@@ -774,7 +774,7 @@ public  Status  input_object_type(
 */
 
         default:
-            print( "Unrecognized object type in file.\n" );
+            print_error( "Unrecognized object type in file.\n" );
             status = ERROR;
         }
     }
@@ -1001,7 +1001,7 @@ public  Status  input_object(
             break;
 
         default:
-            print( "Unrecognized object type %d\n", type );
+            print_error( "Unrecognized object type %d\n", type );
             status = ERROR;
         }
     }

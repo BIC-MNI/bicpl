@@ -17,9 +17,9 @@ static Real  **Gpt2;
 
 /* internal prototypes */
 
-private float lsq_objective(double lt[3][4], 
-			     double **pts1, double **pts2, 
-			     int npoints, int ndim);
+private Real lsq_objective(double lt[3][4], 
+			   double **pts1, double **pts2, 
+			   int npoints, int ndim);
 
 extern  void     amoeba();
 
@@ -40,7 +40,7 @@ private float fit_function(float *params);
 @MODIFIED   : 
 
 ---------------------------------------------------------------------------- */
-private  float lsq_objective(double lt[3][4], 
+private  Real lsq_objective(double lt[3][4], 
 			     Real **pts1, Real **pts2, 
 			     int npoints, int ndim)
 {
@@ -94,7 +94,7 @@ private  float lsq_objective(double lt[3][4],
   sum += npoints * minimum_error;
 
 
-  return(sum);
+  return( (Real) sum);
 
 }
 
@@ -146,7 +146,7 @@ private float fit_function(float *params)
 
 				/* call the needed objective function */
   dim = 3;
-  r = lsq_objective(mat,Gpt1,Gpt2,Gnpoints,dim);
+  r = (float) lsq_objective(mat,Gpt1,Gpt2,Gnpoints,dim);
 
   return(r);
 }

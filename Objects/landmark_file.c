@@ -111,7 +111,7 @@ public  Status  io_tag_point(
 
     if( volume != (Volume) NULL && get_volume_n_dimensions(volume) != 3 )
     {
-        print( "Error:  volume must be 3d to use for input landmarks.\n" );
+        print_error( "Error:  volume must be 3d to use for input landmarks.\n");
         volume = (Volume) NULL;
     }
 

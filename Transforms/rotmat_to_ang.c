@@ -72,7 +72,7 @@ Tue Jun  8 08:44:59 EST 1993 LC
 #define  facos( x )  acosf( x )
 #endif
 
-#ifdef linux
+#if defined(linux) || defined(sun)
 #define  fsin( x )   (float) sin( (double) (x) )
 #define  fcos( x )   (float) cos( (double) (x) )
 #define  fasin( x )  (float) asin( (double) (x) )

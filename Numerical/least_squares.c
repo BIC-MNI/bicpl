@@ -4,7 +4,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least_squares.c,v 1.3 1995-04-28 18:30:34 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least_squares.c,v 1.4 1995-06-23 14:24:52 david Exp $";
 #endif
 
 public  void  least_squares(
@@ -14,7 +14,7 @@ public  void  least_squares(
     Real    values[],
     Real    parameters[] )
 {
-    int                   pt, i, j;
+    int                   pt, i;
     linear_least_squares  lsq;
     Real                  *p;
 
@@ -30,6 +30,8 @@ public  void  least_squares(
 
         add_to_linear_least_squares( &lsq, p, values[pt] );
     }
+
+    FREE( p );
 
     (void) get_linear_least_squares_solution( &lsq, parameters );
 
@@ -92,7 +94,8 @@ public  BOOLEAN  get_linear_least_squares_solution(
 
     if( !solved )
     {
-        print( "Could not solve least squares, non-invertible matrix.\n" );
+        print_error(
+             "Could not solve least squares, non-invertible matrix.\n" );
 
         for_less( i, 0, lsq->n_parameters )
             solution[i] = 0.0;

@@ -19,7 +19,8 @@ private  void  assign_neighbours(
     int       neighbours[],
     int       polygon1,
     int       edge1,
-    int       polygon2 );
+    int       polygon2,
+    BOOLEAN   *topology_error );
 private   void   create_polygon_neighbours(
     int    n_polygons,
     int    indices[],
@@ -43,10 +44,13 @@ private   void   create_polygon_neighbours(
 {
     int                 keys[2], i, edge, i0, i1, size;
     int                 start_index, end_index;
+    BOOLEAN             topology_error;
     edge_info_struct    *edge_ptr;
     hash_table_struct   edge_table;
     hash_table_pointer  hash_ptr;
     progress_struct     progress;
+
+    topology_error = FALSE;
 
     if( n_polygons > 0 )
     {
@@ -84,7 +88,8 @@ private   void   create_polygon_neighbours(
                                         (void **) &edge_ptr ) )
             {
                 assign_neighbours( indices, end_indices, *neighbours,
-                                   i, edge, edge_ptr->polygon_index );
+                                   i, edge, edge_ptr->polygon_index,
+                                   &topology_error );
                 FREE( edge_ptr );
             }
             else
@@ -110,6 +115,31 @@ private   void   create_polygon_neighbours(
     }
 
     delete_hash_table( &edge_table );
+
+    if( topology_error )
+    {
+        print(
+          "create_polygon_neighbours():  more than 2 faces share an edge.\n" );
+    }
+
+#ifdef DEBUG_NEIGHBOURS
+    {
+        int   i, n_open;
+
+        n_open = 0;
+        for_less( i, 0, end_indices[n_polygons-1] )
+        {
+            if( (*neighbours)[i] == INVALID_ID )
+                ++n_open;
+        }
+    
+        if( n_open > 0 )
+        {
+            print( "Polygon not closed: %d/%d.\n", n_open,
+                   end_indices[n_polygons-1] );
+        }
+    }
+#endif
 }
 
 private  void  assign_neighbours(
@@ -118,7 +148,8 @@ private  void  assign_neighbours(
     int       neighbours[],
     int       polygon1,
     int       edge1,
-    int       polygon2 )
+    int       polygon2,
+    BOOLEAN   *topology_error )
 {
     int   i0, i1, edge2, start_index1, size1, start_index2, size2;
     int   p2_i0, p2_i1;
@@ -152,6 +183,12 @@ private  void  assign_neighbours(
 
     if( edge2 == size2 )
         handle_internal_error( "assign neighbours" );
+
+    if( neighbours[POINT_INDEX( end_indices, polygon1, edge1 )] != INVALID_ID ||
+        neighbours[POINT_INDEX( end_indices, polygon2, edge2 )] != INVALID_ID )
+    {
+        *topology_error = TRUE;
+    }
 
     neighbours[POINT_INDEX( end_indices, polygon1, edge1 )] = polygon2;
     neighbours[POINT_INDEX( end_indices, polygon2, edge2 )] = polygon1;

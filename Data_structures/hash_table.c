@@ -481,7 +481,7 @@ public  BOOLEAN  get_next_hash_entry(
 
     found = (ptr->current_entry != (hash_entry_struct *) 0);
 
-    if( found )
+    if( found && data_ptr != NULL )
         *data_ptr = ptr->current_entry->data_ptr;
 
     return( found );

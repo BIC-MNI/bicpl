@@ -34,7 +34,7 @@ public  void  crop_pixels(
 
     if( in_pixels->pixel_type != RGB_PIXEL )
     {
-        print( "cannot crop non-rgb pixels.\n" );
+        print_error( "cannot crop non-rgb pixels.\n" );
         return;
     }
 

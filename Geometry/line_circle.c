@@ -10,7 +10,7 @@ public  void  create_line_circle(
     lines_struct     *lines )
 {
     int      i, a1, a2;
-    double   angle;
+    Real     angle;
 
     initialize_lines( lines, WHITE );
 
