@@ -35,10 +35,10 @@ public  Status  output_volume(
         {
             trans = Transform_elem(volume->voxel_to_world_transform,axis,3);
 
-            if( volume->flip_axis[axis] )
+            if( volume->thickness[axis] < 0.0 )
             {
-                trans -= (Real) (volume->sizes[axis]-1) *
-                         volume->thickness[axis];
+                trans += volume->thickness[axis] *
+                         (Real) (volume->sizes[axis]-1);
             }
 
             status = output_float( file, trans );
@@ -58,9 +58,6 @@ public  Status  output_volume(
 
         if( status == OK )
             status = output_character( file, ' ' );
-
-        if( status == OK && volume->flip_axis[axis_ordering[axis]] )
-            status = output_character( file, '-' );
 
         if( status == OK )
             status = output_character( file, 'x' + axis_ordering[axis] );
