@@ -1,29 +1,34 @@
 #include  <def_mni.h>
 
 public  void  initialize_resample_volume(
-    resample_struct  *resample,
-    Volume           src_volume,
-    Transform        *dest_to_src_transform,
-    Volume           dest_volume )
+    resample_struct      *resample,
+    Volume               src_volume,
+    General_transform    *dest_to_src_transform,
+    Volume               dest_volume )
 {
-    Transform  inverse;
+    General_transform  inverse;
 
     resample->src_volume = src_volume;
     resample->dest_volume = dest_volume;
     resample->x = 0;
     resample->y = 0;
 
-    resample->transform = dest_volume->voxel_to_world_transform;
+    copy_general_transform( get_voxel_to_world_transform(dest_volume),
+                            &resample->transform );
 
-    if( dest_to_src_transform != (Transform *) NULL )
+    if( dest_to_src_transform != (General_transform *) NULL )
     {
-        compute_transform_inverse( dest_to_src_transform, &inverse );
-        concat_transforms( &resample->transform, &resample->transform,
-                           &inverse );
+        create_inverse_general_transform( dest_to_src_transform, &inverse );
+
+        concat_general_transforms( &resample->transform, &inverse,
+                                   &resample->transform );
     }
 
-    concat_transforms( &resample->transform, &resample->transform,
-                       &src_volume->world_to_voxel_transform );
+    create_inverse_general_transform( get_voxel_to_world_transform(src_volume),
+                                      &inverse );
+
+    concat_general_transforms( &resample->transform, &inverse,
+                               &resample->transform );
 }
 
 public  Boolean  do_more_resampling(
@@ -35,7 +40,6 @@ public  Boolean  do_more_resampling(
     int             z;
     Real            xv, yv, zv;
     Real            end_time, real_value;
-    Vector          z_axis;
     int             *dest_sizes, *src_sizes;
 
     if( max_seconds >= 0.0 )
@@ -47,12 +51,12 @@ public  Boolean  do_more_resampling(
     {
         src_sizes = resample->src_volume->sizes;
 
-        get_transform_z_axis( &resample->transform, &z_axis );
-
-        transform_point( &resample->transform, resample->x, resample->y, 0.0,
-                         &xv, &yv, &zv );
         for_less( z, 0, dest_sizes[Z] )
         {
+            general_transform_point( &resample->transform,
+                                     resample->x, resample->y, (Real) z,
+                                     &xv, &yv, &zv );
+
             if( xv < 0.0 || xv >= (Real) (src_sizes[X]-1) ||
                 yv < 0.0 || yv >= (Real) (src_sizes[Y]-1) ||
                 zv < 0.0 || zv >= (Real) (src_sizes[Z]-1) )
@@ -61,7 +65,7 @@ public  Boolean  do_more_resampling(
                     yv < -0.5 || yv >= (Real) src_sizes[Y] - 0.5 ||
                     zv < -0.5 || zv >= (Real) src_sizes[Z] - 0.5 )
                 {
-                    value = resample->src_volume->min_voxel;
+                    value = get_volume_min_voxel( resample->src_volume );
                 }
                 else
                 {
@@ -82,10 +86,6 @@ public  Boolean  do_more_resampling(
 
             SET_VOXEL_3D( resample->dest_volume, resample->x, resample->y, z,
                           value );
-
-            xv += Point_x(z_axis);
-            yv += Point_y(z_axis);
-            zv += Point_z(z_axis);
         }
 
         ++resample->y;
@@ -106,9 +106,9 @@ public  Boolean  do_more_resampling(
 }
 
 public  void  resample_volume(
-    Volume           src_volume,
-    Transform        *dest_to_src_transform,
-    Volume           dest_volume )
+    Volume                   src_volume,
+    General_transform        *dest_to_src_transform,
+    Volume                   dest_volume )
 {
     static const     int  FACTOR = 1000;
     resample_struct  resample;
