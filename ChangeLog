@@ -1,3 +1,8 @@
+2001-02-06  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Images/rgb_io_ppm.c (input_rgb_file): Added code to read
+	PPM images.  This is completely untested, so left inactive.
+
 2001-02-05  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* README.release: New.  Recipe for creating a new release.

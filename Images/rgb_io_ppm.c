@@ -1,5 +1,5 @@
 /*
- * Output (2D) image in PPM format.
+ * Input and Output (2D) image using PPM format.
  */
 
 #include "config.h"
@@ -16,9 +16,56 @@ public  Status  input_rgb_file(
     STRING          filename,
     pixels_struct   *pixels )
 {
-    print_error( "input_rgb_file(): fix rgb_io_ppm.c.\n" );
-}
+    FILE* f;
+    pixel* rowbuf;
+    int n_cols, n_rows, format;
+    pixval max_pixval;
+    int x,y;
 
+
+    /** I think the following code is how it ought to be done,
+	but it is completely untested, so let's be conservative
+	here... **/
+    print_error( "input_rgb_file(): fix rgb_io_ppm.c.\n" );
+    return OK;
+
+
+    if ( (f = fopen(filename,"r")) == NULL ) {
+        print_error( "Error: output file could not be opened for reading: %s\n",
+                     filename );
+        return( ERROR );
+    }
+
+    ppm_readppminit( f, &n_cols, &n_rows, &max_pixval, &format );
+
+    if ( (rowbuf = ppm_allocrow( n_cols ) ) == NULL ) {
+        print_error( "Error: could not allocate memory for image\n" );
+        return( ERROR );
+    }
+
+    initialize_pixels( pixels, 0, 0, n_cols, n_rows, 1.0, 1.0, RGB_PIXEL );
+
+
+    /* The image appears to be scanned from left to right,
+       and bottom to top, so we scan from the largest row index
+       to the smallest. */
+
+    for ( y = n_rows - 1; y >= 0; --y ) {
+	ppm_readppmrow( f, rowbuf, n_cols, max_pixval, format );
+	for( x = 0; x < n_cols; ++x ) {
+	    PIXEL_RGB_COLOUR( *pixels, x, y ) 
+		= make_rgba_Colour( PPM_GETR( rowbuf[x] ),
+				    PPM_GETG( rowbuf[x] ),
+				    PPM_GETB( rowbuf[x] ),
+				    255 );
+	}
+    }
+
+    ppm_freerow( rowbuf );
+    fclose( f );
+
+    return( OK );
+}
 
 
 public  Status  output_rgb_file(
@@ -28,6 +75,11 @@ public  Status  output_rgb_file(
     FILE* f;
     pixel* rowbuf;
     int x,y;
+
+    if ( pixels->pixel_type != RGB_PIXEL ) {
+        print_error( "Error: only RGB_PIXEL images are handled\n" );
+        return( ERROR );
+    }
 
     if( !file_directory_exists( filename ) )
     {
@@ -39,11 +91,6 @@ public  Status  output_rgb_file(
     if ( (f = fopen(filename,"w")) == NULL ) {
         print_error( "Error: output file could not be opened for writing: %s\n",
                      filename );
-        return( ERROR );
-    }
-
-    if ( pixels->pixel_type != RGB_PIXEL ) {
-        print_error( "Error: only RGB_PIXEL images are handled\n" );
         return( ERROR );
     }
 
