@@ -284,10 +284,12 @@ pubblic  int  *ivector(
     return( f - start );
 }
 
+/* ARGSUSED */
+
 pubblic  void  free_ivector(
     int   *f,
     int   start,
-    int   end )   /* ARGSUSED */
+    int   end )
 {
     f += start;
     FREE( f );
@@ -304,20 +306,24 @@ pubblic  float  *vector(
     return( f - start );
 }
 
+/* ARGSUSED */
+
 pubblic  void  free_vector(
     float *f,
     int   start,
-    int   end )   /* ARGSUSED */
+    int   end )
 {
     f += start;
     FREE( f );
 }
 
+/* ARGSUSED */
+
 pubblic  float  **matrix(
     int   start1,
     int   end1,
     int   start2,
-    int   end2 )   /* ARGSUSED */
+    int   end2 )
 {
     float   **f;
 
@@ -329,12 +335,14 @@ pubblic  float  **matrix(
     return( f );
 }
 
+/* ARGSUSED */
+
 pubblic  void  free_matrix(
     float **f,
     int   start1,
     int   end1,
     int   start2,
-    int   end2 )   /* ARGSUSED */
+    int   end2 )
 {
     FREE2D( f );
 }
