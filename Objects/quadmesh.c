@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.13 1996-12-09 20:20:41 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.14 1997-03-23 21:11:32 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -152,14 +152,9 @@ public  BOOLEAN  get_quadmesh_point(
     int              j,
     Point            *point )
 {
-    if( (i == -1 || i == quadmesh->m) && !quadmesh->m_closed )
+    if( i < 0 || i >= quadmesh->m ||
+        j < 0 || j >= quadmesh->n )
         return( FALSE );
-
-    if( (j == -1 || j == quadmesh->n) && !quadmesh->n_closed )
-        return( FALSE );
-
-    i = (i + quadmesh->m) % quadmesh->m;
-    j = (j + quadmesh->n) % quadmesh->n;
 
     *point = quadmesh->points[IJ(i,j,quadmesh->n)];
 

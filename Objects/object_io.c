@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.21 1996-12-09 20:20:38 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.22 1997-03-23 21:11:31 david Exp $";
 #endif
 
 private  Status  io_points(

@@ -117,3 +117,99 @@ public  int  clip_polygon_against_box(
 
     return( n_out );
 }
+
+public  int  clip_polygon_against_plane(
+    int     n_points,
+    Point   points[],
+    Real    plane_constant,
+    Vector  *normal,
+    Point   output_points[] )
+{
+    int     p, n_output;
+    Real    next_dist, dist, ratio;
+    Point   point, next_point;
+
+    n_output = 0;
+    dist = 0.0;
+
+    next_dist = DOT_POINT_VECTOR( *normal, points[0] ) + plane_constant;
+    next_point = points[0];
+
+    for_less( p, 0, n_points )
+    {
+        dist = next_dist;
+        point = next_point;
+        next_point = points[(p+1) % n_points];
+        next_dist = DOT_POINT_VECTOR( *normal, next_point ) + plane_constant;
+
+        if( dist >= 0.0 )
+        {
+            output_points[n_output] = point;
+            ++n_output;
+        }
+
+        if( (n_points > 2 || p == 0 && n_points == 2)
+            && dist * next_dist < 0.0 )
+        {
+            ratio = dist / (dist - next_dist);
+            INTERPOLATE_POINTS( output_points[n_output],
+                                point, next_point, ratio );
+            ++n_output;
+        }
+    }
+
+    return( n_output );
+}
+
+public  void  split_polygon_with_plane(
+    int     n_points,
+    Point   points[],
+    Real    plane_constant,
+    Vector  *normal,
+    int     *n_in,
+    Point   in_points[],
+    int     *n_out,
+    Point   out_points[] )
+{
+    int     p;
+    Real    next_dist, dist, ratio;
+    Point   point, next_point, interp;
+
+    *n_in = 0;
+    *n_out = 0;
+    dist = 0.0;
+
+    next_dist = DOT_POINT_VECTOR( *normal, points[0] ) + plane_constant;
+    next_point = points[0];
+
+    for_less( p, 0, n_points )
+    {
+        dist = next_dist;
+        point = next_point;
+        next_point = points[(p+1) % n_points];
+        next_dist = DOT_POINT_VECTOR( *normal, next_point ) + plane_constant;
+
+        if( dist >= 0.0 )
+        {
+            in_points[*n_in] = point;
+            ++(*n_in);
+        }
+
+        if( dist <= 0.0 )
+        {
+            out_points[*n_out] = point;
+            ++(*n_out);
+        }
+
+        if( (n_points > 2 || p == 0 && n_points == 2)
+            && dist * next_dist < 0.0 )
+        {
+            ratio = dist / (dist - next_dist);
+            INTERPOLATE_POINTS( interp, point, next_point, ratio );
+            in_points[*n_in] = interp;
+            ++(*n_in);
+            out_points[*n_out] = interp;
+            ++(*n_out);
+        }
+    }
+}

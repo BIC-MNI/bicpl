@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.9 1997-01-13 19:14:48 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.10 1997-03-23 21:11:36 david Exp $";
 #endif
 
 #define  MAX_TEMP_STORAGE  1000
@@ -29,9 +29,10 @@ private  void  recursive_scan_polygon_to_voxels(
     int                 min_voxel[],
     int                 max_voxel[] )
 {
-    int        n_clip, dim, max_dim, save, pos;
+    int        n_left, n_right, dim, max_dim, save, pos;
     Real       slice_pos;
-    Point      output_vertices[MAX_TEMP_STORAGE];
+    Point      right_vertices[MAX_TEMP_STORAGE];
+    Point      left_vertices[MAX_TEMP_STORAGE];
     Vector     normal;
 
     max_dim = 0;
@@ -54,28 +55,25 @@ private  void  recursive_scan_polygon_to_voxels(
     fill_Vector( normal, 0.0, 0.0, 0.0 );
     Vector_coord( normal, max_dim ) = -1.0f;
 
-    n_clip = clip_polygon_against_plane( size, points, slice_pos,
-                                         &normal, output_vertices );
+    split_polygon_with_plane( size, points, slice_pos,
+                              &normal, &n_left, left_vertices,
+                              &n_right, right_vertices );
 
-    if( n_clip > 0 )
+    if( n_left > 0 )
     {
         save = max_voxel[max_dim];
         max_voxel[max_dim] = pos;
-        recursive_scan_polygon_to_voxels( n_clip, output_vertices,
+        recursive_scan_polygon_to_voxels( n_left, left_vertices,
                                           label_volume, label,
                                           min_voxel, max_voxel );
         max_voxel[max_dim] = save;
     }
 
-    Vector_coord( normal, max_dim ) = 1.0f;
-    n_clip = clip_polygon_against_plane( size, points, -slice_pos,
-                                         &normal, output_vertices );
-
-    if( n_clip > 0 )
+    if( n_right > 0 )
     {
         save = min_voxel[max_dim];
         min_voxel[max_dim] = pos+1;
-        recursive_scan_polygon_to_voxels( n_clip, output_vertices,
+        recursive_scan_polygon_to_voxels( n_right, right_vertices,
                                           label_volume, label,
                                           min_voxel, max_voxel );
         min_voxel[max_dim] = save;

@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.19 1996-12-09 20:20:49 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.20 1997-03-23 21:11:35 david Exp $";
 #endif
 
 private  void  interpolate_colours(
@@ -434,7 +434,7 @@ private  void  recreate_piecewise_function(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : set_colour_coding_user_defined
+@NAME       : define_colour_coding_user_defined
 @INPUT      : colour_code
               n_colours
               colours
@@ -451,7 +451,7 @@ private  void  recreate_piecewise_function(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  set_colour_coding_user_defined(
+public  BOOLEAN  define_colour_coding_user_defined(
     colour_coding_struct  *colour_code,
     int                   n_colours,
     Colour                colours[],
@@ -503,6 +503,13 @@ public  BOOLEAN  set_colour_coding_user_defined(
                                              get_Colour_a_0_1(colours[p]);
         colour_code->user_defined_colour_points[p].interpolation_space =
                                              interpolation_space;
+    }
+
+    if( get_colour_coding_type( colour_code ) == USER_DEFINED_COLOUR_MAP )
+    {
+        recreate_piecewise_function( colour_code,
+                                     get_colour_coding_type(colour_code),
+                                     FALSE );
     }
 
     return( TRUE );

@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.9 1996-05-17 19:35:27 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.10 1997-03-23 21:11:29 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -104,17 +104,38 @@ public  void  create_tetrahedral_sphere(
     int              n_triangles,
     polygons_struct  *polygons )
 {
-    int             p, start_size;
+    static  int     possible_sizes[] = { 4, 6, 8, 20 };
+    int             p, start_size, s, size, best_size, prev_size;
     Real            cx, cy, cz, dx, dy, dz, scale;
     Real            x, y, z;
     Point           origin;
 
-    /*--- determine the base object, either 4, 6, or 8 */
+    /*--- determine the base object, either 4, 6, or 8, 20 */
 
-    start_size = n_triangles;
+    start_size = 4;
+    best_size = 0;
+    for_less( s, 0, SIZEOF_STATIC_ARRAY( possible_sizes ) )
+    {
+        size = possible_sizes[s];
+        prev_size = size;
+        while( size < n_triangles )
+        {
+            prev_size = size;
+            size *= 4;
+        }
 
-    while( start_size > 8 && start_size != 20 )
-        start_size /= 4;
+        if( ABS( n_triangles - prev_size ) < ABS( n_triangles - best_size ) )
+        {
+            best_size = prev_size;
+            start_size = possible_sizes[s];
+        }
+
+        if( ABS( n_triangles - size ) < ABS( n_triangles - best_size ) )
+        {
+            best_size = size;
+            start_size = possible_sizes[s];
+        }
+    }
 
     fill_Point( origin, 0.0, 0.0, 0.0 );
 

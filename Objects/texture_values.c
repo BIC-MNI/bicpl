@@ -13,13 +13,13 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.1 1997-01-27 15:27:42 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.2 1997-03-23 21:11:32 david Exp $";
 #endif
 
 #include  <internal_volume_io.h>
 #include  <objects.h>
 
-public  Status  output_texture_values(
+private  Status  output_texture_values_ascii(
     STRING   filename,
     int      n_values,
     Real     values[] )
@@ -49,37 +49,118 @@ public  Status  output_texture_values(
     return( OK );
 }
 
-public  Status  input_texture_values(
+private  Status  input_texture_values_ascii(
     STRING   filename,
-    int      n_values,
-    Real     values[] )
+    int      *n_values,
+    Real     *values[] )
 {
     Status   status;
     FILE     *file;
-    int      v;
-    Real     after_end;
+    Real     value;
 
     status = open_file( filename, READ_FILE, ASCII_FORMAT, &file );
 
     if( status != OK )
         return( status );
 
-    for_less( v, 0, n_values )
-    {
-        if( input_real( file, &values[v] ) != OK )
-        {
-            print_error( "Error inputting %d'th value out of %d from file %s\n",
-                         v+1, n_values, filename );
-            return( ERROR );
-        }
-    }
+    *n_values = 0;
+    *values = NULL;
 
-    if( input_real( file, &after_end ) == OK )
+    while( input_real( file, &value ) == OK )
     {
-        print_error( "Warning: extra values at end of file: %s\n", filename );
+        ADD_ELEMENT_TO_ARRAY( *values, *n_values, value, DEFAULT_CHUNK_SIZE );
     }
 
     (void) close_file( file );
 
     return( OK );
+}
+
+private  Status  output_texture_values_binary(
+    STRING   filename,
+    int      n_values,
+    Real     values[] )
+{
+    int      v, sizes[2];
+    Status   status;
+    Volume   volume;
+    STRING   dim_names[] = { MIxspace, MIyspace };
+
+    volume = create_volume( 2, dim_names, NC_FLOAT, FALSE, 0.0, 0.0 );
+    sizes[0] = 1;
+    sizes[1] = n_values;
+    set_volume_sizes( volume, sizes );
+    alloc_volume_data( volume );
+
+    for_less( v, 0, n_values )
+        set_volume_real_value( volume, 0, v, 0, 0, 0, values[v] );
+
+    status = output_volume( filename, NC_UNSPECIFIED, FALSE, 0.0, 0.0,
+                            volume, "Texture values.\n", NULL );
+
+    delete_volume( volume );
+
+    return( status );
+}
+
+private  Status  input_texture_values_binary(
+    STRING   filename,
+    int      *n_values,
+    Real     *values[] )
+{
+    int      v, sizes[2];
+    Status   status;
+    Volume   volume;
+    STRING   dim_names[] = { MIxspace, MIyspace };
+
+    status = input_volume( filename, 2, dim_names,
+                           NC_UNSPECIFIED, FALSE, 0.0, 0.0,
+                           TRUE, &volume, NULL );
+
+    if( status != OK )
+        return( status );
+
+    get_volume_sizes( volume, sizes );
+
+    *n_values = sizes[1];
+
+    ALLOC( *values, *n_values );
+
+    for_less( v, 0, *n_values )
+        (*values)[v] = get_volume_real_value( volume, 0, v, 0, 0, 0 );
+
+    delete_volume( volume );
+
+    return( OK );
+}
+
+public  Status  output_texture_values(
+    STRING         filename,
+    File_formats   format,
+    int            n_values,
+    Real           values[] )
+{
+    Status   status;
+
+    if( format == ASCII_FORMAT )
+        status = output_texture_values_ascii( filename, n_values, values );
+    else
+        status = output_texture_values_binary( filename, n_values, values );
+
+    return( status );
+}
+
+public  Status  input_texture_values(
+    STRING         filename,
+    int            *n_values,
+    Real           *values[] )
+{
+    Status         status;
+
+    if( filename_extension_matches( filename, MNC_ENDING ) )
+        status = input_texture_values_binary( filename, n_values, values );
+    else
+        status = input_texture_values_ascii( filename, n_values, values );
+
+    return( status );
 }

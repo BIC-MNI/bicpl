@@ -59,6 +59,8 @@ NUMERICAL_SRC  = \
                  Numerical/minimize_lsq.c \
                  Numerical/minimize_lsq_float.c \
                  Numerical/numerical.c \
+                 Numerical/quadratic.c \
+                 Numerical/real_quadratic.c \
                  Numerical/statistics.c \
                  Numerical/t_stat.c
 
@@ -78,7 +80,8 @@ OBJECTS_SRC   = \
                 Objects/quadmesh.c \
                 Objects/rgb_lookup.c \
                 Objects/tag_objects.c \
-                Objects/text.c
+                Objects/text.c \
+                Objects/texture_values.c
 
 PROG_UTILS_SRC = \
                  Prog_utils/arguments.c \
@@ -91,6 +94,7 @@ VOLUMES_SRC = \
               Volumes/change_labels.c \
               Volumes/colour_coding.c \
               Volumes/col_code_points.c \
+              Volumes/col_code_io.c \
               Volumes/create_slice.c \
               Volumes/crop_volume.c \
               Volumes/dilate.c \

@@ -215,14 +215,17 @@ private  Real   private_minimize_lsq(
         for_less( p, 0, n_parameters )
             len += xi[p] * xi[p];
 
-        len = sqrt( len );
-        for_less( p, 0, n_parameters )
-            unit_dir[p] = xi[p] / len;
+        if( len != 0.0 )
+        {
+            len = sqrt( len );
+            for_less( p, 0, n_parameters )
+                unit_dir[p] = xi[p] / len;
 
-        minimize_along_line( n_parameters, constant_term, linear_terms,
-                             square_terms, n_cross_terms, cross_parms,
-                             cross_terms,
-                             max_step_size, parm_values, g, unit_dir );
+            minimize_along_line( n_parameters, constant_term, linear_terms,
+                                 square_terms, n_cross_terms, cross_parms,
+                                 cross_terms,
+                                 max_step_size, parm_values, g, unit_dir );
+        }
 
         if( ((iter+1) % update_rate) == 0 || iter == n_iters - 1 )
         {
