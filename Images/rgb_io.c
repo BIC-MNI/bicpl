@@ -1,6 +1,9 @@
 #include <internal_volume_io.h>
 #include <images.h>
 
+static  void  error_function(
+    char  error[] );
+
 #ifdef  sgi
 #include <image.h>
 
@@ -26,9 +29,10 @@ public  Status  input_rgb_file(
     unsigned short        gbuf[8192];
     unsigned short        bbuf[8192];
 
+    i_seterror( error_function );
+
     if( (iimage = iopen(filename,"r")) == NULL )
     {
-        print_error( "Error: can't open input file %s\n", filename );
         return( ERROR );
     }
 
@@ -76,10 +80,18 @@ public  Status  output_rgb_file(
     unsigned short        gbuf[8192];
     unsigned short        bbuf[8192];
 
+    i_seterror( error_function );
+
+    if( !file_directory_exists( filename ) )
+    {
+        print_error( "Error: output file directory does not exist: %s\n",
+                     filename );
+        return( ERROR );
+    }
+
     oimage = iopen( filename, "w", RLE(1), 3, pixels->x_size, pixels->y_size,3);
     if( oimage == NULL )
     {
-        print_error( "Error: can't open output file %s\n", filename );
         return( ERROR );
     }
 
@@ -102,4 +114,10 @@ public  Status  output_rgb_file(
 #endif
 
     return( OK );
+}
+
+static  void  error_function(
+    char  error[] )
+{
+    print_error( error );
 }
