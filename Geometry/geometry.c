@@ -60,6 +60,8 @@ public  void  find_polygon_normal(
         Vector_z(*normal) -= (Point_x(points[i]) + Point_x(points[next_i])) *
                              (Point_y(points[i]) - Point_y(points[next_i]) );
     }
+
+    NORMALIZE_VECTOR( *normal, *normal );
 }
 
 public  Real  get_polygon_2d_area(
