@@ -1,5 +1,5 @@
-INCLUDES = -I$(top_srcdir)/Include
-LDADD = $(BIC_LIBS) ../libbicpl.la -lm
+AM_CPPFLAGS = -I$(top_srcdir)/Include
+LDADD = ../libbicpl.la -lm
 
 bin_PROGRAMS = ascii_binary bicobj2oogl bicobj2vtk
 

@@ -30,7 +30,6 @@ libbicpl_la_LIBADD = \
 	$(top_builddir)/Marching_cubes/libbicpl_mc.la \
 	$(top_builddir)/Objects/libbicpl_o.la \
 	$(top_builddir)/Transforms/libbicpl_t.la \
-	$(top_builddir)/Deform/libbicpl_deform.la \
-	$(BIC_LIBS) $(imageio_LIBS)
+	$(top_builddir)/Deform/libbicpl_deform.la
 
 
