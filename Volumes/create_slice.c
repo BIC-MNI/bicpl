@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.35 1995-07-31 13:45:43 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.36 1995-08-21 14:05:08 david Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10
@@ -622,7 +622,8 @@ private  void  create_weighted_volume_slices(
             }
         }
 
-        GET_VOXEL_PTR( volume_data1, volume1, 0, 0, 0, 0, 0 );
+        if( !volume1->is_cached_volume )
+            GET_VOXEL_PTR( volume_data1, volume1, 0, 0, 0, 0, 0 );
         volume1_data_type = get_volume_data_type( volume1 );
 
         get_volume_sizes( volume1, sizes1 );
@@ -643,7 +644,8 @@ private  void  create_weighted_volume_slices(
                 }
             }
 
-            GET_VOXEL_PTR( volume_data2, volume2, 0, 0, 0, 0, 0 );
+            if( !volume2->is_cached_volume )
+                GET_VOXEL_PTR( volume_data2, volume2, 0, 0, 0, 0, 0 );
             volume2_data_type = get_volume_data_type( volume2 );
             get_volume_sizes( volume2, sizes2 );
 
@@ -654,7 +656,9 @@ private  void  create_weighted_volume_slices(
         else
             volume_data2 = NULL;
 
-        if( degrees_continuity != -1 && n_slices1 == 1 &&
+        if( volume1->is_cached_volume ||
+            (volume2 != NULL && volume2->is_cached_volume) ||
+            degrees_continuity != -1 && n_slices1 == 1 &&
             (volume_data2 == NULL || n_slices2 == 1) )
         {
             interpolate_volume_to_slice( volume1, n_dimensions1, sizes1,

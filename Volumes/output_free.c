@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.17 1995-07-31 13:45:46 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.18 1995-08-21 14:05:10 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -62,7 +62,7 @@ public  Status  output_volume_free_format(
 
     status = open_file( header_filename, WRITE_FILE, ASCII_FORMAT, &file );
 
-    if( volume->data_type == UNSIGNED_BYTE )
+    if( get_volume_data_type(volume) == UNSIGNED_BYTE )
         n_bytes_per_voxel = 1;
     else
         n_bytes_per_voxel = 2;

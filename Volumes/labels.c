@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.27 1995-08-20 05:05:25 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.28 1995-08-21 14:05:09 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -98,6 +98,16 @@ private  void  check_alloc_label_data(
         alloc_volume_data( volume );
         set_all_volume_label_data( volume, 0 );
     }
+}
+
+public  BOOLEAN  is_label_volume_initialized(
+    Volume  volume )
+{
+    return( volume != NULL && 
+            ((volume->is_cached_volume &&
+             cached_volume_has_been_modified( &volume->cache )) ||
+             (!volume->is_cached_volume &&
+              multidim_array_is_alloced( &volume->array ))) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
