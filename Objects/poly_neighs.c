@@ -111,12 +111,6 @@ private   void   create_polygon_neighbours(
     delete_hash_table( &edge_table );
 }
 
-public   void   free_polygon_neighbours(
-    int    neighbours[] )
-{
-    FREE( neighbours );
-}
-
 private  void  assign_neighbours(
     int       indices[],
     int       end_indices[],

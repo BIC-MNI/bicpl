@@ -29,7 +29,8 @@ DATA_STRUCT_OBJ = \
                   Data_structures/bintree.o \
                   Data_structures/build_bintree.o \
                   Data_structures/object_bintrees.o \
-                  Data_structures/search_bintree.o \
+                  Data_structures/point_bintree.o \
+                  Data_structures/ray_bintree.o \
                   Data_structures/skiplist.o
 
 DEFORM_OBJ = \
@@ -42,8 +43,10 @@ DEFORM_OBJ = \
              Deform/search_utils.o
 
 GEOMETRY_OBJ = \
+               Geometry/closest_point.o \
                Geometry/curvature.o \
                Geometry/intersect.o \
+               Geometry/ray_intersect.o \
                Geometry/line_circle.o \
                Geometry/map_polygons.o \
                Geometry/path_surface.o \
@@ -55,6 +58,7 @@ GEOMETRY_OBJ = \
                Geometry/smooth_polygons.o \
                Geometry/subdivide_lines.o \
                Geometry/subdivide_polygons.o \
+               Geometry/surface_area.o \
                Geometry/tetrahedrons.o \
                Geometry/generate_tube.o \
                Geometry/tubes.o \

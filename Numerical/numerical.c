@@ -84,6 +84,19 @@ public  Real  get_good_round_value(
     return( sign * rounded );
 }
 
+public  Real  round_to_nearest_multiple(
+    Real    value,
+    Real    multiple_value )
+{
+    int      i;
+
+    multiple_value = ABS( multiple_value );
+
+    i = ROUND( value / multiple_value );
+
+    return( (Real) i * multiple_value );
+}
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : solve_quadratic
 @INPUT      : a
