@@ -99,7 +99,7 @@ public  BOOLEAN  rotmat_to_ang(
         rz -= 2.0 * PI;
 
     /*--- step two:  find the RY rotation reqd to align 
-                     the local x on the world X axis 
+                     the local x on the world X axis  */
 
     make_rotation_transform( -rz, Z, &z_rot );
 
