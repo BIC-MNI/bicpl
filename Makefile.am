@@ -3,7 +3,11 @@ SUBDIRS = Include Data_structures Transforms Geometry Numerical Objects \
 
 AUTOMAKE_OPTIONS = check-news
 
-EXTRA_DIST = README.release
+EXTRA_DIST = README.release \
+	m4/smr_OPTIONAL_LIB.m4 \
+	m4/smr_REQUIRED_LIB.m4 \
+	m4/smr_WITH_BUILD_PATH.m4
+
 
 # version info argument is CURRENT[:REVISION[:AGE]]
 # see README.release for update instructions
