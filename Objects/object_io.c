@@ -24,6 +24,12 @@ public  Status  io_lines(
 
     status = OK;
 
+    if( io_flag == READ_FILE )
+    {
+        initialize_lines( lines, WHITE );
+        FREE( lines->colours );
+    }
+
     if( io_flag == READ_FILE ||
         (lines->n_points > 0 && lines->n_items > 0) )
     {
@@ -220,6 +226,12 @@ public  Status  io_polygons(
 
     status = OK;
 
+    if( io_flag == READ_FILE )
+    {
+        initialize_polygons( polygons, WHITE, NULL );
+        FREE( polygons->colours );
+    }
+
     if( io_flag == READ_FILE ||
         (polygons->n_points > 0 && polygons->n_items > 0) )
     {
@@ -301,6 +313,12 @@ public  Status  io_quadmesh(
     Status   status;
 
     status = OK;
+
+    if( io_flag == READ_FILE )
+    {
+        initialize_quadmesh( quadmesh, WHITE, NULL, 0, 0 );
+        FREE( quadmesh->colours );
+    }
 
     if( io_flag == READ_FILE ||
         (quadmesh->m > 1 && quadmesh->n > 1) )
@@ -513,7 +531,7 @@ public  Status  io_colours(
         }
     }
 
-    if( status == OK && io_flag == READ_FILE )
+    if( status == OK && io_flag == READ_FILE && n_colours > 0 )
         ALLOC( *colours, n_colours );
 
     if( status == OK )
