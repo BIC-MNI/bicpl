@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.15 1996-09-19 15:30:40 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.16 1996-09-25 01:04:44 david Exp $";
 #endif
 
 #define  INVALID_ID       -1
@@ -78,6 +78,86 @@ public  void  delete_polygon_point_neighbours(
     }
 }
 
+private  void  insert_neighbours(
+    int    n_to_add,
+    int    indices[],
+    int    n_nodes,
+    int    *n_neighbours,
+    int    *neighbours[] )
+{
+    int       p1, p2, first_index, start, i, n_to_insert, n_to_do, last_index;
+    BOOLEAN   wrapped;
+
+    p1 = indices[0];
+    for_less( first_index, 0, *n_neighbours )
+    {
+        if( (*neighbours)[first_index] == p1 + n_nodes )
+            break;
+    }
+
+    wrapped = FALSE;
+
+    if( first_index < *n_neighbours )
+    {
+        start = first_index-1;
+        while( start >= 0 && (*neighbours)[start] < n_nodes )
+            --start;
+        ++start;
+
+        n_to_insert = first_index - start;
+        for_down( i, n_to_add - 1, 0 )
+            indices[n_to_insert+i] = indices[i];
+
+        for_less( i, 0, n_to_insert )
+        {
+            indices[i] = (*neighbours)[start+i];
+            (*neighbours)[start+i] = -1;
+        }
+        (*neighbours)[first_index] = -1;
+        n_to_add += n_to_insert;
+        if( indices[n_to_add-1] == indices[0] )
+        {
+            --n_to_add;
+            wrapped = TRUE;
+        }
+    }
+
+    p2 = indices[n_to_add-1];
+    for_less( last_index, 0, *n_neighbours )
+    {
+        if( (*neighbours)[last_index] == p2 )
+            break;
+    }
+
+    if( last_index == *n_neighbours  )
+    {
+        if( !wrapped )
+            indices[n_to_add-1] += n_nodes;
+        last_index = 0;
+        n_to_do = *n_neighbours;
+    }
+    else
+    {
+        ++last_index;
+        n_to_do = *n_neighbours-1;
+    }
+
+    for_less( i, 0, n_to_do )
+    {
+        if( (*neighbours)[(last_index+i)%*n_neighbours] >= 0 )
+        {
+            indices[n_to_add] = (*neighbours)[(last_index+i)%*n_neighbours];
+            ++n_to_add;
+        }
+    }
+
+    SET_ARRAY_SIZE( *neighbours, *n_neighbours, n_to_add, DEFAULT_CHUNK_SIZE);
+
+    *n_neighbours = n_to_add;
+    for_less( i, 0, n_to_add )
+        (*neighbours)[i] = indices[i];
+}
+
 public   void   create_polygon_point_neighbours(
     polygons_struct  *polygons,
     BOOLEAN          across_polygons_flag,
@@ -87,13 +167,12 @@ public   void   create_polygon_point_neighbours(
     int              **point_polygons_ptr[] )
 {
     int                 edge, i0, i1, size, poly, total_neighbours, p0, p1;
-    int                 n_points, max_neighbours, n, *sorted_list;
+    int                 points_to_add_alloced;
+    int                 n_points, n;
     int                 *n_point_neighbours, **point_neighbours;
     int                 **point_polygons, point, index0, index1;
-    int                 i, v, indices[MAX_POINTS_PER_POLYGON], position, ii;
-    int                 n_to_add, points_to_add[MAX_POINTS_PER_POLYGON];
-    BOOLEAN             done;
-    Smallest_int        *interior_flags;
+    int                 i, v, indices[MAX_POINTS_PER_POLYGON], ii;
+    int                 n_to_add, *points_to_add;
     progress_struct     progress;
 
     if( across_polygons_flag && point_polygons_ptr != NULL )
@@ -103,6 +182,9 @@ public   void   create_polygon_point_neighbours(
         return;
     }
 
+    points_to_add_alloced = 0;
+    points_to_add = NULL;
+
     n_points = polygons->n_points;
 
     ALLOC( n_point_neighbours, n_points );
@@ -111,173 +193,77 @@ public   void   create_polygon_point_neighbours(
 
     ALLOC( point_neighbours, n_points );
 
-    total_neighbours = 0;
+    initialize_progress_report( &progress, FALSE, polygons->n_items,
+                                "Neighbour-finding" );
 
-    do
+    for_less( poly, 0, polygons->n_items )
     {
-        done = TRUE;
-
-        initialize_progress_report( &progress, FALSE, polygons->n_items,
-                                    "Neighbour-finding" );
-
-        for_less( poly, 0, polygons->n_items )
+        size = GET_OBJECT_SIZE( *polygons, poly );
+        for_less( v, 0, size )
         {
-            size = GET_OBJECT_SIZE( *polygons, poly );
-            for_less( v, 0, size )
-            {
-                indices[v] = polygons->indices[
-                           POINT_INDEX(polygons->end_indices,poly,v)];
-            }
-
-            for_less( i0, 0, size )
-            {
-                p0 = indices[i0];
-                n_to_add = 0;
-                for_less( ii, 0, size-1 )
-                {
-                    i1 = (i0 + 1 + ii) % size;
-                    if( !across_polygons_flag && ii != 0 && ii != size-2 )
-                        continue;
-
-                    p1 = indices[i1];
-                    points_to_add[n_to_add] = p1;
-                    ++n_to_add;
-                }
-
-                for_less( i1, 0, n_to_add )
-                {
-                    p1 = points_to_add[i1];
-
-                    for_less( i, 0, n_point_neighbours[p0] )
-                    {
-                        if( (point_neighbours[p0][i]%n_points) == p1)
-                        {
-                            if( i1 < n_to_add-1 )
-                                point_neighbours[p0][i] = p1;
-                            break;
-                        }
-                    }
-
-                    if( i < n_point_neighbours[p0] )
-                        continue;
-
-                    if( i1 > 0 )
-                    {
-                        for_less( position, 0, n_point_neighbours[p0] )
-                        {
-                            if( point_neighbours[p0][position] ==
-                                                     points_to_add[i1-1] )
-                                break;
-                        }
-                    }
-                    else
-                        position = n_point_neighbours[p0];
-
-                    if( position < n_point_neighbours[p0] )
-                    {
-                        ++position;
-                    }
-                    else
-                    {
-                        if( i1 < n_to_add-1 )
-                        {
-                            for_less( position, 0, n_point_neighbours[p0] )
-                            {
-                                if( point_neighbours[p0][position] ==
-                                                  points_to_add[n_to_add-1] )
-                                    break;
-                            }
-                            if( position >= n_point_neighbours[p0] )
-                                position = -1;
-                        }
-                        else
-                            position = -1;
-
-                        if( position < 0 && n_point_neighbours[p0] == 0 )
-                            position = 0;
-                    }
-
-                    if( position >= 0 )
-                    {
-                        SET_ARRAY_SIZE( point_neighbours[p0],
-                                        n_point_neighbours[p0],
-                                        n_point_neighbours[p0]+1, 5 );
-                        for_down( i, n_point_neighbours[p0], position+1 )
-                        {
-                            point_neighbours[p0][i] = 
-                                              point_neighbours[p0][i-1];
-                        }
-                        point_neighbours[p0][position] = p1;
-                        if( i1 == n_to_add - 1 )
-                            point_neighbours[p0][position] += n_points;
-                        ++n_point_neighbours[p0];
-                        ++total_neighbours;
-
-                    }
-                    else
-                        done = FALSE;
-                }
-            }
-
-            update_progress_report( &progress, poly+1 );
+            indices[v] = polygons->indices[
+                                    POINT_INDEX(polygons->end_indices,poly,v)];
         }
 
-        terminate_progress_report( &progress );
-    }
-    while( !done );
+        for_less( i0, 0, size )
+        {
+            p0 = indices[i0];
 
-    max_neighbours = 0;
+            if( size + n_point_neighbours[p0] > points_to_add_alloced )
+            {
+                SET_ARRAY_SIZE( points_to_add, points_to_add_alloced,
+                                size + n_point_neighbours[p0],
+                                DEFAULT_CHUNK_SIZE);
+                points_to_add_alloced = size + n_point_neighbours[p0];
+            }
+
+            n_to_add = 0;
+            for_less( ii, 0, size-1 )
+            {
+                i1 = (i0 + 1 + ii) % size;
+                if( !across_polygons_flag && ii != 0 && ii != size-2 )
+                    continue;
+
+                p1 = indices[i1];
+                points_to_add[n_to_add] = p1;
+                ++n_to_add;
+            }
+
+            insert_neighbours( n_to_add, points_to_add, n_points,
+                               &n_point_neighbours[p0], &point_neighbours[p0] );
+        }
+
+        update_progress_report( &progress, poly+1 );
+    }
+
+    terminate_progress_report( &progress );
+
+    if( points_to_add_alloced > 0 )
+        FREE( points_to_add );
+
+    total_neighbours = 0;
     for_less( i, 0, n_points )
     {
         REALLOC( point_neighbours[i], n_point_neighbours[i] );
-        max_neighbours = MAX( max_neighbours, n_point_neighbours[i] );
+        total_neighbours += n_point_neighbours[i];
     }
 
     if( interior_flags_ptr != NULL )
     {
-        ALLOC( sorted_list, max_neighbours );
-        ALLOC( interior_flags, n_points );
+        ALLOC( *interior_flags_ptr, n_points );
         for_less( point, 0, n_points )
         {
-            position = -1;
-            for_less( n, 0, n_point_neighbours[point] )
-            {
-                if( point_neighbours[point][n] >= n_points )
-                {
-                    point_neighbours[point][n] -= n_points;
-                    if( position != -1 )
-                        print_error( " topology error in neighbours.\n" );
-                    position = n;
-                }
-            }
-
-            interior_flags[point] = (Smallest_int) (position == -1);
-
-            if( !interior_flags[point] )
-            {
-                for_less( n, 0, n_point_neighbours[point] )
-                {
-                    sorted_list[n] = point_neighbours[point]
-                           [(n+position+1)%n_point_neighbours[point]];
-                }
-                for_less( n, 0, n_point_neighbours[point] )
-                    point_neighbours[point][n] = sorted_list[n];
-            }
+            (*interior_flags_ptr)[point] = (Smallest_int)
+              (point_neighbours[point][n_point_neighbours[point]-1] < n_points);
         }
-
-        FREE( sorted_list );
-
-        *interior_flags_ptr = interior_flags;
     }
-    else
+
+    for_less( point, 0, n_points )
     {
-        for_less( point, 0, n_points )
+        for_less( n, 0, n_point_neighbours[point] )
         {
-            for_less( n, 0, n_point_neighbours[point] )
-            {
-                if( point_neighbours[point][n] >= n_points )
-                    point_neighbours[point][n] -= n_points;
-            }
+            if( point_neighbours[point][n] >= n_points )
+                point_neighbours[point][n] -= n_points;
         }
     }
 
