@@ -46,16 +46,9 @@ public  int  clip_polygon_against_box(
 
         while( p >= 0 )
         {
-            point = input[p][0];
-            last_flag = last[p][0];
-            if( n_input[p] == 1 )
-                n_input[p] = 0;
-            else
-            {
-                input[p][0] = input[p][1];
-                last[p][0] = last[p][1];
-                n_input[p] = 1;
-            }
+            --n_input[p];
+            point = input[p][n_input[p]];
+            last_flag = last[p][n_input[p]];
 
             if( !last_flag )
             {
@@ -69,6 +62,13 @@ public  int  clip_polygon_against_box(
             else
                 dist = first_dist[p];
 
+            if( dist >= 0.0 && (!last_flag || p < n_planes-1) )
+            {
+                input[p+1][0] = point;
+                last[p+1][0] = last_flag;
+                n_input[p+1] = 1;
+            }
+
             if( first_flags[p] )
             {
                 first_flags[p] = FALSE;
@@ -77,16 +77,9 @@ public  int  clip_polygon_against_box(
             else if( prev_dist[p] * dist < 0.0 )
             {
                 ratio = prev_dist[p] / (prev_dist[p] - dist);
-                INTERPOLATE_POINTS( input[p+1][n_input[p+1]], prev[p],
-                                    point, ratio );
-                last[p+1][n_input[p+1]] = FALSE;
-                ++n_input[p+1];
-            }
-
-            if( dist >= 0.0 && (!last_flag || p < n_planes-1) )
-            {
-                input[p+1][n_input[p+1]] = point;
-                last[p+1][n_input[p+1]] = last_flag;
+                n = n_input[p+1];
+                INTERPOLATE_POINTS( input[p+1][n], prev[p], point, ratio );
+                last[p+1][n] = FALSE;
                 ++n_input[p+1];
             }
 
@@ -97,9 +90,12 @@ public  int  clip_polygon_against_box(
 
             if( p == n_planes && n_input[p] > 0 )
             {
-                for_less( n, 0, n_input[p] )
-                    output_points[n_out+n] = input[p][n];
-                n_out += n_input[p];
+                n = n_input[p];
+                for_down( n, n_input[p]-1, 0 )
+                {
+                    output_points[n_out] = input[p][n];
+                    ++n_out;
+                }
                 n_input[p] = 0;
                 --p;
             }
