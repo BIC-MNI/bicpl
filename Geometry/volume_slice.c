@@ -4,6 +4,8 @@ public  void   create_slice_quadmesh(
     Volume           volume,
     int              axis_index,
     Real             voxel_position,
+    int              x_tess,
+    int              y_tess,
     quadmesh_struct  *quadmesh )
 {
     Point            point;
@@ -18,20 +20,26 @@ public  void   create_slice_quadmesh(
     y_axis = (axis_index + 2) % N_DIMENSIONS;
     get_volume_sizes( volume, sizes );
 
+    if( x_tess <= 1 )
+        x_tess = MAX( 2, sizes[x_axis] );
+    if( y_tess <= 1 )
+        y_tess = MAX( 2, sizes[y_axis] );
+
     get_default_surfprop( &spr );
-    initialize_quadmesh( quadmesh, WHITE, &spr, sizes[x_axis], sizes[y_axis] );
+    initialize_quadmesh( quadmesh, WHITE, &spr, x_tess, y_tess );
 
     voxel[axis_index] = voxel_position;
 
     fill_Vector( normal, 0.0, 0.0, 0.0 );
     Vector_coord( normal, axis_index ) = 1.0;
 
-    for_less( x, 0, sizes[x_axis] )
+    for_less( x, 0, x_tess )
     {
-        voxel[x_axis] = (Real) x;
-        for_less( y, 0, sizes[y_axis] )
+        voxel[x_axis] = (Real) x / (Real) (x_tess-1) * (Real) (sizes[x_axis]-1);
+        for_less( y, 0, y_tess )
         {
-            voxel[y_axis] = (Real) y;
+            voxel[y_axis] = (Real) y / (Real) (y_tess-1) *
+                            (Real) (sizes[y_axis]-1);
 
             convert_voxel_to_world( volume, voxel, &x_w, &y_w, &z_w );
             fill_Point( point, x_w, y_w, z_w );
