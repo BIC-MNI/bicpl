@@ -18,11 +18,12 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.20 1996-08-07 15:35:50 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.21 1996-08-08 19:15:32 david Exp $";
 #endif
 
 
-#define  TOLERANCE  1.0e-2
+#define  TOLERANCE           1.0e-2
+#define  TRIANGLE_TOLERANCE  1.0e-3
 
 private  BOOLEAN  point_within_triangle_2d(
     Point   *pt,
@@ -74,18 +75,29 @@ private  BOOLEAN   intersect_ray_polygon_points(
 
     if( n_dot_d != 0.0 )
     {
-        cx = 0.0;
-        cy = 0.0;
-        cz = 0.0;
-
-        for_less( p, 0, n_points )
+        if( n_points == 3 )
         {
-            cx += (Real) Point_x(points[p]);
-            cy += (Real) Point_y(points[p]);
-            cz += (Real) Point_z(points[p]);
-        }
+            cx = RPoint_x(points[0]);
+            cy = RPoint_y(points[0]);
+            cz = RPoint_z(points[0]);
 
-        plane_const = (nx * cx + ny * cy + nz * cz) / (Real) n_points;
+            plane_const = nx * cx + ny * cy + nz * cz;
+        }
+        else
+        {
+            cx = 0.0;
+            cy = 0.0;
+            cz = 0.0;
+
+            for_less( p, 0, n_points )
+            {
+                cx += (Real) Point_x(points[p]);
+                cy += (Real) Point_y(points[p]);
+                cz += (Real) Point_z(points[p]);
+            }
+
+            plane_const = (nx * cx + ny * cy + nz * cz) / (Real) n_points;
+        }
 
         n_dot_o = nx * (Real) Point_x(*ray_origin) +
                   ny * (Real) Point_y(*ray_origin) +
@@ -219,32 +231,37 @@ private  BOOLEAN  point_within_triangle_2d(
     Point   *pt,
     Point   points[] )
 {
-    BOOLEAN  inside;
-    int      i;
-    Vector   edges[3];
-    Vector   normal, offset, edge_normal;
+    Real     x_pos, y_pos, sum, bottom;
+    Real     x_dot_x, x_dot_y, x_dot_v, y_dot_y, y_dot_v;
+    Vector   x_axis, y_axis, v;
 
-    SUB_VECTORS( edges[0], points[1], points[0] );
-    SUB_VECTORS( edges[1], points[2], points[1] );
-    SUB_VECTORS( edges[2], points[0], points[2] );
-    CROSS_VECTORS( normal, edges[2], edges[0] );
-    NORMALIZE_VECTOR( normal, normal );
+    SUB_VECTORS( x_axis, points[1], points[0] );
+    SUB_VECTORS( y_axis, points[2], points[0] );
+    SUB_VECTORS( v, *pt, points[0] );
 
-    inside = TRUE;
+    x_dot_x = DOT_VECTORS( x_axis, x_axis );
+    x_dot_y = DOT_VECTORS( x_axis, y_axis );
+    x_dot_v = DOT_VECTORS( x_axis, v );
+    y_dot_y = DOT_VECTORS( y_axis, y_axis );
+    y_dot_v = DOT_VECTORS( y_axis, v );
 
-    for_less( i, 0, 3 )
-    {
-        SUB_POINTS( offset, *pt, points[i] );
-        CROSS_VECTORS( edge_normal, edges[i], normal );
-        NORMALIZE_VECTOR( edge_normal, edge_normal );
-        if( DOT_VECTORS( offset, edge_normal ) > TOLERANCE )
-        {
-            inside = FALSE;
-            break;
-        }
-    }
+    bottom = x_dot_x * y_dot_y - x_dot_y * x_dot_y;
 
-    return( inside );
+    if( bottom == 0.0 )
+        return( FALSE );
+
+    x_pos = (x_dot_v * y_dot_y - y_dot_v * x_dot_y) / bottom;
+
+    if( x_pos < -TRIANGLE_TOLERANCE || x_pos > 1.0 + TRIANGLE_TOLERANCE )
+        return( FALSE );
+
+    y_pos = (y_dot_v * x_dot_x - x_dot_v * x_dot_y) / bottom;
+
+    if( y_pos < -TRIANGLE_TOLERANCE || y_pos > 1.0 + TRIANGLE_TOLERANCE )
+        return( FALSE );
+
+    sum = x_pos + y_pos;
+    return( sum >= -TRIANGLE_TOLERANCE && sum <= 1.0 + TRIANGLE_TOLERANCE );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
