@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.14 1996-04-23 13:30:22 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.15 1996-05-06 19:48:17 david Exp $";
 #endif
 
 #define  DEBUG
@@ -365,6 +365,7 @@ public  Volume  create_box_filtered_volume(
 
             for_less( z, 0, sizes[Z] )
             {
+                sample = (Real) row[z];
                 GET_NEXT_SAMPLE( y_inc_flag, y_bound_flag, y_recede_index,
                                  y_advance_index, y_left_weight, y_right_weight,
                                  sizes[Y], (Real) slice[_I][z], sample )
@@ -384,6 +385,7 @@ public  Volume  create_box_filtered_volume(
         {
             for_less( z, 0, sizes[Z] )
             {
+                sample = (Real) slice[y][z];
                 GET_NEXT_SAMPLE( x_inc_flag, x_bound_flag, x_recede_index,
                                  x_advance_index, x_left_weight, x_right_weight,
                                  sizes[X], (Real) volume_cache[_I][y][z],
