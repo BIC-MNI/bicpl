@@ -27,7 +27,9 @@ LINT_LIBS = \
 
 DATA_STRUCT_OBJ = \
                   Data_structures/bintree.o \
+                  Data_structures/bitlist.o \
                   Data_structures/build_bintree.o \
+                  Data_structures/hash_table.o \
                   Data_structures/object_bintrees.o \
                   Data_structures/point_bintree.o \
                   Data_structures/ray_bintree.o \
@@ -51,6 +53,7 @@ GEOMETRY_OBJ = \
                Geometry/map_polygons.o \
                Geometry/path_surface.o \
                Geometry/poly_dist.o \
+               Geometry/poly_neighs.o \
                Geometry/polygon_sphere.o \
                Geometry/segment_polygons.o \
                Geometry/smooth_curvature.o \
