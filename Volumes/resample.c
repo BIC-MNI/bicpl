@@ -37,7 +37,7 @@ public  Boolean  do_more_resampling(
     Real            v00, v01, v10, v11, v0, v1;
     Real            xv, yv, zv;
     Real            u, v, w;
-    Real            end_time;
+    Real            end_time, real_value;
     Point           point;
     Vector          z_axis;
     int             *dest_sizes, *src_sizes;
@@ -78,31 +78,11 @@ public  Boolean  do_more_resampling(
             }
             else
             {
-                xi = (int) xv;
-                yi = (int) yv;
-                zi = (int) zv;
-                u = FRACTION( xv );
-                v = FRACTION( yv );
-                w = FRACTION( zv );
+                (void) evaluate_volume( resample->src_volume, xv, yv, zv,
+                                        0, FALSE, &real_value,
+                                        (Real *) 0, (Real *) 0, (Real *) 0 );
 
-                GET_VOXEL_3D(v000, resample->src_volume, xi  , yi  , zi );
-                GET_VOXEL_3D(v001, resample->src_volume, xi  , yi  , zi+1);
-                GET_VOXEL_3D(v010, resample->src_volume, xi  , yi+1, zi );
-                GET_VOXEL_3D(v011, resample->src_volume, xi  , yi+1, zi+1);
-                GET_VOXEL_3D(v100, resample->src_volume, xi+1, yi  , zi );
-                GET_VOXEL_3D(v101, resample->src_volume, xi+1, yi  , zi+1);
-                GET_VOXEL_3D(v110, resample->src_volume, xi+1, yi+1, zi );
-                GET_VOXEL_3D(v111, resample->src_volume, xi+1, yi+1, zi+1);
-                
-                v00 = (Real) v000 + (Real) (v001 - v000) * w;
-                v01 = (Real) v010 + (Real) (v011 - v010) * w;
-                v10 = (Real) v100 + (Real) (v101 - v100) * w;
-                v11 = (Real) v110 + (Real) (v111 - v110) * w;
-
-                v0 = (Real) v00 + (Real) (v01 - v00) * v;
-                v1 = (Real) v10 + (Real) (v11 - v10) * v;
-
-                value = ROUND( (Real) v0 + (Real) (v1 - v0) * u );
+                value = ROUND( real_value );
             }
 
             SET_VOXEL_3D( resample->dest_volume, resample->x, resample->y, z,
