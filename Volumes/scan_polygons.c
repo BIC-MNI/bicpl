@@ -16,10 +16,10 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.7 1996-05-24 18:42:47 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.8 1996-12-09 20:20:53 david Exp $";
 #endif
 
-#define  MAX_TEMP_STORAGE  100
+#define  MAX_TEMP_STORAGE  1000
 
 private  void  recursive_polygon_scan(
     int                 size,
@@ -56,8 +56,15 @@ public  void  scan_polygons_to_voxels(
     int                 label,
     Real                max_size )
 {
-    int        i, poly, size;
+    int        vertex, poly, size, dim, point_index;
     Point      vertices[MAX_TEMP_STORAGE];
+    Point      output_vertices[2*MAX_TEMP_STORAGE];
+    Real       voxel[N_DIMENSIONS];
+    Real       min_voxel[N_DIMENSIONS], max_voxel[N_DIMENSIONS];
+    int        min_iv[N_DIMENSIONS], max_iv[N_DIMENSIONS];
+    int        sizes[N_DIMENSIONS], int_voxel[N_DIMENSIONS];
+
+    get_volume_sizes( label_volume, sizes );
 
     for_less( poly, 0, polygons->n_items )
     {
@@ -65,15 +72,73 @@ public  void  scan_polygons_to_voxels(
         if( size > MAX_TEMP_STORAGE )
             size = MAX_TEMP_STORAGE;
 
-        for_less( i, 0, size )
+        for_less( vertex, 0, size )
         {
-            vertices[i] = polygons->points[
-              polygons->indices[POINT_INDEX(polygons->end_indices,poly,i)]];
+            point_index = polygons->indices[POINT_INDEX(
+                                  polygons->end_indices,poly,vertex)];
+
+            convert_world_to_voxel( volume,
+                                    RPoint_x(polygons->points[point_index]),
+                                    RPoint_y(polygons->points[point_index]),
+                                    RPoint_z(polygons->points[point_index]),
+                                    voxel );
+            fill_Point( vertices[vertex], voxel[X], voxel[Y], voxel[Z] );
+
+            if( vertex == 0 )
+            {
+                for_less( dim, 0, N_DIMENSIONS )
+                {
+                    min_voxel[dim] = voxel[dim];
+                    max_voxel[dim] = voxel[dim];
+                }
+            }
+            else
+            {
+                for_less( dim, 0, N_DIMENSIONS )
+                {
+                    if( voxel[dim] < min_voxel[dim] )
+                        min_voxel[dim] = voxel[dim];
+                    if( voxel[dim] > max_voxel[dim] )
+                        max_voxel[dim] = voxel[dim];
+                }
+            }
         }
 
-        if( size == 3 || size == 4 )
-            recursive_polygon_scan( size, vertices, volume, label_volume,
-                                    label, max_size );
+        for_less( dim, 0, N_DIMENSIONS )
+        {
+            min_iv[dim] = ROUND( min_voxel[dim] );
+            if( min_iv[dim] < 0 )
+                min_iv[dim] = 0;
+
+            max_iv[dim] = ROUND( max_voxel[dim] );
+            if( max_iv[dim] >= sizes[dim] )
+                max_iv[dim] = sizes[dim]-1;
+        }
+/*
+min_iv[0] = 12;
+max_iv[0] = 12;
+min_iv[1] = 36;
+max_iv[1] = 36;
+min_iv[2] = 25;
+max_iv[2] = 25;
+*/
+
+        for_inclusive( int_voxel[X], min_iv[X], max_iv[X] ) 
+        for_inclusive( int_voxel[Y], min_iv[Y], max_iv[Y] ) 
+        for_inclusive( int_voxel[Z], min_iv[Z], max_iv[Z] ) 
+        {
+            if( clip_polygon_against_box( size, vertices,
+                                          (Real) int_voxel[X] - 0.5,
+                                          (Real) int_voxel[X] + 0.5,
+                                          (Real) int_voxel[Y] - 0.5,
+                                          (Real) int_voxel[Y] + 0.5,
+                                          (Real) int_voxel[Z] - 0.5,
+                                          (Real) int_voxel[Z] + 0.5,
+                                          output_vertices ) > 0 )
+            {
+                set_volume_label_data( label_volume, int_voxel, label );
+            }
+        }
     }
 }
 

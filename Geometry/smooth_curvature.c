@@ -17,13 +17,15 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.11 1996-09-10 17:57:55 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.12 1996-12-09 20:20:27 david Exp $";
 #endif
 
 private  int  get_smoothing_points(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
+    int               n_found,
+    int               list[],
     Real              smoothing_distance,
     float             distances[],
     Point             *smoothing_points[] );
@@ -58,28 +60,49 @@ public  Real  get_smooth_surface_curvature(
     int               *neighbours[],
     int               poly,
     int               vertex,
+    BOOLEAN           distances_initialized,
+    float             distances[],
     Real              smoothing_distance )
 {
-    int      n_smoothing_points, point_index;
+    int      n_smoothing_points, point_index, n_found, *list, p;
     Point    *smoothing_points;
-    float    *distances;
     Real     curvature;
+    BOOLEAN  alloced_distances;
 
-    ALLOC( distances, polygons->n_points );
+    if( distances == NULL )
+    {
+        alloced_distances = TRUE;
+        distances_initialized = FALSE;
+        ALLOC( distances, polygons->n_points );
+    }
+    else
+        alloced_distances = FALSE;
 
     point_index = polygons->indices[
                   POINT_INDEX(polygons->end_indices,poly,vertex)];
 
-    compute_distances_from_point( polygons, n_neighbours, neighbours,
-                                  &polygons->points[point_index], poly,
-                                  smoothing_distance, distances );
+    n_found = compute_distances_from_point( polygons, n_neighbours, neighbours,
+                                       &polygons->points[point_index], poly,
+                                       smoothing_distance,
+                                       distances_initialized, distances,
+                                       &list );
 
     n_smoothing_points = get_smoothing_points( polygons,
                                                n_neighbours, neighbours,
+                                               n_found, list,
                                                smoothing_distance,
                                                distances, &smoothing_points );
 
-    FREE( distances );
+    if( alloced_distances )
+        FREE( distances );
+    else
+    {
+        for_less( p, 0, n_found )
+            distances[list[p]] = -1.0f;
+    }
+
+    if( n_found > 0 )
+        FREE( list );
 
     if( n_smoothing_points > 0 )
     {
@@ -116,21 +139,25 @@ private  int  get_smoothing_points(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
+    int               n_found,
+    int               list[],
     Real              smoothing_distance,
     float             distances[],
     Point             *smoothing_points[] )
 {
-    int      neigh, point_index, prev_index, inside, outside;
+    int      p, neigh, point_index, prev_index, inside, outside;
     int      n_smoothing_points;
     Real     dist, ratio;
     Point    point;
 
     n_smoothing_points = 0;
 
-    for_less( point_index, 0, polygons->n_points )
+    for_less( p, 0, n_found )
     {
+        point_index = list[p];
+
         if( distances[point_index] < 0.0f )
-            continue;
+            handle_internal_error( "get_smoothing_points" );
 
         for_less( neigh, 0, n_neighbours[point_index] )
         {
@@ -142,7 +169,7 @@ private  int  get_smoothing_points(
                 outside = prev_index;
 
                 dist = (Real) distances[inside] +
-                       distance_between_points(
+                                   distance_between_points(
                                          &polygons->points[inside],
                                          &polygons->points[outside] );
 

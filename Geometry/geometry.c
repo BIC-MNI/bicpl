@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.17 1996-05-17 19:35:28 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.18 1996-12-09 20:20:27 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -166,8 +166,6 @@ public  void   get_plane_through_points(
     Point   centroid;
 
     find_polygon_normal( n_points, points, normal );
-
-    NORMALIZE_VECTOR( *normal, *normal );
 
     get_points_centroid( n_points, points, &centroid );
 

@@ -17,7 +17,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.30 1996-08-07 16:06:28 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.31 1996-12-09 20:20:51 david Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10
@@ -640,7 +640,7 @@ private  void  get_two_axes_coordinates(
     Real  *x_pos,
     Real  *y_pos )
 {
-    Real  x_dot_x, x_dot_v, x_dot_y, y_dot_v, y_dot_y;
+    Real  x_dot_x, x_dot_v, x_dot_y, y_dot_v, y_dot_y, bottom;
 
     x_dot_x = dot( n, x_axis, x_axis );
     x_dot_v = dot( n, x_axis, vector );
@@ -648,10 +648,10 @@ private  void  get_two_axes_coordinates(
     y_dot_y = dot( n, y_axis, y_axis );
     y_dot_v = dot( n, y_axis, vector );
 
-    *x_pos = (x_dot_v * y_dot_y - x_dot_y * y_dot_v) /
-             (x_dot_x * y_dot_y - x_dot_y * x_dot_y);
-    *y_pos = (y_dot_v * x_dot_x - x_dot_y * x_dot_v) /
-             (y_dot_y * x_dot_x - x_dot_y * x_dot_y);
+    bottom = x_dot_x * y_dot_y - x_dot_y * x_dot_y;
+
+    *x_pos = (x_dot_v * y_dot_y - x_dot_y * y_dot_v) / bottom;
+    *y_pos = (y_dot_v * x_dot_x - x_dot_y * x_dot_v) / bottom;
 }
 
 /* ----------------------------- MNI Header -----------------------------------

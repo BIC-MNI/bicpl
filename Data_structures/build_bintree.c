@@ -16,7 +16,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/build_bintree.c,v 1.9 1996-05-17 19:35:43 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/build_bintree.c,v 1.10 1996-12-09 20:20:45 david Exp $";
 #endif
 
 #define  NODE_VISIT_COST        0.02
@@ -452,10 +452,7 @@ private  void  split_node(
     n_objects = get_bintree_leaf_objects( *ptr_to_node, &object_list );
 
     if( n_objects == 0 )
-    {
-        handle_internal_error( "split bintree node" );
         return;
-    }
 
     tightly_bounds = TRUE;
 

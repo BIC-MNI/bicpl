@@ -151,7 +151,11 @@ private  Real  evaluate_sinc(
 }
 
 #define  DO( i ) \
-            values[i] * slice[i]
+            values[i*offset+i] * slice[i]
+
+#define  DO( i ) \
+            *((Real *) ((char *) values + i * offset+i)) * \
+            *((Real *) ((char *) slice + i))
 
 private  void     evaluate_sync_interpolation(
     Volume    volume,
@@ -161,7 +165,7 @@ private  void     evaluate_sync_interpolation(
     Real      *value )
 {
     int    v0, v1, v2, sizes[N_DIMENSIONS], ind, dim;
-    long   which, *offsets;
+    long   which, *offsets, offset;
     Real   delta, d, dd, ddd, *values;
     Real   *d0, *d1, *d2;
     Real   voxel[N_DIMENSIONS], *slice, sum_value, sum_weight, weight;
@@ -204,11 +208,12 @@ private  void     evaluate_sync_interpolation(
     sum_weight = 0.0;
     sum_weight = 1.0;
 
-    ALLOC( values, 10 );
-    for_less( v0, 0, 10 )
+    ALLOC( values, 1000 );
+    for_less( v0, 0, 1000 )
         values[v0] = 1.0;
 
     get_volume_voxel_hyperslab_3d( volume, 0, 0, 0, 1, 1, sizes[2], slice );
+    offset = 0;
 
     for_less( v0, 0, sizes[0] )
     {
@@ -217,48 +222,50 @@ private  void     evaluate_sync_interpolation(
         {
             ind = 0;
             dd = d + d1[v1];
+            if( dd == 1214114343 )
+                offset = 1;
             which = 0;
             sum_value +=
             DO( 0 ) +
-            DO( 1 ) +
-            DO( 2 ) +
-            DO( 3 ) +
-            DO( 4 ) +
-            DO( 5 ) +
-            DO( 6 ) +
-            DO( 7 ) +
             DO( 8 ) +
-            DO( 9 ) +
-            DO( 10 ) +
-            DO( 11 ) +
-            DO( 12 ) +
-            DO( 13 ) +
-            DO( 14 ) +
-            DO( 15 ) +
             DO( 16 ) +
-            DO( 17 ) +
-            DO( 18 ) +
-            DO( 19 ) +
-            DO( 20 ) +
-            DO( 21 ) +
-            DO( 22 ) +
-            DO( 23 ) +
             DO( 24 ) +
-            DO( 25 ) +
-            DO( 26 ) +
-            DO( 27 ) +
-            DO( 28 ) +
-            DO( 29 ) +
-            DO( 30 ) +
-            DO( 31 ) +
             DO( 32 ) +
-            DO( 33 ) +
-            DO( 34 ) +
-            DO( 35 ) +
-            DO( 36 ) +
-            DO( 37 ) +
-            DO( 38 ) +
-            DO( 39 );
+            DO( 40 ) +
+            DO( 48 ) +
+            DO( 56 ) +
+            DO( 64 ) +
+            DO( 72 ) +
+            DO( 80 ) +
+            DO( 88 ) +
+            DO( 96 ) +
+            DO( 104 ) +
+            DO( 112 ) +
+            DO( 120 ) +
+            DO( 128 ) +
+            DO( 136 ) +
+            DO( 144 ) +
+            DO( 152 ) +
+            DO( 160 ) +
+            DO( 168 ) +
+            DO( 176 ) +
+            DO( 184 ) +
+            DO( 192 ) +
+            DO( 200 ) +
+            DO( 208 ) +
+            DO( 216 ) +
+            DO( 224 ) +
+            DO( 232 ) +
+            DO( 240 ) +
+            DO( 248 ) +
+            DO( 256 ) +
+            DO( 264 ) +
+            DO( 272 ) +
+            DO( 280 ) +
+            DO( 288 ) +
+            DO( 296 ) +
+            DO( 304 ) +
+            DO( 312 );
         }
     }
 

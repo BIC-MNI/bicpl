@@ -16,13 +16,13 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/closest_point.c,v 1.6 1995-10-19 15:47:43 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/closest_point.c,v 1.7 1996-12-09 20:20:30 david Exp $";
 #endif
 
 #define  MAX_POINTS    300
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : get_point_polygon_distance
+@NAME       : get_point_polygon_distance_sq
 @INPUT      : point
               polygons
               poly_index
@@ -37,7 +37,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/closes
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real   get_point_polygon_distance(
+private  Real   get_point_polygon_distance_sq(
     Point            *point,
     polygons_struct  *polygons,
     int              poly_index,
@@ -46,16 +46,16 @@ private  Real   get_point_polygon_distance(
     Point    points[MAX_POINTS];
     int      size;
 
-    if( polygons->visibilities == (Smallest_int *) 0 ||
+    if( polygons->visibilities == NULL ||
         polygons->visibilities[poly_index] )
     {
         size = get_polygon_points( polygons, poly_index, points );
 
-        return( find_point_polygon_distance( point, size, points,
-                                             object_point ) );
+        return( find_point_polygon_distance_sq( point, size, points,
+                                                object_point ) );
     }
     else
-        return( 1.0e30 );
+        return( 1.0e60 );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -74,7 +74,7 @@ private  Real   get_point_polygon_distance(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real   get_point_quadmesh_distance(
+private  Real   get_point_quadmesh_distance_sq(
     Point            *point,
     quadmesh_struct  *quadmesh,
     int              obj_index,
@@ -90,7 +90,7 @@ private  Real   get_point_quadmesh_distance(
 
     get_quadmesh_patch( quadmesh, i, j, points );
 
-    return( find_point_polygon_distance( point, 4, points, object_point ) );
+    return( find_point_polygon_distance_sq( point, 4, points, object_point ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -203,7 +203,7 @@ public  Real  get_distance_to_line_segment(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : get_point_line_segment_distance
+@NAME       : get_point_line_segment_distance_sq
 @INPUT      : point
               lines
               obj_index
@@ -217,7 +217,7 @@ public  Real  get_distance_to_line_segment(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real   get_point_line_segment_distance(
+private  Real   get_point_line_segment_distance_sq(
     Point            *point,
     lines_struct     *lines,
     int              obj_index,
@@ -233,7 +233,7 @@ private  Real   get_point_line_segment_distance(
     get_closest_point_on_line_segment( point, &lines->points[p1],
                                        &lines->points[p2], object_point );
 
-    return( distance_between_points( point, object_point ) );
+    return( sq_distance_between_points( point, object_point ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -260,6 +260,41 @@ private  Real  get_point_marker_distance(
     return( distance_between_points( point, object_point ) );
 }
 
+public  Real  get_point_object_distance_sq(
+    Point                 *point,
+    object_struct         *object,
+    int                   obj_index,
+    Point                 *object_point )
+{
+    Real                  dist;
+
+    if( get_object_type( object ) == POLYGONS )
+    {
+        dist = get_point_polygon_distance_sq( point, get_polygons_ptr(object),
+                                              obj_index, object_point );
+    }
+    else if( get_object_type( object ) == QUADMESH )
+    {
+        dist = get_point_quadmesh_distance_sq( point, get_quadmesh_ptr(object),
+                                               obj_index, object_point );
+    }
+    else if( get_object_type( object ) == LINES )
+    {
+        dist = get_point_line_segment_distance_sq( point, get_lines_ptr(object),
+                                                   obj_index, object_point );
+    }
+    else if( get_object_type( object ) == MARKER )
+    {
+        dist = get_point_marker_distance( point, get_marker_ptr(object),
+                                          object_point );
+        dist *= dist;
+    }
+    else
+        dist = 1.0e60;
+
+    return( dist );
+}
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_point_object_distance
 @INPUT      : point
@@ -281,32 +316,8 @@ public  Real  get_point_object_distance(
     int                   obj_index,
     Point                 *object_point )
 {
-    Real                  dist;
-
-    if( get_object_type( object ) == POLYGONS )
-    {
-        dist = get_point_polygon_distance( point, get_polygons_ptr(object),
-                                           obj_index, object_point );
-    }
-    else if( get_object_type( object ) == QUADMESH )
-    {
-        dist = get_point_quadmesh_distance( point, get_quadmesh_ptr(object),
-                                            obj_index, object_point );
-    }
-    else if( get_object_type( object ) == LINES )
-    {
-        dist = get_point_line_segment_distance( point, get_lines_ptr(object),
-                                                obj_index, object_point );
-    }
-    else if( get_object_type( object ) == MARKER )
-    {
-        dist = get_point_marker_distance( point, get_marker_ptr(object),
-                                          object_point );
-    }
-    else
-        dist = 1.0e30;
-
-    return( dist );
+    return( sqrt( get_point_object_distance_sq( point, object,
+                                                obj_index, object_point ) ) );
 }
 
 private  Real   get_point_polygon_vertex_distance(

@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/time.c,v 1.5 1996-05-17 19:35:56 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/time.c,v 1.6 1996-12-09 20:20:54 david Exp $";
 #endif
 
 private  Real  cpu_start_time;
@@ -60,20 +60,24 @@ public  void  end_timing(
     STRING   title,
     int      n )
 {
-    Real  cpu_end_time, real_end_time, per_unit_real_time, per_unit_cpu_time;
+    Real  per_unit_real_time, per_unit_cpu_time;
+    Real  cpu_time, real_time;
 
     if( n < 1 )
         n = 1;
 
-    cpu_end_time = current_cpu_seconds();
-    real_end_time = current_realtime_seconds();
+    cpu_time = current_cpu_seconds() - cpu_start_time;
+    real_time = current_realtime_seconds() - real_start_time;
 
-    per_unit_cpu_time = (cpu_end_time - cpu_start_time) / (Real) n;
-    per_unit_real_time = (real_end_time - real_start_time) / (Real) n;
+    per_unit_cpu_time = cpu_time / (Real) n;
+    per_unit_real_time = real_time / (Real) n;
 
     if( title != NULL )
         print( "%s: ", title );
     print( "per cycle: " );
     print_time( "Cpu:  %g %s\t", per_unit_cpu_time );
-    print_time( "Real:  %g %s\n", per_unit_real_time );
+    print_time( "Real:  %g %s", per_unit_real_time );
+
+    if( cpu_time > 0.0 && real_time > 0.0 )
+        print( "  c/s: %g  %g\n", (Real) n / cpu_time, (Real) n / real_time );
 }

@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.15 1996-05-17 19:35:32 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.16 1996-12-09 20:20:38 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -182,14 +182,28 @@ public  void  get_line_segment_index(
     int           *line,
     int           *seg )
 {
-    *line = 0;
-    while( obj_index > lines->end_indices[*line] - *line - 2 )
-        ++(*line);
+    int    first, last, mid, n_objs;
 
-    if( *line == 0 )
+    first = 0;
+    last = lines->n_items-1;
+
+    while( first < last )
+    {
+        mid = (first + last) / 2;
+
+        n_objs = lines->end_indices[mid] - mid - 1;
+        if( obj_index < n_objs )
+            last = mid;
+        else
+            first = mid+1;
+    }
+
+    *line = first;
+
+    if( first == 0 )
         *seg = obj_index;
     else
-        *seg = obj_index - (lines->end_indices[(*line)-1] - *line);
+        *seg = obj_index - (lines->end_indices[first-1] - first);
 }
 
 static  void  (*bintree_delete_function) ( bintree_struct_ptr* ) = NULL;

@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.19 1996-11-09 23:21:01 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.20 1996-12-09 20:20:40 david Exp $";
 #endif
 
 #define  SMALL_CHUNK_SIZE          4
@@ -194,6 +194,7 @@ public   void   create_polygon_point_neighbours(
 
     for_less( poly, 0, polygons->n_items )
     {
+
         size = GET_OBJECT_SIZE( *polygons, poly );
         for_less( v, 0, size )
         {
@@ -378,7 +379,6 @@ private   void   create_polygon_neighbours(
                 handle_internal_error( "create_polygon_neighbours" );
 
             poly2 = point_polygons[point2][n2];
-
             if( poly2 < 0 )
                 continue;
 

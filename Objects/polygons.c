@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.36 1996-05-17 19:35:35 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.37 1996-12-09 20:20:40 david Exp $";
 #endif
 
 private  void  reverse_polygon_order(
@@ -666,8 +666,8 @@ public  BOOLEAN  lookup_polygon_vertex(
 @RETURNS    : TRUE if found
 @DESCRIPTION: Given a polygon and two vertex indices within the poly,
               corresponding to an edge, finds the neighbouring poly, and
-              the two vertex indices corresponding to the next counter-
-              clockwise edge around the point corresponding to poly,index_1.
+              the two vertex indices corresponding to the next 
+              edge around the point corresponding to poly,index_1.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -737,7 +737,8 @@ public  BOOLEAN  find_next_edge_around_point(
 @GLOBALS    : 
 @CALLS      : 
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   : Sept. 12, 1996  D. MacDonald  : fixed it for the case where not
+                                              a closed surface.
 ---------------------------------------------------------------------------- */
 
 public  int  get_neighbours_of_point(
@@ -748,7 +749,7 @@ public  int  get_neighbours_of_point(
     int               max_neighbours,
     BOOLEAN           *interior_point )
 {
-    int      n_neighbours, current_poly, current_index_within_poly;
+    int      p, n_neighbours, current_poly, current_index_within_poly;
     int      size, neighbour_index_within_poly;
     BOOLEAN  found;
 
@@ -787,6 +788,51 @@ public  int  get_neighbours_of_point(
         }
     }
     while( found && current_poly != poly );
+
+    if( !found )
+    {
+        current_poly = poly;
+        current_index_within_poly = vertex_index;
+        neighbour_index_within_poly = (vertex_index+1+size)%size;
+
+        if( n_neighbours < max_neighbours )
+        {
+            for_down( p, n_neighbours, 1 )
+                neighbours[p] = neighbours[p-1];
+            neighbours[0] = polygons->indices[
+                            POINT_INDEX(polygons->end_indices,
+                                        poly,neighbour_index_within_poly)];
+        }
+        ++n_neighbours;
+
+        do
+        {
+            found = find_next_edge_around_point( polygons,
+                            current_poly, current_index_within_poly,
+                            neighbour_index_within_poly,
+                            &current_poly, &current_index_within_poly,
+                            &neighbour_index_within_poly );
+
+            if( found && current_poly != poly )
+            {
+                if( n_neighbours < max_neighbours )
+                {
+                    for_down( p, n_neighbours, 1 )
+                        neighbours[p] = neighbours[p-1];
+
+                    neighbours[0] = polygons->indices[
+                           POINT_INDEX(polygons->end_indices,current_poly,
+                                       neighbour_index_within_poly)];
+                }
+
+                ++n_neighbours;
+            }
+        }
+        while( found && current_poly != poly );
+
+        if( current_poly == poly )
+            print_error( "get_neighbours_of_point: topology_error" );
+    }
 
     *interior_point = found;
 
@@ -1017,6 +1063,9 @@ public  void  average_polygon_normals(
 
     compute_polygon_normals( polygons );
 
+    if( n_iters <= 0 )
+        return;
+
     ALLOC( new_normals, polygons->n_points );
     for_less( point_index, 0, polygons->n_points )
          new_normals[point_index] = polygons->normals[point_index];
@@ -1204,7 +1253,7 @@ public  void   reverse_polygons_vertices(
 {
     int         poly;
 
-    if( polygons->neighbours != (int *) 0 )
+    if( polygons->neighbours != NULL )
         FREE( polygons->neighbours );
 
     for_less( poly, 0, polygons->n_items )

@@ -45,7 +45,9 @@ int  main(
     get_volume_voxel_range( volume, &min_value, &max_value );
     ALLOC2D( rgb_map, (int)max_value+1, (int) max_value+1 );
 
-    for_less( i, 0, (int) max_value+1 )
+/*    for_less( i, 0, (int) max_value+1 ) */
+
+    for_less( i, 0, 1 )
     for_less( j, 0, (int) max_value+1 )
     {
         intensity = (Real) i / max_value;
@@ -71,22 +73,24 @@ int  main(
 
     for_less( i, 0, n_iters )
     {
-        create_volume_slice( volume, BOX_FILTER, 0.0,
+        create_volume_slice( volume, NEAREST_NEIGHBOUR, 0.0,
                              origin, x_axis, y_axis,
                              x_translation, y_translation,
                              x_scale, y_scale,
-                             volume, BOX_FILTER, 0.0,
+                             NULL, BOX_FILTER, 0.0,
                              origin, x_axis, y_axis,
                              x_translation, y_translation,
                              x_scale, y_scale,
-                             x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, FALSE,
+                             x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, -1,
                              (unsigned short **) NULL,
-                             rgb_map, BLACK, NULL, &n_alloced, &pixels );
+                             rgb_map, BLACK, NULL, TRUE, &n_alloced, &pixels );
     }
 
     end_time = current_cpu_seconds();
 
     print( "Time: %g per render.\n", (end_time - start_time) / (Real) n_iters );
+
+return( 0 );
 
     start_time = current_cpu_seconds();
 
@@ -96,12 +100,12 @@ int  main(
                              origin, x_axis, y_axis,
                              x_translation, y_translation,
                              x_scale, y_scale,
-                             (Volume) NULL, BOX_FILTER, 0.0,
-                             (Real *) NULL, (Real *) NULL, (Real *) NULL,
+                             NULL, BOX_FILTER, 0.0,
+                             NULL, NULL, NULL,
                              0.0, 0.0, 0.0, 0.0,
-                             x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, FALSE,
+                             x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, -1,
                              (unsigned short **) NULL,
-                             rgb_map, BLACK, NULL, &n_alloced, &pixels );
+                             rgb_map, BLACK, NULL, TRUE, &n_alloced, &pixels );
 
         create_volume_slice( volume, BOX_FILTER, 0.0,
                              origin, x_axis, y_axis,
@@ -110,9 +114,9 @@ int  main(
                              (Volume) NULL, BOX_FILTER, 0.0,
                              (Real *) NULL, (Real *) NULL, (Real *) NULL,
                              0.0, 0.0, 0.0, 0.0,
-                             x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, FALSE,
+                             x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, -1,
                              (unsigned short **) NULL,
-                             rgb_map, BLACK, NULL, &n_alloced2, &pixels2 );
+                             rgb_map, BLACK, NULL, TRUE, &n_alloced2, &pixels2);
 
         alpha1 = 0.3;
         alpha2 = 0.7;

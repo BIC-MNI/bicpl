@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surface_area.c,v 1.4 1996-05-17 19:35:30 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surface_area.c,v 1.5 1996-12-09 20:20:34 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -49,7 +49,7 @@ public  Real  get_polygon_2d_area(
                 (Real) Point_x(points[next_i]) * (Real) Point_y(points[i]);
     }
 
-    return( area / 2.0 );
+    return( FABS( area / 2.0 ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

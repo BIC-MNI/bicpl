@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/point_bintree.c,v 1.6 1996-05-17 19:35:45 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/point_bintree.c,v 1.7 1996-12-09 20:20:47 david Exp $";
 #endif
 
 private  void  recursive_find_closest_point(
@@ -58,7 +58,7 @@ public  Real  find_closest_point_in_bintree(
 {
     Real      dist;
 
-    dist = 1.0e30;
+    dist = 1.0e60;
 
     if( obj_index != (int *) NULL )
         *obj_index = -1;
@@ -66,7 +66,7 @@ public  Real  find_closest_point_in_bintree(
     recursive_find_closest_point( point, bintree->root, &bintree->range,
                                   object, obj_index, &dist, point_on_object );
 
-    return( dist );
+    return( sqrt( dist ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -111,8 +111,8 @@ private  void  recursive_find_closest_point(
 
         for_less( i, 0, n_objects )
         {
-            dist = get_point_object_distance( point, object, object_list[i],
-                                              &object_point );
+            dist = get_point_object_distance_sq( point, object, object_list[i],
+                                                 &object_point );
 
             if( dist < *closest_dist )
             {
@@ -193,23 +193,27 @@ private  Real  get_point_range_dist(
     range_struct  *range )
 {
     int      c;
-    Real     min_plane, max_plane, point_pos;
-    Vector   offset;
+    Real     min_plane, max_plane, point_pos, dist, sum;
+
+    sum = 0.0;
 
     for_less( c, 0, N_DIMENSIONS )
     {
         min_plane = (Real) range->limits[c][0];
         max_plane = (Real) range->limits[c][1];
         point_pos = (Real) Point_coord(*point,c);
+
         if( point_pos < min_plane )
-            Vector_coord(offset,c) = (Point_coord_type) (min_plane - point_pos);
+            dist = min_plane - point_pos;
         else if( point_pos > max_plane )
-            Vector_coord(offset,c) = (Point_coord_type) (point_pos - max_plane);
+            dist = point_pos - max_plane;
         else
-            Vector_coord(offset,c) = 0.0f;
+            dist = 0.0;
+
+        sum += dist * dist;
     }
 
-    return( MAGNITUDE( offset ) );
+    return( sum );
 }
 
 private  void  recursive_find_closest_vertex(
@@ -317,7 +321,8 @@ private  void  recursive_find_closest_vertex(
             children_distances[n_to_search] = get_point_range_dist( point,
                                            &children_ranges[n_to_search] );
 
-            if( children_distances[n_to_search] <= *closest_dist )
+            if( children_distances[n_to_search] <=
+                                       *closest_dist * *closest_dist )
                 ++n_to_search;
         }
 
@@ -330,7 +335,8 @@ private  void  recursive_find_closest_vertex(
             children_distances[n_to_search] = get_point_range_dist( point,
                                              &children_ranges[n_to_search] );
 
-            if( children_distances[n_to_search] <= *closest_dist )
+            if( children_distances[n_to_search] <=
+                                       *closest_dist * *closest_dist )
                 ++n_to_search;
         }
 

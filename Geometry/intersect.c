@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/intersect.c,v 1.9 1996-05-24 18:42:41 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/intersect.c,v 1.10 1996-12-09 20:20:26 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -163,6 +163,9 @@ public  BOOLEAN  clip_line_to_box(
     BOOLEAN  first;
     Real     dir, org, t1, t2, min_t, max_t;
 
+    *t_min = 0.0;
+    *t_max = -1.0;
+
     dir = (Real) Vector_x( *direction );
     org = (Real) Point_x( *origin );
 
@@ -269,9 +272,17 @@ public  BOOLEAN  clip_line_to_box(
         }
 
         if( t1 > min_t )
+        {
+            if( t1 > max_t )
+                return( FALSE );
             min_t = t1;
+        }
         if( t2 < max_t )
+        {
+            if( t2 < min_t )
+                return( FALSE );
             max_t = t2;
+        }
     }
 
     dir = (Real) Vector_z( *direction );
@@ -296,9 +307,17 @@ public  BOOLEAN  clip_line_to_box(
         }
 
         if( t1 > min_t )
+        {
+            if( t1 > max_t )
+                return( FALSE );
             min_t = t1;
+        }
         if( t2 < max_t )
+        {
+            if( t2 < min_t )
+                return( FALSE );
             max_t = t2;
+        }
     }
 
     *t_min = min_t;

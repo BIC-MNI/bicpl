@@ -10,6 +10,7 @@
 #define  FAST_SQRT  sqrt
 #endif
 
+#define  MIN_SQRT_ARG              1.0
 #define  MAX_SQRT_ARG              1000.0
 #define  N_SQRT_PRECOMPUTE         30000
 
@@ -21,7 +22,7 @@ public  double  fast_approx_sqrt(
     static   struct {  double  scale; double trans; }
                                  precomp_sqrt[N_SQRT_PRECOMPUTE], *lookup;
 
-    if( y >= MAX_SQRT_ARG )
+    if( y <= MIN_SQRT_ARG || y >= MAX_SQRT_ARG )
     {
         return( sqrt( y ) );
     }

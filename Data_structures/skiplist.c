@@ -17,7 +17,7 @@
 #include  <prog_utils.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.9 1996-05-17 19:35:44 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.10 1996-12-09 20:20:46 david Exp $";
 #endif
 
 private  int  get_random_level( void );
@@ -90,7 +90,7 @@ public   void  initialize_skiplist(
 
 private  BOOLEAN  find_data_position(
     skiplist_struct    *skiplist,
-    int                key,
+    float              key,
     update_struct      *update )
 {
     int           i;
@@ -133,7 +133,7 @@ private  BOOLEAN  find_data_position(
 private   void  insert_data_in_skiplist(
     skiplist_struct   *skiplist,
     update_struct     *update,
-    int               key,
+    float             key,
     void              *data_ptr )
 {
     int           i, new_level;
@@ -283,7 +283,7 @@ public   void  delete_skiplist(
 
 public  BOOLEAN  search_skiplist(
     skiplist_struct          *skiplist,
-    int                      key,
+    float                    key,
     void                     **data_ptr )
 {
     BOOLEAN        found;
@@ -293,6 +293,26 @@ public  BOOLEAN  search_skiplist(
 
     if( found )
         *data_ptr = update_ptrs.update[0]->forward[0]->data_ptr;
+
+    return( found );
+}
+
+public  BOOLEAN  search_skiplist_and_return_pointer(
+    skiplist_struct          *skiplist,
+    float                    key,
+    skip_struct              **entry_ptr,
+    void                     **data_ptr )
+{
+    BOOLEAN        found;
+    update_struct  update_ptrs;
+
+    found = find_data_position( skiplist, key, &update_ptrs );
+
+    if( found )
+    {
+        *entry_ptr = update_ptrs.update[0]->forward[0];
+        *data_ptr = (*entry_ptr)->data_ptr;
+    }
 
     return( found );
 }
@@ -314,7 +334,7 @@ public  BOOLEAN  search_skiplist(
 
 public  BOOLEAN  insert_in_skiplist(
     skiplist_struct          *skiplist,
-    int                      key,
+    float                    key,
     void                     *data_ptr )
 {
     BOOLEAN        already_there;
@@ -345,7 +365,7 @@ public  BOOLEAN  insert_in_skiplist(
 
 public  BOOLEAN  delete_from_skiplist(
     skiplist_struct  *skiplist,
-    int              key,
+    float            key,
     void             **data_ptr )
 {
     BOOLEAN        in_skiplist;
@@ -383,7 +403,7 @@ public  BOOLEAN  delete_from_skiplist(
 public  BOOLEAN  get_first_skiplist_entry(
     skiplist_struct   *skiplist,
     skip_struct       **entry_ptr,
-    int               *key,
+    float             *key,
     void              **data_ptr )
 {
     *entry_ptr = skiplist->header->forward[0];
@@ -414,7 +434,7 @@ public  BOOLEAN  get_first_skiplist_entry(
 
 public  BOOLEAN  get_next_skiplist_entry(
     skip_struct       **entry_ptr,
-    int               *key,
+    float             *key,
     void              **data_ptr )
 {
     *entry_ptr = (*entry_ptr)->forward[0];

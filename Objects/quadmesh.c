@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.12 1995-10-19 15:47:55 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.13 1996-12-09 20:20:41 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -318,4 +318,32 @@ public  void  get_quadmesh_patch(
 
     for_less( p, 0, 4 )
         points[p] = quadmesh->points[indices[p]];
+}
+
+public  void  reverse_quadmesh_vertices(
+    quadmesh_struct  *quadmesh )
+{
+    int     i, j, i1, i2;
+    Point   tmp_point;
+    Vector  tmp_normal;
+
+    for_less( i, 0, quadmesh->m )
+    {
+        for_less( j, 0, quadmesh->n / 2 )
+        {
+            i1 = IJ( i, j, quadmesh->n );
+            i2 = IJ( i, quadmesh->n - 1 - j, quadmesh->n );
+
+            tmp_point = quadmesh->points[i1];
+            quadmesh->points[i1] = quadmesh->points[i2];
+            quadmesh->points[i2] = tmp_point;
+
+            if( quadmesh->normals != NULL )
+            {
+                tmp_normal = quadmesh->normals[i1];
+                quadmesh->normals[i1] = quadmesh->normals[i2];
+                quadmesh->normals[i2] = tmp_normal;
+            }
+        }
+    }
 }

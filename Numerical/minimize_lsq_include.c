@@ -3,7 +3,7 @@
 #include  <prog_utils.h>
 
 #define   MAX_SAVES        100
-#define   N_SAVES            3
+#define   N_SAVES            0
 #define   N_BETWEEN_SAVES    3
 #define   DEFAULT_RATIO      1.0
 
@@ -128,8 +128,8 @@ private  void  minimize_along_line(
 {
     int     parm;
     Real    a, b, t, step_size;
-    static  BOOLEAN  first = TRUE;
     static  Real     ratio;
+    static  BOOLEAN  first = TRUE;
 
     if( first )
     {
@@ -175,31 +175,39 @@ private  Real   private_minimize_lsq(
     int              n_iters,
     Real             parm_values[] )
 {
-    Real              fit, len;
-    int               iter, s, p, n_between_saves;
-    int               update_rate, n_saves;
-    Real              *saves[MAX_SAVES], *swap, *derivs;
+    Real              fit, len, gg, dgg, gam;
+    int               iter, p, n_between_saves, n_saves;
+    int               update_rate, s;
+    Real              *unit_dir, *g, *h, *xi;
+    Real              *saves[MAX_SAVES], *swap;
     Real              last_update_time, current_time;
 
     if( getenv( "LSQ_N_SAVES" ) == NULL ||
         sscanf( getenv( "LSQ_N_SAVES" ), "%d", &n_saves ) != 1 )
         n_saves = N_SAVES;
 
-    if( getenv( "LSQ_N_BETWEEN_SAVES" ) == NULL ||
-        sscanf( getenv( "LSQ_N_BETWEEN_SAVES" ), "%d", &n_between_saves ) != 1 )
-        n_between_saves = n_iters / n_saves;
-
-    for_less( s, 0, n_saves )
+    if( n_saves > 0 )
     {
-        ALLOC( saves[s], n_parameters );
-        for_less( p, 0, n_parameters )
-            saves[s][p] = parm_values[p];
+        if( getenv( "LSQ_N_BETWEEN_SAVES" ) == NULL ||
+            sscanf( getenv( "LSQ_N_BETWEEN_SAVES" ), "%d", &n_between_saves )
+                                                != 1 )
+            n_between_saves = n_iters / n_saves;
+
+        n_between_saves = MAX( n_between_saves, 1 );
+        n_between_saves = MIN( n_between_saves, N_BETWEEN_SAVES );
+
+        for_less( s, 0, n_saves )
+        {
+            ALLOC( saves[s], n_parameters );
+            for_less( p, 0, n_parameters )
+                saves[s][p] = parm_values[p];
+        }
     }
 
-    n_between_saves = MAX( n_between_saves, 1 );
-    n_between_saves = MIN( n_between_saves, N_BETWEEN_SAVES );
-
-    ALLOC( derivs, n_parameters );
+    ALLOC( g, n_parameters );
+    ALLOC( h, n_parameters );
+    ALLOC( xi, n_parameters );
+    ALLOC( unit_dir, n_parameters );
 
     fit = evaluate_fit( n_parameters, constant_term, linear_terms,
                         square_terms, n_cross_terms, cross_parms, cross_terms,
@@ -208,46 +216,56 @@ private  Real   private_minimize_lsq(
     print( "Initial  %g\n", fit );
     (void) flush_file( stdout );
 
+    evaluate_fit_derivative( n_parameters, constant_term, linear_terms,
+                             square_terms, n_cross_terms,
+                             cross_parms, cross_terms,
+                             parm_values, xi );
+
+    for_less( p, 0, n_parameters )
+    {
+        g[p] = -xi[p];
+        h[p] = g[p];
+        xi[p] = g[p];
+    }
+
     update_rate = 1;
     last_update_time = current_cpu_seconds();
 
     for_less( iter, 0, n_iters )
     {
-        evaluate_fit_derivative( n_parameters, constant_term, linear_terms,
-                                 square_terms, n_cross_terms,
-                                 cross_parms, cross_terms,
-                                 parm_values, derivs );
-
         len = 0.0;
         for_less( p, 0, n_parameters )
-            len += derivs[p] * derivs[p];
+            len += xi[p] * xi[p];
 
         len = sqrt( len );
         for_less( p, 0, n_parameters )
-            derivs[p] /= len;
+            unit_dir[p] = xi[p] / len;
 
         minimize_along_line( n_parameters, constant_term, linear_terms,
                              square_terms, n_cross_terms, cross_parms,
                              cross_terms,
-                             max_step_size, parm_values, derivs );
+                             max_step_size, parm_values, unit_dir );
 
-        s = get_random_int( n_saves );
-        len = 0.0;
-        for_less( p, 0, n_parameters )
+        if( n_saves > 0 )
         {
-            derivs[p] = parm_values[p] - saves[s][p];
-            len += derivs[p] * derivs[p];
-            parm_values[p] = saves[s][p];
+            s = get_random_int( n_saves );
+            len = 0.0;
+            for_less( p, 0, n_parameters )
+            {
+                unit_dir[p] = parm_values[p] - saves[s][p];
+                len += unit_dir[p] * unit_dir[p];
+                parm_values[p] = saves[s][p];
+            }
+
+            len = sqrt( len );
+            for_less( p, 0, n_parameters )
+                unit_dir[p] /= len;
+
+            minimize_along_line( n_parameters, constant_term, linear_terms,
+                                 square_terms, n_cross_terms, cross_parms,
+                                 cross_terms,
+                                 max_step_size, parm_values, unit_dir );
         }
-
-        len = sqrt( len );
-        for_less( p, 0, n_parameters )
-            derivs[p] /= len;
-
-        minimize_along_line( n_parameters, constant_term, linear_terms,
-                             square_terms, n_cross_terms, cross_parms,
-                             cross_terms,
-                             max_step_size, parm_values, derivs );
 
         if( ((iter+1) % update_rate) == 0 || iter == n_iters - 1 )
         {
@@ -263,7 +281,7 @@ private  Real   private_minimize_lsq(
             last_update_time = current_time;
         }
 
-        if( (iter % n_between_saves) == 0 )
+        if( n_saves > 0 && (iter % n_between_saves) == 0 )
         {
             swap = saves[0];
             for_less( s, 0, n_saves-1 )
@@ -272,12 +290,43 @@ private  Real   private_minimize_lsq(
             for_less( p, 0, n_parameters )
                 saves[s][p] = parm_values[p];
         }
+
+        evaluate_fit_derivative( n_parameters, constant_term, linear_terms,
+                                 square_terms, n_cross_terms,
+                                 cross_parms, cross_terms,
+                                 parm_values, xi );
+
+        gg = 0.0;
+        dgg = 0.0;
+        for_less( p, 0, n_parameters )
+        {
+            gg += g[p] * g[p];
+            dgg += (xi[p] + g[p]) * xi[p];
+/*
+            dgg += xi[p] * xi[p];
+*/
+        }
+
+        if( gg == 0.0 )
+            break;
+
+        gam = dgg / gg;
+
+        for_less( p, 0, n_parameters )
+        {
+            g[p] = -xi[p];
+            h[p] = g[p] + gam * h[p];
+            xi[p] = h[p];
+        }
     }
 
     for_less( s, 0, n_saves )
         FREE( saves[s] );
 
-    FREE( derivs );
+    FREE( g );
+    FREE( h );
+    FREE( xi );
+    FREE( unit_dir );
 
     return( fit );
 }

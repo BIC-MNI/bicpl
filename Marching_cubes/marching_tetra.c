@@ -214,14 +214,7 @@ private  int  lookup_case(
     return( n_polygons );
 }
 
-#define  N_EDGES   11
-
-public  int  get_max_marching_edges( void )
-{
-    return( N_EDGES );
-}
-
-static  int   offsets[N_EDGES][3] = {
+static  int   offsets[N_MARCHING_TETRA_EDGES][3] = {
                                     { 1, 0, 0 },
                                     { 0, 1, 0 },
                                     { 0, 0, 1 },
@@ -293,11 +286,13 @@ private  void  create_case(
     case_struct  *case_info )
 {
     int          i, j, k, tx, ty, tz, x1, y1, z1, x2, y2, z2;
-    int          poly, n_indices, ind;
+    int          poly, n_indices, ind, vertex;
+    voxel_point_type tmp;
     int          translation_indices[2][2][2][3];
     int          edge_indices[MAX_INDICES_PER_VOXEL][2][3];
     Case_types   transformed_case[2][2][2];
     int          sizes[MAX_POLYGONS_PER_VOXEL];
+    BOOLEAN      left_handed;
 
     for_less( i, 0, 2 )
     for_less( j, 0, 2 )
@@ -347,7 +342,28 @@ private  void  create_case(
         translate_to_edge_index( x1, y1, z1, x2, y2, z2,
                                  &case_info->indices[ind] );
     }
+
+    left_handed = ((x + y + z) % 2) == 1;
+
+    if( left_handed )
+    {
+        ind = 0;
+        for_less( poly, 0, case_info->n_polygons )
+        {
+            for_less( vertex, 0, sizes[poly]/2 )
+            {
+                tmp = case_info->indices[ind+vertex];
+                case_info->indices[ind+vertex] =
+                             case_info->indices[ind+sizes[poly]-1-vertex];
+                case_info->indices[ind+sizes[poly]-1-vertex] = tmp;
+            }
+            ind += sizes[poly];
+        }
+    }
 }
+
+private  void  delete_case(
+    case_struct  *case_info );
 
 public  int  get_tetra_isosurface_polygons(
     int               x,
@@ -377,6 +393,23 @@ public  int  get_tetra_isosurface_polygons(
     zc = z & 1;
 
     voxel_case = &cases[xc][yc][zc][c0][c1][c2][c3][c4][c5][c6][c7];
+
+#ifdef DEBUG
+{
+    Case_types   case_flags[2][2][2];
+
+    case_flags[0][0][0] = (Case_types) c0;
+    case_flags[0][0][1] = (Case_types) c1;
+    case_flags[0][1][0] = (Case_types) c2;
+    case_flags[0][1][1] = (Case_types) c3;
+    case_flags[1][0][0] = (Case_types) c4;
+    case_flags[1][0][1] = (Case_types) c5;
+    case_flags[1][1][0] = (Case_types) c6;
+    case_flags[1][1][1] = (Case_types) c7;
+    delete_case( voxel_case );
+    create_case( xc, yc, zc, case_flags, voxel_case );
+}
+#endif
 
     *sizes = voxel_case->sizes;
     *points = voxel_case->indices;

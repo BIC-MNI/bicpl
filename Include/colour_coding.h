@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char colour_coding_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colour_coding.h,v 1.6 1996-05-17 19:35:21 david Exp $";
+static char colour_coding_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colour_coding.h,v 1.7 1996-12-09 20:20:23 david Exp $";
 #endif
 
 #include  <objects.h>
@@ -29,22 +29,31 @@ typedef enum { GRAY_SCALE,
                BLUE_COLOUR_MAP,
                CONTOUR_COLOUR_MAP,
                SINGLE_COLOUR_SCALE,
-               USER_DEFINED }
+               USER_DEFINED_COLOUR_MAP }
              Colour_coding_types;
+
+typedef struct {
+    Real           position;
+    Real           r, g, b, a;
+    Colour_spaces  interpolation_space;
+} colour_point;
 
 typedef  struct
 {
     Colour_coding_types   type;
-
-    Colour                user_defined_min_colour;
-    Colour                user_defined_max_colour;
-    Colour_spaces         user_defined_interpolation_space;
 
     Colour                under_colour;
     Colour                over_colour;
 
     Real                  min_value;
     Real                  max_value;
+
+    int                   n_colour_points;
+    colour_point          *colour_points;
+
+    int                   user_defined_n_colour_points;
+    colour_point          *user_defined_colour_points;
+
 } colour_coding_struct;
 
 #endif

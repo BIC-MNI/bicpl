@@ -17,7 +17,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.5 1996-05-17 19:35:29 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.6 1996-12-09 20:20:31 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -307,8 +307,8 @@ public  Real  get_angle_between_points(
     Point  *this_point,
     Point  *next_point )
 {
-    Real    angle, x, y;
-    Vector  v1, v2, x_axis, y_axis;
+    Real    angle, c;
+    Vector  v1, v2;
 
     SUB_POINTS( v1, *prev_point, *this_point );
     SUB_POINTS( v2, *next_point, *this_point );
@@ -316,15 +316,14 @@ public  Real  get_angle_between_points(
     NORMALIZE_VECTOR( v1, v1 );
     NORMALIZE_VECTOR( v2, v2 );
 
-    x = DOT_VECTORS( v1, v2 );
+    c = DOT_VECTORS( v1, v2 );
 
-    SCALE_VECTOR( x_axis, v1, x );
-
-    SUB_VECTORS( y_axis, v2, x_axis );
-
-    y = MAGNITUDE( y_axis );
-
-    angle = compute_clockwise_rotation( x, y );
+    if( c >= 1.0 )
+        angle = 0.0;
+    else if( c <= -1.0 )
+        angle = PI;
+    else
+        angle = acos( c );
 
     return( angle );
 }

@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.34 1996-05-17 19:35:48 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.35 1996-12-09 20:20:50 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -548,7 +548,7 @@ private  void  get_input_volume_label_limits(
 @GLOBALS    :
 @CALLS      :
 @CREATED    : Dec.  8, 1995    David MacDonald
-@MODIFIED   :
+@MODIFIED   : Jul. 17, 1996    D. MacDonald   - made faster for linear xforms
 ---------------------------------------------------------------------------- */
 
 private  Status  load_partial_label_volume(
@@ -556,15 +556,20 @@ private  Status  load_partial_label_volume(
     Volume   label_volume )
 {
     Status                status;
-    int                   label_voxel[N_DIMENSIONS];
+    int                   label_voxel[N_DIMENSIONS], dim;
     int                   int_voxel[N_DIMENSIONS], int_voxel_value;
     int                   limits[2][MAX_DIMENSIONS];
     progress_struct       progress;
     nc_type               type;
     Real                  xw, yw, zw, voxel[N_DIMENSIONS];
     Real                  voxel_value;
+    Real                  xyz[N_DIMENSIONS], dx, dy, dz;
     BOOLEAN               signed_flag;
     Volume                file_volume;
+    Vector                z_axis;
+    General_transform     inverse_file_transform, label_transform;
+    Transform             all, reorder1, reorder2;
+    BOOLEAN               is_linear;
 
     check_alloc_label_data( label_volume );
 
@@ -580,6 +585,50 @@ private  Status  load_partial_label_volume(
     get_input_volume_label_limits( label_volume, file_volume,
                                    limits );
 
+    create_inverse_general_transform( get_voxel_to_world_transform(file_volume),
+                                      &inverse_file_transform );
+
+    concat_general_transforms( get_voxel_to_world_transform( label_volume ),
+                               &inverse_file_transform, &label_transform );
+
+    is_linear = get_transform_type( &label_transform ) == LINEAR;
+    if( is_linear )
+    {
+        voxel[0] = 0.0;
+        voxel[1] = 1.0;
+        voxel[2] = 2.0;
+        reorder_voxel_to_xyz( label_volume, voxel, xyz );
+        make_identity_transform( &reorder1 );
+        Transform_elem( reorder1, 0, 0 ) = 0.0;
+        Transform_elem( reorder1, 1, 1 ) = 0.0;
+        Transform_elem( reorder1, 2, 2 ) = 0.0;
+
+        for_less( dim, 0, N_DIMENSIONS )
+            Transform_elem( reorder1, ROUND(xyz[dim]), dim ) = 1.0;
+
+        concat_transforms( &all, &reorder1,
+                           get_linear_transform_ptr(&label_transform) );
+
+        xyz[0] = 0.0;
+        xyz[1] = 1.0;
+        xyz[2] = 2.0;
+        reorder_xyz_to_voxel( file_volume, xyz, voxel );
+        make_identity_transform( &reorder2 );
+        Transform_elem( reorder2, 0, 0 ) = 0.0;
+        Transform_elem( reorder2, 1, 1 ) = 0.0;
+        Transform_elem( reorder2, 2, 2 ) = 0.0;
+
+        for_less( dim, 0, N_DIMENSIONS )
+            Transform_elem( reorder2, ROUND(voxel[dim]), dim ) = 1.0;
+
+        concat_transforms( &all, &all, &reorder2 );
+
+        get_transform_z_axis( &all, &z_axis );
+        dx = RVector_x(z_axis);
+        dy = RVector_y(z_axis);
+        dz = RVector_z(z_axis);
+    }
+
     initialize_progress_report( &progress, FALSE,
                                 (limits[1][X] - limits[0][X] + 1) *
                                 (limits[1][Y] - limits[0][Y] + 1),
@@ -591,12 +640,21 @@ private  Status  load_partial_label_volume(
         {
             for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
             {
-                convert_3D_voxel_to_world( label_volume,
-                                           (Real) label_voxel[X],
-                                           (Real) label_voxel[Y],
-                                           (Real) label_voxel[Z],
-                                           &xw, &yw, &zw );
-                convert_world_to_voxel( file_volume, xw, yw, zw, voxel );
+                if( !is_linear || label_voxel[Z] == limits[0][Z] )
+                {
+                    convert_3D_voxel_to_world( label_volume,
+                                               (Real) label_voxel[X],
+                                               (Real) label_voxel[Y],
+                                               (Real) label_voxel[Z],
+                                               &xw, &yw, &zw );
+                    convert_world_to_voxel( file_volume, xw, yw, zw, voxel );
+                }
+                else
+                {
+                    voxel[X] += dx;
+                    voxel[Y] += dy;
+                    voxel[Z] += dz;
+                }
 
                 if( voxel_is_within_volume( file_volume, voxel ) )
                 {
@@ -623,6 +681,8 @@ private  Status  load_partial_label_volume(
 
     terminate_progress_report( &progress );
 
+    delete_general_transform( &inverse_file_transform );
+    delete_general_transform( &label_transform );
     delete_volume( file_volume );
 
     return( status );

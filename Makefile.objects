@@ -20,8 +20,12 @@ TRANSFORM_SRC = \
                Transforms/transform_io.c
 
 GEOMETRY_SRC = \
+               Geometry/approx_sqrt.c \
+               Geometry/clip_3d.c \
                Geometry/closest_point.c \
                Geometry/curvature.c \
+               Geometry/flatten.c \
+               Geometry/geodesic_distance.c \
                Geometry/geometry.c \
                Geometry/intersect.c \
                Geometry/line_circle.c \
@@ -37,6 +41,7 @@ GEOMETRY_SRC = \
                Geometry/smooth_curvature.c \
                Geometry/smooth_lines.c \
                Geometry/smooth_polygons.c \
+               Geometry/solve_plane.c \
                Geometry/subdivide_lines.c \
                Geometry/subdivide_polygons.c \
                Geometry/surface_area.c \
@@ -51,6 +56,8 @@ NUMERICAL_SRC  = \
                  Numerical/histogram.c \
                  Numerical/least_squares.c \
                  Numerical/matrix_svd.c \
+                 Numerical/minimize_lsq.c \
+                 Numerical/minimize_lsq_float.c \
                  Numerical/numerical.c \
                  Numerical/statistics.c \
                  Numerical/t_stat.c

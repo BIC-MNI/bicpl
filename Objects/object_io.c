@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.20 1996-05-17 19:35:32 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.21 1996-12-09 20:20:38 david Exp $";
 #endif
 
 private  Status  io_points(
@@ -36,6 +36,13 @@ private  Status  io_line_thickness(
     IO_types        io_flag,
     File_formats    format,
     float           *line_thickness );
+private  Status  io_end_indices(
+    FILE           *file,
+    IO_types       io_flag,
+    File_formats   format,
+    int            n_items,
+    int            *end_indices[],
+    int            min_size );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : io_lines
@@ -111,8 +118,8 @@ public  Status  io_lines(
 
         if( status == OK )
         {
-            status = io_ints( file, io_flag, format,
-                              lines->n_items, &lines->end_indices );
+            status = io_end_indices( file, io_flag, format,
+                                     lines->n_items, &lines->end_indices, 1 );
         }
 
         if( status == OK )
@@ -388,9 +395,9 @@ public  Status  io_polygons(
 
         if( status == OK )
         {
-            status = io_ints( file, io_flag, format,
-                              polygons->n_items,
-                              &polygons->end_indices );
+            status = io_end_indices( file, io_flag, format,
+                                     polygons->n_items, &polygons->end_indices,
+                                     3 );
         }
 
         if( status == OK )
@@ -1411,6 +1418,79 @@ public  Status  output_object(
 
     default:
         status = ERROR;
+    }
+
+    return( status );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : io_end_indices
+@INPUT      : file
+              io_flag
+              format
+              n_items
+              end_indices
+              min_size
+@OUTPUT     : 
+@RETURNS    : ERROR or OK
+@DESCRIPTION: Converts between old file format of cumulative sizes of 
+              individual polygons to new format of outputting each size.
+              It tries to detect on input whether it is new format or old
+              format by assuming it is cumulative sizes and checking for
+              any individual size less than min_size.  This is not foolproof
+              but should work for most files. 
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      :  
+@CREATED    : Jul. 31, 1996    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+private  Status  io_end_indices(
+    FILE           *file,
+    IO_types       io_flag,
+    File_formats   format,
+    int            n_items,
+    int            *end_indices[],
+    int            min_size )
+{
+    int      *sizes, item;
+    Status   status;
+
+    if( io_flag == WRITE_FILE )
+    {
+        if( getenv( "NEW_OBJ_FORMAT" ) != NULL )
+        {
+            ALLOC( sizes, n_items );
+            sizes[0] = (*end_indices)[0];
+            for_less( item, 1, n_items )
+                sizes[item] = (*end_indices)[item] - (*end_indices)[item-1];
+
+            status = io_ints( file, io_flag, format, n_items, &sizes );
+ 
+            FREE( sizes );
+        }
+        else
+            status = io_ints( file, io_flag, format, n_items, end_indices );
+    }
+    else
+    {
+        status = io_ints( file, io_flag, format, n_items, end_indices );
+
+        if( status != OK )
+            return( status );
+
+        for_less( item, 1, n_items )
+        {
+            if( (*end_indices)[item] - (*end_indices)[item-1] < min_size )
+                break;
+        }
+
+        if( item < n_items )
+        {
+            for_less( item, 1, n_items )
+                (*end_indices)[item] += (*end_indices)[item-1];
+        }
     }
 
     return( status );

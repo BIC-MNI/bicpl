@@ -17,7 +17,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.10 1996-08-22 18:47:21 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.11 1996-12-09 20:20:29 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -163,18 +163,39 @@ private  Real  get_two_d_coordinate(
 {
     Real     coords[4][2], coord[2], intersect[2];
     Real     intersect_point[2], len2, dx, dy, idx, idy, factor;
-    Vector   normal, offset, hor, vert;
-    int      i;
+    Vector   cross, offset, hor, vert, v1, v2;
+    int      i, j;
     Point    points[4];
+    BOOLEAN  found;
 
     points[0] = *p1;
     points[1] = *p2;
     points[2] = *q2;
     points[3] = *q1;
 
-    find_polygon_normal( 4, points, &normal );
+    found = FALSE;
+    for_less( i, 0, 3 )
+    {
+        SUB_POINTS( v1, points[i], points[0] );
+        for_less( j, i+1, 4 )
+        {
+            SUB_POINTS( v2, points[j], points[0] );
+            CROSS_VECTORS( cross, v1, v2 );
+            if( !null_Vector(&cross) )
+            {
+                found = TRUE;
+                break;
+            }
+        }
 
-    create_two_orthogonal_vectors( &normal, &hor, &vert );
+        if( found )
+            break;
+    }
+
+    if( !found )
+        print_error( "get_two_d_coordinate: degenerate polygons\n" );
+
+    create_two_orthogonal_vectors( &cross, &hor, &vert );
 
     for_less( i, 0, 4 )
     {

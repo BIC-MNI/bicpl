@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.17 1996-10-22 18:21:08 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.18 1996-12-09 20:20:25 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -55,7 +55,6 @@ public  void  get_polygon_vertex_curvatures(
     BOOLEAN          initialized;
     progress_struct  progress;
 
-    check_polygons_neighbours_computed( polygons );
     compute_polygon_normals( polygons );
 
     ALLOC( point_done, polygons->n_points );
@@ -87,9 +86,12 @@ public  void  get_polygon_vertex_curvatures(
 
                 if( smoothing_distance <= 0.0 )
                 {
-                    compute_polygon_point_centroid( polygons, poly,
-                          vertex_index, point_index, &centroid,
-                          &normal, &base_length, &curvature );
+                    compute_points_centroid_and_normal( polygons, point_index,
+                                        n_neighbours[point_index],
+                                        neighbours[point_index],
+                                        &centroid, &normal, &base_length,
+                                        &curvature );
+
                 }
                 else
                 {

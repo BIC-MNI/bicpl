@@ -14,12 +14,14 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.10 1996-09-18 18:14:42 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.11 1996-12-09 20:20:33 david Exp $";
 #endif
 
 #include  <internal_volume_io.h>
 #include  <geom.h>
 #include  <trans.h>
+#include  <numerical.h>
+#include  <prog_utils.h>
 
 public  BOOLEAN  get_interpolation_weights_2d(
     Real   x,
@@ -285,81 +287,15 @@ private  void  test_solution_3d(
 
         if( !numerically_close( value, correct, 1.0e-6 ) )
         {
-            print( "get_prediction_weights_3d: %g %g\n", correct, value );
+            print( "get_prediction_weights_3d: %d: %g %g\n",
+                   iter, correct, value );
             break;
         }
     }
 }
 #endif
 
-#define TOLERANCE  1.0e-1
-
-private  BOOLEAN   get_four_point_prediction(
-    Real   ax,
-    Real   ay,
-    Real   az,
-    Real   ax1,
-    Real   ay1,
-    Real   az1,
-    Real   ax2,
-    Real   ay2,
-    Real   az2,
-    Real   ax3,
-    Real   ay3,
-    Real   az3,
-    Real   ax4,
-    Real   ay4,
-    Real   az4,
-    Real   weights[] )
-{
-    Real  x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
-    Real  x12, y12, z12, x23, x24, x34, x13, x14;
-    Real  a, b, c, denom, v1_len, v2_len, max_len;
-
-    x4 = ax - ax1;
-    y4 = ay - ay1;
-    z4 = az - az1;
-    x1 = ax2 - ax1;
-    y1 = ay2 - ay1;
-    z1 = az2 - az1;
-    x2 = ax3 - ax1;
-    y2 = ay3 - ay1;
-    z2 = az3 - az1;
-    x3 = ax4 - ax1;
-    y3 = ay4 - ay1;
-    z3 = az4 - az1;
-
-    v1_len = sqrt( x1 * x1 + y1 * y1 + z1 * z1 );
-    v2_len = sqrt( x2 * x2 + y2 * y2 + z2 * z2 );
-
-    max_len = MAX( v1_len, v2_len );
-
-    x12 = x1 * y2 - x2 * y1;
-    y12 = y1 * z2 - y2 * z1;
-    z12 = z1 * x2 - z2 * x1;
-    denom = x12 * z3 + z12 * y3 + y12 * x3;
-
-    if( v1_len == 0.0 || v2_len == 0.0 ||
-        FABS( denom / v1_len / v2_len / max_len ) < TOLERANCE )
-        return( FALSE );
-
-    x23 = x2 * y3 - x3 * y2;
-    x24 = x2 * y4 - x4 * y2;
-    x34 = x3 * y4 - x4 * y3;
-    x13 = x1 * y3 - x3 * y1;
-    x14 = x1 * y4 - x4 * y1;
-
-    a = ( z4 * x23 + z3 * (-x24) + z2 * x34) / denom;
-    b = (-z4 * x13 + z3 *   x14  - z1 * x34) / denom;
-    c = ( z4 * x12 + z2 * (-x14) + z1 * x24) / denom;
-
-    weights[0] = 1.0 - a - b - c;
-    weights[1] = a;
-    weights[2] = b;
-    weights[3] = c;
-
-    return( TRUE );
-}
+#define  FACTOR 1.0e-6
 
 public  BOOLEAN  get_prediction_weights_3d(
     Real   x,
@@ -373,56 +309,121 @@ public  BOOLEAN  get_prediction_weights_3d(
     Real   *y_weights[3],
     Real   *z_weights[3] )
 {
-    int   p, p1, p2, p3, p4, n_quads, dim;
-    Real  weights4[4];
+    int                    p, p1, dim, n_iters, iter;
+    Real                   *parms, *coords[N_DIMENSIONS];
+    Real                   coord[N_DIMENSIONS];
+    Real                   len, max_len, sum;
+    linear_least_squares   lsq;
+    BOOLEAN                solved;
+    Real                   y_angle, z_angle, x_trans, y_trans, z_trans;
+    Transform              transform, y_rotation, z_rotation, translation;
 
+    ALLOC( parms, n_points-1 );
+
+    ALLOC( coords[0], n_points );
+    ALLOC( coords[1], n_points );
+    ALLOC( coords[2], n_points );
+
+    max_len = 0.0;
     for_less( p, 0, n_points )
-    for_less( dim, 0, N_DIMENSIONS )
     {
-        x_weights[dim][p] = 0.0;
-        y_weights[dim][p] = 0.0;
-        z_weights[dim][p] = 0.0;
+        len = xs[p] * xs[p] + ys[p] * ys[p] + zs[p] * zs[p];
+        max_len = MAX( max_len, len );
     }
 
-    n_quads = 0;
-    for_less( p1, 0, n_points-3 )
-    for_less( p2, p1+1, n_points-2 )
-    for_less( p3, p2+1, n_points-1 )
-    for_less( p4, p3+1, n_points )
+    max_len = sqrt( max_len );
+
+    initialize_linear_least_squares( &lsq, n_points-1 );
+
+    n_iters = 100;
+    n_iters = 1;
+
+    for_less( iter, 0, n_iters )
     {
-        if( get_four_point_prediction( x, y, z,
-                                      xs[p1], ys[p1], zs[p1],
-                                      xs[p2], ys[p2], zs[p2],
-                                      xs[p3], ys[p3], zs[p3],
-                                      xs[p4], ys[p4], zs[p4],
-                                      weights4 ) )
+        z_angle = 2.0 * PI * get_random_0_to_1();
+        y_angle = 2.0 * PI * get_random_0_to_1();
+        x_trans = 10.0 * get_random_0_to_1() - 5.0;
+        y_trans = 10.0 * get_random_0_to_1() - 5.0;
+        z_trans = 10.0 * get_random_0_to_1() - 5.0;
+
+        make_rotation_transform( y_angle, Y, &y_rotation );
+        make_rotation_transform( z_angle, Z, &z_rotation );
+        make_translation_transform( x_trans, y_trans, z_trans, &translation );
+        concat_transforms( &transform, &translation, &y_rotation );
+        concat_transforms( &transform, &transform, &z_rotation );
+
+        if( iter == 0 )
+            make_identity_transform( &transform );
+
+        for_less( p, 0, n_points )
         {
-            x_weights[0][p1] += weights4[0];
-            x_weights[0][p2] += weights4[1];
-            x_weights[0][p3] += weights4[2];
-            x_weights[0][p4] += weights4[3];
-            y_weights[1][p1] += weights4[0];
-            y_weights[1][p2] += weights4[1];
-            y_weights[1][p3] += weights4[2];
-            y_weights[1][p4] += weights4[3];
-            z_weights[2][p1] += weights4[0];
-            z_weights[2][p2] += weights4[1];
-            z_weights[2][p3] += weights4[2];
-            z_weights[2][p4] += weights4[3];
-            ++n_quads;
+            transform_point( &transform, xs[p], ys[p], zs[p],
+                             &coords[0][p], &coords[1][p], &coords[2][p] );
+                             
+        }
+
+        transform_point( &transform, x, y, z,
+                         &coord[0], &coord[1], &coord[2] );
+
+        for_less( dim, 0, N_DIMENSIONS )
+        {
+            for_less( p, 0, n_points-1 )
+                parms[p] = coords[dim][p] - coords[dim][n_points-1];
+
+            add_to_linear_least_squares( &lsq, parms,
+                                         coord[dim] - coords[dim][n_points-1] );
         }
     }
 
-    if( n_quads == 0 )
+    for_less( p, 0, n_points-1 )
+    {
+        for_less( p1, 0, n_points-1 )
+            parms[p1] = 0.0;
+        parms[p] = FACTOR * max_len;
+
+        add_to_linear_least_squares( &lsq, parms, 0.0 );
+    }
+
+    for_less( p, 0, n_points-1 )
+        parms[p] = 1.0;
+
+    add_to_linear_least_squares( &lsq, parms, 1.0 );
+
+    solved = get_linear_least_squares_solution( &lsq, parms );
+
+    if( solved )
+    {
+        for_less( p, 0, n_points )
+        for_less( dim, 0, N_DIMENSIONS )
+        {
+            x_weights[dim][p] = 0.0;
+            y_weights[dim][p] = 0.0;
+            z_weights[dim][p] = 0.0;
+        }
+
+        sum = 0.0;
+        for_less( p, 0, n_points-1 )
+        {
+            sum += parms[p];
+            x_weights[0][p] = parms[p];
+            y_weights[1][p] = parms[p];
+            z_weights[2][p] = parms[p];
+        }
+
+        x_weights[0][n_points-1] = 1.0 - sum;
+        y_weights[1][n_points-1] = 1.0 - sum;
+        z_weights[2][n_points-1] = 1.0 - sum;
+    }
+
+    delete_linear_least_squares( &lsq );
+    FREE( parms );
+    FREE( coords[0] );
+    FREE( coords[1] );
+    FREE( coords[2] );
+
+    if( !solved )
         return( FALSE );
 
-    for_less( p, 0, n_points )
-    for_less( dim, 0, N_DIMENSIONS )
-    {
-        x_weights[dim][p] /= (Real) n_quads;
-        y_weights[dim][p] /= (Real) n_quads;
-        z_weights[dim][p] /= (Real) n_quads;
-    }
 
 #ifdef DEBUG
     test_solution_3d( 0, x, y, z, n_points, xs, ys, zs, x_weights );

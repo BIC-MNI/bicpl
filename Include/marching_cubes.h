@@ -5,12 +5,15 @@
 
 typedef  enum  { ON_FIRST_CORNER, ON_EDGE, ON_SECOND_CORNER } Point_classes;
 
-typedef  enum  { MARCHING_CUBES, MARCHING_NO_HOLES } Marching_cubes_methods;
+typedef  enum  { MARCHING_CUBES, MARCHING_NO_HOLES, MARCHING_TETRA }
+                 Marching_cubes_methods;
 
 #define  MAX_TRIANGLES_PER_VOXEL        4
 #define  MAX_POINTS_PER_VOXEL           3 * MAX_TRIANGLES_PER_VOXEL
 
 #define  MAX_POINTS_PER_VOXEL_POLYGON  12
+
+#define  N_MARCHING_TETRA_EDGES        11
 
 typedef  enum  {
                  USE_VOXEL_VALUES,

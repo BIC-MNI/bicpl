@@ -152,14 +152,18 @@ public  void  coalesce_object_points(
 }
 
 public  void  separate_object_points(
-    int      *new_n_points,
-    Point    *points[],
-    int      n_indices,
-    int      indices[] )
+    int           *new_n_points,
+    Point         *points[],
+    int           n_indices,
+    int           indices[],
+    Colour_flags  colour_flag,
+    Colour        *colours[] )
 {
     int    point_index, ind;
     Point  *new_points;
+    Colour *new_colours;
 
+    new_colours = NULL;
     new_points = NULL;
     *new_n_points = 0;
     for_less( ind, 0, n_indices )
@@ -168,9 +172,22 @@ public  void  separate_object_points(
         ADD_ELEMENT_TO_ARRAY( new_points, *new_n_points,
                               (*points)[point_index], DEFAULT_CHUNK_SIZE );
 
+        if( colour_flag == PER_VERTEX_COLOURS )
+        {
+            --(*new_n_points);
+            ADD_ELEMENT_TO_ARRAY( new_colours, *new_n_points,
+                                  (*colours)[point_index], DEFAULT_CHUNK_SIZE );
+        }
+
         indices[ind] = *new_n_points - 1;
     }
 
     FREE( *points );
     *points = new_points;
+
+    if( colour_flag == PER_VERTEX_COLOURS )
+    {
+        FREE( *colours );
+        *colours = new_colours;
+    }
 }

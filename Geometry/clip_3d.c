@@ -17,7 +17,7 @@ public  int  clip_polygon_against_box(
     int     p, n_planes, n_out, n, i;
     int     n_input[7], dim, which;
     BOOLEAN last[7][2], first_flags[6], last_flag;
-    Point   prev[6], input[7][2], point;
+    Point   prev[6], input[7][2], point, first_points[6];
     Real    box[2][N_DIMENSIONS], prev_dist[6], first_dist[6], dist, ratio;
 
     box[0][X] = x_min;
@@ -58,19 +58,29 @@ public  int  clip_polygon_against_box(
                     dist = RPoint_coord(point,dim) - box[0][dim];
                 else
                     dist = box[1][dim] - RPoint_coord(point,dim);
+
+                if( dist >= 0.0 )
+                {
+                    input[p+1][0] = point;
+                    last[p+1][0] = FALSE;
+                    n_input[p+1] = 1;
+                }
             }
             else
-                dist = first_dist[p];
-
-            if( dist >= 0.0 && (!last_flag || p < n_planes-1) )
             {
-                input[p+1][0] = point;
-                last[p+1][0] = last_flag;
-                n_input[p+1] = 1;
+                dist = first_dist[p];
+                point = first_points[p];
+
+                if( !first_flags[p] && p < n_planes - 1 )
+                {
+                    last[p+1][0] = TRUE;
+                    n_input[p+1] = 1;
+                }
             }
 
             if( first_flags[p] )
             {
+                first_points[p] = point;
                 first_flags[p] = FALSE;
                 first_dist[p] = dist;
             }

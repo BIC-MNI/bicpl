@@ -16,7 +16,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bitlist.c,v 1.9 1996-05-17 19:35:42 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bitlist.c,v 1.10 1996-12-09 20:20:45 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -200,14 +200,14 @@ public  void  create_bitlist_3d(
     int                nz,
     bitlist_3d_struct  *bitlist )
 {
-    nz = (nz + BITS_PER_BITLIST_WORD - 1) / BITS_PER_BITLIST_WORD;
-
     bitlist->nx = nx;
     bitlist->ny = ny;
     bitlist->nz = nz;
+    bitlist->n_z_words = (nz + BITS_PER_BITLIST_WORD - 1) /
+                         BITS_PER_BITLIST_WORD;
 
     if( nx > 0 && ny > 0 && nz > 0 )
-        ALLOC3D( bitlist->bits, nx, ny, nz );
+        ALLOC3D( bitlist->bits, nx, ny, bitlist->n_z_words );
 
     zero_bitlist_3d( bitlist );
 }
@@ -234,12 +234,23 @@ public  void  zero_bitlist_3d(
     {
         for_less( y, 0, bitlist->ny )
         {
-            for_less( z, 0, bitlist->nz )
+            for_less( z, 0, bitlist->n_z_words )
             {
                 bitlist->bits[x][y][z] = (bitlist_type) 0;
             }
         }
     }
+}
+
+public  void  get_bitlist_3d_sizes(
+    bitlist_3d_struct  *bitlist,
+    int                *nx,
+    int                *ny,
+    int                *nz )
+{
+    *nx = bitlist->nx;
+    *ny = bitlist->ny;
+    *nz = bitlist->nz;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -264,7 +275,7 @@ public  void  fill_bitlist_3d(
     {
         for_less( y, 0, bitlist->ny )
         {
-            for_less( z, 0, bitlist->nz )
+            for_less( z, 0, bitlist->n_z_words )
             {
                 bitlist->bits[x][y][z] = (bitlist_type) -1;
             }
@@ -408,7 +419,7 @@ public  Status  io_bitlist_3d(
             status = io_binary_data( file, io_type,
                                      (void *) (bitlist->bits[x][y]),
                                      sizeof( bitlist->bits[x][y] ),
-                                     bitlist->nz );
+                                     bitlist->n_z_words );
        
             if( status != OK )
                 break;

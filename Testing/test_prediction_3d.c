@@ -5,9 +5,13 @@ int  main(
     int     argc,
     char    *argv[] )
 {
-    int      i, n_points, dim;
+    int      i, n_points, dim, dim1;
     Real     x, y, z, value;
-    Real     xs[10], ys[10], zs[10], weights[10];
+    Real     xs[10], ys[10], zs[10], *weights[3][3];
+
+    for_less( dim, 0, 3 )
+    for_less( dim1, 0, 3 )
+        ALLOC( weights[dim][dim1], 10 );
 
     xs[0] = 1.0;
     ys[0] = 2.0;
@@ -30,12 +34,13 @@ int  main(
     zs[4] = 1.4;
 
     x = 1.0;
-    y = 0.1;
-    z = 2.2;
+    y = 1.0;
+    z = 1.0;
 
     n_points = 5;
 
-    if( !get_prediction_weights_3d( x, y, z, n_points, xs, ys, zs, weights ) )
+    if( !get_prediction_weights_3d( x, y, z, n_points, xs, ys, zs,
+                                    weights[0], weights[1], weights[2] ) )
         print_error( "Dang.\n" );
 
     for_less( dim, 0, 3 )
@@ -43,9 +48,9 @@ int  main(
         value = 0.0;
         for_less( i, 0, n_points )
         {
-            value += (dim == 0 ? weights[i] : 0.0) * xs[i] +
-                     (dim == 1 ? weights[i] : 0.0) * ys[i] +
-                     (dim == 2 ? weights[i] : 0.0) * zs[i];
+            value += weights[dim][0][i] * xs[i] +
+                     weights[dim][1][i] * ys[i] +
+                     weights[dim][2][i] * zs[i];
         }
 
         print( "%g %g %g: %g\n", x, y, z, value );

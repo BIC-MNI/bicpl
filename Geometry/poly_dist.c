@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_dist.c,v 1.6 1996-09-09 19:15:34 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_dist.c,v 1.7 1996-12-09 20:20:28 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -72,22 +72,7 @@ private  Real  point_segment_sq_distance(
     return( sq_distance_between_points( p, closest_point ) );
 }
 
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : find_point_polygon_distance
-@INPUT      : point
-              n_points
-              poly_points
-@OUTPUT     : closest_point
-@RETURNS    : distance
-@DESCRIPTION: Returns the closest distance of a point to a polygon.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    :         1993    David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
-
-public  Real  find_point_polygon_distance(
+public  Real  find_point_polygon_distance_sq(
     Point     *point,
     int       n_points,
     Point     poly_points[],
@@ -120,7 +105,7 @@ public  Real  find_point_polygon_distance(
           it is the closest point of the polygon */
 
     if( point_within_polygon( closest_point, n_points, poly_points, &normal ) )
-        return( MAGNITUDE( offset ) );
+        return( DOT_VECTORS( offset, offset ) );
 
     /*---  find the vertex of the polygon which is closest */
 
@@ -159,7 +144,32 @@ public  Real  find_point_polygon_distance(
         closest_dist = d2;
     }
 
-    return( sqrt( closest_dist ) );
+    return( closest_dist );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : find_point_polygon_distance
+@INPUT      : point
+              n_points
+              poly_points
+@OUTPUT     : closest_point
+@RETURNS    : distance
+@DESCRIPTION: Returns the closest distance of a point to a polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+public  Real  find_point_polygon_distance(
+    Point     *point,
+    int       n_points,
+    Point     poly_points[],
+    Point     *closest_point )
+{
+    return( sqrt( find_point_polygon_distance_sq( point, n_points, poly_points,
+                                                  closest_point ) ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -184,7 +194,7 @@ public  int  find_closest_polygon_point(
 {
     int            poly, size, closest_poly;
     Real           dist, closest_dist;
-    Point          poly_points[MAX_POINTS_PER_POLYGON], closest;
+    Point          poly_points[MAX_POINTS_PER_POLYGON], closest, best;
     object_struct  object;
 
     closest_dist = 0.0;
@@ -194,23 +204,25 @@ public  int  find_closest_polygon_point(
         object.object_type = POLYGONS;
         object.specific.polygons = *polygons;
         (void) find_closest_point_on_object( point, &object, &closest_poly,
-                                             closest_point );
+                                             &best );
     }
     else
     {
         for_less( poly, 0, polygons->n_items )
         {
             size = get_polygon_points( polygons, poly, poly_points );
-            dist = find_point_polygon_distance( point, size, poly_points,
-                                                &closest);
+            dist = find_point_polygon_distance_sq( point, size, poly_points,
+                                                   &closest);
             if( poly == 0 || dist < closest_dist )
             {
                 closest_poly = poly;
                 closest_dist = dist;
-                *closest_point = closest;
+                best = closest;
             }
         }
     }
+
+    *closest_point = best;
 
     return( closest_poly );
 }

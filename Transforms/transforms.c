@@ -17,7 +17,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.9 1996-05-17 19:35:59 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.10 1996-12-09 20:20:58 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -390,6 +390,22 @@ public  Real  compute_clockwise_rotation( Real x, Real y )
 
         return( radians );
     }
+}
+
+public  BOOLEAN  is_transform_right_handed(
+    Transform   *transform )
+{
+    Real     volume;
+    Vector   x_axis, y_axis, z_axis, offset;
+
+    get_transform_x_axis( transform, &x_axis );
+    get_transform_y_axis( transform, &y_axis );
+    get_transform_z_axis( transform, &z_axis );
+
+    CROSS_VECTORS( offset, x_axis, y_axis );
+    volume = DOT_VECTORS( offset, z_axis );
+
+    return( volume > 0.0 );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.20 1996-05-17 19:35:33 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.21 1996-12-09 20:20:39 david Exp $";
 #endif
 
 private  void  advance_object_traverse(
@@ -441,6 +441,7 @@ private  int  get_object_zero_normals(
     object_struct   *object,
     Vector          *normals[] )
 {
+    *normals = NULL;
     return( 0 );
 }
 

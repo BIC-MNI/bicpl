@@ -7,7 +7,7 @@ int  main(
 {
     int      i, j, n_points, dim;
     Real     x, y, value;
-    Real     xs[10], ys[10], *weights[2][2];
+    Real     xs[10], ys[10], *weights[2][2], constants[2];
 
     ALLOC( weights[0][0], 10 );
     ALLOC( weights[0][1], 10 );
@@ -15,26 +15,38 @@ int  main(
     ALLOC( weights[1][1], 10 );
 
     xs[0] = 1.0;
-    ys[0] = 1.0;
+    ys[0] = 2.0;
     xs[1] = 3.0;
     ys[1] = 5.0;
     xs[2] = 5.0;
-    ys[2] = 7.0;
-    xs[3] = 10.0;
-    ys[3] = 8.0;
+    ys[2] = 8.0;
 
-    x = 2.0;
-    y = 3.0;
+    xs[0] = 1.0;
+    ys[0] = 0.0;
+    xs[1] = -1.0;
+    ys[1] = 0.0;
 
+    xs[0] = 7.6536700278753571;
+    ys[0] = 0.0;
+    xs[1] = 1.1208519367670462;
+    ys[1] = 2.7059789613948975;
+    xs[2] = -5.4119662404558344;
+    ys[2] = 5.4119577148906028;
+
+    x = 0.0;
+    y = 0.0;
+
+    n_points = 2;
     n_points = 3;
 
     if( !get_prediction_weights_2d( x, y, n_points, xs, ys,
-                                    weights[0], weights[1] ) )
+                                    weights[0], &constants[0],
+                                    weights[1], &constants[1] ) )
         print_error( "Dang.\n" );
 
     for_less( dim, 0, 2 )
     {
-        value = 0.0;
+        value = constants[dim];
         for_less( j, 0, n_points )
         {
             value += weights[dim][0][j] * xs[j] +

@@ -16,19 +16,21 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/change_labels.c,v 1.5 1996-05-24 18:42:48 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/change_labels.c,v 1.6 1996-12-09 20:20:54 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : modify_labels_in_range
 @INPUT      : volume
-              src_label
+              src_min
+              src_max
               dest_label
               min_threshold
               max_threshold
 @OUTPUT     : label_volume
 @RETURNS    : 
-@DESCRIPTION: Changes all labels which have the value to src_label and a
+@DESCRIPTION: Changes all labels which have the value within src_min and
+              src_max and a
               volume value within the threshold, to the dest_label.
 @METHOD     : 
 @GLOBALS    : 
@@ -40,13 +42,15 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/change_
 public  void  modify_labels_in_range(
     Volume   volume,
     Volume   label_volume,
-    int      src_label,
+    int      src_min,
+    int      src_max,
     int      dest_label,
     Real     min_threshold,
     Real     max_threshold,
     int      range_changed[2][N_DIMENSIONS] )
 {
     int              voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS], dim;
+    int              label;
     BOOLEAN          must_change, first;
     Real             value;
     progress_struct  progress;
@@ -64,8 +68,13 @@ public  void  modify_labels_in_range(
         {
             for_less( voxel[Z], 0, sizes[Z] )
             {
-                must_change = (src_label == -1 ||
-                    get_volume_label_data( label_volume, voxel ) == src_label);
+                if( src_min <= src_max )
+                {
+                    label = get_volume_label_data( label_volume, voxel );
+                    must_change = (src_min <= label && label <= src_max);
+                }
+                else
+                    must_change = TRUE;
 
                 if( must_change && min_threshold < max_threshold )
                 {
