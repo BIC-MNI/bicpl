@@ -1,4 +1,5 @@
 #include <internal_volume_io.h>
+#include <objects.h>
 #include <images.h>
 
 static  void  error_function(
