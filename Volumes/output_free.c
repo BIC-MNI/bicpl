@@ -2,10 +2,13 @@
 
 public  Status  output_volume(
     char           prefix[],
-    volume_struct  *volume )
+    volume_struct  *volume,
+    int            axis_ordering[] )
 {
     Status   status;
-    int      x, y, z, n_bytes_per_voxel;
+    Real     trans;
+    int      a1, a2, a3;
+    int      n_bytes_per_voxel, indices[N_DIMENSIONS];
     FILE     *file;
     String   header_filename, voxel_filename;
     int      axis;
@@ -29,26 +32,46 @@ public  Status  output_volume(
     if( status == OK )
         status = output_newline( file );
 
-    for( axis = Z;  axis >= X;  --axis )
+    for_less( axis, 0, N_DIMENSIONS )
     {
         if( status == OK )
-            status = output_int( file, volume->sizes[axis] );
+            status = output_int( file, volume->sizes[axis_ordering[axis]] );
 
         if( status == OK )
-            status = output_real( file, volume->thickness[axis] );
+            status = output_real( file, volume->thickness[axis_ordering[axis]]);
 
-        if( status == OK && volume->flip_axis[axis] )
+        if( status == OK && volume->flip_axis[axis_ordering[axis]] )
             status = output_character( file, '-' );
 
         if( status == OK )
             status = output_character( file, ' ' );
 
         if( status == OK )
-            status = output_character( file, 'x' + axis );
+            status = output_character( file, 'x' + axis_ordering[axis] );
 
         if( status == OK )
             status = output_newline( file );
     }
+
+    for_less( axis, 0, N_DIMENSIONS )
+    {
+        if( status == OK )
+        {
+            trans = Transform_elem(volume->voxel_to_world_transform,axis,3);
+
+            if( volume->flip_axis[axis] )
+            {
+                trans -= (Real) (volume->sizes[axis]-1) *
+                         volume->thickness[axis];
+            }
+
+            status = output_float( file,
+                     Transform_elem(volume->voxel_to_world_transform,axis,3) );
+        }
+    }
+
+    if( status == OK )
+        status = output_newline( file );
 
     if( status == OK )
         status = close_file( file );
@@ -58,15 +81,19 @@ public  Status  output_volume(
 
     if( status == OK )
     {
-        for_less( z, 0, volume->sizes[Z] )
+        a1 = axis_ordering[0];
+        a2 = axis_ordering[1];
+        a3 = axis_ordering[2];
+        for_less( indices[a1], 0, volume->sizes[a1] )
         {
-            for_less( y, 0, volume->sizes[Y] )
+            for_less( indices[a2], 0, volume->sizes[a2] )
             {
-                for_less( x, 0, volume->sizes[X] )
+                for_less( indices[a3], 0, volume->sizes[a3] )
                 {
                     status = io_binary_data( file, WRITE_FILE,
-                                             GET_VOLUME_DATA_PTR(*volume,x,y,z),
-                                             n_bytes_per_voxel, 1 );
+                                    GET_VOLUME_DATA_PTR(*volume,
+                                    indices[X],indices[Y],indices[Z]),
+                                    n_bytes_per_voxel, 1 );
                 }
             }
         }
