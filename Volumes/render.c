@@ -166,7 +166,7 @@ public  void  render_volume_to_slice(
     void            *render_storage,
     pixels_struct   *pixels )
 {
-    int     i, c, p, total_cases, case_index, case_multiplier;
+    int     i, c, p, total_cases1, total_cases2, case_index, case_multiplier;
     int     offset, int_start;
     int     s, x, y, n_cases1[MAX_DIMENSIONS], n_cases2[MAX_DIMENSIONS];
     int     **x_offsets1, **y_offsets1, *start_x, *end_x;
@@ -190,7 +190,7 @@ public  void  render_volume_to_slice(
     x_size = pixels->x_size;
     y_size = pixels->y_size;
 
-    total_cases = 1;
+    total_cases1 = 1;
     for_less( c, 0, n_dims1 )
     {
         delta = ABS( x_axis1[c] );
@@ -205,10 +205,10 @@ public  void  render_volume_to_slice(
                 n_cases1[c] = max_cases[n_dims1-1];
         }
 
-        total_cases *= n_cases1[c];
+        total_cases1 *= n_cases1[c];
     }
 
-    new_total_cases1 = MAX( total_cases, store->total_cases1_alloced );
+    new_total_cases1 = MAX( total_cases1, store->total_cases1_alloced );
     new_x_size1 = MAX( x_size, store->x_size1_alloced );
     new_y_size1 = MAX( y_size, store->y_size1_alloced );
     new_n_slices1 = MAX( n_slices1, store->n_slices1_alloced );
@@ -266,7 +266,25 @@ public  void  render_volume_to_slice(
 
     if( volume_data2 != (void *) NULL )
     {
-        new_total_cases2 = MAX( total_cases, store->total_cases2_alloced );
+        total_cases2 = 1;
+        for_less( c, 0, n_dims2 )
+        {
+            delta = ABS( x_axis2[c] );
+            if( delta == 0.0 )
+                n_cases2[c] = 1;
+            else if( delta <= 1.0 / (Real) max_cases[n_dims2-1] )
+                n_cases2[c] = max_cases[n_dims2-1];
+            else
+            {
+                n_cases2[c] = (int) (1.0 / delta) + 1;
+                if( n_cases2[c] > max_cases[n_dims2-1] )
+                    n_cases2[c] = max_cases[n_dims2-1];
+            }
+
+            total_cases2 *= n_cases2[c];
+        }
+
+        new_total_cases2 = MAX( total_cases2, store->total_cases2_alloced );
         new_x_size2 = MAX( x_size, store->x_size2_alloced );
         new_y_size2 = MAX( y_size, store->y_size2_alloced );
         new_n_slices2 = MAX( n_slices2, store->n_slices2_alloced );
@@ -311,7 +329,7 @@ public  void  render_volume_to_slice(
         row_offsets2 = store->row_offsets2;
     }
 
-    for_less( i, 0, total_cases )
+    for_less( i, 0, total_cases1 )
     {
         p = i;
         for_less( c, 0, n_dims1 )
@@ -338,25 +356,7 @@ public  void  render_volume_to_slice(
 
     if( volume_data2 != (void *) NULL )
     {
-        total_cases = 1;
-        for_less( c, 0, n_dims2 )
-        {
-            delta = ABS( x_axis2[c] );
-            if( delta == 0.0 )
-                n_cases2[c] = 1;
-            else if( delta <= 1.0 / (Real) max_cases[n_dims2-1] )
-                n_cases2[c] = max_cases[n_dims2-1];
-            else
-            {
-                n_cases2[c] = (int) (1.0 / delta) + 1;
-                if( n_cases2[c] > max_cases[n_dims2-1] )
-                    n_cases2[c] = max_cases[n_dims2-1];
-            }
-
-            total_cases *= n_cases2[c];
-        }
-
-        for_less( i, 0, total_cases )
+        for_less( i, 0, total_cases2 )
         {
             p = i;
             for_less( c, 0, n_dims2 )
