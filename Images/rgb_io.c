@@ -15,6 +15,10 @@ static  void  error_function(
 
 extern  unsigned short *ibufalloc(IMAGE *image);
 
+extern IMAGE *iopen( char *file, char *mode, unsigned int type,
+                     unsigned int dim, unsigned int xsize,
+                     unsigned int ysize, unsigned int zsize );
+
 extern int getrow(IMAGE *image, unsigned short *buffer,
                 unsigned int y, unsigned int z);
 
@@ -42,7 +46,7 @@ public  Status  input_rgb_file(
 
     i_seterror( error_function );
 
-    if( (iimage = iopen(filename,"r")) == NULL )
+    if( (iimage = iopen(filename,"r",0,0,0,0,0)) == NULL )
     {
         return( ERROR );
     }
@@ -100,7 +104,8 @@ public  Status  output_rgb_file(
         return( ERROR );
     }
 
-    oimage = iopen( filename, "w", RLE(1), 3, pixels->x_size, pixels->y_size,3);
+    oimage = iopen( filename, "w", RLE(1), 3, (unsigned int) pixels->x_size,
+                    (unsigned int) pixels->y_size, 3 );
     if( oimage == NULL )
     {
         return( ERROR );
