@@ -10,6 +10,23 @@ private  Real   at,bt,ct;
 
 #define TAKE_SIGN( a, b ) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : singular_value_decomposition
+@INPUT      : m
+              n
+              a   - array of size [m] by [n]
+@OUTPUT     : w
+              v
+@RETURNS    : TRUE if successful
+@DESCRIPTION: Performs singular value decomposition of a matrix, based on
+              the numerical recipes algorithms book.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : Jul  4, 1995    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  BOOLEAN  singular_value_decomposition(
     int    m,
     int    n,
@@ -29,13 +46,13 @@ public  BOOLEAN  singular_value_decomposition(
         return( FALSE );
     }
 
-    ALLOC( rv1, n+1 );
+    ALLOC( rv1, n );
 
     anorm = 0.0;
     scale = 0.0;
     g = 0.0;
 
-    for_less( i, 1, n+1 )
+    for_less( i, 0, n )
     {
         l = i + 1;
         rv1[i] = scale * g;
@@ -43,38 +60,38 @@ public  BOOLEAN  singular_value_decomposition(
         s = 0.0;
         scale = 0.0;
 
-        if( i <= m )
+        if( i < m )
         {
-            for_less( k, i, m+1 )
+            for_less( k, i, m )
                 scale += fabs( a[k][i] );
 
             if( scale != 0.0 )
             {
-                for_less( k, i, m+1 )
+                for_less( k, i, m )
                 {
                     a[k][i] /= scale;
                     s += a[k][i] * a[k][i];
                 }
 
-                f  =a[i][i];
+                f = a[i][i];
                 g = -TAKE_SIGN( sqrt(s), f );
                 h = f * g - s;
                 a[i][i] = f - g;
 
-                if( i != n )
+                if( i != n-1 )
                 {
-                    for_less( j, l, n+1 )
+                    for_less( j, l, n )
                     {
                         s = 0.0;
-                        for_less( k, i, m + 1 )
+                        for_less( k, i, m )
                             s += a[k][i] * a[k][j];
                         f = s / h;
-                        for_less( k, i, m + 1 )
+                        for_less( k, i, m )
                             a[k][j] += f * a[k][i];
                     }
                 }
 
-                for_less( k, i, m+1)
+                for_less( k, i, m )
                     a[k][i] *= scale;
             }
         }
@@ -83,14 +100,14 @@ public  BOOLEAN  singular_value_decomposition(
         g = 0.0;
         s = 0.0;
         scale = 0.0;
-        if( i <= m && i != n )
+        if( i < m && i != n-1 )
         {
-            for_less( k, l, n+1 )
+            for_less( k, l, n )
                 scale += fabs( a[i][k] );
 
             if( scale != 0.0 )
             {
-                for_less( k, l, n+1 )
+                for_less( k, l, n )
                 {
                     a[i][k] /= scale;
                     s += a[i][k] * a[i][k];
@@ -100,53 +117,53 @@ public  BOOLEAN  singular_value_decomposition(
                 g = -TAKE_SIGN( sqrt(s), f );
                 h = f * g - s;
                 a[i][l] = f - g;
-                for_less( k, l, n+1 )
+                for_less( k, l, n )
                     rv1[k] = a[i][k] / h;
-                if( i != m )
+                if( i != m-1 )
                 {
-                    for_less( j, l, m+1 )
+                    for_less( j, l, m )
                     {
                         s = 0.0;
-                        for_less( k, l, n+1 )
+                        for_less( k, l, n )
                             s += a[j][k] * a[i][k];
 
-                        for_less( k, l, n+1 )
+                        for_less( k, l, n )
                             a[j][k] += s * rv1[k];
                     }
                 }
 
-                for_less( k, l, n+1 )
-                     a[i][k] *= scale;
+                for_less( k, l, n )
+                    a[i][k] *= scale;
             }
         }
 
-        t = fabs(w[i] )+ fabs(rv1[i]);
+        t = fabs(w[i] ) + fabs(rv1[i]);
 
         if( t > anorm )
             anorm = t;
     }
 
-    for_down( i, n, 1 )
+    for_down( i, n-1, 0 )
     {
-        if( i < n )
+        if( i < n-1 )
         {
             if( g != 0.0 )
             {
-                for_less( j, l, n+1 )
+                for_less( j, l, n )
                     v[j][i] = (a[i][j] / a[i][l]) / g;
 
-                for_less( j, l, n+1 )
+                for_less( j, l, n )
                 {
                     s = 0.0;
-                    for_less( k, l, n+1 )
+                    for_less( k, l, n )
                         s += a[i][k] * v[k][j];
 
-                    for_less( k, l, n+1 )
+                    for_less( k, l, n )
                         v[k][j] += s * v[k][i];
                 }
             }
 
-            for_less( j, l, n+1 )
+            for_less( j, l, n )
             {
                 v[i][j] = 0.0;
                 v[j][i] = 0.0;
@@ -158,50 +175,50 @@ public  BOOLEAN  singular_value_decomposition(
         l = i;
     }
 
-    for_down( i, n, 1 )
+    for_down( i, n-1, 0 )
     {
         l = i + 1;
         g = w[i];
-        if( i < n )
+        if( i < n-1 )
         {
-            for_less( j, l, n+1 )
+            for_less( j, l, n )
                 a[i][j] = 0.0;
         }
 
         if( g != 0.0 )
         {
             g = 1.0 / g;
-            if( i != n )
+            if( i != n-1 )
             {
-                for_less( j, l, n+1 )
+                for_less( j, l, n )
                 {
                     s = 0.0;
-                    for_less( k, l, m+1 )
+                    for_less( k, l, m )
                         s += a[k][i] * a[k][j];
                     f = (s / a[i][i]) * g;
-                    for_less( k, i, m+1 )
+                    for_less( k, i, m )
                         a[k][j] += f * a[k][i];
                 }
             }
 
-            for_less( j, i, m+1 )
+            for_less( j, i, m )
                 a[j][i] *= g;
         }
         else
         {
-            for_less( j, i, m + 1 )
+            for_less( j, i, m )
                 a[j][i] = 0.0;
         }
 
         a[i][i] += 1.0;
     }
 
-    for_down( k, n, 1 )
+    for_down( k, n-1, 0 )
     {
         for_less( iter, 0, MAX_ITERATIONS )
         {
             flag = TRUE;
-            for_down( l, k, 1 )
+            for_down( l, k, 0 )
             {
                 nm = l - 1;
                 if( fabs(rv1[l]) + anorm == anorm )
@@ -231,7 +248,7 @@ public  BOOLEAN  singular_value_decomposition(
                         h = 1.0 / h;
                         c = g * h;
                         s = -f * h;
-                        for_less( j, 1, m+1 )
+                        for_less( j, 0, m )
                         {
                             y = a[j][nm];
                             z = a[j][i];
@@ -248,7 +265,7 @@ public  BOOLEAN  singular_value_decomposition(
                 if( z < 0.0 )
                 {
                     w[k] = -z;
-                    for_less( j, 1, n+1 )
+                    for_less( j, 0, n )
                         v[j][k] = -v[j][k];
                 }
                 break;
@@ -288,7 +305,7 @@ public  BOOLEAN  singular_value_decomposition(
                 g = g*c - x*s;
                 h = y * s;
                 y = y * c;
-                for_less( jj, 1, n+1 )
+                for_less( jj, 0, n )
                 {
                     x = v[jj][j];
                     z = v[jj][i];
@@ -309,7 +326,7 @@ public  BOOLEAN  singular_value_decomposition(
                 f = c*g + s*y;
                 x = c*y - s*g;
 
-                for_less( jj, 1, m+1 )
+                for_less( jj, 0, m )
                 {
                     y = a[jj][j];
                     z = a[jj][i];

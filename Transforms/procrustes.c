@@ -10,16 +10,23 @@
 @CREATED    : January 29, 1992 (Peter Neelin)
 @MODIFIED   : February 7, 1992 (Peter Neelin)
                  - added routine transformations_to_homogeneous
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
 #include <internal_volume_io.h>
 #include <geom.h>
-#include <recipes.h>
+#include <numerical.h>
 
-/* Routines called in this file */
-void svdcmp(float **, int, int, float *, float **);
+private  void  translation_to_homogeneous(
+    int    ndim,
+    Real   translation[],
+    Real  **transformation );
 
-
+private   void  rotation_to_homogeneous(
+    int     ndim,
+    Real    **rotation,
+    Real    **transformation );
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : procrustes
 @INPUT      : npoints - number of input point pairs
@@ -69,7 +76,6 @@ void svdcmp(float **, int, int, float *, float **);
               translate_points
               transpose
               matrix_multiply
-              svdcmp (numerical recipes)
               trace_of_matrix
 @CREATED    : Long time ago (Sean Marrett)
 @MODIFIED   : Some time later (Shyan Ku)
@@ -77,92 +83,105 @@ void svdcmp(float **, int, int, float *, float **);
               January 30, 1992 (Peter Neelin)
                  - complete rewrite for roughly NIL-abiding code. Modified
                  name and calling parameters.
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
-public void procrustes(int npoints, int ndim, 
-                       float **Apoints, float **Bpoints,
-                       float *translation, float *centre_of_rotation,
-                       float **rotation, float *scale_ptr)
+
+public  void  procrustes(
+    int     npoints,
+    int     ndim, 
+    Real    **Apoints,
+    Real    **Bpoints,
+    Real    translation[],
+    Real    centre_of_rotation[],
+    Real    **rotation,
+    Real    *scale_ptr )
 {
-   int i;
-   float *Atranslation, *Btranslation, *svd_W;
-   float **Ashift, **Bshift, **Atranspose, **Btranspose;
-   float **svd_U, **svd_V, **svd_VT;
-   float **Brotated, **product;
-   float trace1, trace2;
+    int   i;
+    Real  *Atranslation, *Btranslation, *svd_W;
+    Real  **Ashift, **Bshift, **Atranspose, **Btranspose;
+    Real  **svd_V, **svd_VT;
+    Real  **Brotated, **product;
+    Real  trace1, trace2;
+    Real  **svd_U;
                                    
-   /* Get the vectors for centroids */
-   Atranslation=vector(1,ndim);
-   Btranslation=vector(1,ndim);
-   svd_W=vector(1,ndim);
+    /* Get the vectors for centroids */
 
-   /* Get various matrices */
-   Ashift=matrix(1,npoints,1,ndim);
-   Bshift=matrix(1,npoints,1,ndim);
-   Atranspose=matrix(1,ndim,1,npoints);
-   Btranspose=matrix(1,ndim,1,npoints);
-   svd_U=matrix(1,ndim,1,ndim);
-   svd_V=matrix(1,ndim,1,ndim);
-   svd_VT=matrix(1,ndim,1,ndim);
-   Brotated=matrix(1,npoints,1,ndim);
-   product=matrix(1,npoints,1,npoints);
+    ALLOC( Atranslation, ndim );
+    ALLOC( Btranslation, ndim );
+    ALLOC( svd_W, ndim );
 
-   /* Calculate the centroids, remove them from A and B points and
-    save the translation */
+    /* Get various matrices */
 
-   calc_centroid(npoints, ndim, Apoints, centre_of_rotation); 
-   for (i=1; i<=ndim; i++) Atranslation[i] = -centre_of_rotation[i];
-   translate_points(npoints, ndim, Apoints, Atranslation, Ashift);
-   calc_centroid(npoints, ndim, Bpoints, Btranslation); 
-   for (i=1; i<=ndim; i++) Btranslation[i] *= -1;
-   translate_points(npoints, ndim, Bpoints, Btranslation, Bshift);
+    ALLOC2D( Ashift, npoints, ndim );
+    ALLOC2D( Bshift, npoints, ndim );
+    ALLOC2D( Atranspose, ndim, npoints );
+    ALLOC2D( Btranspose, ndim, npoints );
+    ALLOC2D( svd_U, ndim, ndim );
+    ALLOC2D( svd_V, ndim, ndim );
+    ALLOC2D( svd_VT, ndim, ndim );
+    ALLOC2D( Brotated, npoints, ndim );
+    ALLOC2D( product, npoints, npoints );
 
-   for (i=1; i<=ndim; i++) translation[i] = Btranslation[i] - Atranslation[i];
+    /* Calculate the centroids, remove them from A and B points and
+       save the translation */
 
+    calc_centroid( npoints, ndim, Apoints, centre_of_rotation ); 
 
-   /* Calculate the rotation/reflexion matrix */
+    for_less( i, 0, ndim )
+        Atranslation[i] = -centre_of_rotation[i];
 
-   transpose(npoints, ndim, Bshift, Btranspose);
-   matrix_multiply(ndim, npoints, ndim, Btranspose, Ashift, svd_U);
-   svdcmp(svd_U, ndim, ndim, svd_W, svd_V);
-   transpose(ndim, ndim, svd_V, svd_VT);
-   matrix_multiply(ndim, ndim, ndim, svd_U, svd_VT, rotation);
+    translate_points( npoints, ndim, Apoints, Atranslation, Ashift );
+    calc_centroid( npoints, ndim, Bpoints, Btranslation ); 
 
+    for_less( i, 0, ndim )
+        Btranslation[i] *= -1.0;
 
-   /* Calculate the scale */
+    translate_points( npoints, ndim, Bpoints, Btranslation, Bshift );
 
-   matrix_multiply(npoints, ndim, ndim, Bshift, rotation, Brotated);
-   transpose(npoints, ndim, Ashift, Atranspose);
-   matrix_multiply(npoints, ndim, npoints, Brotated, Atranspose, product);
-   trace1 = (float) trace_of_matrix(npoints, product);
-   matrix_multiply(npoints, ndim, npoints, Bshift, Btranspose, product);
-   trace2 = (float) trace_of_matrix(npoints, product);
-   if (trace2 != 0.0) {
-      *scale_ptr = trace1 / trace2;
-   }
-   else {
-      *scale_ptr = 0.0;
-   }
+    for_less( i, 0, ndim )
+        translation[i] = Btranslation[i] - Atranslation[i];
 
+    /* Calculate the rotation/reflexion matrix */
 
-   /* Free vectors */
-   free_vector(Atranslation,1,ndim);
-   free_vector(Btranslation,1,ndim);
-   free_vector(svd_W,1,ndim);
+    transpose( npoints, ndim, Bshift, Btranspose );
+    matrix_multiply( ndim, npoints, ndim, Btranspose, Ashift, svd_U );
+    (void) singular_value_decomposition( ndim, ndim, svd_U, svd_W, svd_V );
+    transpose( ndim, ndim, svd_V, svd_VT );
+    matrix_multiply( ndim, ndim, ndim, svd_U, svd_VT, rotation );
 
-   /* Free matrices */
-   free_matrix(Ashift,1,npoints,1,ndim);
-   free_matrix(Bshift,1,npoints,1,ndim);
-   free_matrix(Atranspose,1,ndim,1,npoints);
-   free_matrix(Btranspose,1,ndim,1,npoints);
-   free_matrix(svd_U,1,ndim,1,ndim);
-   free_matrix(svd_V,1,ndim,1,ndim);
-   free_matrix(svd_VT,1,ndim,1,ndim);
-   free_matrix(Brotated,1,npoints,1,ndim);
-   free_matrix(product,1,npoints,1,npoints);
+    /* Calculate the scale */
+
+    matrix_multiply( npoints, ndim, ndim, Bshift, rotation, Brotated );
+    transpose( npoints, ndim, Ashift, Atranspose );
+    matrix_multiply( npoints, ndim, npoints, Brotated, Atranspose, product );
+    trace1 = trace_of_matrix( npoints, product );
+    matrix_multiply( npoints, ndim, npoints, Bshift, Btranspose, product );
+    trace2 = trace_of_matrix( npoints, product );
+
+    if (trace2 != 0.0)
+        *scale_ptr = trace1 / trace2;
+    else
+        *scale_ptr = 0.0;
+
+    /* Free vectors */
+
+    FREE( Atranslation );
+    FREE( Btranslation );
+    FREE( svd_W );
+
+    /* Free matrices */
+
+    FREE2D( Ashift );
+    FREE2D( Bshift );
+    FREE2D( Atranspose );
+    FREE2D( Btranspose );
+    FREE2D( svd_U );
+    FREE2D( svd_V );
+    FREE2D( svd_VT );
+    FREE2D( Brotated );
+    FREE2D( product );
 }
 
-
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : transformations_to_homogeneous
 @INPUT      : ndim    - number of dimensions
@@ -200,62 +219,67 @@ public void procrustes(int npoints, int ndim,
               matrix_multiply
               matrix_scalar_multiply
 @CREATED    : February 7, 1992 (Peter Neelin)
-@MODIFIED   : 
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
-public void transformations_to_homogeneous(int ndim, 
-                  float *translation, float *centre_of_rotation,
-                  float **rotation, float scaling,
-                  float **transformation)
+
+public  void  transformations_to_homogeneous(
+    int     ndim, 
+    Real    translation[],
+    Real    centre_of_rotation[],
+    Real    **rotation,
+    Real    scaling,
+    Real  **transformation )
 {
-   int i;
-   int size;
-   float *centre_translate;
-   float **trans1, **trans2;
-   float **trans_temp, **rotation_and_scale;
+    int   i;
+    int   size;
+    Real  *centre_translate;
+    Real  **trans1, **trans2;
+    Real  **trans_temp, **rotation_and_scale;
 
-   size=ndim+1;
+    size = ndim + 1;
 
-   /* Allocate matrices and vectors */
-   centre_translate = vector(1,ndim);
-   trans1 = matrix(1,size,1,size);
-   trans2 = matrix(1,size,1,size);
-   trans_temp = matrix(1,size,1,size);
-   rotation_and_scale = matrix(1,ndim,1,ndim);
+    /* Allocate matrices and vectors */
 
+    ALLOC( centre_translate, ndim );
+    ALLOC2D( trans1, size, size );
+    ALLOC2D( trans2, size, size );
+    ALLOC2D( trans_temp, size, size );
+    ALLOC2D( rotation_and_scale, ndim, ndim );
 
-   /* Construct translation matrix */
-   translation_to_homogeneous(ndim, translation, trans1);
+    /* Construct translation matrix */
 
-
-   /* Construct translation matrix for centre of rotation and
-      apply it */
-   for (i=1; i<=ndim; i++) centre_translate[i] = -centre_of_rotation[i];
-   translation_to_homogeneous(ndim, centre_translate, trans_temp);
-   matrix_multiply(size, size, size, trans1, trans_temp, trans2);
+    translation_to_homogeneous( ndim, translation, trans1 );
 
 
-   /* Scale rotation matrix, then convert it to homogeneous coordinates and
-      apply it */
-   matrix_scalar_multiply(ndim, ndim, scaling, rotation, rotation_and_scale);
-   rotation_to_homogeneous(ndim, rotation_and_scale, trans_temp);
-   matrix_multiply(size, size, size, trans2, trans_temp, trans1);
+    /* Construct translation matrix for centre of rotation and apply it */
 
+    for_less( i, 0, ndim )
+        centre_translate[i] = -centre_of_rotation[i];
 
-   /* Return to centre of rotation */
-   translation_to_homogeneous(ndim, centre_of_rotation, trans_temp);
-   matrix_multiply(size, size, size, trans1, trans_temp, transformation);
+    translation_to_homogeneous( ndim, centre_translate, trans_temp );
+    matrix_multiply( size, size, size, trans1, trans_temp, trans2 );
 
+    /* Scale rotation matrix, then convert it to homogeneous coordinates and
+       apply it */
 
-   /* Free matrices */
-   free_vector(centre_translate,1,ndim);
-   free_matrix(trans1,1,size,1,size);
-   free_matrix(trans2,1,size,1,size);
-   free_matrix(trans_temp,1,size,1,size);
-   free_matrix(rotation_and_scale,1,ndim,1,ndim);
+    matrix_scalar_multiply( ndim, ndim, scaling, rotation, rotation_and_scale );
+    rotation_to_homogeneous( ndim, rotation_and_scale, trans_temp );
+    matrix_multiply( size, size, size, trans2, trans_temp, trans1 );
 
+    /* Return to centre of rotation */
+
+    translation_to_homogeneous( ndim, centre_of_rotation, trans_temp );
+    matrix_multiply( size, size, size, trans1, trans_temp, transformation );
+
+    /* Free matrices */
+
+    FREE( centre_translate );
+    FREE2D( trans1 );
+    FREE2D( trans2 );
+    FREE2D( trans_temp );
+    FREE2D( rotation_and_scale );
 }
 
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : translation_to_homogeneous
 @INPUT      : ndim    - number of dimensions
@@ -275,36 +299,37 @@ public void transformations_to_homogeneous(int ndim,
 @GLOBALS    : (none)
 @CALLS      : 
 @CREATED    : February 7, 1992 (Peter Neelin)
-@MODIFIED   : 
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
-public void translation_to_homogeneous(int ndim, float *translation,
-                                       float **transformation)
+
+private  void  translation_to_homogeneous(
+    int    ndim,
+    Real   translation[],
+    Real  **transformation )
 {
-   int i,j;
-   int size;
+    int  i, j, size;
 
-   size=ndim+1;
+    size = ndim+1;
 
-   /* Construct translation matrix */
-   for (i=1; i<=ndim; i++) {
-      for (j=1; j<=size; j++) {
-         if (i == j) {
-            transformation[i][j] = 1.0;
-         }
-         else {
-            transformation[i][j] = 0.0;
-         }
-      }
-   }
-   for (j=1; j<=ndim; j++) {
-      transformation[size][j] = translation[j];
-   }
+    /* Construct translation matrix */
 
-   transformation[size][size] = 1.0;
+    for_less( i, 0, ndim )
+    {
+        for_less( j, 0, size )
+        {
+            if( i == j )
+                transformation[i][j] = 1.0;
+            else
+                transformation[i][j] = 0.0;
+        }
+    }
 
+    for_less( j, 0, ndim )
+        transformation[size-1][j] = translation[j];
+
+    transformation[size-1][size-1] = 1.0;
 }
 
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : rotation_to_homogeneous
 @INPUT      : ndim    - number of dimensions
@@ -326,28 +351,30 @@ public void translation_to_homogeneous(int ndim, float *translation,
 @GLOBALS    : (none)
 @CALLS      : 
 @CREATED    : February 7, 1992 (Peter Neelin)
-@MODIFIED   : 
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
-public void rotation_to_homogeneous(int ndim, float **rotation,
-                                       float **transformation)
+
+private   void  rotation_to_homogeneous(
+    int     ndim,
+    Real    **rotation,
+    Real    **transformation )
 {
-   int i,j;
-   int size;
+    int   i, j, size;
 
-   size=ndim+1;
+    size = ndim + 1;
 
-   /* Construct  matrix */
-   for (i=1; i<=size; i++) {
-      for (j=1; j<=size; j++) {
-         if ((i==size) || (j==size)) {
-            transformation[i][j] = 0.0;
-         }
-         else {
-            transformation[i][j] = rotation[i][j];
-         }
-      }
-   }
+    /* Construct  matrix */
 
-   transformation[size][size] = 1.0;
+    for_less( i, 0, size )
+    {
+        for_less( j, 0, size )
+        {
+            if( i==size-1 || j==size-1 )
+                transformation[i][j] = 0.0;
+            else
+                transformation[i][j] = rotation[i][j];
+        }
+    }
 
+    transformation[size-1][size-1] = 1.0;
 }

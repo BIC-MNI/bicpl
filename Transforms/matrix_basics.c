@@ -17,10 +17,8 @@
 
 #include  <internal_volume_io.h>
 #include <geom.h>
-#include <recipes.h>
 
 
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : calc_centroid
 @INPUT      : npoints - number of points
@@ -40,21 +38,31 @@
 @MODIFIED   : January 31, 1992 (Peter Neelin)
                  - change to roughly NIL-abiding code and modified calling
                  sequence.
----------------------------------------------------------------------------- */
-public void calc_centroid(int npoints, int ndim, float **points, 
-                          float *centroid)
-{
-   int i,j;
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 
-   /* Loop over each dimension */
-   for (i=1; i <= ndim; ++i) {
-      /* Add up points and divide by number of points */
-      centroid[i] = 0;
-      for (j=1; j <= npoints; ++j) {
-         centroid[i] += points[j][i];
-      }
-      if (npoints >0) centroid[i] /= (float) npoints;
-   }
+---------------------------------------------------------------------------- */
+
+public  void  calc_centroid(
+    int     npoints,
+    int     ndim,
+    Real    **points, 
+    Real    centroid[] )
+{
+    int i, j;
+
+    /* Loop over each dimension */
+
+    for_less( i, 0, ndim )
+    {
+         /* Add up points and divide by number of points */
+
+         centroid[i] = 0.0;
+         for_less( j, 0, npoints )
+             centroid[i] += points[j][i];
+
+         if( npoints > 0 )
+             centroid[i] /= (Real) npoints;
+    }
 }
 
 
@@ -79,17 +87,23 @@ public void calc_centroid(int npoints, int ndim, float **points,
 @MODIFIED   : January 31, 1992 (Peter Neelin)
                  - change to roughly NIL-abiding code and modified calling
                  sequence.
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
-public void translate_points(int npoints, int ndim, float **points, 
-                      float *translation, float **newpoints)
-{
-   int i,j;
 
-   for (i=1; i <= npoints; ++i) {
-      for (j=1; j <= ndim; ++j) {
-         newpoints[i][j] = points[i][j] + translation[j];
-      }
-   }
+public  void  translate_points(
+    int    npoints,
+    int    ndim,
+    Real   **points, 
+    Real   translation[],
+    Real   **newpoints)
+{
+    int i, j;
+
+    for_less( i, 0, npoints )
+    {
+        for_less( j, 0, ndim )
+            newpoints[i][j] = points[i][j] + translation[j];
+    }
 }
 
 
@@ -113,16 +127,20 @@ public void translate_points(int npoints, int ndim, float **points,
 @MODIFIED   : January 31, 1992 (Peter Neelin)
                  - change to roughly NIL-abiding code and modified calling
                  sequence.
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
-public void transpose(int rows, int cols, float **mat, float **mat_transpose)
-{
-   int i,j;
 
-   for (i=1; i <= rows; ++i) {
-      for (j=1; j <= cols; ++j) {
-         mat_transpose[j][i]=mat[i][j];
-      }
-   }
+public  void  transpose(
+    int     rows,
+    int     cols,
+    Real    **mat,
+    Real    **mat_transpose )
+{
+    int i, j;
+
+    for_less( i, 0, rows )
+        for_less( j, 0, cols )
+            mat_transpose[j][i] = mat[i][j];
 }
 
 
@@ -148,23 +166,33 @@ public void transpose(int rows, int cols, float **mat, float **mat_transpose)
 @MODIFIED   : January 31, 1992 (Peter Neelin)
                  - change to roughly NIL-abiding code and modified calling
                  sequence.
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
-public void raw_matrix_multiply(int ldim, int mdim, int ndim, 
-                                float **Amat, float **Bmat, float **Cmat)
+
+private  void  raw_matrix_multiply(
+    int     ldim,
+    int     mdim,
+    int     ndim, 
+    Real    **Amat,
+    Real    **Bmat,
+    Real    **Cmat )
 {
-   int i,j,k;
+    int i, j, k;
 
-   /* Zero the output matrix */
-   for (i=1; i <= ldim; ++i)
-      for (j=1; j <= ndim; ++j)
-         Cmat[i][j]=0.;
+    /* Zero the output matrix */
 
-   /* Calculate the product */
-   for (i=1; i <= ldim; ++i)
-      for (j=1; j <= ndim; ++j)
-         for (k=1; k <=mdim; ++k)
-            Cmat[i][j] += (Amat[i][k] * Bmat[k][j]);
+    for_less( i, 0, ldim )
+        for_less( j, 0, ndim )
+            Cmat[i][j] = 0.0;
+
+    /* Calculate the product */
+
+    for_less( i, 0, ldim )
+        for_less( j, 0, ndim )
+            for_less( k, 0, mdim )
+                 Cmat[i][j] += Amat[i][k] * Bmat[k][j];
 }
+
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : matrix_multiply
@@ -188,26 +216,37 @@ public void raw_matrix_multiply(int ldim, int mdim, int ndim,
 @MODIFIED   : March 2, 1992 (P.N.)
                  - Changed so that calling program can use an input matrix for
                  output.
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
-public void matrix_multiply(int ldim, int mdim, int ndim, 
-                            float **Amat, float **Bmat, float **Cmat)
+
+public  void  matrix_multiply(
+    int    ldim,
+    int    mdim,
+    int    ndim, 
+    Real   **Amat,
+    Real   **Bmat,
+    Real   **Cmat )
 {
-   int i,j;
-   float **Ctemp;
+    int     i, j;
+    Real    **Ctemp;
 
-   /* Allocate a temporary matrix */
-   Ctemp = matrix(1,ldim,1,ndim);
+    /* Allocate a temporary matrix */
 
-   /* Do the multiplication */
-   raw_matrix_multiply(ldim,mdim,ndim,Amat,Bmat,Ctemp);
+    ALLOC2D( Ctemp, ldim, ndim );
 
-   /* Copy the result */
-   for (i=1; i <= ldim; ++i)
-      for (j=1; j <= ndim; ++j)
-         Cmat[i][j] = Ctemp[i][j];
+    /* Do the multiplication */
 
-   /* Free the matrix */
-   free_matrix(Ctemp,1,ldim,1,ndim);
+    raw_matrix_multiply( ldim, mdim, ndim, Amat, Bmat, Ctemp );
+
+    /* Copy the result */
+
+    for_less( i, 0, ldim )
+        for_less( j, 0, ndim )
+            Cmat[i][j] = Ctemp[i][j];
+
+    /* Free the matrix */
+
+    FREE2D( Ctemp );
 }
                   
 
@@ -227,17 +266,22 @@ public void matrix_multiply(int ldim, int mdim, int ndim,
 @MODIFIED   : January 31, 1992 (Peter Neelin)
                  - change to roughly NIL-abiding code and modified calling
                  sequence.
+@MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
-public Real trace_of_matrix(int size, float **the_matrix)
+
+public  Real  trace_of_matrix(
+    int    size,
+    Real   **the_matrix )
 {
-   Real sum=0.;
-   int i;
+    int  i;
+    Real sum;
 
-   for (i=1; i <= size; ++i) {
-      sum += the_matrix[i][i];
-   }
+    sum = 0.0;
 
-   return(sum);
+    for_less( i, 0, size )
+        sum += the_matrix[i][i];
+
+    return( sum );
 }
 
 
@@ -261,89 +305,17 @@ public Real trace_of_matrix(int size, float **the_matrix)
                  - change to roughly NIL-abiding code and modified calling
                  sequence.
 ---------------------------------------------------------------------------- */
-public void matrix_scalar_multiply(int rows, int cols, float scalar, 
-                            float **the_matrix, float **product)
+
+public  void  matrix_scalar_multiply(
+    int     rows,
+    int     cols,
+    Real    scalar, 
+    Real    **the_matrix,
+    Real    **product )
 {
-   int i,j;
+    int   i, j;
 
-   for (i=1; i <= rows; ++i)
-      for (j=1; j<=cols; ++j)
-         product[i][j]=scalar*the_matrix[i][j];
+    for_less( i, 0, rows )
+        for_less( j, 0, cols )
+            product[i][j] = scalar * the_matrix[i][j];
 }
-
-
-#ifdef NOT_YET
-pubblic  int  *ivector(
-    int   start,
-    int   end )
-{
-    int   *f;
-
-    ALLOC( f, end - start + 1 );
-
-    return( f - start );
-}
-
-/* ARGSUSED */
-
-pubblic  void  free_ivector(
-    int   *f,
-    int   start,
-    int   end )
-{
-    f += start;
-    FREE( f );
-}
-
-pubblic  float  *vector(
-    int   start,
-    int   end )
-{
-    float   *f;
-
-    ALLOC( f, end - start + 1 );
-
-    return( f - start );
-}
-
-/* ARGSUSED */
-
-pubblic  void  free_vector(
-    float *f,
-    int   start,
-    int   end )
-{
-    f += start;
-    FREE( f );
-}
-
-/* ARGSUSED */
-
-pubblic  float  **matrix(
-    int   start1,
-    int   end1,
-    int   start2,
-    int   end2 )
-{
-    float   **f;
-
-    if( start1 < 0 || start2 < 0 )
-        handle_internal_error( "matrix" );
-
-    ALLOC2D( f, end1 + 1, end2 + 1 );
-
-    return( f );
-}
-
-/* ARGSUSED */
-
-pubblic  void  free_matrix(
-    float **f,
-    int   start1,
-    int   end1,
-    int   start2,
-    int   end2 )
-{
-    FREE2D( f );
-}
-#endif
