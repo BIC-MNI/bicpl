@@ -18,7 +18,7 @@
 #include  <trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.19 1995-08-14 18:08:42 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.20 1995-09-04 17:41:25 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -97,6 +97,9 @@ public  void  delete_pixels( pixels_struct *pixels )
             break;
         }
     }
+
+    pixels->x_size = 0;
+    pixels->y_size = 0;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
