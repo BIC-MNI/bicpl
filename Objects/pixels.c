@@ -124,6 +124,26 @@ public  void  convert_pixels24_to_pixels8(
     }
 }
 
+public  void  convert_pixels24_to_gray_scale(
+    pixels_struct   *pixels_rgb,
+    pixels_struct   *pixels_8 )
+{
+    int   x, y;
+
+    initialize_pixels( pixels_8, 0, 0, pixels_rgb->x_size, pixels_rgb->y_size,
+                       1.0, 1.0,
+                       COLOUR_INDEX_8BIT_PIXEL );
+
+    for_less( x, 0, pixels_rgb->x_size )
+    {
+        for_less( y, 0, pixels_rgb->y_size )
+        {
+            PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) =
+                   get_Colour_luminance( PIXEL_RGB_COLOUR(*pixels_rgb,x,y) );
+        }
+    }
+}
+
 public  void  resample_pixels(
     pixels_struct   *pixels,
     Transform_2d    *transform,
