@@ -711,7 +711,7 @@ private  void   triquadratic_interpolate_volume(
     Real           *deriv_zz )
 {
     int      i, j, k;
-    Real     tx, ty, tz, u, v, w;
+    Real     tx, ty, tz, u, v, w, dummy;
     Real     c000, c001, c002, c010, c011, c012, c020, c021, c022;
     Real     c100, c101, c102, c110, c111, c112, c120, c121, c122;
     Real     c200, c201, c202, c210, c211, c212, c220, c221, c222;
@@ -788,17 +788,19 @@ private  void   triquadratic_interpolate_volume(
 
     if( value != (Real *) 0 )
     {
-        QUADRATIC_TRIVAR( c, u, v, w, *value );
+        QUADRATIC_TRIVAR(c, u, v, w, *value );
     }
 
     if( deriv_x != (Real *) 0 )
     {
-        QUADRATIC_TRIVAR_DERIV( c, u, v, w, *deriv_x, *deriv_y, *deriv_z );
+        QUADRATIC_TRIVAR_DERIV(c, u, v, w, dummy, *deriv_x, *deriv_y, *deriv_z );
     }
 
     if( deriv_xx != (Real *) 0 )
     {
-        QUADRATIC_TRIVAR_DERIV2( c, u, v, w, *deriv_xx, *deriv_xy, *deriv_xz,
+        QUADRATIC_TRIVAR_DERIV2(c, u, v, w,
+                                 dummy, dummy, dummy, dummy,
+                                 *deriv_xx, *deriv_xy, *deriv_xz,
                                  *deriv_yy, *deriv_yz, *deriv_zz );
     }
 }
@@ -820,7 +822,7 @@ private  void   tricubic_interpolate_volume(
     Real           *deriv_zz )
 {
     int                i, j, k;
-    Real               u, v, w;
+    Real               u, v, w, dummy;
     Real               c000, c001, c002, c003, c010, c011, c012, c013;
     Real               c020, c021, c022, c023, c030, c031, c032, c033;
     Real               c100, c101, c102, c103, c110, c111, c112, c113;
@@ -936,21 +938,22 @@ private  void   tricubic_interpolate_volume(
 
     if( deriv_xx != (Real *) 0 )
     {
-        CUBIC_TRIVAR_VAL_DERIV2( c, u, v, w, *value,
-                                 *deriv_x, *deriv_y, *deriv_z,
-                                 *deriv_xx, *deriv_xy, *deriv_xz,
-                                 *deriv_yy, *deriv_yz, *deriv_zz );
+        CUBIC_TRIVAR_DERIV2(c, u, v, w, *value,
+                             *deriv_x, *deriv_y, *deriv_z,
+                             *deriv_xx, *deriv_xy, *deriv_xz,
+                             *deriv_yy, *deriv_yz, *deriv_zz );
     }
     else
     {
         if( value != (Real *) 0 )
         {
-            CUBIC_TRIVAR( c, u, v, w, *value );
+            CUBIC_TRIVAR(c, u, v, w, *value );
         }
 
         if( deriv_x != (Real *) 0 )
         {
-            CUBIC_TRIVAR_DERIV( c, u, v, w, *deriv_x, *deriv_y, *deriv_z );
+            CUBIC_TRIVAR_DERIV(c, u, v, w,
+                                dummy, *deriv_x, *deriv_y, *deriv_z );
         }
     }
 }
@@ -968,7 +971,7 @@ private  void   bicubic_interpolate_volume(
     Real           *deriv_yy )
 {
     int                i, j, k;
-    Real               u, v;
+    Real               u, v, dummy;
     Real               c00, c01, c02, c03, c10, c11, c12, c13;
     Real               c20, c21, c22, c23, c30, c31, c32, c33;
     int                sizes[MAX_DIMENSIONS];
@@ -1025,24 +1028,19 @@ private  void   bicubic_interpolate_volume(
 
     if( deriv_xx != (Real *) 0 )
     {
-        CUBIC_BIVAR_VAL_DERIV2( c00, c01, c02, c03, c10, c11, c12, c13,
-                                c20, c21, c22, c23, c30, c31, c32, c33,
-                                u, v, *value, *deriv_x, *deriv_y,
-                                *deriv_xx, *deriv_xy, *deriv_yy );
+        CUBIC_BIVAR_DERIV2(c, u, v, *value, *deriv_x, *deriv_y,
+                            *deriv_xx, *deriv_xy, *deriv_yy );
     }
     else
     {
         if( value != (Real *) 0 )
         {
-            CUBIC_BIVAR( c00, c01, c02, c03, c10, c11, c12, c13,
-                         c20, c21, c22, c23, c30, c31, c32, c33, u, v, *value );
+            CUBIC_BIVAR(c, u, v, *value );
         }
 
         if( deriv_x != (Real *) 0 )
         {
-            CUBIC_BIVAR_DERIV( c00, c01, c02, c03, c10, c11, c12, c13,
-                               c20, c21, c22, c23, c30, c31, c32, c33,
-                               u, v, *deriv_x, *deriv_y );
+            CUBIC_BIVAR_DERIV(c, u, v, dummy, *deriv_x, *deriv_y );
         }
     }
 }
