@@ -1,20 +1,19 @@
 
 #include  <def_mni.h>
 
-public  Status  initialize_polygons(
+public  void  initialize_polygons(
     polygons_struct   *polygons,
     Colour            col,
     Surfprop          *spr )
 {
-    Status   status;
+    ALLOC( polygons->colours, 1 );
 
-    ALLOC( status, polygons->colours, 1 );
-
-    if( status == OK )
-        polygons->colour_flag = ONE_COLOUR;
+    polygons->colour_flag = ONE_COLOUR;
 
     polygons->colours[0] = col;
-    polygons->surfprop = *spr;
+
+    if( spr != (Surfprop *) 0 )
+        polygons->surfprop = *spr;
 
     polygons->n_points = 0;
     polygons->points = (Point *) 0;
@@ -25,58 +24,83 @@ public  Status  initialize_polygons(
     polygons->indices = (int *) 0;
 
     polygons->visibilities = (Smallest_int *) 0;
-
-    return( status );
+    polygons->neighbours = (int *) 0;
+    polygons->bintree = (bintree_struct *) 0;
 }
 
-public  Status  delete_polygons( polygons_struct *polygons )
+public  void  delete_polygons( polygons_struct *polygons )
 {
-    Status   status;
-
-    FREE( status, polygons->colours );
+    FREE( polygons->colours );
 
     if( polygons->n_points > 0 )
-        FREE( status, polygons->points );
+        FREE( polygons->points );
 
-    if( status == OK && polygons->n_points > 0 &&
+    if( polygons->n_points > 0 &&
         polygons->normals != (Vector *) 0 )
-        FREE( status, polygons->normals );
+        FREE( polygons->normals );
 
-    if( status == OK && polygons->n_items > 0 )
-        FREE( status, polygons->indices );
+    if( polygons->n_items > 0 )
+        FREE( polygons->indices );
 
-    if( status == OK && polygons->n_items > 0 )
-        FREE( status, polygons->end_indices );
+    if( polygons->n_items > 0 )
+        FREE( polygons->end_indices );
 
-    if( status == OK && polygons->visibilities != (Smallest_int *) 0 )
-        FREE( status, polygons->visibilities );
+    if( polygons->visibilities != (Smallest_int *) 0 )
+        FREE( polygons->visibilities );
 
-    return( status );
+    if( polygons->neighbours != (int *) 0 )
+        FREE( polygons->neighbours );
+
+    if( polygons->bintree != (bintree_struct *) NULL )
+        delete_polygons_bintree( polygons );
+
+    polygons->visibilities = (Smallest_int *) 0;
+    polygons->neighbours = (int *) 0;
+    polygons->bintree = (bintree_struct *) 0;
 }
 
-public  Status  start_new_polygon( polygons_struct *polygons )
+public  Status  create_polygons_bintree(
+    polygons_struct   *polygons,
+    int               max_nodes )
 {
-    Status   status;
+    ALLOC( polygons->bintree, 1 );
+
+    create_object_bintree( polygons->n_points, polygons->points,
+                           polygons->n_items, polygons->end_indices,
+                           polygons->indices, polygons->bintree, max_nodes );
+}
+
+public  void  delete_polygons_bintree(
+    polygons_struct   *polygons )
+{
+    if( polygons->bintree != (bintree_struct *) 0 )
+    {
+        delete_bintree( polygons->bintree );
+
+        FREE( polygons->bintree );
+        polygons->bintree = (bintree_struct *) 0;
+    }
+}
+
+public  void  start_new_polygon( polygons_struct *polygons )
+{
     int      n_indices;
 
     n_indices = NUMBER_INDICES( *polygons );
 
-    ADD_ELEMENT_TO_ARRAY( status, polygons->n_items, polygons->end_indices,
+    ADD_ELEMENT_TO_ARRAY( polygons->end_indices, polygons->n_items,
                           n_indices, DEFAULT_CHUNK_SIZE );
-
-    return( status );
 }
 
-public  Status  add_point_to_polygon(
+public  void  add_point_to_polygon(
     polygons_struct   *polygons,
     Point             *point,
     Vector            *normal )
 {
     int      n_points;
-    Status   status;
 
     if( polygons->n_items == 0 )
-        status = start_new_polygon( polygons );
+        start_new_polygon( polygons );
 
     if( polygons->n_points > 1 )
     {
@@ -88,23 +112,17 @@ public  Status  add_point_to_polygon(
         }
     }
 
+    ADD_ELEMENT_TO_ARRAY( polygons->indices,
+                          polygons->end_indices[polygons->n_items-1],
+                          polygons->n_points, DEFAULT_CHUNK_SIZE );
+
     if( normal != (Vector *) 0 )
     {
         n_points = polygons->n_points;
-        ADD_ELEMENT_TO_ARRAY( status, n_points, polygons->normals,
+        ADD_ELEMENT_TO_ARRAY( polygons->normals, n_points,
                               *normal, DEFAULT_CHUNK_SIZE );
     }
 
-    ADD_ELEMENT_TO_ARRAY( status, polygons->n_points, polygons->points,
+    ADD_ELEMENT_TO_ARRAY( polygons->points, polygons->n_points,
                           *point, DEFAULT_CHUNK_SIZE );
-
-    if( status == OK )
-    {
-        ADD_ELEMENT_TO_ARRAY( status,
-                              polygons->end_indices[polygons->n_items-1],
-                              polygons->indices,
-                              polygons->n_points-1, DEFAULT_CHUNK_SIZE );
-    }
-
-    return( status );
 }
