@@ -7,10 +7,12 @@ public  void   intersect_planes_with_polygons(
     Vector            *plane_normal,
     lines_struct      *lines )
 {
-    int     n_points, p;
+    int     n_points;
     int     poly, edge, size;
     int     point_index1, point_index2;
-    Point   points[2], int_point;
+    Vector  v1, v2;
+    Real    t1, t2, ratio;
+    Point   points[2];
 
     initialize_lines( lines, WHITE );
 
@@ -27,28 +29,22 @@ public  void   intersect_planes_with_polygons(
             point_index2 = polygons->indices[
                      POINT_INDEX(polygons->end_indices,poly,(edge+1)%size)];
 
-            if( line_segment_intersects_plane( &polygons->points[point_index1],
-                                               &polygons->points[point_index2],
-                                               plane_origin, plane_normal,
-                                               &int_point ) )
+            SUB_POINTS( v1, polygons->points[point_index1], *plane_origin );
+            SUB_POINTS( v2, polygons->points[point_index2], *plane_origin );
+
+            t1 = DOT_VECTORS( v1, *plane_normal );
+            t2 = DOT_VECTORS( v2, *plane_normal );
+
+            /*--- check if it intersects the line segment [p1 .. p2)  */
+
+            if( t1 >= 0.0 && t2 < 0.0 || t1 <= 0.0 && t2 > 0.0 )
             {
-                for_less( p, 0, n_points )
-                {
-                    if( EQUAL_POINTS( int_point, points[p] ) )
-                        break;
-                }
+                ratio = t1 / (t1 - t2);
 
-                if( p >= n_points )
-                {
-                    if( n_points == 2 )
-                    {
-                        n_points = 0;
-                        break;
-                    }
-
-                    points[n_points] = int_point;
-                    ++n_points;
-                }
+                INTERPOLATE_POINTS( points[n_points],
+                                    polygons->points[point_index1],
+                                    polygons->points[point_index2], ratio );
+                ++n_points;
             }
         }
 
