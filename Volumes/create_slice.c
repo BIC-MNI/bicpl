@@ -19,32 +19,61 @@ private  void  get_mapping(
     Real            *y_offset )
 {
     *x_delta = x_scale * volume->separation[x_axis_index];
-    *x_offset = x_translation;
     if( *x_delta >= 0.0 )
     {
         *x_start = -0.5;
         *x_end = (Real) volume->sizes[x_axis_index] - 0.5;
+        *x_offset = x_translation;
     }
     else
     {
         *x_end = -0.5;
         *x_start = (Real) volume->sizes[x_axis_index] - 0.5;
+        *x_offset = x_translation - *x_delta *
+                    (Real) (volume->sizes[x_axis_index] - 1);
     }
 
     *y_delta = y_scale * volume->separation[y_axis_index];
-    *y_offset = y_translation;
 
     if( *y_delta >= 0.0 )
     {
         *y_start = -0.5;
         *y_end = (Real) volume->sizes[y_axis_index] - 0.5;
+        *y_offset = y_translation;
     }
     else
     {
         *y_end = -0.5;
         *y_start = (Real) volume->sizes[y_axis_index] - 0.5;
+        *y_offset = y_translation - *y_delta *
+                    (Real) (volume->sizes[y_axis_index] - 1);
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : clip_slice_to_viewport
+@INPUT      : volume
+              x_translation
+              y_translation
+              x_scale
+              y_scale
+              x_axis_index
+              y_axis_index
+              x_viewport_size
+              y_viewport_size
+@OUTPUT     : x_pixel_start
+              x_pixel_end
+              y_pixel_start
+              y_pixel_end
+@RETURNS    : 
+@DESCRIPTION: Clips the given slice to the viewport, by returning the
+              pixel limits within the viewport of the slice.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  clip_slice_to_viewport(
     Volume          volume,
@@ -78,45 +107,6 @@ public  void  clip_slice_to_viewport(
                                x_pixel_start, y_pixel_start,
                                x_pixel_end, y_pixel_end );
 }
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : create_volume_slice
-@INPUT      : volume1          - the volume to create a slice for
-              slice_position1  - the voxel coordinate of the slice
-              x_translation1   - pixel translation for viewing
-              y_translation1   - pixel translation for viewing
-              x_scale1         - pixel zoom for viewing
-              y_scale1         - pixel zoom for viewing
-              volume2          - second volume to be merged with first, or null
-              slice_position2  - the voxel coordinate of the slice
-              x_translation2   - pixel translation for viewing
-              y_translation2   - pixel translation for viewing
-              x_scale2         - pixel zoom for viewing
-              y_scale2         - pixel zoom for viewing
-              x_axis_index     - X,Y, or Z
-              y_axis_index     - X,Y, or Z
-              x_viewport_size  - will be clipped to this size
-              y_viewport_size  - will be clipped to this size
-              pixel_type       - RGB_PIXEL or COLOUR_INDEX_PIXEL for rgb/cmap
-              interpolation_flag - ignored for now
-              cmode_colour_map - if pixel_type == COLOUR_INDEX_PIXEL, then
-                          2d array of 16 bit colour indices for merged slices,
-                          or pointer to 1d array of colour indices for volume1
-              rgb_colour_map - if pixel_type == RGB_PIXEL, then
-                          2d array of 24 bit colours for merged slices,
-                          or pointer to 1d array of colours for volume1
-@OUTPUT     : n_pixels_alloced - a pointer to the size alloced.  Before first
-                          call, set size alloced to zero, and all calls,
-                          pass pointer to size alloced, and pointer to pixels.
-              pixels           - 2d pixels array created, and realloced as
-                                 necessary, assuming, n_pixels_alloced is a
-                                 pointer to the current alloc size of pixels.
-@RETURNS    : 
-@DESCRIPTION: Creates a slice of one volume or merged slice of two, suitable
-              for graphics display.
-@CREATED    : Mar   1993           David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
 
 private  void  create_weighted_volume_slices(
     int             n_slices,
@@ -289,6 +279,48 @@ private  void  create_weighted_volume_slices(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_volume_slice
+@INPUT      : filter_type      - filter_type, usually NEAREST_NEIGHBOUR
+              filter_width     - width of filter, used for BOX, TRIANGLE, GAUSS
+              volume1          - the volume to create a slice for
+              slice_position1  - the voxel coordinate of the slice
+              x_translation1   - pixel translation for viewing
+              y_translation1   - pixel translation for viewing
+              x_scale1         - pixel zoom for viewing
+              y_scale1         - pixel zoom for viewing
+              volume2          - second volume to be merged with first, or null
+              slice_position2  - the voxel coordinate of the slice
+              x_translation2   - pixel translation for viewing
+              y_translation2   - pixel translation for viewing
+              x_scale2         - pixel zoom for viewing
+              y_scale2         - pixel zoom for viewing
+              x_axis_index     - X,Y, or Z
+              y_axis_index     - X,Y, or Z
+              axis_index       - X,Y, or Z
+              x_viewport_size  - will be clipped to this size
+              y_viewport_size  - will be clipped to this size
+              pixel_type       - RGB_PIXEL or COLOUR_INDEX_PIXEL for rgb/cmap
+              interpolation_flag - ignored for now
+              cmode_colour_map - if pixel_type == COLOUR_INDEX_PIXEL, then
+                          2d array of 16 bit colour indices for merged slices,
+                          or pointer to 1d array of colour indices for volume1
+              rgb_colour_map - if pixel_type == RGB_PIXEL, then
+                          2d array of 24 bit colours for merged slices,
+                          or pointer to 1d array of colours for volume1
+@OUTPUT     : n_pixels_alloced - a pointer to the size alloced.  Before first
+                          call, set size alloced to zero, and all calls,
+                          pass pointer to size alloced, and pointer to pixels.
+              pixels           - 2d pixels array created, and realloced as
+                                 necessary, assuming, n_pixels_alloced is a
+                                 pointer to the current alloc size of pixels.
+@RETURNS    : 
+@DESCRIPTION: Creates a slice of one volume or merged slice of two, suitable
+              for graphics display.
+@CREATED    : Mar   1993           David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  create_volume_slice(
     Filter_types    filter_type,
     Real            filter_width,
@@ -375,6 +407,29 @@ if( n_slices > 1 )
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_slice_pixel_to_voxel
+@INPUT      : volume
+              x_pixel
+              y_pixel
+              slice_position
+              x_axis_index
+              y_axis_index
+              x_translation
+              y_translation
+              x_scale
+              y_scale
+@OUTPUT     : pixel_slice_position
+@RETURNS    : 
+@DESCRIPTION: Converts pixel from the viewport to a voxel position.  The
+              centres of pixels correspond to .0, as opposed to .5.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Boolean  convert_slice_pixel_to_voxel(
     Volume          volume,
     Real            x_pixel,
@@ -408,6 +463,29 @@ public  Boolean  convert_slice_pixel_to_voxel(
 
     return( voxel_is_within_volume( volume, pixel_slice_position ) );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_voxel_to_slice_pixel
+@INPUT      : volume
+              voxel_position
+              x_axis_index
+              y_axis_index
+              x_translation
+              y_translation
+              x_scale
+              y_scale
+@OUTPUT     : x_pixel
+              y_pixel
+@RETURNS    : 
+@DESCRIPTION: Converts the voxel position (centres of voxels are at .0,
+              not .5) to a pixel position in the viewport.  To get the
+              integer pixel position, take ROUND( x_pixel ).
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 public  void  convert_voxel_to_slice_pixel(
     Volume          volume,
