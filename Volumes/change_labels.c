@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/change_labels.c,v 1.6 1996-12-09 20:20:54 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/change_labels.c,v 1.7 1997-08-31 00:38:45 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -55,7 +55,7 @@ public  void  modify_labels_in_range(
     Real             value;
     progress_struct  progress;
 
-    get_volume_sizes( volume, sizes );
+    get_volume_sizes( label_volume, sizes );
 
     initialize_progress_report( &progress, FALSE, sizes[X] * sizes[Y],
                                 "Modifying Labels" );
