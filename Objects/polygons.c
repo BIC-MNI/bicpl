@@ -236,6 +236,109 @@ public  int  find_vertex_index(
     return( index );
 }
 
+public  int  find_edge_index(
+    polygons_struct  *polygons,
+    int              poly,
+    int              point_index1,
+    int              point_index2 )
+{
+    int   e, index, size, p1, p2;
+
+    index = -1;
+
+    size = GET_OBJECT_SIZE( *polygons, poly );
+
+    p2 = polygons->indices[POINT_INDEX(polygons->end_indices,poly,0)];
+    for_less( e, 0, size )
+    {
+        p1 = p2;
+        p2 = polygons->indices[POINT_INDEX(polygons->end_indices,poly,
+                               (e+1)%size)];
+
+        if( p1 == point_index1 && p2 == point_index2 ||
+            p1 == point_index2 && p2 == point_index1 )
+        {
+            index = e;
+            break;
+        }
+    }
+
+    return( index );
+}
+
+public  Boolean  find_polygon_with_edge(
+    polygons_struct  *polygons,
+    int              point_index1,
+    int              point_index2,
+    int              *poly_containing_edge,
+    int              *edge_index )
+{
+    int   poly;
+
+    for_less( poly, 0, polygons->n_items )
+    {
+        *edge_index = find_edge_index( polygons, poly,
+                                       point_index1, point_index2 );
+
+        if( *edge_index >= 0 )
+        {
+            *poly_containing_edge = poly;
+            break;
+        }
+    }
+
+    return( poly < polygons->n_items );
+}
+
+public  Boolean  lookup_polygon_vertex(
+    polygons_struct   *polygons,
+    Point             *point,
+    int               *point_index )
+{
+    int      i;
+
+    for_less( i, 0, polygons->n_points )
+    {
+        if( EQUAL_POINTS( polygons->points[i], *point ) )
+        {
+            *point_index = i;
+            break;
+        }
+    }
+
+    return( i < polygons->n_points );
+}
+
+public  Boolean  find_polygon_with_vertex(
+    polygons_struct   *polygons,
+    int               point_index,
+    int               *poly_index,
+    int               *vertex_index )
+{
+    int      poly, size, i;
+    Boolean  found;
+
+    found = FALSE;
+
+    for_less( poly, 0, polygons->n_items )
+    {
+        size = GET_OBJECT_SIZE( *polygons, poly );
+        for_less( i, 0, size )
+        {
+            if( polygons->indices[POINT_INDEX(polygons->end_indices,poly,i)] ==
+                point_index )
+            {
+                *poly_index = poly;
+                *vertex_index = i;
+                found = TRUE;
+                break;
+            }
+        }
+    }
+
+    return( found );
+}
+
 public  Boolean  find_next_edge_around_point(
     polygons_struct   *polygons,
     int               poly,
@@ -601,8 +704,7 @@ public  void  compute_polygon_point_centroid(
         for_less( i, 0, n_neighbours )
             neigh_points[i] = polygons->points[neighbours[i]];
 
-        get_points_centroid( n_neighbours, neigh_points,
-                             centroid );
+        get_points_centroid( n_neighbours, neigh_points, centroid );
 
         find_polygon_normal( n_neighbours, neigh_points, normal );
 
@@ -627,18 +729,25 @@ private  Real  estimate_polygon_curvature(
     Vector  *normal,
     Real    *base_length )
 {
-    Real   curvature;
+    int    i;
+    Real   curvature, len;
     Vector to_point;
 
-    *base_length = distance_between_points( &neighs[0], centroid ) +
-                   distance_between_points( &neighs[n_neighs/2], centroid );
+    len = 0.0;
+    for_less( i, 0, n_neighs )
+        len += distance_between_points( &neighs[i], centroid );
 
-    if( *base_length == 0.0 )
-        *base_length = 1.0;
+    if( n_neighs > 0 )
+        len = 2.0 * len / (Real) n_neighs;
+
+    if( len == 0.0 )
+        len = 1.0;
+
+    *base_length = len;
 
     SUB_POINTS( to_point, *point, *centroid );
 
-    curvature = MAGNITUDE( to_point ) / (*base_length);
+    curvature = MAGNITUDE( to_point ) / len;
 
     if( DOT_VECTORS( to_point, *normal ) < 0.0 )
         curvature = -curvature;
