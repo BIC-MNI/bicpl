@@ -16,7 +16,7 @@
 #include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.41 2000-02-06 15:30:56 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.42 2000-06-14 18:14:26 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -445,6 +445,8 @@ public  void  render_volume_to_slice(
             for_less( c, 0, n_dims1 )
             {
                 start_c = tmp_origin[c] + (Real) x * x_axis1[c];
+                if (start_c < 0) start_c = 0;
+                if (start_c >= sizes1[c]) start_c = sizes1[c] - 1;
                 offset += strides1[c] * FLOOR( start_c );
             }
             x_offsets1[i][x] = offset;
@@ -473,6 +475,8 @@ public  void  render_volume_to_slice(
                 for_less( c, 0, n_dims2 )
                 {
                     start_c = tmp_origin[c] + (Real) x * x_axis2[c];
+                    if (start_c < 0) start_c = 0;
+                    if (start_c >= sizes2[c]) start_c = sizes2[c] - 1;
                     offset += strides2[c] * FLOOR( start_c );
                 }
                 x_offsets2[i][x] = offset;

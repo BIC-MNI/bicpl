@@ -1,7 +1,16 @@
+2000-06-14  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Volumes/render.c (render_volume_to_slice): applied patch from
+	John & Peter.  The patch does not fix the root problem, which
+	relates to the calculation of offsets converting from screen
+	pixels to volume voxels. It simply prevents the offsets from
+	stepping outside the volume. The calculation error appears to only
+	affect the edge pixels, so it should not be too serious (apart
+	from the core dumping).
+
 2000-02-06  Steve ROBBINS  <stever@bic.mni.mcgill.ca>
 
-	* Include/bicpl/.cvsignore:
-	* README.CVS: new.
+	* Include/bicpl/.cvsignore: * README.CVS: new.
 
 2000-02-06  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
