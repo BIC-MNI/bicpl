@@ -213,60 +213,108 @@ public  int solve_cubic(
     return num;
 }
 
-private  Boolean  range_may_contain_zero(
+private  Real  evaluate_polynomial(
+    int     n,
+    Real    poly[],
+    Real    u )
+{
+    int     i;
+    Real    val;
+
+    val = 0.0;
+
+    for( i = n-1;  i >= 0;  --i )
+        val = val * u + poly[i];
+
+    return( val );
+}
+
+private  int  get_roots_of_cubic(
     int     n,
     Real    poly[],
     Real    u_min,
-    Real    u_max )
+    Real    u_max,
+    Real    roots[] )
 {
-    int     i;
-    Boolean opposite_signs;
-    Real    min_value, max_value, u_min_power, u_max_power;
-    Real    min_power, max_power;
+    int      n_roots, i, n_inside;
+    Real     cubic[4];
 
-    opposite_signs = (u_min * u_max < 0.0);
-
-    min_value = poly[0];
-    max_value = poly[0];
-    u_min_power = 1.0;
-    u_max_power = 1.0;
-
-    for_less( i, 1, n )
+    for_less( i, 0, 4 )
     {
-        u_min_power *= u_min;
-        u_max_power *= u_max;
-        if( i % 2 == 0 && opposite_signs )
-        {
-            if( poly[i] >= 0.0 )
-            {
-                min_power = 0.0;
-                max_power = poly[i] * MAX( u_min_power, u_max_power );
-            }
-            else
-            {
-                min_power = poly[i] * MAX( u_min_power, u_max_power );
-                max_power = 0.0;
-            }
-        }
+        if( i >= n )
+            cubic[i] = 0.0;
         else
-        {
-            if( poly[i] >= 0.0 )
-            {
-                min_power = poly[i] * MIN( u_min_power, u_max_power );
-                max_power = poly[i] * MAX( u_min_power, u_max_power );
-            }
-            else
-            {
-                min_power = poly[i] * MAX( u_min_power, u_max_power );
-                max_power = poly[i] * MIN( u_min_power, u_max_power );
-            }
-        }
-
-        min_value += min_power;
-        max_value += max_power;
+            cubic[i] = poly[i];
     }
 
-    return( min_value <= 0.0 && max_value >= 0.0 );
+    n_roots = solve_cubic( cubic[3], cubic[2], cubic[1], cubic[0], roots );
+    n_inside = 0;
+    for_less( i, 0, n_roots )
+    {
+        if( u_min <= roots[i] && roots[i] <= u_max )
+        {
+            roots[n_inside] = roots[i];
+            ++n_inside;
+        }
+    }
+
+    return( n_inside );
+}
+
+private  void  check_interval(
+    int     n,
+    Real    poly[],
+    Real    u_min,
+    Real    val_min,
+    Real    u_max,
+    Real    val_max,
+    Real    accuracy,
+    int     *n_roots,
+    Real    roots[] )
+{
+    int    i, which;
+    Real   u_mid, min_diff, diff, val_mid;
+
+    u_mid = (u_max + u_min) / 2.0;
+
+    if( u_max - u_min <= accuracy )
+    {
+        if( *n_roots == n-1 )
+        {
+            which = 0;
+            min_diff = 0.0;
+            for_less( i, 0, *n_roots-1 )
+            {
+                diff = roots[i+1] - roots[i];
+                if( which == 0 || diff < min_diff )
+                {
+                    min_diff = diff;
+                    which = i;
+                }
+            }
+
+            for_less( i, which+1, *n_roots-1 )
+                roots[i] = roots[i+1];
+            --(*n_roots);
+        }
+
+        roots[*n_roots] = u_mid;
+        ++(*n_roots);
+    }
+    else
+    {
+        val_mid = evaluate_polynomial( n, poly, u_mid );
+        if( val_min * val_mid <= 0.0 )
+        {
+            check_interval( n, poly, u_min, val_min, u_mid, val_mid,
+                            accuracy, n_roots, roots );
+        }
+        if( val_mid * val_max <= 0.0 )
+        {
+            check_interval( n, poly, u_mid, val_mid, u_max, val_max,
+                            accuracy, n_roots, roots );
+        }
+    }
 }
 
 public  int  get_roots_of_polynomial(
@@ -274,92 +322,30 @@ public  int  get_roots_of_polynomial(
     Real    poly[],
     Real    u_min,
     Real    u_max,
+    Real    step,
     Real    accuracy,
     Real    roots[] )
 {
-    Boolean              done, may_contain_zero, subdivide;
-    int                  n_roots, i, which, n_inside;
-    Real                 u_mid, diff, min_diff, cubic[4];
-    STACK_STRUCT( Real ) next_u_max;
+    Real       u1, u2, val1, val2;
+    int        n_roots;
 
     if( n <= 4 )
-    {
-        for_less( i, 0, 4 )
-        {
-            if( i >= n )
-                cubic[i] = 0.0;
-            else
-                cubic[i] = poly[i];
-        }
+        return( get_roots_of_cubic( n, poly, u_min, u_max, roots ) );
 
-        n_roots = solve_cubic( cubic[3], cubic[2], cubic[1], cubic[0], roots );
-        n_inside = 0;
-        for_less( i, 0, n_roots )
-        {
-            if( u_min <= roots[i] && roots[i] >= roots[i] )
-            {
-                roots[n_inside] = roots[i];
-                ++n_inside;
-            }
-        }
-        return( n_inside );
-    }
-
-    INITIALIZE_STACK( next_u_max );
-
-    PUSH_STACK( next_u_max, u_max );
-
-    done = FALSE;
     n_roots = 0;
 
-    while( !done )
+    val2 = evaluate_polynomial( n, poly, u_min );
+
+    for( u1 = u_min;  u1 < u_max;  u1 += step )
     {
-        u_mid = (u_min + u_max) / 2.0;
-        subdivide = (u_max - u_min > accuracy);
-        may_contain_zero = range_may_contain_zero( n, poly, u_min, u_max );
+        val1 = val2;
+        u2 = u1 + step;
+        val2 = evaluate_polynomial( n, poly, u2 );
 
-        if( may_contain_zero && subdivide )
-        {
-            PUSH_STACK( next_u_max, u_max );
-            u_max = u_mid;
-        }
-        else
-        {
-            if( may_contain_zero && (n_roots == 0 || roots[n_roots-1] != u_mid))
-            {
-                if( n_roots == n-1 )
-                {
-                    which = 0;
-                    min_diff = 0.0;
-                    for_less( i, 0, n_roots-1 )
-                    {
-                        diff = roots[i+1] - roots[i];
-                        if( which == 0 || diff < min_diff )
-                        {
-                            min_diff = diff;
-                            which = i;
-                        }
-                    }
-
-                    for_less( i, which+1, n_roots-1 )
-                        roots[i] = roots[i+1];
-                    --n_roots;
-                }
-                roots[n_roots] = u_mid;
-                ++n_roots;
-            }
-
-            if( IS_STACK_EMPTY( next_u_max ) )
-                done = TRUE;
-            else
-            {
-                u_min = u_max;
-                POP_STACK( next_u_max, u_max );
-            }
-        }
+        if( val1 * val2 <= 0.0 )
+            check_interval( n, poly, u1, val1, u2, val2, accuracy,
+                            &n_roots, roots );
     }
-
-    DELETE_STACK( next_u_max );
 
     return( n_roots );
 }
