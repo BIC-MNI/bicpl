@@ -30,7 +30,7 @@ public  void  initialize_polygons(
     polygons->points = (Point *) 0;
     polygons->normals = (Vector *) 0;
 
-    polygons->line_thickness = 1;
+    polygons->line_thickness = 1.0;
 
     polygons->n_items = 0;
     polygons->end_indices = (int *) 0;
