@@ -13,12 +13,12 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
-#include  <numerical.h>
+#include  <bicpl/geom.h>
+#include  <bicpl/numerical.h>
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Testing/r.c,v 1.2 2000-02-05 21:27:14 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Testing/r.c,v 1.3 2000-02-06 15:30:48 stever Exp $";
 #endif
 
 

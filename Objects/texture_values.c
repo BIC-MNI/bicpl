@@ -13,12 +13,12 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.4 2000-02-05 21:27:11 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.5 2000-02-06 15:30:46 stever Exp $";
 #endif
 
 #include  <netcdf.h>
 #include  <volume_io/internal_volume_io.h>
-#include  <objects.h>
+#include  <bicpl/objects.h>
 
 private  Status  output_texture_values_ascii(
     STRING   filename,

@@ -14,4 +14,3 @@ libbicpl_la_LIBADD = \
 	$(top_builddir)/Marching_cubes/libbicpl_mc.la \
 	$(top_builddir)/Objects/libbicpl_o.la \
 	$(top_builddir)/Transforms/libbicpl_t.la
-

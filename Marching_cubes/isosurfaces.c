@@ -1,4 +1,4 @@
-#include  <marching.h>
+#include  <bicpl/marching.h>
 #include  <volume_io/internal_volume_io.h>
 
 private  int  get_polygons(
@@ -132,8 +132,8 @@ public  Point_classes  get_isosurface_point(
             point_class = ON_SECOND_CORNER;
             alpha = 1.0;
         }
-        else if( val1 < min_value && val2 > min_value ||
-                 val1 > min_value && val2 < min_value )
+        else if( (val1 < min_value && val2 > min_value) ||
+                 (val1 > min_value && val2 < min_value) )
         {
             point_class = ON_EDGE;
             alpha = (min_value - val1) / (val2 - val1);

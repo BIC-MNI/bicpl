@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
+#include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/generate_tube.c,v 1.5 2000-02-05 21:26:51 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/generate_tube.c,v 1.6 2000-02-06 15:30:13 stever Exp $";
 #endif
 
 private  void  project_vector_to_plane(

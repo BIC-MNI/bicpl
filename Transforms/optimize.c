@@ -14,11 +14,11 @@
 ---------------------------------------------------------------------------- */
 
 #include <volume_io/internal_volume_io.h>
-#include <trans.h>
-#include <numerical.h>
+#include <bicpl/trans.h>
+#include <bicpl/numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.14 2000-02-05 21:27:20 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.15 2000-02-06 15:30:50 stever Exp $";
 #endif
 
 #define   FUNCTION_TOLERANCE    1e-6

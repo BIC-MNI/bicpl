@@ -1,6 +1,6 @@
 #include  <volume_io/internal_volume_io.h>
-#include  <numerical.h>
-#include  <prog_utils.h>
+#include  <bicpl/numerical.h>
+#include  <bicpl/prog_utils.h>
 
 #define  LSQ_TYPE      float
 #define  MINIMIZE_LSQ  minimize_lsq

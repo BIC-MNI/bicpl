@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include <volume_io/internal_volume_io.h>
-#include <numerical.h>
+#include <bicpl/numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.5 2000-02-05 21:27:03 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.6 2000-02-06 15:30:40 stever Exp $";
 #endif
 
 #define  MAX_ITERATIONS  30

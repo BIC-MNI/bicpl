@@ -26,11 +26,11 @@
 ---------------------------------------------------------------------------- */
 
 #include <volume_io/internal_volume_io.h>
-#include <trans.h>
-#include <numerical.h>
+#include <bicpl/trans.h>
+#include <bicpl/numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/procrustes.c,v 1.13 2000-02-05 21:27:20 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/procrustes.c,v 1.14 2000-02-06 15:30:50 stever Exp $";
 #endif
 
 private  Real  trace_of_matrix(

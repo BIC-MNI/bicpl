@@ -13,11 +13,11 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <numerical.h>
+#include  <bicpl/numerical.h>
 #include  <limits.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.23 2000-02-05 21:27:04 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.24 2000-02-06 15:30:41 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -366,7 +366,7 @@ private  int  get_roots_of_cubic(
     n_inside = 0;
     for_less( i, 0, n_roots )
     {
-        if( u_min > u_max || u_min <= roots[i] && roots[i] <= u_max )
+        if( u_min > u_max || (u_min <= roots[i] && roots[i] <= u_max) )
         {
             roots[n_inside] = roots[i];
             ++n_inside;

@@ -13,11 +13,11 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <vols.h>
-#include  <numerical.h>
+#include  <bicpl/vols.h>
+#include  <bicpl/numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.32 2000-02-05 21:27:26 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.33 2000-02-06 15:30:55 stever Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10
@@ -100,10 +100,10 @@ private  int  clip_points(
 
                     if( i > 0 )
                     {
-                        if( dist < -DISTANCE_THRESHOLD &&
-                            prev_dist > DISTANCE_THRESHOLD ||
-                            dist > DISTANCE_THRESHOLD &&
-                            prev_dist < -DISTANCE_THRESHOLD )
+                        if( (dist < -DISTANCE_THRESHOLD &&
+                            prev_dist > DISTANCE_THRESHOLD) ||
+                            (dist > DISTANCE_THRESHOLD &&
+                            prev_dist < -DISTANCE_THRESHOLD) )
                         {
                             ratio = prev_dist / (prev_dist - dist);
                             if( ratio > DISTANCE_THRESHOLD &&

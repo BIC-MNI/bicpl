@@ -1,6 +1,6 @@
 #include  <volume_io/internal_volume_io.h>
-#include  <objects.h>
-#include  <images.h>
+#include  <bicpl/objects.h>
+#include  <bicpl/images.h>
 
 private  BOOLEAN  is_clear_slab(
     pixels_struct  *pixels,

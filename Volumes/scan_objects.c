@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_objects.c,v 1.7 2000-02-05 21:27:28 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_objects.c,v 1.8 2000-02-06 15:30:57 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -75,6 +75,9 @@ public  void  scan_object_to_volume(
                                    volume, label_volume,
                                    label );
             break;
+	default:
+	    print_error("scan_object_to_volume: object type %d not handled.\n",
+			get_object_type( current_object ) );
         }
     }
 }

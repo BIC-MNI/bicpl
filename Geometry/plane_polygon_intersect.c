@@ -1,5 +1,5 @@
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
+#include  <bicpl/geom.h>
 
 private  void  coalesce_lines(
     lines_struct   *lines )
@@ -181,7 +181,7 @@ public  void   intersect_planes_with_polygons(
 
             /*--- check if it intersects the line segment [p1 .. p2)  */
 
-            if( t1 == 0.0 || t1 > 0.0 && t2 < 0.0 || t1 < 0.0 && t2 > 0.0 )
+            if( t1 == 0.0 || (t1 > 0.0 && t2 < 0.0) || (t1 < 0.0 && t2 > 0.0) )
             {
                 if( n_points < 2 )
                 {
@@ -259,7 +259,7 @@ public  void   intersect_planes_with_quadmesh(
     lines_struct      *lines )
 {
     int                 n_points, p, index, m, n, x_index, y_index;
-    int                 poly, edge, size;
+    int                 edge;
     int                 point_index1, point_index2, indices[4];
     Vector              v1, v2;
     Point               point, *points;
@@ -304,7 +304,7 @@ public  void   intersect_planes_with_quadmesh(
 
                 /*--- check if it intersects the line segment [p1 .. p2)  */
 
-                if( t1 == 0.0 || t1 > 0.0 && t2 < 0.0 || t1 < 0.0 && t2 > 0.0 )
+                if( t1 == 0.0 || (t1 > 0.0 && t2 < 0.0) || (t1 < 0.0 && t2 > 0.0) )
                 {
                     if( n_points < 2 )
                     {

@@ -13,11 +13,11 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <data_structures.h>
-#include  <prog_utils.h>
+#include  <bicpl/data_structures.h>
+#include  <bicpl/prog_utils.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.11 2000-02-05 21:26:49 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.12 2000-02-06 15:30:12 stever Exp $";
 #endif
 
 private  int  get_random_level( void );

@@ -13,12 +13,12 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.5 2000-02-05 21:26:51 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.6 2000-02-06 15:30:14 stever Exp $";
 #endif
 
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
-#include  <priority_queue.h>
+#include  <bicpl/geom.h>
+#include  <bicpl/priority_queue.h>
 
 public  int  compute_distances_from_point(
     polygons_struct   *polygons,

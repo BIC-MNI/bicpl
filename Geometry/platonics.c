@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
+#include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/platonics.c,v 1.3 2000-02-05 21:26:53 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/platonics.c,v 1.4 2000-02-06 15:30:16 stever Exp $";
 #endif
 
 private  void  fill_in_indices(

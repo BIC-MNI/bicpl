@@ -1,5 +1,5 @@
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
+#include  <bicpl/geom.h>
 
 #define  STATIC_STORAGE  1000
 
@@ -148,7 +148,7 @@ public  int  clip_polygon_against_plane(
             ++n_output;
         }
 
-        if( (n_points > 2 || p == 0 && n_points == 2)
+        if( (n_points > 2 || (p == 0 && n_points == 2))
             && dist * next_dist < 0.0 )
         {
             ratio = dist / (dist - next_dist);
@@ -201,7 +201,7 @@ public  void  split_polygon_with_plane(
             ++(*n_out);
         }
 
-        if( (n_points > 2 || p == 0 && n_points == 2)
+        if( (n_points > 2 || (p == 0 && n_points == 2))
             && dist * next_dist < 0.0 )
         {
             ratio = dist / (dist - next_dist);

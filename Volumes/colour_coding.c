@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <vols.h>
+#include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.24 2000-02-05 21:27:23 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.25 2000-02-06 15:30:53 stever Exp $";
 #endif
 
 private  void  interpolate_colours(

@@ -22,7 +22,10 @@
 @GLOBALS    : 
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : $Log: safe_compute_xfm.c,v $
-@MODIFIED   : Revision 1.10  2000-02-05 21:27:21  stever
+@MODIFIED   : Revision 1.11  2000-02-06 15:30:51  stever
+@MODIFIED   : rearranged header file structure; add gcc -Wall fixes
+@MODIFIED   :
+@MODIFIED   : Revision 1.10  2000/02/05 21:27:21  stever
 @MODIFIED   : change include lines <foo.h> --> <bicpl/foo.h>
 @MODIFIED   :
 @MODIFIED   : Revision 1.9  1995/10/19 15:48:59  david
@@ -63,10 +66,10 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <volume_io/internal_volume_io.h>
-#include <trans.h>
+#include <bicpl/trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.10 2000-02-05 21:27:21 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.11 2000-02-06 15:30:51 stever Exp $";
 #endif
 
 #define NO_FORK

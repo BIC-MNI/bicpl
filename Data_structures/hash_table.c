@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <data_structures.h>
+#include  <bicpl/data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.12 2000-02-05 21:26:48 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.13 2000-02-06 15:30:11 stever Exp $";
 #endif
 
 #define  HASH_FUNCTION_CONSTANT          0.6180339887498948482

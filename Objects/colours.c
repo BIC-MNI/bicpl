@@ -14,10 +14,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <objects.h>
+#include  <bicpl/objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.9 2000-02-05 21:27:06 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.10 2000-02-06 15:30:42 stever Exp $";
 #endif
 
 private Colour ANTIQUE_WHITE_COL;

@@ -1,5 +1,5 @@
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
+#include  <bicpl/geom.h>
 
 #undef   USE_FAST_APPROX
 #define  USE_FAST_APPROX

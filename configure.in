@@ -52,6 +52,7 @@ dnl AC_CHECK_TYPE(bool,int)
 
 AC_OUTPUT( 
 Makefile
+Include/Makefile Include/bicpl/Makefile
 Data_structures/Makefile
 Transforms/Makefile
 Geometry/Makefile
@@ -61,5 +62,4 @@ Prog_utils/Makefile
 Volumes/Makefile
 Marching_cubes/Makefile
 Images/Makefile
-Include/Makefile
 )

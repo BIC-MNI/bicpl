@@ -30,10 +30,10 @@
 ---------------------------------------------------------------------------- */
 
 #include <volume_io/internal_volume_io.h>
-#include <trans.h>
+#include <bicpl/trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.11 2000-02-05 21:27:19 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.12 2000-02-06 15:30:49 stever Exp $";
 #endif
 
 /* prototype definitions: */

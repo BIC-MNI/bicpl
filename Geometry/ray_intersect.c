@@ -13,12 +13,12 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
-#include  <numerical.h>
+#include  <bicpl/geom.h>
+#include  <bicpl/numerical.h>
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.30 2000-02-05 21:26:54 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.31 2000-02-06 15:30:17 stever Exp $";
 #endif
 
 

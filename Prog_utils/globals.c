@@ -13,11 +13,11 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <prog_utils.h>
-#include  <objects.h>
+#include  <bicpl/prog_utils.h>
+#include  <bicpl/objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.14 2000-02-05 21:27:12 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.15 2000-02-06 15:30:47 stever Exp $";
 #endif
 
 static    Status  input_global_variable( int, global_struct [],

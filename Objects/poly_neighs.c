@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <objects.h>
+#include  <bicpl/objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.21 2000-02-05 21:27:09 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.22 2000-02-06 15:30:45 stever Exp $";
 #endif
 
 #define  SMALL_CHUNK_SIZE          4
@@ -390,8 +390,8 @@ private   void   create_polygon_neighbours(
                 i1 = polygons->indices[POINT_INDEX(polygons->end_indices,
                                                    poly1,(edge1+1)%size1)];
 
-                if( i0 == point1 && i1 == point2 ||
-                    i1 == point1 && i0 == point2 )
+                if( (i0 == point1 && i1 == point2) ||
+                    (i1 == point1 && i0 == point2) )
                     break;
             }
 
@@ -406,8 +406,8 @@ private   void   create_polygon_neighbours(
                 i1 = polygons->indices[POINT_INDEX(polygons->end_indices,
                                                    poly2,(edge2+1)%size2)];
 
-                if( i0 == point1 && i1 == point2 ||
-                    i1 == point1 && i0 == point2 )
+                if( (i0 == point1 && i1 == point2) ||
+                    (i1 == point1 && i0 == point2) )
                     break;
             }
 

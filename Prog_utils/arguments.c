@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <prog_utils.h>
+#include  <bicpl/prog_utils.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.12 2000-02-05 21:27:12 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.13 2000-02-06 15:30:47 stever Exp $";
 #endif
 
 typedef struct
@@ -177,11 +177,11 @@ public  BOOLEAN  get_real_argument(
     BOOLEAN   found;
 
     if( arguments_remaining() &&
-        (real_is_double() &&
-         sscanf( get_current_argument_string(), "%lf", (double *) value ) ==1 ||
-         !real_is_double() &&
-         sscanf( get_current_argument_string(), "%f", (float *) value ) == 1
-        ) )
+        ((real_is_double() &&
+	  sscanf( get_current_argument_string(), "%lf", (double *) value ) == 1) ||
+         (!real_is_double() &&
+	  sscanf( get_current_argument_string(), "%f", (float *) value ) == 1))
+	)
     {
         advance_argument();
         found = TRUE;

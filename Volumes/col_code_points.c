@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <vols.h>
+#include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_points.c,v 1.7 2000-02-05 21:27:23 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_points.c,v 1.8 2000-02-06 15:30:53 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -129,5 +129,8 @@ public  void  colour_code_object(
                             &lines->colour_flag, &lines->colours,
                             lines->n_points, lines->points );
         break;
+    default:
+	print_error( "colour_code_object: object type %d not handled.\n", 
+		     object->object_type );
     }
 }

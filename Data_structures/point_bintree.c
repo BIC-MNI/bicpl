@@ -13,11 +13,11 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <data_structures.h>
-#include  <geom.h>
+#include  <bicpl/data_structures.h>
+#include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/point_bintree.c,v 1.8 2000-02-05 21:26:48 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/point_bintree.c,v 1.9 2000-02-06 15:30:11 stever Exp $";
 #endif
 
 private  void  recursive_find_closest_point(

@@ -79,10 +79,10 @@ Tue Jun  8 08:44:59 EST 1993 LC
 ---------------------------------------------------------------------------- */
 
 #include <volume_io/internal_volume_io.h>
-#include <trans.h>
+#include <bicpl/trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.19 2000-02-05 21:27:21 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.20 2000-02-06 15:30:51 stever Exp $";
 #endif
 
 #ifdef DEBUG

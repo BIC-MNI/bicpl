@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <objects.h>
+#include  <bicpl/objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.11 2000-02-05 21:27:10 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.12 2000-02-06 15:30:46 stever Exp $";
 #endif
 
 #define  NUM_PIXELS8   256

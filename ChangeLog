@@ -1,3 +1,52 @@
+2000-02-06  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* autogen.sh: new.
+
+	* Marching_cubes/marching_cube_data.h: moved here from Include.
+	* Marching_cubes/Makefile.am (libbicpl_mc_la_SOURCES): add
+	marching_cube_data.h
+
+	* */*.c: changed all include directives from <foo.h> to <bicpl/foo.h>.
+	* Include/*.h: removed all unused headers; moved all but bicpl.h
+	into Include/bicpl.
+	* configure.in (AC_OUTPUT): add Include/bicpl/Makefile.
+
+	* Include/bicpl/minimization.h (downhill_simplex_struct): fully
+	prototype evaluate_fit_function.
+
+	* version.c: make version string non static.
+
+	* Images/rgb_io.c (error_function): defined by not used,
+	if HAVE_IMAGE_H not defined; moved definition into conditionally
+	compiled code.
+
+	* Marching_cubes/marching_tetra.c (translate_to_edge_index): 
+	* Marching_cubes/isosurfaces.c (get_isosurface_point): 
+	* Volumes/call_rend_f_include.c: 
+	* Volumes/mapping.c (clip_points): 
+	* Volumes/interpolate.c (interpolate_volume_to_slice): 
+	* Volumes/dilate.c (dilate_voxels_3d): 
+	* Volumes/create_slice.c (create_weighted_volume_slices): 
+	* Prog_utils/arguments.c (get_real_argument): 
+	* Objects/polygons.c (add_point_to_polygon, find_edge_index): 
+	* Objects/poly_neighs.c (create_polygon_neighbours): 
+	* Numerical/numerical.c (get_roots_of_cubic): 
+	* Geometry/polygon_sphere.c (get_tessellation_with_n_points): 
+	* Geometry/plane_polygon_intersect.c (intersect_planes_with_polygons, 
+	intersect_planes_with_quadmesh): 
+	* Geometry/clip_3d.c (clip_polygon_against_plane, 
+	split_polygon_with_plane): 
+	* Data_structures/build_bintree.c (split_node): small changes to
+	placate "gcc -Wall", e.g.  add parentheses around && within ||,
+	remove unused variables, add braces to avoid ambiguous else.
+
+	* Volumes/scan_objects.c (scan_object_to_volume): 
+	* Volumes/col_code_points.c (colour_code_object): several object types
+	not handled in switch; add default case that prints error message.
+
+	* Objects/object_io.c (io_object_type): object type N_OBJECT_TYPES
+	is not handled in switch; return error.
+
 Thu Jan 20 01:36:43 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Include/globals.h: fix includes.

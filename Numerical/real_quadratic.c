@@ -1,5 +1,5 @@
 #include  <volume_io/internal_volume_io.h>
-#include  <numerical.h>
+#include  <bicpl/numerical.h>
 
 public  void  initialize_quadratic_real(
     int              n_parameters,

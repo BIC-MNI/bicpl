@@ -13,12 +13,12 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <objects.h>
-#include  <geom.h>
-#include  <trans.h>
+#include  <bicpl/objects.h>
+#include  <bicpl/geom.h>
+#include  <bicpl/trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.39 2000-02-05 21:27:10 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.40 2000-02-06 15:30:45 stever Exp $";
 #endif
 
 private  void  reverse_polygon_order(
@@ -357,8 +357,8 @@ public  void  add_point_to_polygon(
 
     if( polygons->n_points > 1 )
     {
-        if( normal != (Vector *) 0 && polygons->normals == (Vector *) 0 ||
-            normal == (Vector *) 0 && polygons->normals != (Vector *) 0 )
+        if( (normal != (Vector *) 0 && polygons->normals == (Vector *) 0) ||
+            (normal == (Vector *) 0 && polygons->normals != (Vector *) 0) )
         {
             print_error(
               "Error: be consistent with normals in add_point_to_polygon.\n" );
@@ -525,8 +525,8 @@ public  int  find_edge_index(
         p2 = polygons->indices[POINT_INDEX(polygons->end_indices,poly,
                                (e+1)%size)];
 
-        if( p1 == point_index1 && p2 == point_index2 ||
-            p1 == point_index2 && p2 == point_index1 )
+        if( (p1 == point_index1 && p2 == point_index2) ||
+            (p1 == point_index2 && p2 == point_index1) )
         {
             ind = e;
             break;

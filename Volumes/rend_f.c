@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <vols.h>
+#include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.6 2000-02-05 21:27:27 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.7 2000-02-06 15:30:56 stever Exp $";
 #endif
 
 #include  "render_funcs_include.c"

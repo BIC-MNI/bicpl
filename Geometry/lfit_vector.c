@@ -1,5 +1,5 @@
 #include <volume_io/internal_volume_io.h>
-#include <geom.h>
+#include <bicpl/geom.h>
 
 static float sqrarg;
 #define SQR(a) (sqrarg=(a),sqrarg*sqrarg)

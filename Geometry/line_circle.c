@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
+#include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/line_circle.c,v 1.10 2000-02-05 21:26:52 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/line_circle.c,v 1.11 2000-02-06 15:30:15 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -1,6 +1,6 @@
 #include  <volume_io/internal_volume_io.h>
-#include  <objects.h>
-#include  <geom.h>
+#include  <bicpl/objects.h>
+#include  <bicpl/geom.h>
 
 #define  N_BOX_RATIO   0.05
 #define  MIN_N_BOXES   10

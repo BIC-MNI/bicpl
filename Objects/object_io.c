@@ -13,11 +13,11 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <objects.h>
-#include  <geom.h>
+#include  <bicpl/objects.h>
+#include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.26 2000-02-05 21:27:08 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.27 2000-02-06 15:30:44 stever Exp $";
 #endif
 
 private  Status  io_vectors(
@@ -1054,6 +1054,9 @@ public  Status  io_object_type(
         case  POLYGONS:    ch = 'p';    break;
         case  QUADMESH:    ch = 'q';    break;
         case  TEXT:        ch = 't';    break;
+	default: 
+            print_error( "io_object_type: object type %d not handled.\n", type );
+            return ERROR;
         }
 
         if( format == ASCII_FORMAT )

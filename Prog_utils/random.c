@@ -13,11 +13,11 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <prog_utils.h>
+#include  <bicpl/prog_utils.h>
 #include  <sys/time.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.11 2000-02-05 21:27:13 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.12 2000-02-06 15:30:47 stever Exp $";
 #endif
 
 #define  MAX_RAND  2147483648.0

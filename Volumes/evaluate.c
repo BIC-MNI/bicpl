@@ -1,6 +1,6 @@
 #include  <volume_io/internal_volume_io.h>
-#include  <vols.h>
-#include  <numerical.h>
+#include  <bicpl/vols.h>
+#include  <bicpl/numerical.h>
 
 private  void   trilinear_interpolate_volume(
     Volume         volume,

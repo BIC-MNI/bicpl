@@ -13,11 +13,11 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <numerical.h>
-#include  <data_structures.h>
+#include  <bicpl/numerical.h>
+#include  <bicpl/data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.13 2000-02-05 21:27:05 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.14 2000-02-06 15:30:41 stever Exp $";
 #endif
 
 #define  DEFAULT_N_MEDIAN_BOXES    100000

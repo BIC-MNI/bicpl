@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <numerical.h>
+#include  <bicpl/numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gradient_minimize.c,v 1.4 2000-02-05 21:27:02 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gradient_minimize.c,v 1.5 2000-02-06 15:30:39 stever Exp $";
 #endif
 
 #define  SMALLEST_STEP_SIZE     1.0e-20

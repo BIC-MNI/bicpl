@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <vols.h>
+#include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.13 2000-02-05 21:27:29 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.14 2000-02-06 15:30:57 stever Exp $";
 #endif
 
 #define  TALAIRACH_OFFSET   16.0

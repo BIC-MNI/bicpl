@@ -14,12 +14,12 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/t.c,v 1.2 2000-02-05 21:26:57 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/t.c,v 1.3 2000-02-06 15:30:19 stever Exp $";
 #endif
 
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
-#include  <trans.h>
+#include  <bicpl/geom.h>
+#include  <bicpl/trans.h>
 
 public  BOOLEAN  get_interpolation_weights_2d(
     Real   x,

@@ -14,14 +14,14 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.12 2000-02-05 21:26:56 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.13 2000-02-06 15:30:18 stever Exp $";
 #endif
 
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
-#include  <trans.h>
-#include  <numerical.h>
-#include  <prog_utils.h>
+#include  <bicpl/geom.h>
+#include  <bicpl/trans.h>
+#include  <bicpl/numerical.h>
+#include  <bicpl/prog_utils.h>
 
 public  BOOLEAN  get_interpolation_weights_2d(
     Real   x,
@@ -78,8 +78,8 @@ public  BOOLEAN  get_interpolation_weights_2d(
 #ifdef   DEBUG
 #define  DEBUG
 
-#include <prog_utils.h>
-#include <numerical.h>
+#include <bicpl/prog_utils.h>
+#include <bicpl/numerical.h>
 
 private  void  test_solution(
     int    dim,

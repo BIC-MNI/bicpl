@@ -2,7 +2,7 @@
          BOOLEAN  one_slice;
          one_slice = ( n_slices1 == 1 && weights1[0] == 1.0 &&
          (volume_data2 == (void *) NULL ||
-         n_slices2 == 1 && weights2[0] == 1.0) );
+         (n_slices2 == 1 && weights2[0] == 1.0)) );
 
          switch( volume1_type )
          {

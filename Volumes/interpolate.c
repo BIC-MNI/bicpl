@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <vols.h>
+#include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.10 2000-02-05 21:27:26 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.11 2000-02-06 15:30:55 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -85,7 +85,7 @@ public  void  interpolate_volume_to_slice(
 #endif
 
     if( is_an_rgb_volume( volume1 ) ||
-        volume2 != NULL && is_an_rgb_volume( volume2 ) )
+        (volume2 != NULL && is_an_rgb_volume( volume2 )) )
         degrees_continuity = -1;
 
     get_volume_voxel_range( volume1, &min_voxel1, &max_voxel1 );

@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.12 2000-02-05 21:27:24 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.13 2000-02-06 15:30:54 stever Exp $";
 #endif
 
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
@@ -161,18 +161,18 @@ public  int  dilate_voxels_3d(
                             value = value_row[z];
 
                         inside = (min_inside_label > max_inside_label ||
-                                  min_inside_label <= label &&
-                                  label <= max_inside_label)           &&
+                                  (min_inside_label <= label &&
+                                  label <= max_inside_label))           &&
                                  (min_inside_value > max_inside_value ||
-                                  min_inside_value <= value &&
-                                  value <= max_inside_value);
+                                  (min_inside_value <= value &&
+                                  value <= max_inside_value));
 
                         outside = (min_outside_label > max_outside_label ||
-                                   min_outside_label <= label &&
-                                   label <= max_outside_label)           &&
+                                   (min_outside_label <= label &&
+                                   label <= max_outside_label))           &&
                                   (min_outside_value > max_outside_value ||
-                                   min_outside_value <= value &&
-                                   value <= max_outside_value);
+                                   (min_outside_value <= value &&
+                                   value <= max_outside_value));
 
                         if( inside_specified )
                         {

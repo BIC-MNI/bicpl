@@ -13,11 +13,11 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <geom.h>
-#include  <numerical.h>
+#include  <bicpl/geom.h>
+#include  <bicpl/numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.15 2000-02-05 21:26:54 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.16 2000-02-06 15:30:16 stever Exp $";
 #endif
 
 private  int  get_n_sphere_points(
@@ -517,7 +517,7 @@ public  int  get_tessellation_with_n_points(
 
     n_sol = solve_quadratic( a, b, c, &s1, &s2 );
 
-    if( n_sol == 1 || n_sol == 2 && s2 <= 0.0 )
+    if( n_sol == 1 || (n_sol == 2 && s2 <= 0.0) )
     {
         if( s1 > 0.0 )
             return( ROUND( s1 ) );

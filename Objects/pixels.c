@@ -13,12 +13,12 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <objects.h>
-#include  <geom.h>
-#include  <trans.h>
+#include  <bicpl/objects.h>
+#include  <bicpl/geom.h>
+#include  <bicpl/trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.25 2000-02-05 21:27:09 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.26 2000-02-06 15:30:45 stever Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -13,10 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #include  <volume_io/internal_volume_io.h>
-#include  <vols.h>
+#include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.3 2000-02-05 21:27:23 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.4 2000-02-06 15:30:53 stever Exp $";
 #endif
 
 #define    DEFAULT_USER_DEFINED_COLOUR_CODE_SUFFIX      "ccd"

@@ -1,6 +1,6 @@
 
 #include  <volume_io/internal_volume_io.h>
-#include  <marching.h>
+#include  <bicpl/marching.h>
 
 #define  MAX_POLYGONS_PER_VOXEL  5
 #define  MAX_INDICES_PER_VOXEL   20
@@ -239,7 +239,7 @@ public  void  translate_to_edge_index(
 {
     int     tmp, edge;
 
-    if( x2 < x1 || x1 == x2 && y2 < y1 || x1 == x2 && y1 == y2 && z2 < z1 )
+    if( x2 < x1 || (x1 == x2 && y2 < y1) || (x1 == x2 && y1 == y2 && z2 < z1) )
     {
         tmp = x1;
         x1 = x2;

@@ -1,3 +1,3 @@
 #include <config.h>
 
-static char* rcsid = PACKAGE " v" VERSION;
+char* bicpl_version_string = PACKAGE " v" VERSION;

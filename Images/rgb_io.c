@@ -1,12 +1,18 @@
 #include <volume_io/internal_volume_io.h>
-#include <objects.h>
-#include <images.h>
+#include <bicpl/objects.h>
+#include <bicpl/images.h>
 
-static  void  error_function(
-    char  error[] );
 
 #ifdef  HAVE_IMAGE_H
 #include <image.h>
+
+
+static  void  error_function(
+    char  error[] )
+{
+    print_error( error );
+}
+
 
 extern  unsigned short *ibufalloc(IMAGE *image);
 
@@ -163,8 +169,3 @@ public  Status  output_rgb_file(
     return( OK );
 }
 
-static  void  error_function(
-    char  error[] )
-{
-    print_error( error );
-}
