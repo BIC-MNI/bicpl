@@ -102,6 +102,7 @@ public  Status  create_sphere_from_polygons( polygons, sphere, centre,
             }
         }
 
+#ifdef DEFORM
         deform.deform_data.type = SPHERE_DATA;
         deform.deform_data.sphere_centre = *centre;
         deform.deform_data.sphere_x_size = x_radius;
@@ -117,6 +118,7 @@ public  Status  create_sphere_from_polygons( polygons, sphere, centre,
 
         if( status == OK )
             status = deform_polygons( sphere, &deform );
+#endif
     }
 
     return( status );
