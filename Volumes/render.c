@@ -1,3 +1,4 @@
+#include  <internal_volume_io.h>
 #include  <vols.h>
 
 private  void  clip(
@@ -67,14 +68,16 @@ public  void  render_volume_to_slice(
     Colour          empty_colour,
     pixels_struct   *pixels )
 {
-    int   i, c, p, total_cases, case_index, case_multiplier, offset, int_start;
-    int   s, x, y, n_cases1[MAX_DIMENSIONS], n_cases2[MAX_DIMENSIONS];
-    int   **x_offsets1, **y_offsets1, *start_x, *end_x;
-    int   **x_offsets2, **y_offsets2;
-    int   ***which_x_offsets1, ***which_x_offsets2;
-    int   remainder_case, x_size, y_size;
-    Real  start_c, x_start, x_end, remainder, tmp_origin[MAX_DIMENSIONS];
-    Real  remainder_offset, left_edge, right_edge, delta;
+    int     i, c, p, total_cases, case_index, case_multiplier;
+    int     offset, int_start;
+    int     s, x, y, n_cases1[MAX_DIMENSIONS], n_cases2[MAX_DIMENSIONS];
+    int     **x_offsets1, **y_offsets1, *start_x, *end_x;
+    int     **x_offsets2, **y_offsets2;
+    int     ***which_x_offsets1, ***which_x_offsets2;
+    int     remainder_case, x_size, y_size;
+    void    **start_slices1, **start_slices2;
+    Real    start_c, x_start, x_end, remainder, tmp_origin[MAX_DIMENSIONS];
+    Real    remainder_offset, left_edge, right_edge, delta;
     static  int   max_cases[MAX_DIMENSIONS] = { 10, 10, 4, 3, 3 };
 
     x_size = pixels->x_size;
@@ -127,6 +130,7 @@ public  void  render_volume_to_slice(
 
     ALLOC2D( y_offsets1, n_slices1, y_size );
     ALLOC2D( which_x_offsets1, n_slices1, y_size );
+    ALLOC( start_slices1, n_slices1 );
 
     if( volume_data2 != (void *) NULL )
     {
@@ -178,6 +182,7 @@ public  void  render_volume_to_slice(
 
         ALLOC2D( y_offsets2, n_slices2, y_size );
         ALLOC2D( which_x_offsets2, n_slices2, y_size );
+        ALLOC( start_slices2, n_slices2 );
     }
 
     ALLOC( start_x, y_size );
@@ -352,14 +357,16 @@ public  void  render_volume_to_slice(
     FREE2D( x_offsets1 );
     FREE2D( y_offsets1 );
     FREE2D( which_x_offsets1 );
+    FREE( start_slices1 );
 
     if( volume_data2 != (void *) NULL )
     {
         FREE2D( x_offsets2 );
         FREE2D( y_offsets2 );
         FREE2D( which_x_offsets2 );
+        FREE( start_slices2 );
     }
 
-    FREE( start_x );
     FREE( end_x );
+    FREE( start_x );
 }
