@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.6 1995-08-14 18:08:45 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.7 1995-09-26 14:25:20 david Exp $";
 #endif
 
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
@@ -46,7 +46,7 @@ typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  dilate_labeled_voxels_3d(
+public  int  dilate_labeled_voxels_3d(
     Volume          volume,
     Volume          label_volume,
     int             min_inside_label,
@@ -60,6 +60,7 @@ public  void  dilate_labeled_voxels_3d(
     int             new_label,
     Neighbour_types connectivity )
 {
+    int                     n_changed;
     int                     x, y, z, delta_x, tx, ty, tz;
     int                     sizes[N_DIMENSIONS];
     int                     dir, n_dirs, label, *dx, *dy, *dz;
@@ -107,6 +108,8 @@ public  void  dilate_labeled_voxels_3d(
 
     initialize_progress_report( &progress, FALSE, sizes[X],
                                 "Expanding labeled voxels" );
+
+    n_changed = 0;
 
     for_less( x, 0, sizes[X] )
     {
@@ -195,6 +198,7 @@ public  void  dilate_labeled_voxels_3d(
                             set_volume_label_data_5d( label_volume,
                                                       x, y, z, 0, 0,
                                                       new_label );
+                            ++n_changed;
                             break;
                         }
                     }
@@ -214,4 +218,6 @@ public  void  dilate_labeled_voxels_3d(
 
     for_less( x, 0, 3 )
         FREE2D( voxel_classes[x] );
+
+    return( n_changed );
 }

@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.13 1995-09-19 18:23:53 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.14 1995-09-26 14:25:17 david Exp $";
 #endif
 
 
@@ -61,7 +61,7 @@ private  BOOLEAN   intersect_ray_polygon_points(
     Vector   normal;
     Real     n_dot_d, n_dot_o, t, plane_const, nx, ny, nz;
     Real     cx, cy, cz;
-    Point    centroid, pt;
+    Point    pt;
     int      p;
 
     intersects = FALSE;
