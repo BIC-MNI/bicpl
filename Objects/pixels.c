@@ -144,6 +144,107 @@ public  void  convert_pixels24_to_gray_scale(
     }
 }
 
+public  void  convert_pixels24_to_dithered(
+    pixels_struct   *pixels_rgb,
+    pixels_struct   *pixels_8,
+    int             n_colours,
+    Colour          colour_table[] )
+{
+    int      x, y, dir, error_row, c, comp[3], used[3];
+    int      first_x, last_x, ind, one, three, five, seven, error;
+    Colour   col;
+    short    ***errors;
+
+    initialize_pixels( pixels_8, 0, 0, pixels_rgb->x_size, pixels_rgb->y_size,
+                       1.0, 1.0,
+                       COLOUR_INDEX_8BIT_PIXEL );
+
+    ALLOC3D( errors, 2, 3, pixels_rgb->x_size )
+
+    for_less( x, 0, pixels_rgb->x_size )
+    {
+        errors[0][0][x] = 0;
+        errors[0][1][x] = 0;
+        errors[0][2][x] = 0;
+        errors[1][0][x] = 0;
+        errors[1][1][x] = 0;
+        errors[1][2][x] = 0;
+    }
+
+    error_row = 0;
+    dir = 1;
+
+    for_less( y, 0, pixels_rgb->y_size )
+    {
+        if( dir > 0 )
+        {
+            first_x = 0;
+            last_x = pixels_rgb->x_size;
+        }
+        else
+        {
+            first_x = pixels_rgb->x_size-1;
+            last_x = -1;
+        }
+        for( x = first_x;  x != last_x;  x += dir )
+        {
+            col = PIXEL_RGB_COLOUR(*pixels_rgb,x,y);
+            comp[0] = get_Colour_r( col ) + errors[error_row][0][x];
+            comp[1] = get_Colour_g( col ) + errors[error_row][1][x];
+            comp[2] = get_Colour_b( col ) + errors[error_row][2][x];
+#ifdef DEBUG
+comp[1] = 0;
+comp[2] = 0;
+#endif
+
+            ind = find_closest_colour( comp[0], comp[1], comp[2],
+                                       n_colours, colour_table );
+
+            used[0] = get_Colour_r( colour_table[ind] );
+            used[1] = get_Colour_g( colour_table[ind] );
+            used[2] = get_Colour_b( colour_table[ind] );
+#ifdef DEBUG
+            used[1] = 0;
+            used[2] = 0;
+#endif
+
+            for_less( c, 0, 3 )
+            {
+                error = comp[c] - used[c];
+                seven = ROUND( (Real) error * 7.0/ 16.0 );
+                five = ROUND( (Real) error * 5.0 / 16.0 );
+                three = ROUND( (Real) error * 3.0 / 16.0 );
+                one = error - seven - five - three;
+
+                if( x + dir >= 0 && x + dir < pixels_rgb->x_size )
+                {
+                    errors[error_row][c][x+dir] += seven;
+                    errors[1-error_row][c][x+dir] += one;
+                }
+
+                if( x - dir >= 0 && x - dir < pixels_rgb->x_size )
+                    errors[1-error_row][c][x-dir] += three;
+
+                errors[1-error_row][c][x] += five;
+            }
+
+            PIXEL_COLOUR_INDEX_8(*pixels_8,x,y) = ind;
+        }
+
+        error_row = 1 - error_row;
+        dir = - dir;
+
+        for_less( x, 0, pixels_rgb->x_size )
+        {
+            errors[1-error_row][0][x] = 0;
+            errors[1-error_row][1][x] = 0;
+            errors[1-error_row][2][x] = 0;
+        }
+    }
+
+    FREE3D( errors );
+}
+
 public  void  resample_pixels(
     pixels_struct   *pixels,
     Transform_2d    *transform,
