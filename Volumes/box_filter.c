@@ -154,6 +154,27 @@ private  Real  get_correct_amount(
         } \
     }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_box_filtered_volume
+@INPUT      : volume           - volume to filter
+              nc_data_type     - if NC_UNSPECIFIED, this and next 3 args ignored
+              sign_flag
+              real_min_value
+              real_max_value
+              x_width          - full width of box filter
+              y_width
+              z_width
+@OUTPUT     : 
+@RETURNS    : filtered volume
+@DESCRIPTION: Filters a volume with a box filter, creating a new volume with
+              the same number of samples per dimension.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  Volume  create_box_filtered_volume(
     Volume   volume,
     nc_type  nc_data_type,

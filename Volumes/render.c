@@ -349,9 +349,17 @@ public  void  render_volume_to_slice(
         FREE( row_offsets2 );
 }
 
-    FREE2D( y_offsets1 );
     FREE2D( x_offsets1 );
+    FREE2D( y_offsets1 );
     FREE2D( which_x_offsets1 );
+
+    if( volume_data2 != (void *) NULL )
+    {
+        FREE2D( x_offsets2 );
+        FREE2D( y_offsets2 );
+        FREE2D( which_x_offsets2 );
+    }
+
     FREE( start_x );
     FREE( end_x );
 }

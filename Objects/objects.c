@@ -904,3 +904,59 @@ public  void  free_colours(
     if( should_free )
         FREE( colours );
 }
+
+public  BOOLEAN  objects_are_same_topology(
+    int    n_points1,
+    int    n_items1,
+    int    *end_indices1,
+    int    *indices1,
+    int    n_points2,
+    int    n_items2,
+    int    *end_indices2,
+    int    *indices2 )
+{
+    int   p;
+
+    if( n_points1 != n_points2 || n_items1 != n_items2 )
+        return( FALSE );
+
+    for_less( p, 0, n_items1 )
+        if( end_indices1[p] != end_indices2[p] )
+            return( FALSE );
+
+    for_less( p, 0, end_indices1[n_items1-1] )
+        if( indices1[p] != indices2[p] )
+            return( FALSE );
+
+    return( TRUE );
+}
+
+public  int  get_n_colours(
+    Colour_flags  colour_flag,
+    int           n_points,
+    int           n_items )
+{
+    int   n_colours;
+
+    switch( colour_flag )
+    {
+    case ONE_COLOUR:
+        n_colours = 1;
+        break;
+
+    case PER_ITEM_COLOURS:
+        n_colours = n_items;
+        break;
+
+    case PER_VERTEX_COLOURS:
+        n_colours = n_points;
+        break;
+
+    default:
+        print( "invalid colour flag\n" );
+        n_colours = 0;
+        break;
+    }
+
+    return( n_colours );
+}

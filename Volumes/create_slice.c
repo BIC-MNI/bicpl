@@ -3,6 +3,32 @@
 
 #define  BIG_NUMBER  1.0e10
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : clip_one_edge
+@INPUT      : closing
+              edge
+              sizes
+              origin
+              x_axis
+              y_axis
+              point
+              first
+              first_point
+              prev_point
+              prev_dist
+@OUTPUT     : n_clipped_points
+              clipped_points
+@RETURNS    : 
+@DESCRIPTION: Performs clipping against the four edges of a viewport, using
+              recursive edge clipping.  This routine clips against one edge
+              and passes it on to the next edge.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void clip_one_edge(
     BOOLEAN  closing,
     int      edge,
@@ -21,6 +47,8 @@ private  void clip_one_edge(
     int   axis;
     Real  dist, ratio, interpolated[2];
 
+    /* --- if done clipping, then record clipped point x and y */
+
     if( edge == -1 )
     {
         if( !closing )
@@ -31,6 +59,8 @@ private  void clip_one_edge(
         }
         return;
     }
+
+    /* --- find distance of point from edge */
 
     axis = edge / 2;
     if( edge % 2 == 0 )
@@ -45,6 +75,9 @@ private  void clip_one_edge(
                                point[1] * y_axis[axis]);
     }
 
+    /* --- if this point and previous point generate an edge crossing,
+           find it and pass it on to the next edge */
+
     if( !first[edge] && (dist != 0.0 && prev_dist[edge] != 0.0) &&
         (dist <= 0.0 && prev_dist[edge] >= 0.0 ||
          dist >= 0.0 && prev_dist[edge] <= 0.0) )
@@ -58,6 +91,9 @@ private  void clip_one_edge(
                        interpolated, first, first_point, prev_point, prev_dist,
                        n_clipped_points, clipped_points );
     }
+
+    /* --- if the point is inside, then pass it on, otherwise, if we are
+           closing, pass along the first point that was given to this edge */
 
     if( dist >= 0.0 )
     {
@@ -84,6 +120,25 @@ private  void clip_one_edge(
     prev_point[edge][1] = point[1];
     prev_dist[edge] = dist;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : clip_points
+@INPUT      : n_dims
+              sizes
+              origin
+              x_axis
+              y_axis
+              n_points
+              points
+@OUTPUT     : clipped_points
+@RETURNS    : number of points output
+@DESCRIPTION: Clips the points against the four edges.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  int  clip_points(
     int      n_dims,
@@ -123,6 +178,23 @@ private  int  clip_points(
     return( n_clipped_points );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_cross_section
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+@OUTPUT     : clipped_points
+@RETURNS    : number of clipped points
+@DESCRIPTION: Gets the points defining the outline of the cross section of the
+              plane with the volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  int    get_cross_section(
     Volume   volume,
     Real     origin[],
@@ -157,6 +229,23 @@ private  int    get_cross_section(
     return( n_points );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_volume_cross_section
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+@OUTPUT     : clipped_voxels
+@RETURNS    : number of voxels
+@DESCRIPTION: Gets the cross section of the plane with the volume, in terms
+              of a list of voxels defining the vertices of the polygon.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  int    get_volume_cross_section(
     Volume   volume,
     Real     origin[],
@@ -190,6 +279,26 @@ public  int    get_volume_cross_section(
 
     return( n_points );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_volume_slice_range
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+@OUTPUT     : x_pixel_start
+              x_pixel_end
+              y_pixel_start
+              y_pixel_end
+@RETURNS    : 
+@DESCRIPTION: Gets the range of the cross section of the volume with the
+              plane.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void    get_volume_slice_range(
     Volume   volume,
@@ -234,6 +343,30 @@ private  void    get_volume_slice_range(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_volume_mapping_range
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+              x_trans
+              y_trans
+              x_scale
+              y_scale
+@OUTPUT     : x_pixel_start
+              x_pixel_end
+              y_pixel_start
+              y_pixel_end
+@RETURNS    : 
+@DESCRIPTION: Gets the pixel limits of the cross section, based on the scale
+              and translation parameters.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void    get_volume_mapping_range(
     Volume   volume,
     Real     origin[],
@@ -259,6 +392,25 @@ public  void    get_volume_mapping_range(
                             x_pixel_start, x_pixel_end,
                             y_pixel_start, y_pixel_end );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : clip_viewport_to_volume
+@INPUT      : volume
+              origin
+              x_axis
+              y_axis
+@OUTPUT     : x_pixel_start
+              x_pixel_end
+              y_pixel_start
+              y_pixel_end
+@RETURNS    : 
+@DESCRIPTION: Finds the pixel range of the volume cross section.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void    clip_viewport_to_volume(
     Volume   volume,
@@ -291,6 +443,46 @@ private  void    clip_viewport_to_volume(
     if( int_y_max < *y_pixel_end )
         *y_pixel_end = int_y_max;
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_weighted_volume_slices
+@INPUT      : volume1,
+              n_slices1   - number of parallel slices to weighted-sum.
+              origins1
+              x_axis1
+              y_axis1
+              weights1
+              x_translation1
+              y_translation1
+              x_scale1
+              y_scale1
+              volume2,
+              n_slices2   - number of parallel slices to weighted-sum.
+              origins2
+              x_axis2
+              y_axis2
+              weights2
+              x_translation2
+              y_translation2
+              x_scale2
+              y_scale2
+              x_viewport_size
+              y_viewport_size
+              pixel_type
+              interpolation_flag
+              cmode_colour_map
+              rgb_colour_map
+              empty_colour
+              n_pixels_alloced
+@OUTPUT     : pixels
+@RETURNS    : 
+@DESCRIPTION: Renders a volume or a merge of 2 volumes to pixels.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void  create_weighted_volume_slices(
     Volume          volume1,
@@ -447,6 +639,27 @@ private  void  create_weighted_volume_slices(
         FREE2D( real_origins2 );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : get_filter_slices
+@INPUT      : volume
+              position
+              x_axis
+              y_axis
+              filter_type
+              filter_width
+@OUTPUT     : n_slices
+              origins
+              weights
+@RETURNS    : TRUE if successful
+@DESCRIPTION: Converts the filter type and width to a list of parallel slices
+              to be used in a weighted-sum rendering.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  BOOLEAN  get_filter_slices(
     Volume          volume,
     Real            position[],
@@ -490,16 +703,22 @@ private  BOOLEAN  get_filter_slices(
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_volume_slice
-@INPUT      : filter_type      - filter_type, usually NEAREST_NEIGHBOUR
-              filter_width     - width of filter, used for BOX, TRIANGLE, GAUSS
-              volume1          - the volume to create a slice for
+@INPUT      : volume1          - the volume to create a slice for
+              filter_type1     - filter_type, usually NEAREST_NEIGHBOUR
+              filter_width1    - width of filter, used for BOX, TRIANGLE, GAUSS
               slice_position1  - the voxel coordinate of the slice
+              x_axis1          - the x axis in voxels
+              y_axis1          - the y axis in voxels
               x_translation1   - pixel translation for viewing
               y_translation1   - pixel translation for viewing
               x_scale1         - pixel zoom for viewing
               y_scale1         - pixel zoom for viewing
               volume2          - second volume to be merged with first, or null
+              filter_type2     - filter_type, usually NEAREST_NEIGHBOUR
+              filter_width2    - width of filter, used for BOX, TRIANGLE, GAUSS
               slice_position2  - the voxel coordinate of the slice
+              x_axis2          - the x axis in voxels
+              y_axis2          - the y axis in voxels
               x_translation2   - pixel translation for viewing
               y_translation2   - pixel translation for viewing
               x_scale2         - pixel zoom for viewing

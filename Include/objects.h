@@ -59,6 +59,8 @@ typedef  struct
     int            patient_id;
 } marker_struct;
 
+#define  MAX_POINTS_PER_POLYGON     20
+
 typedef  struct
 {
     Colour_flags    colour_flag;

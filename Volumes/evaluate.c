@@ -1,6 +1,19 @@
 #include  <mni.h>
 #include  <splines.h>
 
+private  void   trilinear_interpolate_volume(
+    Volume         volume,
+    Real           x,
+    Real           y,
+    Real           z,
+    BOOLEAN        x_use_higher,
+    BOOLEAN        y_use_higher,
+    BOOLEAN        z_use_higher,
+    Real           *value,
+    Real           *deriv_x,
+    Real           *deriv_y,
+    Real           *deriv_z );
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : voxel_is_within_volume
 @INPUT      : volume
@@ -37,11 +50,11 @@ public  BOOLEAN  voxel_is_within_volume(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : cube_is_within_volume
+@NAME       : int_voxel_is_within_volume
 @INPUT      : volume
               indices
 @OUTPUT     : 
-@RETURNS    : TRUE if cube within volume
+@RETURNS    : TRUE if voxel within volume
 @DESCRIPTION: Determines if the voxel with integer coordinates is within the
               volume.
 @CREATED    : Mar   1993           David MacDonald
@@ -71,6 +84,21 @@ public  BOOLEAN  int_voxel_is_within_volume(
     return( inside );
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_real_to_int_voxel
+@INPUT      : n_dimensions
+              voxel
+@OUTPUT     : int_voxel
+@RETURNS    : 
+@DESCRIPTION: Converts real valued voxel positions to integer positions, by
+              rounding.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  convert_real_to_int_voxel(
     int      n_dimensions,
     Real     voxel[],
@@ -85,7 +113,7 @@ public  void  convert_real_to_int_voxel(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : voxel_contains_value
 @INPUT      : volume
-              indices
+              int_voxel
               target_value
 @OUTPUT     : 
 @RETURNS    : TRUE if voxel contains this value
@@ -176,13 +204,14 @@ public  BOOLEAN  voxel_contains_value(
               x
               y
               z
+              degrees_continuity - 0 = linear, 2 = cubic
 @OUTPUT     : value
               deriv_x
               deriv_y
               deriv_z
 @RETURNS    : 
 @DESCRIPTION: Takes a world space position and evaluates the value within
-              the volume by trilinear interpolation. 
+              the volume.
               If deriv_x is not a null pointer, then the 3 derivatives are
               passed back.
 @CREATED    : Mar   1993           David MacDonald
@@ -259,6 +288,51 @@ public  void   evaluate_3D_volume_in_world(
         convert_voxel_normal_vector_to_world( volume,
                                               txz, tyz, tzz,
                                               deriv_xz, deriv_yz, deriv_zz );
+    }
+}
+
+public  void   special_evaluate_3D_volume_in_world(
+    Volume         volume,
+    Real           x,
+    Real           y,
+    Real           z,
+    BOOLEAN        x_use_higher,
+    BOOLEAN        y_use_higher,
+    BOOLEAN        z_use_higher,
+    Real           *value,
+    Real           *deriv_x,
+    Real           *deriv_y,
+    Real           *deriv_z )
+{
+    Real      voxel[MAX_DIMENSIONS];
+    int       sizes[MAX_DIMENSIONS];
+
+    convert_world_to_voxel( volume, x, y, z, voxel );
+
+    get_volume_sizes( volume, sizes );
+    if( x < -0.5 || x > (Real) sizes[X] - 0.5 ||
+        y < -0.5 || y > (Real) sizes[Y] - 0.5 ||
+        z < -0.5 || z > (Real) sizes[Z] - 0.5 )
+    {
+        *value = get_volume_voxel_min( volume );
+        if( deriv_x != (Real *) NULL )
+        {
+            *deriv_x = 0.0;
+            *deriv_y = 0.0;
+            *deriv_z = 0.0;
+        }
+        return;
+    }
+
+    trilinear_interpolate_volume( volume, voxel[X], voxel[Y], voxel[Z],
+                                  x_use_higher, y_use_higher, z_use_higher,
+                                  value, deriv_x, deriv_y, deriv_z );
+
+    if( deriv_x != (Real *) 0 )
+    {
+        convert_voxel_normal_vector_to_world( volume,
+                                              *deriv_x, *deriv_y, *deriv_z,
+                                              deriv_x, deriv_y, deriv_z );
     }
 }
 
@@ -343,6 +417,26 @@ public  void   evaluate_3D_slice_in_world(
                                               deriv_xy, deriv_yy, &ignore );
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : triconstant_interpolate_volume
+@INPUT      : volume
+              x
+              y
+              z
+@OUTPUT     : value
+              deriv_x
+              deriv_y
+              deriv_z
+@RETURNS    : 
+@DESCRIPTION: Returns the value within the volume, assuming constant voxels,
+              (step function).  Derivative is approximated by neighbours.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void   triconstant_interpolate_volume(
     Volume         volume,
@@ -450,11 +544,34 @@ private  void   triconstant_interpolate_volume(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : trilinear_interpolate_volume
+@INPUT      : volume
+              x
+              y
+              z
+@OUTPUT     : value
+              deriv_x
+              deriv_y
+              deriv_z
+@RETURNS    : 
+@DESCRIPTION: Returns the value within the volume, assuming trilinear
+              interpolation.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 private  void   trilinear_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
     Real           z,
+    BOOLEAN        x_use_higher,
+    BOOLEAN        y_use_higher,
+    BOOLEAN        z_use_higher,
     Real           *value,
     Real           *deriv_x,
     Real           *deriv_y,
@@ -479,6 +596,11 @@ private  void   trilinear_interpolate_volume(
     {
         i = (int) x;
         u = FRACTION( x );
+        if( !x_use_higher && u == 0.0 && i > 0 )
+        {
+            --i;
+            u = 1.0;
+        }
     }
 
     if( y == (Real) (sizes[Y]-1) )
@@ -490,6 +612,11 @@ private  void   trilinear_interpolate_volume(
     {
         j = (int) y;
         v = FRACTION( y );
+        if( !y_use_higher && v == 0.0 && j > 0 )
+        {
+            --j;
+            v = 1.0;
+        }
     }
 
     if( z == (Real) (sizes[Z]-1) )
@@ -501,6 +628,11 @@ private  void   trilinear_interpolate_volume(
     {
         k = (int) z;
         w = FRACTION( z );
+        if( !z_use_higher && w == 0.0 && k > 0 )
+        {
+            --k;
+            w = 1.0;
+        }
     }
 
     GET_VALUE_3D( c000, volume, i,   j,   k );
@@ -541,6 +673,26 @@ private  void   trilinear_interpolate_volume(
         *deriv_z = (c1 - c0);
     }
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : triquadratic_interpolate_volume
+@INPUT      : volume
+              x
+              y
+              z
+@OUTPUT     : value
+              deriv_x
+              deriv_y
+              deriv_z
+@RETURNS    : 
+@DESCRIPTION: Returns the value within the volume, assuming trilinear
+              interpolation.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    : 1993            David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
 
 private  void   triquadratic_interpolate_volume(
     Volume         volume,
@@ -991,7 +1143,8 @@ public  void   evaluate_3D_volume(
         break;
 
     case 0:
-        trilinear_interpolate_volume( volume, x, y, z, value,
+        trilinear_interpolate_volume( volume, x, y, z,
+                                      TRUE, TRUE, TRUE, value,
                                       deriv_x, deriv_y, deriv_z );
         break;
 

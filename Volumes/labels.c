@@ -21,6 +21,8 @@ public  Volume  create_label_volume(
     label_volume = copy_volume_definition( volume, NC_BYTE, FALSE,
                                            0.0, 255.0 );
 
+    set_volume_real_range( label_volume, 0.0, 255.0 );
+
     set_all_volume_label_data( label_volume, 0 );
 
     return( label_volume );
@@ -300,60 +302,33 @@ public  BOOLEAN  get_volume_voxel_activity(
         return( activity_if_mixed );
 }
 
-public  Status  io_label_volume(
-    FILE     *file,
-    IO_types io_type,
-    Volume   label_volume )
-{
-    Status   status;
-    int      sizes[MAX_DIMENSIONS];
-    void     *void_ptr;
-
-    GET_VOXEL_PTR( void_ptr, label_volume, 0, 0, 0, 0, 0 );
-
-    get_volume_sizes( label_volume, sizes );
-
-    status = io_binary_data( file, io_type, void_ptr,
-                             sizes[X] * sizes[Y] * sizes[Z],
-                             sizeof(unsigned char) );
-
-    return( status );
-}
-
-private  Status  save_or_load_label_volume(
-    char     filename[],
-    IO_types io_type,
-    Volume   label_volume )
-{
-    Status   status;
-    FILE     *file;
-
-    check_alloc_label_data( label_volume );
-
-    status = open_file_with_default_suffix( filename, "lbl", io_type,
-                                            BINARY_FORMAT, &file );
-
-    if( status == OK )
-        status = io_label_volume( file, io_type, label_volume );
-
-    if( status == OK )
-        status = close_file( file );
-
-    return( status );
-}
-
 public  Status  load_label_volume(
     char     filename[],
     Volume   label_volume )
 {
-    return( save_or_load_label_volume( filename, READ_FILE, label_volume ) );
+    Status   status;
+
+    check_alloc_label_data( label_volume );
+
+    status = input_volume( filename, 3, XYZ_dimension_names,
+                           NC_BYTE, FALSE, 0.0, 0.0,
+                           FALSE, &label_volume, NULL );
+
+    return( status );
 }
 
 public  Status  save_label_volume(
     char     filename[],
     Volume   label_volume )
 {
-    return( save_or_load_label_volume( filename, WRITE_FILE, label_volume ) );
+    Status   status;
+
+    check_alloc_label_data( label_volume );
+
+    status = output_volume( filename, NC_UNSPECIFIED, FALSE, 0.0, 0.0,
+                            label_volume, "Label volume", NULL );
+
+    return( status );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

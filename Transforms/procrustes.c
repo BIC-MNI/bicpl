@@ -80,7 +80,7 @@ void svdcmp(float **, int, int, float *, float **);
 public void procrustes(int npoints, int ndim, 
                        float **Apoints, float **Bpoints,
                        float *translation, float *centre_of_rotation,
-                       float **rotation, float *scale)
+                       float **rotation, float *scale_ptr)
 {
    int i;
    float *Atranslation, *Btranslation, *svd_W;
@@ -136,10 +136,10 @@ public void procrustes(int npoints, int ndim,
    matrix_multiply(npoints, ndim, npoints, Bshift, Btranspose, product);
    trace2 = trace(npoints, product);
    if (trace2 != 0.0) {
-      *scale = trace1 / trace2;
+      *scale_ptr = trace1 / trace2;
    }
    else {
-      *scale = 0.0;
+      *scale_ptr = 0.0;
    }
 
 
@@ -203,7 +203,7 @@ public void procrustes(int npoints, int ndim,
 ---------------------------------------------------------------------------- */
 public void transformations_to_homogeneous(int ndim, 
                   float *translation, float *centre_of_rotation,
-                  float **rotation, float scale,
+                  float **rotation, float scaling,
                   float **transformation)
 {
    int i;
@@ -235,7 +235,7 @@ public void transformations_to_homogeneous(int ndim,
 
    /* Scale rotation matrix, then convert it to homogeneous coordinates and
       apply it */
-   matrix_scalar_multiply(ndim, ndim, scale, rotation, rotation_and_scale);
+   matrix_scalar_multiply(ndim, ndim, scaling, rotation, rotation_and_scale);
    rotation_to_homogeneous(ndim, rotation_and_scale, trans_temp);
    matrix_multiply(size, size, size, trans2, trans_temp, trans1);
 

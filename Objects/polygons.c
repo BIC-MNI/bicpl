@@ -80,12 +80,15 @@ public  void  copy_polygons(
     polygons_struct   *src,
     polygons_struct   *dest )
 {
-    int   i, n_indices;
+    int   i, n_indices, n_colours;
 
     *dest = *src;
 
-    ALLOC( dest->colours, 1 );
-    dest->colours[0] = src->colours[0];
+    n_colours = get_n_colours( src->colour_flag, src->n_points, src->n_items );
+
+    ALLOC( dest->colours, n_colours );
+    for_less( i, 0, n_colours )
+        dest->colours[i] = src->colours[i];
 
     ALLOC( dest->points, src->n_points );
     if( src->normals != (Vector *) NULL )
@@ -226,6 +229,24 @@ public  void  add_point_to_polygon(
 
     ADD_ELEMENT_TO_ARRAY( polygons->points, polygons->n_points,
                           *point, DEFAULT_CHUNK_SIZE );
+}
+
+public  int  get_polygon_points(
+    polygons_struct   *polygons,
+    int               poly,
+    Point             points[] )
+{
+    int      size, p;
+
+    size = GET_OBJECT_SIZE( *polygons, poly );
+
+    for_less( p, 0, size )
+    {
+        points[p] = polygons->points[
+                 polygons->indices[POINT_INDEX(polygons->end_indices,poly,p)]];
+    }
+
+    return( size );
 }
 
 public  void  get_polygon_centroid(

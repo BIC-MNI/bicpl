@@ -26,8 +26,8 @@ public  BOOLEAN  numerically_close(
     diff = n1 - n2;
     if( diff < 0.0 )  diff = -diff;
 
-    if( n1 <= 0.0 && n2 >= 0.0 ||
-        n1 >= 0.0 && n2 <= 0.0 )
+    if( n1 <= threshold_ratio && n1 >= -threshold_ratio &&
+        n2 <= threshold_ratio && n2 >= -threshold_ratio )
     {
         return( diff <= threshold_ratio );
     }
