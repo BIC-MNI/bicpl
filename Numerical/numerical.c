@@ -17,7 +17,7 @@
 #include  <limits.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.19 1996-02-28 16:04:02 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.20 1996-05-13 15:48:01 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -47,8 +47,8 @@ public  BOOLEAN  numerically_close(
     diff = n1 - n2;
     if( diff < 0.0 )  diff = -diff;
 
-    abs_n1 = ABS( n1 );
-    abs_n2 = ABS( n2 );
+    abs_n1 = FABS( n1 );
+    abs_n2 = FABS( n2 );
 
     if( abs_n1 < SMALLEST || abs_n2 < SMALLEST )
         return( abs_n1 < threshold_ratio && abs_n2 < threshold_ratio );
@@ -126,7 +126,7 @@ public  Real  round_to_nearest_multiple(
     int      i;
     Real     factor, nearest;
 
-    multiple_value = ABS( multiple_value );
+    multiple_value = FABS( multiple_value );
 
     factor = value / multiple_value;
     if( factor > (Real) INT_MAX || factor < (Real) INT_MIN )
@@ -264,8 +264,8 @@ public  int solve_cubic(
 	x^3 +px + q = 0 */
 
     sq_A = A * A;
-    p = 1.0/3 * (- 1.0/3 * sq_A + B);
-    q = 1.0/2 * (2.0/27 * A * sq_A - 1.0/3 * A * B + C);
+    p = 1.0/3.0 * (- 1.0/3.0 * sq_A + B);
+    q = 1.0/2.0 * (2.0/27.0 * A * sq_A - 1.0/3.0 * A * B + C);
 
     /* use Cardano's formula */
 
@@ -276,25 +276,25 @@ public  int solve_cubic(
     {
 	if (IsZero(q)) /* one triple solution */
 	{
-	    s[ 0 ] = 0;
+	    s[ 0 ] = 0.0;
 	    num = 1;
 	}
 	else /* one single and one double solution */
 	{
 	    double u = cbrt(-q);
-	    s[ 0 ] = 2 * u;
+	    s[ 0 ] = 2.0 * u;
 	    s[ 1 ] = - u;
 	    num = 2;
 	}
     }
-    else if (D < 0) /* Casus irreducibilis: three real solutions */
+    else if (D < 0.0) /* Casus irreducibilis: three real solutions */
     {
-	double phi = 1.0/3 * acos(-q / sqrt(-cb_p));
-	double t = 2 * sqrt(-p);
+	double phi = 1.0/3.0 * acos(-q / sqrt(-cb_p));
+	double t = 2.0 * sqrt(-p);
 
 	s[ 0 ] =   t * cos(phi);
-	s[ 1 ] = - t * cos(phi + M_PI / 3);
-	s[ 2 ] = - t * cos(phi - M_PI / 3);
+	s[ 1 ] = - t * cos(phi + M_PI / 3.0);
+	s[ 2 ] = - t * cos(phi - M_PI / 3.0);
 	num = 3;
     }
     else /* one real solution */
@@ -309,7 +309,7 @@ public  int solve_cubic(
 
     /* resubstitute */
 
-    sub = 1.0/3 * A;
+    sub = 1.0/3.0 * A;
 
     for (i = 0; i < num; ++i)
 	s[ i ] -= sub;
