@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.15 1996-01-15 17:37:57 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.16 1996-05-16 15:36:21 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -49,9 +49,9 @@ public  void  find_polygon_normal_no_normalize(
     *ny = 0.0;
     *nz = 0.0;
 
-    tx = Point_x(points[0]);
-    ty = Point_y(points[0]);
-    tz = Point_z(points[0]);
+    tx = (Real) Point_x(points[0]);
+    ty = (Real) Point_y(points[0]);
+    tz = (Real) Point_z(points[0]);
 
     for_less( i, 0, n_points )
     {
@@ -60,9 +60,9 @@ public  void  find_polygon_normal_no_normalize(
         x = tx;
         y = ty;
         z = tz;
-        tx = Point_x(points[next_i]);
-        ty = Point_y(points[next_i]);
-        tz = Point_z(points[next_i]);
+        tx = (Real) Point_x(points[next_i]);
+        ty = (Real) Point_y(points[next_i]);
+        tz = (Real) Point_z(points[next_i]);
 
         *nx -= (y + ty) * (z - tz);
         *ny -= (z + tz) * (x - tx);
@@ -79,9 +79,9 @@ public  void  find_polygon_normal_no_normalize(
             SUB_POINTS( v1, points[(i+1)%n_points], points[i] );
             SUB_POINTS( v2, points[(i-1)%n_points], points[i] );
             CROSS_VECTORS( normal, v1, v2 );
-            *nx = Vector_x( normal );
-            *ny = Vector_y( normal );
-            *nz = Vector_z( normal );
+            *nx = (Real) Vector_x( normal );
+            *ny = (Real) Vector_y( normal );
+            *nz = (Real) Vector_z( normal );
             if( !null_Vector( &normal ) )
                 break;
         }
