@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.28 1998-04-27 17:15:31 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.29 1998-06-29 13:13:22 david Exp $";
 #endif
 
 
@@ -34,16 +34,16 @@ private  BOOLEAN  point_within_polygon_2d(
     Point   points[],
     Vector  *polygon_normal );
 
-private  int   n_dirs = 0;
+private  int   n_dirs = -1;
 private  Real  *dirs = NULL;
 
-private   void  initialize_intersect_directions( void )
+public   void  initialize_intersect_directions( void )
 {
     if( n_dirs > 0 )
     {
         FREE( dirs );
-        n_dirs = 0;
     }
+    n_dirs = 0;
 }
 
 public  Real  *get_intersect_directions( void )
@@ -56,7 +56,11 @@ public  Real  *get_intersect_directions( void )
         ALLOC( d, n_dirs );
         for_less( i, 0, n_dirs )
             d[i] = dirs[i];
+
+        FREE( dirs );
     }
+
+    n_dirs = -1;
 
     return( d );
 }
@@ -138,7 +142,11 @@ private  BOOLEAN   intersect_ray_triangle(
             sign = 0.0;
         else
             sign = 1.0;
-        ADD_ELEMENT_TO_ARRAY( dirs, n_dirs, sign, DEFAULT_CHUNK_SIZE );
+
+        if( n_dirs >= 0 )
+        {
+            ADD_ELEMENT_TO_ARRAY( dirs, n_dirs, sign, DEFAULT_CHUNK_SIZE );
+        }
     }
 
     return( *dist >= 0.0 );
@@ -989,8 +997,6 @@ public  int  intersect_ray_with_object(
     polygons_struct  *polygons;
     quadmesh_struct  *quadmesh;
     int              i, n_intersections, m, n, n_objects;
-
-    initialize_intersect_directions();
 
     n_intersections = 0;
     if( obj_index != (int *) NULL )

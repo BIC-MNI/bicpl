@@ -17,7 +17,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least_squares.c,v 1.5 1995-07-31 13:45:26 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least_squares.c,v 1.6 1998-06-29 13:13:25 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -43,7 +43,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  least_squares(
+public  BOOLEAN  least_squares(
     int     n_points,
     int     n_dims,
     Real    **points,
@@ -53,6 +53,7 @@ public  void  least_squares(
     int                   pt, i;
     linear_least_squares  lsq;
     Real                  *p;
+    BOOLEAN               success;
 
     initialize_linear_least_squares( &lsq, n_dims+1 );
 
@@ -69,9 +70,11 @@ public  void  least_squares(
 
     FREE( p );
 
-    (void) get_linear_least_squares_solution( &lsq, parameters );
+    success = get_linear_least_squares_solution( &lsq, parameters );
 
     delete_linear_least_squares( &lsq );
+
+    return( success );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

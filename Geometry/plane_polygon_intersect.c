@@ -37,8 +37,6 @@ private  void  coalesce_lines(
     {
         if( n_neighbours[p] != 0 && n_neighbours[p] != 2 )
         {
-            print( "Cannot coalesce these lines (n_neighbours = %d)\n",
-                   n_neighbours[p] );
             return;
         }
         total_neighbours += n_neighbours[p];
@@ -245,6 +243,129 @@ public  void   intersect_planes_with_polygons(
                 ADD_ELEMENT_TO_ARRAY( lines->indices,
                                       lines->end_indices[lines->n_items-1],
                                       index, DEFAULT_CHUNK_SIZE );
+            }
+        }
+    }
+
+    delete_hash2_table( &hash );
+
+    coalesce_lines( lines );
+}
+
+public  void   intersect_planes_with_quadmesh(
+    quadmesh_struct   *quadmesh,
+    Point             *plane_origin,
+    Vector            *plane_normal,
+    lines_struct      *lines )
+{
+    int                 n_points, p, index, m, n, x_index, y_index;
+    int                 poly, edge, size;
+    int                 point_index1, point_index2, indices[4];
+    Vector              v1, v2;
+    Point               point, *points;
+    Real                t1, t2, ratios[2];
+    int                 p1s[2], p2s[2];
+    hash2_table_struct  hash;
+
+    initialize_lines( lines, WHITE );
+
+    get_quadmesh_n_objects( quadmesh, &m, &n );
+
+    initialize_hash2_table( &hash, m * n, (int) sizeof(int),
+                            0.5, .25 );
+
+    points = quadmesh->points;
+
+    index = 0;
+
+    for_less( x_index, 0, m )
+    {
+        for_less( y_index, 0, n )
+        {
+            n_points = 0;
+
+            indices[0] = IJ(x_index,y_index,quadmesh->n);
+            indices[1] = IJ((x_index+1)%quadmesh->m,y_index,quadmesh->n);
+            indices[2] = IJ((x_index+1)%quadmesh->m,(y_index+1)%quadmesh->n,
+                         quadmesh->n);
+            indices[3] = IJ(x_index,(y_index+1)%quadmesh->n,
+                         quadmesh->n);
+
+            for_less( edge, 0, 4 )
+            {
+                point_index1 = indices[edge];
+                point_index2 = indices[(edge+1) % 4];
+
+                SUB_POINTS( v1, points[point_index1], *plane_origin );
+                SUB_POINTS( v2, points[point_index2], *plane_origin );
+
+                t1 = DOT_VECTORS( v1, *plane_normal );
+                t2 = DOT_VECTORS( v2, *plane_normal );
+
+                /*--- check if it intersects the line segment [p1 .. p2)  */
+
+                if( t1 == 0.0 || t1 > 0.0 && t2 < 0.0 || t1 < 0.0 && t2 > 0.0 )
+                {
+                    if( n_points < 2 )
+                    {
+                        if( t1 == 0.0 )
+                            ratios[n_points] = 0.0;
+                        else
+                            ratios[n_points] = t1 / (t1 - t2);
+
+                        p1s[n_points] = MIN( point_index1, point_index2 );
+                        p2s[n_points] = MAX( point_index1, point_index2 );
+                        if( p1s[n_points] != point_index1 )
+                            ratios[n_points] = 1.0 - ratios[n_points];
+
+                        if( ratios[n_points] == 0.0 )
+                        {
+                            p2s[n_points] = n_points;
+                            ratios[n_points] = 0.0;
+                        }
+                        else if( ratios[n_points] == 1.0 )
+                        {
+                            p1s[n_points] = p2s[n_points];
+                            p2s[n_points] = n_points;
+                            ratios[n_points] = 0.0;
+                        }
+                    }
+
+                    ++n_points;
+                }
+            }
+
+            if( n_points == 2 &&
+                (ratios[0] != 0.0 || ratios[1] != 0.0 || p1s[0] != p1s[1]) )
+            {
+                start_new_line( lines );
+
+                for_less( p, 0, 2 )
+                {
+                    if( !lookup_in_hash2_table( &hash, p1s[p], p2s[p],
+                                                (void *) &index ) )
+                    {
+                        if( ratios[p] == 0.0 )
+                            point = points[p1s[p]];
+                        else
+                        {
+                            INTERPOLATE_POINTS( point,
+                                                points[p1s[p]], points[p2s[p]],
+                                                ratios[p] );
+                        }
+
+                        index = lines->n_points;
+                        insert_in_hash2_table( &hash, p1s[p], p2s[p],
+                                               (void *) &index );
+
+                        ADD_ELEMENT_TO_ARRAY( lines->points, lines->n_points,
+                                              point, DEFAULT_CHUNK_SIZE );
+                    }
+
+                    ADD_ELEMENT_TO_ARRAY( lines->indices,
+                                          lines->end_indices[lines->n_items-1],
+                                          index, DEFAULT_CHUNK_SIZE );
+                }
             }
         }
     }

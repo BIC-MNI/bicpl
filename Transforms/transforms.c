@@ -17,7 +17,7 @@
 #include  <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.10 1996-12-09 20:20:58 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.11 1998-06-29 13:13:28 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -272,17 +272,20 @@ public  void  make_rotation_about_axis(
     Real       angle,
     Transform  *transform )
 {
-    Real  c, s, t;
-    Real  txy, txz, tyz, sx, sy, sz;
-    Real  x, y, z;
+    Real    c, s, t;
+    Real    txy, txz, tyz, sx, sy, sz;
+    Real    x, y, z;
+    Vector  unit_axis;
+
+    NORMALIZE_VECTOR( unit_axis, *axis );
 
     c = cos( (double) -angle );
     s = sin( (double) -angle );
     t = 1.0 - c;
 
-    x = (Real) Vector_x( *axis );
-    y = (Real) Vector_y( *axis );
-    z = (Real) Vector_z( *axis );
+    x = (Real) Vector_x( unit_axis );
+    y = (Real) Vector_y( unit_axis );
+    z = (Real) Vector_z( unit_axis );
 
     txy = t * x * y;
     txz = t * x * z;

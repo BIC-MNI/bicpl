@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.22 1997-08-13 13:21:55 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.23 1998-06-29 13:13:27 david Exp $";
 #endif
 
 private  void  interpolate_colours(
@@ -549,24 +549,19 @@ public  Colour  get_colour_code(
     {
         if( value < colour_coding->min_value )
             return( colour_coding->under_colour );
-        else if( value > colour_coding->max_value )
+        else if( value >= colour_coding->max_value )
             return( colour_coding->over_colour );
     }
     else
     {
         if( value > colour_coding->min_value )
             return( colour_coding->under_colour );
-        else if( value < colour_coding->max_value )
+        else if( value <= colour_coding->max_value )
             return( colour_coding->over_colour );
     }
 
-    if( colour_coding->min_value == colour_coding->max_value )
-        pos = 0.5;
-    else
-    {
-        pos = (value - colour_coding->min_value) /
-              (colour_coding->max_value - colour_coding->min_value);
-    }
+    pos = (value - colour_coding->min_value) /
+          (colour_coding->max_value - colour_coding->min_value);
 
     n_points = colour_coding->n_colour_points;
 
