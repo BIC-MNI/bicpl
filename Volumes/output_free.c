@@ -5,17 +5,19 @@ public  Status  output_volume_free_format(
     Volume         volume,
     int            axis_ordering[] )
 {
-    Status           status;
-    Real             trans, separations[MAX_DIMENSIONS];
-    int              sizes[MAX_DIMENSIONS];
-    int              a1, a2, a3;
-    int              n_bytes_per_voxel, indices[N_DIMENSIONS];
-    void             *ptr;
-    FILE             *file;
-    String           header_filename, voxel_filename, abs_voxel_filename;
-    String           filename_no_dirs;
-    int              axis;
-    progress_struct  progress;
+    Status             status;
+    Real               trans, separations[MAX_DIMENSIONS];
+    int                sizes[MAX_DIMENSIONS];
+    int                a1, a2, a3;
+    int                n_bytes_per_voxel, indices[N_DIMENSIONS];
+    void               *ptr;
+    FILE               *file;
+    String             header_filename, voxel_filename, abs_voxel_filename;
+    String             filename_no_dirs;
+    int                axis;
+    progress_struct    progress;
+    General_transform  *voxel_to_world;
+    Transform          *transform;
 
     (void) sprintf( header_filename, "%s.fre", prefix );
     (void) sprintf( abs_voxel_filename, "%s.img", prefix );
@@ -39,16 +41,25 @@ public  Status  output_volume_free_format(
     get_volume_sizes( volume, sizes );
     get_volume_separations( volume, separations );
 
+    voxel_to_world = get_voxel_to_world_transform( volume );
+
+    if( get_transform_type(voxel_to_world) == LINEAR )
+        transform = get_linear_transform_ptr( voxel_to_world );
+    else
+        transform = (Transform *) NULL;
+
     for_less( axis, 0, N_DIMENSIONS )
     {
         if( status == OK )
         {
-            trans = Transform_elem(volume->voxel_to_world_transform,axis,3);
-
-            if( separations[axis] < 0.0 )
+            if( transform != (Transform *) NULL )
             {
-                trans += separations[axis] * (Real) (sizes[axis]-1);
+                trans = Transform_elem(*transform,axis,3);
+                if( separations[axis] < 0.0 )
+                    trans += separations[axis] * (Real) (sizes[axis]-1);
             }
+            else
+                trans = 0.0;
 
             status = output_float( file, trans );
         }

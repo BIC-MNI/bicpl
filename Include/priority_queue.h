@@ -198,6 +198,9 @@
              } \
          }
 
+#define  GET_TOP_PRIORITY( q ) \
+             ( IS_PRIORITY_QUEUE_EMPTY(q) ? 0.0 : (q).priorities[1] )
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : DELETE_PRIORITY_QUEUE
 @INPUT      : q

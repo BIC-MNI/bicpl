@@ -37,6 +37,8 @@ public  Boolean  do_more_resampling(
     Real             *fraction_done )
 {
     int             value;
+    Boolean         linear;
+    Vector          z_axis;
     int             z;
     Real            xv, yv, zv;
     Real            end_time, real_value;
@@ -47,15 +49,23 @@ public  Boolean  do_more_resampling(
 
     dest_sizes = resample->dest_volume->sizes;
 
+    linear = get_transform_type( &resample->transform ) == LINEAR;
+    if( linear )
+    {
+        get_transform_z_axis( get_linear_transform_ptr(&resample->transform),
+                              &z_axis );
+    }
+
     while( resample->x < dest_sizes[X] )
     {
         src_sizes = resample->src_volume->sizes;
 
         for_less( z, 0, dest_sizes[Z] )
         {
-            general_transform_point( &resample->transform,
-                                     resample->x, resample->y, (Real) z,
-                                     &xv, &yv, &zv );
+            if( !linear || z == 0 )
+                general_transform_point( &resample->transform,
+                                         resample->x, resample->y, (Real) z,
+                                         &xv, &yv, &zv );
 
             if( xv < 0.0 || xv >= (Real) (src_sizes[X]-1) ||
                 yv < 0.0 || yv >= (Real) (src_sizes[Y]-1) ||
@@ -86,6 +96,13 @@ public  Boolean  do_more_resampling(
 
             SET_VOXEL_3D( resample->dest_volume, resample->x, resample->y, z,
                           value );
+
+            if( linear )
+            {
+                xv += Vector_x(z_axis);
+                yv += Vector_y(z_axis);
+                zv += Vector_z(z_axis);
+            }
         }
 
         ++resample->y;

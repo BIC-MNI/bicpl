@@ -1035,7 +1035,7 @@ public  Boolean   evaluate_volume(
         y < -0.5 || y > (Real) ny - 0.5 ||
         z < -0.5 || z > (Real) nz - 0.5 )
     {
-        *value = volume->min_voxel;
+        *value = get_volume_min_voxel( volume );
         if( deriv_x != (Real *) NULL )
         {
             *deriv_x = 0.0;
@@ -1163,7 +1163,7 @@ public  Boolean   evaluate_slice(
         y < 1.0 || y > (Real) ny - 2.0 ||
         z < 1.0 || z > (Real) nz - 2.0 )
     {
-        *value = volume->min_voxel;
+        *value = get_volume_min_voxel( volume );
         if( deriv_x != (Real *) NULL )
         {
             *deriv_x = 0.0;

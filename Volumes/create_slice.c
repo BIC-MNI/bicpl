@@ -14,24 +14,15 @@ private  void  get_mapping(
     Real            *y_delta,
     Real            *y_offset )
 {
-    int   sizes[MAX_DIMENSIONS];
     Real  separations[MAX_DIMENSIONS];
 
-    get_volume_sizes( volume, sizes );
     get_volume_separations( volume, separations );
 
     *x_delta = x_scale * separations[x_axis_index];
-    if( *x_delta >= 0.0 )
-        *x_offset = x_translation;
-    else
-        *x_offset = x_translation - *x_delta * (Real) (sizes[x_axis_index] - 1);
+    *x_offset = x_translation;
 
     *y_delta = y_scale * separations[y_axis_index];
-
-    if( *y_delta >= 0.0 )
-        *y_offset = y_translation;
-    else
-        *y_offset = y_translation - *y_delta * (Real) (sizes[y_axis_index] - 1);
+    *y_offset = y_translation;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -489,4 +480,132 @@ public  void  convert_voxel_to_slice_pixel(
                                          x_offset, x_delta );
     *y_pixel = map_slice_to_viewport_1d( voxel_position[y_axis_index],
                                          y_offset, y_delta );
+}
+
+public  void  fit_slice_voxel_range_to_viewport(
+    Volume       volume,
+    int          x_axis,
+    int          y_axis,
+    Real         x_min_voxel,
+    Real         x_max_voxel,
+    Real         y_min_voxel,
+    Real         y_max_voxel,
+    int          x_viewport_size,
+    int          y_viewport_size,
+    Real         *x_scale,
+    Real         *y_scale,
+    Real         *x_translation,
+    Real         *y_translation )
+{
+    int       viewport_size[2], axis, axis_index[2];
+    Real      voxel_diff[2];
+    Real      scales[2], sign_scales[2];
+    Real      translation[2], separations[N_DIMENSIONS], n_pixels;
+    Real      lower_voxel[2], upper_voxel[2];
+
+    viewport_size[0] = x_viewport_size;
+    viewport_size[1] = y_viewport_size;
+    axis_index[0] = x_axis;
+    axis_index[1] = y_axis;
+    lower_voxel[0] = x_min_voxel;
+    upper_voxel[0] = x_max_voxel;
+    lower_voxel[1] = y_min_voxel;
+    upper_voxel[1] = y_max_voxel;
+
+    get_volume_separations( volume, separations );
+
+    for_less( axis, 0, 2 )
+    {
+        voxel_diff[axis] = upper_voxel[axis] - lower_voxel[axis];
+
+        scales[axis] = (Real) viewport_size[axis] / voxel_diff[axis] /
+                       separations[axis_index[axis]]; 
+
+        if( scales[axis] < 0.0 )
+            sign_scales[axis] = -1.0;
+        else
+            sign_scales[axis] = 1.0;
+    }
+
+    if( ABS(scales[0]) < ABS(scales[1]) )
+        scales[1] = sign_scales[1] * ABS( scales[0] );
+    else
+        scales[0] = sign_scales[0] * ABS( scales[1] );
+
+    for_less( axis, 0, 2 )
+    {
+        n_pixels = scales[axis] * separations[axis_index[axis]] *
+                   voxel_diff[axis];
+
+        translation[axis] = ((Real) viewport_size[axis] - n_pixels) / 2.0 -
+                            lower_voxel[axis] * scales[axis] *
+                            separations[axis_index[axis]] + 0.5;
+    }
+
+    *x_translation = translation[0];
+    *y_translation = translation[1];
+    *x_scale = scales[0];
+    *y_scale = scales[1];
+}
+
+public  void  fit_volume_slice_to_viewport(
+    Volume       volume,
+    int          x_axis_index,
+    int          y_axis_index,
+    Boolean      x_flip,
+    Boolean      y_flip,
+    int          x_viewport_size,
+    int          y_viewport_size,
+    Real         fraction_oversize,
+    Real         *x_scale,
+    Real         *y_scale,
+    Real         *x_translation,
+    Real         *y_translation )
+{
+    int            sizes[N_DIMENSIONS];
+    Real           x_voxel[2], y_voxel[2], x_boundary, y_boundary;
+    Real           separations[N_DIMENSIONS];
+
+    get_volume_sizes( volume, sizes );
+    get_volume_separations( volume, separations );
+
+    x_boundary = fraction_oversize / 2.0 *(Real) sizes[x_axis_index];
+    y_boundary = fraction_oversize / 2.0 *(Real) sizes[y_axis_index];
+
+    if( separations[x_axis_index] < 0.0 )
+        x_flip = !x_flip;
+
+    if( separations[y_axis_index] < 0.0 )
+        y_flip = !y_flip;
+
+    x_voxel[  x_flip] = - 0.5 - x_boundary;
+    x_voxel[1-x_flip] = (Real) sizes[x_axis_index] - 0.5 + x_boundary;
+
+    y_voxel[  y_flip] = - 0.5 - y_boundary;
+    y_voxel[1-y_flip] = (Real) sizes[y_axis_index] - 0.5 + y_boundary;
+
+    fit_slice_voxel_range_to_viewport( volume, x_axis_index, y_axis_index,
+                           x_voxel[0], x_voxel[1], y_voxel[0], y_voxel[1],
+                           x_viewport_size, y_viewport_size,
+                           x_scale, y_scale, x_translation, y_translation );
+}
+
+public  void   scale_slice_about_viewport_centre(
+    Real        scale_factor,
+    int         x_viewport_size,
+    int         y_viewport_size,
+    Real        *x_scale,
+    Real        *y_scale,
+    Real        *x_translation,
+    Real        *y_translation )
+{
+    Real  x_centre, y_centre;
+
+    x_centre = (Real) x_viewport_size / 2.0;
+    y_centre = (Real) y_viewport_size / 2.0;
+
+    *x_translation = x_centre - scale_factor * (x_centre - *x_translation);
+    *y_translation = y_centre - scale_factor * (y_centre - *y_translation);
+    *x_scale *= scale_factor;
+    *y_scale *= scale_factor;
 }
