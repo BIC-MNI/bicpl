@@ -139,7 +139,7 @@ private  Real   private_minimize_lsq(
     Real             node_values[] )
 {
     Real              fit;
-    int               iter, s, p;
+    int               iter, s, p, n_between_saves;
     int               update_rate;
     Real              *saves[N_SAVES], *swap, *derivs;
     Real              last_update_time, current_time;
@@ -150,6 +150,10 @@ private  Real   private_minimize_lsq(
         for_less( p, 0, n_parameters )
             saves[s][p] = node_values[p];
     }
+
+    n_between_saves = n_iters / N_SAVES;
+    n_between_saves = MAX( n_between_saves, 1 );
+    n_between_saves = MIN( n_between_saves, N_BETWEEN_SAVES );
 
     ALLOC( derivs, n_parameters );
 
@@ -197,7 +201,7 @@ private  Real   private_minimize_lsq(
             last_update_time = current_time;
         }
 
-        if( (iter % N_BETWEEN_SAVES) == 0 )
+        if( (iter % n_between_saves) == 0 )
         {
             swap = saves[0];
             for_less( s, 0, N_SAVES-1 )
