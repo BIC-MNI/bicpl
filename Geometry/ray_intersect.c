@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.23 1996-08-27 17:23:37 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.24 1996-08-27 17:32:30 david Exp $";
 #endif
 
 
@@ -40,17 +40,29 @@ private  BOOLEAN   intersect_ray_triangle(
     Point            points[],
     Real             *dist )
 {
-    Real     n_dot_d, d, tx[3], ty[3], tz[3];
+    Real     n_dot_d, d;
     Real     v01x, v01y, v01z, v02x, v02y, v02z, nx, ny, nz, rx, ry, rz;
     Real     vx, vy, vz;
-    int      p, next;
+    Real     tx0, ty0, tz0, tx1, ty1, tz1, tx2, ty2, tz2;
 
-    v01x = RPoint_x(points[1]) - RPoint_x(points[0]);
-    v01y = RPoint_y(points[1]) - RPoint_y(points[0]);
-    v01z = RPoint_z(points[1]) - RPoint_z(points[0]);
-    v02x = RPoint_x(points[2]) - RPoint_x(points[0]);
-    v02y = RPoint_y(points[2]) - RPoint_y(points[0]);
-    v02z = RPoint_z(points[2]) - RPoint_z(points[0]);
+    tx0 = RPoint_x( points[0] ) - RPoint_x( *ray_origin );
+    ty0 = RPoint_y( points[0] ) - RPoint_y( *ray_origin );
+    tz0 = RPoint_z( points[0] ) - RPoint_z( *ray_origin );
+
+    tx1 = RPoint_x( points[1] ) - RPoint_x( *ray_origin );
+    ty1 = RPoint_y( points[1] ) - RPoint_y( *ray_origin );
+    tz1 = RPoint_z( points[1] ) - RPoint_z( *ray_origin );
+
+    tx2 = RPoint_x( points[2] ) - RPoint_x( *ray_origin );
+    ty2 = RPoint_y( points[2] ) - RPoint_y( *ray_origin );
+    tz2 = RPoint_z( points[2] ) - RPoint_z( *ray_origin );
+
+    v01x = tx1 - tx0;
+    v01y = ty1 - ty0;
+    v01z = tz1 - tz0;
+    v02x = tx2 - tx0;
+    v02y = ty2 - ty0;
+    v02z = tz2 - tz0;
 
     nx = v01y * v02z - v01z * v02y;
     ny = v01z * v02x - v01x * v02z;
@@ -65,35 +77,28 @@ private  BOOLEAN   intersect_ray_triangle(
     if( n_dot_d == 0.0 )
         return( FALSE );
 
-    for_less( p, 0, 3 )
-    {
-        tx[p] = RPoint_x( points[p] ) - RPoint_x( *ray_origin );
-        ty[p] = RPoint_y( points[p] ) - RPoint_y( *ray_origin );
-        tz[p] = RPoint_z( points[p] ) - RPoint_z( *ray_origin );
-    }
+    vx = ty1 * tz0 - tz1 * ty0;
+    vy = tz1 * tx0 - tx1 * tz0;
+    vz = tx1 * ty0 - ty1 * tx0;
+    d = rx * vx + ry * vy + rz * vz;
+    if( n_dot_d * d > 0.0 )
+        return( FALSE );
 
-    for_less( p, 0, 3 )
-    {
-        next = (p + 1) % 3;
-        vx = ty[next] * tz[p] - tz[next] * ty[p];
-        vy = tz[next] * tx[p] - tx[next] * tz[p];
-        vz = tx[next] * ty[p] - ty[next] * tx[p];
+    vx = ty2 * tz1 - tz2 * ty1;
+    vy = tz2 * tx1 - tx2 * tz1;
+    vz = tx2 * ty1 - ty2 * tx1;
+    d = rx * vx + ry * vy + rz * vz;
+    if( n_dot_d * d > 0.0 )
+        return( FALSE );
 
-        d = rx * vx + ry * vy + rz * vz;
+    vx = ty0 * tz2 - tz0 * ty2;
+    vy = tz0 * tx2 - tx0 * tz2;
+    vz = tx0 * ty2 - ty0 * tx2;
+    d = rx * vx + ry * vy + rz * vz;
+    if( n_dot_d * d > 0.0 )
+        return( FALSE );
 
-        if( n_dot_d < 0.0 )
-        {
-            if( d < 0.0 )
-                return( FALSE );
-        }
-        else
-        {
-            if( d > 0.0 )
-                return( FALSE );
-        }
-    }
-
-    *dist = (nx * tx[0] + ny * ty[0] + nz * tz[0])/ n_dot_d;
+    *dist = (nx * tx0 + ny * ty0 + nz * tz0)/ n_dot_d;
 
     return( *dist >= 0.0 );
 }
