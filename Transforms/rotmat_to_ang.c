@@ -1,5 +1,4 @@
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : rotmat_to_ang.c
+/* ----------------------------- MNI Header ----------------------------------- @NAME       : rotmat_to_ang.c
 @INPUT      : rot      - rotation matrix (3x3 in num recipes form) calculated
                          by the calling program.
 @OUTPUT     : ang      - vector giving rx,ry and rz rotation angles (in 
@@ -70,7 +69,7 @@ extern char *prog_name;
 
 #define EPS  0.00000000001	/* epsilon, should be calculated */
 
-
+private void print_rot_error(char *s, char * d1, int d2, int d3, int d4, int d5, int d6, int d7);
 
 public BOOLEAN rotmat_to_ang(float **rot_mat, float *ang)
 {
@@ -116,13 +115,13 @@ public BOOLEAN rotmat_to_ang(float **rot_mat, float *ang)
    k = t[3][1];
 
    if (i<EPS) {			/* if i is not already in the positive X range, */
-      print_error("step one: rz not in the range -pi/2..pi/2",__FILE__, __LINE__,0,0,0,0,0);
+      print_rot_error("step one: rz not in the range -pi/2..pi/2",__FILE__, __LINE__,0,0,0,0,0);
       return(FALSE);
    }
 
    len = sqrt(i*i + j*j);	/* length of vect x on XY plane */
    if (ABS(len)<EPS) {
-      print_error("step one: length of vect x null.",__FILE__, __LINE__,0,0,0,0,0);
+      print_rot_error("step one: length of vect x null.",__FILE__, __LINE__,0,0,0,0,0);
       return(FALSE);
    }
 
@@ -157,14 +156,14 @@ public BOOLEAN rotmat_to_ang(float **rot_mat, float *ang)
    k = s[3][1];
 
    if (i<EPS) {
-      print_error("step two: ry not in the range -pi/2..pi/2",__FILE__, __LINE__,0,0,0,0,0);
+      print_rot_error("step two: ry not in the range -pi/2..pi/2",__FILE__, __LINE__,0,0,0,0,0);
       return(FALSE);
    }
 
    len = sqrt(i*i + k*k);		/* length of vect x in XZ plane, after RZ */
 
    if (ABS(len)<EPS) {
-      print_error("step two: length of vect z null.",__FILE__, __LINE__,0,0,0,0,0);
+      print_rot_error("step two: length of vect z null.",__FILE__, __LINE__,0,0,0,0,0);
       return(FALSE);
    }
 
@@ -202,7 +201,7 @@ public BOOLEAN rotmat_to_ang(float **rot_mat, float *ang)
    len = sqrt(j*j + k*k);	/* length of vect x in Y,Z plane */
 
    if (ABS(len)<EPS) {
-      print_error("step three: length of vect z null.",__FILE__, __LINE__,0,0,0,0,0);
+      print_rot_error("step three: length of vect z null.",__FILE__, __LINE__,0,0,0,0,0);
       return(FALSE);
    }
 
@@ -488,7 +487,7 @@ public void nr_multf(float **A, int mA1, int mA2, int nA1, int nA2,
 }
 
 
-public void print_error(char *s, char * d1, int d2, int d3, int d4, int d5, int d6, int d7)
+private void print_rot_error(char *s, char * d1, int d2, int d3, int d4, int d5, int d6, int d7)
 {
   (void) fprintf(stderr, "Error in file %s, line %d\n   ",d1,d2);
   (void) fprintf(stderr, s, d3,d4,d5,d6,d7);
