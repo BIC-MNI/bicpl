@@ -1,7 +1,9 @@
 SUBDIRS = Include Data_structures Transforms Geometry Numerical Objects \
-	Prog_utils Volumes Marching_cubes Images . tools Documentation
+	Prog_utils Volumes Marching_cubes Images . tools Documentation \
+	Testing
 
 AUTOMAKE_OPTIONS = check-news
+ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = README.release \
 	m4/smr_OPTIONAL_LIB.m4 \

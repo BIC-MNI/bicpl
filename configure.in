@@ -50,16 +50,17 @@ dnl AC_CHECK_TYPE(bool,int)
 
 AC_OUTPUT( 
 Makefile
-Include/Makefile Include/bicpl/Makefile
 Data_structures/Makefile
-Transforms/Makefile
+Documentation/Makefile Documentation/doxygen.config
 Geometry/Makefile
+Images/Makefile
+Include/Makefile Include/bicpl/Makefile
+Marching_cubes/Makefile
 Numerical/Makefile
 Objects/Makefile
 Prog_utils/Makefile
+Testing/Makefile
+Transforms/Makefile
 Volumes/Makefile
-Marching_cubes/Makefile
-Images/Makefile
 tools/Makefile
-Documentation/Makefile Documentation/doxygen.config
 )

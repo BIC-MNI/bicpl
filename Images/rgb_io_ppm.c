@@ -22,14 +22,6 @@ public  Status  input_rgb_file(
     pixval max_pixval;
     int x,y;
 
-
-    /** I think the following code is how it ought to be done,
-	but it is completely untested, so let's be conservative
-	here... **/
-    print_error( "input_rgb_file(): fix rgb_io_ppm.c.\n" );
-    return OK;
-
-
     if ( (f = fopen(filename,"r")) == NULL ) {
         print_error( "Error: output file could not be opened for reading: %s\n",
                      filename );
