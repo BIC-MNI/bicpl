@@ -134,18 +134,20 @@ private  Real  evaluate_sinc(
     Real   d_squared )
 {
     lookup_struct  *lookup;
-    Real           x;
 
+
+/*
     if( d_squared >= max_sinc_arg )
     {
         return( sinc( d_squared ) );
     }
 
     x = sinc_factor * d_squared;
+*/
 
-    lookup = &precomp_sinc[(int) x];
+    lookup = &precomp_sinc[(int) d_squared];
 
-    return( lookup->trans + lookup->scale * x );
+    return( lookup->trans + lookup->scale * d_squared );
 }
 
 private  void     evaluate_sync_interpolation(
@@ -156,9 +158,11 @@ private  void     evaluate_sync_interpolation(
     Real      *value )
 {
     int    v0, v1, v2, sizes[N_DIMENSIONS], ind, dim;
-    Real   d0, d1, d2, d;
+    Real   delta, d, dd, ddd;
+    Real   *d0, *d1, *d2;
     Real   voxel[N_DIMENSIONS], *slice, sum_value, sum_weight, weight;
     Real   separations[N_DIMENSIONS];
+    lookup_struct  *lookup;
 
     convert_world_to_voxel( volume, x, y, z, voxel );
 
@@ -167,36 +171,56 @@ private  void     evaluate_sync_interpolation(
         separations[dim] = FABS( separations[dim] );
 
     get_volume_sizes( volume, sizes );
-    ALLOC( slice, sizes[1] * sizes[2] );
+    ALLOC( slice, sizes[2] );
+
+    ALLOC( d0, sizes[0] );
+    ALLOC( d1, sizes[1] );
+    ALLOC( d2, sizes[2] );
+    for_less( v0, 0, sizes[0] )
+    {
+        delta = ((Real) v0 - voxel[0]) * separations[0];
+        d0[v0] = sinc_factor * delta * delta;
+    }
+    for_less( v1, 0, sizes[1] )
+    {
+        delta = ((Real) v1 - voxel[1]) * separations[1];
+        d1[v1] = sinc_factor * delta * delta;
+    }
+    for_less( v2, 0, sizes[2] )
+    {
+        delta = ((Real) v2 - voxel[2]) * separations[2];
+        d2[v2] = sinc_factor * delta * delta;
+    }
 
     sum_value = 0.0;
     sum_weight = 0.0;
 
     for_less( v0, 0, sizes[0] )
     {
-        get_volume_voxel_hyperslab_3d( volume, v0, 0, 0, 1, sizes[1], sizes[2],
-                                       slice );
-
-        ind = 0;
-        d0 = ((Real) v0 - voxel[0]) * separations[0];
+        d = d0[v0];
         for_less( v1, 0, sizes[1] )
         {
-            d1 = ((Real) v1 - voxel[1]) * separations[1];
+            get_volume_voxel_hyperslab_3d( volume, v0, v1, 0, 1, 1, sizes[2],
+                                           slice );
+            ind = 0;
+            dd = d + d1[v1];
             for_less( v2, 0, sizes[2] )
             {
-                d2 = ((Real) v2 - voxel[2]) * separations[2];
-                d = d0 * d0 + d1 * d1 + d2 * d2;
+                ddd = dd + d2[v2];
+                lookup = &precomp_sinc[(int) ddd];
+                weight = lookup->trans + lookup->scale * ddd;
 
-                weight = evaluate_sinc( d );
-
-                sum_value += weight * slice[ind];
                 sum_weight += weight;
+                sum_value += weight * slice[ind];
                 ++ind;
             }
         }
     }
 
     FREE( slice );
+    FREE( d0 );
+    FREE( d1 );
+    FREE( d2 );
 
     *value = CONVERT_VOXEL_TO_VALUE( volume, sum_value / sum_weight );
 }
