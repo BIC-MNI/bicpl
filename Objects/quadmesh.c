@@ -27,7 +27,7 @@ public  void  initialize_quadmesh(
         ALLOC( quadmesh->normals, m * n );
     }
 
-    quadmesh->bintree = NULL;
+    quadmesh->bintree = (bintree_struct_ptr) NULL;
 }
 
 public  void  delete_quadmesh(
@@ -45,8 +45,7 @@ public  void  delete_quadmesh(
             FREE( quadmesh->normals );
     }
 
-    if( quadmesh->bintree != NULL )
-        delete_quadmesh_bintree( quadmesh );   
+    delete_bintree_if_any( &quadmesh->bintree );   
 }
 
 public  void  set_quadmesh_point(
@@ -143,55 +142,4 @@ public  void  get_quadmesh_patch(
 
     for_less( p, 0, 4 )
         points[p] = quadmesh->points[indices[p]];
-}
-
-public  void  create_quadmesh_bintree(
-    quadmesh_struct   *quadmesh,
-    int               max_nodes )
-{
-    int              i, j, m, n, obj_index;
-    range_struct     *bound_vols;
-    Point            min_range, max_range;
-    Point            points[4];
-
-    ALLOC( quadmesh->bintree, 1 );
-
-    get_quadmesh_n_objects( quadmesh, &m, &n );
-
-    ALLOC( bound_vols, m * n );
-
-    for_less( i, 0, m )
-    {
-        for_less( j, 0, n )
-        {
-            obj_index = IJ( i, j, n );
-            get_quadmesh_patch( quadmesh, i, j, points );
-
-            get_range_points( 4, points, &min_range, &max_range );
-
-            bound_vols[obj_index].limits[X][0] = Point_x(min_range);
-            bound_vols[obj_index].limits[Y][0] = Point_y(min_range);
-            bound_vols[obj_index].limits[Z][0] = Point_z(min_range);
-            bound_vols[obj_index].limits[X][1] = Point_x(max_range);
-            bound_vols[obj_index].limits[Y][1] = Point_y(max_range);
-            bound_vols[obj_index].limits[Z][1] = Point_z(max_range);
-        }
-    }
-
-    create_object_bintree( m * n, bound_vols,
-                           quadmesh->bintree, max_nodes );
-
-    FREE( bound_vols );
-}
-
-public  void  delete_quadmesh_bintree(
-    quadmesh_struct   *quadmesh )
-{
-    if( quadmesh->bintree != (bintree_struct *) 0 )
-    {
-        delete_bintree( quadmesh->bintree );
-
-        FREE( quadmesh->bintree );
-        quadmesh->bintree = (bintree_struct *) 0;
-    }
 }
