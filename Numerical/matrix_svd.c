@@ -3,7 +3,7 @@
 
 #define  MAX_ITERATIONS  30
 
-private  float   at,bt,ct;
+private  Real   at,bt,ct;
 
 #define PYTHAG(a,b) ((at=fabs(a)) > (bt=fabs(b)) ? \
 (ct=bt/at,at*sqrt(1.0+ct*ct)) : (bt ? (ct=at/bt,bt*sqrt(1.0+ct*ct)): 0.0))
@@ -13,15 +13,15 @@ private  float   at,bt,ct;
 public  BOOLEAN  singular_value_decomposition(
     int    m,
     int    n,
-    float   **a,
-    float   w[],
-    float   **v )
+    Real   **a,
+    Real   w[],
+    Real   **v )
 {
     BOOLEAN     flag;
     int         i, iter, j, jj, k, l, nm;
-    float        c, f, h, s, x, y, z;
-    float        anorm, g, scale, t;
-    float        *rv1;
+    Real        c, f, h, s, x, y, z;
+    Real        anorm, g, scale, t;
+    Real        *rv1;
 
     if( m < n )
     {
