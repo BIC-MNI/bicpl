@@ -37,13 +37,20 @@ public  void   intersect_planes_with_polygons(
 
             /*--- check if it intersects the line segment [p1 .. p2)  */
 
-            if( t1 >= 0.0 && t2 < 0.0 || t1 <= 0.0 && t2 > 0.0 )
+            if( t1 == 0.0 || t1 > 0.0 && t2 < 0.0 || t1 < 0.0 && t2 > 0.0 )
             {
-                ratio = t1 / (t1 - t2);
+                if( t1 == 0.0 )
+                    ratio = 0.0;
+                else
+                    ratio = t1 / (t1 - t2);
 
-                INTERPOLATE_POINTS( points[n_points],
-                                    polygons->points[point_index1],
-                                    polygons->points[point_index2], ratio );
+                if( n_points < 2 )
+                {
+                    INTERPOLATE_POINTS( points[n_points],
+                                        polygons->points[point_index1],
+                                        polygons->points[point_index2], ratio );
+                }
+
                 ++n_points;
             }
         }
