@@ -42,7 +42,7 @@ public  void  initialize_polygons(
 
     polygons->visibilities = (Smallest_int *) 0;
     polygons->neighbours = (int *) 0;
-    polygons->bintree = (bintree_struct *) 0;
+    polygons->bintree = (bintree_struct_ptr) NULL;
 }
 
 public  void  delete_polygons( polygons_struct *polygons )
@@ -68,12 +68,10 @@ public  void  delete_polygons( polygons_struct *polygons )
     if( polygons->neighbours != (int *) 0 )
         FREE( polygons->neighbours );
 
-    if( polygons->bintree != (bintree_struct *) NULL )
-        delete_polygons_bintree( polygons );
+    delete_bintree_if_any( &polygons->bintree );
 
     polygons->visibilities = (Smallest_int *) 0;
     polygons->neighbours = (int *) 0;
-    polygons->bintree = (bintree_struct *) 0;
 }
 
 public  void  copy_polygons(
@@ -114,7 +112,7 @@ public  void  copy_polygons(
 
     dest->visibilities = (Smallest_int *) 0;
     dest->neighbours = (int *) 0;
-    dest->bintree = (bintree_struct *) 0;
+    dest->bintree = (bintree_struct_ptr) NULL;
 }
 
 public  void  set_polygon_per_item_colours(
@@ -160,50 +158,6 @@ public  void  set_polygons_visibilities(
     {
         for_less( i, 0, polygons->n_items )
             polygons->visibilities[i] = state;
-    }
-}
-
-public  void  create_polygons_bintree(
-    polygons_struct   *polygons,
-    int               max_nodes )
-{
-    int              poly, size;
-    range_struct     *bound_vols;
-    Point            min_range, max_range;
-    Point            points[MAX_POINTS_PER_POLYGON];
-
-    ALLOC( polygons->bintree, 1 );
-
-    ALLOC( bound_vols, polygons->n_items );
-
-    for_less( poly, 0, polygons->n_items )
-    {
-        size = get_polygon_points( polygons, poly, points );
-
-        get_range_points( size, points, &min_range, &max_range );
-        bound_vols[poly].limits[X][0] = Point_x(min_range);
-        bound_vols[poly].limits[Y][0] = Point_y(min_range);
-        bound_vols[poly].limits[Z][0] = Point_z(min_range);
-        bound_vols[poly].limits[X][1] = Point_x(max_range);
-        bound_vols[poly].limits[Y][1] = Point_y(max_range);
-        bound_vols[poly].limits[Z][1] = Point_z(max_range);
-    }
-
-    create_object_bintree( polygons->n_items, bound_vols,
-                           polygons->bintree, max_nodes );
-
-    FREE( bound_vols );
-}
-
-public  void  delete_polygons_bintree(
-    polygons_struct   *polygons )
-{
-    if( polygons->bintree != (bintree_struct *) 0 )
-    {
-        delete_bintree( polygons->bintree );
-
-        FREE( polygons->bintree );
-        polygons->bintree = (bintree_struct *) 0;
     }
 }
 
