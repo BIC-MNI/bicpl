@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS = check-news
 
 # version info argument is CURRENT[:REVISION[:AGE]]
 # see below
-libbicpl_la_LDFLAGS = -version-info 0:1
+libbicpl_la_LDFLAGS = -version-info 0:2
 
 lib_LTLIBRARIES = libbicpl.la
 
