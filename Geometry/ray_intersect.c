@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.21 1996-08-08 19:15:32 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.22 1996-08-27 17:12:59 david Exp $";
 #endif
 
 
@@ -33,6 +33,54 @@ private  BOOLEAN  point_within_polygon_2d(
     int     n_points,
     Point   points[],
     Vector  *polygon_normal );
+
+private  BOOLEAN   intersect_ray_triangle(
+    Point            *ray_origin,
+    Vector           *ray_direction,
+    Point            points[],
+    Real             *dist )
+{
+    Real     n_dot_d, d;
+    Vector   t[3], v, v01, v02, normal;
+    int      p;
+
+    SUB_POINTS( v01, points[1], points[0] );
+    SUB_POINTS( v02, points[2], points[0] );
+    CROSS_VECTORS( normal, v01, v02 );
+
+    n_dot_d = DOT_VECTORS( *ray_direction, normal );
+
+    if( n_dot_d == 0.0 )
+        return( FALSE );
+
+    for_less( p, 0, 3 )
+    {
+        SUB_POINTS( t[p], points[p], *ray_origin );
+    }
+
+    for_less( p, 0, 3 )
+    {
+        CROSS_VECTORS( v, t[(p+1)%3], t[p] );
+        d = DOT_VECTORS( *ray_direction, v );
+        if( n_dot_d < 0.0 )
+        {
+            if( d < 0.0 )
+                return( FALSE );
+        }
+        else
+        {
+            if( d > 0.0 )
+                return( FALSE );
+        }
+    }
+
+    *dist = (RVector_x(normal) * (RPoint_x(points[0]) - RPoint_x(*ray_origin)) +
+             RVector_y(normal) * (RPoint_y(points[0]) - RPoint_y(*ray_origin)) +
+             RVector_z(normal) * (RPoint_z(points[0]) - RPoint_z(*ray_origin)))/
+             n_dot_d;
+
+    return( *dist >= 0.0 );
+}
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : intersect_ray_polygon_points
@@ -172,8 +220,16 @@ private  BOOLEAN   intersect_ray_polygon(
             points[p-start_index] = polygons->points[ind];
         }
 
-        intersects = intersect_ray_polygon_points( ray_origin, ray_direction,
-                                                   size, points, dist );
+        if( size == 3 )
+        {
+            intersects = intersect_ray_triangle( ray_origin, ray_direction,
+                                                 points, dist );
+        }
+        else
+        {
+            intersects = intersect_ray_polygon_points( ray_origin,
+                              ray_direction, size, points, dist );
+        }
     }
 
     return( intersects );
