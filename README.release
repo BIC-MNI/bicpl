@@ -41,7 +41,7 @@ The version started at 0:0:0.
 
 * Copy tar file to distribution site.
 
-* Run "cvs tag release-x_y_z"
+* Run "cvs tag bicpl-x_y_z"
 
 * Update version number in configure.in.
 
