@@ -33,3 +33,20 @@ public  Colour     *get_8bit_rgb_pixel_lookup( void )
 
     return( lookup_table );
 }
+
+public  int  convert_rgb_pixel_to_8bit_lookup(
+    Colour    colour )
+{
+    int   ind, r, g, b, r_ind, g_ind, b_ind;
+
+    r = get_Colour_r( colour );
+    g = get_Colour_g( colour );
+    b = get_Colour_b( colour );
+
+    r_ind = 8 * r / 256;
+    g_ind = 8 * g / 256;
+    b_ind = 4 * b / 256;
+    ind = r_ind | (g_ind << 3) | (b_ind << 6);
+
+    return( ind );
+}

@@ -121,47 +121,13 @@ private  void  map_voxel_to_pixel(
     Real   *y_pixel )
 {
     int   c;
-    Real  len_x, len_y, x_dot_y, factor, z_mag;
     Real  vector[MAX_DIMENSIONS];
-    Real  z_axis[MAX_DIMENSIONS];
 
     for_less( c, 0, n )
         vector[c] = voxel[c] - origin[c];
 
-    len_x = sqrt( dot( n, x_axis, x_axis ) );
-    len_y = sqrt( dot( n, y_axis, y_axis ) );
-
-    x_dot_y = dot( n, x_axis, y_axis );
-    if( len_x != 0.0 )
-        x_dot_y /= len_x;
-    if( len_y != 0.0 )
-        x_dot_y /= len_y;
-
-    if( ABS( x_dot_y ) < 0.001 )
-    {
-        *x_pixel = dot( n, vector, x_axis ) / len_x / len_x;
-        *y_pixel = dot( n, vector, y_axis ) / len_y / len_y;
-    }
-    else if( n == 3 )
-    {
-        cross( n, x_axis, y_axis, z_axis );
-        z_mag = dot( n, z_axis, z_axis );
-        if( z_mag != 0.0 )
-        {
-            factor = dot( n, vector, z_axis ) / z_mag;
-            for_less( c, 0, n )
-                vector[c] -= factor * z_axis[c];
-        }
-
-        get_two_axes_coordinates( n, vector, x_axis, y_axis,
-                                  x_pixel, y_pixel );
-    }
-    else
-    {
-        print( "Cannot handle nonortho axis of non-3D data.\n" );
-        *x_pixel = 0.0;
-        *y_pixel = 0.0;
-    }
+    get_two_axes_coordinates( n, vector, x_axis, y_axis,
+                              x_pixel, y_pixel );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -252,17 +218,44 @@ public  void  convert_voxel_to_slice_pixel(
     Real            *x_pixel,
     Real            *y_pixel )
 {
-    int          n_dims;
+    int          c, n_dims;
+    Real         z_mag, factor;
+    Real         vector[MAX_DIMENSIONS];
+    Real         separations[MAX_DIMENSIONS];
     Real         real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
     Real         real_origin[MAX_DIMENSIONS];
+    Real         z_axis[MAX_DIMENSIONS], used_voxel[MAX_DIMENSIONS];
+
+    n_dims = get_volume_n_dimensions( volume );
+
+    for_less( c, 0, n_dims )
+        used_voxel[c] = voxel[c];
+
+    if( n_dims == N_DIMENSIONS )
+    {
+        get_volume_separations( volume, separations );
+
+        cross( N_DIMENSIONS, x_axis, y_axis, z_axis );
+        z_mag = dot( N_DIMENSIONS, z_axis, z_axis );
+        if( z_mag != 0.0 )
+        {
+            for_less( c, 0, N_DIMENSIONS )
+                vector[c] = separations[c] * (voxel[c] - origin[c]);
+
+            factor = dot( N_DIMENSIONS, vector, z_axis ) / z_mag;
+
+            for_less( c, 0, N_DIMENSIONS )
+                used_voxel[c] -= factor * z_axis[c] / separations[c];
+        }
+    }
+    else
+        print( "Not sure if non-3d convert_voxel_to_slice_pixel works.\n" );
 
     get_mapping( volume, origin, x_axis, y_axis,
                  x_translation, y_translation, x_scale, y_scale,
                  real_origin, real_x_axis, real_y_axis );
 
-    n_dims = get_volume_n_dimensions( volume );
-
-    map_voxel_to_pixel( n_dims, voxel, real_origin,
+    map_voxel_to_pixel( n_dims, used_voxel, real_origin,
                         real_x_axis, real_y_axis, x_pixel, y_pixel );
 }
 

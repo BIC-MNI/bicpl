@@ -74,11 +74,19 @@ public  int  find_object_index_in_model(
     return( -1 );
 }
 
-public  void  remove_object_from_model(
+public  void  remove_ith_object_from_model(
     model_struct   *model,
     int            obj_index )
 {
     remove_object_from_list( &model->n_objects, &model->objects, obj_index );
+}
+
+public  void  remove_object_from_model(
+    model_struct   *model,
+    object_struct  *object )
+{
+    remove_ith_object_from_model( model,
+                                  find_object_index_in_model(model,object) );
 }
 
 public  void  delete_object_list(

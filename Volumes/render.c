@@ -84,10 +84,16 @@ public  void  render_volume_to_slice(
     for_less( c, 0, n_dims1 )
     {
         delta = ABS( x_axis1[c] );
-        if( delta <= 1.0 / (Real) max_cases[n_dims1-1] )
+        if( delta == 0.0 )
+            n_cases1[c] = 1;
+        else if( delta <= 1.0 / (Real) max_cases[n_dims1-1] )
             n_cases1[c] = max_cases[n_dims1-1];
         else
+        {
             n_cases1[c] = (int) (1.0 / delta) + 1;
+            if( n_cases1[c] > max_cases[n_dims1-1] )
+                n_cases1[c] = max_cases[n_dims1-1];
+        }
 
         total_cases *= n_cases1[c];
     }
@@ -100,7 +106,10 @@ public  void  render_volume_to_slice(
         for_less( c, 0, n_dims1 )
         {
             case_index = p % n_cases1[c];
-            tmp_origin[c] = ((Real) case_index + 0.5) / (Real) n_cases1[c];
+            if( x_axis1[c] == 0.0 )
+                tmp_origin[c] = 0.0;
+            else
+                tmp_origin[c] = ((Real) case_index + 0.5) / (Real) n_cases1[c];
             p /= n_cases1[c];
         }
 
@@ -125,10 +134,16 @@ public  void  render_volume_to_slice(
         for_less( c, 0, n_dims2 )
         {
             delta = ABS( x_axis2[c] );
-            if( delta <= 1.0 / (Real) max_cases[n_dims2-1] )
+            if( delta == 0.0 )
+                n_cases2[c] = 1;
+            else if( delta <= 1.0 / (Real) max_cases[n_dims2-1] )
                 n_cases2[c] = max_cases[n_dims2-1];
             else
+            {
                 n_cases2[c] = (int) (1.0 / delta) + 1;
+                if( n_cases2[c] > max_cases[n_dims2-1] )
+                    n_cases2[c] = max_cases[n_dims2-1];
+            }
 
             total_cases *= n_cases2[c];
         }
@@ -141,7 +156,11 @@ public  void  render_volume_to_slice(
             for_less( c, 0, n_dims2 )
             {
                 case_index = p % n_cases2[c];
-                tmp_origin[c] = ((Real) case_index + 0.5) / (Real) n_cases2[c];
+                if( x_axis2[c] == 0.0 )
+                    tmp_origin[c] = 0.0;
+                else
+                    tmp_origin[c] = ((Real) case_index + 0.5) /
+                                    (Real) n_cases2[c];
                 p /= n_cases2[c];
             }
 

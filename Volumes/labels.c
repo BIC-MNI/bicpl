@@ -176,6 +176,23 @@ public  int  get_volume_label_data(
     }
 }
 
+public  int  get_3D_volume_label_data(
+    Volume          volume,
+    int             x,
+    int             y,
+    int             z )
+{
+    int    label;
+
+    if( volume == (Volume) NULL || volume->data == (void *) NULL )
+        return( 0 );
+    else
+    {
+        GET_VOXEL_3D( label, volume, x, y, z );
+        return( label );
+    }
+}
+
 public  BOOLEAN  get_voxel_label_bit(
     Volume          volume,
     int             voxel[],
@@ -246,7 +263,7 @@ public  BOOLEAN  get_volume_voxel_activity(
         n[c] = 2;
     }
 
-    for_less( c, get_volume_n_dimensions(volume)-1, MAX_DIMENSIONS )
+    for_less( c, get_volume_n_dimensions(volume), MAX_DIMENSIONS )
     {
         n[c] = 1;
         int_index[c] = 0;
@@ -262,9 +279,17 @@ public  BOOLEAN  get_volume_voxel_activity(
     for_less( ind[4], int_index[4], int_index[4] + n[4] )
     {
         if( get_voxel_activity_flag( volume, ind ) )
+        {
+            if( inactive_found )
+                return( activity_if_mixed );
             active_found = TRUE;
+        }
         else
+        {
+            if( active_found )
+                return( activity_if_mixed );
             inactive_found = TRUE;
+        }
     }
 
     if( active_found && !inactive_found )
@@ -273,6 +298,62 @@ public  BOOLEAN  get_volume_voxel_activity(
         return( FALSE );
     else
         return( activity_if_mixed );
+}
+
+public  Status  io_label_volume(
+    FILE     *file,
+    IO_types io_type,
+    Volume   label_volume )
+{
+    Status   status;
+    int      sizes[MAX_DIMENSIONS];
+    void     *void_ptr;
+
+    GET_VOXEL_PTR( void_ptr, label_volume, 0, 0, 0, 0, 0 );
+
+    get_volume_sizes( label_volume, sizes );
+
+    status = io_binary_data( file, io_type, void_ptr,
+                             sizes[X] * sizes[Y] * sizes[Z],
+                             sizeof(unsigned char) );
+
+    return( status );
+}
+
+private  Status  save_or_load_label_volume(
+    char     filename[],
+    IO_types io_type,
+    Volume   label_volume )
+{
+    Status   status;
+    FILE     *file;
+
+    check_alloc_label_data( label_volume );
+
+    status = open_file_with_default_suffix( filename, "lbl", io_type,
+                                            BINARY_FORMAT, &file );
+
+    if( status == OK )
+        status = io_label_volume( file, io_type, label_volume );
+
+    if( status == OK )
+        status = close_file( file );
+
+    return( status );
+}
+
+public  Status  load_label_volume(
+    char     filename[],
+    Volume   label_volume )
+{
+    return( save_or_load_label_volume( filename, READ_FILE, label_volume ) );
+}
+
+public  Status  save_label_volume(
+    char     filename[],
+    Volume   label_volume )
+{
+    return( save_or_load_label_volume( filename, WRITE_FILE, label_volume ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

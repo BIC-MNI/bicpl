@@ -16,6 +16,12 @@ public  object_struct  *create_object(
     return( object );
 }
 
+public  Object_types  get_object_type(
+    object_struct   *object )
+{
+    return( object->object_type );
+}
+
 public  BOOLEAN  get_object_visibility(
     object_struct  *object )
 {

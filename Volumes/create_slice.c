@@ -166,8 +166,14 @@ public  int    get_volume_cross_section(
 {
     Real    clipped_points[2*MAX_DIMENSIONS][2];
     int     i, c, n_dims, n_points;
+    Real    real_origin[MAX_DIMENSIONS];
+    Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
 
-    n_points = get_cross_section( volume, origin, x_axis, y_axis,
+    get_mapping( volume, origin, x_axis, y_axis,
+                 0.0, 0.0, 1.0, 1.0,
+                 real_origin, real_x_axis, real_y_axis );
+
+    n_points = get_cross_section( volume, real_origin, real_x_axis, real_y_axis,
                                   clipped_points );
 
     n_dims = get_volume_n_dimensions( volume );
@@ -176,9 +182,9 @@ public  int    get_volume_cross_section(
     {
         for_less( c, 0, n_dims )
         {
-            clipped_voxels[i][c] = origin[c] +
-                                   clipped_points[i][0] * x_axis[c] +
-                                   clipped_points[i][1] * y_axis[c];
+            clipped_voxels[i][c] = real_origin[c] +
+                                   clipped_points[i][0] * real_x_axis[c] +
+                                   clipped_points[i][1] * real_y_axis[c];
         }
     }
 
@@ -378,6 +384,8 @@ private  void  create_weighted_volume_slices(
     modify_pixels_size( n_pixels_alloced, pixels, x_size, y_size, pixel_type );
     pixels->x_position = x_pixel_start;
     pixels->y_position = y_pixel_start;
+    pixels->x_zoom = 1.0;
+    pixels->y_zoom = 1.0;
 
     if( x_size > 0 && y_size > 0 )
     {
@@ -467,9 +475,9 @@ private  BOOLEAN  get_filter_slices(
         {
             a1 = (c + 1) % N_DIMENSIONS;
             a2 = (c + 2) % N_DIMENSIONS;
-            direction[c] = x_axis[a1] * y_axis[a2] -
-                           x_axis[a2] * y_axis[a1];
-            direction[c] *= separations[a1] * separations[a2] / separations[c];
+            direction[c] = x_axis[a1] * y_axis[a2] - x_axis[a2] * y_axis[a1];
+            direction[c] *= ABS( separations[a1] * separations[a2] /
+                                 separations[c] );
         }
     }
 

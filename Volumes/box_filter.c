@@ -170,7 +170,7 @@ public  Volume  create_box_filtered_volume(
 #ifdef DEBUG
     Real               correct_voxel;
 #endif
-    Real               total_volume, voxel, sum;
+    Real               total_volume, voxel, value, sum;
     int                start, end;
     int                x_init_recede_index, y_init_recede_index;
     int                z_init_recede_index;
@@ -223,7 +223,7 @@ public  Volume  create_box_filtered_volume(
         for_less( y, 0, sizes[Y] )
         {
             for_less( z, 0, sizes[Z] )
-                GET_VOXEL_3D( volume_cache[x][y][z], volume, x, y, z );
+                GET_VALUE_3D( volume_cache[x][y][z], volume, x, y, z );
         }
     }
 
@@ -269,7 +269,7 @@ public  Volume  create_box_filtered_volume(
                 for_less( y, 0, sizes[Y] )
                 {
                     for_less( z, 0, sizes[Z] )
-                        GET_VOXEL_3D( volume_cache[i][y][z], volume, i, y, z );
+                        GET_VALUE_3D( volume_cache[i][y][z], volume, i, y, z );
                 }
             }
 
@@ -301,7 +301,8 @@ public  Volume  create_box_filtered_volume(
                     HANDLE_INTERNAL_ERROR( "Dang" );
 #endif
 
-                voxel = sum / total_volume;
+                value = sum / total_volume;
+                voxel = CONVERT_VALUE_TO_VOXEL( resampled_volume, value );
                 SET_VOXEL_3D( resampled_volume, x, y, z, voxel );
 
                 if( z == sizes[Z]-1 )
@@ -421,7 +422,7 @@ private  Real  get_amount_in_box(
 
             for_inclusive( y, y_min_voxel, y_max_voxel )
             {
-                GET_VOXEL_3D( voxel, volume, x, y, z );
+                GET_VALUE_3D( voxel, volume, x, y, z );
 
                 if( y == y_min_voxel )
                     voxel *= y_weight_start;
