@@ -16,7 +16,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.14 1996-09-12 15:53:09 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.15 1996-09-19 15:30:40 david Exp $";
 #endif
 
 #define  INVALID_ID       -1
@@ -57,6 +57,7 @@ public  void  delete_polygon_point_neighbours(
     polygons_struct  *polygons,
     int              n_point_neighbours[],
     int              *point_neighbours[],
+    Smallest_int     interior_flags[],
     int              *point_polygons[] )
 {
     int   i;
@@ -66,6 +67,9 @@ public  void  delete_polygon_point_neighbours(
     for_less( i, 0, polygons->n_points )
         FREE( point_neighbours[i] );
     FREE( point_neighbours );
+
+    if( interior_flags != NULL )
+        FREE( interior_flags );
 
     if( point_polygons != NULL )
     {
@@ -79,14 +83,17 @@ public   void   create_polygon_point_neighbours(
     BOOLEAN          across_polygons_flag,
     int              *n_point_neighbours_ptr[],
     int              **point_neighbours_ptr[],
+    Smallest_int     *interior_flags_ptr[],
     int              **point_polygons_ptr[] )
 {
     int                 edge, i0, i1, size, poly, total_neighbours, p0, p1;
+    int                 n_points, max_neighbours, n, *sorted_list;
     int                 *n_point_neighbours, **point_neighbours;
     int                 **point_polygons, point, index0, index1;
     int                 i, v, indices[MAX_POINTS_PER_POLYGON], position, ii;
     int                 n_to_add, points_to_add[MAX_POINTS_PER_POLYGON];
     BOOLEAN             done;
+    Smallest_int        *interior_flags;
     progress_struct     progress;
 
     if( across_polygons_flag && point_polygons_ptr != NULL )
@@ -96,11 +103,13 @@ public   void   create_polygon_point_neighbours(
         return;
     }
 
-    ALLOC( n_point_neighbours, polygons->n_points );
-    for_less( point, 0, polygons->n_points )
+    n_points = polygons->n_points;
+
+    ALLOC( n_point_neighbours, n_points );
+    for_less( point, 0, n_points )
         n_point_neighbours[point] = 0;
 
-    ALLOC( point_neighbours, polygons->n_points );
+    ALLOC( point_neighbours, n_points );
 
     total_neighbours = 0;
 
@@ -141,19 +150,28 @@ public   void   create_polygon_point_neighbours(
 
                     for_less( i, 0, n_point_neighbours[p0] )
                     {
-                        if( point_neighbours[p0][i] == p1 )
+                        if( (point_neighbours[p0][i]%n_points) == p1)
+                        {
+                            if( i1 < n_to_add-1 )
+                                point_neighbours[p0][i] = p1;
                             break;
+                        }
                     }
 
                     if( i < n_point_neighbours[p0] )
                         continue;
 
-                    for_less( position, 0, n_point_neighbours[p0] )
+                    if( i1 > 0 )
                     {
-                        if( point_neighbours[p0][position] ==
-                                 points_to_add[(i1-1+n_to_add)%n_to_add] )
-                            break;
+                        for_less( position, 0, n_point_neighbours[p0] )
+                        {
+                            if( point_neighbours[p0][position] ==
+                                                     points_to_add[i1-1] )
+                                break;
+                        }
                     }
+                    else
+                        position = n_point_neighbours[p0];
 
                     if( position < n_point_neighbours[p0] )
                     {
@@ -161,20 +179,22 @@ public   void   create_polygon_point_neighbours(
                     }
                     else
                     {
-                        for_less( position, 0, n_point_neighbours[p0] )
+                        if( i1 < n_to_add-1 )
                         {
-                            if( point_neighbours[p0][position] ==
-                                     points_to_add[(i1+1+n_to_add)%n_to_add] )
-                                break;
-                        }
-
-                        if( position >= n_point_neighbours[p0] )
-                        {
-                            if( n_point_neighbours[p0] == 0 )
-                                position = 0;
-                            else
+                            for_less( position, 0, n_point_neighbours[p0] )
+                            {
+                                if( point_neighbours[p0][position] ==
+                                                  points_to_add[n_to_add-1] )
+                                    break;
+                            }
+                            if( position >= n_point_neighbours[p0] )
                                 position = -1;
                         }
+                        else
+                            position = -1;
+
+                        if( position < 0 && n_point_neighbours[p0] == 0 )
+                            position = 0;
                     }
 
                     if( position >= 0 )
@@ -188,9 +208,11 @@ public   void   create_polygon_point_neighbours(
                                               point_neighbours[p0][i-1];
                         }
                         point_neighbours[p0][position] = p1;
+                        if( i1 == n_to_add - 1 )
+                            point_neighbours[p0][position] += n_points;
                         ++n_point_neighbours[p0];
                         ++total_neighbours;
-                        continue;
+
                     }
                     else
                         done = FALSE;
@@ -199,13 +221,65 @@ public   void   create_polygon_point_neighbours(
 
             update_progress_report( &progress, poly+1 );
         }
+
+        terminate_progress_report( &progress );
     }
     while( !done );
 
-    terminate_progress_report( &progress );
-
-    for_less( i, 0, polygons->n_points )
+    max_neighbours = 0;
+    for_less( i, 0, n_points )
+    {
         REALLOC( point_neighbours[i], n_point_neighbours[i] );
+        max_neighbours = MAX( max_neighbours, n_point_neighbours[i] );
+    }
+
+    if( interior_flags_ptr != NULL )
+    {
+        ALLOC( sorted_list, max_neighbours );
+        ALLOC( interior_flags, n_points );
+        for_less( point, 0, n_points )
+        {
+            position = -1;
+            for_less( n, 0, n_point_neighbours[point] )
+            {
+                if( point_neighbours[point][n] >= n_points )
+                {
+                    point_neighbours[point][n] -= n_points;
+                    if( position != -1 )
+                        print_error( " topology error in neighbours.\n" );
+                    position = n;
+                }
+            }
+
+            interior_flags[point] = (Smallest_int) (position == -1);
+
+            if( !interior_flags[point] )
+            {
+                for_less( n, 0, n_point_neighbours[point] )
+                {
+                    sorted_list[n] = point_neighbours[point]
+                           [(n+position+1)%n_point_neighbours[point]];
+                }
+                for_less( n, 0, n_point_neighbours[point] )
+                    point_neighbours[point][n] = sorted_list[n];
+            }
+        }
+
+        FREE( sorted_list );
+
+        *interior_flags_ptr = interior_flags;
+    }
+    else
+    {
+        for_less( point, 0, n_points )
+        {
+            for_less( n, 0, n_point_neighbours[point] )
+            {
+                if( point_neighbours[point][n] >= n_points )
+                    point_neighbours[point][n] -= n_points;
+            }
+        }
+    }
 
     *n_point_neighbours_ptr = n_point_neighbours;   
     *point_neighbours_ptr = point_neighbours;   
@@ -213,13 +287,13 @@ public   void   create_polygon_point_neighbours(
     if( point_polygons_ptr == NULL )
         return;
 
-    ALLOC( point_polygons, polygons->n_points );
+    ALLOC( point_polygons, n_points );
     ALLOC( point_polygons[0], total_neighbours );
 
     for_less( point, 0, total_neighbours )
         point_polygons[0][point] = -1;
 
-    for_less( point, 1, polygons->n_points )
+    for_less( point, 1, n_points )
     {
         point_polygons[point] = &point_polygons[point-1]
                                                [n_point_neighbours[point-1]];
@@ -294,7 +368,7 @@ private   void   create_polygon_neighbours(
         neighbours[i0] = -1;
 
     create_polygon_point_neighbours( polygons, FALSE, &n_point_neighbours,
-                                     &point_neighbours, &point_polygons );
+                                     &point_neighbours, NULL, &point_polygons );
 
     initialize_progress_report( &progress, FALSE, polygons->n_items,
                                 "Neighbour-finding step 2" );
@@ -371,7 +445,7 @@ private   void   create_polygon_neighbours(
 
     delete_polygon_point_neighbours( polygons,
                                      n_point_neighbours, point_neighbours,
-                                     point_polygons );
+                                     NULL, point_polygons );
 
 #ifdef  DEBUG
     for_less( i0, 0, polygons->end_indices[polygons->n_items-1] )
