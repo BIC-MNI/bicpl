@@ -1,5 +1,8 @@
 2003-04-26  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
+	* tools/Makefile.am (LDADD): Remove $(BIC_LIBS), as it
+	was not defined anywhere.
+
 	* Makefile.am (libbicpl_la_LDFLAGS): Fix -version-info by
 	incrementing "current" and "age", since interfaces were added in
 	change of 2003-02-10.
