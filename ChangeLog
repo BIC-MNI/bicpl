@@ -1,3 +1,11 @@
+2002-04-26  Steve ROBBINS  <stever@bic.mni.mcgill.ca>
+
+	* tools/ParseArgv.c:
+	* tools/ParseArgv.h: Remove.  These are now installed with
+	MINC 1.0.
+
+	* autogen.sh: Run libtoolize.
+
 2001-12-21  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* tools/bicobj2vtk.c: New.  Transform polygons into VTK

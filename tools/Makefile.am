@@ -3,13 +3,11 @@ LDADD = $(BIC_LIBS) ../libbicpl.la -lm
 
 bin_PROGRAMS = ascii_binary bicobj2oogl bicobj2vtk
 
-parseargv_sources = ParseArgv.c ParseArgv.h
-
 EXTRA_DIST = plytools-patch
 
 
 bicobj2oogl_SOURCES = bicobj2oogl.c
-bicobj2vtk_SOURCES = bicobj2vtk.c $(parseargv_sources)
+bicobj2vtk_SOURCES = bicobj2vtk.c
 
 
 # These two programs are not likely of general interest.
