@@ -2,11 +2,41 @@
 #ifndef  DEF_SPLINES
 #define  DEF_SPLINES
 
+#define  LINEAR_COEF_00     1.0
+#define  LINEAR_COEF_01     0.0
+#define  LINEAR_COEF_10    -1.0
+#define  LINEAR_COEF_11     1.0
+
+#define  LINEAR_COEF_0( v0, v1 ) \
+            (v0)
+#define  LINEAR_COEF_1( v0, v1 ) \
+            ((v1) - (v0))
+
+#define LINEAR_UNIVAR( v0, v1, u ) \
+            (LINEAR_COEF_1(v0,v1 ) * u + LINEAR_COEF_0(v0,v1))
+
 /* ------------------ QUADRATIC INTERPOLATING SPLINES ----------------------- */
 
+#define  QUADRATIC_COEF_00   0.375
+#define  QUADRATIC_COEF_01   0.75
+#define  QUADRATIC_COEF_02  -0.125
+#define  QUADRATIC_COEF_10  -1.0
+#define  QUADRATIC_COEF_11   1.0
+#define  QUADRATIC_COEF_12   0.0
+#define  QUADRATIC_COEF_20   0.5
+#define  QUADRATIC_COEF_21  -1.0
+#define  QUADRATIC_COEF_22   0.5
+
+#define  QUADRATIC_COEF_0( v0, v1, v2 ) \
+          (0.375*(v0) + 0.75 * (v1) - 0.125 * (v2))
+#define  QUADRATIC_COEF_1( v0, v1, v2 ) \
+           ( (v1) - (v0) )
+#define  QUADRATIC_COEF_2( v0, v1, v2 ) \
+           ( 0.5*(v0) - (v1) + 0.5 * (v2) )
+
 #define  QUADRATIC_UNIVAR( v0, v1, v2, u )                               \
-     ( 0.375 * (v0) + 0.75 * (v1) - 0.125 * (v2) + (u) *                 \
-        ( (v1) - (v0) + (u) * (0.5*(v0) - (v1) + 0.5 * (v2)) ) )
+     ( QUADRATIC_COEF_0(v0,v1,v2) + (u) * \
+       (QUADRATIC_COEF_1( v0, v1, v2 ) + (u) * QUADRATIC_COEF_2(v0,v1,v2)) )
 
 #define  QUADRATIC_UNIVAR_DERIV( v0, v1, v2, u ) \
      ( 0.5 * (v1) - 0.5 * (v0) + (u) * ((v0) - 2.0 *(v1) + (v2)) )
@@ -227,13 +257,40 @@
 
 /* -------------------- CUBIC INTERPOLATING SPLINES ----------------------- */
 
+#define  CUBIC_COEF_00   0.0
+#define  CUBIC_COEF_01   1.0
+#define  CUBIC_COEF_02   0.0
+#define  CUBIC_COEF_03   0.0
+
+#define  CUBIC_COEF_10  -0.5
+#define  CUBIC_COEF_11   0.0
+#define  CUBIC_COEF_12   0.5
+#define  CUBIC_COEF_13   0.0
+
+#define  CUBIC_COEF_20   1.0
+#define  CUBIC_COEF_21  -2.5
+#define  CUBIC_COEF_22   2.0
+#define  CUBIC_COEF_23  -0.5
+
+#define  CUBIC_COEF_30  -0.5
+#define  CUBIC_COEF_31   1.5
+#define  CUBIC_COEF_32  -1.5
+#define  CUBIC_COEF_33   0.5
+
+#define  CUBIC_COEF_0( v0, v1, v2, v3 ) \
+             (v1)
+#define  CUBIC_COEF_1( v0, v1, v2, v3 ) \
+             (0.5 * ((v2)-(v0)))
+#define  CUBIC_COEF_2( v0, v1, v2, v3 ) \
+             ((v0) - 2.5 * (v1) + 2.0 * (v2) - 0.5 * (v3))
+#define  CUBIC_COEF_3( v0, v1, v2, v3 ) \
+             (-0.5 * (v0) + 1.5 * (v1) - 1.5 * (v2) + 0.5 * (v3))
+
 #define  CUBIC_UNIVAR( v0, v1, v2, v3, u ) \
-     ( (v1) + (u) * ( \
-       0.5 * ((v2)-(v0)) + (u) * ( \
-       (v0) - 2.5 * (v1) + 2.0 * (v2) - 0.5 * (v3) + (u) * ( \
-       -0.5 * (v0) + 1.5 * (v1) - 1.5 * (v2) + 0.5 * (v3)  ) \
-                                 ) \
-                    ) \
+     (  CUBIC_COEF_0(v0,v1,v2,v3) + (u) * ( \
+        CUBIC_COEF_1(v0,v1,v2,v3) + (u) * ( \
+        CUBIC_COEF_2(v0,v1,v2,v3) + (u) * \
+        CUBIC_COEF_3(v0,v1,v2,v3) ) ) \
      )
 
 #define  CUBIC_UNIVAR_DERIV( v0, v1, v2, v3, u ) \
