@@ -1,4 +1,4 @@
-#include  <mni.h>
+#include  <vols.h>
 
 typedef struct {
     Real           position;
