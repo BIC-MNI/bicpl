@@ -82,9 +82,9 @@ private  void clip_one_edge(
     /* --- if this point and previous point generate an edge crossing,
            find it and pass it on to the next edge */
 
-    if( !first[edge] && (dist != 0.0 && prev_dist[edge] != 0.0) &&
-        (dist <= 0.0 && prev_dist[edge] >= 0.0 ||
-         dist >= 0.0 && prev_dist[edge] <= 0.0) )
+    if( !first[edge] &&
+        (dist < 0.0 && prev_dist[edge] > 0.0 ||
+         dist > 0.0 && prev_dist[edge] < 0.0) )
     {
         ratio = prev_dist[edge] / (prev_dist[edge] - dist);
         interpolated[0] = prev_point[edge][0] + ratio *
@@ -96,19 +96,22 @@ private  void clip_one_edge(
                        n_dims, n_clipped_points, clipped_points );
     }
 
-    /* --- if the point is inside, then pass it on, otherwise, if we are
-           closing, pass along the first point that was given to this edge */
+    /* --- if we are closing, pass along the first point that was given
+           to the next edge */
 
-    if( dist >= 0.0 )
+    if( closing )
     {
-        clip_one_edge( closing, edge-1, sizes, origin, x_axis, y_axis, point,
-                       first, first_point, prev_point, prev_dist,
-                       n_dims, n_clipped_points, clipped_points );
+        if( !first[edge-1] )
+        {
+            clip_one_edge( TRUE, edge-1, sizes, origin, x_axis, y_axis,
+                           first_point[edge-1],
+                           first, first_point, prev_point, prev_dist,
+                           n_dims, n_clipped_points, clipped_points );
+        }
     }
-    else if( closing && edge > 0 && !first[edge-1] )
+    else if( dist >= 0.0 ) /* --- if the point is inside, then pass it on */
     {
-        clip_one_edge( TRUE, edge-1, sizes, origin, x_axis, y_axis,
-                       first_point[edge-1],
+        clip_one_edge( FALSE, edge-1, sizes, origin, x_axis, y_axis, point,
                        first, first_point, prev_point, prev_dist,
                        n_dims, n_clipped_points, clipped_points );
     }
@@ -117,9 +120,9 @@ private  void clip_one_edge(
     {
         first_point[edge][0] = point[0];
         first_point[edge][1] = point[1];
+        first[edge] = FALSE;
     }
 
-    first[edge] = FALSE;
     prev_point[edge][0] = point[0];
     prev_point[edge][1] = point[1];
     prev_dist[edge] = dist;
@@ -136,7 +139,7 @@ private  void clip_one_edge(
               points
 @OUTPUT     : clipped_points
 @RETURNS    : number of points output
-@DESCRIPTION: Clips the points against the four edges.
+@DESCRIPTION: Clips the points against the 2 * n_dims edges of the volume.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -172,7 +175,7 @@ private  int  clip_points(
                        n_dims, &n_clipped_points, clipped_points );
     }
 
-    if( !first[2*n_dims-1] )
+    if( n_points > 0 )
     {
         clip_one_edge( TRUE, 2*n_dims-1, sizes, origin, x_axis, y_axis,
                        points[0], first, first_point, prev_point, prev_dist,
@@ -208,7 +211,7 @@ private  int    get_cross_section(
 {
     Real    points[4][2], voxel[MAX_DIMENSIONS];
     int     d, sizes[MAX_DIMENSIONS], n_dims, n_points;
-    int     n_limits[MAX_DIMENSIONS];
+    int     n_limits[MAX_DIMENSIONS], lim[MAX_DIMENSIONS];
     Real    x_pixel, y_pixel, x_min, x_max, y_min, y_max;
     BOOLEAN first;
 
@@ -218,27 +221,25 @@ private  int    get_cross_section(
     for_less( d, 0, MAX_DIMENSIONS )
     {
         if( d < n_dims )
-            n_limits[d] = 1;
+            n_limits[d] = 2;
         else
         {
-            n_limits[d] = 0;
+            n_limits[d] = 1;
             sizes[d] = 1;
         }
     }
 
     first = TRUE;
 
-    for( voxel[0] = -0.5;  voxel[0] <= n_limits[0] * (Real) sizes[0] - 0.5;
-         voxel[0] += (Real) sizes[0] )
-    for( voxel[1] = -0.5;  voxel[1] <= n_limits[1] * (Real) sizes[1] - 0.5;
-         voxel[1] += (Real) sizes[1] )
-    for( voxel[2] = -0.5;  voxel[2] <= n_limits[2] * (Real) sizes[2] - 0.5;
-         voxel[2] += (Real) sizes[2] )
-    for( voxel[3] = -0.5;  voxel[3] <= n_limits[3] * (Real) sizes[3] - 0.5;
-         voxel[3] += (Real) sizes[3] )
-    for( voxel[4] = -0.5;  voxel[4] <= n_limits[4] * (Real) sizes[4] - 0.5;
-         voxel[4] += (Real) sizes[4] )
+    for_less( lim[0], 0, n_limits[0] )
+    for_less( lim[1], 0, n_limits[1] )
+    for_less( lim[2], 0, n_limits[2] )
+    for_less( lim[3], 0, n_limits[3] )
+    for_less( lim[4], 0, n_limits[4] )
     {
+        for_less( d, 0, n_dims )
+            voxel[d] = -0.5 + (Real) (sizes[d] * lim[d]);
+
         map_voxel_to_pixel( get_volume_n_dimensions(volume),
                             voxel, origin, x_axis, y_axis, &x_pixel, &y_pixel );
 
@@ -254,11 +255,11 @@ private  int    get_cross_section(
         {
             if( x_pixel < x_min )
                 x_min = x_pixel;
-            if( x_pixel > x_max )
+            else if( x_pixel > x_max )
                 x_max = x_pixel;
             if( y_pixel < y_min )
                 y_min = y_pixel;
-            if( y_pixel > y_max )
+            else if( y_pixel > y_max )
                 y_max = y_pixel;
         }
     }
