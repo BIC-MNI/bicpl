@@ -45,17 +45,39 @@
                         if( $n_volumes == 2 )
                             { print( "#define TYPE2 $type2\n\n" ); }
 
-                        $func = "render_${slice}_${cmap}_${type_name1}";
-
-                        if( $n_volumes == 2 )
+                        if( $n_volumes == 1 && $slice eq "one" &&
+                            $cmap eq "rgb" && $type1 eq "unsigned long" )
                         {
-                            $type_name2 = $type2;
-                            $type_name2 =~ s/\s/_/g;
-                            $func = $func . "_$type_name2";
+                            @colour_maps = ( 0, 1 );
+                        }
+                        else
+                        {
+                            @colour_maps = ( 1 );
                         }
 
-                        print( "private  void $func\n" );
-                        print( "#include \"rend_f_include.c\"\n\n" );
+                        foreach $cmap_present ( @colour_maps )
+                        {
+                            $func = "render_${slice}_${cmap}_${type_name1}";
+
+                            if( $n_volumes == 2 )
+                            {
+                                $type_name2 = $type2;
+                                $type_name2 =~ s/\s/_/g;
+                                $func = $func . "_$type_name2";
+                            }
+
+                            if( ! $cmap_present )
+                            {
+                                print( "#define NO_COLOUR_TABLE\n\n" );
+                                $func = $func . "_direct";
+                            }
+
+                            print( "private  void $func\n" );
+                            print( "#include \"rend_f_include.c\"\n\n" );
+
+                            if( ! $cmap_present )
+                                { print( "#undef NO_COLOUR_TABLE\n\n" ); }
+                        }
 
                         if( $n_volumes == 2 )
                             { print( "#undef TYPE2\n\n" ); }
