@@ -1,6 +1,7 @@
+#include  <internal_volume_io.h>
 #include  <vols.h>
 
-#include  "render_funcs.c"
+#include  "render_funcs_include.c"
 
 public  void  render_the_slice (
     void            *volume_data1,

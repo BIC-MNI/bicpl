@@ -9,8 +9,6 @@
                "float",
                "double" );
 
-    print( "#include <vols.h>\n\n" );
-
     foreach $slice ( "one", "many" )
     {
         if( $slice eq "one" )

@@ -40,14 +40,12 @@
 )
 
 {
-    int            x, voxel_data1;
-    Colour         colour;
-#ifdef  TWO_VOLUMES
-    int            voxel_data2;
-#endif
+    int            x;
 #ifdef  ONE_SLICE
+    TYPE1          *ptr1;
     int            *offset_ptr1;
 #ifdef  TWO_VOLUMES
+    TYPE2          *ptr2;
     int            *offset_ptr2;
 #endif
 #else
@@ -58,10 +56,6 @@
     TYPE2          **start_data2;
     Real           real_voxel_data2;
 #endif
-#endif
-#ifdef ONE_SLICE
-    TYPE1          *ptr1;
-    TWO( TYPE2     *ptr2; )
 #endif
 #ifndef  TWO_VOLUMES
 #ifdef  COLOUR_MAP
@@ -93,10 +87,21 @@
     for_inclusive( x, start_x, end_x )
     {
 #ifdef ONE_SLICE
-        voxel_data1 = ptr1[*offset_ptr1];
-        ++offset_ptr1;
-        TWO( voxel_data2 = ptr2[*offset_ptr2]; )
-        TWO( ++offset_ptr2; )
+#ifdef TWO_VOLUMES
+#ifdef COLOUR_MAP
+        *pixel_ptr++ = cmode_colour_map[(int) ptr1[*offset_ptr1++]]
+                                       [(int) ptr2[*offset_ptr2++]];
+#else
+        *pixel_ptr++ = rgb_colour_map[(int) ptr1[*offset_ptr1++]]
+                                     [(int) ptr2[*offset_ptr2++]];
+#endif
+#else
+#ifdef COLOUR_MAP
+        *pixel_ptr++ = single_cmode_map[(int) ptr1[*offset_ptr1++]];
+#else
+        *pixel_ptr++ = single_rgb_map[(int) ptr1[*offset_ptr1++]];
+#endif 
+#endif /* TWO_VOLUMES */
 #else
         real_voxel_data1 = 0.5;
         for_less( s, 0, n_slices1 )
@@ -105,7 +110,6 @@
                                 start_data1[s][row_offsets1[s][x]];
         }
 
-        voxel_data1 = (int) real_voxel_data1;
 #ifdef  TWO_VOLUMES
         real_voxel_data2 = 0.5;
         for_less( s, 0, n_slices2 )
@@ -114,25 +118,21 @@
                                 start_data2[s][row_offsets2[s][x]];
         }
 
-        voxel_data2 = (int) real_voxel_data2;
-#endif
-
-#endif
-
-#ifdef  TWO_VOLUMES
 #ifdef COLOUR_MAP
-        colour = cmode_colour_map[voxel_data1][voxel_data2];
+        *pixel_ptr++ = cmode_colour_map[(int) real_voxel_data1]
+                                       [(int) real_voxel_data2];
 #else
-        colour = rgb_colour_map[voxel_data1][voxel_data2];
+        *pixel_ptr++ = rgb_colour_map[(int) real_voxel_data1]
+                                     [(int) real_voxel_data2];
 #endif
 #else
+
 #ifdef COLOUR_MAP
-        colour = single_cmode_map[voxel_data1];
+        *pixel_ptr++ = single_cmode_map[(int) real_voxel_data1];
 #else
-        colour = single_rgb_map[voxel_data1];
+        *pixel_ptr++ = single_rgb_map[(int) real_voxel_data1];
 #endif
-#endif
-        *pixel_ptr = colour;
-        ++pixel_ptr;
+#endif /* TWO_VOLUMES */
+#endif /* ONE_SLICE */
     }
 }
