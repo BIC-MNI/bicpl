@@ -30,11 +30,11 @@ imageio_GLUE_CODE=rgb_io_none.c
 
 smr_OPTIONAL_LIB(ppm,ppm_writeppminit,ppm.h,[-lpgm -lpbm])
 
-if test $HAVE_ppm = yes; then
+if test $HAVE_libppm = yes; then
     imageio_GLUE_CODE=rgb_io_ppm.c
 else
     smr_OPTIONAL_LIB(image,iopen,image.h)
-    if test $HAVE_image = yes; then
+    if test $HAVE_libimage = yes; then
 	imageio_GLUE_CODE=rgb_io_sgi.c
     fi
 fi

@@ -1,3 +1,10 @@
+2001-07-25  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* m4/smr_OPTIONAL_LIB.m4: Define HAVE_libfoo, if library foo is
+	found.
+
+	* configure.in: Accomodate above change.
+
 2001-07-24  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* tools/Makefile.am: Don't build biobj2ply, make_mesh_map.
