@@ -24,6 +24,8 @@ public  Volume  create_label_volume(
 
     set_volume_sizes( volume, sizes );
 
+    set_all_volume_label_data( volume, 0 );
+
     return( volume );
 }
 

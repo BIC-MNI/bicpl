@@ -122,7 +122,7 @@ public  void  set_polygons_visibilities(
     }
 }
 
-public  Status  create_polygons_bintree(
+public  void  create_polygons_bintree(
     polygons_struct   *polygons,
     int               max_nodes )
 {
