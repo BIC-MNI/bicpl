@@ -70,11 +70,6 @@ private  void  find_neighbour_face(
     int    *new_c,
     int    *new_face,
     int    *new_edge );
-private  int  get_voxel_polygons(
-    Real              corners[2][2][2],
-    Real              isovalue,
-    int               *sizes[],
-    voxel_point_type  *points[] );
 private  void  delete_case(
     case_struct  *case_info );
 private  void  create_case_polygons(
@@ -665,7 +660,7 @@ private  void  find_voxel_edge_index(
     }
 }
 
-private  int  get_voxel_polygons(
+public  int  get_holeless_isosurface_polygons(
     Real              corners[2][2][2],
     Real              isovalue,
     int               *sizes[],
@@ -756,31 +751,6 @@ private  int  get_voxel_polygons(
     *points = voxel_case->polygons[amb_index].indices;
 
     return( voxel_case->polygons[amb_index].n_polygons );
-}
-
-public  int  compute_polygons_in_voxel(
-    Marching_cubes_methods  method,
-    Real                    corners[2][2][2],
-    Real                    isovalue,
-    int                     *sizes[],
-    voxel_point_type        *points[] )
-{
-    int           n_polygons;
-    private  int  static_sizes[4] = { 3, 3, 3, 3 };
-
-    switch( method )
-    {
-    case MARCHING_CUBES:
-        n_polygons = compute_isotriangles_in_voxel( corners, isovalue, points );
-        *sizes = static_sizes;
-        break;
-
-    case MARCHING_NO_HOLES:
-        n_polygons = get_voxel_polygons( corners, isovalue, sizes, points );
-        break;
-    }
-
-    return( n_polygons );
 }
 
 public  void  delete_marching_cubes_table()
