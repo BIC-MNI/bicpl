@@ -1,5 +1,5 @@
 SUBDIRS = Include Deform Data_structures Transforms Geometry Numerical \
-	Objects Prog_utils Volumes Marching_cubes Images . tools      \
+	Objects Prog_utils Volumes Marching_cubes Images bicpl_clapack . tools \
 	Documentation Testing
 
 AUTOMAKE_OPTIONS = check-news
@@ -30,6 +30,7 @@ libbicpl_la_LIBADD = \
 	$(top_builddir)/Marching_cubes/libbicpl_mc.la \
 	$(top_builddir)/Objects/libbicpl_o.la \
 	$(top_builddir)/Transforms/libbicpl_t.la \
-	$(top_builddir)/Deform/libbicpl_deform.la
+	$(top_builddir)/Deform/libbicpl_deform.la \
+	$(top_builddir)/bicpl_clapack/libbicpl_cla.la
 
 

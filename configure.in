@@ -76,5 +76,6 @@ Transforms/Makefile
 Volumes/Makefile
 tools/Makefile
 Deform/Makefile
+bicpl_clapack/Makefile
 ])
 AC_OUTPUT
