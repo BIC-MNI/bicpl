@@ -14,7 +14,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.5 1996-09-13 19:36:50 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.6 1996-09-13 19:59:06 david Exp $";
 #endif
 
 #include  <internal_volume_io.h>
@@ -137,7 +137,8 @@ private  BOOLEAN  get_prediction_weights_2d_for_1_coord(
     int        p, eq;
     Real       **coefs, *values, *solution, angle;
     Real       xt, yt, zt, x_centre, y_centre, x_min, x_max, inc;
-    Transform  transform;
+    Real       x_trans, y_trans;
+    Transform  transform, rotation, translation;
     BOOLEAN    solved;
 
     ALLOC2D( coefs, 2 * n_points+1, 2 * n_points+1 );
@@ -157,12 +158,22 @@ private  BOOLEAN  get_prediction_weights_2d_for_1_coord(
     x_centre = x_min - 2.0 * (x_max - x_min);
     y_centre = 0.0;
 
+    x_centre = 0.0;
+
     inc = 0.1133422127;
     angle = 0.0;
     for_less( eq, 0, 2 * n_points+1 )
     {
         angle += inc;
         make_rotation_transform( angle, Z, &transform );
+
+        angle = 2.0 * PI * get_random_0_to_1();
+        x_trans = 10.0 * get_random_0_to_1() - 5.0;
+        y_trans = 10.0 * get_random_0_to_1() - 5.0;
+
+        make_rotation_transform( angle, Z, &rotation );
+        make_translation_transform( x_trans, y_trans, 0.0, &translation );
+        concat_transforms( &transform, &translation, &rotation );
 
         transform_point( &transform, x - x_centre, y - y_centre, 0.0,
                          &xt, &yt, &zt );
