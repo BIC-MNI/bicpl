@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.15 1996-09-10 16:42:38 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.16 1996-09-10 18:11:18 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -40,6 +40,8 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvat
 
 public  void  get_polygon_vertex_curvatures(
     polygons_struct   *polygons,
+    int               n_neighbours[],
+    int               *neighbours[],
     Real              smoothing_distance,
     Real              low_threshold,
     Real              curvatures[] )
@@ -84,7 +86,8 @@ public  void  get_polygon_vertex_curvatures(
                 else
                 {
                     curvature = get_smooth_surface_curvature( polygons,
-                                       poly, vertex_index, smoothing_distance );
+                                  n_neighbours, neighbours,
+                                  poly, vertex_index, smoothing_distance );
                 }
 
                 if( FABS( curvature ) < low_threshold )
