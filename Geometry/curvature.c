@@ -5,11 +5,11 @@ private  void  get_surface_colour(
     Real    max_curvature,
     Colour  *colour );
 
-public  void  colour_polygons_by_curvature(
+public  void  get_polygon_vertex_curvatures(
     polygons_struct   *polygons,
-    polygons_struct   *sphere,
-    Real              max_curvature,
-    Real              low_threshold )
+    Real              smoothing_distance,
+    Real              low_threshold,
+    Real              curvatures[] )
 {
     int           size, point_index, vertex_index, poly;
     Real          curvature, base_length;
@@ -20,10 +20,6 @@ public  void  colour_polygons_by_curvature(
     check_polygons_neighbours_computed( polygons );
 
     ALLOC( point_done, polygons->n_points );
-
-    sphere->colour_flag = PER_VERTEX_COLOURS;
-
-    REALLOC( sphere->colours, sphere->n_points );
 
     for_less( point_index, 0, polygons->n_points )
         point_done[point_index] = FALSE;
@@ -41,33 +37,23 @@ public  void  colour_polygons_by_curvature(
             {
                 point_done[point_index] = TRUE;
 
-                compute_polygon_point_centroid( polygons, poly,
+                if( smoothing_distance <= 0.0 )
+                {
+                    compute_polygon_point_centroid( polygons, poly,
                           vertex_index, point_index, &centroid,
                           &normal, &base_length, &curvature );
+                }
+                else
+                {
+                    curvature = get_smooth_surface_curvature( polygons,
+                                       poly, vertex_index, smoothing_distance );
+                }
 
                 if( ABS( curvature ) < low_threshold )
                     curvature = 0.0;
 
-                get_surface_colour( curvature, max_curvature,
-                                    &sphere->colours[point_index] );
+                curvatures[point_index] = curvature;
             }
         }
     }
-}
-
-private  void  get_surface_colour(
-    Real    curvature,
-    Real    max_curvature,
-    Colour  *colour )
-{
-    Real   ratio;
-
-    if( curvature < -max_curvature )
-        curvature = -max_curvature;
-    else if( curvature > max_curvature )
-        curvature = max_curvature;
-
-    ratio = (curvature + max_curvature) / max_curvature / 2.0;
-
-    *colour = make_Colour_0_1( ratio, ratio, ratio );
 }
