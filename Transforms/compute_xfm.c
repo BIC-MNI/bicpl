@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.10  1995-07-07 18:18:23  david
-@MODIFIED   : check_in_all
+@MODIFIED   : Revision 1.11  1995-07-07 18:51:24  david
+@MODIFIED   : *** empty log message ***
 @MODIFIED   :
+ * Revision 1.10  1995/07/07  18:18:23  david
+ * check_in_all
+ *
  * Revision 1.9  1995/07/07  18:16:45  david
  * *** empty log message ***
  *
@@ -348,33 +351,19 @@ private  void  compute_arb_param_transform(
 ---------------------------------------------------------------------------- */
 
 private  void   make_rots(
-    Real      **xmat,
-    Real      rot_x,
-    Real      rot_y,
-    Real      rot_z )
+    Transform   *xmat,
+    Real        rot_x,
+    Real        rot_y,
+    Real        rot_z )
 {
-    Real     **TRX, **TRY, **TRZ, **T1, **T2;
-   
-    ALLOC2D( TRX, 4, 4 );
-    ALLOC2D( TRY, 4, 4 );
-    ALLOC2D( TRZ, 4, 4 );
-    ALLOC2D( T1, 4, 4 );
-    ALLOC2D( T2, 4, 4 );
+    Transform  tx, ty, tz;
 
-    nr_rotx( TRX, rot_x );             /* create the rotate X matrix */
-    nr_roty( TRY, rot_y );             /* create the rotate Y matrix */
-    nr_rotz( TRZ, rot_z );             /* create the rotate Z matrix */
+    make_rotation_transform( -rot_x, X, &tx ) ;
+    make_rotation_transform( -rot_y, Y, &ty ) ;
+    make_rotation_transform( -rot_z, Z, &tz ) ;
 
-    matrix_multiply( 4, 4, 4, TRY, TRX, T1 ); /* apply rx and ry */
-    matrix_multiply( 4, 4, 4, TRZ, T1,  T2 ); /* apply rz */
-
-    transpose( 4, 4, T2, xmat );
-   
-    FREE2D( TRX );
-    FREE2D( TRY );
-    FREE2D( TRZ );
-    FREE2D( T1 );
-    FREE2D( T2 );
+    concat_transforms( xmat, &tx, &ty );
+    concat_transforms( xmat, xmat, &tz );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -393,73 +382,43 @@ private  void   make_rots(
 ---------------------------------------------------------------------------- */
 
 public  void  build_transformation_matrix(
-    Real  lt[3][4], 
-    Real  center[],
-    Real  translations[],
-    Real  scales[],
-    Real  shears[],
-    Real  rotations[] )
+    Transform   *lt, 
+    Real        center[],
+    Real        translations[],
+    Real        scales[],
+    Real        shears[],
+    Real        rotations[] )
 {
-    Real    **T, **SH, **S, **R, **C, **T1, **T2, **T3, **T4;
-    int     i, j;
-
-    ALLOC2D( T, 4, 4 );
-    ALLOC2D( SH, 4, 4 );
-    ALLOC2D( S, 4, 4 );
-    ALLOC2D( R, 4, 4 );
-    ALLOC2D( C, 4, 4 );
-    ALLOC2D( T1, 4, 4 );
-    ALLOC2D( T2, 4, 4 );
-    ALLOC2D( T3, 4, 4 );
-    ALLOC2D( T4, 4, 4 );
+    Transform    T, SH, S, R, C;
 
     /* mat = (C)(SH)(S)(R)(-C)(T) */
 
-    nr_ident( T, 4, 4 );                     /* make (T)(-C) */
+    /* make (T)(-C) */
 
-    for_less( i, 0, 3 )
-        T[i][3] = translations[i] - center[i];                
+    make_translation_transform( translations[X] - center[X],
+                                translations[Y] - center[Y],
+                                translations[Z] - center[Z], &T );
 
     /* make rotation matix */
 
-    make_rots( R, rotations[0], rotations[1], rotations[2] );
+    make_rots( &R, rotations[0], rotations[1], rotations[2] );
 
     /* make shear rotation matrix */
 
-    make_rots( SH, shears[0], shears[1], shears[2] );
+    make_rots( &SH, shears[0], shears[1], shears[2] );
 
     /* make scaling matrix */
 
-    nr_ident( S, 4, 4 );
+    make_scale_transform( scales[X], scales[Y], scales[Z], &S );
 
-    for_less( i, 0, 3 )
-        S[i][i] = scales[i];
+    /* make translation back to centre */
 
-    nr_ident( C, 4, 4 );          /* make center          */
+    make_translation_transform( center[X], center[Y], center[Z], &C );
 
-    for_less( i, 0, 3 )
-        C[i][3] = center[i];                
-
-    matrix_multiply( 4, 4, 4, C, SH,  T1 );  
-    matrix_multiply( 4, 4, 4, T1, S,  T2 );  
-    matrix_multiply( 4, 4, 4, T2, R,  T3 );  
-    matrix_multiply( 4, 4, 4, T3, T, T4 );  
-
-    for_less( i, 0, 3 )
-    {
-        for_less( j, 0, 4 )
-            lt[i][j] = T4[i][j];
-    }
-
-    FREE2D( T );
-    FREE2D( SH );
-    FREE2D( S );
-    FREE2D( R );
-    FREE2D( C );
-    FREE2D( T1 );
-    FREE2D( T2 );
-    FREE2D( T3 );
-    FREE2D( T4 );
+    concat_transforms( lt, &T, &R );
+    concat_transforms( lt, lt, &S );
+    concat_transforms( lt, lt, &C );
+    concat_transforms( lt, lt, &SH );
 }
 
 private  void  build_homogeneous_from_parameters(
@@ -470,15 +429,15 @@ private  void  build_homogeneous_from_parameters(
     Real  shears[],
     Real  angles[] )
 {
-    Real  mat[3][4];
-    int   i, j;
-  
-    build_transformation_matrix( mat, centre, translation, scales, shears,
+    Transform   mat;
+    int         i, j;
+
+    build_transformation_matrix( &mat, centre, translation, scales, shears,
                                  angles );
 
     for_less( i, 0, N_DIMENSIONS )
         for_less( j, 0, N_DIMENSIONS + 1 )
-            calc_transformation[j][i] = mat[i][j];
+            calc_transformation[j][i] = Transform_elem(mat,i,j);
 
     for_less( i, 0, N_DIMENSIONS )
         calc_transformation[i][N_DIMENSIONS] = 0.0;
