@@ -16,12 +16,14 @@ LINT_LIBS = $(DEFORM_LINT_LIB) \
             $(MARCHING_LINT_LIB) \
             $(SURFACE_LINT_LIB)
 
-DEFORM_OBJ = deform/anneal_line.o \
+DEFORM_OBJ = \
              deform/curvature_colour.o \
              deform/deform_line.o \
              deform/deform_polygons.o \
              deform/find_in_direction.o \
              deform/intersect_voxel.o \
+             deform/models.o \
+             deform/model_objects.o \
              deform/search_utils.o
 
 GEOMETRY_OBJ = geometry/intersect.o \
@@ -44,7 +46,7 @@ SURFACE_OBJ = \
               surface_rep/superquadric.o \
               surface_rep/surface_reps.o
 
-PROTOTYPE_FILE = Include/def_module_prototypes.h
+PROTOTYPE_FILE = Include/module_prototypes.h
 
 LIBS = \
        $(DEFORM_LIB)   $(DEFORM_LINT_LIB) \
@@ -53,6 +55,7 @@ LIBS = \
        $(SURFACE_LIB)  $(SURFACE_LINT_LIB)
 
 all: $(PROTOTYPE_FILE) $(LIBS) $(LINT_LIBS)
+	cd lint ; ln -s ../*.ln .
 
 include $(C_DEV_DIRECTORY)/Make/Makefile.include
 
