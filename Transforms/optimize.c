@@ -18,7 +18,7 @@
 #include <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.10 1995-07-31 13:46:01 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.11 1995-12-06 21:11:07 david Exp $";
 #endif
 
 #define   FUNCTION_TOLERANCE    1e-6
@@ -81,7 +81,7 @@ private  Real  lsq_objective(
 
 #ifdef I_DONT_THINK_THIS_IS_NEEDED
 
-      I ifdef'd this out because we are no longer using the Numerical
+      I if'def'd this out because we are no longer using the Numerical
       recipes code, so I don't think the new amoeba code will blow up,
       as hinted by the next comment.
                           -- David MacDonald
