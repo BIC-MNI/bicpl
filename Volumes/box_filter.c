@@ -188,7 +188,7 @@ public  Volume  create_box_filtered_volume(
 #ifdef DEBUG
     Real               correct_voxel;
 #endif
-    Real               total_volume, voxel, value, sum;
+    Real               total_volume, value, sum;
     int                start, end;
     int                x_init_recede_index, y_init_recede_index;
     int                z_init_recede_index;
@@ -245,7 +245,8 @@ public  Volume  create_box_filtered_volume(
         for_less( y, 0, sizes[Y] )
         {
             for_less( z, 0, sizes[Z] )
-                GET_VALUE_3D( volume_cache[x][y][z], volume, x, y, z );
+                volume_cache[x][y][z] = get_volume_real_value( volume, x, y, z,
+                                                               0, 0 );
         }
     }
 
@@ -291,7 +292,10 @@ public  Volume  create_box_filtered_volume(
                 for_less( y, 0, sizes[Y] )
                 {
                     for_less( z, 0, sizes[Z] )
-                        GET_VALUE_3D( volume_cache[i][y][z], volume, i, y, z );
+                    {
+                        volume_cache[i][y][z] = get_volume_real_value( volume,
+                                                i, y, z, 0, 0 );
+                    }
                 }
             }
 
@@ -324,8 +328,7 @@ public  Volume  create_box_filtered_volume(
 #endif
 
                 value = sum / total_volume;
-                voxel = CONVERT_VALUE_TO_VOXEL( resampled_volume, value );
-                SET_VOXEL_3D( resampled_volume, x, y, z, voxel );
+                set_volume_real_value( resampled_volume, x, y, z, 0, 0, value );
 
                 if( z == sizes[Z]-1 )
                     continue;
@@ -430,7 +433,7 @@ private  Real  get_amount_in_box(
     Real      z_weight_end )
 {
     int     x, y, z;
-    Real    sum, z_sum, x_sum, voxel;
+    Real    sum, z_sum, x_sum, value;
 
     sum = 0.0;
 
@@ -444,14 +447,14 @@ private  Real  get_amount_in_box(
 
             for_inclusive( y, y_min_voxel, y_max_voxel )
             {
-                GET_VALUE_3D( voxel, volume, x, y, z );
+                value = get_volume_real_value( volume, x, y, z, 0, 0 );
 
                 if( y == y_min_voxel )
-                    voxel *= y_weight_start;
+                    value *= y_weight_start;
                 else if( y == y_max_voxel )
-                    voxel *= y_weight_end;
+                    value *= y_weight_end;
 
-                x_sum += voxel;
+                x_sum += value;
             }
 
             if( x == x_min_voxel )

@@ -45,6 +45,7 @@ public  void  set_all_volume_label_data(
 {
     Data_types      type;
     void            *ptr;
+    Real            real_value;
     int             v0, v1, v2, v3, v4, n_voxels;
 
     check_alloc_label_data( volume );
@@ -58,9 +59,10 @@ public  void  set_all_volume_label_data(
     }
     else
     {
+        real_value = (Real) value;
         BEGIN_ALL_VOXELS( volume, v0, v1, v2, v3, v4 )
 
-            SET_VOXEL( volume, v0, v1, v2, v3, v4, value );
+            set_volume_voxel_value( volume, v0, v1, v2, v3, v4, real_value );
 
         END_ALL_VOXELS
     }
@@ -87,8 +89,9 @@ public  void  set_volume_label_data(
 {
     check_alloc_label_data( volume );
 
-    SET_VOXEL( volume, voxel[0], voxel[1], voxel[2], voxel[3], voxel[4],
-               value );
+    set_volume_voxel_value( volume,
+                            voxel[0], voxel[1], voxel[2], voxel[3], voxel[4],
+                            (Real) value );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -114,8 +117,8 @@ public  int  get_volume_label_data(
         return( 0 );
     else
     {
-        GET_VOXEL( label, volume,
-                   voxel[0], voxel[1], voxel[2], voxel[3], voxel[4] );
+        label = (int) get_volume_voxel_value( volume,
+                       voxel[0], voxel[1], voxel[2], voxel[3], voxel[4] );
         return( label );
     }
 }
@@ -132,7 +135,7 @@ public  int  get_3D_volume_label_data(
         return( 0 );
     else
     {
-        GET_VOXEL_3D( label, volume, x, y, z );
+        label = (int) get_volume_voxel_value( volume, x, y, z, 0, 0 );
         return( label );
     }
 }
@@ -160,7 +163,7 @@ public  void  set_voxel_label_bit(
     for_less( i, 0, n_dims )
         v[i] = voxel[i];
 
-    GET_VOXEL( label, volume, v[0], v[1], v[2], v[3], v[4] );
+    label = (int) get_volume_voxel_value( volume, v[0], v[1], v[2], v[3], v[4]);
 
     anded = (label & bit);
 
@@ -169,13 +172,15 @@ public  void  set_voxel_label_bit(
         if( anded != bit )
         {
             new_label = label | bit;
-            SET_VOXEL( volume, v[0], v[1], v[2], v[3], v[4], new_label )
+            set_volume_voxel_value( volume, v[0], v[1], v[2], v[3], v[4],
+                                    (Real) new_label );
         }
     }
     else if( anded != 0 )
     {
         new_label = label & (~bit);
-        SET_VOXEL( volume, v[0], v[1], v[2], v[3], v[4], new_label )
+        set_volume_voxel_value( volume, v[0], v[1], v[2], v[3], v[4],
+                                (Real) new_label );
     }
 }
 

@@ -328,7 +328,7 @@ public  BOOLEAN  line_intersects_ellipsoid(
     return( intersects );
 }
 
-private  BOOLEAN  ray_intersects_sphere(
+public  BOOLEAN  ray_intersects_sphere(
     Point       *origin,
     Vector      *direction,
     Point       *centre,

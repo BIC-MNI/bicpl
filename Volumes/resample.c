@@ -91,7 +91,8 @@ public  BOOLEAN  do_more_resampling(
                 voxel[Y] = yv;
                 voxel[Z] = zv;
                 evaluate_volume( resample->src_volume, voxel, NULL,
-                                 0, get_volume_real_min(resample->src_volume),
+                                 0, FALSE,
+                                 get_volume_real_min(resample->src_volume),
                                  &real_value, NULL, NULL );
 
                 value = ROUND( real_value );

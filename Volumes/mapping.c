@@ -505,7 +505,7 @@ public  BOOLEAN  voxel_contains_range(
     for_less( indices[3], base_indices[3], base_indices[3] + ms )
     for_less( indices[4], base_indices[4], base_indices[4] + mt )
     {
-        GET_VALUE( value, volume,
+        value = get_volume_real_value( volume,
                    indices[0], indices[1], indices[2], indices[3], indices[4] );
 
         if( value < min_value )

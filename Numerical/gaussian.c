@@ -7,105 +7,38 @@ private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
     int    n_values,
     float  **values )
 {
-    int       i, j, k, p, v, *row, tmp;
-    float     **a, **solution, *s, val, best_val, m, scale_factor;
+    int       i, j, v, *row;
+    Real      **a, **solution;
     BOOLEAN   success;
 
     ALLOC( row, n );
     ALLOC2D( a, n, n );
     ALLOC2D( solution, n, n_values );
-    ALLOC( s, n );
 
     for_less( i, 0, n )
     {
-        row[i] = i;
         for_less( j, 0, n )
-            a[i][j] = coefs[i][j];
-        for_less( j, 0, n_values )
-            solution[i][j] = values[j][i];
+            a[i][j] = (Real) coefs[i][j];
+        for_less( v, 0, n_values )
+            solution[i][v] = (Real) values[v][i];
     }
 
-    for_less( i, 0, n )
-    {
-        s[i] = ABS( a[i][0] );
-        for_less( j, 1, n )
-        {
-            if( ABS(a[i][j]) > s[i] )
-               s[i] = ABS(a[i][j]);
-        }
-    }
-
-    success = TRUE;
-
-    for_less( i, 0, n-1 )
-    {
-        p = i;
-        best_val = a[row[i]][i] / s[row[i]];
-        best_val = ABS( best_val );
-        for_less( j, i+1, n )
-        {
-            val = a[row[j]][i] / s[row[j]];
-            val = ABS( val );
-            if( val > best_val )
-            {
-                best_val = val;
-                p = j;
-            }
-        }
-
-        if( a[row[p]][i] == 0.0 )
-        {
-            success = FALSE;
-            break;
-        }
-
-        if( i != p )
-        {
-            tmp = row[i];
-            row[i] = row[p];
-            row[p] = tmp;
-        }
-
-        for_less( j, i+1, n )
-        {
-            m = a[row[j]][i] / a[row[i]][i];
-            for_less( k, i+1, n )
-                a[row[j]][k] -= m * a[row[i]][k];
-            for_less( v, 0, n_values )
-                solution[row[j]][v] -= m * solution[row[i]][v];
-        }
-    }
-
-    if( success && a[row[n-1]][n-1] == 0.0 )
-        success = FALSE;
+    success = scaled_maximal_pivoting_gaussian_elimination( n, row, a, n_values,
+                                                            solution );
 
     if( success )
     {
-        for( i = n-1;  i >= 0;  --i )
-        {
-            for_less( j, i+1, n )
-            {
-                scale_factor = a[row[i]][j];
-                for_less( v, 0, n_values )
-                    solution[row[i]][v] -= scale_factor * solution[row[j]][v];
-            }
-
-            for_less( v, 0, n_values )
-                solution[row[i]][v] /= a[row[i]][i];
-        }
-
         for_less( i, 0, n )
         {
             for_less( v, 0, n_values )
             {
-                values[v][i] = solution[row[i]][v];
+                values[v][i] = (float) solution[row[i]][v];
             }
         }
     }
 
     FREE2D( a );
     FREE2D( solution );
-    FREE( s );
     FREE( row );
 
     return( success );

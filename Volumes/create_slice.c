@@ -2,6 +2,8 @@
 #include  <internal_volume_io.h>
 #include  <vols.h>
 
+#define  DISTANCE_THRESHOLD  1.0e-10
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : clip_points
 @INPUT      : n_dims
@@ -80,17 +82,23 @@ private  int  clip_points(
 
                     if( i > 0 )
                     {
-                        if( dist < 0.0 && prev_dist > 0.0 ||
-                            dist > 0.0 && prev_dist < 0.0 )
+                        if( dist < -DISTANCE_THRESHOLD &&
+                            prev_dist > DISTANCE_THRESHOLD ||
+                            dist > DISTANCE_THRESHOLD &&
+                            prev_dist < -DISTANCE_THRESHOLD )
                         {
                             ratio = prev_dist / (prev_dist - dist);
-                            output_points[n_output_points][0] =
-                               input_points[i-1][0] + ratio *
-                              (input_points[this][0] - input_points[i-1][0]);
-                            output_points[n_output_points][1] =
-                               input_points[i-1][1] + ratio *
-                              (input_points[this][1] - input_points[i-1][1]);
-                            ++n_output_points;
+                            if( ratio > DISTANCE_THRESHOLD &&
+                                ratio < 1.0 - DISTANCE_THRESHOLD )
+                            {
+                                output_points[n_output_points][0] =
+                                  input_points[i-1][0] + ratio *
+                                 (input_points[this][0] - input_points[i-1][0]);
+                                output_points[n_output_points][1] =
+                                  input_points[i-1][1] + ratio *
+                                 (input_points[this][1] - input_points[i-1][1]);
+                                ++n_output_points;
+                            }
                         }
                     }
                     else
@@ -151,7 +159,7 @@ private  int    get_cross_section(
     Real    points[4][2], voxel[MAX_DIMENSIONS];
     int     d, sizes[MAX_DIMENSIONS], n_dims, n_points;
     int     n_limits[MAX_DIMENSIONS], lim[MAX_DIMENSIONS];
-    Real    x_pixel, y_pixel, x_min, x_max, y_min, y_max;
+    Real    x_pixel, y_pixel, x_min, x_max, y_min, y_max, dx, dy;
     BOOLEAN first;
 
     get_volume_sizes( volume, sizes );
@@ -203,6 +211,14 @@ private  int    get_cross_section(
         }
     }
 
+    dx = x_max - x_min;
+    dy = y_max - y_min;
+
+    x_min -= dx;
+    x_max += dx;
+    y_min -= dy;
+    y_max += dy;
+
     points[0][0] = x_min;
     points[0][1] = y_min;
     points[1][0] = x_max;
@@ -215,7 +231,7 @@ private  int    get_cross_section(
     n_points = clip_points( n_dims, sizes, origin, x_axis, y_axis,
                             4, points, clipped_points );
 
-    if( n_points == 1 || n_points == 2 || n_points > 2 * n_dims )
+    if( n_points == 1 || n_points == 2 )
     {
 /*
         print( "N points = %d\n", n_points );

@@ -138,9 +138,9 @@ public  Volume  smooth_resample_volume(
 
                             if( weight > 0.0 )
                             {
-                                GET_VOXEL_3D( voxel, volume,
+                                voxel = get_volume_voxel_value( volume,
                                               src_voxel[X], src_voxel[Y],
-                                              src_voxel[Z]);
+                                              src_voxel[Z], 0, 0 );
                                 val += weight * voxel;
                                 if( get_volume_label_data(volume,src_voxel) ==0)
                                     voxel_valid = TRUE;
@@ -149,8 +149,8 @@ public  Volume  smooth_resample_volume(
                     }
                 }
 
-                SET_VOXEL_3D( resampled_volume,
-                              dest_voxel[X], dest_voxel[Y], dest_voxel[Z],
+                set_volume_voxel_value( resampled_volume,
+                              dest_voxel[X], dest_voxel[Y], dest_voxel[Z], 0, 0,
                               val + 0.5 );
 
                 if( !voxel_valid )

@@ -294,7 +294,7 @@ private  BOOLEAN   point_inside_range(
     vy = ROUND( y );
     vz = ROUND( z );
 
-    GET_VOXEL_3D( val, volume, vx, vy, vz );
+    val = get_volume_voxel_value( volume, vx, vy, vz, 0, 0 );
 
     return( min_value <= val &&  val <= max_value );
 }

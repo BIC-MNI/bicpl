@@ -20,7 +20,6 @@ public  void  dilate_labeled_voxels_3d(
     int                     voxel[N_DIMENSIONS], sizes[N_DIMENSIONS];
     int                     dir, n_dirs, *dx, *dy, *dz, label;
     Real                    val;
-    BOOLEAN                 changed;
     bitlist_3d_struct       inside_bits, outside_bits;
     progress_struct         progress;
 
@@ -49,7 +48,7 @@ public  void  dilate_labeled_voxels_3d(
             {
                 for_less( z, 0, sizes[Z] )
                 {
-                    GET_VALUE_3D( val, volume, x, y, z );
+                    val = get_volume_real_value( volume, x, y, z, 0, 0 );
                     if( min_inside_value <= max_inside_value &&
                         min_inside_value <= val && val <= max_inside_value )
                     {
@@ -129,8 +128,6 @@ public  void  dilate_labeled_voxels_3d(
         }
     }
 
-    changed = FALSE;
-
     initialize_progress_report( &progress, FALSE, sizes[X] * sizes[Y],
                                 "Expanding labeled voxels" );
 
@@ -153,7 +150,6 @@ public  void  dilate_labeled_voxels_3d(
                         {
                             set_volume_label_data( label_volume, v,
                                                    new_label );
-                            changed = TRUE;
                             break;
                         }
                     }
