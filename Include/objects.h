@@ -3,7 +3,6 @@
 
 #include  <basic.h>
 #include  <stack.h>
-#include  <bintree.h>
 
 #define  SET_OBJECT_SIZE( object, n, size ) \
              { \
@@ -31,6 +30,8 @@
 
 typedef enum { ONE_COLOUR, PER_ITEM_COLOURS, PER_VERTEX_COLOURS } Colour_flags;
 
+typedef  void  *bintree_struct_ptr;
+
 typedef  struct
 {
     Colour_flags   colour_flag;
@@ -44,7 +45,7 @@ typedef  struct
     int            *end_indices;
     int            *indices;
 
-    bintree_struct  *bintree;
+    bintree_struct_ptr  bintree;
 } lines_struct;
 
 typedef  enum  { BOX_MARKER, SPHERE_MARKER,
@@ -80,7 +81,7 @@ typedef  struct
 
     Smallest_int    *visibilities;
     int             *neighbours;
-    bintree_struct  *bintree;
+    bintree_struct_ptr  bintree;
 } polygons_struct;
 
 typedef  struct
@@ -95,7 +96,7 @@ typedef  struct
     Point           *points;
     Vector          *normals;
 
-    bintree_struct  *bintree;
+    bintree_struct_ptr  bintree;
 } quadmesh_struct;
 
 typedef enum { FIXED_FONT, SIZED_FONT } Font_types;
