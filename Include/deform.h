@@ -17,32 +17,39 @@ typedef  struct
     Real               tolerance;
 } boundary_definition_struct;
 
-typedef  enum  { SPHERE_DATA, VOLUME_DATA }  Deform_data_types;
+typedef  enum  { VOLUME_DATA }  Deform_data_types;
 
 typedef  struct
 {
     Deform_data_types   type;
-    Point               sphere_centre;
-    Real                sphere_x_size;
-    Real                sphere_y_size;
-    Real                sphere_z_size;
     volume_struct       *volume;
 } deform_data_struct;
 
-typedef  enum { POINT_SPHERE_MODEL, SPHERICAL_MODEL, AVERAGE_MODEL,
+typedef  enum { FLAT_MODEL, AVERAGE_MODEL,
                 PARAMETRIC_MODEL, GENERAL_MODEL }
                 Deformation_model_types;
 
 typedef  struct
 {
+    int                       up_to_n_points;
+
     Deformation_model_types   model_type;
-    Boolean                   sphere_topology;
-    int                       n_points;
+    Real                      model_weight;
+    object_struct             *model_object;
+
+    int                       n_model_points;
     Point                     *model_centroids;
     Vector                    *model_normals;
     Point                     *model_points;
+
     Real                      min_curvature_offset;
     Real                      max_curvature_offset;
+} deform_model_struct;
+
+typedef  struct
+{
+    int                       n_models;
+    deform_model_struct       *models;
     Boolean                   position_constrained;
     Boolean                   max_position_offset;
     Point                     *original_positions;
@@ -51,7 +58,6 @@ typedef  struct
 typedef  struct
 {
     deform_data_struct            deform_data;
-    Real                          model_weight;
     deformation_model_struct      deformation_model;
     Real                          fractional_step;
     Real                          max_step;
