@@ -63,6 +63,22 @@ private  Real   dot(
     return( d );
 }
 
+private  void   cross(
+    int    n,
+    Real   v1[],
+    Real   v2[],
+    Real   cr[] )
+{
+    int   c, a1, a2;
+
+    for_less( c, 0, n )
+    {
+        a1 = (c + 1) % N_DIMENSIONS;
+        a2 = (c + 2) % N_DIMENSIONS;
+        cr[c] = v1[a1] * v2[a2] - v1[a2] * v2[a1];
+    }
+}
+
 private  Real  get_axis_coordinates(
     int   n,
     Real  x_axis[],
@@ -85,34 +101,67 @@ private  Real  get_axis_coordinates(
 
 private  void  get_two_axes_coordinates(
     int   n,
-    Real  origin[],
+    Real  vector[],
     Real  x_axis[],
     Real  y_axis[],
-    Real  point[],
     Real  *x_pos,
     Real  *y_pos )
 {
-    int    c;
-    Real   vector[MAX_DIMENSIONS];
-
-    for_less( c, 0, n )
-        vector[c] = point[c] - origin[c];
-
     *y_pos = get_axis_coordinates( n, x_axis, y_axis, vector );
     *x_pos = get_axis_coordinates( n, y_axis, x_axis, vector );
 }
 
 private  void  map_voxel_to_pixel(
-    int    n_dims,
-    Real   voxel_origin[],
+    int    n,
+    Real   voxel[],
     Real   origin[],
     Real   x_axis[],
     Real   y_axis[],
     Real   *x_pixel,
     Real   *y_pixel )
 {
-    get_two_axes_coordinates( n_dims, origin, x_axis, y_axis, voxel_origin,
-                              x_pixel, y_pixel );
+    int   c;
+    Real  len_x, len_y, x_dot_y, factor, z_mag;
+    Real  vector[MAX_DIMENSIONS];
+    Real  z_axis[MAX_DIMENSIONS];
+
+    for_less( c, 0, n )
+        vector[c] = voxel[c] - origin[c];
+
+    len_x = sqrt( dot( n, x_axis, x_axis ) );
+    len_y = sqrt( dot( n, y_axis, y_axis ) );
+
+    x_dot_y = dot( n, x_axis, y_axis );
+    if( len_x != 0.0 )
+        x_dot_y /= len_x;
+    if( len_y != 0.0 )
+        x_dot_y /= len_y;
+
+    if( ABS( x_dot_y ) < 0.001 )
+    {
+        *x_pixel = dot( n, vector, x_axis ) / len_x / len_x;
+        *y_pixel = dot( n, vector, y_axis ) / len_y / len_y;
+    }
+    else if( n == 3 )
+    {
+        cross( n, x_axis, y_axis, z_axis );
+        z_mag = dot( n, z_axis, z_axis );
+        if( z_mag != 0.0 )
+        {
+            factor = dot( n, vector, z_axis ) / z_mag;
+            for_less( c, 0, n )
+                vector[c] -= factor * z_axis[c];
+        }
+
+        get_two_axes_coordinates( n, vector, x_axis, y_axis,
+                                  x_pixel, y_pixel );
+    }
+    else
+    {
+        print( "Cannot handle nonortho axis of non-3D data.\n" );
+        *x_pixel = 0.0;
+        *y_pixel = 0.0;
+    }
 }
 
 /* ----------------------------- MNI Header -----------------------------------
