@@ -17,7 +17,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.10 1996-04-10 17:19:49 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.11 1996-04-16 13:58:51 david Exp $";
 #endif
 
 private  void  recursive_intersect_ray(
@@ -83,7 +83,7 @@ public  int  intersect_ray_with_bintree(
     Real                *distances[] )
 {
     int       n_intersections;
-    Real      t_min, t_max, diff;
+    Real      t_min, t_max;
 
     n_intersections = 0;
     if( obj_index != (int *) NULL )
@@ -92,7 +92,6 @@ public  int  intersect_ray_with_bintree(
     if( ray_intersects_range( &bintree->range, origin, direction,
                               &t_min, &t_max ) )
     {
-        diff = t_max - t_min;
         recursive_intersect_ray( origin, direction, t_min, t_max,
                                  bintree->root, object, obj_index, dist,
                                  &n_intersections, distances );
