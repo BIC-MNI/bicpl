@@ -6,9 +6,12 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.5  1995-04-04 03:42:05  david
-@MODIFIED   : check_in_all
+@MODIFIED   : Revision 1.6  1995-05-19 21:51:21  david
+@MODIFIED   : *** empty log message ***
 @MODIFIED   :
+ * Revision 1.5  1995/04/04  03:42:05  david
+ * check_in_all
+ *
  * Revision 1.4  1995/03/07  18:54:49  david
  * check_in_all
  *
@@ -138,8 +141,8 @@ public void compute_transform_from_tags(int npoints,
                             trans_type, transform);
       break;
    default:
-      (void) fprintf(stderr, 
-         "Invalid transform type in compute_transform_from tags\n");
+      print_error(
+         "Invalid transform type in compute_transform_from tags\n" );
       exit(EXIT_FAILURE);
    }
 
@@ -268,10 +271,9 @@ private void compute_arb_param_transform(int npoints,
     linear_transform;
   
   if (trans_type!=TRANS_LSQ9 && trans_type!=TRANS_LSQ10) {
-    (void) fprintf(stderr, "Error in compute_arb_param_transform().\n");
-    (void) fprintf(stderr, 
-                   "Trans_type (=%d) requested is not LSQ9 or LSQ10.\n", 
-                   trans_type);
+    print_error( "Error in compute_arb_param_transform().\n" );
+    print_error( "Trans_type (=%d) requested is not LSQ9 or LSQ10.\n", 
+                 trans_type );
     exit(EXIT_FAILURE);
   }
 				/* Create needed matrices and vectors */
@@ -301,8 +303,8 @@ private void compute_arb_param_transform(int npoints,
 	     centre_of_rotation, rotation, &scale);
   
   if (!rotmat_to_ang(rotation, angles)) {
-    (void) fprintf(stderr, "Error in compute_arb_param_transform().\n");
-    (void) fprintf(stderr, "Cannot extract angles from rotation matrix.\n");
+    print_error( "Error in compute_arb_param_transform().\n");
+    print_error( "Cannot extract angles from rotation matrix.\n");
     exit(EXIT_FAILURE);
   }
   
@@ -318,8 +320,8 @@ private void compute_arb_param_transform(int npoints,
 			scales,
 			shears,
 			angles)) {
-    (void) fprintf(stderr, "Error in compute_arb_param_transform(),\n");
-    (void) fprintf(stderr, "in call to optimize_simplex().\n");
+    print_error( "Error in compute_arb_param_transform(),\n");
+    print_error( "in call to optimize_simplex().\n");
     exit(EXIT_FAILURE);
   }
 
@@ -571,7 +573,7 @@ private void compute_12param_transform(int npoints,
    /* Check transformation type */
 
    if (trans_type != TRANS_LSQ12) {
-      (void) fprintf(stderr, "Internal error in compute_12param_transform!\n");
+      print_error( "Internal error in compute_12param_transform!\n");
       exit(EXIT_FAILURE);
    }
 
@@ -641,7 +643,7 @@ private  void  compute_tps_transform(int npoints,
    /* Check trans_type */
 
    if (trans_type != TRANS_TPS) {
-      (void) fprintf(stderr, "Wrong trans type in compute_tps_transform\n");
+      print_error( "Wrong trans type in compute_tps_transform\n");
       exit(EXIT_FAILURE);
    }
 
