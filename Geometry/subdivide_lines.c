@@ -1,4 +1,4 @@
-#include  <module.h>
+#include  <geom.h>
 
 private  void  subdivide_line(
     lines_struct      *lines,
@@ -44,7 +44,7 @@ private  void  subdivide_line(
 private  void  general_subdivide_lines(
     lines_struct  *lines )
 {
-    int                i, new_n_points, new_n_indices, new_n_lines;
+    int                size, i, new_n_points, new_n_indices, new_n_lines;
     int                *new_indices, *new_end_indices;
     Point              *new_points;
 
@@ -52,7 +52,8 @@ private  void  general_subdivide_lines(
     new_n_lines = 0;
     new_n_indices = 0;
 
-    SET_ARRAY_SIZE( new_points, 0, new_n_points, DEFAULT_CHUNK_SIZE );
+    size = 0;
+    SET_ARRAY_SIZE( new_points, size, new_n_points, DEFAULT_CHUNK_SIZE );
 
     for_less( i, 0, new_n_points )
         new_points[i] = lines->points[i];
