@@ -118,8 +118,6 @@ public  void  render_volume_to_slice(
 
     ALLOC2D( y_offsets1, n_slices1, y_size );
     ALLOC2D( which_x_offsets1, n_slices1, y_size );
-    ALLOC( start_x, y_size );
-    ALLOC( end_x, y_size );
 
     if( volume_data2 != (void *) NULL )
     {
@@ -288,7 +286,7 @@ public  void  render_volume_to_slice(
         {
             Colour          *pixel_ptr, colour;
 
-            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,x,x_size)];
+            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,0,x_size)];
 
             for_less( x, 0, start_x[y] )
             {
@@ -308,7 +306,7 @@ public  void  render_volume_to_slice(
         {
             unsigned short          *pixel_ptr, colour;
 
-            pixel_ptr = &pixels->data.pixels_16bit_colour_index[IJ(y,x,x_size)];
+            pixel_ptr = &pixels->data.pixels_16bit_colour_index[IJ(y,0,x_size)];
 
             for_less( x, 0, start_x[y] )
             {

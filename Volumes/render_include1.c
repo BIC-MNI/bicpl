@@ -7,7 +7,7 @@
 #include  "render_include2.c"
 #undef    ONE_SLICE
     }
-else
+    else
     {
 #include  "render_include2.c"
     }

@@ -14,19 +14,16 @@ public  int  get_active_bit()
 }
 
 public  Volume  create_label_volume(
-    int    n_dimensions,
-    int    sizes[] )
+    Volume  volume )
 {
-    Volume   volume;
+    Volume   label_volume;
 
-    volume = create_volume( n_dimensions, (char **) NULL, NC_BYTE, FALSE,
-                            0.0, 0.0 );
+    label_volume = copy_volume_definition( volume, NC_BYTE, FALSE,
+                                           0.0, 255.0 );
 
-    set_volume_sizes( volume, sizes );
+    set_all_volume_label_data( label_volume, 0 );
 
-    set_all_volume_label_data( volume, 0 );
-
-    return( volume );
+    return( label_volume );
 }
 
 private  void  check_alloc_label_data(

@@ -7,8 +7,8 @@ public  void  get_mapping(
     Real            x_axis[],
     Real            y_axis[],
     Real            x_translation,
-    Real            x_scale,
     Real            y_translation,
+    Real            x_scale,
     Real            y_scale,
     Real            pix_origin[],
     Real            pix_x_axis[],
@@ -156,8 +156,7 @@ public  BOOLEAN  convert_slice_pixel_to_voxel(
     Real         real_origin[MAX_DIMENSIONS];
 
     get_mapping( volume, origin, x_axis, y_axis,
-                 x_translation, x_scale,
-                 y_translation, y_scale,
+                 x_translation, y_translation, x_scale, y_scale,
                  real_origin, real_x_axis, real_y_axis );
 
     n_dims = get_volume_n_dimensions( volume );
@@ -209,8 +208,7 @@ public  void  convert_voxel_to_slice_pixel(
     Real         real_origin[MAX_DIMENSIONS];
 
     get_mapping( volume, origin, x_axis, y_axis,
-                 x_translation, x_scale,
-                 y_translation, y_scale,
+                 x_translation, y_translation, x_scale, y_scale,
                  real_origin, real_x_axis, real_y_axis );
 
     n_dims = get_volume_n_dimensions( volume );
@@ -226,10 +224,10 @@ public  void  resize_volume_slice(
     int          old_used_y_viewport_size,
     int          new_x_viewport_size,
     int          new_y_viewport_size,
-    Real         *x_scale,
-    Real         *y_scale,
     Real         *x_translation,
     Real         *y_translation,
+    Real         *x_scale,
+    Real         *y_scale,
     int          *used_x_viewport_size,
     int          *used_y_viewport_size )
 {
@@ -246,8 +244,8 @@ public  void  resize_volume_slice(
 
     scale_slice_about_viewport_centre( scale_factor,
                                        old_x_viewport_size, old_y_viewport_size,
-                                       x_scale, y_scale,
-                                       x_translation, y_translation );
+                                       x_translation, y_translation,
+                                       x_scale, y_scale );
 
     *x_translation += (new_x_viewport_size - old_x_viewport_size) / 2.0;
     *y_translation += (new_y_viewport_size - old_y_viewport_size) / 2.0;
@@ -261,30 +259,25 @@ public  void  fit_volume_slice_to_viewport(
     int          x_viewport_size,
     int          y_viewport_size,
     Real         fraction_oversize,
-    Real         *x_scale,
-    Real         *y_scale,
     Real         *x_translation,
     Real         *y_translation,
+    Real         *x_scale,
+    Real         *y_scale,
     int          *used_x_viewport_size,
     int          *used_y_viewport_size )
 {
     Real         x_min, x_max, y_min, y_max;
-    Real         real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
-    Real         real_origin[MAX_DIMENSIONS];
 
-    get_mapping( volume, origin, x_axis, y_axis,
-                 0.0, 1.0, 0.0, 1.0,
-                 real_origin, real_x_axis, real_y_axis );
-
-    get_volume_mapping_range( volume, real_origin, real_x_axis, real_y_axis,
+    get_volume_mapping_range( volume, origin, x_axis, y_axis,
+                              0.0, 0.0, 1.0, 1.0,
                               &x_min, &x_max, &y_min, &y_max );
 
     if( x_min == x_max || y_min == y_max )
     {
-        *x_scale = 1.0;
-        *y_scale = 1.0;
         *x_translation = 0.0;
         *y_translation = 0.0;
+        *x_scale = 1.0;
+        *y_scale = 1.0;
         return;
     }
 
@@ -313,10 +306,10 @@ public  void   scale_slice_about_viewport_centre(
     Real        scale_factor,
     int         x_viewport_size,
     int         y_viewport_size,
-    Real        *x_scale,
-    Real        *y_scale,
     Real        *x_translation,
-    Real        *y_translation )
+    Real        *y_translation,
+    Real        *x_scale,
+    Real        *y_scale )
 {
     Real  x_centre, y_centre;
 

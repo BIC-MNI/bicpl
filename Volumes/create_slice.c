@@ -123,7 +123,7 @@ private  int  clip_points(
     return( n_clipped_points );
 }
 
-public  void    get_volume_mapping_range(
+private  void    get_volume_slice_range(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
@@ -185,6 +185,32 @@ public  void    get_volume_mapping_range(
     }
 }
 
+public  void    get_volume_mapping_range(
+    Volume   volume,
+    Real     origin[],
+    Real     x_axis[],
+    Real     y_axis[],
+    Real     x_trans,
+    Real     y_trans,
+    Real     x_scale,
+    Real     y_scale,
+    Real     *x_pixel_start,
+    Real     *x_pixel_end,
+    Real     *y_pixel_start,
+    Real     *y_pixel_end )
+{
+    Real    real_origin[MAX_DIMENSIONS];
+    Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
+
+    get_mapping( volume, origin, x_axis, y_axis,
+                 x_trans, y_trans, x_scale, y_scale,
+                 real_origin, real_x_axis, real_y_axis );
+
+    get_volume_slice_range( volume, real_origin, real_x_axis, real_y_axis,
+                            x_pixel_start, x_pixel_end,
+                            y_pixel_start, y_pixel_end );
+}
+
 private  void    clip_viewport_to_volume(
     Volume   volume,
     Real     origin[],
@@ -198,8 +224,8 @@ private  void    clip_viewport_to_volume(
     int     int_x_min, int_x_max, int_y_min, int_y_max;
     Real    x_min, x_max, y_min, y_max;
 
-    get_volume_mapping_range( volume, origin, x_axis, y_axis,
-                              &x_min, &x_max, &y_min, &y_max );
+    get_volume_slice_range( volume, origin, x_axis, y_axis,
+                            &x_min, &x_max, &y_min, &y_max );
 
     int_x_min = CEILING( x_min );
     int_x_max = FLOOR( x_max );
@@ -271,8 +297,7 @@ private  void  create_weighted_volume_slices(
     for_less( s, 0, n_slices1 )
     {
         get_mapping( volume1, origins1[s], x_axis1, y_axis1,
-                     x_translation1, x_scale1,
-                     y_translation1, y_scale1,
+                     x_translation1, y_translation1, x_scale1, y_scale1,
                      real_origins1[s], real_x_axis1, real_y_axis1 );
 
         clip_viewport_to_volume( volume1, real_origins1[s],
@@ -290,8 +315,7 @@ private  void  create_weighted_volume_slices(
         for_less( s, 0, n_slices2 )
         {
             get_mapping( volume2, origins2[s], x_axis2, y_axis2,
-                         x_translation2, x_scale2,
-                         y_translation2, y_scale2,
+                         x_translation2, y_translation2, x_scale2, y_scale2,
                          real_origins2[s], real_x_axis2, real_y_axis2 );
 
             clip_viewport_to_volume( volume2, real_origins2[s],

@@ -635,62 +635,85 @@ private  Real  angle_between_points(
 
 public  void  average_polygon_normals(
     polygons_struct  *polygons,
+    int              n_iters,
     Real             neighbour_weight )
 {
-    int                e, poly, size, point_index, neigh_index;
-    Vector             *neigh_normal_sum;
+    Real               avg_dot_prod;
+    int                e, poly, size, point_index, neigh_index, i;
+    Vector             *neigh_normal_sum, *new_normals, new_normal;
     progress_struct    progress;
 
     if( polygons->n_points <= 0 || polygons->n_items <= 0 )
         return;
 
-    ALLOC( neigh_normal_sum, polygons->n_points );
+    compute_polygon_normals( polygons );
+
+    ALLOC( new_normals, polygons->n_points );
     for_less( point_index, 0, polygons->n_points )
-        fill_Vector( neigh_normal_sum[point_index], 0.0, 0.0, 0.0 );
+         new_normals[point_index] = polygons->normals[point_index];
 
-    initialize_progress_report( &progress, FALSE, polygons->n_items,
-                                "Averaging Normals" );
+    ALLOC( neigh_normal_sum, polygons->n_points );
 
-    for_less( poly, 0, polygons->n_items )
+    for_less( i, 0, n_iters )
     {
-        size = GET_OBJECT_SIZE( *polygons, poly );
+        for_less( point_index, 0, polygons->n_points )
+            fill_Vector( neigh_normal_sum[point_index], 0.0, 0.0, 0.0 );
 
-        for_less( e, 0, size )
+        initialize_progress_report( &progress, FALSE, polygons->n_items,
+                                    "Averaging Normals" );
+
+        for_less( poly, 0, polygons->n_items )
         {
-            point_index =
-                   polygons->indices[POINT_INDEX(polygons->end_indices,poly,e)];
-            neigh_index =
-                   polygons->indices[POINT_INDEX(polygons->end_indices,poly,
-                                     (e+1)%size)];
+            size = GET_OBJECT_SIZE( *polygons, poly );
 
-            ADD_VECTORS( neigh_normal_sum[point_index],
-                         neigh_normal_sum[point_index],
-                         polygons->normals[neigh_index] );
-            ADD_VECTORS( neigh_normal_sum[neigh_index],
-                         neigh_normal_sum[neigh_index],
-                         polygons->normals[point_index] );
+            for_less( e, 0, size )
+            {
+                point_index = polygons->indices[
+                           POINT_INDEX(polygons->end_indices,poly,e)];
+                neigh_index = polygons->indices[
+                           POINT_INDEX(polygons->end_indices,poly,(e+1)%size)];
+
+                ADD_VECTORS( neigh_normal_sum[point_index],
+                             neigh_normal_sum[point_index],
+                             new_normals[neigh_index] );
+                ADD_VECTORS( neigh_normal_sum[neigh_index],
+                             neigh_normal_sum[neigh_index],
+                             new_normals[point_index] );
+            }
+
+            update_progress_report( &progress, poly + 1 );
         }
 
-        update_progress_report( &progress, poly + 1 );
-    }
+        terminate_progress_report( &progress );
 
-    terminate_progress_report( &progress );
+        avg_dot_prod = 0.0;
+
+        for_less( point_index, 0, polygons->n_points )
+        {
+            NORMALIZE_VECTOR( neigh_normal_sum[point_index],
+                              neigh_normal_sum[point_index] );
+
+            INTERPOLATE_VECTORS( new_normal,
+                                 polygons->normals[point_index],
+                                 neigh_normal_sum[point_index],
+                                 neighbour_weight );
+
+            NORMALIZE_VECTOR( new_normal, new_normal );
+
+            avg_dot_prod += DOT_VECTORS( new_normal, new_normals[point_index] );
+            new_normals[point_index] = new_normal;
+        }
+
+        avg_dot_prod /= (Real) polygons->n_points;
+
+        print( "Average dot product: %g\n", avg_dot_prod );
+    }
 
     for_less( point_index, 0, polygons->n_points )
-    {
-        NORMALIZE_VECTOR( neigh_normal_sum[point_index],
-                          neigh_normal_sum[point_index] );
-
-        INTERPOLATE_VECTORS( polygons->normals[point_index],
-                             polygons->normals[point_index],
-                             neigh_normal_sum[point_index],
-                             neighbour_weight );
-
-        NORMALIZE_VECTOR( polygons->normals[point_index],
-                          polygons->normals[point_index] );
-    }
+         polygons->normals[point_index] = new_normals[point_index];
 
     FREE( neigh_normal_sum );
+    FREE( new_normals );
 }
 
 public  BOOLEAN  get_plane_polygon_intersection(
