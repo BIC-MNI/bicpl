@@ -4,8 +4,8 @@ GEOMETRY_LIB       = libgeometry.a
 GEOMETRY_LINT_LIB  = lint/llib-lgeometry.ln
 MARCHING_LIB       = libmarching.a
 MARCHING_LINT_LIB  = lint/llib-lmarching.ln
-STATS_LIB          = libstatistics.a
-STATS_LINT_LIB     = lint/llib-lstatistics.ln
+NUMERICAL_LIB          = libnumerical.a
+NUMERICAL_LINT_LIB     = lint/llib-lnumerical.ln
 SURFACE_LIB        = libsurface.a
 SURFACE_LINT_LIB   = lint/llib-lsurface.ln
 
@@ -30,14 +30,17 @@ DEFORM_OBJ = \
 
 GEOMETRY_OBJ = \
                Geometry/line_circle.o \
+               Geometry/map_polygons.o \
                Geometry/path_surface.o \
+               Geometry/poly_dist.o \
                Geometry/polygon_sphere.o \
                Geometry/segment_polygons.o \
                Geometry/smooth_lines.o \
                Geometry/smooth_polygons.o \
                Geometry/subdivide_lines.o \
                Geometry/subdivide_polygons.o \
-               Geometry/tetrahedrons.o
+               Geometry/tetrahedrons.o \
+               Geometry/volume_slice.o
 
 MARCHING_OBJ = \
                Marching_cubes/marching_cubes.o \
@@ -48,8 +51,10 @@ SURFACE_OBJ = \
               Surface_rep/superquadric.o \
               Surface_rep/surface_reps.o
 
-STATS_OBJ  = \
-             Statistics/statistics.o
+NUMERICAL_OBJ  = \
+             Numerical/amoeba.o \
+             Numerical/statistics.o \
+             Numerical/histogram.o
 
 PROTOTYPE_FILE = Include/module_prototypes.h
 
@@ -58,7 +63,7 @@ LIBS = \
        $(GEOMETRY_LIB) $(GEOMETRY_LINT_LIB) \
        $(MARCHING_LIB) $(MARCHING_LINT_LIB) \
        $(SURFACE_LIB)  $(SURFACE_LINT_LIB) \
-       $(STATS_LIB)    $(STATS_LINT_LIB)
+       $(NUMERICAL_LIB)    $(NUMERICAL_LINT_LIB)
 
 all: $(PROTOTYPE_FILE) $(LIBS) $(LINT_LIBS)
 	cd lint ; ln -s ../*.ln .
@@ -75,7 +80,7 @@ INCLUDE = $(C_UTILS_INCLUDE) -IInclude
 OBJECTS = $(DEFORM_OBJ) \
           $(GEOMETRY_OBJ) \
           $(MARCHING_OBJ) \
-          $(STATS_OBJ) \
+          $(NUMERICAL_OBJ) \
           $(SURFACE_OBJ)
 
 $(PROTOTYPE_FILE): $(OBJECTS:.o=.c)
@@ -111,14 +116,14 @@ $(MARCHING_LINT_LIB): $(MARCHING_OBJ:.o=.ln)
 	@echo "--- Linting ---"
 	lint -u -o marching $(MARCHING_OBJ:.o=.ln)
 
-$(STATS_LIB): $(STATS_OBJ)
+$(NUMERICAL_LIB): $(NUMERICAL_OBJ)
 	@if( -e $@ ) \rm -f $@
-	$(MAKE_LIBRARY) $@ $(STATS_OBJ)
+	$(MAKE_LIBRARY) $@ $(NUMERICAL_OBJ)
 	$(RANLIB) $@
 
-$(STATS_LINT_LIB): $(STATS_OBJ:.o=.ln)
+$(NUMERICAL_LINT_LIB): $(NUMERICAL_OBJ:.o=.ln)
 	@echo "--- Linting ---"
-	lint -u -o statistics $(STATS_OBJ:.o=.ln)
+	lint -u -o numerical $(NUMERICAL_OBJ:.o=.ln)
 
 $(SURFACE_LIB): $(SURFACE_OBJ)
 	@if( -e $@ ) \rm -f $@
