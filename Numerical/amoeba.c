@@ -83,7 +83,7 @@ private  Real  try_amoeba(
     ALLOC( parameters, amoeba->n_parameters );
 
     fac1 = (1.0 - fac) / amoeba->n_parameters;
-    fac2 = fac1 - fac;
+    fac2 = fac - fac1;
 
     for_less( j, 0, amoeba->n_parameters )
         parameters[j] = sum[j] * fac1 + amoeba->parameters[high][j] * fac2;
