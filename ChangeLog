@@ -1,3 +1,16 @@
+2003-04-26  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Makefile.am (libbicpl_la_LDFLAGS): Fix -version-info by
+	incrementing "current" and "age", since interfaces were added in
+	change of 2003-02-10.
+
+	* configure.in: Set version to 1.4.1.
+
+	* Documentation/Makefile.am (tex_sources): Add rules to
+	build bicpl.ps.
+
+	* tools/bicobj2vtk.c (MAX_ATTRIBUTES): Raise to 300.
+
 2003-02-16  Jason Lerch		<jason@bic.mni.mcgill.ca>
 
 	* added mni_bicpl.epm.header
@@ -9,7 +22,6 @@
 	/home/bic/david/Source/David/Deform/.
 	* added deform.h and friends to Include directory
 	* bumped version to 1.4.0
-	
 
 2003-01-25  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 

@@ -14,3 +14,12 @@
     stuff so I just report the problem without supplying a general
     solution. I've modified my configure.
 
+
+* build with SGI image library should be an option
+  - MNI's /usr/local should be built with SGI image lib
+
+* PPM code should check that it really gets a valid PPM
+  file on read
+
+
+

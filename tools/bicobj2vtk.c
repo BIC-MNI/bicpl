@@ -23,7 +23,7 @@ int n_cells = -1;
    I'm being lazy and using static-sized arrays.  
    The standard C++ vector<> would be so helpful here ...
  */
-#define MAX_ATTRIBUTES  16
+#define MAX_ATTRIBUTES  300
 typedef struct {
     int count;
     char* data_name[MAX_ATTRIBUTES];
@@ -293,7 +293,7 @@ int main( int ac, char** av )
 
     /* Spit out the header */
     fprintf( out, "# vtk DataFile Version 2.0\n" );
-    fprintf( out, "File '%s' (converted by bicobj2vtk $Id: bicobj2vtk.c,v 1.3 2002-11-27 22:48:44 stever Exp $\n", av[1] );
+    fprintf( out, "File '%s' (converted by bicobj2vtk $Id: bicobj2vtk.c,v 1.4 2003-04-26 19:39:19 stever Exp $\n", av[1] );
     fprintf( out, "ASCII\n" );
     fprintf( out, "DATASET POLYDATA\n" );
     

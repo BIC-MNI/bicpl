@@ -1,6 +1,6 @@
-SUBDIRS = Include Deform Data_structures Transforms Geometry Numerical Objects \
-	Prog_utils Volumes Marching_cubes Images . tools Documentation \
-	Testing
+SUBDIRS = Include Deform Data_structures Transforms Geometry Numerical \
+	Objects Prog_utils Volumes Marching_cubes Images . tools      \
+	Documentation Testing
 
 AUTOMAKE_OPTIONS = check-news
 ACLOCAL_AMFLAGS = -I m4
@@ -14,7 +14,8 @@ EXTRA_DIST = README.release \
 
 # version info argument is CURRENT[:REVISION[:AGE]]
 # see README.release for update instructions
-libbicpl_la_LDFLAGS = -version-info 1:4:0
+# DO NOT SET THIS TO BE THE SAME AS THE PACKAGE VERSION!!!
+libbicpl_la_LDFLAGS = -version-info 2:0:1
 
 lib_LTLIBRARIES = libbicpl.la
 

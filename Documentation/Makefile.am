@@ -1,7 +1,15 @@
 EXTRA_DOX = groups.dox
 EXTRA_DIST = Changes.list bicpl.tex frank.obj lines_format.txt \
 	polygons_format.txt t1.obj t2.obj \
-	doxygen.config.in $(EXTRA_DOX)
+	doxygen.config.in $(EXTRA_DOX) $(tex_sources)
+
+tex_sources = bicpl.tex
+
+bicpl.dvi: $(tex_sources)
+	latex bicpl.tex
+
+bicpl.ps: bicpl.dvi
+	dvips bicpl -o bicpl.ps
 
 # Enable when doxygen is probed for in configure
 #all-local: html/index.html
