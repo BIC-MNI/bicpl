@@ -46,6 +46,45 @@ private  void  get_mapping(
     }
 }
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_volume_slice
+@INPUT      : volume1          - the volume to create a slice for
+              slice_position1  - the voxel coordinate of the slice
+              x_translation1   - pixel translation for viewing
+              y_translation1   - pixel translation for viewing
+              x_scale1         - pixel zoom for viewing
+              y_scale1         - pixel zoom for viewing
+              volume2          - second volume to be merged with first, or null
+              slice_position2  - the voxel coordinate of the slice
+              x_translation2   - pixel translation for viewing
+              y_translation2   - pixel translation for viewing
+              x_scale2         - pixel zoom for viewing
+              y_scale2         - pixel zoom for viewing
+              x_axis_index     - X,Y, or Z
+              y_axis_index     - X,Y, or Z
+              x_viewport_size  - will be clipped to this size
+              y_viewport_size  - will be clipped to this size
+              pixel_type       - RGB_PIXEL or COLOUR_INDEX_PIXEL for rgb/cmap
+              interpolation_flag - ignored for now
+              cmode_colour_map - if pixel_type == COLOUR_INDEX_PIXEL, then
+                          2d array of 16 bit colour indices for merged slices,
+                          or pointer to 1d array of colour indices for volume1
+              rgb_colour_map - if pixel_type == RGB_PIXEL, then
+                          2d array of 24 bit colours for merged slices,
+                          or pointer to 1d array of colours for volume1
+@OUTPUT     : n_pixels_alloced - a pointer to the size alloced.  Before first
+                          call, set size alloced to zero, and all calls,
+                          pass pointer to size alloced, and pointer to pixels.
+              pixels           - 2d pixels array created, and realloced as
+                                 necessary, assuming, n_pixels_alloced is a
+                                 pointer to the current alloc size of pixels.
+@RETURNS    : 
+@DESCRIPTION: Creates a slice of one volume or merged slice of two, suitable
+              for graphics display.
+@CREATED    : Mar   1993           David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
 public  void  create_volume_slice(
     volume_struct   *volume1,
     Real            slice_position1,

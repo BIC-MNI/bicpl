@@ -33,7 +33,8 @@ typedef  struct
 {
     Deformation_model_types   model_type;
     Real                      *curvatures;
-    Real                      max_curvature;
+    Real                      min_curvature_offset;
+    Real                      max_curvature_offset;
 } deformation_model_struct;
 
 typedef  struct

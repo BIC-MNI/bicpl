@@ -20,6 +20,7 @@ public  void  subdivide_polygons(
     int                *index_ptr;
     Point              *new_points;
     Point              dummy;
+    Colour             save_colour;
     hash_table_struct  midpoint_table;
     hash_table_pointer hash_pointer;
     progress_struct    progress;
@@ -28,7 +29,10 @@ public  void  subdivide_polygons(
     {
         (void) printf( "Subdividing assuming sphere topology.\n" );
         create_polygons_sphere( &dummy, 0.0, 0.0, 0.0, 0, 0, TRUE, polygons );
+        return;
     }
+
+    save_colour = polygons->colours[0];
 
     new_n_points = polygons->n_points;
     new_n_polygons = 0;
@@ -67,6 +71,10 @@ public  void  subdivide_polygons(
     delete_hash_table( &midpoint_table );
 
     delete_polygons( polygons );
+
+    ALLOC( polygons->colours, 1 );
+    polygons->colour_flag = ONE_COLOUR;
+    polygons->colours[0] = save_colour;
 
     ALLOC( polygons->normals, new_n_points );
 

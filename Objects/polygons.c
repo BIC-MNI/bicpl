@@ -15,9 +15,6 @@ private  Real  estimate_polygon_curvature(
     Point   *centroid,
     Vector  *normal,
     Real    *base_length );
-public  Boolean  polygon_is_back_facing(
-    polygons_struct   *polygons,
-    int               poly );
 
 public  void  initialize_polygons(
     polygons_struct   *polygons,
@@ -48,13 +45,13 @@ public  void  initialize_polygons(
 
 public  void  delete_polygons( polygons_struct *polygons )
 {
-    FREE( polygons->colours );
+    free_colours( polygons->colour_flag, polygons->colours, polygons->n_points,
+                  polygons->n_items );
 
     if( polygons->n_points > 0 )
         FREE( polygons->points );
 
-    if( polygons->n_points > 0 &&
-        polygons->normals != (Vector *) 0 )
+    if( polygons->n_points > 0 && polygons->normals != (Vector *) 0 )
         FREE( polygons->normals );
 
     if( polygons->n_items > 0 )

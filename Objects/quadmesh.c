@@ -31,12 +31,16 @@ public  void  initialize_quadmesh(
 public  void  delete_quadmesh(
     quadmesh_struct *quadmesh )
 {
-    FREE( quadmesh->colours );
+    free_colours( quadmesh->colour_flag, quadmesh->colours,
+                  quadmesh->m * quadmesh->n,
+                  (quadmesh->m-1) * (quadmesh->n-1) );
 
     if( quadmesh->m > 0 && quadmesh->n > 0 )
     {
         FREE( quadmesh->points );
-        FREE( quadmesh->normals );
+
+        if( quadmesh->normals != (Vector *) NULL )
+            FREE( quadmesh->normals );
     }
 }
 

@@ -14,6 +14,9 @@ public  void  create_line_circle(
 
     initialize_lines( lines, WHITE );
 
+    lines->n_points = n_points;
+    lines->n_items = 1;
+
     ALLOC( lines->points, n_points );
     ALLOC( lines->end_indices, 1 );
     ALLOC( lines->indices, n_points+1 );

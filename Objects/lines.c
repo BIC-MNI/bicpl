@@ -17,7 +17,8 @@ public  void  initialize_lines(
 
 public  void  delete_lines( lines_struct *lines )
 {
-    FREE( lines->colours );
+    free_colours( lines->colour_flag, lines->colours, lines->n_points,
+                  lines->n_items );
 
     if( lines->n_points > 0 )
         FREE( lines->points );

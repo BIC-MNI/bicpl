@@ -1,11 +1,6 @@
 #include  <def_mni.h>
 #include  <def_module.h>
 
-private  int  get_point_index(
-    int   up,
-    int   around,
-    int   n_up,
-    int   n_around );
 private  int  get_n_sphere_points(
     int   n_up,
     int   n_around );
@@ -89,7 +84,7 @@ public  void  create_polygons_sphere(
         {
             around_pos = (Real) around / (Real) n_around;
 
-            point_index = get_point_index( up, around, n_up, n_around );
+            point_index = get_sphere_point_index( up, around, n_up, n_around );
 
             if( subdividing_flag )
             {
@@ -108,12 +103,12 @@ public  void  create_polygons_sphere(
 
     /* ------ build indices for top ------ */
 
-    top_point_index = get_point_index( 0, 0, n_up, n_around );
+    top_point_index = get_sphere_point_index( 0, 0, n_up, n_around );
 
     for_less( around, 0, n_around )
     {
-        point_index1 = get_point_index( 1, around, n_up, n_around );
-        point_index2 = get_point_index( 1, (around+1)%n_around, n_up, n_around);
+        point_index1 = get_sphere_point_index( 1, around, n_up, n_around );
+        point_index2 = get_sphere_point_index( 1, (around+1)%n_around, n_up, n_around);
 
         ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                               top_point_index, DEFAULT_CHUNK_SIZE );
@@ -133,10 +128,10 @@ public  void  create_polygons_sphere(
         for_less( around, 0, n_around )
         {
             next_around = (around + 1) % n_around;
-            point_index1 = get_point_index( up, around, n_up, n_around );
-            point_index2 = get_point_index( up+1, around, n_up, n_around );
-            point_index3 = get_point_index( up+1, next_around, n_up, n_around );
-            point_index4 = get_point_index( up, next_around, n_up, n_around );
+            point_index1 = get_sphere_point_index( up, around, n_up, n_around );
+            point_index2 = get_sphere_point_index( up+1, around, n_up, n_around );
+            point_index3 = get_sphere_point_index( up+1, next_around, n_up, n_around );
+            point_index4 = get_sphere_point_index( up, next_around, n_up, n_around );
 
             ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
                                   point_index1, DEFAULT_CHUNK_SIZE );
@@ -154,12 +149,12 @@ public  void  create_polygons_sphere(
 
     /* ------ build indices for bottom ------ */
 
-    bottom_point_index = get_point_index( n_up, 0, n_up, n_around );
+    bottom_point_index = get_sphere_point_index( n_up, 0, n_up, n_around );
 
     for_less( around, 0, n_around )
     {
-        point_index1 = get_point_index( n_up-1, around, n_up, n_around );
-        point_index2 = get_point_index( n_up-1, (around+1)%n_around,
+        point_index1 = get_sphere_point_index( n_up-1, around, n_up, n_around );
+        point_index2 = get_sphere_point_index( n_up-1, (around+1)%n_around,
                                         n_up, n_around);
 
         ADD_ELEMENT_TO_ARRAY( polygons->indices, n_indices,
@@ -174,7 +169,7 @@ public  void  create_polygons_sphere(
     }
 }
 
-private  int  get_point_index(
+public  int  get_sphere_point_index(
     int   up,
     int   around,
     int   n_up,
@@ -186,7 +181,7 @@ private  int  get_point_index(
     {
         (void) printf( "up %d/%d     around %d/%d\n", up, n_up,
                        around, n_around );
-        HANDLE_INTERNAL_ERROR( "get_point_index" );
+        HANDLE_INTERNAL_ERROR( "get_sphere_point_index" );
     }
 
     if( up == 0 )
@@ -248,24 +243,24 @@ private  void  get_subdivided_point(
     input_around = around / 2;
     around_midpoint_flag = (around & 1) == 1;
 
-    *point = input_points[get_point_index( input_up,
+    *point = input_points[get_sphere_point_index( input_up,
                              input_around, input_n_up, 2 * input_n_up )];
 
     if( up_midpoint_flag )
     {
-        corner_below = input_points[get_point_index( input_up+1,
+        corner_below = input_points[get_sphere_point_index( input_up+1,
                          input_around, input_n_up, 2 * input_n_up )];
         INTERPOLATE_POINTS( *point, *point, corner_below, 0.5 );
     }
 
     if( around_midpoint_flag )
     {
-        corner_across = input_points[get_point_index( input_up,
+        corner_across = input_points[get_sphere_point_index( input_up,
            (input_around + 1) % (2*input_n_up), input_n_up, 2*input_n_up )];
 
         if( up_midpoint_flag )
         {
-            corner_below_across = input_points[get_point_index(
+            corner_below_across = input_points[get_sphere_point_index(
                input_up+1, (input_around + 1) % (2*input_n_up),
                input_n_up, 2*input_n_up )];
             INTERPOLATE_POINTS( corner_across, corner_across,

@@ -68,7 +68,7 @@ public  Boolean  do_more_resampling(
                     yv < -0.5 || yv >= (Real) src_sizes[Y] - 0.5 ||
                     zv < -0.5 || zv >= (Real) src_sizes[Z] - 0.5 )
                 {
-                    value = 0;
+                    value = resample->src_volume->min_value;
                 }
                 else
                 {

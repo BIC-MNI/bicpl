@@ -3,9 +3,6 @@
 private  void  advance_object_traverse(
     object_traverse_struct  *object_traverse );
 
-private  void  terminate_object_traverse(
-    object_traverse_struct   *object_traverse );
-
 public  object_struct  *create_object(
     Object_types   object_type )
 {
@@ -114,56 +111,6 @@ public  text_struct  *get_text_ptr(
     }
     else
         return( &object->specific.text );
-}
-
-/* --------------------- draw functions ------------------------ */
-
-private  void  draw_lines(
-    window_struct   *window,
-    object_struct   *object )
-{
-    G_draw_lines( window, get_lines_ptr(object) );
-}
-
-private  void  draw_marker(
-    window_struct   *window,
-    object_struct   *object )
-{
-    G_draw_marker( window, get_marker_ptr(object) );
-}
-
-private  void  draw_model(
-    window_struct   *window,
-    object_struct   *object )                    /* ARGSUSED */
-{
-}
-
-private  void  draw_pixels(
-    window_struct   *window,
-    object_struct   *object )
-{
-    G_draw_pixels( window, get_pixels_ptr(object) );
-}
-
-private  void  draw_polygons(
-    window_struct   *window,
-    object_struct   *object )
-{
-    G_draw_polygons( window, get_polygons_ptr(object) );
-}
-
-private  void  draw_quadmesh(
-    window_struct   *window,
-    object_struct   *object )
-{
-    G_draw_quadmesh( window, get_quadmesh_ptr(object) );
-}
-
-private  void  draw_text(
-    window_struct   *window,
-    object_struct   *object )
-{
-    G_draw_text( window, get_text_ptr(object) );
 }
 
 /* --------------------- get points ------------------------ */
@@ -457,6 +404,7 @@ private  void  delete_polygons_object(
 private  void  delete_quadmesh_object(
     object_struct   *object )       /* ARGSUSED */
 {
+    delete_quadmesh( get_quadmesh_ptr(object) );
 }
 
 private  void  delete_text_object(
@@ -468,7 +416,6 @@ private  void  delete_text_object(
 
 typedef  struct
 {
-    void          (*draw_function)( window_struct *, object_struct * );
     int           (*get_points_function)( object_struct *, Point *[] );
     int           (*get_normals_function)( object_struct *, Vector *[] );
     Colour_flags  *(*get_colours_function)( object_struct *, Colour *[] );
@@ -482,7 +429,6 @@ object_functions_list;
 static  object_functions_list   object_functions[N_OBJECT_TYPES] =
 {
     {
-        draw_lines,
         get_lines_points,
         get_object_zero_normals,
         get_lines_colours,
@@ -492,7 +438,6 @@ static  object_functions_list   object_functions[N_OBJECT_TYPES] =
         delete_lines_object
     },                              /* LINES */
     {
-        draw_marker,
         get_marker_points,
         get_object_zero_normals,
         get_marker_colours,
@@ -502,7 +447,6 @@ static  object_functions_list   object_functions[N_OBJECT_TYPES] =
         delete_marker_object
     },                              /* MARKER */
     {
-        draw_model,
         get_object_zero_points,
         get_object_zero_normals,
         get_object_zero_colours,
@@ -512,7 +456,6 @@ static  object_functions_list   object_functions[N_OBJECT_TYPES] =
         delete_model_object
     },                              /* MODEL */
     {
-        draw_pixels,
         get_object_zero_points,
         get_object_zero_normals,
         get_object_zero_colours,
@@ -522,7 +465,6 @@ static  object_functions_list   object_functions[N_OBJECT_TYPES] =
         delete_pixels_object
     },                              /* PIXELS */
     {
-        draw_polygons,
         get_polygons_points,
         get_polygons_normals,
         get_polygons_colours,
@@ -532,7 +474,6 @@ static  object_functions_list   object_functions[N_OBJECT_TYPES] =
         delete_polygons_object
     },                              /* POLYGONS */
     {
-        draw_quadmesh,
         get_quadmesh_points,
         get_quadmesh_normals,
         get_quadmesh_colours,
@@ -542,7 +483,6 @@ static  object_functions_list   object_functions[N_OBJECT_TYPES] =
         delete_quadmesh_object
     },                              /* QUADMESH */
     {
-        draw_text,
         get_text_points,
         get_object_zero_normals,
         get_text_colours,
@@ -552,14 +492,6 @@ static  object_functions_list   object_functions[N_OBJECT_TYPES] =
         delete_text_object
     }                               /* TEXT */
 };
-
-public  void  draw_object(
-    window_struct   *window,
-    object_struct   *object )
-{
-    if( object->visibility )
-        object_functions[object->object_type].draw_function( window, object );
-}
 
 public  void  delete_object(
     object_struct  *object )
@@ -682,7 +614,7 @@ private  void  advance_object_traverse(
     }
 }
 
-private  void  terminate_object_traverse(
+public  void  terminate_object_traverse(
     object_traverse_struct   *object_traverse )
 {
     DELETE_STACK( object_traverse->stack );
@@ -948,4 +880,33 @@ public  void  set_object_surfprop(
 
     if( object_spr != (Surfprop *) NULL )
         *object_spr = *spr;
+}
+
+public  void  free_colours(
+    Colour_flags   colour_flag,
+    Colour         colours[],
+    int            n_points,
+    int            n_items )
+{
+    Boolean  should_free;
+
+    should_free = FALSE;
+
+    switch( colour_flag )
+    {
+    case  ONE_COLOUR:
+        should_free = TRUE;
+        break;
+
+    case  PER_ITEM_COLOURS:
+        should_free = (n_items > 0);
+        break;
+
+    case  PER_VERTEX_COLOURS:
+        should_free = (n_points > 0);
+        break;
+    }
+
+    if( should_free )
+        FREE( colours );
 }
