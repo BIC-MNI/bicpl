@@ -16,10 +16,15 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char bintree_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/bintree.h,v 1.1 2000-02-06 15:30:34 stever Exp $";
+static char bintree_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/bintree.h,v 1.2 2001-01-23 08:55:16 stever Exp $";
 #endif
 
 #include  <volume_io/geometry.h>
+
+/**
+ * A bintree is a binary space partition.
+ * The code is in Data_structures/bintree.c.
+ **/
 
 typedef  unsigned char   node_info_type;
 

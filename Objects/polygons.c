@@ -18,7 +18,7 @@
 #include  <bicpl/trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.40 2000-02-06 15:30:45 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.41 2001-01-23 08:55:17 stever Exp $";
 #endif
 
 private  void  reverse_polygon_order(
@@ -919,6 +919,7 @@ public  int  get_polygons_around_vertex(
 @OUTPUT     : normal
 @RETURNS    : 
 @DESCRIPTION: Computes the polygon normal.
+              Vertices after the 1000th are silently ignored.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -955,9 +956,10 @@ public  void  compute_polygon_normal(
 @INPUT      : polygons
 @OUTPUT     : polygons
 @RETURNS    : 
-@DESCRIPTION: Computes the normals at the vertices of the polygons.  These
-              are weighted averages of the normals of the polygonal faces
-              touching a vertex.
+@DESCRIPTION: Computes the normals at the vertices of the polygons.  Each is
+              the average of the normals of the polygonal faces
+              touching the vertex, weighted by the interior angle of the
+	      polygon at the vertex.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -1552,7 +1554,7 @@ public  Real  compute_polygon_vertex_curvature(
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_opposite_point
-@INPUT      : polygon
+@INPUT      : polygons
               poly
               edge
 @OUTPUT     : point

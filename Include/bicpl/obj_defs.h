@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/obj_defs.h,v 1.1 2000-02-06 15:30:36 stever Exp $";
+static char obj_defs_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/bicpl/obj_defs.h,v 1.2 2001-01-23 08:55:16 stever Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -82,17 +82,32 @@ typedef  struct
 #define  MAX_POINTS_PER_POLYGON     20
 #define  MAX_POLYGON_NEIGHBOURS     2048
 
+
+/* Set of polygons.
+   Code in Objects/polygons.c
+*/
 typedef  struct
 {
+    /* Colours may be specified for entire set (colour_flag == ONE_COLOUR)
+       or per item.  The colour array is dynamically resized to match */
     Colour_flags    colour_flag;
     Colour          *colours;
     Surfprop        surfprop;
     float           line_thickness;
 
+    /* points is a dynamic array.  normals may be either NULL
+       (no normal information kept) or a dynamic array. */
     int             n_points;
     Point           *points;
     Vector          *normals;
 
+    /* "items" are the polygons themselves; they appear to be stored in
+       the following manner.  
+       Each polygon is specified by a list of points, stored as indices
+       into the "points" array.  Polygon 0's list of indices is 
+       indices[0], indices[1], ..., indices[E-1],
+       where E = end_indices[0].  Polygon 1's list starts at indices[E].       
+     */
     int             n_items;
     int             *end_indices;
     int             *indices;
