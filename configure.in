@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 AC_CONFIG_SRCDIR([Include/bicpl.h])
-AC_PREREQ(2.58)
+AC_PREREQ(2.57)
 AM_INIT_AUTOMAKE(bicpl, 1.4.1)
 AC_CONFIG_HEADERS([config.h])
 
@@ -18,11 +18,7 @@ AM_PROG_LIBTOOL
 dnl Add extra include or link directories
 smr_WITH_BUILD_PATH
 
-smr_REQUIRED_LIB(m,sqrt,math.h)
-smr_REQUIRED_LIB(netcdf,ncopen,netcdf.h)
-smr_REQUIRED_LIB(minc,miicv_create,minc.h)
-smr_REQUIRED_LIB(volume_io,input_volume,volume_io.h)
-
+mni_REQUIRE_VOLUMEIO
 
 dnl Decide which file format is used for images.  The installer *must* choose
 dnl a "--with-image-X" option, otherwise no image I/O is possible
