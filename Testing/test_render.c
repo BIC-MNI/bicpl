@@ -74,7 +74,7 @@ int  main(
                          (Volume) NULL, BOX_FILTER, 0.0,
                          (Real *) NULL, (Real *) NULL, (Real *) NULL,
                          0.0, 0.0, 0.0, 0.0,
-                         x_size, y_size, RGB_PIXEL, FALSE,
+                         x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, FALSE,
                          (unsigned short **) NULL,
                          &rgb_map, BLACK, NULL, &n_alloced, &pixels );
     }

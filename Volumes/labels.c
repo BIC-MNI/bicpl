@@ -16,7 +16,7 @@
 #include  <vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.31 1995-10-19 15:48:16 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.32 1995-12-13 14:24:24 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -535,6 +535,99 @@ private  void  get_input_volume_label_limits(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
+@NAME       : load_partial_label_volume
+@INPUT      : filename
+              label_volume
+@OUTPUT     :
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Loads a label volume from a file which does not necessarily
+              contain the exact topology of the label volume.  Essentially
+              it resamples the volume in the file onto the label volume.
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
+@CREATED    : Dec.  8, 1995    David MacDonald
+@MODIFIED   :
+---------------------------------------------------------------------------- */
+
+private  Status  load_partial_label_volume(
+    STRING   filename,
+    Volume   label_volume )
+{
+    Status                status;
+    int                   label_voxel[N_DIMENSIONS];
+    int                   int_voxel[N_DIMENSIONS], int_voxel_value;
+    int                   limits[2][MAX_DIMENSIONS];
+    progress_struct       progress;
+    nc_type               type;
+    Real                  xw, yw, zw, voxel[N_DIMENSIONS];
+    Real                  voxel_value;
+    BOOLEAN               signed_flag;
+    Volume                file_volume;
+
+    check_alloc_label_data( label_volume );
+
+    type = get_volume_nc_data_type( label_volume, &signed_flag );
+
+    status = input_volume( filename, 3, File_order_dimension_names,
+                           type, signed_flag, 0.0, 0.0,
+                           TRUE, &file_volume, NULL );
+
+    if( status != OK )
+        return( ERROR );
+
+    get_input_volume_label_limits( label_volume, file_volume,
+                                   limits );
+
+    initialize_progress_report( &progress, FALSE,
+                                (limits[1][X] - limits[0][X] + 1) *
+                                (limits[1][Y] - limits[0][Y] + 1),
+                                "Installing Labels" );
+
+    for_inclusive( label_voxel[X], limits[0][X], limits[1][X] )
+    {
+        for_inclusive( label_voxel[Y], limits[0][Y], limits[1][Y] )
+        {
+            for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
+            {
+                convert_3D_voxel_to_world( label_volume,
+                                           (Real) label_voxel[X],
+                                           (Real) label_voxel[Y],
+                                           (Real) label_voxel[Z],
+                                           &xw, &yw, &zw );
+                convert_world_to_voxel( file_volume, xw, yw, zw, voxel );
+
+                if( voxel_is_within_volume( file_volume, voxel ) )
+                {
+                    convert_real_to_int_voxel( 3, voxel, int_voxel );
+                    voxel_value = get_volume_voxel_value( file_volume,
+                                       int_voxel[0], int_voxel[1],
+                                       int_voxel[2], 0, 0 );
+
+                    int_voxel_value = ROUND( voxel_value );
+                    if( int_voxel_value > 0 )
+                    {
+                        set_volume_label_data( label_volume, label_voxel,
+                                               int_voxel_value );
+                    }
+                }
+            }
+
+            update_progress_report( &progress,
+                                    (label_voxel[X] - limits[0][X]) *
+                                    (limits[1][Y] - limits[0][Y]) +
+                                    label_voxel[Y] - limits[0][Y] + 1 );
+        }
+    }
+
+    terminate_progress_report( &progress );
+
+    delete_volume( file_volume );
+
+    return( status );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
 @NAME       : load_label_volume
 @INPUT      : Filename
 @OUTPUT     : label_volume
@@ -554,103 +647,50 @@ public  Status  load_label_volume(
 {
     Status                status;
     int                   n_file_dims;
-    int                   label_voxel[N_DIMENSIONS];
-    int                   int_voxel[N_DIMENSIONS], int_voxel_value;
-    int                   limits[2][MAX_DIMENSIONS];
-    progress_struct       progress;
+    int                   n_dims;
+    STRING                *dim_names;
     nc_type               type;
-    Real                  xw, yw, zw, voxel[N_DIMENSIONS];
-    Real                  voxel_value;
     BOOLEAN               signed_flag, same_grid;
     Volume                file_volume;
-    volume_input_struct   volume_input;
 
     check_alloc_label_data( label_volume );
 
-    type = get_volume_nc_data_type( label_volume, &signed_flag );
+    n_dims = get_volume_n_dimensions( label_volume );
+    dim_names = get_volume_dimension_names( label_volume );
 
-    if( start_volume_input( filename, 3, XYZ_dimension_names,
-                            type, signed_flag, 0.0, 0.0,
-                            TRUE, &file_volume, NULL, &volume_input ) != OK )
-        return( ERROR );
+    status = input_volume_header_only( filename, n_dims, dim_names,
+                                       &file_volume, NULL );
+
+    delete_dimension_names( label_volume, dim_names );
+
+    if( status != OK )
+        return( status );
 
     same_grid = volumes_are_same_grid( label_volume, file_volume );
     n_file_dims = get_volume_n_dimensions(file_volume);
-    cancel_volume_input( file_volume, &volume_input );
 
-    if( !same_grid && n_file_dims != N_DIMENSIONS )
+    if( n_file_dims != n_dims )
     {
-        print_error( "%s is not a 3D volume, it has %d dims.\n", filename,
+        print_error( "Label volume n dimensions (%d) does not match\n",
                      n_file_dims );
+        print_error( "      volume n dimensions (%d).\n", n_dims );
         return( ERROR );
     }
 
     if( same_grid )
     {
+        type = get_volume_nc_data_type( label_volume, &signed_flag );
+
         status = input_volume( filename, 3, XYZ_dimension_names,
                                type, signed_flag, 0.0, 0.0,
                                FALSE, &label_volume, NULL );
+
+        set_label_volume_real_range( label_volume );
     }
     else
     {
-        status = input_volume( filename, 3, File_order_dimension_names,
-                               type, signed_flag, 0.0, 0.0,
-                               TRUE, &file_volume, NULL );
-
-        if( status != OK )
-            return( ERROR );
-
-        get_input_volume_label_limits( label_volume, file_volume,
-                                       limits );
-
-        initialize_progress_report( &progress, FALSE,
-                                    (limits[1][X] - limits[0][X] + 1) *
-                                    (limits[1][Y] - limits[0][Y] + 1),
-                                    "Installing Labels" );
-
-        for_inclusive( label_voxel[X], limits[0][X], limits[1][X] )
-        {
-            for_inclusive( label_voxel[Y], limits[0][Y], limits[1][Y] )
-            {
-                for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
-                {
-                    convert_3D_voxel_to_world( label_volume,
-                                               (Real) label_voxel[X],
-                                               (Real) label_voxel[Y],
-                                               (Real) label_voxel[Z],
-                                               &xw, &yw, &zw );
-                    convert_world_to_voxel( file_volume, xw, yw, zw, voxel );
-
-                    if( voxel_is_within_volume( file_volume, voxel ) )
-                    {
-                        convert_real_to_int_voxel( 3, voxel, int_voxel );
-                        voxel_value = get_volume_voxel_value( file_volume,
-                                           int_voxel[0], int_voxel[1],
-                                           int_voxel[2], 0, 0 );
-
-                        int_voxel_value = ROUND( voxel_value );
-                        if( int_voxel_value > 0 )
-                        {
-                            set_volume_label_data( label_volume, label_voxel,
-                                                   int_voxel_value );
-                        }
-                    }
-                }
-
-                update_progress_report( &progress,
-                                        (label_voxel[X] - limits[0][X]) *
-                                        (limits[1][Y] - limits[0][Y]) +
-                                        label_voxel[Y] - limits[0][Y] + 1 );
-            }
-        }
-
-        terminate_progress_report( &progress );
-
-        delete_volume( file_volume );
+        status = load_partial_label_volume( filename, label_volume );
     }
-
-    if( status == OK )
-        set_label_volume_real_range( label_volume );
 
     return( status );
 }
@@ -788,6 +828,80 @@ public  Status  input_tags_as_labels(
         {
             set_volume_label_data( label_volume, ind, label);
         }
+    }
+
+    return( status );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : create_label_volume_from_file
+@INPUT      : filename
+              volume
+@OUTPUT     : label_volume
+@RETURNS    : OK or ERROR
+@DESCRIPTION: Creates a label volume for the given volume from a tag file or
+              a minc file.
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
+@CREATED    : Dec.  8, 1995    David MacDonald
+@MODIFIED   :
+---------------------------------------------------------------------------- */
+
+public  Status  create_label_volume_from_file(
+    STRING   filename,
+    Volume   volume,
+    Volume   *label_volume )
+{
+    Status  status;
+    STRING  *dim_names;
+    Volume  file_volume;
+    FILE    *file;
+    BOOLEAN same_grid;
+
+    status = OK;
+
+    if( filename_extension_matches( filename, "mnc" ) )
+    {
+        dim_names = get_volume_dimension_names( volume );
+        status = input_volume_header_only( filename,
+                                           get_volume_n_dimensions(volume),
+                                           dim_names, &file_volume, NULL );
+
+        if( status != OK )
+        {
+            delete_dimension_names( volume, dim_names );
+            return( status );
+        }
+
+        same_grid = volumes_are_same_grid( volume, file_volume );
+        delete_volume( file_volume );
+
+        if( same_grid )
+        {
+            status = input_volume( filename, get_volume_n_dimensions(volume),
+                                   dim_names, NC_UNSPECIFIED, FALSE, 0.0, 0.0,
+                                   TRUE, label_volume, NULL );
+        }
+        else
+        {
+            *label_volume = create_label_volume( volume, NC_UNSPECIFIED );
+            status = load_partial_label_volume( filename, *label_volume );
+        }
+
+        delete_dimension_names( volume, dim_names );
+    }
+    else
+    {
+        *label_volume = create_label_volume( volume, NC_UNSPECIFIED );
+
+        if( open_file( filename, READ_FILE, ASCII_FORMAT, &file )!=OK)
+            return( ERROR );
+
+        if( input_tags_as_labels( file, volume, *label_volume ) != OK )
+            return( ERROR );
+
+        (void) close_file( file );
     }
 
     return( status );

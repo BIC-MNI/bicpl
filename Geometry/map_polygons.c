@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.7 1995-10-19 15:47:42 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.8 1995-12-13 14:24:20 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -103,20 +103,22 @@ private  void  get_triangle_interpolation_weights(
 ---------------------------------------------------------------------------- */
 
 private  BOOLEAN  intersect_lines_2d(
-    Point    *p1,
-    Point    *p2,
-    Point    *q1,
-    Point    *q2,
-    Point    *intersect )
+    Real    p1[],
+    Real    p2[],
+    Real    q1[],
+    Real    q2[],
+    Real    intersect[] )
 {
     BOOLEAN  intersects;
     Real     t, bottom;
-    Vector   dp, dq;
+    Real     dp[2], dq[2];
 
-    SUB_POINTS( dp, *p2, *p1 );
-    SUB_POINTS( dq, *q2, *q1 );
+    dp[0] = p2[0] - p1[0];
+    dp[1] = p2[1] - p1[1];
+    dq[0] = q2[0] - q1[0];
+    dq[1] = q2[1] - q1[1];
 
-    bottom = Vector_x(dp) * Vector_y(dq) - Vector_y(dp) * Vector_x(dq);
+    bottom = dp[0] * dq[1] - dp[1] * dq[0];
 
     if( bottom == 0.0 )
     {
@@ -124,9 +126,9 @@ private  BOOLEAN  intersect_lines_2d(
     }
     else
     {
-        t = (Vector_x(dq) * (Point_y(*p1) - Point_y(*q1)) +
-             Vector_y(dq) * (Point_x(*q1) - Point_x(*p1))) / bottom;
-        GET_POINT_ON_RAY( *intersect, *p1, dp, t );
+        t = (dq[0] * (p1[1] - q1[1]) + dq[1] * (q1[0] - p1[0])) / bottom;
+        intersect[0] = p1[0] + t * (dp[0] - p1[0]);
+        intersect[1] = p1[1] + t * (dp[1] - p1[1]);
         intersects = TRUE;
     }
 
@@ -158,28 +160,54 @@ private  Real  get_two_d_coordinate(
     Point    *q1,
     Point    *q2 )
 {
-    Real     factor;
-    Point    intersect, point;
-    Vector   p_p1, p1_q1, rotated;
+    Real     x, y, coords[4][2], coord[2], intersect[2];
+    Real     intersect_point[2], len2, dx, dy, idx, idy, factor;
+    Vector   normal, offset, hor, vert;
+    int      i;
+    Point    points[4];
 
-    SUB_POINTS( p1_q1, *q1, *p1 );
+    points[0] = *p1;
+    points[1] = *p2;
+    points[2] = *q2;
+    points[3] = *q1;
 
-    if( intersect_lines_2d( p1, p2, q1, q2, &intersect ) )
+    find_polygon_normal( 4, points, &normal );
+
+    create_two_orthogonal_vectors( &normal, &hor, &vert );
+
+    for_less( i, 0, 4 )
     {
-        if( !intersect_lines_2d( &intersect, p, p1, q1, &point ) )
-            return( 0.0 );
+        SUB_POINTS( offset, points[i], points[0] );
+        coords[i][0] = DOT_VECTORS( hor, offset );
+        coords[i][1] = DOT_VECTORS( vert, offset );
+    }
 
-        SUB_POINTS( p_p1, point, *p1 );
-        factor = DOT_VECTORS( p_p1, p1_q1 ) / DOT_VECTORS( p1_q1, p1_q1 );
+    SUB_POINTS( offset, *p, points[0] );
+    coord[0] = DOT_VECTORS( hor, offset );
+    coord[1] = DOT_VECTORS( vert, offset );
+
+    if( intersect_lines_2d( coords[0], coords[1], coords[3], coords[2],
+                            intersect ) )
+    {
+        if( !intersect_lines_2d( intersect, coord, coords[0], coords[3],
+                                 intersect_point ) )
+            return( 0.0 );
     }
     else
     {
-        fill_Vector( rotated, Point_y(*p2) - Point_y(*p1),
-                              Point_x(*p1) - Point_x(*p2), 0.0 );
-        SUB_POINTS( p_p1, *p, *p1 );
-
-        factor = DOT_VECTORS( p_p1, rotated ) / DOT_VECTORS( p1_q1, rotated );
+        intersect_point[0] = coord[0];
+        intersect_point[1] = coord[1];
     }
+
+    dx = coords[3][0] - coords[0][0];
+    dy = coords[3][1] - coords[0][1];
+
+    len2 = dx * dx + dy * dy;
+
+    idx = intersect_point[0] - coords[0][0];
+    idy = intersect_point[1] - coords[0][1];
+
+    factor = (dx * idx + dy * idy) / len2;
 
     return( factor );
 }

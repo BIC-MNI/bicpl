@@ -16,7 +16,7 @@
 #include  <bicpl.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.5 1995-10-19 15:48:48 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.6 1995-12-13 14:24:25 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -231,4 +231,38 @@ public  Volume  create_cropped_volume(
     END_ALL_VOXELS
 
     return( cropped_volume );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : autocrop_volume
+@INPUT      : volume
+@OUTPUT     :
+@RETURNS    : a volume
+@DESCRIPTION: Creates a new volume which is the input volume cropped down
+              to exclude regions containing only zero values.
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
+@CREATED    : Dec.  8, 1995    David MacDonald
+@MODIFIED   :
+---------------------------------------------------------------------------- */
+
+public  Volume  autocrop_volume(
+    Volume    volume )
+{
+    Volume  cropped;
+    int     dim, limits[2][MAX_DIMENSIONS];
+
+    if( !find_volume_crop_bounds( volume, 0.0, 0.0, limits ) )
+    {
+        for_less( dim, 0, N_DIMENSIONS )
+        {
+            limits[0][dim] = 0;
+            limits[1][dim] = 0;
+        }                     
+    }
+
+    cropped = create_cropped_volume( volume, limits );
+
+    return( cropped );
 }

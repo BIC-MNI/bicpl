@@ -18,7 +18,7 @@
 #include <numerical.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.11 1995-12-06 21:11:07 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.12 1995-12-13 14:24:27 david Exp $";
 #endif
 
 #define   FUNCTION_TOLERANCE    1e-6
@@ -78,52 +78,6 @@ private  Real  lsq_objective(
 
         sum += error2;
     }
-
-#ifdef I_DONT_THINK_THIS_IS_NEEDED
-
-      I if'def'd this out because we are no longer using the Numerical
-      recipes code, so I don't think the new amoeba code will blow up,
-      as hinted by the next comment.
-                          -- David MacDonald
-
-    /* Add in a constant error so that amoeba doesn't blow up when there is no
-       error on the points. This is equivalent to having an rms error of 
-       1/FUDGE_FACTOR of the length of the long diagonal of the tag point 
-       bounding box. A FUDGE_FACTOR of 250 was chosen to given a typical 
-       rms error of around 1mm */
-
-#define FUDGE_FACTOR 250.0
-
-    {
-        Real  max[N_DIMENSIONS], min[N_DIMENSIONS], minimum_error, range;
-
-        for_less( j, 0, N_DIMENSIONS )
-        {
-            max[j] = -DBL_MAX;
-            min[j] = DBL_MAX;
-        }
-
-        for_less( i, 0, npoints )         /* for all of the points */
-        {
-            for_less( j, 0, N_DIMENSIONS )
-            {
-                if( pts1[i][j] > max[j] ) max[j] = pts1[i][j];
-                if( pts1[i][j] < min[j] ) min[j] = pts1[i][j];
-            }
-        }
-
-        minimum_error = 0.0;
-        for_less( j, 0, N_DIMENSIONS )
-        {
-           range = (max[j] - min[j]) / FUDGE_FACTOR;
-           minimum_error += range * range;
-        }
-
-        if( minimum_error == 0.0 ) minimum_error = 1.0;
-
-        sum += npoints * minimum_error;
-    }
-#endif
 
     return( sum);
 }

@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.5 1995-07-31 13:45:03 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.6 1995-12-13 14:24:20 david Exp $";
 #endif
 
 private  BOOLEAN  get_vertex_distances(

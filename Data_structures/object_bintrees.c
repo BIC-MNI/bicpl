@@ -18,7 +18,7 @@
 #include  <objects.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.7 1995-07-31 13:45:36 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.8 1995-12-13 14:24:23 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -129,7 +129,7 @@ public  void  create_lines_bintree(
 
     ALLOC( bound_vols, n_segments );
 
-    radius = (Real) lines->line_thickness;
+    radius = lines->line_thickness;
 
     object_id = 0;
     for_less( line, 0, lines->n_items )

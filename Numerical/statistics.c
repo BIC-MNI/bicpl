@@ -17,12 +17,12 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.7 1995-10-19 15:48:03 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.8 1995-12-13 14:24:22 david Exp $";
 #endif
 
-#define  DEFAULT_N_MEDIAN_BOXES    10000
+#define  DEFAULT_N_MEDIAN_BOXES    100000
 
-#define  MAX_SAMPLES_RECORDED      10000
+#define  MAX_SAMPLES_RECORDED      100000
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : compute_statistics
