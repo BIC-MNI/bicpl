@@ -28,7 +28,7 @@ DEFORM_OBJ = \
              Deform/model_objects.o \
              Deform/search_utils.o
 
-GEOMETRY_OBJ = Geometry/intersect.o \
+GEOMETRY_OBJ = \
                Geometry/line_circle.o \
                Geometry/path_surface.o \
                Geometry/polygon_sphere.o \
@@ -63,14 +63,14 @@ LIBS = \
 all: $(PROTOTYPE_FILE) $(LIBS) $(LINT_LIBS)
 	cd lint ; ln -s ../*.ln .
 
-include $(C_DEV_DIRECTORY)/Make/Makefile.include
+include ../C_dev/Makefile.include
 
 OPT = $(OPT_O)
 
 OPT_g = -g
 OPT_O = -O
 
-INCLUDE = -I$(C_DEV_DIRECTORY)/Include -IInclude -I/usr/local/include
+INCLUDE = $(C_UTILS_INCLUDE) -IInclude
 
 OBJECTS = $(DEFORM_OBJ) \
           $(GEOMETRY_OBJ) \
@@ -87,6 +87,7 @@ $(PROTOTYPE_FILE): $(OBJECTS:.o=.c)
 $(DEFORM_LIB): $(DEFORM_OBJ)
 	@if( -e $@ ) \rm -f $@
 	$(MAKE_LIBRARY) $@ $(DEFORM_OBJ)
+	$(RANLIB) $@
 
 $(DEFORM_LINT_LIB): $(DEFORM_OBJ:.o=.ln)
 	@echo "--- Linting ---"
@@ -95,6 +96,7 @@ $(DEFORM_LINT_LIB): $(DEFORM_OBJ:.o=.ln)
 $(GEOMETRY_LIB): $(GEOMETRY_OBJ)
 	@if( -e $@ ) \rm -f $@
 	$(MAKE_LIBRARY) $@ $(GEOMETRY_OBJ)
+	$(RANLIB) $@
 
 $(GEOMETRY_LINT_LIB): $(GEOMETRY_OBJ:.o=.ln)
 	@echo "--- Linting ---"
@@ -103,6 +105,7 @@ $(GEOMETRY_LINT_LIB): $(GEOMETRY_OBJ:.o=.ln)
 $(MARCHING_LIB): $(MARCHING_OBJ)
 	@if( -e $@ ) \rm -f $@
 	$(MAKE_LIBRARY) $@ $(MARCHING_OBJ)
+	$(RANLIB) $@
 
 $(MARCHING_LINT_LIB): $(MARCHING_OBJ:.o=.ln)
 	@echo "--- Linting ---"
@@ -111,14 +114,16 @@ $(MARCHING_LINT_LIB): $(MARCHING_OBJ:.o=.ln)
 $(STATS_LIB): $(STATS_OBJ)
 	@if( -e $@ ) \rm -f $@
 	$(MAKE_LIBRARY) $@ $(STATS_OBJ)
+	$(RANLIB) $@
 
 $(STATS_LINT_LIB): $(STATS_OBJ:.o=.ln)
 	@echo "--- Linting ---"
-	lint -u -o stats $(STATS_OBJ:.o=.ln)
+	lint -u -o statistics $(STATS_OBJ:.o=.ln)
 
 $(SURFACE_LIB): $(SURFACE_OBJ)
 	@if( -e $@ ) \rm -f $@
 	$(MAKE_LIBRARY) $@ $(SURFACE_OBJ)
+	$(RANLIB) $@
 
 $(SURFACE_LINT_LIB): $(SURFACE_OBJ:.o=.ln)
 	@echo "--- Linting ---"
