@@ -13,7 +13,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.7 2002-11-27 22:48:11 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.8 2003-06-17 15:19:24 stever Exp $";
 #endif
 
 #include  <volume_io/internal_volume_io.h>
@@ -24,8 +24,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodes
 /*! \brief Compute distance in mesh structure.
  *
  * Compute single-source shortest path distances in the graph using 
- * Dijkstra's algorithm.  If the upper bound (max_distance) is positive,
- * then the search is terminated once this bound is reached.
+ * Dijkstra's algorithm.  If \a max_distance is positive,
+ * then the search is terminated once this distance is reached.
+ *
+ * If \a distances_initialized is true, then array \a distances is
+ * assumed to be correctly initialized.  Otherwise, the distances
+ * are all set to -1 before starting the search.  Distance -1 is
+ * treated as \em infinite, i.e. not yet seen.
  */
 public  int  compute_distances_from_point(
     polygons_struct   *polygons,

@@ -17,7 +17,7 @@
 #include  <bicpl/data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.15 2002-11-27 22:48:11 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.16 2003-06-17 15:19:24 stever Exp $";
 #endif
 
 private  int  get_smoothing_points(
@@ -54,6 +54,27 @@ private  Real  get_average_curvature(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
+/*! \brief Compute a measure of surface curvature.
+ *
+ * Returns a curvature measure for surface at \a vertex.
+ *
+ * Imagine drawing a circle on the surface of radius \a smoothing_distance,
+ * centred on \a vertex.  The radius of the circle should be measured 
+ * geodesically on the surface.  In this function it is approximated by
+ * the link distance on the polyhedron vertex graph.  The disc will cut
+ * through a number of polyhedron edges.  Call these points of intersection
+ * the \em smoothing_points.  Imagine the cone with apex at \a vertex
+ * that best fits the smoothing_points.  Denote the cone angle by
+ * \em angle, measured in degrees.  The curvature magnitude is
+ * 180 - angle.  The sign is negative if the cone points away from
+ * the surface normal at \a vertex, otherwise positive.
+ *
+ * The precise calculation of the cone angle is as follows.  Let
+ * \em centroid denote the mean location of the smoothing_points.
+ * The cone angle is twice the mean angle formed by the centroid,
+ * \a vertex, and the i'th smoothing point.
+ *
+ */
 public  Real  get_smooth_surface_curvature(
     polygons_struct   *polygons,
     int               n_neighbours[],
@@ -83,10 +104,9 @@ public  Real  get_smooth_surface_curvature(
 
     /* If !distances_initialized, this routine sets them all to -1.
        Then the mesh distances from point_index are computed, up to 
-       smoothing_distance.  However, if distances_initialized is TRUE,
-       the distances are not reset.  It seems to me that distances from
-       a previous call to get_smooth_surface_curvature() with a different
-       point may not be properly updated.
+       smoothing_distance.  The list of vertices visited is returned
+       and the distances for the visited vertices are re-set to -1
+       below.
     */
     n_found = compute_distances_from_point( polygons, n_neighbours, neighbours,
                                        &polygons->points[point_index], poly,
@@ -119,6 +139,8 @@ public  Real  get_smooth_surface_curvature(
                                            smoothing_points );
     }
     else
+	/* I don't think this should ever be reached.  (?)
+	 */
         curvature = 0.0;
 
     if( n_smoothing_points > 0 )
@@ -141,7 +163,14 @@ public  Real  get_smooth_surface_curvature(
 @CREATED    :         1994    David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
-
+/*! \brief Return intersection of disc with mesh edges.
+ *
+ * Returns the points at distance \a smoothing_distance from a given
+ * start point.  Distances are measured in the graph, so they
+ * are approximately geodesic.  The array \a distances must be
+ * filled in with distances from the start point, or -1 to indicate
+ * that the vertex lies at distance greater than \a smoothing_distance.
+ */
 private  int  get_smoothing_points(
     polygons_struct   *polygons,
     int               n_neighbours[],
@@ -170,8 +199,12 @@ private  int  get_smoothing_points(
         {
             prev_index = neighbours[point_index][neigh];
 
-	    /* This seems to indicate that the distances are expected to
-	       be initialized to -1 in compute_distance_from_point().
+	    /* The array distances[] is expected to be initialized to -1
+	       before starting the graph search in
+	       compute_distance_from_point().  Upon exit from the graph
+	       search, distance -1 indicates that the vertex was not visited;
+	       i.e. it is further from the initial point than the maximum
+	       distance.
 	    */
             if( distances[prev_index] < 0.0f )
             {
