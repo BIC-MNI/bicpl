@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.19 1996-08-06 19:05:21 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.20 1996-08-07 15:35:50 david Exp $";
 #endif
 
 
@@ -555,50 +555,6 @@ public  BOOLEAN  ray_intersects_sphere(
     return( intersects );
 }
 
-private  BOOLEAN  ray_intersects_box_bounding_tube(
-    Point       *origin,
-    Vector      *direction,
-    Point       *p1,
-    Point       *p2,
-    Real        radius )
-{
-    Real       len_axis, x, y, z, t_min, t_max;
-    Point      trans_origin;
-    Vector     tube_axis, hor, vert, trans_direction;
-    Transform  transform;
-
-    SUB_POINTS( tube_axis, *p2, *p1 );
-    create_two_orthogonal_vectors( &tube_axis, &hor, &vert );
-    len_axis = MAGNITUDE( tube_axis );
-    if( len_axis != 0.0 )
-    {
-        SCALE_VECTOR( tube_axis, tube_axis, 1.0 / len_axis );
-        NORMALIZE_VECTOR( hor, hor );
-        NORMALIZE_VECTOR( vert, vert );
-        make_change_from_bases_transform( p1, &hor, &vert, &tube_axis,
-                                          &transform );
-    }
-    else
-    {
-        make_translation_transform( -RPoint_x(*p1), -RPoint_y(*p1),
-                                    -RPoint_z(*p1), &transform );
-    }
-
-    transform_point( &transform,
-                     RPoint_x(*origin), RPoint_y(*origin), RPoint_z(*origin),
-                     &x, &y, &z );
-    fill_Point( trans_origin, x, y, z );
-
-    transform_vector( &transform,
-          RVector_x(*direction), RVector_y(*direction), RVector_z(*direction),
-          &x, &y, &z );
-    fill_Vector( trans_direction, x, y, z );
-
-    return( clip_line_to_box( &trans_origin, &trans_direction,
-                              -radius, radius, -radius, radius,
-                              -radius, len_axis + radius, &t_min, &t_max ) );
-}
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : ray_intersects_tube
 @INPUT      : origin
@@ -625,43 +581,50 @@ private  BOOLEAN  ray_intersects_tube(
     Real        radius,
     Real        *dist )
 {
-    Real     o_dot_o, o_dot_v, v_dot_v, d_dot_d, d_dot_v, d_dot_o, d;
-    Real     vx, vy, vz, ox, oy, oz, len_v;
-    Point    point;
-    Vector   offset;
-    int      n_sols;
-    Real     a, b, c, sols[2], t_min, t_max;
+    Point      point;
+    int        n_sols;
+    Real       a, b, c, sols[2], t_min, t_max;
+    Real       len_axis, x, y, z, dx, dy, ox, oy;
+    Point      trans_origin;
+    Vector     tube_axis, hor, vert, trans_direction;
+    Transform  transform;
 
-    if( !ray_intersects_box_bounding_tube( origin, direction, p1, p2, radius ) )
+    if( EQUAL_POINTS( *p1, *p2 ) )
         return( FALSE );
 
-    vx = (Real) Point_x(*p2) - (Real) Point_x(*p1);
-    vy = (Real) Point_y(*p2) - (Real) Point_y(*p1);
-    vz = (Real) Point_z(*p2) - (Real) Point_z(*p1);
+    SUB_POINTS( tube_axis, *p2, *p1 );
+    create_two_orthogonal_vectors( &tube_axis, &hor, &vert );
+    len_axis = MAGNITUDE( tube_axis );
+    SCALE_VECTOR( tube_axis, tube_axis, 1.0 / len_axis );
+    NORMALIZE_VECTOR( hor, hor );
+    NORMALIZE_VECTOR( vert, vert );
+    make_change_from_bases_transform( p1, &hor, &vert, &tube_axis, &transform );
 
-    len_v = sqrt( vx*vx + vy*vy + vz*vz );
-    if( len_v == 0.0 )
-        len_v = 1.0;
+    transform_point( &transform,
+                     RPoint_x(*origin), RPoint_y(*origin), RPoint_z(*origin),
+                     &x, &y, &z );
+    fill_Point( trans_origin, x, y, z );
 
-    ox = (Real) Point_x(*origin) - (Real) Point_x(*p1);
-    oy = (Real) Point_y(*origin) - (Real) Point_y(*p1);
-    oz = (Real) Point_z(*origin) - (Real) Point_z(*p1);
+    transform_vector( &transform,
+          RVector_x(*direction), RVector_y(*direction), RVector_z(*direction),
+          &x, &y, &z );
+    fill_Vector( trans_direction, x, y, z );
 
-    o_dot_o = ox * ox + oy * oy + oz * oz;
-    o_dot_v = (ox * vx + oy * vy + oz * vz) / len_v;
-    v_dot_v = 1.0;
-    d_dot_d = DOT_VECTORS( *direction, *direction );
-    d_dot_o = (Real) Vector_x(*direction) * ox +
-              (Real) Vector_y(*direction) * oy +
-              (Real) Vector_z(*direction) * oz;
-    d_dot_v = ((Real) Vector_x(*direction) * vx +
-               (Real) Vector_y(*direction) * vy +
-               (Real) Vector_z(*direction) * vz) / len_v;
-    a = d_dot_d - 2.0 * d_dot_v * d_dot_v + v_dot_v * d_dot_v * d_dot_v;
-    b = 2.0 * d_dot_o - 4.0 * o_dot_v * d_dot_v +
-        2.0 * v_dot_v * o_dot_v * d_dot_v;
-    c = o_dot_o - 2.0 * o_dot_v * o_dot_v + v_dot_v * o_dot_v * o_dot_v -
-         radius * radius;
+    if( !clip_line_to_box( &trans_origin, &trans_direction,
+                           -radius, radius, -radius, radius,
+                           -radius, len_axis + radius, &t_min, &t_max ) )
+    {
+        return( FALSE );
+    }
+
+    ox = RPoint_x( trans_origin );
+    oy = RPoint_y( trans_origin );
+    dx = RVector_x( trans_direction );
+    dy = RVector_y( trans_direction );
+
+    a = dx * dx + dy * dy;
+    b = 2.0 * (ox * dx + oy * dy);
+    c = ox * ox + oy * oy - radius * radius;
 
     n_sols = solve_quadratic( a, b, c, &sols[0], &sols[1] );
 
@@ -686,12 +649,8 @@ private  BOOLEAN  ray_intersects_tube(
 
     if( *dist >= 0.0 )
     {
-        GET_POINT_ON_RAY( point, *origin, *direction, *dist );
-        SUB_POINTS( offset, point, *p1 );
-        d = (vx * (Real) Vector_x(offset) +
-             vy * (Real) Vector_y(offset) +
-             vz * (Real) Vector_z(offset)) / len_v;
-        if( d < 0.0 || d > distance_between_points( p1, p2 ) )
+        GET_POINT_ON_RAY( point, trans_origin, trans_direction, *dist );
+        if( RPoint_z(point) < 0.0 || RPoint_z(point) > len_axis )
             *dist = -1.0;
     }
 
