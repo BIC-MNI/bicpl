@@ -14,14 +14,17 @@ public  void  smooth_resample_volume(
     int                 new_nz,
     volume_struct       *resampled_volume )
 {
-    int         nx, ny, nz;
-    int         x, y, z, xv, yv, zv;
-    Real        x_min, x_max, y_min, y_max, z_min, z_max;
-    Real        dx, dy, dz;
-    Real        x_weight, xy_weight, xyz_weight;
-    Real        val;
-    Boolean     voxel_valid;
-    Transform   scale_transform;
+    Boolean          activity_present;
+    int              nx, ny, nz;
+    int              x, y, z, xv, yv, zv;
+    Real             x_min, x_max, y_min, y_max, z_min, z_max;
+    Real             dx, dy, dz;
+    Real             x_weight, xy_weight, weight;
+    Real             *y_weights, *z_weights;
+    Real             val;
+    Boolean          voxel_valid;
+    Transform        scale_transform, translation_transform, transform;
+    progress_struct  progress;
 
     get_volume_size( volume, &nx, &ny, &nz );
 
@@ -48,30 +51,60 @@ public  void  smooth_resample_volume(
     resampled_volume->thickness[Y] *= dy;
     resampled_volume->thickness[Z] *= dz;
 
+    make_translation_transform( dx / 2.0 - 0.5, dy / 2.0 - 0.5, dz / 2.0 - 0.5,
+                                &translation_transform );
     make_scale_transform( dx, dy, dz, &scale_transform );
+
+    concat_transforms( &transform,
+                       &scale_transform, &translation_transform );
+
     concat_transforms( &resampled_volume->voxel_to_world_transform,
-                       &scale_transform,
+                       &transform,
                        &resampled_volume->voxel_to_world_transform );
-    compute_transform_inverse( &volume->voxel_to_world_transform,
-                               &volume->world_to_voxel_transform );
+    compute_transform_inverse( &resampled_volume->voxel_to_world_transform,
+                               &resampled_volume->world_to_voxel_transform );
 
     alloc_volume( resampled_volume );
-    alloc_auxiliary_data( resampled_volume );
+
+    activity_present = (volume->labels != (unsigned char ***) NULL);
+
+    if( activity_present )
+        alloc_auxiliary_data( resampled_volume );
+    else
+        resampled_volume->labels = (unsigned char ***) NULL;
+
+    ALLOC( y_weights, (int) dy + 2 );
+    ALLOC( z_weights, (int) dz + 2 );
+
+    initialize_progress_report( &progress, FALSE, new_nx * new_ny,
+                                "Resampling" );
 
     for_less( x, 0, new_nx )
     {
-        x_min = (Real)   x    / dz;
-        x_max = (Real)  (x+1) / dz;
+        x_min = (Real)   x    * dx;
+        x_max = (Real)  (x+1) * dx;
 
         for_less( y, 0, new_ny )
         {
-            y_min = (Real)  y    / dy;
-            y_max = (Real) (y+1) / dy;
+            y_min = (Real)  y    * dy;
+            y_max = (Real) (y+1) * dy;
 
             for_less( z, 0, new_nz )
             {
-                z_min = (Real)  z    / dz;
-                z_max = (Real) (z+1) / dz;
+                z_min = (Real)  z    * dz;
+                z_max = (Real) (z+1) * dz;
+
+                for_inclusive( yv, (int) y_min, (int) y_max )
+                {
+                    y_weights[yv-(int)y_min] =
+                        calculate_weight( yv, dy, y_min, y_max );
+                }
+
+                for_inclusive( zv, (int) z_min, (int) z_max )
+                {
+                    z_weights[zv-(int)z_min] =
+                        calculate_weight( zv, dz, z_min, z_max );
+                }
 
                 val = 0.0;
 
@@ -83,16 +116,15 @@ public  void  smooth_resample_volume(
 
                     for_inclusive( yv, (int) y_min, (int) y_max )
                     {
-                        xy_weight = x_weight *
-                                    calculate_weight( yv, dy, y_min, y_max );
+                        xy_weight = x_weight * y_weights[yv-(int)y_min];
+
                         for_inclusive( zv, (int) z_min, (int) z_max )
                         {
-                            xyz_weight = xy_weight *
-                                     calculate_weight( zv, dz, z_min, z_max );
+                            weight = xy_weight * z_weights[zv-(int)z_min];
 
-                            if( xyz_weight > 0.0 )
+                            if( weight > 0.0 )
                             {
-                                val += xyz_weight *
+                                val += weight *
                                        (Real) GET_VOLUME_DATA(*volume,xv,yv,zv);
                                 if( get_voxel_activity_flag(volume,xv,yv,zv) )
                                     voxel_valid = TRUE;
@@ -103,11 +135,19 @@ public  void  smooth_resample_volume(
 
                 ASSIGN_VOLUME_DATA(*resampled_volume,x,y,z, val + 0.5 );
 
-                set_voxel_activity_flag( resampled_volume, x, y, z,
-                                         voxel_valid );
+                if( !voxel_valid && activity_present )
+                    set_voxel_activity_flag( resampled_volume, x, y, z,
+                                             voxel_valid );
             }
+
+            update_progress_report( &progress, x * new_ny + y + 1 );
         }
     }
+
+    terminate_progress_report( &progress );
+
+    FREE( y_weights );
+    FREE( z_weights );
 }
 
 private  Real  calculate_weight(
@@ -126,7 +166,7 @@ private  Real  calculate_weight(
         HANDLE_INTERNAL_ERROR( "calculate_weight" );
     }
 
-    weight = dx * (end - start);
+    weight = (end - start) / dx;
 
     return( weight );
 }
