@@ -1,3 +1,9 @@
+2001-03-02  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* tools/make_mesh_map.c: New.  Takes two BICOBJ files each 
+	containing a mesh, and generates a PLY file where each
+	vertex has two sets of coordinate values.
+
 2001-02-12  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* tools/bicobj2ply.c: New.  Convert BIC ".obj" file to PLY format.

@@ -5,3 +5,4 @@ Makefile.in
 Makefile
 bicobj2oogl
 bicobj2ply
+make_mesh_map

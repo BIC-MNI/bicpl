@@ -1,0 +1,205 @@
+/**
+ * Combine two BIC .obj files that represent the initial and
+ * final locations of some surface into one PLY file.
+ **/
+
+#include <assert.h>
+#include <stdio.h>
+
+#include <volume_io.h>
+#include <bicpl.h>
+
+#include "ply.h"
+
+
+
+typedef struct Vertex {
+    float x,y,z;                    /* initial position */
+    float x_final,y_final,z_final;  /* final position */
+} Vertex;
+
+typedef struct Face {
+    unsigned char nverts;    /* number of vertex indices in list */
+    int *verts;              /* vertex index list */
+} Face;
+
+
+STRING comment1;
+STRING comment2;
+STRING comment3;
+
+
+/** 
+ * Check that polygons p and q have the same graph structure.
+ **/
+int is_isomorphic( const polygons_struct* p,
+		   const polygons_struct* q)
+{
+    int n_faces = p->n_items;
+    int f;
+
+    if ( p->n_points != q->n_points ) {
+	fprintf(stderr,"Input polygons differ in number of vertices.\n");
+	return 0;
+    }
+
+
+    if ( p->n_items != q->n_items ) {
+	fprintf(stderr,"Input polygons differ in number of faces.\n");
+	return 0;
+    }
+
+    for( f = 0; f < n_faces; ++f ) {
+	int n_vertices = GET_OBJECT_SIZE(*p,f);
+	int p_start = START_INDEX(p->end_indices,f);
+	int q_start = START_INDEX(q->end_indices,f);
+	int v;
+
+	if ( n_vertices != GET_OBJECT_SIZE(*q,f) ) {
+	    fprintf(stderr,"Input polygons differ in size of face %d.\n",f);
+	    return 0;
+	}
+
+	if ( p_start != q_start )
+	    fprintf( stderr, "Start vertices differ for face %d."
+		     "  Tell Steve!\n", f );
+
+	for( v = 0; v < n_vertices; ++v ) {
+	    if ( p->indices[p_start+v] != q->indices[q_start+v] ) {
+		fprintf( stderr, "Input polygons differ: face %d, vertex %d.\n",
+			 f, v );
+		return 0;
+	    }
+	}
+    }
+    return 1;
+}
+
+
+void write_polygons( const polygons_struct* p,
+		     const polygons_struct* q)
+{
+    static char* element_names[] = { "vertex", "face" };
+
+    static PlyProperty vertex_prop[] = {
+	{"x", Float32, Float32, offsetof(Vertex,x), 0, 0, 0, 0},
+	{"y", Float32, Float32, offsetof(Vertex,y), 0, 0, 0, 0},
+	{"z", Float32, Float32, offsetof(Vertex,z), 0, 0, 0, 0},
+	{"x_final", Float32, Float32, offsetof(Vertex,x_final), 0, 0, 0, 0},
+	{"y_final", Float32, Float32, offsetof(Vertex,y_final), 0, 0, 0, 0},
+	{"z_final", Float32, Float32, offsetof(Vertex,z_final), 0, 0, 0, 0},
+    };
+
+    static PlyProperty face_prop[] = {
+	{"vertex_indices", Int32, Int32, offsetof(Face,verts),
+	 1, Uint8, Uint8, offsetof(Face,nverts)},
+    };
+
+    PlyFile* ply;
+    int n_vertices = p->n_points;
+    int n_faces = p->n_items;
+    int i,j;
+
+    assert( is_isomorphic(p,q) );
+
+    /* Declare PLY file that has 2 elements; use ascii format */
+    ply = write_ply( stdout, 2, element_names, PLY_ASCII );
+
+    append_comment_ply( ply, comment1 );
+    append_comment_ply( ply, comment2 );
+    append_comment_ply( ply, comment3 );
+
+    /* First set of elements in the file is the vertices. */
+    /* Describe properties of each vertex element */
+    describe_element_ply( ply, "vertex", n_vertices );
+    describe_property_ply( ply, &vertex_prop[0] );
+    describe_property_ply( ply, &vertex_prop[1] );
+    describe_property_ply( ply, &vertex_prop[2] );
+    describe_property_ply( ply, &vertex_prop[3] );
+    describe_property_ply( ply, &vertex_prop[4] );
+    describe_property_ply( ply, &vertex_prop[5] );
+
+    /* Second set of elements in the file is the faces. */
+    /* Describe properties of each face element. */
+    describe_element_ply( ply, "face", n_faces );
+    describe_property_ply( ply, &face_prop[0] );
+
+    header_complete_ply( ply );
+
+    /* Write out vertices */
+    put_element_setup_ply( ply, "vertex" );
+    for( i = 0; i < n_vertices; ++i ) {
+	Vertex v = { Point_x( p->points[i] ), 
+		     Point_y( p->points[i] ), 
+		     Point_z( p->points[i] ),
+		     Point_x( q->points[i] ),
+		     Point_y( q->points[i] ),
+		     Point_z( q->points[i] )
+	};
+	put_element_ply( ply, &v );
+    }
+
+    /* Write out faces */
+    put_element_setup_ply( ply, "face" );
+    for ( i = 0; i < n_faces; ++i ) {
+	Face f;
+	f.nverts = GET_OBJECT_SIZE( *p, i );
+	f.verts = &(p->indices[START_INDEX(p->end_indices, i)]);
+	put_element_ply( ply, &f );
+    }
+
+    close_ply( ply );
+    free_ply( ply );
+}
+
+
+const polygons_struct* read_polygons( char* filename ) 
+{
+    File_formats format;
+    int num_objects;
+    object_struct** object_list;
+    Object_types ot;
+
+    if ( input_graphics_file( filename, &format, 
+			      &num_objects, &object_list ) != OK ) {
+	fprintf( stderr, "input_graphics_file( %s ) failed.\n", filename );
+	exit(1);
+    }
+    assert( num_objects == 1 );
+
+    ot = (object_list[0])->object_type;
+    assert( ot == POLYGONS );
+
+    return &((object_list[0])->specific.polygons);
+}
+  
+
+
+void usage( char* argv0 )
+{
+    fprintf( stderr, "usage: %s initial[.obj] final[.obj]\n", argv0 );
+    fprintf( stderr, "\tOutput a PLY file.\n" );
+}
+
+
+int main( int ac, char** av ) 
+{
+    if ( ac != 3 ) {
+	usage( av[0] );
+	return 1;
+    }
+
+    comment1 = create_string
+	( "Generated by $Id: make_mesh_map.c,v 1.1 2001-03-02 14:55:46 stever Exp $" );
+    comment2 = concat_strings
+	( create_string( "Initial surface: " ), create_string( av[1] ) );
+    comment3 = concat_strings
+	( create_string( "Final surface: " ), create_string( av[2] ) );
+
+    write_polygons( read_polygons(av[1]),
+		    read_polygons(av[2]) );
+
+    return 0;
+}
+
+
