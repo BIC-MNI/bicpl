@@ -1,3 +1,21 @@
+2001-02-12  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* tools/bicobj2ply.c: New.  Convert BIC ".obj" file to PLY format.
+	See http://www.cc.gatech.edu/projects/large_models/ply.html.
+
+	* tools/ply.c:
+	* tools/ply.h: New.  Routines for reading and writing PLY, from
+	gatech's "plytools" package, obtained at the above website.
+	Changed to declare equal_strings() statically, as it conflicts
+	with function in "volume_io".
+	
+2001-02-09  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* tools: New directory.
+
+	* tools/bicobj2oogl.c: New.  Convert BIC ".obj" file to
+	OOGL format, for viewing with Geomview.
+
 2001-02-06  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Images/rgb_io_ppm.c (input_rgb_file): Added code to read

@@ -1,0 +1,88 @@
+The files ply.c and ply.h come from
+
+  http://www.cc.gatech.edu/projects/large_models/ply.html
+
+with the following changes.
+
+1. Declare equal_strings() statically, as there is conflict with
+   function in volume_io library.
+
+2. Fix memory leak in open_for_writing_ply().
+
+
+
+
+
+--- /tmp/ply/ply.c	Thu Aug  6 17:54:49 1998
++++ ply.c	Fri Feb  9 18:54:29 2001
+@@ -60,7 +60,9 @@
+ #define NAMED_PROP       1
+ 
+ /* returns 1 if strings are equal, 0 if not */
+-int equal_strings(char *, char *);
++/* 2001-02-09: Steve Robbins
++   Made static as it conflicts with function of same name in volume_io */
++static int equal_strings(char *, char *);
+ 
+ /* find an element in a plyfile's list */
+ PlyElement *find_element(PlyFile *, char *);
+@@ -188,9 +190,6 @@
+   int file_type
+ )
+ {
+-  int i;
+-  PlyFile *plyfile;
+-  PlyElement *elem;
+   char *name;
+   FILE *fp;
+ 
+@@ -205,18 +204,15 @@
+   /* open the file for writing */
+ 
+   fp = fopen (name, "w");
++  free(name);
++
+   if (fp == NULL) {
+     return (NULL);
+   }
+ 
+   /* create the actual PlyFile structure */
+ 
+-  plyfile = ply_write (fp, nelems, elem_names, file_type);
+-  if (plyfile == NULL)
+-    return (NULL);
+-
+-  /* return pointer to the file descriptor */
+-  return (plyfile);
++  return ply_write (fp, nelems, elem_names, file_type);
+ }
+ 
+ 
+@@ -738,6 +734,8 @@
+   /* open the file for reading */
+ 
+   fp = fopen (name, "r");
++  free(name);
++
+   if (fp == NULL)
+     return (NULL);
+ 
+@@ -1302,7 +1300,7 @@
+ Compare two strings.  Returns 1 if they are the same, 0 if not.
+ ******************************************************************************/
+ 
+-int equal_strings(char *s1, char *s2)
++static int equal_strings(char *s1, char *s2)
+ {
+   int i;
+ 
+--- /tmp/ply/ply.h	Thu Aug  6 17:56:02 1998
++++ ply.h	Fri Feb  9 18:55:02 2001
+@@ -222,7 +222,6 @@
+ PlyRuleList *append_prop_rule (PlyRuleList *, char *, char *);
+ int matches_rule_name (char *);
+ 
+-int equal_strings(char *, char *);
+ char *recreate_command_line (int, char *argv[]);
+ 
+ 

@@ -1,0 +1,7 @@
+.deps
+.libs
+*.o
+Makefile.in
+Makefile
+bicobj2oogl
+bicobj2ply

@@ -1,10 +1,12 @@
 SUBDIRS = Include Data_structures Transforms Geometry Numerical Objects \
-	Prog_utils Volumes Marching_cubes Images .
+	Prog_utils Volumes Marching_cubes Images . tools
 
 AUTOMAKE_OPTIONS = check-news
 
+EXTRA_DIST = README.release
+
 # version info argument is CURRENT[:REVISION[:AGE]]
-# see below
+# see README.release for update instructions
 libbicpl_la_LDFLAGS = -version-info 0:2
 
 lib_LTLIBRARIES = libbicpl.la

@@ -93,4 +93,5 @@ Prog_utils/Makefile
 Volumes/Makefile
 Marching_cubes/Makefile
 Images/Makefile
+tools/Makefile
 )
