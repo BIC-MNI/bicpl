@@ -4,6 +4,8 @@ GEOMETRY_LIB       = libgeometry.a
 GEOMETRY_LINT_LIB  = lint/llib-lgeometry.ln
 MARCHING_LIB       = libmarching.a
 MARCHING_LINT_LIB  = lint/llib-lmarching.ln
+STATS_LIB          = libstatistics.a
+STATS_LINT_LIB     = lint/llib-lstatistics.ln
 SURFACE_LIB        = libsurface.a
 SURFACE_LINT_LIB   = lint/llib-lsurface.ln
 
@@ -17,34 +19,37 @@ LINT_LIBS = $(DEFORM_LINT_LIB) \
             $(SURFACE_LINT_LIB)
 
 DEFORM_OBJ = \
-             deform/curvature_colour.o \
-             deform/deform_line.o \
-             deform/deform_polygons.o \
-             deform/find_in_direction.o \
-             deform/intersect_voxel.o \
-             deform/models.o \
-             deform/model_objects.o \
-             deform/search_utils.o
+             Deform/curvature_colour.o \
+             Deform/deform_line.o \
+             Deform/deform_polygons.o \
+             Deform/find_in_direction.o \
+             Deform/intersect_voxel.o \
+             Deform/models.o \
+             Deform/model_objects.o \
+             Deform/search_utils.o
 
-GEOMETRY_OBJ = geometry/intersect.o \
-               geometry/line_circle.o \
-               geometry/path_surface.o \
-               geometry/polygon_sphere.o \
-               geometry/segment_polygons.o \
-               geometry/smooth_lines.o \
-               geometry/smooth_polygons.o \
-               geometry/subdivide_lines.o \
-               geometry/subdivide_polygons.o \
-               geometry/tetrahedrons.o
+GEOMETRY_OBJ = Geometry/intersect.o \
+               Geometry/line_circle.o \
+               Geometry/path_surface.o \
+               Geometry/polygon_sphere.o \
+               Geometry/segment_polygons.o \
+               Geometry/smooth_lines.o \
+               Geometry/smooth_polygons.o \
+               Geometry/subdivide_lines.o \
+               Geometry/subdivide_polygons.o \
+               Geometry/tetrahedrons.o
 
 MARCHING_OBJ = \
-               marching_cubes/marching_cubes.o \
-               marching_cubes/marching_no_holes.o
+               Marching_cubes/marching_cubes.o \
+               Marching_cubes/marching_no_holes.o
 
 SURFACE_OBJ = \
-              surface_rep/spline.o \
-              surface_rep/superquadric.o \
-              surface_rep/surface_reps.o
+              Surface_rep/spline.o \
+              Surface_rep/superquadric.o \
+              Surface_rep/surface_reps.o
+
+STATS_OBJ  = \
+             Statistics/statistics.o
 
 PROTOTYPE_FILE = Include/module_prototypes.h
 
@@ -52,7 +57,8 @@ LIBS = \
        $(DEFORM_LIB)   $(DEFORM_LINT_LIB) \
        $(GEOMETRY_LIB) $(GEOMETRY_LINT_LIB) \
        $(MARCHING_LIB) $(MARCHING_LINT_LIB) \
-       $(SURFACE_LIB)  $(SURFACE_LINT_LIB)
+       $(SURFACE_LIB)  $(SURFACE_LINT_LIB) \
+       $(STATS_LIB)    $(STATS_LINT_LIB)
 
 all: $(PROTOTYPE_FILE) $(LIBS) $(LINT_LIBS)
 	cd lint ; ln -s ../*.ln .
@@ -69,6 +75,7 @@ INCLUDE = -I$(C_DEV_DIRECTORY)/Include -IInclude -I/usr/local/include
 OBJECTS = $(DEFORM_OBJ) \
           $(GEOMETRY_OBJ) \
           $(MARCHING_OBJ) \
+          $(STATS_OBJ) \
           $(SURFACE_OBJ)
 
 $(PROTOTYPE_FILE): $(OBJECTS:.o=.c)
@@ -100,6 +107,14 @@ $(MARCHING_LIB): $(MARCHING_OBJ)
 $(MARCHING_LINT_LIB): $(MARCHING_OBJ:.o=.ln)
 	@echo "--- Linting ---"
 	lint -u -o marching $(MARCHING_OBJ:.o=.ln)
+
+$(STATS_LIB): $(STATS_OBJ)
+	@if( -e $@ ) \rm -f $@
+	$(MAKE_LIBRARY) $@ $(STATS_OBJ)
+
+$(STATS_LINT_LIB): $(STATS_OBJ:.o=.ln)
+	@echo "--- Linting ---"
+	lint -u -o stats $(STATS_OBJ:.o=.ln)
 
 $(SURFACE_LIB): $(SURFACE_OBJ)
 	@if( -e $@ ) \rm -f $@
