@@ -37,6 +37,8 @@ The version started at 0:0:0.
 
 * Run "make distcheck".
 
+* Test build from tarball on another system.
+
 * Copy tar file to distribution site.
 
 * Run "cvs tag release-x_y_z"

@@ -54,8 +54,9 @@ dnl otherwise no image I/O is possible
 
 imageio_GLUE_CODE=rgb_io_none.c
 
-smr_CHECK_LIB(ppm,netpbm,
-[Portable PixMap library], ppm_writeppminit, ppm.h)
+smr_CHECK_LIB(ppm,,
+[Portable PixMap library], ppm_writeppminit, ppm.h,
+-lpgm -lpbm)
 if test "$ppm_LIBS" != ""; then
     imageio_CFLAGS="$ppm_CFLAGS"
     imageio_LIBS="$ppm_LIBS"
