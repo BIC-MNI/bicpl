@@ -1,3 +1,13 @@
+2001-04-21  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Volumes/render_funcs_include.c: 
+	* Volumes/call_rend_f_include.c: Replace all occurances of "long"
+	or "LONG" by "int" and "INT".  Needed for upcoming MINC release
+	based on netcdf-3.x.
+
+	* Documentation/doxygen.config.in: Tweaked for better C-code
+	documentation.
+
 2001-04-02  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Makefile.am (SUBDIRS): Descend into Documentation subdir.

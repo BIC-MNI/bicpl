@@ -240,7 +240,7 @@ MAX_INITIALIZER_LINES  = 30
 # For instance some of the names that are used will be different. The list 
 # of all members will be omitted, etc. 
 
-OPTIMIZE_OUTPUT_FOR_C  = NO
+OPTIMIZE_OUTPUT_FOR_C  = YES
 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -433,7 +433,7 @@ ENUM_VALUES_PER_LINE   = 4
 # JavaScript and frames is required (for instance Netscape 4.0+ 
 # or Internet explorer 4.0+). 
 
-GENERATE_TREEVIEW      = NO
+GENERATE_TREEVIEW      = YES
 
 # If the treeview is enabled (see GENERATE_TREEVIEW) then this tag can be 
 # used to set the initial width (in pixels) of the frame in which the tree 
@@ -572,13 +572,14 @@ ENABLE_PREPROCESSING   = YES
 # compilation will be performed. Macro expansion can be done in a controlled 
 # way by setting EXPAND_ONLY_PREDEF to YES. 
 
-MACRO_EXPANSION        = NO
+MACRO_EXPANSION        = YES
 
 # If the EXPAND_ONLY_PREDEF and MACRO_EXPANSION tags are both set to YES 
 # then the macro expansion is limited to the macros specified with the 
 # PREDEFINED and EXPAND_AS_PREDEFINED tags. 
 
-EXPAND_ONLY_PREDEF     = NO
+EXPAND_ONLY_PREDEF     = YES
+PREDEFINED             = "private=static "
 
 # If the SEARCH_INCLUDES tag is set to YES (the default) the includes files 
 # in the INCLUDE_PATH (see below) will be search if a #include is found. 

@@ -13,7 +13,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.5 2000-02-06 15:30:46 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.6 2001-04-21 17:06:53 stever Exp $";
 #endif
 
 #include  <netcdf.h>
@@ -135,6 +135,12 @@ private  Status  input_texture_values_binary(
     return( OK );
 }
 
+/*!
+ * \brief Write a set of real values to file.
+ *
+ * The file will be created, if necessary.
+ * BINARY_FORMAT files will not be portable.
+ */
 public  Status  output_texture_values(
     STRING         filename,
     File_formats   format,
@@ -151,6 +157,12 @@ public  Status  output_texture_values(
     return( status );
 }
 
+/*!
+ * \brief Read a set of real values from file.
+ *
+ * Reading a BINARY_FORMAT file that was created
+ * on another system will produce undefined behaviour.
+ */
 public  Status  input_texture_values(
     STRING         filename,
     int            *n_values,

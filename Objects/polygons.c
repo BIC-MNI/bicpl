@@ -18,7 +18,7 @@
 #include  <bicpl/trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.41 2001-01-23 08:55:17 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.42 2001-04-21 17:06:53 stever Exp $";
 #endif
 
 private  void  reverse_polygon_order(
@@ -45,7 +45,16 @@ private  Real  estimate_polygon_curvature(
 @CREATED    :         1993    David MacDonald
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
-
+/*!
+ * \brief generate empty set of polygons
+ *
+ * Generates a valid polygons instance, with the given colour
+ * and surface properties.  
+ *
+ * @param polygons pointer to allocated structure
+ * @param col colour for polygons
+ * @param spr surface properties (or NULL for defaults)
+ */
 public  void  initialize_polygons(
     polygons_struct   *polygons,
     Colour            col,
@@ -77,6 +86,22 @@ public  void  initialize_polygons(
     polygons->bintree = (bintree_struct_ptr) NULL;
 }
 
+
+/*!
+ * \brief generate polygons with fixed-size facets
+ *
+ * Partially initialize a polygons instance.  To finish
+ * the description, the points, normals, and indices arrays
+ * must be filled in.  The rest of the fields (including
+ * end_indices) are filled in by this routine.
+ *
+ * @param polygons pointer to allocated structure
+ * @param col colour for polygons
+ * @param spr surface properties (or NULL)
+ * @param n_points number of vertices
+ * @param n_polygons number of facets
+ * @param size number of vertices per facet
+ */
 public  void  initialize_polygons_with_size(
     polygons_struct   *polygons,
     Colour            col,

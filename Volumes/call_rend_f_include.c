@@ -246,12 +246,12 @@
                    }
                  }
                  break;
-               case UNSIGNED_LONG:
+               case UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-  render_one_rgb_unsigned_char_unsigned_long(
+  render_one_rgb_unsigned_char_unsigned_int(
        volume_data1,
        y,
        start_x,
@@ -267,7 +267,7 @@
                    }
                    else
                    { 
-  render_one_cmap_unsigned_char_unsigned_long(
+  render_one_cmap_unsigned_char_unsigned_int(
        volume_data1,
        y,
        start_x,
@@ -286,7 +286,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-  render_many_rgb_unsigned_char_unsigned_long(
+  render_many_rgb_unsigned_char_unsigned_int(
        volume_data1,
        y,
        start_x,
@@ -308,7 +308,7 @@
                    }
                    else
                    { 
-  render_many_cmap_unsigned_char_unsigned_long(
+  render_many_cmap_unsigned_char_unsigned_int(
        volume_data1,
        y,
        start_x,
@@ -498,12 +498,12 @@
                    }
                  }
                  break;
-               case SIGNED_LONG:
+               case SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-  render_one_rgb_unsigned_char_signed_long(
+  render_one_rgb_unsigned_char_signed_int(
        volume_data1,
        y,
        start_x,
@@ -519,7 +519,7 @@
                    }
                    else
                    { 
-  render_one_cmap_unsigned_char_signed_long(
+  render_one_cmap_unsigned_char_signed_int(
        volume_data1,
        y,
        start_x,
@@ -538,7 +538,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-  render_many_rgb_unsigned_char_signed_long(
+  render_many_rgb_unsigned_char_signed_int(
        volume_data1,
        y,
        start_x,
@@ -560,7 +560,7 @@
                    }
                    else
                    { 
-  render_many_cmap_unsigned_char_signed_long(
+  render_many_cmap_unsigned_char_signed_int(
        volume_data1,
        y,
        start_x,
@@ -993,12 +993,12 @@
                    }
                  }
                  break;
-               case UNSIGNED_LONG:
+               case UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-  render_one_rgb_unsigned_short_unsigned_long(
+  render_one_rgb_unsigned_short_unsigned_int(
        volume_data1,
        y,
        start_x,
@@ -1014,7 +1014,7 @@
                    }
                    else
                    { 
-  render_one_cmap_unsigned_short_unsigned_long(
+  render_one_cmap_unsigned_short_unsigned_int(
        volume_data1,
        y,
        start_x,
@@ -1033,7 +1033,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-  render_many_rgb_unsigned_short_unsigned_long(
+  render_many_rgb_unsigned_short_unsigned_int(
        volume_data1,
        y,
        start_x,
@@ -1055,7 +1055,7 @@
                    }
                    else
                    { 
-  render_many_cmap_unsigned_short_unsigned_long(
+  render_many_cmap_unsigned_short_unsigned_int(
        volume_data1,
        y,
        start_x,
@@ -1245,12 +1245,12 @@
                    }
                  }
                  break;
-               case SIGNED_LONG:
+               case SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-  render_one_rgb_unsigned_short_signed_long(
+  render_one_rgb_unsigned_short_signed_int(
        volume_data1,
        y,
        start_x,
@@ -1266,7 +1266,7 @@
                    }
                    else
                    { 
-  render_one_cmap_unsigned_short_signed_long(
+  render_one_cmap_unsigned_short_signed_int(
        volume_data1,
        y,
        start_x,
@@ -1285,7 +1285,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-  render_many_rgb_unsigned_short_signed_long(
+  render_many_rgb_unsigned_short_signed_int(
        volume_data1,
        y,
        start_x,
@@ -1307,7 +1307,7 @@
                    }
                    else
                    { 
-  render_many_cmap_unsigned_short_signed_long(
+  render_many_cmap_unsigned_short_signed_int(
        volume_data1,
        y,
        start_x,
@@ -1500,7 +1500,7 @@
                }
              }
             break;
-           case UNSIGNED_LONG:
+           case UNSIGNED_INT:
              if( volume_data2 == NULL )
              {
                if( one_slice )
@@ -1509,7 +1509,7 @@
                  { 
                    if( rgb_colour_map == NULL )
                    { 
-                     render_one_rgb_unsigned_long_direct(
+                     render_one_rgb_unsigned_int_direct(
                           volume_data1,
                           y,
                           start_x,
@@ -1521,7 +1521,7 @@
                    }
                    else
                    {
-                     render_one_rgb_unsigned_long(
+                     render_one_rgb_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -1535,7 +1535,7 @@
                  }
                  else
                  { 
-                     render_one_cmap_unsigned_long(
+                     render_one_cmap_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -1551,7 +1551,7 @@
                {
                  if( pixels->pixel_type == RGB_PIXEL )
                  { 
-                     render_many_rgb_unsigned_long(
+                     render_many_rgb_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -1567,7 +1567,7 @@
                  }
                  else
                  { 
-                     render_many_cmap_unsigned_long(
+                     render_many_cmap_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -1592,7 +1592,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_unsigned_long_unsigned_char(
+                     render_one_rgb_unsigned_int_unsigned_char(
                           volume_data1,
                           y,
                           start_x,
@@ -1608,7 +1608,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_unsigned_long_unsigned_char(
+                     render_one_cmap_unsigned_int_unsigned_char(
                           volume_data1,
                           y,
                           start_x,
@@ -1627,7 +1627,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_unsigned_long_unsigned_char(
+                     render_many_rgb_unsigned_int_unsigned_char(
                           volume_data1,
                           y,
                           start_x,
@@ -1649,7 +1649,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_unsigned_long_unsigned_char(
+                     render_many_cmap_unsigned_int_unsigned_char(
                           volume_data1,
                           y,
                           start_x,
@@ -1676,7 +1676,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_unsigned_long_unsigned_short(
+                     render_one_rgb_unsigned_int_unsigned_short(
                           volume_data1,
                           y,
                           start_x,
@@ -1692,7 +1692,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_unsigned_long_unsigned_short(
+                     render_one_cmap_unsigned_int_unsigned_short(
                           volume_data1,
                           y,
                           start_x,
@@ -1711,7 +1711,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_unsigned_long_unsigned_short(
+                     render_many_rgb_unsigned_int_unsigned_short(
                           volume_data1,
                           y,
                           start_x,
@@ -1733,7 +1733,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_unsigned_long_unsigned_short(
+                     render_many_cmap_unsigned_int_unsigned_short(
                           volume_data1,
                           y,
                           start_x,
@@ -1755,12 +1755,12 @@
                    }
                  }
                  break;
-               case UNSIGNED_LONG:
+               case UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_unsigned_long_unsigned_long(
+                     render_one_rgb_unsigned_int_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -1776,7 +1776,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_unsigned_long_unsigned_long(
+                     render_one_cmap_unsigned_int_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -1795,7 +1795,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_unsigned_long_unsigned_long(
+                     render_many_rgb_unsigned_int_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -1817,7 +1817,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_unsigned_long_unsigned_long(
+                     render_many_cmap_unsigned_int_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -1844,7 +1844,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_unsigned_long_signed_char(
+                     render_one_rgb_unsigned_int_signed_char(
                           volume_data1,
                           y,
                           start_x,
@@ -1860,7 +1860,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_unsigned_long_signed_char(
+                     render_one_cmap_unsigned_int_signed_char(
                           volume_data1,
                           y,
                           start_x,
@@ -1879,7 +1879,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_unsigned_long_signed_char(
+                     render_many_rgb_unsigned_int_signed_char(
                           volume_data1,
                           y,
                           start_x,
@@ -1901,7 +1901,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_unsigned_long_signed_char(
+                     render_many_cmap_unsigned_int_signed_char(
                           volume_data1,
                           y,
                           start_x,
@@ -1928,7 +1928,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_unsigned_long_signed_short(
+                     render_one_rgb_unsigned_int_signed_short(
                           volume_data1,
                           y,
                           start_x,
@@ -1944,7 +1944,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_unsigned_long_signed_short(
+                     render_one_cmap_unsigned_int_signed_short(
                           volume_data1,
                           y,
                           start_x,
@@ -1963,7 +1963,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_unsigned_long_signed_short(
+                     render_many_rgb_unsigned_int_signed_short(
                           volume_data1,
                           y,
                           start_x,
@@ -1985,7 +1985,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_unsigned_long_signed_short(
+                     render_many_cmap_unsigned_int_signed_short(
                           volume_data1,
                           y,
                           start_x,
@@ -2007,12 +2007,12 @@
                    }
                  }
                  break;
-               case SIGNED_LONG:
+               case SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_unsigned_long_signed_long(
+                     render_one_rgb_unsigned_int_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2028,7 +2028,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_unsigned_long_signed_long(
+                     render_one_cmap_unsigned_int_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2047,7 +2047,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_unsigned_long_signed_long(
+                     render_many_rgb_unsigned_int_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2069,7 +2069,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_unsigned_long_signed_long(
+                     render_many_cmap_unsigned_int_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2096,7 +2096,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_unsigned_long_float(
+                     render_one_rgb_unsigned_int_float(
                           volume_data1,
                           y,
                           start_x,
@@ -2112,7 +2112,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_unsigned_long_float(
+                     render_one_cmap_unsigned_int_float(
                           volume_data1,
                           y,
                           start_x,
@@ -2131,7 +2131,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_unsigned_long_float(
+                     render_many_rgb_unsigned_int_float(
                           volume_data1,
                           y,
                           start_x,
@@ -2153,7 +2153,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_unsigned_long_float(
+                     render_many_cmap_unsigned_int_float(
                           volume_data1,
                           y,
                           start_x,
@@ -2180,7 +2180,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_unsigned_long_double(
+                     render_one_rgb_unsigned_int_double(
                           volume_data1,
                           y,
                           start_x,
@@ -2196,7 +2196,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_unsigned_long_double(
+                     render_one_cmap_unsigned_int_double(
                           volume_data1,
                           y,
                           start_x,
@@ -2215,7 +2215,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_unsigned_long_double(
+                     render_many_rgb_unsigned_int_double(
                           volume_data1,
                           y,
                           start_x,
@@ -2237,7 +2237,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_unsigned_long_double(
+                     render_many_cmap_unsigned_int_double(
                           volume_data1,
                           y,
                           start_x,
@@ -2502,12 +2502,12 @@
                    }
                  }
                  break;
-               case UNSIGNED_LONG:
+               case UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_char_unsigned_long(
+                     render_one_rgb_signed_char_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2523,7 +2523,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_char_unsigned_long(
+                     render_one_cmap_signed_char_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2542,7 +2542,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_char_unsigned_long(
+                     render_many_rgb_signed_char_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2564,7 +2564,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_char_unsigned_long(
+                     render_many_cmap_signed_char_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2754,12 +2754,12 @@
                    }
                  }
                  break;
-               case SIGNED_LONG:
+               case SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_char_signed_long(
+                     render_one_rgb_signed_char_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2775,7 +2775,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_char_signed_long(
+                     render_one_cmap_signed_char_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2794,7 +2794,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_char_signed_long(
+                     render_many_rgb_signed_char_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -2816,7 +2816,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_char_signed_long(
+                     render_many_cmap_signed_char_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3249,12 +3249,12 @@
                    }
                  }
                  break;
-               case UNSIGNED_LONG:
+               case UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_short_unsigned_long(
+                     render_one_rgb_signed_short_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3270,7 +3270,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_short_unsigned_long(
+                     render_one_cmap_signed_short_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3289,7 +3289,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_short_unsigned_long(
+                     render_many_rgb_signed_short_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3311,7 +3311,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_short_unsigned_long(
+                     render_many_cmap_signed_short_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3501,12 +3501,12 @@
                    }
                  }
                  break;
-               case SIGNED_LONG:
+               case SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_short_signed_long(
+                     render_one_rgb_signed_short_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3522,7 +3522,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_short_signed_long(
+                     render_one_cmap_signed_short_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3541,7 +3541,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_short_signed_long(
+                     render_many_rgb_signed_short_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3563,7 +3563,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_short_signed_long(
+                     render_many_cmap_signed_short_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3756,14 +3756,14 @@
                }
              }
             break;
-           case SIGNED_LONG:
+           case SIGNED_INT:
              if( volume_data2 == NULL )
              {
                if( one_slice )
                { 
                  if( pixels->pixel_type == RGB_PIXEL )
                  { 
-                     render_one_rgb_signed_long(
+                     render_one_rgb_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3776,7 +3776,7 @@
                  }
                  else
                  { 
-                     render_one_cmap_signed_long(
+                     render_one_cmap_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3792,7 +3792,7 @@
                {
                  if( pixels->pixel_type == RGB_PIXEL )
                  { 
-                     render_many_rgb_signed_long(
+                     render_many_rgb_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3808,7 +3808,7 @@
                  }
                  else
                  { 
-                     render_many_cmap_signed_long(
+                     render_many_cmap_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -3833,7 +3833,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_long_unsigned_char(
+                     render_one_rgb_signed_int_unsigned_char(
                           volume_data1,
                           y,
                           start_x,
@@ -3849,7 +3849,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_long_unsigned_char(
+                     render_one_cmap_signed_int_unsigned_char(
                           volume_data1,
                           y,
                           start_x,
@@ -3868,7 +3868,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_long_unsigned_char(
+                     render_many_rgb_signed_int_unsigned_char(
                           volume_data1,
                           y,
                           start_x,
@@ -3890,7 +3890,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_long_unsigned_char(
+                     render_many_cmap_signed_int_unsigned_char(
                           volume_data1,
                           y,
                           start_x,
@@ -3917,7 +3917,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_long_unsigned_short(
+                     render_one_rgb_signed_int_unsigned_short(
                           volume_data1,
                           y,
                           start_x,
@@ -3933,7 +3933,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_long_unsigned_short(
+                     render_one_cmap_signed_int_unsigned_short(
                           volume_data1,
                           y,
                           start_x,
@@ -3952,7 +3952,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_long_unsigned_short(
+                     render_many_rgb_signed_int_unsigned_short(
                           volume_data1,
                           y,
                           start_x,
@@ -3974,7 +3974,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_long_unsigned_short(
+                     render_many_cmap_signed_int_unsigned_short(
                           volume_data1,
                           y,
                           start_x,
@@ -3996,12 +3996,12 @@
                    }
                  }
                  break;
-               case UNSIGNED_LONG:
+               case UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_long_unsigned_long(
+                     render_one_rgb_signed_int_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4017,7 +4017,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_long_unsigned_long(
+                     render_one_cmap_signed_int_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4036,7 +4036,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_long_unsigned_long(
+                     render_many_rgb_signed_int_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4058,7 +4058,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_long_unsigned_long(
+                     render_many_cmap_signed_int_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4085,7 +4085,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_long_signed_char(
+                     render_one_rgb_signed_int_signed_char(
                           volume_data1,
                           y,
                           start_x,
@@ -4101,7 +4101,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_long_signed_char(
+                     render_one_cmap_signed_int_signed_char(
                           volume_data1,
                           y,
                           start_x,
@@ -4120,7 +4120,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_long_signed_char(
+                     render_many_rgb_signed_int_signed_char(
                           volume_data1,
                           y,
                           start_x,
@@ -4142,7 +4142,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_long_signed_char(
+                     render_many_cmap_signed_int_signed_char(
                           volume_data1,
                           y,
                           start_x,
@@ -4169,7 +4169,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_long_signed_short(
+                     render_one_rgb_signed_int_signed_short(
                           volume_data1,
                           y,
                           start_x,
@@ -4185,7 +4185,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_long_signed_short(
+                     render_one_cmap_signed_int_signed_short(
                           volume_data1,
                           y,
                           start_x,
@@ -4204,7 +4204,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_long_signed_short(
+                     render_many_rgb_signed_int_signed_short(
                           volume_data1,
                           y,
                           start_x,
@@ -4226,7 +4226,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_long_signed_short(
+                     render_many_cmap_signed_int_signed_short(
                           volume_data1,
                           y,
                           start_x,
@@ -4248,12 +4248,12 @@
                    }
                  }
                  break;
-               case SIGNED_LONG:
+               case SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_long_signed_long(
+                     render_one_rgb_signed_int_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4269,7 +4269,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_long_signed_long(
+                     render_one_cmap_signed_int_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4288,7 +4288,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_long_signed_long(
+                     render_many_rgb_signed_int_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4310,7 +4310,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_long_signed_long(
+                     render_many_cmap_signed_int_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4337,7 +4337,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_long_float(
+                     render_one_rgb_signed_int_float(
                           volume_data1,
                           y,
                           start_x,
@@ -4353,7 +4353,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_long_float(
+                     render_one_cmap_signed_int_float(
                           volume_data1,
                           y,
                           start_x,
@@ -4372,7 +4372,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_long_float(
+                     render_many_rgb_signed_int_float(
                           volume_data1,
                           y,
                           start_x,
@@ -4394,7 +4394,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_long_float(
+                     render_many_cmap_signed_int_float(
                           volume_data1,
                           y,
                           start_x,
@@ -4421,7 +4421,7 @@
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_signed_long_double(
+                     render_one_rgb_signed_int_double(
                           volume_data1,
                           y,
                           start_x,
@@ -4437,7 +4437,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_signed_long_double(
+                     render_one_cmap_signed_int_double(
                           volume_data1,
                           y,
                           start_x,
@@ -4456,7 +4456,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_signed_long_double(
+                     render_many_rgb_signed_int_double(
                           volume_data1,
                           y,
                           start_x,
@@ -4478,7 +4478,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_signed_long_double(
+                     render_many_cmap_signed_int_double(
                           volume_data1,
                           y,
                           start_x,
@@ -4743,12 +4743,12 @@
                    }
                  }
                  break;
-               case UNSIGNED_LONG:
+               case UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_float_unsigned_long(
+                     render_one_rgb_float_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4764,7 +4764,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_float_unsigned_long(
+                     render_one_cmap_float_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4783,7 +4783,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_float_unsigned_long(
+                     render_many_rgb_float_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4805,7 +4805,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_float_unsigned_long(
+                     render_many_cmap_float_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -4995,12 +4995,12 @@
                    }
                  }
                  break;
-               case SIGNED_LONG:
+               case SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_float_signed_long(
+                     render_one_rgb_float_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5016,7 +5016,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_float_signed_long(
+                     render_one_cmap_float_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5035,7 +5035,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_float_signed_long(
+                     render_many_rgb_float_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5057,7 +5057,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_float_signed_long(
+                     render_many_cmap_float_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5490,12 +5490,12 @@
                    }
                  }
                  break;
-               case UNSIGNED_LONG:
+               case UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_double_unsigned_long(
+                     render_one_rgb_double_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5511,7 +5511,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_double_unsigned_long(
+                     render_one_cmap_double_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5530,7 +5530,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_double_unsigned_long(
+                     render_many_rgb_double_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5552,7 +5552,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_double_unsigned_long(
+                     render_many_cmap_double_unsigned_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5742,12 +5742,12 @@
                    }
                  }
                  break;
-               case SIGNED_LONG:
+               case SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_one_rgb_double_signed_long(
+                     render_one_rgb_double_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5763,7 +5763,7 @@
                    }
                    else
                    { 
-                     render_one_cmap_double_signed_long(
+                     render_one_cmap_double_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5782,7 +5782,7 @@
                  {
                    if( pixels->pixel_type == RGB_PIXEL )
                    { 
-                     render_many_rgb_double_signed_long(
+                     render_many_rgb_double_signed_int(
                           volume_data1,
                           y,
                           start_x,
@@ -5804,7 +5804,7 @@
                    }
                    else
                    { 
-                     render_many_cmap_double_signed_long(
+                     render_many_cmap_double_signed_int(
                           volume_data1,
                           y,
                           start_x,
