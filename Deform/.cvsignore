@@ -1,2 +1,4 @@
-.deps 
+.deps .libs
 Makefile.in Makefile
+*.lo
+libbicpl_deform.la
