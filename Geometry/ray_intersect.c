@@ -18,7 +18,7 @@
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.16 1996-04-04 19:37:00 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.17 1996-04-10 17:19:47 david Exp $";
 #endif
 
 
@@ -579,22 +579,34 @@ private  BOOLEAN  ray_intersects_tube(
     Real        *dist )
 {
     Real     o_dot_o, o_dot_v, v_dot_v, d_dot_d, d_dot_v, d_dot_o, d;
-    Vector   v, o, offset;
+    Real     vx, vy, vz, ox, oy, oz, len_v;
     Point    point;
+    Vector   offset;
     int      n_sols;
     Real     a, b, c, sols[2], t_min, t_max;
 
-    SUB_POINTS( v, *p2, *p1 );
-    NORMALIZE_VECTOR( v, v );
+    vx = Point_x(*p2) - Point_x(*p1);
+    vy = Point_y(*p2) - Point_y(*p1);
+    vz = Point_z(*p2) - Point_z(*p1);
 
-    SUB_POINTS( o, *origin, *p1 );
+    len_v = sqrt( vx*vx + vy*vy + vz*vz );
+    if( len_v == 0.0 )
+        len_v = 1.0;
 
-    o_dot_o = DOT_VECTORS( o, o );
-    o_dot_v = DOT_VECTORS( o, v );
-    v_dot_v = DOT_VECTORS( v, v );
+    ox = Point_x(*origin) - Point_x(*p1);
+    oy = Point_y(*origin) - Point_y(*p1);
+    oz = Point_z(*origin) - Point_z(*p1);
+
+    o_dot_o = ox * ox + oy * oy + oz * oz;
+    o_dot_v = (ox * vx + oy * vy + oz * vz) / len_v;
+    v_dot_v = 1.0;
     d_dot_d = DOT_VECTORS( *direction, *direction );
-    d_dot_o = DOT_VECTORS( *direction, o );
-    d_dot_v = DOT_VECTORS( *direction, v );
+    d_dot_o = Vector_x(*direction) * ox +
+              Vector_y(*direction) * oy +
+              Vector_z(*direction) * oz;
+    d_dot_v = (Vector_x(*direction) * vx +
+               Vector_y(*direction) * vy +
+               Vector_z(*direction) * vz) / len_v;
     a = d_dot_d - 2.0 * d_dot_v * d_dot_v + v_dot_v * d_dot_v * d_dot_v;
     b = 2.0 * d_dot_o - 4.0 * o_dot_v * d_dot_v +
         2.0 * v_dot_v * o_dot_v * d_dot_v;
@@ -626,7 +638,8 @@ private  BOOLEAN  ray_intersects_tube(
     {
         GET_POINT_ON_RAY( point, *origin, *direction, *dist );
         SUB_POINTS( offset, point, *p1 );
-        d = DOT_VECTORS( v, offset );
+        d = (vx * Vector_x(offset) + vy*Vector_y(offset) + vz*Vector_z(offset))
+            / len_v;
         if( d < 0.0 || d > distance_between_points( p1, p2 ) )
             *dist = -1.0;
     }

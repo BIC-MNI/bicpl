@@ -54,6 +54,7 @@ NUMERICAL_SRC  = \
                  Numerical/t_stat.c
 
 OBJECTS_SRC   = \
+                Objects/coalesce.c \
                 Objects/colours.c \
                 Objects/graphics_io.c \
                 Objects/landmark_file.c \

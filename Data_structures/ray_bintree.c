@@ -17,10 +17,8 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.9 1996-04-04 15:07:38 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.10 1996-04-10 17:19:49 david Exp $";
 #endif
-
-#define  TOLERANCE 1.0e-4
 
 private  void  recursive_intersect_ray(
     Point                 *origin,
@@ -95,8 +93,6 @@ public  int  intersect_ray_with_bintree(
                               &t_min, &t_max ) )
     {
         diff = t_max - t_min;
-        t_min -= TOLERANCE * diff;
-        t_max += TOLERANCE * diff;
         recursive_intersect_ray( origin, direction, t_min, t_max,
                                  bintree->root, object, obj_index, dist,
                                  &n_intersections, distances );
@@ -154,7 +150,7 @@ private  void  recursive_intersect_ray(
         {
             ++n_objects_searched;
 
-             intersect_ray_object( origin, direction, t_min,
+             intersect_ray_object( origin, direction,
                                    object, object_list[i], obj_index,
                                    closest_dist, n_intersections,
                                    distances );

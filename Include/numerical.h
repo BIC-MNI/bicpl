@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char numerical_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/numerical.h,v 1.6 1995-10-19 15:47:36 david Exp $";
+static char numerical_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/numerical.h,v 1.7 1996-04-10 17:19:46 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -32,6 +32,15 @@ typedef  struct
     Real  **second_derivs;
     Real  *constants;
 } linear_least_squares;
+
+typedef struct
+{
+    int   degrees_freedom;
+    int   n_points;
+    Real  max_dist;
+    Real  *cumulative_probs;
+
+} t_stat_struct;
 
 #ifndef  public
 #define       public   extern

@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.10 1996-02-28 16:04:02 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.11 1996-04-10 17:19:49 david Exp $";
 #endif
 
 #define  DEFAULT_N_MEDIAN_BOXES    100000
@@ -290,7 +290,6 @@ public  void  get_statistics(
     Real               *max_value,
     Real               *std_deviation )
 {
-    BOOLEAN  exact;
     int      n;
     Real     sum_x, sum_xx, min_median_range, max_median_range, variance;
 
@@ -360,4 +359,55 @@ public  void  terminate_statistics(
         FREE( stats->median_box_counts );
         FREE( stats->median_box_values );
     }
+}
+
+public  void  compute_mean_and_variance(
+    int   n,
+    Real  samples[],
+    Real  *mean,
+    Real  *variance )
+{
+    int    i;
+    Real   sum_x, sum_xx;
+
+    sum_x = 0.0;
+    sum_xx = 0.0;
+
+    for_less( i, 0, n )
+    {
+        sum_x += samples[i];
+        sum_xx += samples[i] * samples[i];
+    }
+
+    *mean = sum_x / (Real) n;
+
+    if( n == 1 )
+        *variance = 0.0;
+    else
+        *variance = (sum_xx - sum_x * sum_x / (Real) n) / (Real) (n - 1);
+}
+
+public  Real  compute_two_means_t_statistic(
+    int    n1,
+    Real   samples1[],
+    int    n2,
+    Real   samples2[] )
+{
+    Real   mean1, mean2, variance1, variance2, std_dev, std_err;
+    Real   t;
+
+    compute_mean_and_variance( n1, samples1, &mean1, &variance1 );
+    compute_mean_and_variance( n2, samples2, &mean2, &variance2 );
+
+    std_dev = sqrt( ((Real) n1 * variance1 + (Real) n2 * variance2) /
+                    (Real) (n1 + n2 - 2) );
+
+    std_err = std_dev * sqrt( 1.0 / (Real) n1 + 1.0 / (Real) n2 );
+
+    if( std_err == 0.0 )
+        t = 0.0;
+    else
+        t = (mean1 - mean2) / std_err;
+
+    return( t );
 }
