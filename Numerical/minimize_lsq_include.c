@@ -47,8 +47,8 @@ private  void  evaluate_fit_derivative(
     Real             parm_values[],
     Real             derivatives[] )
 {
-    int   parm, n, neigh_parm;
-    Real  term, parm_val;
+    int   parm, n, neigh_parm, n_terms;
+    Real  term, parm_val, deriv_p;
 
     for_less( parm, 0, n_parameters )
         derivatives[parm] = 0.0;
@@ -57,16 +57,18 @@ private  void  evaluate_fit_derivative(
     {
         parm_val = parm_values[parm];
 
-        derivatives[parm] += (Real) linear_terms[parm] +
-                             2.0 * parm_val * (Real) square_terms[parm];
+        deriv_p = (Real) linear_terms[parm] +
+                         2.0 * parm_val * (Real) square_terms[parm];
 
-        for_less( n, 0, n_cross_terms[parm] )
+        n_terms = n_cross_terms[parm];
+        for_less( n, 0, n_terms )
         {
             neigh_parm = cross_parms[parm][n];
             term = (Real) cross_terms[parm][n];
-            derivatives[parm] += parm_values[neigh_parm] * term;
-            derivatives[neigh_parm] += (Real) parm_val * term;
+            deriv_p += term * parm_values[neigh_parm];
+            derivatives[neigh_parm] += term * (Real) parm_val;
         }
+        derivatives[parm] += deriv_p;
     }
 }
 
@@ -83,8 +85,9 @@ private  void  evaluate_fit_along_line(
     Real             *a_ptr,
     Real             *b_ptr )
 {
-    int   parm, n, neigh_parm;
-    Real  weight, n_line_coef, square, a, b, parm_val, line_coef;
+    int   parm, n, neigh_parm, n_terms;
+    Real  weight, square, a, b, parm_val, line_coef;
+    Real  b_inc1, b_inc2, wc;
 
     a = 0.0;
     b = 0.0;
@@ -95,19 +98,20 @@ private  void  evaluate_fit_along_line(
         square = (Real) square_terms[parm];
         line_coef = line_coefs[parm];
 
-        b += line_coef * ((Real) linear_terms[parm] +
-                               square * 2.0 * parm_val);
-        a += square * line_coef * line_coef;
+        b_inc1 = (Real) linear_terms[parm] + square * 2.0 * parm_val;
+        b_inc2 = 0.0;
 
-        for_less( n, 0, n_cross_terms[parm] )
+        n_terms = n_cross_terms[parm];
+        for_less( n, 0, n_terms )
         {
             neigh_parm = cross_parms[parm][n];
             weight = (Real) cross_terms[parm][n];
-            n_line_coef = line_coefs[neigh_parm];
-            b += weight * (line_coef * parm_values[neigh_parm] +
-                           n_line_coef * parm_val);
-            a += weight * line_coef * n_line_coef;
+            wc = weight * line_coefs[neigh_parm];
+            b_inc2 += wc;
+            b_inc1 += weight * parm_values[neigh_parm];
         }
+        a += line_coef * (line_coef * square + b_inc2);
+        b += b_inc1 * line_coef + b_inc2 * parm_val;
     }
 
     *a_ptr = a;
