@@ -1,3 +1,25 @@
+2005-04-02  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* bicpl_clapack/Makefile.am (libbicpl_cla_la_SOURCES): Include
+	headers blaswrap.h and f2c.h.
+
+	* Include/bicpl.h:
+	* Include/bicpl/deform_prototypes.h:
+	* Include/bicpl/ds_prototypes.h:
+	* Include/bicpl/geom_prototypes.h
+	* Include/bicpl/image_prototypes.h:
+	* Include/bicpl/march_prototypes.h:
+	* Include/bicpl/numeric_prototypes.h:
+	* Include/bicpl/object_prototypes.h:
+	* Include/bicpl/prog_prototypes.h:
+	* Include/bicpl/trans_prototypes.h:
+	* Include/bicpl/vol_prototypes.h: Wrap files in "extern C"
+	declaration if compiled with C++.
+
+	* Include/bicpl/ds_prototypes.h: 
+	* Data_structures/object_bintrees.c (allocate_bintree): Return
+	bintree_struct_ptr rather than casting to void*.
+
 2004-04-15  Vivek Singh    <vsingh@bic.mni.mcgill.ca>
 
 	* removed non-open source compatible file Geometry/lfit_vector.c
