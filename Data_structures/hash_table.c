@@ -1,4 +1,4 @@
-#include  <mni.h>
+#include  <module.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_hash_table

@@ -1,5 +1,5 @@
 
-#include  <mni.h>
+#include  <module.h>
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_bitlist
