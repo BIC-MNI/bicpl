@@ -68,9 +68,10 @@ public  void  render_volume_to_slice(
     pixels_struct   *pixels )
 {
     int   i, c, p, total_cases, case_index, case_multiplier, offset, int_start;
-    int   s, x, y, n_cases1[MAX_DIMENSIONS];
+    int   s, x, y, n_cases1[MAX_DIMENSIONS], n_cases2[MAX_DIMENSIONS];
     int   **x_offsets1, **y_offsets1, *start_x, *end_x;
-    int   ***which_x_offsets1;
+    int   **x_offsets2, **y_offsets2;
+    int   ***which_x_offsets1, ***which_x_offsets2;
     int   remainder_case, x_size, y_size;
     Real  start_c, x_start, x_end, remainder, tmp_origin[MAX_DIMENSIONS];
     Real  remainder_offset, left_edge, right_edge, delta;
@@ -120,6 +121,51 @@ public  void  render_volume_to_slice(
     ALLOC( start_x, y_size );
     ALLOC( end_x, y_size );
 
+    if( volume_data2 != (void *) NULL )
+    {
+        total_cases = 1;
+        for_less( c, 0, n_dims2 )
+        {
+            delta = ABS( x_axis2[c] );
+            if( delta <= 1.0 / (Real) max_cases[n_dims2-1] )
+                n_cases2[c] = max_cases[n_dims2-1];
+            else
+                n_cases2[c] = (int) (1.0 / delta) + 1;
+
+            total_cases *= n_cases2[c];
+        }
+
+        ALLOC2D( x_offsets2, total_cases, x_size );
+
+        for_less( i, 0, total_cases )
+        {
+            p = i;
+            for_less( c, 0, n_dims2 )
+            {
+                case_index = p % n_cases2[c];
+                tmp_origin[c] = ((Real) case_index + 0.5) / (Real) n_cases2[c];
+                p /= n_cases2[c];
+            }
+
+            for_less( x, 0, x_size )
+            {
+                offset = 0;
+                for_less( c, 0, n_dims2 )
+                {
+                    start_c = tmp_origin[c] + (Real) x * x_axis2[c];
+                    offset += strides2[c] * FLOOR( start_c );
+                }
+                x_offsets2[i][x] = offset;
+            }
+        }
+
+        ALLOC2D( y_offsets2, n_slices2, y_size );
+        ALLOC2D( which_x_offsets2, n_slices2, y_size );
+    }
+
+    ALLOC( start_x, y_size );
+    ALLOC( end_x, y_size );
+
     for_less( y, 0, y_size )
     {
         x_start = 0.0;
@@ -157,6 +203,42 @@ public  void  render_volume_to_slice(
             which_x_offsets1[s][y] = x_offsets1[case_index];
         }
 
+        if( volume_data2 != (void *) NULL )
+        {
+            for_less( s, 0, n_slices2 )
+            {
+                offset = 0;
+                case_index = 0;
+                case_multiplier = 1;
+                for_less( c, 0, n_dims2 )
+                {
+                    start_c = origins2[s][c] + (Real) y * y_axis2[c] + 0.5;
+                    int_start = FLOOR( start_c );
+                    remainder = start_c - int_start;
+                    remainder_case = (int) (remainder * n_cases2[c]);
+                    remainder_offset = remainder -
+                                       (remainder_case + 0.5)/ n_cases2[c];
+                    case_index += case_multiplier * remainder_case;
+                    case_multiplier *= n_cases2[c];
+                    offset += strides2[c] * int_start;
+
+                    left_edge = 0.0;
+                    right_edge = (Real) sizes2[c];
+
+                    if( remainder_offset < 0.0 )
+                        right_edge += remainder_offset;
+                    else
+                        left_edge += remainder_offset;
+
+                    clip( left_edge, right_edge, start_c, x_axis2[c],
+                          &x_start, &x_end );
+                }
+
+                y_offsets2[s][y] = offset;
+                which_x_offsets2[s][y] = x_offsets2[case_index];
+            }
+        }
+
         start_x[y] = CEILING( x_start );
         end_x[y] = FLOOR( x_end );
 
@@ -168,20 +250,91 @@ public  void  render_volume_to_slice(
             start_x[y] = end_x[y] + 1;
     }
 
-    if( pixels->pixel_type == RGB_PIXEL )
+{
+    int              voxel_data1, **row_offsets1;
+    int              voxel_data2, **row_offsets2;
+    int              *offset_ptr1, *offset_ptr2;
+    Real             real_voxel_data1, real_voxel_data2;
+    unsigned short   *single_cmode_map;
+    Colour           *single_rgb_map;
+    Pixel_types      pixel_type;
+
+    pixel_type = pixels->pixel_type;
+
+    if( volume_data2 == (void *) NULL )
     {
-#include  "render_include1.c"
+        if( pixel_type == RGB_PIXEL )
+            single_rgb_map = rgb_colour_map[0];
+        else
+            single_cmode_map = cmode_colour_map[0];
     }
-    else
+
+    ALLOC( row_offsets1, n_slices1 );
+    if( volume_data2 != (void *) NULL )
+        ALLOC( row_offsets2, n_slices2 );
+
+    for_less( y, 0, y_size )
     {
-#define   COLOUR_MAP
-#include  "render_include1.c"
+        for_less( s, 0, n_slices1 )
+            row_offsets1[s] = which_x_offsets1[s][y];
+
+        if( volume_data2 != (void *) NULL )
+        {
+            for_less( s, 0, n_slices2 )
+                row_offsets2[s] = which_x_offsets2[s][y];
+        }
+
+        if( pixel_type == RGB_PIXEL )
+        {
+            Colour          *pixel_ptr, colour;
+
+            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,x,x_size)];
+
+            for_less( x, 0, start_x[y] )
+            {
+                *pixel_ptr = empty_colour;
+                ++pixel_ptr;
+            }
+
+#include    "render_include1.c"
+
+            for_less( x, end_x[y]+1, x_size )
+            {
+                *pixel_ptr = empty_colour;
+                ++pixel_ptr;
+            }
+        }
+        else
+        {
+            unsigned short          *pixel_ptr, colour;
+
+            pixel_ptr = &pixels->data.pixels_16bit_colour_index[IJ(y,x,x_size)];
+
+            for_less( x, 0, start_x[y] )
+            {
+                *pixel_ptr = empty_colour;
+                ++pixel_ptr;
+            }
+
+#define     COLOUR_MAP
+#include    "render_include1.c"
+
+            for_less( x, end_x[y]+1, x_size )
+            {
+                *pixel_ptr = empty_colour;
+                ++pixel_ptr;
+            }
+        }
     }
+
+    FREE( row_offsets1 );
+    if( volume_data2 != (void *) NULL )
+        FREE( row_offsets2 );
+}
 
     FREE2D( y_offsets1 );
     FREE2D( x_offsets1 );
     FREE2D( which_x_offsets1 );
-    FREE2D( origins1 );
     FREE( start_x );
     FREE( end_x );
 }

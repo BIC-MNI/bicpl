@@ -1,11 +1,11 @@
 {
-    if( volume_data2 == (Volume *) NULL )
+    if( volume_data2 == (void *) NULL )
     {
 #include  "render_include.c"
     }
     else
     {
-#define  TWO_SLICES
+#define  TWO_VOLUMES
         switch( volume1_type )
         {
         case  UNSIGNED_BYTE:
@@ -57,5 +57,5 @@
             break;
         }
     }
-#undef  TWO_SLICES
+#undef  TWO_VOLUMES
 }
