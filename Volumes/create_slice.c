@@ -46,6 +46,39 @@ private  void  get_mapping(
     }
 }
 
+public  void  clip_slice_to_viewport(
+    Volume          volume,
+    Real            x_translation,
+    Real            y_translation,
+    Real            x_scale,
+    Real            y_scale,
+    int             x_axis_index,
+    int             y_axis_index,
+    int             x_viewport_size,
+    int             y_viewport_size,
+    int             *x_pixel_start,
+    int             *x_pixel_end,
+    int             *y_pixel_start,
+    int             *y_pixel_end )
+{
+    Real         x_delta, x_start, x_end, y_delta, y_start, y_end;
+    Real         x_offset, y_offset;
+
+    get_mapping( volume,
+                 x_translation, x_scale, x_axis_index,
+                 y_translation, y_scale, y_axis_index,
+                 &x_start, &x_end, &x_delta, &x_offset,
+                 &y_start, &y_end, &y_delta, &y_offset );
+
+    clip_slice_to_pixel_range( x_viewport_size, y_viewport_size,
+                               x_offset, y_offset,
+                               x_delta, y_delta,
+                               x_start, y_start,
+                               x_end, y_end,
+                               x_pixel_start, y_pixel_start,
+                               x_pixel_end, y_pixel_end );
+}
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_volume_slice
 @INPUT      : volume1          - the volume to create a slice for
@@ -85,7 +118,7 @@ private  void  get_mapping(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_volume_slice(
+private  void  create_weighted_volume_slices(
     int             n_slices,
     Volume          volume1,
     Real            slice_positions1[],
@@ -260,6 +293,92 @@ public  void  create_volume_slice(
 
         if( volume2 != (Volume) NULL )
             FREE( slice_start2 );
+    }
+}
+
+public  void  create_volume_slice(
+    Filter_types    filter_type,
+    Real            filter_width,
+    Volume          volume1,
+    Real            slice_position1,
+    Real            x_translation1,
+    Real            y_translation1,
+    Real            x_scale1,
+    Real            y_scale1,
+    Volume          volume2,
+    Real            slice_position2,
+    Real            x_translation2,
+    Real            y_translation2,
+    Real            x_scale2,
+    Real            y_scale2,
+    int             x_axis_index,
+    int             y_axis_index,
+    int             axis_index,
+    int             x_viewport_size,
+    int             y_viewport_size,
+    Pixel_types     pixel_type,
+    Boolean         interpolation_flag,
+    unsigned short  **cmode_colour_map,
+    Colour          **rgb_colour_map,
+    int             *n_pixels_alloced,
+    pixels_struct   *pixels )
+{
+    int          i, n_slices;
+    Real         *positions1, *positions2, *weights1, *weights2;
+
+    n_slices = get_slice_weights_for_filter( volume1, axis_index,
+                                             slice_position1,
+                                             filter_type, filter_width,
+                                             &positions1, &weights1 );
+
+#ifdef DEBUG
+#define DEBUG
+if( n_slices > 1 )
+{
+    (void) printf( "%3d slices: ", n_slices );
+    for_less( i, 0, n_slices )
+        (void) printf( "%10g", positions1[i] );
+    (void) printf( "\n" );
+
+    (void) printf( "          : " );
+    for_less( i, 0, n_slices )
+        (void) printf( "%10g", weights1[i] );
+    (void) printf( "\n" );
+}
+#endif
+
+    if( volume2 != (Volume) NULL )
+    {
+        ALLOC( positions2, n_slices );
+        ALLOC( weights2, n_slices );
+
+        for_less( i, 0, n_slices )
+        {
+            weights2[i] = weights1[i];
+            positions2[i] = slice_position2 + positions1[i] - slice_position1;
+        }
+    }
+
+    create_weighted_volume_slices( n_slices,
+                                   volume1, positions1, weights1,
+                                   x_translation1, y_translation1,
+                                   x_scale1, y_scale1,
+                                   volume2, positions2, weights2,
+                                   x_translation2, y_translation2,
+                                   x_scale2, y_scale2,
+                                   x_axis_index, y_axis_index,
+                                   x_viewport_size, y_viewport_size,
+                                   pixel_type, interpolation_flag,
+                                   cmode_colour_map, rgb_colour_map,
+                                   n_pixels_alloced, pixels );
+
+    FREE( positions1 );
+    FREE( weights1 );
+
+    if( volume2 != (Volume) NULL )
+    {
+        FREE( positions2 );
+        FREE( weights2 );
     }
 }
 
