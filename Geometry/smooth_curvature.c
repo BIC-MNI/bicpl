@@ -17,7 +17,7 @@
 #include  <data_structures.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.7 1996-08-08 15:16:10 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.8 1996-08-08 15:26:32 david Exp $";
 #endif
 
 private  BOOLEAN  get_vertex_distances(
@@ -229,14 +229,16 @@ private  int  get_smoothing_points(
     Real              distances[],
     Point             *smoothing_points[] )
 {
-    int      poly, vertex, i, p, point_index, next_point_index;
+    int      poly, vertex, i, p, point_index, next_point_index, ind;
     int      n_polys, *polys, n_smoothing_points, size, neighbour_size;
+    int      neigh_ind;
     Real     dist, ratio;
     Point    point;
     BOOLEAN  closed_flag;
 
     ALLOC( polys, polygons->n_items );
     n_smoothing_points = 0;
+    ind = 0;
 
     for_less( poly, 0, polygons->n_items )
     {
@@ -244,8 +246,8 @@ private  int  get_smoothing_points(
 
         for_less( vertex, 0, size )
         {
-            point_index = polygons->indices[
-                     POINT_INDEX( polygons->end_indices, poly, vertex )];
+            point_index = polygons->indices[ind];
+            ++ind;
 
             if( distances[point_index] > 0.0 )
             {
@@ -256,11 +258,12 @@ private  int  get_smoothing_points(
                 for_less( i, 0, n_polys )
                 {
                     neighbour_size = GET_OBJECT_SIZE( *polygons, polys[i] );
+                    neigh_ind = POINT_INDEX(polygons->end_indices, polys[i],0);
 
                     for_less( p, 0, neighbour_size )
                     {
-                        next_point_index = polygons->indices[
-                             POINT_INDEX( polygons->end_indices, polys[i], p )];
+                        next_point_index = polygons->indices[neigh_ind];
+                        ++neigh_ind;
 
                         if( distances[next_point_index] ==
                                       GREATER_THAN_DISTANCE )
