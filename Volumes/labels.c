@@ -373,6 +373,115 @@ public  Status  io_volume_auxiliary_bit(
     return( status );
 }
 
+public  Status  input_tags_as_labels(
+    FILE    *file,
+    Volume  volume )
+{
+    int             i, label, ind[N_DIMENSIONS];
+    Real            x_voxel, y_voxel, z_voxel;
+    int             n_volumes, n_tag_points;
+    Real            **tags1, **tags2, *weights;
+    int             *structure_ids, *patient_ids;
+    char            **labels;
+
+    if( input_tag_points( file, &n_volumes, &n_tag_points,
+                               &tags1, &tags2, &weights, &structure_ids,
+                               &patient_ids, &labels ) != OK )
+        return( ERROR );
+
+    for_less( i, 0, n_tag_points )
+    {
+        convert_world_to_voxel( volume,
+                                tags1[i][X], tags1[i][Y], tags1[i][Z],
+                                &x_voxel, &y_voxel, &z_voxel );
+
+        ind[X] = ROUND( x_voxel );
+        ind[Y] = ROUND( y_voxel );
+        ind[Z] = ROUND( z_voxel );
+
+        label = structure_ids[i];
+        if( label >= 0 && label <= LOWER_AUXILIARY_BITS &&
+            cube_is_within_volume( volume, ind ) )
+        {
+            set_volume_auxiliary_data( volume, ind[X], ind[Y], ind[Z],
+                                       label | ACTIVE_BIT );
+        }
+    }
+
+    free_tag_points( n_volumes, n_tag_points, tags1, tags2,
+                     weights, structure_ids, patient_ids, labels );
+
+    return( OK );
+}
+
+public  Status  output_labels_as_tags(
+    FILE    *file,
+    Volume  volume,
+    int     desired_label,
+    Real    size,
+    int     patient_id )
+{
+    Status          status;
+    int             x, y, z;
+    int             n_tags, label, sizes[N_DIMENSIONS];
+    Real            x_world, y_world, z_world;
+    Real            **tags, *weights;
+    int             *structure_ids, *patient_ids;
+
+    get_volume_sizes( volume, sizes );
+
+    n_tags = 0;
+
+    for_less( x, 0, sizes[X] )
+    {
+        for_less( y, 0, sizes[Y] )
+        {
+            for_less( z, 0, sizes[Z] )
+            {
+                label = get_volume_auxiliary_data( volume, x, y, z ) &
+                        LOWER_AUXILIARY_BITS;
+
+                if( label == desired_label || (desired_label < 0 && label > 0) )
+                {
+                    convert_voxel_to_world( volume, (Real) x, (Real) y, (Real)z,
+                                            &x_world, &y_world, &z_world );
+
+                    SET_ARRAY_SIZE( tags, n_tags, n_tags+1, DEFAULT_CHUNK_SIZE);
+                    ALLOC( tags[n_tags], N_DIMENSIONS );
+                    SET_ARRAY_SIZE( weights, n_tags, n_tags+1,
+                                    DEFAULT_CHUNK_SIZE);
+                    SET_ARRAY_SIZE( structure_ids, n_tags, n_tags+1,
+                                    DEFAULT_CHUNK_SIZE);
+                    SET_ARRAY_SIZE( patient_ids, n_tags, n_tags+1,
+                                    DEFAULT_CHUNK_SIZE);
+
+                    tags[n_tags][X] = x_world;
+                    tags[n_tags][Y] = y_world;
+                    tags[n_tags][Z] = z_world;
+                    weights[n_tags] = size;
+                    structure_ids[n_tags] = label;
+                    patient_ids[n_tags] = patient_id;
+                    ++n_tags;
+                }
+            }
+        }
+    }
+
+    status = OK;
+
+    if( n_tags > 0 )
+    {
+        status = output_tag_points( file, (char *) NULL,
+                           1, n_tags, tags, (Real **) NULL, weights,
+                           structure_ids, patient_ids, (char **) NULL );
+
+        free_tag_points( 1, n_tags, tags, (Real **) NULL,
+                         weights, structure_ids, patient_ids, (char **) NULL );
+    }
+
+    return( status );
+}
+
 public  Status  input_landmarks_as_labels(
     FILE    *file,
     Volume  volume )
@@ -399,55 +508,6 @@ public  Status  input_landmarks_as_labels(
         {
             set_volume_auxiliary_data( volume, ind[X], ind[Y], ind[Z],
                                        label | ACTIVE_BIT );
-        }
-    }
-
-    return( OK );
-}
-
-public  Status  output_labels_as_landmarks(
-    FILE    *file,
-    Volume  volume,
-    int     desired_label,
-    Real    marker_size,
-    int     patient_id,
-    Colour  colour_table[] )
-{
-    int             x, y, z, label, sizes[N_DIMENSIONS];
-    Real            x_world, y_world, z_world;
-    marker_struct   marker;
-
-    get_volume_sizes( volume, sizes );
-
-    for_less( x, 0, sizes[X] )
-    {
-        for_less( y, 0, sizes[Y] )
-        {
-            for_less( z, 0, sizes[Z] )
-            {
-                label = get_volume_auxiliary_data( volume, x, y, z ) &
-                        LOWER_AUXILIARY_BITS;
-
-                if( label == desired_label || (desired_label < 0 && label > 0) )
-                {
-                    convert_voxel_to_world( volume, (Real) x, (Real) y, (Real)z,
-                                            &x_world, &y_world, &z_world );
-
-                    fill_Point( marker.position, x_world, y_world, z_world );
-                    marker.type = BOX_MARKER;
-                    marker.colour = colour_table[label];
-                    marker.size = marker_size;
-                    marker.label[0] = (char) 0;
-                    marker.structure_id = label;
-                    marker.patient_id = patient_id;
-
-                    if( io_tag_point( file, WRITE_FILE, volume, 1.0,
-                                      &marker ) != OK )
-                    {
-                        return( ERROR );
-                    }
-                }
-            }
         }
     }
 
