@@ -1,25 +1,38 @@
-DEFORM_LIB         = libdeform.a
-DEFORM_LINT_LIB    = lint/llib-ldeform.ln
-GEOMETRY_LIB       = libgeometry.a
-GEOMETRY_LINT_LIB  = lint/llib-lgeometry.ln
-MARCHING_LIB       = libmarching.a
-MARCHING_LINT_LIB  = lint/llib-lmarching.ln
+DATA_STRUCT_LIB        = libdata_structures.a
+DATA_STRUCT_LINT_LIB   = lint/llib-ldata_structures.ln
+DEFORM_LIB             = libdeform.a
+DEFORM_LINT_LIB        = lint/llib-ldeform.ln
+GEOMETRY_LIB           = libgeometry.a
+GEOMETRY_LINT_LIB      = lint/llib-lgeometry.ln
+MARCHING_LIB           = libmarching.a
+MARCHING_LINT_LIB      = lint/llib-lmarching.ln
 NUMERICAL_LIB          = libnumerical.a
 NUMERICAL_LINT_LIB     = lint/llib-lnumerical.ln
-SURFACE_LIB        = libsurface.a
-SURFACE_LINT_LIB   = lint/llib-lsurface.ln
+SURFACE_LIB            = libsurface.a
+SURFACE_LINT_LIB       = lint/llib-lsurface.ln
 
-LIBS = $(DEFORM_LIB) \
+LIBS = \
+       $(DATA_STRUCT_LIB) \
+       $(DEFORM_LIB) \
        $(GEOMETRY_LIB) \
        $(MARCHING_LIB) \
        $(SURFACE_LIB)
-LINT_LIBS = $(DEFORM_LINT_LIB) \
+
+LINT_LIBS = \
+            $(DEFORM_LINT_LIB) \
+            $(DATA_STRUCT_LINT_LIB) \
             $(GEOMETRY_LINT_LIB) \
             $(MARCHING_LINT_LIB) \
             $(SURFACE_LINT_LIB)
 
+DATA_STRUCT_OBJ = \
+                  Data_structures/bintree.o \
+                  Data_structures/build_bintree.o \
+                  Data_structures/object_bintrees.o \
+                  Data_structures/search_bintree.o \
+                  Data_structures/skiplist.o
+
 DEFORM_OBJ = \
-             Deform/curvature_colour.o \
              Deform/deform_line.o \
              Deform/deform_polygons.o \
              Deform/find_in_direction.o \
@@ -29,20 +42,26 @@ DEFORM_OBJ = \
              Deform/search_utils.o
 
 GEOMETRY_OBJ = \
+               Geometry/curvature.o \
+               Geometry/intersect.o \
                Geometry/line_circle.o \
                Geometry/map_polygons.o \
                Geometry/path_surface.o \
                Geometry/poly_dist.o \
                Geometry/polygon_sphere.o \
                Geometry/segment_polygons.o \
+               Geometry/smooth_curvature.o \
                Geometry/smooth_lines.o \
                Geometry/smooth_polygons.o \
                Geometry/subdivide_lines.o \
                Geometry/subdivide_polygons.o \
                Geometry/tetrahedrons.o \
+               Geometry/generate_tube.o \
+               Geometry/tubes.o \
                Geometry/volume_slice.o
 
 MARCHING_OBJ = \
+               Marching_cubes/isosurfaces.o \
                Marching_cubes/marching_cubes.o \
                Marching_cubes/marching_no_holes.o
 
@@ -59,10 +78,11 @@ NUMERICAL_OBJ  = \
 PROTOTYPE_FILE = Include/module_prototypes.h
 
 LIBS = \
-       $(DEFORM_LIB)   $(DEFORM_LINT_LIB) \
-       $(GEOMETRY_LIB) $(GEOMETRY_LINT_LIB) \
-       $(MARCHING_LIB) $(MARCHING_LINT_LIB) \
-       $(SURFACE_LIB)  $(SURFACE_LINT_LIB) \
+       $(DATA_STRUCT_LIB)  $(DATA_STRUCT_LINT_LIB) \
+       $(DEFORM_LIB)       $(DEFORM_LINT_LIB) \
+       $(GEOMETRY_LIB)     $(GEOMETRY_LINT_LIB) \
+       $(MARCHING_LIB)     $(MARCHING_LINT_LIB) \
+       $(SURFACE_LIB)      $(SURFACE_LINT_LIB) \
        $(NUMERICAL_LIB)    $(NUMERICAL_LINT_LIB)
 
 all: $(PROTOTYPE_FILE) $(LIBS) $(LINT_LIBS)
@@ -88,6 +108,24 @@ $(PROTOTYPE_FILE): $(OBJECTS:.o=.c)
 	@echo "#define  DEF_MODULE_PROTOTYPES"              >> $@
 	@extract_functions -public $(OBJECTS:.o=.c)         >> $@
 	@echo "#endif"                                      >> $@
+
+DS_PROTOTYPE_FILE = Include/data_structs_prototypes.h
+
+$(DS_PROTOTYPE_FILE): $(DATA_STRUCT_OBJ:.o=.c)
+	@echo "#ifndef  DEF_DATA_STRUCT_PROTOTYPES"         >  $@
+	@echo "#define  DEF_DATA_STRUCT_PROTOTYPES"         >> $@
+	@extract_functions -public $(DATA_STRUCT_OBJ:.o=.c) >> $@
+	@echo "#endif"                                      >> $@
+
+
+$(DATA_STRUCT_LIB): $(DS_PROTOTYPE_FILE) $(DATA_STRUCT_OBJ)
+	@if( -e $@ ) \rm -f $@
+	$(MAKE_LIBRARY) $@ $(DATA_STRUCT_OBJ)
+	$(RANLIB) $@
+
+$(DATA_STRUCT_LINT_LIB): $(DATA_STRUCT_OBJ:.o=.ln)
+	@echo "--- Linting ---"
+	lint -u -o data_structures $(DATA_STRUCT_OBJ:.o=.ln)
 
 $(DEFORM_LIB): $(DEFORM_OBJ)
 	@if( -e $@ ) \rm -f $@
