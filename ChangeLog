@@ -1,3 +1,9 @@
+Wed Jan 19 13:12:09 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* acinclude.m4 (AC_PRETTY_HELP_STRING): remove the occurances of
+	"if ! command" and "while ! command", which isn't supported by
+	IRIX 5.3 /bin/sh.
+
 Wed Jan 19 02:40:27 2000  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* configure.in: volume_io needs -lm on IRIX.

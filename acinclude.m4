@@ -349,45 +349,29 @@ rhs="$2"
 
 lhs_column=25
 rhs_column=`expr $lhs_column + 1`
+lhs_pad='                         '      # 25 spaces
+rhs_pad='                          '     # 26 spaces
+
 
 # Insure that the LHS begins with exactly two spaces.
 changequote(, )dnl
 lhs=`echo "$lhs" | sed -n -e "s/[ ]*\(.*\)/  \1/p"`
 changequote([, ])dnl
 
-# Is the length of the LHS less than $lhs_column?
-if ! `echo "$lhs" | grep ".\{$lhs_column\}" > /dev/null 2>&1`; then
-
-  # Pad the LHS with spaces.  Note that padding the LHS is an
-  # "expensive" operation (i.e. expensive in the sense of there being
-  # multiple calls to `grep') only the first time AC_PRETTY_HELP_STRING
-  # is called.  Once this macro is called once, subsequent calls will be
-  # nice and zippy.
-  : ${lhs_pad=""}
-changequote(, )dnl
-  while ! `echo "$lhs_pad" | grep "[ ]\{$lhs_column\}" > /dev/null 2>&1`; do
-changequote([, ])dnl
-    lhs_pad=" $lhs_pad"
-  done
-
-  lhs="${lhs}${lhs_pad}"
-changequote(, )dnl
-$3=`echo "$lhs" | sed -n -e "/.\{$lhs_column\}[ ][ ]*$/ s/\(.\{$rhs_column\}\).*/\1$rhs/p"`
-changequote([, ])dnl
-
-else
+# Is the length of the LHS greater or equal to the $lhs_column?
+if `echo "$lhs" | grep ".\{$lhs_column\}" > /dev/null 2>&1`; then
 
   # Build up a string of spaces to pad the left-hand-side of the RHS
   # with.  Note that padding the RHS is an "expensive" operation
   # (i.e. expensive in the sense of there being multiple calls to
   # `grep') only the first time AC_PRETTY_HELP_STRING is called.  Once
   # this macro is called once, subsequent calls will be nice and zippy.
-  : ${rhs_pad=""}
-changequote(, )dnl
-  while ! `echo "$rhs_pad" | grep "[ ]\{$rhs_column\}" > /dev/null 2>&1`; do
-changequote([, ])dnl
-    rhs_pad=" $rhs_pad"
-  done
+#  : ${rhs_pad=""}
+#changequote(, )dnl
+#  while ! `echo "$rhs_pad" | grep "[ ]\{$rhs_column\}" > /dev/null 2>&1`; do
+#changequote([, ])dnl
+#    rhs_pad=" $rhs_pad"
+#  done
 
   # Strip all leading spaces from the RHS.
 changequote(, )dnl
@@ -396,6 +380,26 @@ changequote([, ])dnl
 
 $3="$lhs
 ${rhs_pad}${rhs}"
+
+else
+
+  # Pad the LHS with spaces.  Note that padding the LHS is an
+  # "expensive" operation (i.e. expensive in the sense of there being
+  # multiple calls to `grep') only the first time AC_PRETTY_HELP_STRING
+  # is called.  Once this macro is called once, subsequent calls will be
+  # nice and zippy.
+#  : ${lhs_pad=""}
+#changequote(, )dnl
+#  while ! `echo "$lhs_pad" | grep "[ ]\{$lhs_column\}" > /dev/null 2>&1`; do
+#changequote([, ])dnl
+#    lhs_pad=" $lhs_pad"
+#  done
+
+  lhs="${lhs}${lhs_pad}"
+changequote(, )dnl
+$3=`echo "$lhs" | sed -n -e "/.\{$lhs_column\}[ ][ ]*$/ s/\(.\{$rhs_column\}\).*/\1$rhs/p"`
+changequote([, ])dnl
+
 fi 
 AC_DIVERT_POP()dnl
 ])
