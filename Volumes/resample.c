@@ -81,8 +81,8 @@ public  BOOLEAN  do_more_resampling(
                 }
                 else
                 {
-                    GET_VOXEL_3D( value, resample->src_volume,
-                                  ROUND( xv ), ROUND( yv ), ROUND( zv ) );
+                    value = get_volume_voxel_value( resample->src_volume,
+                                  ROUND( xv ), ROUND( yv ), ROUND( zv ), 0, 0 );
                 }
             }
             else
@@ -97,8 +97,8 @@ public  BOOLEAN  do_more_resampling(
                 value = ROUND( real_value );
             }
 
-            SET_VOXEL_3D( resample->dest_volume, resample->x, resample->y, z,
-                          value );
+            set_volume_voxel_value( resample->dest_volume,
+                                    resample->x, resample->y, z, 0, 0, value );
 
             if( linear )
             {
