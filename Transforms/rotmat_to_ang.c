@@ -74,61 +74,33 @@ public  BOOLEAN  rotmat_to_ang(
      Real  **rot_mat,
      Real  *ang )
 {
-    Real     rx,ry,rz, **t,**s, **R, **Rx, **Ry, **Rz, len, i,j,k;
-    int      m,n;
+    Real       rx,ry,rz, **t,**s, **R, **Rx, **Ry, **Rz, len, i,j,k;
+    Real       vx, vy, vz;
+    int        m,n;
+    Vector     x_axis, z_axis;
+    Transform  rot_trans, z_rot, y_rot;
 
-    ALLOC2D( t, 4, 1 );      /* make two column vectors */
-    ALLOC2D( s, 4, 1 );
+    make_identity_transform( &rot_trans );
 
-    ALLOC2D( R, 4, 4 );      /* working space matrices */
-    ALLOC2D( Rx, 4, 4 );
-    ALLOC2D( Ry, 4, 4 );
-    ALLOC2D( Rz, 4, 4 );
+    for_less( m, 0, N_DIMENSIONS )
+    {
+        for_less( n, 0, N_DIMENSIONS )
+            Transform_elem(rot_trans,m,n) = rot_mat[m][n];
+    }
 
-    nr_ident( R, 4, 4 );        /* init R homogeneous matrix */
-
-    for_less( m, 0, 3 )         /* copy rot matrix into R */
-        for_less( n, 0, 3 )
-            R[m][n] = rot_mat[m][n];
+    get_transform_x_axis( &rot_trans, &x_axis );
+    get_transform_z_axis( &rot_trans, &z_axis );
    
 /* ---------------------------------------------------------------
    step one,  find the RZ rotation reqd to bring 
               the local x into the world XZ plane
 */
 
-    for_less( m, 0, 3 )       /* extract local x vector, ie the first column */
-        t[m][0] = R[m][0];
-    t[3][0] = 1.0;
+    rz = compute_clockwise_rotation( Vector_x(x_axis), Vector_y(x_axis) );
 
-    i = t[0][0];                        /* make local vector componants */
-    j = t[1][0]; 
-    k = t[2][0];
+    if( rz >= PI )
+        rz -= 2.0 * PI;
 
-    if( i < EPS )
-    {                        /* if i is not already in the positive X range, */
-        print_rot_error(
-          "step one: rz not in the range -pi/2..pi/2",__FILE__, __LINE__,
-             0,0,0,0,0 );
-        return(FALSE);
-    }
-
-    len = sqrt(i*i + j*j);        /* length of vect x on XY plane */
-    if( ABS(len) < EPS )
-    {
-        print_rot_error(
-            "step one: length of vect x null.",__FILE__, __LINE__,0,0,0,0,0 );
-        return(FALSE);
-    }
-
-    if( ABS(i) > ABS(j) )
-        rz = ABS( asin(j/len) );
-    else
-        rz = ABS( acos(i/len) );
-
-    if( j > 0 )                   /* what is the counter clockwise angle */
-        rz = -rz;                 /* necessary to bring vect x ont XY plane? */
-      
-  
 /*---------------------------------------------------------------
    step two:  find the RY rotation reqd to align 
               the local x on the world X axis 
@@ -136,95 +108,89 @@ public  BOOLEAN  rotmat_to_ang(
    (since i was positive above, RY should already by in range -pi/2..pi/2 
    but we'll check it  anyway)                                             */
 
-    for_less( m, 0, 3 )                /* extract local x vector */
-       t[m][0] = R[m][0];
-    t[3][0] = 1.0;
+    make_rotation_transform( -rz, Z, &z_rot );
 
-    nr_rotz( Rz, rz );             /* create the rotate Z matrix */
- 
-    matrix_multiply( 4, 4, 1, Rz, t, s ); /* apply RZ, to get x in XZ plane */
+    transform_vector( &z_rot, Vector_x(x_axis), Vector_y(x_axis),
+                      Vector_z(x_axis), &vx, &vy, &vz );
 
-    i = s[0][0];                        /* make local vector componants */
-    j = s[1][0]; 
-    k = s[2][0];
+    ry = - compute_clockwise_rotation( vx, vz );
 
-    if( i < EPS )
-    {
-        print_rot_error(
-              "step two: ry not in the range -pi/2..pi/2",__FILE__, __LINE__,
-              0,0,0,0,0);
-        return(FALSE);
-    }
-
-    len = sqrt(i*i + k*k);        /* length of vect x in XZ plane, after RZ */
-
-    if( ABS(len) < EPS )
-    {
-        print_rot_error(
-           "step two: length of vect z null.",__FILE__, __LINE__,0,0,0,0,0);
-        return(FALSE);
-    }
-
-    if( ABS(i) > ABS(k) )
-        ry = ABS( asin(k/len) );
-    else
-        ry = ABS( acos(i/len) );
-
-    /*    what is the counter clockwise angle necessary to bring  */
-    /*    vect x onto X? */
-
-    if( k < 0.0 )
-        ry = -ry;
+    if( ry <= -PI )
+        ry += 2.0 * PI;
 
    /*--------------------------------------------------------------- */
    /*   step three,rotate around RX to */
    /*              align the local y with Y and z with Z */
 
-    for_less( m, 0, 3 )                /* extract local z vector */
-        t[m][0] = R[m][2];
-    t[3][0] = 1.0;
+    make_rotation_transform( -ry, Y, &y_rot );
 
-    nr_roty( Ry, ry );             /* create the rotate Y matrix */
+    transform_vector( &z_rot, Vector_x(z_axis), Vector_y(z_axis),
+                      Vector_z(z_axis), &vx, &vy, &vz );
+    transform_vector( &y_rot, vx, vy, vz, &vx, &vy, &vz );
 
-                       /* t =  roty(ry*180/pi) *(rotz(rz*180/pi) *r(3,:)); */
-    matrix_multiply( 4, 4, 1, Rz, t, s ); /* apply RZ, to get x in XZ plane */
-    matrix_multiply( 4, 4, 1, Ry, s, t ); /* apply RY, to get x onto X      */
+    rx = - compute_clockwise_rotation( vz, vy );
 
-    i = t[0][0];                        /* make local vector componants */
-    j = t[1][0]; 
-    k = t[2][0];
+    if( rx <= -PI )
+        rx += 2.0 * PI;
 
-    len = sqrt(j*j + k*k);        /* length of vect x in Y,Z plane */
-
-    if( ABS(len) < EPS )
-    {
-        print_rot_error(
-           "step three: length of vect z null.",__FILE__, __LINE__,0,0,0,0,0);
-        return(FALSE);
-    }
-
-    if( ABS(k) > ABS(j) )
-        rx = ABS( asin(j/len) );
-    else
-        rx = ABS( acos(k/len) );
-
-    if( j < 0.0 )
-        rx = -rx;
-        
     rx = -rx;  /* these are the required rotations */
     ry = -ry;
     rz = -rz;
 
-    ang[0] = rx;
-    ang[1] = ry;
-    ang[2] = rz;
+#define  DEBUG
+#ifdef DEBUG
+{
+    BOOLEAN  error;
+    Real     **test;
 
-    FREE2D( t );
-    FREE2D( s );
-    FREE2D( R );
+    ALLOC2D( test, 4, 4 );      /* working space matrices */
+    ALLOC2D( Rx, 4, 4 );
+    ALLOC2D( Ry, 4, 4 );
+    ALLOC2D( Rz, 4, 4 );
+
+    nr_rotx( Rx, rx );
+    nr_roty( Ry, ry );
+    nr_rotz( Rz, rz );
+    matrix_multiply( 4, 4, 4, Ry, Rx, test );
+    matrix_multiply( 4, 4, 4, Rz, test, test );
+
+    error = FALSE;
+    for_less( m, 0, N_DIMENSIONS )
+        for_less( n, 0, N_DIMENSIONS )
+            if( !numerically_close( test[m][n], rot_mat[m][n], 1.0e-3 ) )
+            {
+                error = TRUE;
+            }
+
+    if( error )
+    {
+        for_less( m, 0, N_DIMENSIONS )
+        {
+            for_less( n, 0, N_DIMENSIONS )
+                print( " %g", test[m][n] );
+            print( "\n" );
+        }
+        print( "\n" );
+        for_less( m, 0, N_DIMENSIONS )
+        {
+            for_less( n, 0, N_DIMENSIONS )
+                print( " %g", rot_mat[m][n] );
+            print( "\n" );
+        }
+
+        handle_internal_error( "rotmat_to_ang" );
+    }
+
+    FREE2D( test );
     FREE2D( Rx );
     FREE2D( Ry );
     FREE2D( Rz );
+}
+#endif
+
+    ang[0] = rx;
+    ang[1] = ry;
+    ang[2] = rz;
 
     return(TRUE);
 }
