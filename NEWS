@@ -1,6 +1,8 @@
-New in the public releases
+New in Release 1.3.2
 
 * Image I/O can be done using either Portable PixMap (PPM) files
   or IRIS image library files, depending on configure-time
   options.
+
+* First public release independent of Display and Register packages.
 
