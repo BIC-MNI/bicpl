@@ -1,5 +1,7 @@
 2001-07-24  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
+	* tools/Makefile.am: Don't build biobj2ply, make_mesh_map.
+
 	* autogen.sh: Improved ordering; stop on error; use "aclocal -I m4".
 
 	* acinclude.m4: Remove.
