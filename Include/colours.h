@@ -16,7 +16,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colours.h,v 1.11 1996-09-14 17:38:09 david Exp $";
+static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include/Attic/colours.h,v 1.12 1996-10-02 18:16:37 david Exp $";
 #endif
 
 #include  <volume_io.h>
@@ -24,6 +24,7 @@ static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 #define  COMPOSITE_COLOURS( result, front, back ) \
          { \
              Real  _rf, _gf, _bf, _af, _rb, _gb, _bb, _ab, _weight; \
+             Real  _r, _g, _b, _a; \
              _rf = get_Colour_r_0_1(front); \
              _gf = get_Colour_g_0_1(front); \
              _bf = get_Colour_b_0_1(front); \
@@ -33,10 +34,17 @@ static char colours_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
              _bb = get_Colour_b_0_1(back); \
              _ab = get_Colour_a_0_1(back); \
              _weight = (1.0 - _af) * _ab; \
-             (result) = make_rgba_Colour_0_1( _af * _rf + _weight * _rb, \
-                                              _af * _gf + _weight * _gb, \
-                                              _af * _bf + _weight * _bb, \
-                                              _af * _af + _weight * _ab ); \
+             _r = _af * _rf + _weight * _rb; \
+             _g = _af * _gf + _weight * _gb; \
+             _b = _af * _bf + _weight * _bb; \
+             _a = _af + _weight; \
+             if( _a > 0.0 ) \
+             { \
+                 _r /= _a; \
+                 _g /= _a; \
+                 _b /= _a; \
+             } \
+             (result) = make_rgba_Colour_0_1( _r, _g, _b, _a ); \
          }
 
 typedef  enum  { RGB_SPACE, HSL_SPACE }  Colour_spaces;
