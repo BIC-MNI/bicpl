@@ -202,9 +202,9 @@ public BOOLEAN optimize_simplex(Real **pts1, Real **pts2,
     ndim = 10;
     break;
   default:
-    (void) fprintf(stderr, "Unknown type of transformation requested (%d)\n",
-		   trans_type);
-    (void) fprintf(stderr, "Error in line %d, file %s\n",__LINE__, __FILE__);
+    print_error( "Unknown type of transformation requested (%d)\n",
+		 trans_type);
+    print_error( "Error in line %d, file %s\n",__LINE__, __FILE__);
     stat = FALSE;
   }
 
@@ -263,17 +263,17 @@ public BOOLEAN optimize_simplex(Real **pts1, Real **pts2,
       y[i] = fit_function(p[i]);
 
 #ifdef PRINT_DEBUG
-      (void) printf ("corr = %6.4f",y[i]);
+      print("corr = %6.4f",y[i]);
       for (j=1; j<=3; ++j)  {
-         (void) printf (" %7.2f",p[i][j]);
+         print(" %7.2f",p[i][j]);
       }
       for (j=4; j<=6; ++j)  {
-         (void) printf (" %7.3f",p[i][j]*RAD_TO_DEG);
+         print(" %7.3f",p[i][j]*RAD_TO_DEG);
       }
       for (j=7; j<=ndim; ++j)  {
-         (void) printf (" %6.4f",p[i][j]);
+         print(" %6.4f",p[i][j]);
       }
-      (void) printf ("\n");
+      print("\n");
 #endif
       
     }
@@ -281,21 +281,21 @@ public BOOLEAN optimize_simplex(Real **pts1, Real **pts2,
     amoeba(p,y,ndim,local_ftol,fit_function,&nfunk);
     
 #ifdef PRINT_DEBUG
-    (void) printf("after %d iterations\n",nfunk);
+    print("after %d iterations\n",nfunk);
     
     for (i=1; i<=(ndim+1); ++i)	{   /* print out value of correlation at all points of simplex */
       if (i==1) {
-         (void) printf ("end corr = %f",y[i]);
+         print("end corr = %f",y[i]);
 	for (j=1; j<=3; ++j)  {
-      (void) printf (" %f",p[i][j]);
+      print(" %f",p[i][j]);
 	}
 	for (j=4; j<=6; ++j)  {
-      (void) printf (" %f",p[i][j]*RAD_TO_DEG);
+      print(" %f",p[i][j]*RAD_TO_DEG);
 	}
 	for (j=7; j<=ndim; ++j)  {
-      (void) printf (" %f",p[i][j]);
+      print(" %f",p[i][j]);
 	}
-         (void) printf ("\n");
+         print("\n");
       }
     }   
 #endif
