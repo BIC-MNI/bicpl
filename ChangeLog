@@ -1,3 +1,11 @@
+2004-04-15  Vivek Singh    <vsingh@bic.mni.mcgill.ca>
+
+	* removed non-open source compatible file Geometry/lfit_vector.c
+	* modified Numerical/matrix_svd.c (again due to licence compatibility)
+	and replaced it with a call to a function from the clapack library.
+	The supporting files required by the function were placed in 
+	the directory bicpl_clapack. 
+
 2003-11-16  Steve ROBBINS  <stever@bic.mni.mcgill.ca>
 
 	* mni_bicpl.epm.header: Set correct license file.
