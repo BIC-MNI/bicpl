@@ -43,6 +43,8 @@ typedef  struct
     int            n_items;
     int            *end_indices;
     int            *indices;
+
+    bintree_struct  *bintree;
 } lines_struct;
 
 typedef  enum  { BOX_MARKER, SPHERE_MARKER,
@@ -92,6 +94,8 @@ typedef  struct
     int             m, n;
     Point           *points;
     Vector          *normals;
+
+    bintree_struct  *bintree;
 } quadmesh_struct;
 
 typedef enum { FIXED_FONT, SIZED_FONT } Font_types;

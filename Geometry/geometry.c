@@ -41,7 +41,8 @@ public  void  find_polygon_normal(
     Point    points[],
     Vector   *normal )
 {
-    int    i, next_i;
+    int     i, next_i;
+    Vector  v1, v2;
 
     Vector_x(*normal) = 0.0;
     Vector_y(*normal) = 0.0;
@@ -59,6 +60,18 @@ public  void  find_polygon_normal(
 
         Vector_z(*normal) -= (Point_x(points[i]) + Point_x(points[next_i])) *
                              (Point_y(points[i]) - Point_y(points[next_i]) );
+    }
+
+    if( null_Vector( normal ) )
+    {
+        for_less( i, 0, n_points )
+        {
+            SUB_POINTS( v1, points[(i+1)%n_points], points[i] );
+            SUB_POINTS( v2, points[(i-1)%n_points], points[i] );
+            CROSS_VECTORS( *normal, v1, v2 );
+            if( !null_Vector( normal ) )
+                break;
+        }
     }
 
     NORMALIZE_VECTOR( *normal, *normal );

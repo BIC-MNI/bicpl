@@ -167,11 +167,32 @@ public  void  create_polygons_bintree(
     polygons_struct   *polygons,
     int               max_nodes )
 {
+    int              poly, size;
+    range_struct     *bound_vols;
+    Point            min_range, max_range;
+    Point            points[MAX_POINTS_PER_POLYGON];
+
     ALLOC( polygons->bintree, 1 );
 
-    create_object_bintree( polygons->n_points, polygons->points,
-                           polygons->n_items, polygons->end_indices,
-                           polygons->indices, polygons->bintree, max_nodes );
+    ALLOC( bound_vols, polygons->n_items );
+
+    for_less( poly, 0, polygons->n_items )
+    {
+        size = get_polygon_points( polygons, poly, points );
+
+        get_range_points( size, points, &min_range, &max_range );
+        bound_vols[poly].limits[X][0] = Point_x(min_range);
+        bound_vols[poly].limits[Y][0] = Point_y(min_range);
+        bound_vols[poly].limits[Z][0] = Point_z(min_range);
+        bound_vols[poly].limits[X][1] = Point_x(max_range);
+        bound_vols[poly].limits[Y][1] = Point_y(max_range);
+        bound_vols[poly].limits[Z][1] = Point_z(max_range);
+    }
+
+    create_object_bintree( polygons->n_items, bound_vols,
+                           polygons->bintree, max_nodes );
+
+    FREE( bound_vols );
 }
 
 public  void  delete_polygons_bintree(
