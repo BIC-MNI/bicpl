@@ -16,7 +16,7 @@
 #include  <geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.14 1995-09-19 18:23:53 david Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.15 1996-01-15 17:37:57 david Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -43,23 +43,30 @@ public  void  find_polygon_normal_no_normalize(
 {
     int     i, next_i;
     Vector  v1, v2, normal;
+    Real    x, y, z, tx, ty, tz;
 
     *nx = 0.0;
     *ny = 0.0;
     *nz = 0.0;
 
+    tx = Point_x(points[0]);
+    ty = Point_y(points[0]);
+    tz = Point_z(points[0]);
+
     for_less( i, 0, n_points )
     {
         next_i = (i + 1) % n_points;
 
-        *nx -= (Point_y(points[i]) + Point_y(points[next_i])) *
-               (Point_z(points[i]) - Point_z(points[next_i]) );
+        x = tx;
+        y = ty;
+        z = tz;
+        tx = Point_x(points[next_i]);
+        ty = Point_y(points[next_i]);
+        tz = Point_z(points[next_i]);
 
-        *ny -= (Point_z(points[i]) + Point_z(points[next_i])) *
-               (Point_x(points[i]) - Point_x(points[next_i]) );
-
-        *nz -= (Point_x(points[i]) + Point_x(points[next_i])) *
-               (Point_y(points[i]) - Point_y(points[next_i]) );
+        *nx -= (y + ty) * (z - tz);
+        *ny -= (z + tz) * (x - tx);
+        *nz -= (x + tx) * (y - ty);
     }
 
     /*--- if result is null, try to find one vertex for which a normal can
