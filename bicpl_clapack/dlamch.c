@@ -186,10 +186,10 @@ nding
     doublereal d__1, d__2;
     /* Local variables */
     static logical lrnd;
-    static doublereal a, b, c, f;
+    volatile doublereal a, b, c, f;
     static integer lbeta;
     static doublereal savec;
-    extern doublereal dlamc3_(doublereal *, doublereal *);
+    extern doublereal dlamc3_(volatile doublereal *, volatile doublereal *);
     static logical lieee1;
     static doublereal t1, t2;
     static integer lt;
@@ -432,7 +432,7 @@ L30:
     static doublereal third, lrmin, lrmax, sixth;
     extern /* Subroutine */ int dlamc1_(integer *, integer *, logical *, 
 	    logical *);
-    extern doublereal dlamc3_(doublereal *, doublereal *);
+    extern doublereal dlamc3_(volatile doublereal *, volatile doublereal *);
     static logical lieee1;
     extern /* Subroutine */ int dlamc4_(integer *, doublereal *, integer *), 
 	    dlamc5_(integer *, integer *, integer *, logical *, integer *, 
@@ -647,7 +647,7 @@ ing
 
 #include "f2c.h"
 
-doublereal dlamc3_(doublereal *a, doublereal *b)
+doublereal dlamc3_(volatile doublereal *a, volatile doublereal *b)
 {
 /*  -- LAPACK auxiliary routine (version 3.0) --   
        Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,   
