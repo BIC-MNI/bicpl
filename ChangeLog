@@ -1,3 +1,11 @@
+2005-05-02  Bert Vincent   <bert@bic.mni.mcgill.ca>
+
+	* Fixed odd problem in dlamch.c.  In the case where GCC 3.4.1 was
+	used to compile the code with the -O2 option on Linux, the code
+	would hang in an infinite loop in the function dlamc1_(). The bug
+	could be avoided by disabling the optimizer. I masked the problem
+	by declaring a few local variables 'volatile'.
+	
 2005-04-02  Steve M. Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* bicpl_clapack/Makefile.am (libbicpl_cla_la_SOURCES): Include
