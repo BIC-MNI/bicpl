@@ -22,7 +22,10 @@
 @GLOBALS    : 
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : $Log: safe_compute_xfm.c,v $
-@MODIFIED   : Revision 1.11  2000-02-06 15:30:51  stever
+@MODIFIED   : Revision 1.12  2005-06-03 18:08:37  bert
+@MODIFIED   : Include config.h and use HAVE_FORK rather than NO_FORK, also omit unistd.h
+@MODIFIED   :
+@MODIFIED   : Revision 1.11  2000/02/06 15:30:51  stever
 @MODIFIED   : rearranged header file structure; add gcc -Wall fixes
 @MODIFIED   :
 @MODIFIED   : Revision 1.10  2000/02/05 21:27:21  stever
@@ -60,20 +63,22 @@
  * 
 ---------------------------------------------------------------------------- */
 
+#if HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <unistd.h>
+#if HAVE_FORK
 #include <sys/wait.h>
+#endif
 #include <volume_io/internal_volume_io.h>
 #include <bicpl/trans.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.11 2000-02-06 15:30:51 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.12 2005-06-03 18:08:37 bert Exp $";
 #endif
-
-#define NO_FORK
-#undef NO_FORK
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : safe_compute_transform_from_tags
@@ -101,7 +106,7 @@ public void safe_compute_transform_from_tags(
     Trans_type          trans_type,
     General_transform   *transform )
 {
-#ifdef  NO_FORK
+#if !HAVE_FORK
         compute_transform_from_tags( npoints, tag_list1, tag_list2, trans_type,
                                      transform );
 #else
