@@ -12,12 +12,15 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
+#if HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include  <volume_io/internal_volume_io.h>
 #include  <bicpl/numerical.h>
 #include  <limits.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.24 2000-02-06 15:30:41 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.25 2005-06-03 18:10:04 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -232,7 +235,7 @@ public  int  solve_quadratic(
 #define     EQN_EPS     1e-9
 #define	    IsZero(x)	((x) > -EQN_EPS && (x) < EQN_EPS)
 
-#ifdef  NO_CBRT
+#if !HAVE_CBRT
 #define     cbrt(x)     ((x) > 0.0 ? pow((double)(x), 1.0/3.0) : \
                         ((x) < 0.0 ? -pow((double)-(x), 1.0/3.0) : 0.0))
 #endif
