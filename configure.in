@@ -20,6 +20,9 @@ smr_WITH_BUILD_PATH
 
 mni_REQUIRE_VOLUMEIO
 
+AC_FUNC_FORK
+AC_CHECK_FUNCS(srandom random cbrt gamma gettimeofday)
+
 dnl Decide which file format is used for images.  The installer *must* choose
 dnl a "--with-image-X" option, otherwise no image I/O is possible
 
