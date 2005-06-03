@@ -16,7 +16,7 @@
 #include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.40 2000-02-06 15:30:55 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.41 2005-06-03 18:08:02 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -561,19 +561,20 @@ public  Status  load_label_volume(
     Minc_file             file;
     BOOLEAN               is_linear, is_integer_step;
     progress_struct       progress;
+    static STRING         file_order_dim_names[] = {"", "", "", "", ""};
 
     check_alloc_label_data( label_volume );
 
     /*--- get 3d transformation in file */
 
     if( input_volume_header_only( filename, N_DIMENSIONS,
-                                  File_order_dimension_names,
+                                  file_order_dim_names,
                                   &file_volume_3d, NULL ) != OK )
         return( ERROR );
 
     get_volume_sizes( file_volume_3d, file_sizes );
 
-    file_volume = create_volume( 2, File_order_dimension_names,
+    file_volume = create_volume( 2, file_order_dim_names,
                                  NC_UNSPECIFIED, FALSE, 0.0, 0.0 );
 
     file = initialize_minc_input( filename, file_volume, NULL );
