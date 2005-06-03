@@ -725,7 +725,7 @@ doublereal dlamc3_(volatile doublereal *a, volatile doublereal *b)
     static doublereal zero, a;
     static integer i;
     static doublereal rbase, b1, b2, c1, c2, d1, d2;
-    extern doublereal dlamc3_(doublereal *, doublereal *);
+    extern doublereal dlamc3_(volatile doublereal *, volatile doublereal *);
     static doublereal one;
 
 
@@ -842,7 +842,7 @@ L10:
     static integer uexp, i;
     static doublereal y, z;
     static integer nbits;
-    extern doublereal dlamc3_(doublereal *, doublereal *);
+    extern doublereal dlamc3_(volatile doublereal *, volatile doublereal *);
     static doublereal recbas;
     static integer exbits, expsum, try__;
 
