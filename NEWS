@@ -1,6 +1,8 @@
 New in Release 1.4.2
 
 * Minor bug fixes
+* Windows build support
+* Fix hang in CLAPACK code
 
 New in Release 1.4.1
 

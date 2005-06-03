@@ -1,3 +1,27 @@
+2005-06-03  Bert Vincent   <bert@bic.mni.mcgill.ca>
+	* A series of smallish changes for Windows build compatibility:
+	
+	 - bicpl_clapack/dlamch.c - add volatile to all declarations 
+	 of dlamc3_
+	 - bicpl_clapack/Makefile.am - put f2c.h and blaswrap.h in a
+	 noinst_HEADERS target
+	 - Volumes/labels.c - avoid use of global
+	 File_order_dimension_names
+	 - Transforms/safe_compute_xfm.c - use HAVE_FORK rather than
+	 NO_FORK and include config.h
+	 - Prog_utils/random.c - If random(), srandom(), and
+	 gettimeofday() are not available, use rand(), srand(), and
+	 time(). Also make use of the standard constant RAND_MAX 
+	 - Numerical/t_stat.c - If gamma() is not defined, use a private
+	 copy.
+	 - Numerical/numerical.c - Use HAVE_CBRT rather than NO_CBRT and
+	 include config.h
+
+	 - configure.in - add checks for fork(), srandom(), random(),
+	 cbrt(), gamma(), gettimeofday()
+	 - Makefile.am - remove unnecessary m4 files, add the Windows
+	 build files	
+	
 2005-05-02  Bert Vincent   <bert@bic.mni.mcgill.ca>
 
 	* Fixed odd problem in dlamch.c.  In the case where GCC 3.4.1 was
