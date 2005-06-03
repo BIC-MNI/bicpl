@@ -12,15 +12,22 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/prog_utils.h>
-#include  <sys/time.h>
-
-#ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.13 2001-02-05 22:03:48 stever Exp $";
+#if HAVE_CONFIG_H
+#include "config.h"
 #endif
 
-#define  MAX_RAND  2147483648.0
+#include  <volume_io/internal_volume_io.h>
+#include  <bicpl/prog_utils.h>
+
+#if HAVE_SYS_TIME_H
+#include  <sys/time.h>
+#endif
+
+#include <stdlib.h>
+
+#ifndef lint
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.14 2005-06-03 18:09:12 bert Exp $";
+#endif
 
 private  BOOLEAN  initialized = FALSE;
 
@@ -39,7 +46,12 @@ private  BOOLEAN  initialized = FALSE;
 
 public  void  set_random_seed( int seed )
 {
+#if HAVE_SRANDOM
     (void) srandom( (unsigned int) seed );
+#else
+    (void) srand( (unsigned int) seed );
+#endif /* HAVE_SRANDOM */
+
     initialized = TRUE;
 }
 
@@ -58,14 +70,20 @@ public  void  set_random_seed( int seed )
 
 private  void  check_initialized( void )
 {
+#if HAVE_GETTIMEOFDAY
     struct   timeval   t;
+#endif
     int                seed;
 
     if( !initialized )
     {
+#if HAVE_GETTIMEOFDAY
         (void) gettimeofday( &t, (struct timezone *) 0 );
 
         seed = (int) t.tv_usec;
+#else
+        seed = time(NULL);
+#endif
 
         set_random_seed( seed );
     }
@@ -88,7 +106,11 @@ private  int  get_random( void )
 {
     check_initialized();
 
+#if HAVE_RANDOM
     return( (int) random() );
+#else
+    return( (int) rand() );
+#endif /* HAVE_RANDOM */
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -125,5 +147,5 @@ public  int  get_random_int( int n )
 
 public  Real  get_random_0_to_1( void )
 {
-    return( (Real) get_random() / MAX_RAND );
+    return( (Real) get_random() / (Real) RAND_MAX );
 }
