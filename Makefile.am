@@ -6,6 +6,7 @@ AUTOMAKE_OPTIONS = check-news
 ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = README.release \
+	autogen.sh \
 	epm-header.in \
 	Makefile.msvc-win32 \
 	config.h.msvc-win32 \

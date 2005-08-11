@@ -16,9 +16,9 @@ fi
 
 set -e
 
-libtoolize --automake
+libtoolize --automake --copy
 aclocal -I m4
 autoheader
-automake --add-missing
+automake --add-missing --copy
 autoconf
 
