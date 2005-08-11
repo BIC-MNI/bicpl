@@ -3,6 +3,7 @@ New in Release 1.4.2
 * Minor bug fixes
 * Windows build support
 * Fix hang in CLAPACK code
+* support for netpbm library over ppm for OSX
 
 New in Release 1.4.1
 

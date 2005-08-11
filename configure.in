@@ -28,6 +28,11 @@ dnl a "--with-image-X" option, otherwise no image I/O is possible
 
 imagelib=none
 
+AC_ARG_WITH([image-netpbm],
+  [  --with-image-netpbm     use netpbm library to output raster data],
+  [imagelib=netpbm]
+)
+
 AC_ARG_WITH([image-ppm],
   [  --with-image-ppm        use PPM library to output raster data],
   [imagelib=ppm]
@@ -42,6 +47,10 @@ case "$imagelib" in
     none)
 	AC_MSG_WARN([No image library chosen.  Raster output disabled!!])
 	imageio_GLUE_CODE=rgb_io_none.c
+	;;
+    netpbm)
+	smr_REQUIRED_LIB(netpbm,ppm_writeppminit,ppm.h,[-lnetpbm])
+ 	imageio_GLUE_CODE=rgb_io_ppm.c
 	;;
     ppm)
 	smr_REQUIRED_LIB(ppm,ppm_writeppminit,ppm.h,[-lpgm -lpbm])
@@ -77,4 +86,4 @@ tools/Makefile
 Deform/Makefile
 bicpl_clapack/Makefile
 ])
-AC_OUTPUT
+AC_OUTPUT([epm-header])

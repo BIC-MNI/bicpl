@@ -1,3 +1,7 @@
+2005-08-11  Andrew Janke  <a.janke@gmail.com>
+	* added epm-header.in
+	* added netpbm alternative to ppm for OSX
+
 2005-06-03  Bert Vincent   <bert@bic.mni.mcgill.ca>
 	* A series of smallish changes for Windows build compatibility:
 	

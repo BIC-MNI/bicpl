@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS = check-news
 ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = README.release \
-	mni_bicpl.epm.header \
+	epm-header.in \
 	Makefile.msvc-win32 \
 	config.h.msvc-win32 \
 	$(m4_files)
