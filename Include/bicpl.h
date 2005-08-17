@@ -19,6 +19,17 @@
 extern "C" {
 #endif
 
+#ifndef BICAPI
+#if defined(_MSC_VER)
+/* If we are building on the Microsoft C compiler, we want to
+ * explicitly import all public functions from the DLL
+ */
+#define BICAPI __declspec(dllimport)
+#else
+#define BICAPI
+#endif /* _MSC_VER not defined */
+#endif /* BICAPI not defined */
+
 #include  <bicpl/data_structures.h>
 #include  <bicpl/geom.h>
 #include  <bicpl/trans.h>
