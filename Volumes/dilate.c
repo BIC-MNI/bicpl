@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.13 2000-02-06 15:30:54 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.14 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
@@ -46,7 +45,7 @@ typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  dilate_voxels_3d(
+BICAPI int  dilate_voxels_3d(
     Volume          volume,
     Volume          label_volume,
     Real            min_inside_label,

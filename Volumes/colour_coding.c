@@ -12,14 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.26 2000-12-15 19:55:07 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.27 2005-08-17 22:26:19 bert Exp $";
 #endif
 
-private  void  interpolate_colours(
+static void  interpolate_colours(
     colour_point   *p1,
     colour_point   *p2,
     Real           pos,
@@ -28,7 +27,7 @@ private  void  interpolate_colours(
     Real           *b,
     Real           *a );
 
-private  void  recreate_piecewise_function(
+static void  recreate_piecewise_function(
     colour_coding_struct  *colour_coding,
     Colour_coding_types   type,
     BOOLEAN               set_user_defined );
@@ -50,7 +49,7 @@ private  void  recreate_piecewise_function(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_colour_coding(
+BICAPI void  initialize_colour_coding(
     colour_coding_struct   *colour_coding,
     Colour_coding_types    type,
     Colour                 under_colour,
@@ -82,7 +81,7 @@ public  void  initialize_colour_coding(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_colour_coding(
+BICAPI void  delete_colour_coding(
     colour_coding_struct   *colour_coding )
 {
     if( colour_coding->n_colour_points > 0 )
@@ -105,7 +104,7 @@ public  void  delete_colour_coding(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_colour_coding_type(
+BICAPI void  set_colour_coding_type(
     colour_coding_struct   *colour_coding,
     Colour_coding_types    type )
 {
@@ -127,7 +126,7 @@ public  void  set_colour_coding_type(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Colour_coding_types  get_colour_coding_type(
+BICAPI Colour_coding_types  get_colour_coding_type(
     colour_coding_struct   *colour_coding )
 {
     return( colour_coding->type );
@@ -148,7 +147,7 @@ public  Colour_coding_types  get_colour_coding_type(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_colour_coding_min_max(
+BICAPI void  set_colour_coding_min_max(
     colour_coding_struct   *colour_coding,
     Real                   min_value,
     Real                   max_value )
@@ -171,7 +170,7 @@ public  void  set_colour_coding_min_max(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_colour_coding_min_max(
+BICAPI void  get_colour_coding_min_max(
     colour_coding_struct   *colour_coding,
     Real                   *min_value,
     Real                   *max_value )
@@ -193,7 +192,7 @@ public  void  get_colour_coding_min_max(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Colour  get_colour_coding_under_colour(
+BICAPI Colour  get_colour_coding_under_colour(
     colour_coding_struct   *colour_coding )
 {
     return( colour_coding->under_colour );
@@ -213,7 +212,7 @@ public  Colour  get_colour_coding_under_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_colour_coding_under_colour(
+BICAPI void  set_colour_coding_under_colour(
     colour_coding_struct   *colour_coding,
     Colour                 under_colour )
 {
@@ -233,7 +232,7 @@ public  void  set_colour_coding_under_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Colour  get_colour_coding_over_colour(
+BICAPI Colour  get_colour_coding_over_colour(
     colour_coding_struct   *colour_coding )
 {
     return( colour_coding->over_colour );
@@ -253,7 +252,7 @@ public  Colour  get_colour_coding_over_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_colour_coding_over_colour(
+BICAPI void  set_colour_coding_over_colour(
     colour_coding_struct   *colour_coding,
     Colour                 over_colour )
 {
@@ -286,7 +285,7 @@ public  void  set_colour_coding_over_colour(
                                                structure
 ---------------------------------------------------------------------------- */
 
-private  void  recreate_piecewise_function(
+static void  recreate_piecewise_function(
     colour_coding_struct  *colour_coding,
     Colour_coding_types   type,
     BOOLEAN               set_user_defined )
@@ -451,7 +450,7 @@ private  void  recreate_piecewise_function(
 @MODIFIED   : Apr. 16, 1997    D. MacDonald - now rescales to [0..1]
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  define_colour_coding_user_defined(
+BICAPI BOOLEAN  define_colour_coding_user_defined(
     colour_coding_struct  *colour_code,
     int                   n_colours,
     Colour                colours[],
@@ -537,7 +536,7 @@ public  BOOLEAN  define_colour_coding_user_defined(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Colour  get_colour_code(
+BICAPI Colour  get_colour_code(
     colour_coding_struct  *colour_coding,
     Real                  value )
 {
@@ -600,7 +599,7 @@ public  Colour  get_colour_code(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  interpolate_colours(
+static void  interpolate_colours(
     colour_point   *p1,
     colour_point   *p2,
     Real           pos,

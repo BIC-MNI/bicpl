@@ -1,7 +1,7 @@
-#include  <bicpl/marching.h>
-#include  <volume_io/internal_volume_io.h>
+#include "bicpl_internal.h"
+#include "bicpl/marching.h"
 
-private  int  get_polygons(
+static  int  get_polygons(
     Marching_cubes_methods  method,
     int                     x,
     int                     y,
@@ -35,7 +35,7 @@ private  int  get_polygons(
     return( n_polygons );
 }
 
-private  BOOLEAN  is_binary_inside(
+static  BOOLEAN  is_binary_inside(
     Real   value,
     Real   min_value,
     Real   max_value )
@@ -43,7 +43,7 @@ private  BOOLEAN  is_binary_inside(
     return( min_value <= value && value <= max_value );
 }
 
-public  int  compute_isosurface_in_voxel(
+BICAPI  int  compute_isosurface_in_voxel(
     Marching_cubes_methods  method,
     int                     x,
     int                     y,
@@ -81,7 +81,7 @@ public  int  compute_isosurface_in_voxel(
                               sizes, points ) );
 }
 
-public  Point_classes  get_isosurface_point(
+BICAPI  Point_classes  get_isosurface_point(
     Real              corners[2][2][2],
     int               voxel[],
     int               edge_intersected,
@@ -154,7 +154,7 @@ public  Point_classes  get_isosurface_point(
     return( point_class );
 }
 
-public  int  get_max_marching_edges(
+BICAPI  int  get_max_marching_edges(
     Marching_cubes_methods  method )
 {
     switch( method )
@@ -172,7 +172,7 @@ public  int  get_max_marching_edges(
     }
 }
 
-public  int  get_max_marching_polygons_per_voxel(
+BICAPI  int  get_max_marching_polygons_per_voxel(
     Marching_cubes_methods  method )
 {
     switch( method )

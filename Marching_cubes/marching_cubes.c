@@ -1,8 +1,7 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/marching_cube_data.h>
-#include  <bicpl/marching.h>
+#include "bicpl_internal.h"
+#include "bicpl/marching_cube_data.h"
 
-private  marching_cube_data_struct  marching_cube_cases[256] =
+static  marching_cube_data_struct  marching_cube_cases[256] =
     {
         {            /* 0 */
             0,
@@ -3484,11 +3483,11 @@ private  marching_cube_data_struct  marching_cube_cases[256] =
         }
     };
 
-private  int  get_voxel_case_struct(
+static  int  get_voxel_case_struct(
     BOOLEAN             above_flags[2][2][2],
     voxel_point_type    *points_list_ptr[] );
 
-public  int  compute_isotriangles_in_voxel(
+BICAPI  int  compute_isotriangles_in_voxel(
     Real                corner_values[2][2][2],
     Real                target_value,
     voxel_point_type    *points_list_ptr[] )
@@ -3507,7 +3506,7 @@ public  int  compute_isotriangles_in_voxel(
     return( get_voxel_case_struct( above_flags, points_list_ptr ) );
 }
 
-private  int  get_voxel_case_struct(
+static  int  get_voxel_case_struct(
     BOOLEAN             above_flags[2][2][2],
     voxel_point_type    *points_list_ptr[] )
 {

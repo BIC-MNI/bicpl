@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.11 2000-02-06 15:30:55 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.12 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -48,7 +47,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpo
 
 /* ARGSUSED */
 
-public  void  interpolate_volume_to_slice(
+BICAPI void  interpolate_volume_to_slice(
     Volume          volume1,
     int             n_dims1,
     Real            origin1[],

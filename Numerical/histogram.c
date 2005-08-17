@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/histogram.c,v 1.11 2000-02-06 15:30:39 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/histogram.c,v 1.12 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -34,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/histo
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_histogram(
+BICAPI  void  initialize_histogram(
     histogram_struct  *histogram,
     Real              delta,
     Real              offset )
@@ -59,7 +58,7 @@ public  void  initialize_histogram(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_histogram(
+BICAPI  void  delete_histogram(
     histogram_struct  *histogram )
 {
     if( histogram->max_index >= histogram->min_index )
@@ -83,7 +82,7 @@ public  void  delete_histogram(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_histogram_index(
+static  int  get_histogram_index(
     histogram_struct  *histogram,
     Real              value )
 {
@@ -108,7 +107,7 @@ private  int  get_histogram_index(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  convert_real_index_to_value(
+static  Real  convert_real_index_to_value(
     histogram_struct  *histogram,
     Real              ind )
 {
@@ -130,7 +129,7 @@ private  Real  convert_real_index_to_value(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  convert_index_to_value(
+static  Real  convert_index_to_value(
     histogram_struct  *histogram,
     int               ind )
 {
@@ -153,7 +152,7 @@ private  Real  convert_index_to_value(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  add_to_histogram(
+BICAPI  void  add_to_histogram(
     histogram_struct  *histogram,
     Real              value )
 {
@@ -215,7 +214,7 @@ public  void  add_to_histogram(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_histogram_range(
+static  void  get_histogram_range(
     histogram_struct  *histogram,
     Real              *min_value,
     Real              *max_value )
@@ -237,7 +236,7 @@ private  void  get_histogram_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_histogram_max_count(
+static  int  get_histogram_max_count(
     histogram_struct  *histogram )
 {
     int   ind, max_count;
@@ -270,7 +269,7 @@ private  int  get_histogram_max_count(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  box_filter_histogram(
+static  void  box_filter_histogram(
     int          n,
     Real         counts[],
     Real         new_counts[],
@@ -317,7 +316,7 @@ private  void  box_filter_histogram(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_histogram_counts(
+BICAPI  int  get_histogram_counts(
     histogram_struct  *histogram,
     Real              *counts[],
     Real              filter_width,
@@ -369,7 +368,7 @@ public  int  get_histogram_counts(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  resample_histogram(
+static  void  resample_histogram(
     histogram_struct  *histogram,
     int               x_size,
     int               y_size,
@@ -439,7 +438,7 @@ private  void  resample_histogram(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  display_histogram(
+BICAPI  void  display_histogram(
     histogram_struct  *histogram,
     int               x_size,
     int               y_size )
@@ -489,7 +488,7 @@ public  void  display_histogram(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_histogram_line(
+BICAPI  void  create_histogram_line(
     histogram_struct  *histogram,
     int               x_size,
     int               y_size,

@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/volume_slice.c,v 1.11 2000-02-06 15:30:20 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/volume_slice.c,v 1.12 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -42,7 +40,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/volume
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   create_slice_quadmesh(
+BICAPI  void   create_slice_quadmesh(
     Volume           volume,
     int              axis_index,
     Real             voxel_position,
@@ -121,7 +119,7 @@ public  void   create_slice_quadmesh(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   create_slice_3d(
+BICAPI  void   create_slice_3d(
     Volume           volume,
     Point            *origin,
     Vector           *normal,

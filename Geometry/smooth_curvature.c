@@ -12,15 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/data_structures.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.16 2003-06-17 15:19:24 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.17 2005-08-17 22:30:25 bert Exp $";
 #endif
 
-private  int  get_smoothing_points(
+static  int  get_smoothing_points(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
@@ -30,7 +28,7 @@ private  int  get_smoothing_points(
     float             distances[],
     Point             *smoothing_points[] );
 
-private  Real  get_average_curvature(
+static  Real  get_average_curvature(
     Point   *point,
     Vector  *normal,
     int     n_smoothing_points,
@@ -75,7 +73,7 @@ private  Real  get_average_curvature(
  * \a vertex, and the i'th smoothing point.
  *
  */
-public  Real  get_smooth_surface_curvature(
+BICAPI  Real  get_smooth_surface_curvature(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
@@ -171,7 +169,7 @@ public  Real  get_smooth_surface_curvature(
  * filled in with distances from the start point, or -1 to indicate
  * that the vertex lies at distance greater than \a smoothing_distance.
  */
-private  int  get_smoothing_points(
+static  int  get_smoothing_points(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
@@ -250,7 +248,7 @@ private  int  get_smoothing_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  get_average_curvature(
+static  Real  get_average_curvature(
     Point   *point,
     Vector  *normal,
     int     n_smoothing_points,

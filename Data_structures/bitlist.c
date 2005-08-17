@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/data_structures.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bitlist.c,v 1.12 2000-02-06 15:30:10 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bitlist.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -32,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_bitlist(
+BICAPI  void  create_bitlist(
     int             n_bits,
     bitlist_struct  *bitlist )
 {
@@ -58,7 +57,7 @@ public  void  create_bitlist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  zero_bitlist(
+BICAPI  void  zero_bitlist(
     bitlist_struct  *bitlist )
 {
     int   i;
@@ -80,7 +79,7 @@ public  void  zero_bitlist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  fill_bitlist(
+BICAPI  void  fill_bitlist(
     bitlist_struct  *bitlist )
 {
     int   i;
@@ -104,7 +103,7 @@ public  void  fill_bitlist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void     set_bitlist_bit(
+BICAPI  void     set_bitlist_bit(
     bitlist_struct  *bitlist,
     int             bit_index,
     BOOLEAN         value )
@@ -137,7 +136,7 @@ public  void     set_bitlist_bit(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN     get_bitlist_bit(
+BICAPI  BOOLEAN     get_bitlist_bit(
     bitlist_struct  *bitlist,
     int             bit_index )
 {
@@ -168,7 +167,7 @@ public  BOOLEAN     get_bitlist_bit(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_bitlist(
+BICAPI  void  delete_bitlist(
     bitlist_struct  *bitlist )
 {
     if( bitlist->n_words > 0 )
@@ -194,7 +193,7 @@ public  void  delete_bitlist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_bitlist_3d(
+BICAPI  void  create_bitlist_3d(
     int                nx,
     int                ny,
     int                nz,
@@ -225,7 +224,7 @@ public  void  create_bitlist_3d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  zero_bitlist_3d(
+BICAPI  void  zero_bitlist_3d(
     bitlist_3d_struct  *bitlist )
 {
     int   x, y, z;
@@ -242,7 +241,7 @@ public  void  zero_bitlist_3d(
     }
 }
 
-public  void  get_bitlist_3d_sizes(
+BICAPI  void  get_bitlist_3d_sizes(
     bitlist_3d_struct  *bitlist,
     int                *nx,
     int                *ny,
@@ -266,7 +265,7 @@ public  void  get_bitlist_3d_sizes(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  fill_bitlist_3d(
+BICAPI  void  fill_bitlist_3d(
     bitlist_3d_struct  *bitlist )
 {
     int   x, y, z;
@@ -300,7 +299,7 @@ public  void  fill_bitlist_3d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void     set_bitlist_bit_3d(
+BICAPI  void     set_bitlist_bit_3d(
     bitlist_3d_struct  *bitlist,
     int                x,
     int                y,
@@ -344,7 +343,7 @@ public  void     set_bitlist_bit_3d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN     get_bitlist_bit_3d(
+BICAPI  BOOLEAN     get_bitlist_bit_3d(
     bitlist_3d_struct  *bitlist,
     int                x,
     int                y,
@@ -378,7 +377,7 @@ public  BOOLEAN     get_bitlist_bit_3d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_bitlist_3d(
+BICAPI  void  delete_bitlist_3d(
     bitlist_3d_struct  *bitlist )
 {;
     if( bitlist->nx > 0 && bitlist->ny > 0 && bitlist->nz > 0 )
@@ -402,7 +401,7 @@ public  void  delete_bitlist_3d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_bitlist_3d(
+BICAPI  Status  io_bitlist_3d(
     FILE               *file,
     IO_types           io_type,
     bitlist_3d_struct  *bitlist )

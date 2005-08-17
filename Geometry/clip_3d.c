@@ -1,9 +1,8 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #define  STATIC_STORAGE  1000
 
-public  int  clip_polygon_against_box(
+BICAPI  int  clip_polygon_against_box(
     int     n_points,
     Point   points[],
     Real    x_min,
@@ -124,7 +123,7 @@ public  int  clip_polygon_against_box(
     return( n_out );
 }
 
-public  int  clip_polygon_against_plane(
+BICAPI  int  clip_polygon_against_plane(
     int     n_points,
     Point   points[],
     Real    plane_constant,
@@ -167,7 +166,7 @@ public  int  clip_polygon_against_plane(
     return( n_output );
 }
 
-public  void  split_polygon_with_plane(
+BICAPI  void  split_polygon_with_plane(
     int     n_points,
     Point   points[],
     Real    plane_constant,

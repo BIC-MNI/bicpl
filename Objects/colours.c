@@ -13,156 +13,155 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.10 2000-02-06 15:30:42 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.11 2005-08-17 22:28:26 bert Exp $";
 #endif
 
-private Colour ANTIQUE_WHITE_COL;
-private Colour ALICE_BLUE_COL;
-private Colour AQUAMARINE_COL;
-private Colour AZURE_COL;
-private Colour BEIGE_COL;
-private Colour BISQUE_COL;
-private Colour BLACK_COL;
-private Colour BLANCHED_ALMOND_COL;
-private Colour BLUE_COL;
-private Colour BLUE_VIOLET_COL;
-private Colour BRIGHT_MUSTARD_COL;
-private Colour BROWN_COL;
-private Colour BURLYWOOD_COL;
-private Colour CADET_BLUE_COL;
-private Colour CHARTREUSE_COL;
-private Colour CHOCOLATE_COL;
-private Colour CORAL_COL;
-private Colour CORNFLOWER_BLUE_COL;
-private Colour CORNSILK_COL;
-private Colour CYAN_COL;
-private Colour DARK_BROWN_COL;
-private Colour DARK_FIREBRICK_COL;
-private Colour DARK_GOLDENROD_COL;
-private Colour DARK_GREEN_COL;
-private Colour DARK_KHAKI_COL;
-private Colour DARK_OLIVE_GREEN_COL;
-private Colour DARK_ORANGE_COL;
-private Colour DARK_ORCHID_COL;
-private Colour DARK_RED_COL;
-private Colour DARK_SALMON_COL;
-private Colour DARK_SEA_GREEN_COL;
-private Colour DARK_SLATE_BLUE_COL;
-private Colour DARK_SLATE_GRAY_COL;
-private Colour DARK_SLATE_GREY_COL;
-private Colour DARK_TURQUOISE_COL;
-private Colour DARK_VIOLET_COL;
-private Colour DEEP_PINK_COL;
-private Colour DEEP_SKY_BLUE_COL;
-private Colour DIM_GRAY_COL;
-private Colour DIM_GREY_COL;
-private Colour DODGER_BLUE_COL;
-private Colour FIREBRICK_COL;
-private Colour FLORAL_WHITE_COL;
-private Colour FOREST_GREEN_COL;
-private Colour GAINSBORO_COL;
-private Colour GHOST_WHITE_COL;
-private Colour GOLDENROD_COL;
-private Colour GOLD_COL;
-private Colour GRAY_COL;
-private Colour GREEN_COL;
-private Colour GREEN_YELLOW_COL;
-private Colour GREY_COL;
-private Colour HONEYDEW_COL;
-private Colour HOT_PINK_COL;
-private Colour INDIAN_RED_COL;
-private Colour IVORY_COL;
-private Colour KHAKI_COL;
-private Colour LAVENDER_BLUSH_COL;
-private Colour LAVENDER_COL;
-private Colour LAWN_GREEN_COL;
-private Colour LEMON_CHIFFON_COL;
-private Colour LIGHT_BLUE_COL;
-private Colour LIGHT_CORAL_COL;
-private Colour LIGHT_CYAN_COL;
-private Colour LIGHT_GOLDENROD_COL;
-private Colour LIGHT_GOLDENROD_YELLOW_COL;
-private Colour LIGHT_GRAY_COL;
-private Colour LIGHT_GREY_COL;
-private Colour LIGHT_PINK_COL;
-private Colour LIGHT_SALMON_COL;
-private Colour LIGHT_SEA_GREEN_COL;
-private Colour LIGHT_SKY_BLUE_COL;
-private Colour LIGHT_SLATE_BLUE_COL;
-private Colour LIGHT_SLATE_GRAY_COL;
-private Colour LIGHT_SLATE_GREY_COL;
-private Colour LIGHT_STEEL_BLUE_COL;
-private Colour LIGHT_YELLOW_COL;
-private Colour LIME_GREEN_COL;
-private Colour LINEN_COL;
-private Colour MAGENTA_COL;
-private Colour MAROON_COL;
-private Colour MEDIUM_AQUAMARINE_COL;
-private Colour MEDIUM_BLUE_COL;
-private Colour MEDIUM_ORCHID_COL;
-private Colour MEDIUM_PURPLE_COL;
-private Colour MEDIUM_SEA_GREEN_COL;
-private Colour MEDIUM_SLATE_BLUE_COL;
-private Colour MEDIUM_SPRING_GREEN_COL;
-private Colour MEDIUM_TURQUOISE_COL;
-private Colour MEDIUM_VIOLET_RED_COL;
-private Colour MIAMI_PINK_COL;
-private Colour MIAMI_TURQUOISE_COL;
-private Colour MIDNIGHT_BLUE_COL;
-private Colour MINT_CREAM_COL;
-private Colour MISTY_ROSE_COL;
-private Colour MOCCASIN_COL;
-private Colour NAVAJO_WHITE_COL;
-private Colour NAVY_BLUE_COL;
-private Colour NAVY_COL;
-private Colour OLD_LACE_COL;
-private Colour OLIVE_DRAB_COL;
-private Colour ORANGE_COL;
-private Colour ORANGE_RED_COL;
-private Colour ORCHID_COL;
-private Colour PALE_GOLDENROD_COL;
-private Colour PALE_GREEN_COL;
-private Colour PALE_TURQUOISE_COL;
-private Colour PALE_VIOLET_RED_COL;
-private Colour PAPAYA_WHIP_COL;
-private Colour PEACH_PUFF_COL;
-private Colour PERU_COL;
-private Colour PINK_COL;
-private Colour PLUM_COL;
-private Colour POWDER_BLUE_COL;
-private Colour PURPLE_COL;
-private Colour RED_COL;
-private Colour ROSY_BROWN_COL;
-private Colour ROYAL_BLUE_COL;
-private Colour SADDLE_BROWN_COL;
-private Colour SALMON_COL;
-private Colour SANDY_BROWN_COL;
-private Colour SEASHELL_COL;
-private Colour SEA_GREEN_COL;
-private Colour SIENNA_COL;
-private Colour SKY_BLUE_COL;
-private Colour SLATE_BLUE_COL;
-private Colour SLATE_GRAY_COL;
-private Colour SLATE_GREY_COL;
-private Colour SNOW_COL;
-private Colour SPRING_GREEN_COL;
-private Colour STEEL_BLUE_COL;
-private Colour TAN_COL;
-private Colour THISTLE_COL;
-private Colour TOMATO_COL;
-private Colour TURQUOISE_COL;
-private Colour VIOLET_COL;
-private Colour VIOLET_RED_COL;
-private Colour WHEAT_COL;
-private Colour WHITE_COL;
-private Colour WHITE_SMOKE_COL;
-private Colour YELLOW_COL;
-private Colour YELLOW_GREEN_COL;
-private Colour TRANSPARENT_COL;
+static Colour ANTIQUE_WHITE_COL;
+static Colour ALICE_BLUE_COL;
+static Colour AQUAMARINE_COL;
+static Colour AZURE_COL;
+static Colour BEIGE_COL;
+static Colour BISQUE_COL;
+static Colour BLACK_COL;
+static Colour BLANCHED_ALMOND_COL;
+static Colour BLUE_COL;
+static Colour BLUE_VIOLET_COL;
+static Colour BRIGHT_MUSTARD_COL;
+static Colour BROWN_COL;
+static Colour BURLYWOOD_COL;
+static Colour CADET_BLUE_COL;
+static Colour CHARTREUSE_COL;
+static Colour CHOCOLATE_COL;
+static Colour CORAL_COL;
+static Colour CORNFLOWER_BLUE_COL;
+static Colour CORNSILK_COL;
+static Colour CYAN_COL;
+static Colour DARK_BROWN_COL;
+static Colour DARK_FIREBRICK_COL;
+static Colour DARK_GOLDENROD_COL;
+static Colour DARK_GREEN_COL;
+static Colour DARK_KHAKI_COL;
+static Colour DARK_OLIVE_GREEN_COL;
+static Colour DARK_ORANGE_COL;
+static Colour DARK_ORCHID_COL;
+static Colour DARK_RED_COL;
+static Colour DARK_SALMON_COL;
+static Colour DARK_SEA_GREEN_COL;
+static Colour DARK_SLATE_BLUE_COL;
+static Colour DARK_SLATE_GRAY_COL;
+static Colour DARK_SLATE_GREY_COL;
+static Colour DARK_TURQUOISE_COL;
+static Colour DARK_VIOLET_COL;
+static Colour DEEP_PINK_COL;
+static Colour DEEP_SKY_BLUE_COL;
+static Colour DIM_GRAY_COL;
+static Colour DIM_GREY_COL;
+static Colour DODGER_BLUE_COL;
+static Colour FIREBRICK_COL;
+static Colour FLORAL_WHITE_COL;
+static Colour FOREST_GREEN_COL;
+static Colour GAINSBORO_COL;
+static Colour GHOST_WHITE_COL;
+static Colour GOLDENROD_COL;
+static Colour GOLD_COL;
+static Colour GRAY_COL;
+static Colour GREEN_COL;
+static Colour GREEN_YELLOW_COL;
+static Colour GREY_COL;
+static Colour HONEYDEW_COL;
+static Colour HOT_PINK_COL;
+static Colour INDIAN_RED_COL;
+static Colour IVORY_COL;
+static Colour KHAKI_COL;
+static Colour LAVENDER_BLUSH_COL;
+static Colour LAVENDER_COL;
+static Colour LAWN_GREEN_COL;
+static Colour LEMON_CHIFFON_COL;
+static Colour LIGHT_BLUE_COL;
+static Colour LIGHT_CORAL_COL;
+static Colour LIGHT_CYAN_COL;
+static Colour LIGHT_GOLDENROD_COL;
+static Colour LIGHT_GOLDENROD_YELLOW_COL;
+static Colour LIGHT_GRAY_COL;
+static Colour LIGHT_GREY_COL;
+static Colour LIGHT_PINK_COL;
+static Colour LIGHT_SALMON_COL;
+static Colour LIGHT_SEA_GREEN_COL;
+static Colour LIGHT_SKY_BLUE_COL;
+static Colour LIGHT_SLATE_BLUE_COL;
+static Colour LIGHT_SLATE_GRAY_COL;
+static Colour LIGHT_SLATE_GREY_COL;
+static Colour LIGHT_STEEL_BLUE_COL;
+static Colour LIGHT_YELLOW_COL;
+static Colour LIME_GREEN_COL;
+static Colour LINEN_COL;
+static Colour MAGENTA_COL;
+static Colour MAROON_COL;
+static Colour MEDIUM_AQUAMARINE_COL;
+static Colour MEDIUM_BLUE_COL;
+static Colour MEDIUM_ORCHID_COL;
+static Colour MEDIUM_PURPLE_COL;
+static Colour MEDIUM_SEA_GREEN_COL;
+static Colour MEDIUM_SLATE_BLUE_COL;
+static Colour MEDIUM_SPRING_GREEN_COL;
+static Colour MEDIUM_TURQUOISE_COL;
+static Colour MEDIUM_VIOLET_RED_COL;
+static Colour MIAMI_PINK_COL;
+static Colour MIAMI_TURQUOISE_COL;
+static Colour MIDNIGHT_BLUE_COL;
+static Colour MINT_CREAM_COL;
+static Colour MISTY_ROSE_COL;
+static Colour MOCCASIN_COL;
+static Colour NAVAJO_WHITE_COL;
+static Colour NAVY_BLUE_COL;
+static Colour NAVY_COL;
+static Colour OLD_LACE_COL;
+static Colour OLIVE_DRAB_COL;
+static Colour ORANGE_COL;
+static Colour ORANGE_RED_COL;
+static Colour ORCHID_COL;
+static Colour PALE_GOLDENROD_COL;
+static Colour PALE_GREEN_COL;
+static Colour PALE_TURQUOISE_COL;
+static Colour PALE_VIOLET_RED_COL;
+static Colour PAPAYA_WHIP_COL;
+static Colour PEACH_PUFF_COL;
+static Colour PERU_COL;
+static Colour PINK_COL;
+static Colour PLUM_COL;
+static Colour POWDER_BLUE_COL;
+static Colour PURPLE_COL;
+static Colour RED_COL;
+static Colour ROSY_BROWN_COL;
+static Colour ROYAL_BLUE_COL;
+static Colour SADDLE_BROWN_COL;
+static Colour SALMON_COL;
+static Colour SANDY_BROWN_COL;
+static Colour SEASHELL_COL;
+static Colour SEA_GREEN_COL;
+static Colour SIENNA_COL;
+static Colour SKY_BLUE_COL;
+static Colour SLATE_BLUE_COL;
+static Colour SLATE_GRAY_COL;
+static Colour SLATE_GREY_COL;
+static Colour SNOW_COL;
+static Colour SPRING_GREEN_COL;
+static Colour STEEL_BLUE_COL;
+static Colour TAN_COL;
+static Colour THISTLE_COL;
+static Colour TOMATO_COL;
+static Colour TURQUOISE_COL;
+static Colour VIOLET_COL;
+static Colour VIOLET_RED_COL;
+static Colour WHEAT_COL;
+static Colour WHITE_COL;
+static Colour WHITE_SMOKE_COL;
+static Colour YELLOW_COL;
+static Colour YELLOW_GREEN_COL;
+static Colour TRANSPARENT_COL;
 
 typedef  struct
 {
@@ -170,7 +169,7 @@ typedef  struct
     Colour   *colour;
 } colours_struct;
 
-private  colours_struct  colour_lookup[] =
+static  colours_struct  colour_lookup[] =
 {
     { "TRANSPARENT", &TRANSPARENT_COL },
     { "ALICE_BLUE", &ALICE_BLUE_COL },
@@ -317,7 +316,7 @@ private  colours_struct  colour_lookup[] =
     { "YELLOW_GREEN", &YELLOW_GREEN_COL }
 };
 
-private   BOOLEAN  strings_equivalent( STRING, STRING );
+static   BOOLEAN  strings_equivalent( STRING, STRING );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : check_initialize_colours
@@ -333,7 +332,7 @@ private   BOOLEAN  strings_equivalent( STRING, STRING );
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  check_initialize_colours( void )
+static  void  check_initialize_colours( void )
 {
     static  BOOLEAN  first = TRUE;
 
@@ -499,7 +498,7 @@ private  void  check_initialize_colours( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_default_surfprop(
+BICAPI  void  get_default_surfprop(
     Surfprop  *surfprop )
 {
     Surfprop_a(*surfprop) = 0.3f;
@@ -523,7 +522,7 @@ public  void  get_default_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  lookup_colour(
+BICAPI  BOOLEAN  lookup_colour(
     STRING    colour_name,
     Colour    *col )
 {
@@ -561,7 +560,7 @@ public  BOOLEAN  lookup_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  lookup_colour_name(
+BICAPI  BOOLEAN  lookup_colour_name(
     Colour  col,
     STRING  *colour_name )
 {
@@ -600,7 +599,7 @@ public  BOOLEAN  lookup_colour_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  strings_equivalent(
+static  BOOLEAN  strings_equivalent(
     STRING   str1,
     STRING   str2 )
 {
@@ -650,7 +649,7 @@ private  BOOLEAN  strings_equivalent(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  rgb_to_hsl(
+BICAPI  void  rgb_to_hsl(
     Real    r,
     Real    g,
     Real    b,
@@ -729,7 +728,7 @@ public  void  rgb_to_hsl(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  hsl_to_rgb(
+BICAPI  void  hsl_to_rgb(
     Real   h,
     Real   sl,
     Real   l,
@@ -794,7 +793,7 @@ public  void  hsl_to_rgb(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_colour_to_hsl(
+BICAPI  void  convert_colour_to_hsl(
     Colour   rgb,
     Colour   *hsl )
 {
@@ -821,7 +820,7 @@ public  void  convert_colour_to_hsl(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_colour_to_rgb(
+BICAPI  void  convert_colour_to_rgb(
     Colour   hsl,
     Colour   *rgb )
 {
@@ -849,7 +848,7 @@ public  void  convert_colour_to_rgb(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  equal_colours(
+BICAPI  BOOLEAN  equal_colours(
     Colour  col1,
     Colour  col2 )
 {
@@ -872,7 +871,7 @@ public  BOOLEAN  equal_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  STRING  convert_colour_to_string(
+BICAPI  STRING  convert_colour_to_string(
     Colour   col )
 {
     char       buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -906,7 +905,7 @@ public  STRING  convert_colour_to_string(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Colour  convert_string_to_colour(
+BICAPI  Colour  convert_string_to_colour(
     STRING     string )
 {
     Colour   colour;
@@ -946,7 +945,7 @@ public  Colour  convert_string_to_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_colour_distance(
+BICAPI  int  get_colour_distance(
     int      r,
     int      g,
     int      b,
@@ -979,7 +978,7 @@ public  int  get_colour_distance(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int   find_closest_colour(
+BICAPI  int   find_closest_colour(
     int     r,
     int     g,
     int     b,
@@ -1017,7 +1016,7 @@ public  int   find_closest_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_Colour_luminance(
+BICAPI  int  get_Colour_luminance(
     Colour   colour )
 {
     return( ROUND( 0.299 * (Real) get_Colour_r(colour) +
@@ -1040,7 +1039,7 @@ public  int  get_Colour_luminance(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Colour  scale_colour(
+BICAPI  Colour  scale_colour(
     Colour   colour,
     Real     factor )
 {

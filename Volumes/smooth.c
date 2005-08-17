@@ -12,16 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/trans.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/smooth.c,v 1.21 2000-02-06 15:30:57 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/smooth.c,v 1.22 2005-08-17 22:26:19 bert Exp $";
 #endif
 
-private  Real  calculate_weight(
+static Real  calculate_weight(
     int      x,
     Real     dx,
     Real     x_min,
@@ -44,7 +41,7 @@ private  Real  calculate_weight(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Volume  smooth_resample_volume(
+BICAPI Volume  smooth_resample_volume(
     Volume              volume,
     int                 new_nx,
     int                 new_ny,
@@ -213,7 +210,7 @@ public  Volume  smooth_resample_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  calculate_weight(
+static Real  calculate_weight(
     int      x,
     Real     dx,
     Real     x_min,

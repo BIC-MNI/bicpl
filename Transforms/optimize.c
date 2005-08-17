@@ -13,12 +13,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include <volume_io/internal_volume_io.h>
-#include <bicpl/trans.h>
-#include <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.15 2000-02-06 15:30:50 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.16 2005-08-17 22:26:47 bert Exp $";
 #endif
 
 #define   FUNCTION_TOLERANCE    1e-6
@@ -51,7 +49,7 @@ typedef struct
 
 ---------------------------------------------------------------------------- */
 
-private  Real  lsq_objective(
+static  Real  lsq_objective(
     Transform  *lt,
     Real       **pts1,
     Real       **pts2, 
@@ -99,7 +97,7 @@ private  Real  lsq_objective(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  fit_function(
+static  Real  fit_function(
     void   *func_data,
     float  params[] ) 
 {
@@ -161,7 +159,7 @@ private  Real  fit_function(
 @MODIFIED   : July 4, 1995      D. MacDonald   - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  optimize_simplex(
+BICAPI  BOOLEAN  optimize_simplex(
     Real           **pts1,
     Real           **pts2, 
     int            npoints, 

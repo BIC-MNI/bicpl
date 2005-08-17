@@ -12,21 +12,20 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.5 2000-12-15 19:55:06 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.6 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define    DEFAULT_USER_DEFINED_COLOUR_CODE_SUFFIX      "ccd"
 
-public  STRING    get_default_user_def_colour_code_suffix( void )
+BICAPI STRING    get_default_user_def_colour_code_suffix( void )
 {
     return( DEFAULT_USER_DEFINED_COLOUR_CODE_SUFFIX );
 }
 
-public  Status  input_user_defined_colour_coding(
+BICAPI Status  input_user_defined_colour_coding(
     colour_coding_struct   *colour_coding,
     STRING                 filename )
 {

@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.20 2000-02-06 15:30:14 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geometry.c,v 1.21 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -34,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geomet
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  find_polygon_normal_no_normalize(
+BICAPI  void  find_polygon_normal_no_normalize(
     int      n_points,
     Point    points[],
     Real     *nx,
@@ -126,7 +125,7 @@ public  void  find_polygon_normal_no_normalize(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  find_polygon_normal(
+BICAPI  void  find_polygon_normal(
     int      n_points,
     Point    points[],
     Vector   *normal )
@@ -157,7 +156,7 @@ public  void  find_polygon_normal(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   get_plane_through_points(
+BICAPI  void   get_plane_through_points(
     int      n_points,
     Point    points[],
     Vector   *normal,
@@ -187,7 +186,7 @@ public  void   get_plane_through_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  distance_from_plane(
+BICAPI  Real  distance_from_plane(
     Point    *point,
     Vector   *plane_normal,
     Real     plane_constant )
@@ -210,7 +209,7 @@ public  Real  distance_from_plane(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  distance_from_line(
+BICAPI  Real  distance_from_line(
     Point    *point,
     Point    *end_point1,
     Point    *end_point2 )

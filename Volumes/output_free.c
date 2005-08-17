@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.22 2000-02-06 15:30:56 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.23 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -35,7 +34,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  output_volume_free_format(
+BICAPI Status  output_volume_free_format(
     STRING         prefix,
     Volume         volume,
     int            axis_ordering[] )

@@ -1,24 +1,22 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/deform.h>
-#include  <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #define  MAX_DERIVS   2
 
-private  void   get_voxel_coefs(
+static  void   get_voxel_coefs(
     int     degrees_continuity,
     Real    voxel[],
     Real    coefs[MAX_DERIVS+2][MAX_DERIVS+2][MAX_DERIVS+2] );
-private  void   make_coefs_uv(
+static  void   make_coefs_uv(
     int     degrees_continuity,
     Real    voxels[MAX_DERIVS+2],
     Real    interpolation_coefs[MAX_DERIVS+2][MAX_DERIVS+2],
     Real    coefs[MAX_DERIVS+2] );
-private  void   make_coefs_u(
+static  void   make_coefs_u(
     int     degrees_continuity,
     Real    coefs_uv[MAX_DERIVS+2][MAX_DERIVS+2],
     Real    interpolation_coefs[MAX_DERIVS+2][MAX_DERIVS+2],
     Real    coefs_u[MAX_DERIVS+2][MAX_DERIVS+2] );
-private  void  find_coefs_of_line(
+static  void  find_coefs_of_line(
     int         degrees_continuity,
     Real        coefs[MAX_DERIVS+2][MAX_DERIVS+2][MAX_DERIVS+2],
     Real        ou,
@@ -29,7 +27,7 @@ private  void  find_coefs_of_line(
     Real        dw,
     Real        line_coefs[(MAX_DERIVS+1) * N_DIMENSIONS+1] );
 
-private  void  get_voxel_line_tricubic(
+static  void  get_voxel_line_tricubic(
     Real        coefs[],
     int         x,
     int         y,
@@ -87,7 +85,7 @@ private  void  get_voxel_line_tricubic(
     line_poly[3] = du * delta0tt;
 }
 
-public  int  find_voxel_line_polynomial(
+BICAPI  int  find_voxel_line_polynomial(
     Real        coefs[],
     int         degrees_continuity,
     int         x,
@@ -130,7 +128,7 @@ public  int  find_voxel_line_polynomial(
 
 #define  N_STEPS  8
 
-private  int   get_cubic_root(
+static  int   get_cubic_root(
     Real  coefs[],
     Real  u_min,
     Real  u_max,
@@ -186,7 +184,7 @@ private  int   get_cubic_root(
 #endif
 }
 
-public  int  find_voxel_line_value_intersection(
+BICAPI  int  find_voxel_line_value_intersection(
     Real        coefs[],
     int         degrees_continuity,
     int         x,
@@ -226,7 +224,7 @@ public  int  find_voxel_line_value_intersection(
     return( n_intersections );
 }
 
-private  void   get_voxel_coefs(
+static  void   get_voxel_coefs(
     int     degrees_continuity,
     Real    voxel[],
     Real    coefs[MAX_DERIVS+2][MAX_DERIVS+2][MAX_DERIVS+2] )
@@ -296,7 +294,7 @@ private  void   get_voxel_coefs(
     }
 }
 
-private  void   make_coefs_uv(
+static  void   make_coefs_uv(
     int     degrees_continuity,
     Real    voxels[MAX_DERIVS+2],
     Real    interpolation_coefs[MAX_DERIVS+2][MAX_DERIVS+2],
@@ -314,7 +312,7 @@ private  void   make_coefs_uv(
     }
 }
 
-private  void   make_coefs_u(
+static  void   make_coefs_u(
     int     degrees_continuity,
     Real    coefs_uv[MAX_DERIVS+2][MAX_DERIVS+2],
     Real    interpolation_coefs[MAX_DERIVS+2][MAX_DERIVS+2],
@@ -335,7 +333,7 @@ private  void   make_coefs_u(
     }
 }
 
-private  void   add_components(
+static  void   add_components(
     int   du,
     int   dv,
     int   dw,
@@ -449,7 +447,7 @@ private  void   add_components(
     }
 }
 
-private  void  find_coefs_of_line(
+static  void  find_coefs_of_line(
     int         degrees_continuity,
     Real        coefs[MAX_DERIVS+2][MAX_DERIVS+2][MAX_DERIVS+2],
     Real        ou,

@@ -12,16 +12,15 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_polygons.c,v 1.12 2000-02-06 15:30:18 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_polygons.c,v 1.13 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 #define  CHECK_INTERVAL     1.0
 
-private  void  smooth_points(
+static  void  smooth_points(
     polygons_struct  *polygons,
     Point            current_points[],
     Point            new_points[],
@@ -35,7 +34,7 @@ private  void  smooth_points(
     int              max_value,
     Real             *avg_moved,
     Real             *max_moved );
-private  Real  update_point_position(
+static  Real  update_point_position(
     polygons_struct  *polygons,
     int              poly,
     int              vertex_index,
@@ -49,7 +48,7 @@ private  Real  update_point_position(
     volume_struct    *volume,
     int              min_value,
     int              max_value );
-private  BOOLEAN   point_inside_range(
+static  BOOLEAN   point_inside_range(
     volume_struct  *volume,
     Point          *point,
     int            min_value,
@@ -77,7 +76,7 @@ private  BOOLEAN   point_inside_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  smooth_polygon(
+BICAPI  void  smooth_polygon(
     polygons_struct  *polygons,
     Real             max_dist_from_original,
     Real             fraction_to_move,
@@ -172,7 +171,7 @@ public  void  smooth_polygon(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  smooth_points(
+static  void  smooth_points(
     polygons_struct  *polygons,
     Point            current_points[],
     Point            new_points[],
@@ -250,7 +249,7 @@ private  void  smooth_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  update_point_position(
+static  Real  update_point_position(
     polygons_struct  *polygons,
     int              poly,
     int              vertex_index,
@@ -370,7 +369,7 @@ private  Real  update_point_position(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN   point_inside_range(
+static  BOOLEAN   point_inside_range(
     volume_struct  *volume,
     Point          *point,
     int            min_value,

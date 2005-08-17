@@ -1,8 +1,6 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
-#include  <bicpl/numerical.h>
+#include  "bicpl_internal.h"
 
-private  void   trilinear_interpolate_volume(
+static void   trilinear_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -35,7 +33,7 @@ private  void   trilinear_interpolate_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   evaluate_3D_volume_in_world(
+BICAPI void   evaluate_3D_volume_in_world(
     Volume         volume,
     Real           x,
     Real           y,
@@ -57,6 +55,7 @@ public  void   evaluate_3D_volume_in_world(
     Real      txx, txy, txz;
     Real      tyx, tyy, tyz;
     Real      tzx, tzy, tzz;
+    Real      derivs[MAX_DIMENSIONS];
 
     if( get_volume_n_dimensions(volume) != 3 )
     {
@@ -73,8 +72,10 @@ public  void   evaluate_3D_volume_in_world(
 
     if( deriv_x != (Real *) 0 )
     {
-        convert_voxel_normal_vector_to_world( volume,
-                                              *deriv_x, *deriv_y, *deriv_z,
+        derivs[0] = *deriv_x;
+        derivs[1] = *deriv_y;
+        derivs[2] = *deriv_z;
+        convert_voxel_normal_vector_to_world( volume, derivs,
                                               deriv_x, deriv_y, deriv_z );
     }
 
@@ -108,7 +109,7 @@ public  void   evaluate_3D_volume_in_world(
     }
 }
 
-public  void   special_evaluate_3D_volume_in_world(
+BICAPI void   special_evaluate_3D_volume_in_world(
     Volume         volume,
     Real           x,
     Real           y,
@@ -174,7 +175,7 @@ public  void   special_evaluate_3D_volume_in_world(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   evaluate_3D_slice_in_world(
+BICAPI void   evaluate_3D_slice_in_world(
     Volume         volume,
     Real           x,
     Real           y,
@@ -255,7 +256,7 @@ public  void   evaluate_3D_slice_in_world(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void   triconstant_interpolate_volume(
+static void   triconstant_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -381,7 +382,7 @@ private  void   triconstant_interpolate_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void   trilinear_interpolate_volume(
+static void   trilinear_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -491,7 +492,7 @@ private  void   trilinear_interpolate_volume(
     }
 }
 
-private  void   trivar_interpolate_volume(
+static void   trivar_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -600,7 +601,7 @@ private  void   trivar_interpolate_volume(
         *value = derivs[IJK(0,0,0,n_derivs+1,n_derivs+1)];
 }
 
-private  void   bicubic_interpolate_volume(
+static void   bicubic_interpolate_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -704,7 +705,7 @@ private  void   bicubic_interpolate_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   evaluate_3D_volume(
+BICAPI void   evaluate_3D_volume(
     Volume         volume,
     Real           x,
     Real           y,
@@ -821,7 +822,7 @@ public  void   evaluate_3D_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   evaluate_3D_slice(
+BICAPI void   evaluate_3D_slice(
     Volume         volume,
     Real           x,
     Real           y,

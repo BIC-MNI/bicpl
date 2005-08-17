@@ -29,16 +29,15 @@
 @MODIFIED   : Jul 6 1995,   David MacDonald removed recipes type code, rewrote
 ---------------------------------------------------------------------------- */
 
-#include <volume_io/internal_volume_io.h>
-#include <bicpl/trans.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.12 2000-02-06 15:30:49 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.13 2005-08-17 22:26:47 bert Exp $";
 #endif
 
 /* prototype definitions: */
 
-private  void  calculate_weights(
+static  void  calculate_weights(
     Real    **values,
     Real    **INVML,
     Real    **INVMLY,
@@ -46,7 +45,7 @@ private  void  calculate_weights(
     int     n_dims,
     int     n_values );
 
-private  void  makeL(
+static  void  makeL(
     Real   **positions,
     Real   **ML,
     int    n_points,
@@ -72,7 +71,7 @@ private  void  makeL(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_nonlinear_warp(
+BICAPI  void  get_nonlinear_warp(
    Real     **positions,   /* n_points x n_dims */
    Real     **values,   /* n_points x n_values */
    Real     **INVMLY,   /* n_points+1+n_dims x n_values */
@@ -116,7 +115,7 @@ public  void  get_nonlinear_warp(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  makeL(
+static  void  makeL(
     Real   **positions,
     Real   **ML,
     int    n_points,
@@ -177,7 +176,7 @@ private  void  makeL(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  calculate_weights(
+static  void  calculate_weights(
     Real    **YM,
     Real    **INVML,
     Real    **INVMLY,

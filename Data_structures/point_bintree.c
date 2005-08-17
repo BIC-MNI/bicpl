@@ -12,15 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/data_structures.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/point_bintree.c,v 1.9 2000-02-06 15:30:11 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/point_bintree.c,v 1.10 2005-08-17 22:31:12 bert Exp $";
 #endif
 
-private  void  recursive_find_closest_point(
+static  void  recursive_find_closest_point(
     Point                 *point,
     bintree_node_struct   *node,
     range_struct          *range,
@@ -28,7 +26,7 @@ private  void  recursive_find_closest_point(
     int                   *obj_index,
     Real                  *closest_dist,
     Point                 *closest_point );
-private  Real  get_point_range_dist(
+static  Real  get_point_range_dist(
     Point         *point,
     range_struct  *range );
 
@@ -49,7 +47,7 @@ private  Real  get_point_range_dist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  find_closest_point_in_bintree(
+BICAPI  Real  find_closest_point_in_bintree(
     Point               *point,
     bintree_struct_ptr  bintree,
     object_struct       *object,
@@ -87,7 +85,7 @@ public  Real  find_closest_point_in_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  recursive_find_closest_point(
+static  void  recursive_find_closest_point(
     Point                 *point,
     bintree_node_struct   *node,
     range_struct          *range,
@@ -188,7 +186,7 @@ private  void  recursive_find_closest_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  get_point_range_dist(
+static  Real  get_point_range_dist(
     Point         *point,
     range_struct  *range )
 {
@@ -216,7 +214,7 @@ private  Real  get_point_range_dist(
     return( sum );
 }
 
-private  void  recursive_find_closest_vertex(
+static  void  recursive_find_closest_vertex(
     Point                 *point,
     bintree_node_struct   *node,
     range_struct          *range,
@@ -240,7 +238,7 @@ private  void  recursive_find_closest_vertex(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  find_closest_vertex_in_bintree(
+BICAPI  Real  find_closest_vertex_in_bintree(
     Point               *point,
     bintree_struct_ptr  bintree,
     object_struct       *object,
@@ -273,7 +271,7 @@ public  Real  find_closest_vertex_in_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  recursive_find_closest_vertex(
+static  void  recursive_find_closest_vertex(
     Point                 *point,
     bintree_node_struct   *node,
     range_struct          *range,

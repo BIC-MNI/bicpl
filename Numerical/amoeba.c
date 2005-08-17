@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.14 2000-02-06 15:30:39 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.15 2005-08-17 22:28:58 bert Exp $";
 #endif
 
 #define  FLIP_RATIO      1.0
@@ -38,7 +37,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeb
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  get_function_value(
+static  Real  get_function_value(
     amoeba_struct  *amoeba,
     float          parameters[] )
 {
@@ -63,7 +62,7 @@ private  Real  get_function_value(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_amoeba(
+BICAPI  void  initialize_amoeba(
     amoeba_struct     *amoeba,
     int               n_parameters,
     Real              initial_parameters[],
@@ -115,7 +114,7 @@ public  void  initialize_amoeba(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  get_amoeba_parameters(
+BICAPI  Real  get_amoeba_parameters(
     amoeba_struct  *amoeba,
     Real           parameters[] )
 {
@@ -147,7 +146,7 @@ public  Real  get_amoeba_parameters(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  terminate_amoeba(
+BICAPI  void  terminate_amoeba(
     amoeba_struct  *amoeba )
 {
     FREE2D( amoeba->parameters );
@@ -174,7 +173,7 @@ public  void  terminate_amoeba(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  try_amoeba(
+static  Real  try_amoeba(
     amoeba_struct  *amoeba,
     Real           sum[],
     int            high,
@@ -229,7 +228,7 @@ private  Real  try_amoeba(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  perform_amoeba(
+BICAPI  BOOLEAN  perform_amoeba(
     amoeba_struct  *amoeba )
 {
     int      i, j, low, high, next_high;

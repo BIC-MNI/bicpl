@@ -4,15 +4,13 @@
 
 #include "config.h"
 
-#include <volume_io/internal_volume_io.h>
-#include <bicpl/objects.h>
-#include <bicpl/images.h>
+#include "bicpl_internal.h"
 
 #include <ppm.h>
 
 
 
-public  Status  input_rgb_file(
+BICAPI  Status  input_rgb_file(
     STRING          filename,
     pixels_struct   *pixels )
 {
@@ -60,7 +58,7 @@ public  Status  input_rgb_file(
 }
 
 
-public  Status  output_rgb_file(
+BICAPI  Status  output_rgb_file(
     STRING          filename,
     pixels_struct   *pixels )
 {

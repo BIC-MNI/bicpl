@@ -12,15 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/data_structures.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.18 2000-02-06 15:30:11 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.19 2005-08-17 22:31:12 bert Exp $";
 #endif
 
-private  void  recursive_intersect_ray(
+static  void  recursive_intersect_ray(
     Point                 *origin,
     Vector                *direction,
     Real                  t_min,
@@ -32,8 +30,8 @@ private  void  recursive_intersect_ray(
     int                   *n_intersections,
     Real                  *distances[] );
 
-private  int  n_nodes_searched = 0;
-private  int  n_objects_searched = 0;
+static  int  n_nodes_searched = 0;
+static  int  n_objects_searched = 0;
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : print_bintree_stats
@@ -48,7 +46,7 @@ private  int  n_objects_searched = 0;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  print_bintree_stats(
+BICAPI  void  print_bintree_stats(
     int   n_objects )
 {
     print( "Nodes %g  ", (Real) n_nodes_searched / (Real) n_objects );
@@ -73,7 +71,7 @@ public  void  print_bintree_stats(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  intersect_ray_with_bintree(
+BICAPI  int  intersect_ray_with_bintree(
     Point               *origin,
     Vector              *direction,
     bintree_struct_ptr  bintree,
@@ -121,7 +119,7 @@ public  int  intersect_ray_with_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  recursive_intersect_ray(
+static  void  recursive_intersect_ray(
     Point                 *origin,
     Vector                *direction,
     Real                  t_min,
@@ -288,7 +286,7 @@ private  void  recursive_intersect_ray(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  ray_intersects_range(
+BICAPI  BOOLEAN  ray_intersects_range(
     range_struct  *range,
     Point         *origin,
     Vector        *direction,

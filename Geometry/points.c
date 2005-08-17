@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/trans.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.8 2000-02-06 15:30:16 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.9 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -33,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  null_Point(
+BICAPI  BOOLEAN  null_Point(
     Point   *p )
 {
     return( Point_x(*p) == 0.0f &&
@@ -54,7 +52,7 @@ public  BOOLEAN  null_Point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  null_Vector(
+BICAPI  BOOLEAN  null_Vector(
     Vector   *v )
 {
     return( Vector_x(*v) == 0.0f &&
@@ -76,7 +74,7 @@ public  BOOLEAN  null_Vector(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  distance_between_points(
+BICAPI  Real  distance_between_points(
     Point  *p1,
     Point  *p2 )
 {
@@ -105,7 +103,7 @@ public  Real  distance_between_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  points_within_distance(
+BICAPI  BOOLEAN  points_within_distance(
     Point  *p1,
     Point  *p2,
     Real   distance )
@@ -138,7 +136,7 @@ public  BOOLEAN  points_within_distance(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  apply_point_to_min_and_max(
+BICAPI  void  apply_point_to_min_and_max(
     Point   *point,
     Point   *min_point,
     Point   *max_point )
@@ -172,7 +170,7 @@ public  void  apply_point_to_min_and_max(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  expand_min_and_max_points(
+BICAPI  void  expand_min_and_max_points(
     Point   *min_point,
     Point   *max_point,
     Point   *min_to_check,
@@ -204,7 +202,7 @@ public  void  expand_min_and_max_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_range_points(
+BICAPI  void  get_range_points(
     int                n_points,
     Point              points[],
     Point              *min_corner,
@@ -238,7 +236,7 @@ public  void  get_range_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_points_centroid(
+BICAPI  void  get_points_centroid(
     int     n_points,
     Point   points[],
     Point   *centroid )
@@ -276,7 +274,7 @@ public  void  get_points_centroid(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   void     reverse_vectors(
+BICAPI   void     reverse_vectors(
     int       n_vectors,
     Vector    vectors[] )
 {
@@ -302,7 +300,7 @@ public   void     reverse_vectors(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  get_angle_between_points(
+BICAPI  Real  get_angle_between_points(
     Point  *prev_point,
     Point  *this_point,
     Point  *next_point )

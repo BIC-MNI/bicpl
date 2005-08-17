@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/prog_utils.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.15 2000-02-06 15:30:47 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.16 2005-08-17 22:27:56 bert Exp $";
 #endif
 
 static    Status  input_global_variable( int, global_struct [],
@@ -40,7 +38,7 @@ static    STRING    extract_string( STRING );
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  input_globals_file(
+BICAPI  Status  input_globals_file(
     int             n_globals_lookup,
     global_struct   globals_lookup[],
     STRING          filename )
@@ -81,7 +79,7 @@ public  Status  input_globals_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  input_global_variable(
+static  Status  input_global_variable(
     int             n_globals_lookup,
     global_struct   globals_lookup[],
     FILE            *file,
@@ -142,7 +140,7 @@ private  Status  input_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  lookup_global(
+static  Status  lookup_global(
     int              n_globals,
     global_struct    global_lookup[],
     STRING           variable_name,
@@ -200,7 +198,7 @@ private  Status  lookup_global(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  get_global_variable(
+BICAPI  Status  get_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
     STRING           variable_name,
@@ -300,7 +298,7 @@ public  Status  get_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  set_global_variable(
+BICAPI  Status  set_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
     STRING           variable_name,
@@ -446,7 +444,7 @@ public  Status  set_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  set_or_get_global_variable(
+BICAPI  Status  set_or_get_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
     STRING           input_str,
@@ -499,7 +497,7 @@ public  Status  set_or_get_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  STRING  extract_string(
+static  STRING  extract_string(
     STRING   str )
 {
     int     len_str, start, end, i;
@@ -552,7 +550,7 @@ private  STRING  extract_string(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_global_variables(
+BICAPI  void  delete_global_variables(
     int             n_globals_lookup,
     global_struct   globals_lookup[] )
 {

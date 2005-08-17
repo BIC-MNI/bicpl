@@ -1,8 +1,6 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
-#include  <bicpl/images.h>
+#include "bicpl_internal.h"
 
-private  BOOLEAN  is_clear_slab(
+static  BOOLEAN  is_clear_slab(
     pixels_struct  *pixels,
     Colour         bg_colour,
     int            x_min,
@@ -24,7 +22,7 @@ private  BOOLEAN  is_clear_slab(
     return( TRUE );
 }
 
-public  void  crop_pixels(
+BICAPI  void  crop_pixels(
     pixels_struct  *in_pixels,
     Colour         background_colour,
     int            border,

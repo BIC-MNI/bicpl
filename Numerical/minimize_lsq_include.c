@@ -1,10 +1,7 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/numerical.h>
-#include  <bicpl/prog_utils.h>
 
 #define   DEFAULT_RATIO      1.0
 
-private  Real  evaluate_fit(
+static  Real  evaluate_fit(
     int              n_parameters,
     Real             constant_term,
     LSQ_TYPE         *linear_terms,
@@ -33,7 +30,7 @@ private  Real  evaluate_fit(
     return( fit );
 }
 
-private  void  evaluate_fit_derivative(
+static  void  evaluate_fit_derivative(
     int              n_parameters,
     Real             constant_term,
     LSQ_TYPE         *linear_terms,
@@ -72,7 +69,7 @@ private  void  evaluate_fit_derivative(
     }
 }
 
-private  void  evaluate_fit_along_line(
+static  void  evaluate_fit_along_line(
     int              n_parameters,
     Real             constant_term,
     LSQ_TYPE         *linear_terms,
@@ -113,7 +110,7 @@ private  void  evaluate_fit_along_line(
     *b_ptr = b;
 }
 
-private  void  minimize_along_line(
+static  void  minimize_along_line(
     int              n_parameters,
     Real             constant_term,
     LSQ_TYPE         *linear_terms,
@@ -164,7 +161,7 @@ private  void  minimize_along_line(
         parm_values[parm] += t * line_coefs[parm];
 }
 
-private  Real   private_minimize_lsq(
+static  Real   private_minimize_lsq(
     int              n_parameters,
     Real             constant_term,
     LSQ_TYPE         *linear_terms,

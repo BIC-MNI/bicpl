@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/intersect.c,v 1.12 2000-02-06 15:30:14 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/intersect.c,v 1.13 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -36,7 +35,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/inters
 @MODIFIED   : Jul 12, 1995    David MacDonald - rewrote to be clearer.
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN   line_segment_intersects_plane(
+BICAPI  BOOLEAN   line_segment_intersects_plane(
     Point   *p1,
     Point   *p2,
     Point   *plane_origin,
@@ -90,7 +89,7 @@ public  BOOLEAN   line_segment_intersects_plane(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_nearest_point_on_lines(
+BICAPI  BOOLEAN  get_nearest_point_on_lines(
     Point   *origin1,
     Vector  *delta1,
     Point   *origin2,
@@ -148,7 +147,7 @@ public  BOOLEAN  get_nearest_point_on_lines(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  clip_line_to_box(
+BICAPI  BOOLEAN  clip_line_to_box(
     Point    *origin,
     Vector   *direction,
     Real     x_min,

@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
-#include  <bicpl/vols.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmark_file.c,v 1.9 2000-02-06 15:30:43 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmark_file.c,v 1.10 2005-08-17 22:28:26 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -33,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmar
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  STRING  get_default_landmark_file_suffix( void )
+BICAPI  STRING  get_default_landmark_file_suffix( void )
 {
     return( "lmk" );
 }
@@ -56,7 +54,7 @@ public  STRING  get_default_landmark_file_suffix( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status   input_landmark_file(
+BICAPI  Status   input_landmark_file(
     Volume         volume,
     STRING         filename,
     Colour         colour,
@@ -111,7 +109,7 @@ public  Status   input_landmark_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_tag_point(
+BICAPI  Status  io_tag_point(
     FILE            *file,
     IO_types        io_direction,
     Volume          volume,

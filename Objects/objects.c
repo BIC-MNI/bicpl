@@ -12,15 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.23 2000-02-06 15:30:44 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.24 2005-08-17 22:28:27 bert Exp $";
 #endif
 
-private  void  advance_object_traverse(
+static  void  advance_object_traverse(
     object_traverse_struct  *object_traverse );
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -36,7 +34,7 @@ private  void  advance_object_traverse(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  object_struct  *create_object(
+BICAPI  object_struct  *create_object(
     Object_types   object_type )
 {
     object_struct   *object;
@@ -62,7 +60,7 @@ public  object_struct  *create_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Object_types  get_object_type(
+BICAPI  Object_types  get_object_type(
     object_struct   *object )
 {
     return( object->object_type );
@@ -81,7 +79,7 @@ public  Object_types  get_object_type(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_object_visibility(
+BICAPI  BOOLEAN  get_object_visibility(
     object_struct  *object )
 {
     return( object->visibility );
@@ -101,7 +99,7 @@ public  BOOLEAN  get_object_visibility(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_object_visibility(
+BICAPI  void  set_object_visibility(
     object_struct  *object,
     BOOLEAN        visibility )
 {
@@ -121,7 +119,7 @@ public  void  set_object_visibility(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  lines_struct  *get_lines_ptr(
+BICAPI  lines_struct  *get_lines_ptr(
     object_struct  *object )
 {
     if( object->object_type != LINES )
@@ -146,7 +144,7 @@ public  lines_struct  *get_lines_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  marker_struct  *get_marker_ptr(
+BICAPI  marker_struct  *get_marker_ptr(
     object_struct  *object )
 {
     if( object->object_type != MARKER )
@@ -171,7 +169,7 @@ public  marker_struct  *get_marker_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  model_struct  *get_model_ptr(
+BICAPI  model_struct  *get_model_ptr(
     object_struct  *object )
 {
     if( object->object_type != MODEL )
@@ -196,7 +194,7 @@ public  model_struct  *get_model_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  pixels_struct  *get_pixels_ptr(
+BICAPI  pixels_struct  *get_pixels_ptr(
     object_struct  *object )
 {
     if( object->object_type != PIXELS )
@@ -221,7 +219,7 @@ public  pixels_struct  *get_pixels_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  polygons_struct  *get_polygons_ptr(
+BICAPI  polygons_struct  *get_polygons_ptr(
     object_struct  *object )
 {
     if( object->object_type != POLYGONS )
@@ -246,7 +244,7 @@ public  polygons_struct  *get_polygons_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  quadmesh_struct  *get_quadmesh_ptr(
+BICAPI  quadmesh_struct  *get_quadmesh_ptr(
     object_struct  *object )
 {
     if( object->object_type != QUADMESH )
@@ -271,7 +269,7 @@ public  quadmesh_struct  *get_quadmesh_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  text_struct  *get_text_ptr(
+BICAPI  text_struct  *get_text_ptr(
     object_struct  *object )
 {
     if( object->object_type != TEXT )
@@ -297,7 +295,7 @@ public  text_struct  *get_text_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_lines_points(
+static  int  get_lines_points(
     object_struct   *object,
     Point           *points[] )
 {
@@ -320,7 +318,7 @@ private  int  get_lines_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_marker_points(
+static  int  get_marker_points(
     object_struct   *object,
     Point           *points[] )
 {
@@ -345,7 +343,7 @@ private  int  get_marker_points(
 
 /* ARGSUSED */
 
-private  int  get_object_zero_points(
+static  int  get_object_zero_points(
     object_struct   *object,
     Point           *points[] )
 {
@@ -366,7 +364,7 @@ private  int  get_object_zero_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_polygons_points(
+static  int  get_polygons_points(
     object_struct   *object,
     Point           *points[] )
 {
@@ -389,7 +387,7 @@ private  int  get_polygons_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_quadmesh_points(
+static  int  get_quadmesh_points(
     object_struct   *object,
     Point           *points[] )
 {
@@ -412,7 +410,7 @@ private  int  get_quadmesh_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_text_points(
+static  int  get_text_points(
     object_struct   *object,
     Point           *points[] )
 {
@@ -437,7 +435,7 @@ private  int  get_text_points(
 
 /* ARGSUSED */
 
-private  int  get_object_zero_normals(
+static  int  get_object_zero_normals(
     object_struct   *object,
     Vector          *normals[] )
 {
@@ -459,7 +457,7 @@ private  int  get_object_zero_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_polygons_normals(
+static  int  get_polygons_normals(
     object_struct   *object,
     Vector          *normals[] )
 {
@@ -482,7 +480,7 @@ private  int  get_polygons_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_quadmesh_normals(
+static  int  get_quadmesh_normals(
     object_struct   *object,
     Vector          *normals[] )
 {
@@ -505,7 +503,7 @@ private  int  get_quadmesh_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Colour_flags  *get_lines_colours(
+static  Colour_flags  *get_lines_colours(
     object_struct   *object,
     Colour          *colours[] )
 {
@@ -528,7 +526,7 @@ private  Colour_flags  *get_lines_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Colour_flags  *get_marker_colours(
+static  Colour_flags  *get_marker_colours(
     object_struct    *object,
     Colour           *colours[] )
 {
@@ -553,7 +551,7 @@ private  Colour_flags  *get_marker_colours(
 
 /* ARGSUSED */
 
-private  Colour_flags  *get_object_zero_colours(
+static  Colour_flags  *get_object_zero_colours(
     object_struct   *object,
     Colour          *colours[] )
 {
@@ -576,7 +574,7 @@ private  Colour_flags  *get_object_zero_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Colour_flags  *get_polygons_colours(
+static  Colour_flags  *get_polygons_colours(
     object_struct   *object,
     Colour          *colours[] )
 {
@@ -599,7 +597,7 @@ private  Colour_flags  *get_polygons_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Colour_flags  *get_quadmesh_colours(
+static  Colour_flags  *get_quadmesh_colours(
     object_struct   *object,
     Colour          *colours[] )
 {
@@ -622,7 +620,7 @@ private  Colour_flags  *get_quadmesh_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Colour_flags  *get_text_colours(
+static  Colour_flags  *get_text_colours(
     object_struct   *object,
     Colour          *colours[] )
 {
@@ -645,7 +643,7 @@ private  Colour_flags  *get_text_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  set_lines_colours(
+static  void  set_lines_colours(
     object_struct   *object,
     Colour          colours[] )
 {
@@ -669,7 +667,7 @@ private  void  set_lines_colours(
 
 /* ARGSUSED */
 
-private  void  set_object_no_colours(
+static  void  set_object_no_colours(
     object_struct    *object,
     Colour           colours[] )
 {
@@ -689,7 +687,7 @@ private  void  set_object_no_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  set_polygons_colours(
+static  void  set_polygons_colours(
     object_struct   *object,
     Colour          colours[] )
 {
@@ -710,7 +708,7 @@ private  void  set_polygons_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  set_quadmesh_colours(
+static  void  set_quadmesh_colours(
     object_struct   *object,
     Colour          colours[] )
 {
@@ -732,7 +730,7 @@ private  void  set_quadmesh_colours(
 
 /* ARGSUSED */
 
-private  Surfprop  *get_object_no_surfprop(
+static  Surfprop  *get_object_no_surfprop(
     object_struct   *object )
 {
     return( (Surfprop *) NULL );
@@ -751,7 +749,7 @@ private  Surfprop  *get_object_no_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Surfprop  *get_polygons_surfprop(
+static  Surfprop  *get_polygons_surfprop(
     object_struct   *object )
 {
     return( &get_polygons_ptr(object)->surfprop );
@@ -770,7 +768,7 @@ private  Surfprop  *get_polygons_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Surfprop  *get_quadmesh_surfprop(
+static  Surfprop  *get_quadmesh_surfprop(
     object_struct   *object )
 {
     return( &get_quadmesh_ptr(object)->surfprop );
@@ -789,7 +787,7 @@ private  Surfprop  *get_quadmesh_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  STRING  get_lines_name(
+static  STRING  get_lines_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -814,7 +812,7 @@ private  STRING  get_lines_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  STRING  get_marker_name(
+static  STRING  get_marker_name(
     object_struct   *object )
 {
     STRING   label;
@@ -849,7 +847,7 @@ private  STRING  get_marker_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  STRING  get_model_name(
+static  STRING  get_model_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -872,7 +870,7 @@ private  STRING  get_model_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  STRING  get_pixels_name(
+static  STRING  get_pixels_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -897,7 +895,7 @@ private  STRING  get_pixels_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  STRING  get_polygons_name(
+static  STRING  get_polygons_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -922,7 +920,7 @@ private  STRING  get_polygons_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  STRING  get_quadmesh_name(
+static  STRING  get_quadmesh_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -946,7 +944,7 @@ private  STRING  get_quadmesh_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  STRING  get_text_name(
+static  STRING  get_text_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -969,7 +967,7 @@ private  STRING  get_text_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  delete_lines_object(
+static  void  delete_lines_object(
     object_struct   *object )
 {
     delete_lines( get_lines_ptr(object) );
@@ -990,7 +988,7 @@ private  void  delete_lines_object(
 
 /* ARGSUSED */
 
-private  void  delete_marker_object(
+static  void  delete_marker_object(
     object_struct   *object )
 {
     delete_marker( get_marker_ptr(object) );
@@ -1009,7 +1007,7 @@ private  void  delete_marker_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  delete_model_object(
+static  void  delete_model_object(
     object_struct   *object )
 {
     delete_model( get_model_ptr(object) );
@@ -1028,7 +1026,7 @@ private  void  delete_model_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  delete_pixels_object(
+static  void  delete_pixels_object(
     object_struct   *object )
 {
     delete_pixels( get_pixels_ptr(object) );
@@ -1047,7 +1045,7 @@ private  void  delete_pixels_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  delete_polygons_object(
+static  void  delete_polygons_object(
     object_struct   *object )
 {
     delete_polygons( get_polygons_ptr(object) );
@@ -1068,7 +1066,7 @@ private  void  delete_polygons_object(
 
 /* ARGSUSED */
 
-private  void  delete_quadmesh_object(
+static  void  delete_quadmesh_object(
     object_struct   *object )
 {
     delete_quadmesh( get_quadmesh_ptr(object) );
@@ -1089,7 +1087,7 @@ private  void  delete_quadmesh_object(
 
 /* ARGSUSED */
 
-private  void  delete_text_object(
+static  void  delete_text_object(
     object_struct   *object )
 {
     delete_text( get_text_ptr(object) );
@@ -1189,7 +1187,7 @@ static  object_functions_list   object_functions[N_OBJECT_TYPES] =
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_object(
+BICAPI  void  delete_object(
     object_struct  *object )
 {
     object_functions[object->object_type].delete_function( object );
@@ -1209,7 +1207,7 @@ public  void  delete_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_object_points(
+BICAPI  int  get_object_points(
     object_struct   *object,
     Point           *points[] )
 {
@@ -1230,7 +1228,7 @@ public  int  get_object_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_object_normals(
+BICAPI  int  get_object_normals(
     object_struct   *object,
     Vector          *normals[] )
 {
@@ -1251,7 +1249,7 @@ public  int  get_object_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Colour_flags  *get_object_colours(
+BICAPI  Colour_flags  *get_object_colours(
     object_struct   *object,
     Colour          *colours[] )
 {
@@ -1273,7 +1271,7 @@ public  Colour_flags  *get_object_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_object_colours(
+BICAPI  void  set_object_colours(
     object_struct   *object,
     Colour          colours[] )
 {
@@ -1293,7 +1291,7 @@ public  void  set_object_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Surfprop  *get_object_surfprop(
+BICAPI  Surfprop  *get_object_surfprop(
     object_struct   *object )
 {
     return( object_functions[object->object_type].get_surfprop_function
@@ -1313,13 +1311,13 @@ public  Surfprop  *get_object_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  STRING  get_object_name(
+BICAPI  STRING  get_object_name(
     object_struct  *object )
 {
     return( object_functions[object->object_type].get_name_function( object ) );
 }
 
-private  void   pop_object_stack(
+static  void   pop_object_stack(
     object_traverse_struct  *object_traverse )
 {
     if( object_traverse->top_of_stack > 0 )
@@ -1328,7 +1326,7 @@ private  void   pop_object_stack(
         handle_internal_error( "pop_object_stack" );
 }
 
-private  void  push_object_stack(
+static  void  push_object_stack(
     object_traverse_struct  *object_traverse,
     object_stack_struct     *entry )
 {
@@ -1362,7 +1360,7 @@ private  void  push_object_stack(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_object_traverse(
+BICAPI  void  initialize_object_traverse(
     object_traverse_struct  *object_traverse,
     BOOLEAN                 visible_ones_only,
     int                     n_objects,
@@ -1404,7 +1402,7 @@ public  void  initialize_object_traverse(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_next_object_traverse(
+BICAPI  BOOLEAN  get_next_object_traverse(
     object_traverse_struct  *object_traverse,
     object_struct           **object )
 {
@@ -1441,7 +1439,7 @@ public  BOOLEAN  get_next_object_traverse(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  advance_object_traverse(
+static  void  advance_object_traverse(
     object_traverse_struct  *object_traverse )
 {
     object_stack_struct   *top_entry, push_entry;
@@ -1496,7 +1494,7 @@ private  void  advance_object_traverse(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  terminate_object_traverse(
+BICAPI  void  terminate_object_traverse(
     object_traverse_struct   *object_traverse )
 {
     if( object_traverse->n_stack_alloced > MAX_OBJECT_TRAVERSE )
@@ -1518,7 +1516,7 @@ public  void  terminate_object_traverse(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_range_of_object(
+BICAPI  BOOLEAN  get_range_of_object(
     object_struct   *object,
     BOOLEAN         visible_ones_only,
     Point           *min_corner,
@@ -1572,7 +1570,7 @@ public  BOOLEAN  get_range_of_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  reverse_object_normals(
+BICAPI  void  reverse_object_normals(
     object_struct   *object )
 {
     int                     n_normals;
@@ -1602,7 +1600,7 @@ public  void  reverse_object_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_object_colour(
+BICAPI  BOOLEAN  get_object_colour(
     object_struct  *object,
     Colour         *colour )
 {
@@ -1640,7 +1638,7 @@ public  BOOLEAN  get_object_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_object_colour(
+BICAPI  void  set_object_colour(
     object_struct  *object,
     Colour         col )
 {
@@ -1678,7 +1676,7 @@ public  void  set_object_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_object_surfprop(
+BICAPI  void  set_object_surfprop(
     object_struct  *object,
     Surfprop       *spr )
 {
@@ -1706,7 +1704,7 @@ public  void  set_object_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  free_colours(
+BICAPI  void  free_colours(
     Colour_flags   colour_flag,
     Colour         colours[],
     int            n_points,
@@ -1755,7 +1753,7 @@ public  void  free_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  objects_are_same_topology(
+BICAPI  BOOLEAN  objects_are_same_topology(
     int    n_points1,
     int    n_items1,
     int    *end_indices1,
@@ -1796,7 +1794,7 @@ public  BOOLEAN  objects_are_same_topology(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_n_colours(
+BICAPI  int  get_n_colours(
     Colour_flags  colour_flag,
     int           n_points,
     int           n_items )

@@ -12,14 +12,17 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#if HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include  "bicpl_internal.h"
 
 #include <limits.h>
 #include <float.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.8 2005-03-29 22:17:08 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.9 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #include  "render_funcs_include.c"
@@ -38,7 +41,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  render_one_row (
+BICAPI void  render_one_row (
     void            *volume_data1,
     Data_types      volume1_type,
     int             y,

@@ -1,7 +1,7 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/deform.h>
+#include "bicpl_internal.h"
+#include "bicpl/deform.h"
 
-public  void  get_model_shape_point(
+BICAPI  void  get_model_shape_point(
     Point    *origin,
     Vector   *pos_model_dir,
     Vector   *neg_model_dir,
@@ -22,7 +22,7 @@ public  void  get_model_shape_point(
     ADD_POINT_VECTOR( *point, *origin, offset );
 }
 
-public  void  compute_equilibrium_point(
+BICAPI  void  compute_equilibrium_point(
     int                       point_index,
     BOOLEAN                   boundary_exists,
     Real                      boundary_dist,
@@ -66,7 +66,7 @@ public  void  compute_equilibrium_point(
                            equil_dist, equilibrium_point );
 }
 
-public  void  compute_model_dirs(
+BICAPI  void  compute_model_dirs(
     Point      *centroid,
     Vector     *normal,
     Real       base_length,
@@ -160,7 +160,7 @@ public  void  compute_model_dirs(
     SCALE_VECTOR( *neg_model_dir, *neg_model_dir, -1.0 );
 }
 
-private  void  get_coords_in_nonortho_system(
+static  void  get_coords_in_nonortho_system(
     Vector   *v,
     Vector   *v1,
     Vector   *v2,
@@ -212,7 +212,7 @@ private  void  get_coords_in_nonortho_system(
 
 #define  MAX_MODEL_NEIGHS   2000
 
-private  void  compute_model_point(
+static  void  compute_model_point(
     Point   points[],
     int     point_index,
     int     n_neighbours,
@@ -292,7 +292,7 @@ private  void  compute_model_point(
 #endif
 }
 
-public  void  get_model_point(
+BICAPI  void  get_model_point(
     deformation_model_struct  *deformation_model,
     Point                     points[],
     int                       point_index,
@@ -354,7 +354,7 @@ public  void  get_model_point(
     }
 }
 
-public  void  get_neighbours_of_line_vertex(
+BICAPI  void  get_neighbours_of_line_vertex(
     lines_struct    *lines,
     int             vertex_index,
     int             neighbours[2] )
@@ -373,7 +373,7 @@ public  void  get_neighbours_of_line_vertex(
     neighbours[1] = lines->indices[next_index];
 }
 
-public  BOOLEAN  deformation_model_includes_average(
+BICAPI  BOOLEAN  deformation_model_includes_average(
     deformation_model_struct   *model )
 {
     int   i;
@@ -385,7 +385,7 @@ public  BOOLEAN  deformation_model_includes_average(
     return( FALSE );
 }
 
-public  Real  compute_line_curvature(
+BICAPI  Real  compute_line_curvature(
     lines_struct    *lines,
     int             axis,
     int             point_index,
@@ -410,7 +410,7 @@ public  Real  compute_line_curvature(
     return( curvature );
 }
 
-public  Real  deform_point(
+BICAPI  Real  deform_point(
     int                        point_index,
     Point                      points[],
     Point                      *equilibrium_point,
@@ -452,7 +452,7 @@ public  Real  deform_point(
     return( dist_to_equil );
 }
 
-public  void  compute_line_centroid_and_normal(
+BICAPI  void  compute_line_centroid_and_normal(
     lines_struct     *lines,
     int              axis,
     int              prev_point_index,
@@ -484,7 +484,7 @@ public  void  compute_line_centroid_and_normal(
                         lines->points[prev_point_index], 0.5 );
 }
 
-public  int  get_subsampled_neighbours_of_point(
+BICAPI  int  get_subsampled_neighbours_of_point(
     deformation_model_struct  *deformation_model,
     polygons_struct           *polygons,
     int                       poly,

@@ -24,11 +24,10 @@
 @MODIFIED   : Jul 6,      1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/trans.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/matrix_basics.c,v 1.16 2000-02-06 15:30:50 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/matrix_basics.c,v 1.17 2005-08-17 22:26:47 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -50,7 +49,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/matr
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-public  void  transpose(
+BICAPI  void  transpose(
     int     rows,
     int     cols,
     Real    **mat,
@@ -114,7 +113,7 @@ public  void  transpose(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-private  void  raw_matrix_multiply(
+static  void  raw_matrix_multiply(
     int     ldim,
     int     mdim,
     int     ndim, 
@@ -163,7 +162,7 @@ private  void  raw_matrix_multiply(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-public  void  matrix_multiply(
+BICAPI  void  matrix_multiply(
     int    ldim,
     int    mdim,
     int    ndim, 

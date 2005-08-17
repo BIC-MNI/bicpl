@@ -12,20 +12,19 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/generate_tube.c,v 1.6 2000-02-06 15:30:13 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/generate_tube.c,v 1.7 2005-08-17 22:30:25 bert Exp $";
 #endif
 
-private  void  project_vector_to_plane(
+static  void  project_vector_to_plane(
     Vector   *v,
     Vector   *direction,
     Vector   *normal,
     Vector   *projected );
 
-private  void   fill_in_ellipse_points(
+static  void   fill_in_ellipse_points(
     Point   tube_points[],
     Vector  tube_normals[],
     Point   *centre,
@@ -52,7 +51,7 @@ private  void   fill_in_ellipse_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_direction(
+static  void  get_direction(
     int      n_points,
     Point    points[],
     int      i,
@@ -100,7 +99,7 @@ private  void  get_direction(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  generate_tube(
+BICAPI  void  generate_tube(
     int    n_points,
     Point  points[],
     int    n_around,
@@ -185,7 +184,7 @@ public  void  generate_tube(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void   fill_in_ellipse_points(
+static  void   fill_in_ellipse_points(
     Point   tube_points[],
     Vector  tube_normals[],
     Point   *centre,
@@ -228,7 +227,7 @@ private  void   fill_in_ellipse_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  project_vector_to_plane(
+static  void  project_vector_to_plane(
     Vector   *v,
     Vector   *direction,
     Vector   *normal,

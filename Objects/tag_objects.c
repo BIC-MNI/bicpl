@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/tag_objects.c,v 1.7 2000-02-06 15:30:46 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/tag_objects.c,v 1.8 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -36,7 +35,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/tag_obj
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status   input_tag_objects_file(
+BICAPI  Status   input_tag_objects_file(
     STRING         filename,
     Colour         marker_colour,
     Real           default_size,

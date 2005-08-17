@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-public  int  compute_isosurface_in_voxel(
+BICAPI  int  compute_isosurface_in_voxel(
     Marching_cubes_methods  method,
     int                     x,
     int                     y,
@@ -17,7 +17,7 @@ public  int  compute_isosurface_in_voxel(
     int                     *sizes[],
     voxel_point_type        *points[] );
 
-public  Point_classes  get_isosurface_point(
+BICAPI  Point_classes  get_isosurface_point(
     Real              corners[2][2][2],
     int               voxel[],
     int               edge_intersected,
@@ -26,26 +26,26 @@ public  Point_classes  get_isosurface_point(
     Real              max_value,
     Real              point[] );
 
-public  int  get_max_marching_edges(
+BICAPI  int  get_max_marching_edges(
     Marching_cubes_methods  method );
 
-public  int  get_max_marching_polygons_per_voxel(
+BICAPI  int  get_max_marching_polygons_per_voxel(
     Marching_cubes_methods  method );
 
-public  int  compute_isotriangles_in_voxel(
+BICAPI  int  compute_isotriangles_in_voxel(
     Real                corner_values[2][2][2],
     Real                target_value,
     voxel_point_type    *points_list_ptr[] );
 
-public  int  get_holeless_isosurface_polygons(
+BICAPI  int  get_holeless_isosurface_polygons(
     Real              corners[2][2][2],
     Real              isovalue,
     int               *sizes[],
     voxel_point_type  *points[] );
 
-public  void  delete_marching_cubes_table( void );
+BICAPI  void  delete_marching_cubes_table( void );
 
-public  void  translate_to_edge_index(
+BICAPI  void  translate_to_edge_index(
     int                x1,
     int                y1,
     int                z1,
@@ -54,11 +54,11 @@ public  void  translate_to_edge_index(
     int                z2,
     voxel_point_type   *edge_point );
 
-public  void  translate_from_edge_index(
+BICAPI  void  translate_from_edge_index(
     int       edge_index,
     int       offset[] );
 
-public  int  get_tetra_isosurface_polygons(
+BICAPI  int  get_tetra_isosurface_polygons(
     int               x,
     int               y,
     int               z,
@@ -67,7 +67,7 @@ public  int  get_tetra_isosurface_polygons(
     int               *sizes[],
     voxel_point_type  *points[] );
 
-public  void  delete_tetra_marching_cubes_table( void );
+BICAPI  void  delete_tetra_marching_cubes_table( void );
 
 #ifdef __cplusplus
 }

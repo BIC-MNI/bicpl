@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.15 2003-06-17 15:21:58 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.16 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define  MAX_TEMP_STORAGE  1000
@@ -37,7 +36,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_po
  * \param min_voxel array of minimum voxel values
  * \param max_voxel array of maximum voxel values
  */
-private  void  recursive_scan_polygon_to_voxels(
+static void  recursive_scan_polygon_to_voxels(
     int                 size,
     Point               points[],
     Volume              label_volume,
@@ -131,7 +130,7 @@ private  void  recursive_scan_polygon_to_voxels(
  * \param label value to store in label_volume
  */
 
-public  void  scan_a_polygon(
+BICAPI void  scan_a_polygon(
     int                 size,
     Point               vertices[],
     Point               voxels[],
@@ -237,7 +236,7 @@ public  void  scan_a_polygon(
  * \param label value to store in label_volume
  * \param max_distance ignored
  */
-public  void  scan_polygons_to_voxels(
+BICAPI void  scan_polygons_to_voxels(
     polygons_struct     *polygons,
     Volume              volume,
     Volume              label_volume,
@@ -311,7 +310,7 @@ public  void  scan_polygons_to_voxels(
  * \param label value to store in label_volume
  * \param max_distance ignored
  */
-public  void  scan_quadmesh_to_voxels(
+BICAPI void  scan_quadmesh_to_voxels(
     quadmesh_struct     *quadmesh,
     Volume              volume,
     Volume              label_volume,

@@ -1,7 +1,6 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl.h>
+#include "bicpl_internal.h"
 
-private  void  multiply_matrices(
+static  void  multiply_matrices(
     int    x1,
     int    y1,
     Real   m1[],
@@ -41,7 +40,7 @@ private  void  multiply_matrices(
 #define  MAX_DEGREE        4
 #define  MAX_TOTAL_VALUES  4000
 
-public  void  spline_tensor_product(
+BICAPI  void  spline_tensor_product(
     int     n_dims,
     Real    positions[],
     int     degrees[],     /* [n_dims] */

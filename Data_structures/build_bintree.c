@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/data_structures.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/build_bintree.c,v 1.12 2000-02-06 15:30:10 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/build_bintree.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 #define  NODE_VISIT_COST        0.02
@@ -32,12 +31,12 @@ typedef     PRIORITY_QUEUE_STRUCT( leaf_queue_type )   leaf_queue_struct;
 
 /*---------------- private functions ------------------------- */
 
-private  void  subdivide_bintree(
+static  void  subdivide_bintree(
     bintree_struct_ptr   bintree,
     int                  max_nodes,
     int                  n_objects,
     range_struct         bound_vols[] );
-private  void  split_node(
+static  void  split_node(
     range_struct          bound_vols[],
     bintree_node_struct   **ptr_to_node,
     range_struct          *limits,
@@ -46,30 +45,30 @@ private  void  split_node(
     Real                  *left_cost,
     range_struct          *right_limits,
     Real                  *right_cost );
-private  void  create_leaf_queue(
+static  void  create_leaf_queue(
     leaf_queue_struct   *leaf_queue );
-private  void  delete_leaf_queue(
+static  void  delete_leaf_queue(
     leaf_queue_struct   *leaf_queue );
-private  BOOLEAN  leaf_queue_empty(
+static  BOOLEAN  leaf_queue_empty(
     leaf_queue_struct   *leaf_queue );
-private  void  insert_in_leaf_queue(
+static  void  insert_in_leaf_queue(
     leaf_queue_struct     *leaf_queue,
     bintree_node_struct   **ptr_to_node,
     Real                  node_cost,
     range_struct          *limits );
-private  void  remove_from_leaf_queue(
+static  void  remove_from_leaf_queue(
     leaf_queue_struct     *leaf_queue,
     bintree_node_struct   ***ptr_to_node,
     range_struct          *limits );
-private  BOOLEAN  node_tightly_bounds_object(
+static  BOOLEAN  node_tightly_bounds_object(
     range_struct  *bound_vol,
     range_struct  *limits );
-private  void  recursive_efficiency_count(
+static  void  recursive_efficiency_count(
     bintree_node_struct   *node,
     range_struct          *limits,
     Real                  *avg_nodes_visited,
     Real                  *avg_objects_visited );
-private  Real  node_visit_estimation(
+static  Real  node_visit_estimation(
     range_struct  *limits );
 
 /* ---------------------------------------------------------- */
@@ -91,7 +90,7 @@ private  Real  node_visit_estimation(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_object_bintree(
+BICAPI  void  create_object_bintree(
     int                  n_objects,
     range_struct         bound_vols[],
     bintree_struct_ptr   bintree,
@@ -177,7 +176,7 @@ public  void  create_object_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  subdivide_bintree(
+static  void  subdivide_bintree(
     bintree_struct_ptr   bintree,
     int                  max_nodes,
     int                  n_objects,
@@ -259,7 +258,7 @@ private  void  subdivide_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void   get_planes(
+static  void   get_planes(
     int             axis_index,
     int             n_objects,
     int             list[],
@@ -326,7 +325,7 @@ private  void   get_planes(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  find_best_split_node_for_axis(
+static  Real  find_best_split_node_for_axis(
     int                   axis_index,
     int                   n_objects,
     int                   object_list[],
@@ -401,7 +400,7 @@ private  Real  find_best_split_node_for_axis(
     }
 
 #ifdef  DEBUG
-private  void  check_objects(
+static  void  check_objects(
     range_struct          *limits,
     int                   n_objects,
     int                   object_list[],
@@ -429,7 +428,7 @@ private  void  check_objects(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  split_node(
+static  void  split_node(
     range_struct          bound_vols[],
     bintree_node_struct   **ptr_to_node,
     range_struct          *limits,
@@ -603,25 +602,25 @@ private  void  split_node(
                                                  right_child );
 }
 
-private  void  create_leaf_queue(
+static  void  create_leaf_queue(
     leaf_queue_struct   *leaf_queue )
 {
     INITIALIZE_PRIORITY_QUEUE( *leaf_queue );
 }
 
-private  void  delete_leaf_queue(
+static  void  delete_leaf_queue(
     leaf_queue_struct   *leaf_queue )
 {
     DELETE_PRIORITY_QUEUE( *leaf_queue );
 }
 
-private  BOOLEAN  leaf_queue_empty(
+static  BOOLEAN  leaf_queue_empty(
     leaf_queue_struct   *leaf_queue )
 {
     return( IS_PRIORITY_QUEUE_EMPTY( *leaf_queue ) );
 }
 
-private  void  insert_in_leaf_queue(
+static  void  insert_in_leaf_queue(
     leaf_queue_struct     *leaf_queue,
     bintree_node_struct   **ptr_to_node,
     Real                  node_cost,
@@ -635,7 +634,7 @@ private  void  insert_in_leaf_queue(
     INSERT_IN_PRIORITY_QUEUE( *leaf_queue, entry, node_cost );
 }
 
-private  void  remove_from_leaf_queue(
+static  void  remove_from_leaf_queue(
     leaf_queue_struct     *leaf_queue,
     bintree_node_struct   ***ptr_to_node,
     range_struct          *limits )
@@ -652,7 +651,7 @@ private  void  remove_from_leaf_queue(
     *limits = entry.limits;
 }
 
-private  BOOLEAN  node_tightly_bounds_object(
+static  BOOLEAN  node_tightly_bounds_object(
     range_struct  *bound_vol,
     range_struct  *limits )
 {
@@ -672,7 +671,7 @@ private  BOOLEAN  node_tightly_bounds_object(
     return( TRUE );
 }
 
-public  void  evaluate_bintree_efficiency(
+BICAPI  void  evaluate_bintree_efficiency(
     bintree_struct_ptr   bintree,
     Real                 *avg_nodes_visited,
     Real                 *avg_objects_visited )
@@ -694,7 +693,7 @@ public  void  evaluate_bintree_efficiency(
     *avg_objects_visited /= n_visits_top_level;
 }
 
-private  void  recursive_efficiency_count(
+static  void  recursive_efficiency_count(
     bintree_node_struct   *node,
     range_struct          *limits,
     Real                  *avg_nodes_visited,
@@ -747,7 +746,7 @@ private  void  recursive_efficiency_count(
     }
 }
 
-private  Real  node_visit_estimation(
+static  Real  node_visit_estimation(
     range_struct  *limits )
 {
 #ifdef  VOLUME_EST

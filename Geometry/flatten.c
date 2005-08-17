@@ -14,14 +14,12 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/flatten.c,v 1.5 2000-02-06 15:30:13 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/flatten.c,v 1.6 2005-08-17 22:30:25 bert Exp $";
 #endif
 
-#include  <bicpl/geom.h>
-#include  <bicpl/trans.h>
-#include  <volume_io/internal_volume_io.h>
+#include "bicpl_internal.h"
 
-public  void  flatten_around_vertex(
+BICAPI  void  flatten_around_vertex(
     Point     *vertex,
     int       n_neighbours,
     Point     neighbours[],
@@ -71,7 +69,7 @@ public  void  flatten_around_vertex(
     }
 }
 
-public  void  flatten_around_vertex_to_sphere(
+BICAPI  void  flatten_around_vertex_to_sphere(
     Real      radius,
     Point     *vertex,
     int       n_neighbours,

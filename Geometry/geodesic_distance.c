@@ -13,12 +13,10 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.8 2003-06-17 15:19:24 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.9 2005-08-17 22:30:25 bert Exp $";
 #endif
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/priority_queue.h>
+#include "bicpl_internal.h"
 
 
 /*! \brief Compute distance in mesh structure.
@@ -32,7 +30,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geodes
  * are all set to -1 before starting the search.  Distance -1 is
  * treated as \em infinite, i.e. not yet seen.
  */
-public  int  compute_distances_from_point(
+BICAPI  int  compute_distances_from_point(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],

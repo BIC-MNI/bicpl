@@ -12,16 +12,15 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.22 2000-02-06 15:30:45 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.23 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 #define  SMALL_CHUNK_SIZE          4
 
-private   void   create_polygon_neighbours(
+static   void   create_polygon_neighbours(
     polygons_struct  *polygons,
     int              neighbours[] );
 
@@ -39,7 +38,7 @@ private   void   create_polygon_neighbours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  check_polygons_neighbours_computed(
+BICAPI  void  check_polygons_neighbours_computed(
     polygons_struct   *polygons )
 {
     if( polygons->neighbours == NULL && polygons->n_items > 0 )
@@ -49,7 +48,7 @@ public  void  check_polygons_neighbours_computed(
     }
 }
 
-public  void  delete_polygon_point_neighbours(
+BICAPI  void  delete_polygon_point_neighbours(
     polygons_struct  *polygons,
     int              n_point_neighbours[],
     int              *point_neighbours[],
@@ -74,7 +73,7 @@ public  void  delete_polygon_point_neighbours(
     }
 }
 
-private  void  insert_neighbours(
+static  void  insert_neighbours(
     int    n_to_add,
     int    indices[],
     int    n_nodes,
@@ -154,7 +153,7 @@ private  void  insert_neighbours(
         (*neighbours)[i] = indices[i];
 }
 
-public   void   create_polygon_point_neighbours(
+BICAPI   void   create_polygon_point_neighbours(
     polygons_struct  *polygons,
     BOOLEAN          across_polygons_flag,
     int              *n_point_neighbours_ptr[],
@@ -337,7 +336,7 @@ public   void   create_polygon_point_neighbours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   void   create_polygon_neighbours(
+static   void   create_polygon_neighbours(
     polygons_struct  *polygons,
     int              neighbours[] )
 {

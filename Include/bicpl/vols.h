@@ -29,16 +29,6 @@ typedef struct
     General_transform      transform;
 } resample_struct;
 
-#ifndef  public
-#define       public   extern
-#define       public_was_defined_here
-#endif
-
 #include  <bicpl/vol_prototypes.h>
-
-#ifdef  public_was_defined_here
-#undef       public
-#undef       public_was_defined_here
-#endif
 
 #endif

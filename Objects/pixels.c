@@ -12,13 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/trans.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.26 2000-02-06 15:30:45 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.27 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -40,7 +37,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_pixels(
+BICAPI  void  initialize_pixels(
     pixels_struct  *pixels,
     int            x_position,
     int            y_position,
@@ -78,7 +75,7 @@ public  void  initialize_pixels(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_pixels( pixels_struct *pixels )
+BICAPI  void  delete_pixels( pixels_struct *pixels )
 {
     if( pixels->x_size > 0 && pixels->y_size > 0 )
     {
@@ -119,7 +116,7 @@ public  void  delete_pixels( pixels_struct *pixels )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  modify_pixels_size(
+BICAPI  void  modify_pixels_size(
     int            *n_pixels_alloced,
     pixels_struct  *pixels,
     int            x_size,
@@ -193,7 +190,7 @@ public  void  modify_pixels_size(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_pixels24_to_pixels8(
+BICAPI  void  convert_pixels24_to_pixels8(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8 )
 {
@@ -231,7 +228,7 @@ public  void  convert_pixels24_to_pixels8(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_pixels24_to_index8(
+BICAPI  void  convert_pixels24_to_index8(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8,
     int             n_colours,
@@ -274,7 +271,7 @@ public  void  convert_pixels24_to_index8(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_index8_to_pixels24(
+BICAPI  void  convert_index8_to_pixels24(
     pixels_struct   *pixels_8,
     Colour          colour_table[],
     pixels_struct   *pixels_rgb )
@@ -308,7 +305,7 @@ public  void  convert_index8_to_pixels24(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_pixels24_to_gray_scale(
+BICAPI  void  convert_pixels24_to_gray_scale(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8 )
 {
@@ -344,7 +341,7 @@ public  void  convert_pixels24_to_gray_scale(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_pixels24_to_dithered(
+BICAPI  void  convert_pixels24_to_dithered(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8,
     int             n_colours,
@@ -453,7 +450,7 @@ public  void  convert_pixels24_to_dithered(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  resample_pixels(
+BICAPI  void  resample_pixels(
     pixels_struct   *pixels,
     Transform_2d    *transform,
     int             n_samples,
@@ -554,7 +551,7 @@ public  void  resample_pixels(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  copy_pixel_region(
+BICAPI  void  copy_pixel_region(
     pixels_struct   *pixels,
     int             x_min,
     int             x_max,

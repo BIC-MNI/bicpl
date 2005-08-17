@@ -1,7 +1,6 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
-private  void  coalesce_lines(
+static  void  coalesce_lines(
     lines_struct   *lines )
 {
     int   p, n, l, *n_neighbours, **neighbours, total_neighbours;
@@ -138,7 +137,7 @@ private  void  coalesce_lines(
     lines->end_indices = end_indices;
 }
 
-public  void   intersect_planes_with_polygons(
+BICAPI  void   intersect_planes_with_polygons(
     polygons_struct   *polygons,
     Point             *plane_origin,
     Vector            *plane_normal,
@@ -252,7 +251,7 @@ public  void   intersect_planes_with_polygons(
     coalesce_lines( lines );
 }
 
-public  void   intersect_planes_with_quadmesh(
+BICAPI  void   intersect_planes_with_quadmesh(
     quadmesh_struct   *quadmesh,
     Point             *plane_origin,
     Vector            *plane_normal,

@@ -22,7 +22,10 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.17  2000-02-06 15:30:50  stever
+@MODIFIED   : Revision 1.18  2005-08-17 22:26:47  bert
+@MODIFIED   : Replace public/private with BICAPI/static
+@MODIFIED   :
+@MODIFIED   : Revision 1.17  2000/02/06 15:30:50  stever
 @MODIFIED   : rearranged header file structure; add gcc -Wall fixes
 @MODIFIED   :
 @MODIFIED   : Revision 1.16  2000/02/05 21:27:20  stever
@@ -90,38 +93,36 @@
  * 
 ---------------------------------------------------------------------------- */
 
-#include <volume_io/internal_volume_io.h>
-#include <bicpl/trans.h>
-#include <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.17 2000-02-06 15:30:50 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.18 2005-08-17 22:26:47 bert Exp $";
 #endif
 
 /* Function declarations */
 
-private void compute_procrustes_transform(int npoints, 
+static void compute_procrustes_transform(int npoints, 
                                           Real **tag_list1, 
                                           Real **tag_list2, 
                                           Trans_type trans_type,
                                           General_transform *transform);
-private void compute_arb_param_transform(int npoints, 
+static void compute_arb_param_transform(int npoints, 
                                          Real **tag_list1, 
                                          Real **tag_list2, 
                                          Trans_type trans_type,
                                          General_transform *transform);
-private void compute_12param_transform(int npoints, 
+static void compute_12param_transform(int npoints, 
                                        Real **tag_list1, 
                                        Real **tag_list2, 
                                        Trans_type trans_type,
                                        General_transform *transform);
-private void compute_tps_transform(int npoints, 
+static void compute_tps_transform(int npoints, 
                                    Real **tag_list1, 
                                    Real **tag_list2, 
                                    Trans_type trans_type,
                                    General_transform *transform);
 
-private  void  concat_transformation_matrix(
+static  void  concat_transformation_matrix(
     Transform   *lt, 
     Real        center[],
     Real        translations[],
@@ -146,7 +147,7 @@ private  void  concat_transformation_matrix(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-public  void  compute_transform_from_tags(
+BICAPI  void  compute_transform_from_tags(
     int                 npoints, 
     Real                **tag_list1, 
     Real                **tag_list2, 
@@ -224,7 +225,7 @@ public  void  compute_transform_from_tags(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-private  void  compute_procrustes_transform(
+static  void  compute_procrustes_transform(
     int                 npoints, 
     Real                **tag_list1, 
     Real                **tag_list2, 
@@ -281,7 +282,7 @@ private  void  compute_procrustes_transform(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-private  void  compute_arb_param_transform(
+static  void  compute_arb_param_transform(
     int                 npoints, 
     Real                **tag_list1, 
     Real                **tag_list2, 
@@ -359,7 +360,7 @@ private  void  compute_arb_param_transform(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-private  void   make_rots(
+static  void   make_rots(
     Transform   *xmat,
     Real        rot_x,
     Real        rot_y,
@@ -390,7 +391,7 @@ private  void   make_rots(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-private  void  concat_transformation_matrix(
+static  void  concat_transformation_matrix(
     Transform   *lt, 
     Real        center[],
     Real        translations[],
@@ -441,7 +442,7 @@ private  void  concat_transformation_matrix(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-public  void  build_transformation_matrix(
+BICAPI  void  build_transformation_matrix(
     Transform   *lt, 
     Real        center[],
     Real        translations[],
@@ -480,7 +481,7 @@ public  void  build_transformation_matrix(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-private  void  compute_12param_transform(
+static  void  compute_12param_transform(
     int                 npoints, 
     Real                **tag_list1, 
     Real                **tag_list2, 
@@ -556,7 +557,7 @@ private  void  compute_12param_transform(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
  
-private  void  compute_tps_transform(
+static  void  compute_tps_transform(
     int                 npoints, 
     Real                **tag_list1, 
     Real                **tag_list2, 

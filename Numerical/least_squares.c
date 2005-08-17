@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least_squares.c,v 1.8 2000-02-06 15:30:40 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least_squares.c,v 1.9 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -43,7 +41,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  least_squares(
+BICAPI  BOOLEAN  least_squares(
     int     n_points,
     int     n_dims,
     Real    **points,
@@ -91,7 +89,7 @@ public  BOOLEAN  least_squares(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_linear_least_squares(
+BICAPI  void  initialize_linear_least_squares(
     linear_least_squares   *lsq,
     int                    n_parameters )
 {
@@ -137,7 +135,7 @@ public  void  initialize_linear_least_squares(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  add_to_linear_least_squares(
+BICAPI  void  add_to_linear_least_squares(
     linear_least_squares   *lsq,
     Real                   parameter_coefs[],
     Real                   constant )
@@ -166,7 +164,7 @@ public  void  add_to_linear_least_squares(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_linear_least_squares_solution(
+BICAPI  BOOLEAN  get_linear_least_squares_solution(
     linear_least_squares   *lsq,
     Real                   solution[] )
 {
@@ -207,7 +205,7 @@ public  BOOLEAN  get_linear_least_squares_solution(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_linear_least_squares(
+BICAPI  void  delete_linear_least_squares(
     linear_least_squares   *lsq )
 {
     FREE2D( lsq->second_derivs );

@@ -1,6 +1,4 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #define  N_BOX_RATIO   0.05
 #define  MIN_N_BOXES   10
@@ -11,7 +9,7 @@ typedef  struct
     int   *point_indices;
 } box_struct;
 
-private  void  get_box_index(
+static  void  get_box_index(
     Point   *point,
     Point   *min_point,
     Point   *max_point,
@@ -48,7 +46,7 @@ private  void  get_box_index(
     } 
 }
 
-public  void  coalesce_object_points(
+BICAPI  void  coalesce_object_points(
     int      *n_points,
     Point    *points[],
     int      n_indices,
@@ -151,7 +149,7 @@ public  void  coalesce_object_points(
     *points = new_points;
 }
 
-public  void  separate_object_points(
+BICAPI  void  separate_object_points(
     int           *new_n_points,
     Point         *points[],
     int           n_indices,

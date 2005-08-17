@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.41 2005-06-03 18:08:02 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.42 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -32,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_label_volume_real_range(
+BICAPI void  set_label_volume_real_range(
     Volume  volume )
 {
     if( get_volume_data_type(volume) != FLOAT &&
@@ -60,7 +59,7 @@ public  void  set_label_volume_real_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Volume  create_label_volume(
+BICAPI Volume  create_label_volume(
     Volume  volume,
     nc_type type )
 {
@@ -90,7 +89,7 @@ public  Volume  create_label_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  check_alloc_label_data(
+static void  check_alloc_label_data(
     Volume  volume )
 {
     if( !volume_is_alloced( volume ) && !volume_is_cached(volume) )
@@ -100,7 +99,7 @@ private  void  check_alloc_label_data(
     }
 }
 
-public  BOOLEAN  is_label_volume_initialized(
+BICAPI BOOLEAN  is_label_volume_initialized(
     Volume  volume )
 {
     return( volume != NULL && 
@@ -121,7 +120,7 @@ public  BOOLEAN  is_label_volume_initialized(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_all_volume_label_data(
+BICAPI void  set_all_volume_label_data(
     Volume    volume,
     int       value )
 {
@@ -166,7 +165,7 @@ public  void  set_all_volume_label_data(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_volume_label_data_5d(
+BICAPI void  set_volume_label_data_5d(
     Volume          volume,
     int             v0,
     int             v1,
@@ -180,7 +179,7 @@ public  void  set_volume_label_data_5d(
     set_volume_real_value( volume, v0, v1, v2, v3, v4, (Real) value );
 }
 
-public  void  set_volume_label_data(
+BICAPI void  set_volume_label_data(
     Volume          volume,
     int             voxel[],
     int             value )
@@ -203,7 +202,7 @@ public  void  set_volume_label_data(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_volume_label_data(
+BICAPI int  get_volume_label_data(
     Volume          volume,
     int             voxel[] )
 {
@@ -211,7 +210,7 @@ public  int  get_volume_label_data(
                        voxel[0], voxel[1], voxel[2], voxel[3], voxel[4] ) );
 }
 
-public  int  get_volume_label_data_5d(
+BICAPI int  get_volume_label_data_5d(
     Volume          volume,
     int             v0,
     int             v1,
@@ -246,7 +245,7 @@ public  int  get_volume_label_data_5d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_3D_volume_label_data(
+BICAPI int  get_3D_volume_label_data(
     Volume          volume,
     int             x,
     int             y,
@@ -278,7 +277,7 @@ public  int  get_3D_volume_label_data(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_voxel_label_bit(
+BICAPI BOOLEAN  get_voxel_label_bit(
     Volume          volume,
     int             voxel[],
     int             bit )
@@ -302,7 +301,7 @@ public  BOOLEAN  get_voxel_label_bit(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_voxel_label_bit(
+BICAPI void  set_voxel_label_bit(
     Volume          volume,
     int             voxel[],
     int             bit,
@@ -351,7 +350,7 @@ public  void  set_voxel_label_bit(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_all_volume_label_data_bit(
+BICAPI void  set_all_volume_label_data_bit(
     Volume         volume,
     int            bit,
     BOOLEAN        value )
@@ -383,7 +382,7 @@ public  void  set_all_volume_label_data_bit(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_volume_voxel_activity(
+BICAPI BOOLEAN  get_volume_voxel_activity(
     Volume     volume,
     Real       voxel[],
     BOOLEAN    activity_if_mixed )
@@ -461,7 +460,7 @@ public  BOOLEAN  get_volume_voxel_activity(
 @MODIFIED   : May. 6, 1997    D. MacDonald     -  one slice of 3d volume
 ---------------------------------------------------------------------------- */
 
-private  void  get_input_volume_label_limits(
+static void  get_input_volume_label_limits(
     Volume   volume1,
     Volume   volume2,
     int      slice,
@@ -539,7 +538,7 @@ private  void  get_input_volume_label_limits(
                                                coordinate systems
 ---------------------------------------------------------------------------- */
 
-public  Status  load_label_volume(
+BICAPI Status  load_label_volume(
     STRING   filename,
     Volume   label_volume )
 {
@@ -789,7 +788,7 @@ public  Status  load_label_volume(
 @MODIFIED   : Aug. 1, 1995    D. MacDonald    - crops the volume on output
 ---------------------------------------------------------------------------- */
 
-public  Status  save_label_volume(
+BICAPI Status  save_label_volume(
     STRING   filename,
     STRING   original_filename,
     Volume   label_volume,
@@ -870,7 +869,7 @@ public  Status  save_label_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  input_tags_as_labels(
+BICAPI Status  input_tags_as_labels(
     FILE    *file,
     Volume  volume,
     Volume  label_volume )
@@ -927,7 +926,7 @@ public  Status  input_tags_as_labels(
 @MODIFIED   :
 ---------------------------------------------------------------------------- */
 
-public  Status  create_label_volume_from_file(
+BICAPI Status  create_label_volume_from_file(
     STRING   filename,
     Volume   volume,
     Volume   *label_volume )
@@ -1005,7 +1004,7 @@ public  Status  create_label_volume_from_file(
                                              be more memory efficient.
 ---------------------------------------------------------------------------- */
 
-public  Status  output_labels_as_tags(
+BICAPI Status  output_labels_as_tags(
     FILE    *file,
     Volume  volume,
     Volume  label_volume,
@@ -1081,7 +1080,7 @@ public  Status  output_labels_as_tags(
                                              be more memory efficient.
 ---------------------------------------------------------------------------- */
 
-public  Status  input_landmarks_as_labels(
+BICAPI Status  input_landmarks_as_labels(
     FILE    *file,
     Volume  volume,
     Volume  label_volume )

@@ -25,26 +25,24 @@
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-#include <volume_io/internal_volume_io.h>
-#include <bicpl/trans.h>
-#include <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/procrustes.c,v 1.14 2000-02-06 15:30:50 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/procrustes.c,v 1.15 2005-08-17 22:26:47 bert Exp $";
 #endif
 
-private  Real  trace_of_matrix(
+static  Real  trace_of_matrix(
     int    size,
     Real   **the_matrix );
 
-private  void  translate_points(
+static  void  translate_points(
     int    npoints,
     int    ndim,
     Real   **points, 
     Real   translation[],
     Real   **newpoints);
 
-private  void  calc_centroid(
+static  void  calc_centroid(
     int     npoints,
     int     ndim,
     Real    **points, 
@@ -102,7 +100,7 @@ private  void  calc_centroid(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-public  void  procrustes(
+BICAPI  void  procrustes(
     int         npoints,
     int         ndim, 
     Real        **Apoints,
@@ -225,7 +223,7 @@ public  void  procrustes(
 
 ---------------------------------------------------------------------------- */
 
-private  void  calc_centroid(
+static  void  calc_centroid(
     int     npoints,
     int     ndim,
     Real    **points, 
@@ -269,7 +267,7 @@ private  void  calc_centroid(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-private  void  translate_points(
+static  void  translate_points(
     int    npoints,
     int    ndim,
     Real   **points, 
@@ -303,7 +301,7 @@ private  void  translate_points(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-private  Real  trace_of_matrix(
+static  Real  trace_of_matrix(
     int    size,
     Real   **the_matrix )
 {

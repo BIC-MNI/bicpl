@@ -1,6 +1,5 @@
-
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/marching.h>
+#include "bicpl_internal.h"
+#include "bicpl/marching.h"
 
 #define  MAX_POLYGONS_PER_VOXEL  5
 #define  MAX_INDICES_PER_VOXEL   20
@@ -15,14 +14,14 @@ typedef  struct
 typedef  enum  { PLUS_FLAG, MINUS_FLAG, MAX_CASES }
                Case_types;
 
-private  case_struct   cases[2][2][2][2][2][2][2][2][2][2][2];
+static  case_struct   cases[2][2][2][2][2][2][2][2][2][2][2];
 
-private   BOOLEAN  initialized = FALSE;
+static   BOOLEAN  initialized = FALSE;
 
-/*  ---------------- private prototypes ------------------------- */
+/*  ---------------- static prototypes ------------------------- */
 
-private  void  create_marching_cubes_lookup( void );
-private  void  create_case(
+static  void  create_marching_cubes_lookup( void );
+static  void  create_case(
     int          x,
     int          y,
     int          z,
@@ -31,7 +30,7 @@ private  void  create_case(
 
 /*  ------------------------------------------------------------- */
 
-private  void  check_initialized( void )
+static  void  check_initialized( void )
 {
     if( !initialized )
     {
@@ -41,7 +40,7 @@ private  void  check_initialized( void )
     }
 }
 
-private  void  create_marching_cubes_lookup( void )
+static  void  create_marching_cubes_lookup( void )
 {
     int          x, y, z;
     Case_types   case_flags[2][2][2];
@@ -70,7 +69,7 @@ private  void  create_marching_cubes_lookup( void )
     }
 }
 
-private  int  get_tetra_polygon(
+static  int  get_tetra_polygon(
     Case_types   tetra_flags[],
     int          tetra_indices[][2] )
 {
@@ -100,7 +99,7 @@ private  int  get_tetra_polygon(
     return( sizes[n_minus] );
 }
 
-private  int  get_tetra_case(
+static  int  get_tetra_case(
     Case_types   case_flags[2][2][2],
     int          indices[][3],
     int          edge_indices[][2][3] )
@@ -169,7 +168,7 @@ private  int  get_tetra_case(
     return( size );
 }
 
-private  int  lookup_case(
+static  int  lookup_case(
     Case_types   case_flags[2][2][2],
     int          sizes[],
     int          edge_indices[][2][3] )
@@ -228,7 +227,7 @@ static  int   offsets[N_MARCHING_TETRA_EDGES][3] = {
                                     { 0, -1, -1 }
                                  };
 
-public  void  translate_to_edge_index(
+BICAPI  void  translate_to_edge_index(
     int                x1,
     int                y1,
     int                z1,
@@ -269,7 +268,7 @@ public  void  translate_to_edge_index(
     edge_point->coord[2] = z1;
 }
 
-public  void  translate_from_edge_index(
+BICAPI  void  translate_from_edge_index(
     int       edge_index,
     int       offset[] )
 {
@@ -278,7 +277,7 @@ public  void  translate_from_edge_index(
     offset[2] = offsets[edge_index][2];
 }
 
-private  void  create_case(
+static  void  create_case(
     int          x,
     int          y,
     int          z,
@@ -362,10 +361,10 @@ private  void  create_case(
     }
 }
 
-private  void  delete_case(
+static  void  delete_case(
     case_struct  *case_info );
 
-public  int  get_tetra_isosurface_polygons(
+BICAPI  int  get_tetra_isosurface_polygons(
     int               x,
     int               y,
     int               z,
@@ -417,7 +416,7 @@ public  int  get_tetra_isosurface_polygons(
     return( voxel_case->n_polygons );
 }
 
-private  void  delete_case(
+static  void  delete_case(
     case_struct  *case_info )
 {
     if( case_info->n_polygons > 0 )
@@ -427,7 +426,7 @@ private  void  delete_case(
     }
 }
 
-public  void  delete_tetra_marching_cubes_table( void )
+BICAPI  void  delete_tetra_marching_cubes_table( void )
 {
     int          x, y, z;
     Case_types   c0, c1, c2, c3, c4, c5, c6, c7;

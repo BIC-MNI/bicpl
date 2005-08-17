@@ -12,14 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.18 2000-02-06 15:30:19 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.19 2005-08-17 22:30:25 bert Exp $";
 #endif
 
-private  void  subdivide_polygon(
+static  void  subdivide_polygon(
     polygons_struct   *polygons,
     int               poly,
     int               *new_n_points,
@@ -46,7 +45,7 @@ private  void  subdivide_polygon(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  subdivide_polygons(
+BICAPI  void  subdivide_polygons(
     polygons_struct  *polygons )
 {
     int                i, new_n_points, new_n_indices, new_n_polygons;
@@ -153,7 +152,7 @@ public  void  subdivide_polygons(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  subdivide_polygon(
+static  void  subdivide_polygon(
     polygons_struct   *polygons,
     int               poly,
     int               *new_n_points,

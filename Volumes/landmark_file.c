@@ -13,7 +13,7 @@
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  char  *get_default_landmark_file_suffix()
+BICAPI char  *get_default_landmark_file_suffix()
 {
     return( "lmk" );
 }
@@ -36,7 +36,7 @@ public  char  *get_default_landmark_file_suffix()
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status   input_landmark_file(
+BICAPI Status   input_landmark_file(
     Volume         volume,
     char           filename[],
     Colour         colour,
@@ -89,7 +89,7 @@ public  Status   input_landmark_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_tag_point(
+BICAPI Status  io_tag_point(
     FILE            *file,
     IO_types        io_direction,
     Volume          volume,

@@ -12,19 +12,17 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
-#include  <bicpl/numerical.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.19 2000-02-06 15:30:52 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.20 2005-08-17 22:26:18 bert Exp $";
 #endif
 
 #define  DEBUG
 #undef  DEBUG
 
 #ifdef DEBUG
-private  Real  get_correct_amount(
+static Real  get_correct_amount(
     Volume   volume,
     int      x,
     int      y,
@@ -110,7 +108,7 @@ private  Real  get_correct_amount(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Volume  create_box_filtered_volume(
+BICAPI Volume  create_box_filtered_volume(
     Volume   volume,
     nc_type  nc_data_type,
     BOOLEAN  sign_flag,
@@ -385,7 +383,7 @@ public  Volume  create_box_filtered_volume(
 }
 
 #ifdef DEBUG
-private  void  get_voxel_range(
+static void  get_voxel_range(
     int      size,
     Real     min_pos,
     Real     max_pos,
@@ -414,7 +412,7 @@ private  void  get_voxel_range(
     }
 }
     
-private  Real  get_amount_in_box(
+static Real  get_amount_in_box(
     Volume    volume,
     int       x_min_voxel,
     int       x_max_voxel,
@@ -473,7 +471,7 @@ private  Real  get_amount_in_box(
     return( sum );
 }
 
-private  Real  get_correct_amount(
+static Real  get_correct_amount(
     Volume   volume,
     int      x,
     int      y,

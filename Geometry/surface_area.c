@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surface_area.c,v 1.7 2000-02-06 15:30:19 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surface_area.c,v 1.8 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -33,7 +32,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surfac
 @MODIFIED   :
 ---------------------------------------------------------------------------- */
 
-public  Real  get_polygon_2d_area(
+BICAPI  Real  get_polygon_2d_area(
     int      n_points,
     Point    points[] )
 {
@@ -68,7 +67,7 @@ public  Real  get_polygon_2d_area(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  get_polygon_surface_area(
+BICAPI  Real  get_polygon_surface_area(
     int      n_points,
     Point    points[] )
 {
@@ -105,7 +104,7 @@ public  Real  get_polygon_surface_area(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  get_polygons_surface_area(
+BICAPI  Real  get_polygons_surface_area(
     polygons_struct  *polygons )
 {
     int      poly, size;

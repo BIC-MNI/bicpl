@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/prog_utils.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.13 2000-02-06 15:30:47 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.14 2005-08-17 22:27:56 bert Exp $";
 #endif
 
 typedef struct
@@ -27,7 +26,7 @@ typedef struct
     int   current_offset_within_arg;
 } arguments_struct;
 
-private  arguments_struct   arguments;
+static  arguments_struct   arguments;
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : arguments_remaining
@@ -42,12 +41,12 @@ private  arguments_struct   arguments;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  arguments_remaining( void )
+static  BOOLEAN  arguments_remaining( void )
 {
     return( arguments.current_arg < arguments.argc );
 }
 
-public  int  get_n_arguments_remaining( void )
+BICAPI  int  get_n_arguments_remaining( void )
 {
     return( arguments.argc - arguments.current_arg );
 }
@@ -67,7 +66,7 @@ public  int  get_n_arguments_remaining( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  STRING  get_current_argument_string( void )
+static  STRING  get_current_argument_string( void )
 {
     STRING   arg;
 
@@ -88,7 +87,7 @@ private  STRING  get_current_argument_string( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  advance_argument( void )
+static  void  advance_argument( void )
 {
     ++arguments.current_arg;
     arguments.current_offset_within_arg = 0;
@@ -109,7 +108,7 @@ private  void  advance_argument( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_argument_processing(
+BICAPI  void  initialize_argument_processing(
     int     argc,
     char    *argv[] )
 {
@@ -134,7 +133,7 @@ public  void  initialize_argument_processing(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_int_argument(
+BICAPI  BOOLEAN  get_int_argument(
     int   default_value,
     int   *value )
 {
@@ -170,7 +169,7 @@ public  BOOLEAN  get_int_argument(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_real_argument(
+BICAPI  BOOLEAN  get_real_argument(
     Real   default_value,
     Real   *value )
 {
@@ -210,7 +209,7 @@ public  BOOLEAN  get_real_argument(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_string_argument(
+BICAPI  BOOLEAN  get_string_argument(
     STRING   default_value,
     STRING   *value )
 {
@@ -246,7 +245,7 @@ public  BOOLEAN  get_string_argument(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_prefix_argument(
+BICAPI  BOOLEAN  get_prefix_argument(
     STRING  prefix )
 {
     char      *next_str;

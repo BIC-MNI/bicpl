@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.14 2002-04-29 18:31:05 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.15 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -35,7 +34,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrah
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  is_this_tetrahedral_topology(
+BICAPI  BOOLEAN  is_this_tetrahedral_topology(
     polygons_struct   *polygons )
 {
     int    n_polygons;
@@ -63,7 +62,7 @@ public  BOOLEAN  is_this_tetrahedral_topology(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_tetra_tessellation_with_n_points(
+BICAPI  int  get_tetra_tessellation_with_n_points(
     int   n_points )
 {
     int  n_polygons;
@@ -98,7 +97,7 @@ public  int  get_tetra_tessellation_with_n_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_tetrahedral_sphere(
+BICAPI  void  create_tetrahedral_sphere(
     Point            *centre,
     Real             rx,
     Real             ry,
@@ -210,7 +209,7 @@ public  void  create_tetrahedral_sphere(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  half_sample_tetrahedral_tessellation(
+BICAPI  void  half_sample_tetrahedral_tessellation(
     polygons_struct  *polygons,
     polygons_struct  *half )
 {

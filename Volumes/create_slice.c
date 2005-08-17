@@ -12,14 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.46 2005-03-29 22:16:47 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.47 2005-08-17 22:26:19 bert Exp $";
 #endif
 
-private  void  create_pixel_mapping(
+static void  create_pixel_mapping(
     Volume          volume1,
     int             n_slices1,
     Real            **origins1,
@@ -73,7 +72,7 @@ private  void  create_pixel_mapping(
     }
 }
 
-private  void  set_pixel_range(
+static void  set_pixel_range(
     Volume          volume1,
     int             n_slices1,
     Real            **real_origins1,
@@ -171,7 +170,7 @@ private  void  set_pixel_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  create_weighted_volume_slices(
+static void  create_weighted_volume_slices(
     Volume          volume1,
     int             n_slices1,
     Real            **origins1,
@@ -327,7 +326,7 @@ private  void  create_weighted_volume_slices(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  get_filter_slices(
+static BOOLEAN  get_filter_slices(
     Volume          volume,
     Real            position[],
     Real            x_axis[],
@@ -416,7 +415,7 @@ private  BOOLEAN  get_filter_slices(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_volume_slice(
+BICAPI void  create_volume_slice(
     Volume          volume1,
     Filter_types    filter_type1,
     Real            filter_width1,
@@ -523,7 +522,7 @@ public  void  create_volume_slice(
     FREE2D( real_origins1 );
 }
 
-public  void  set_volume_slice_pixel_range(
+BICAPI void  set_volume_slice_pixel_range(
     Volume          volume1,
     Filter_types    filter_type1,
     Real            filter_width1,

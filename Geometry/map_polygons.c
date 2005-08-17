@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/trans.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.13 2000-02-06 15:30:15 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.14 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -37,7 +35,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_po
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  get_baricentric(
+static  Real  get_baricentric(
     Point       *point,
     Point       *p1,
     Point       *p2,
@@ -76,7 +74,7 @@ private  Real  get_baricentric(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_triangle_interpolation_weights(
+static  void  get_triangle_interpolation_weights(
     Point       *point,
     Point       points[],
     Real        weights[] )
@@ -103,7 +101,7 @@ private  void  get_triangle_interpolation_weights(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  intersect_lines_2d(
+static  BOOLEAN  intersect_lines_2d(
     Real    p1[],
     Real    p2[],
     Real    q1[],
@@ -154,7 +152,7 @@ private  BOOLEAN  intersect_lines_2d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  get_two_d_coordinate(
+static  Real  get_two_d_coordinate(
     Point    *p,
     Point    *p1,
     Point    *p2,
@@ -249,7 +247,7 @@ private  Real  get_two_d_coordinate(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_quadrilateral_interpolation_weights(
+static  void  get_quadrilateral_interpolation_weights(
     Point       *point,
     Point       points[],
     Real        weights[] )
@@ -281,7 +279,7 @@ private  void  get_quadrilateral_interpolation_weights(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_arbitrary_polygon_interpolation_weights(
+static  void  get_arbitrary_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
     Point       points[],
@@ -336,7 +334,7 @@ private  void  get_arbitrary_polygon_interpolation_weights(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_polygon_interpolation_weights(
+BICAPI  void  get_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
     Point       points[],
@@ -374,7 +372,7 @@ public  void  get_polygon_interpolation_weights(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  map_point_between_polygons(
+BICAPI  void  map_point_between_polygons(
     polygons_struct  *p1,
     int              poly_index,
     Point            *p1_point,
@@ -424,7 +422,7 @@ public  void  map_point_between_polygons(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  map_point_to_unit_sphere(
+BICAPI  Real  map_point_to_unit_sphere(
     polygons_struct  *p,
     Point            *point,
     polygons_struct  *unit_sphere,
@@ -456,7 +454,7 @@ public  Real  map_point_to_unit_sphere(
     return( dist );
 }
 
-public  void  map_unit_sphere_to_point(
+BICAPI  void  map_unit_sphere_to_point(
     polygons_struct  *unit_sphere,
     Point            *unit_sphere_point,
     polygons_struct  *p,
@@ -489,7 +487,7 @@ public  void  map_unit_sphere_to_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  polygon_transform_point(
+static  void  polygon_transform_point(
     object_struct   *src_object,
     object_struct   *dest_object,
     Point           *src_point,
@@ -522,7 +520,7 @@ private  void  polygon_transform_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  polygon_transform_points(
+BICAPI  void  polygon_transform_points(
     polygons_struct   *src_polygons,
     polygons_struct   *dest_polygons,
     int               n_points,
@@ -551,7 +549,7 @@ public  void  polygon_transform_points(
     }
 }
 
-public  void  map_sphere_to_uv(
+BICAPI  void  map_sphere_to_uv(
     Real    x,
     Real    y,
     Real    z,
@@ -569,7 +567,7 @@ public  void  map_sphere_to_uv(
     *u = angle_around / (2.0*PI);
 }
 
-public  void  map_uv_to_sphere(
+BICAPI  void  map_uv_to_sphere(
     Real    u,
     Real    v,
     Real    *x,

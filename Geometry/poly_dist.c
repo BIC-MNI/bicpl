@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_dist.c,v 1.9 2000-02-06 15:30:16 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_dist.c,v 1.10 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -33,7 +32,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_d
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  sq_distance_between_points(
+BICAPI  Real  sq_distance_between_points(
     Point  *p1,
     Point  *p2 )
 {
@@ -61,7 +60,7 @@ public  Real  sq_distance_between_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  point_segment_sq_distance(
+static  Real  point_segment_sq_distance(
     Point   *p,
     Point   *q1,
     Point   *q2,
@@ -72,7 +71,7 @@ private  Real  point_segment_sq_distance(
     return( sq_distance_between_points( p, closest_point ) );
 }
 
-public  Real  find_point_polygon_distance_sq(
+BICAPI  Real  find_point_polygon_distance_sq(
     Point     *point,
     int       n_points,
     Point     poly_points[],
@@ -162,7 +161,7 @@ public  Real  find_point_polygon_distance_sq(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  find_point_polygon_distance(
+BICAPI  Real  find_point_polygon_distance(
     Point     *point,
     int       n_points,
     Point     poly_points[],
@@ -187,7 +186,7 @@ public  Real  find_point_polygon_distance(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  find_closest_polygon_point(
+BICAPI  int  find_closest_polygon_point(
     Point              *point,
     polygons_struct    *polygons,
     Point              *closest_point )

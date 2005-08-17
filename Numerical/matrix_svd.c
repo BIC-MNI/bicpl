@@ -12,8 +12,7 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include <volume_io/internal_volume_io.h>
-#include <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 
 int bicpl_dgesvd_(char *jobu, char *jobvt, long int *m, long int *n,
@@ -23,7 +22,7 @@ int bicpl_dgesvd_(char *jobu, char *jobvt, long int *m, long int *n,
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.8 2004-04-15 22:04:05 vsingh Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.9 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -43,7 +42,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matri
 	      compatible code, specifically a routine extracted from the clapack library
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  singular_value_decomposition(
+BICAPI  BOOLEAN  singular_value_decomposition(
     int    m,
     int    n,
     Real   **a,

@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/data_structures.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash2_table.c,v 1.3 2000-02-06 15:30:10 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash2_table.c,v 1.4 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 #define  HASH1_FUNCTION_CONSTANT          0.6180339887498948482
@@ -39,7 +38,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   void  initialize_hash2_table(
+BICAPI   void  initialize_hash2_table(
     hash2_table_struct  *hash_table,
     int                 size,
     int                 data_size,
@@ -73,7 +72,7 @@ public   void  initialize_hash2_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   void  delete_hash2_table_list(
+static   void  delete_hash2_table_list(
     hash2_table_struct  *hash_table )
 {
     if( hash_table->size > 0 )
@@ -93,7 +92,7 @@ private   void  delete_hash2_table_list(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   void  delete_hash2_table(
+BICAPI   void  delete_hash2_table(
     hash2_table_struct  *hash_table )
 {
     int                  i;
@@ -130,7 +129,7 @@ public   void  delete_hash2_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   int  hash2_function(
+static   int  hash2_function(
     hash2_table_struct   *hash_table,
     int                 key1,
     int                 key2 )
@@ -162,7 +161,7 @@ private   int  hash2_function(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   hash2_entry_struct  **lookup(
+static   hash2_entry_struct  **lookup(
     hash2_table_struct  *hash_table,
     int                 key1,
     int                 key2 )
@@ -197,7 +196,7 @@ private   hash2_entry_struct  **lookup(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  insert_in_hash2_table(
+BICAPI  void  insert_in_hash2_table(
     hash2_table_struct  *hash_table,
     int                 key1,
     int                 key2,
@@ -257,7 +256,7 @@ public  void  insert_in_hash2_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  lookup_in_hash2_table(
+BICAPI  BOOLEAN  lookup_in_hash2_table(
     hash2_table_struct  *hash_table,
     int                 key1,
     int                 key2,
@@ -305,7 +304,7 @@ public  BOOLEAN  lookup_in_hash2_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  remove_from_hash2_table(
+BICAPI  BOOLEAN  remove_from_hash2_table(
     hash2_table_struct  *hash_table,
     int                 key1,
     int                 key2,
@@ -356,7 +355,7 @@ public  BOOLEAN  remove_from_hash2_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   void  move_hash2_entries_to_new_table(
+static   void  move_hash2_entries_to_new_table(
     hash2_table_struct  *dest,
     hash2_table_struct  *src )
 {
@@ -399,7 +398,7 @@ private   void  move_hash2_entries_to_new_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   void  increase_hash2_table_size(
+BICAPI   void  increase_hash2_table_size(
     hash2_table_struct   *hash_table,
     int                  new_size )
 {
@@ -430,7 +429,7 @@ public   void  increase_hash2_table_size(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_hash2_pointer(
+BICAPI  void  initialize_hash2_pointer(
     hash2_table_pointer  *ptr )
 {
     ptr->current_index = -1;
@@ -452,7 +451,7 @@ public  void  initialize_hash2_pointer(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_next_hash2_entry(
+BICAPI  BOOLEAN  get_next_hash2_entry(
     hash2_table_struct   *hash_table,
     hash2_table_pointer  *ptr,
     void                 *data_ptr )

@@ -1,13 +1,11 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/numerical.h>
-#include  <bicpl/prog_utils.h>
+#include "bicpl_internal.h"
 
 #define  LSQ_TYPE      float
 #define  MINIMIZE_LSQ  minimize_lsq
 
 #include  "minimize_lsq_include.c"
 
-public  Real   minimize_lsq_float(
+BICAPI  Real   minimize_lsq_float(
     int              n_parameters,
     Real             constant_term,
     float            linear_terms[],
@@ -25,7 +23,7 @@ public  Real   minimize_lsq_float(
                                   max_step_size, n_iters, node_values ) );
 }
 
-public  void  initialize_lsq_terms_float(
+BICAPI  void  initialize_lsq_terms_float(
     int              n_parameters,
     Real             *constant_term,
     float            *linear_terms[],
@@ -52,7 +50,7 @@ public  void  initialize_lsq_terms_float(
     }
 }
 
-public  void  reset_lsq_terms_float(
+BICAPI  void  reset_lsq_terms_float(
     int              n_parameters,
     Real             *constant_term,
     float            linear_terms[],
@@ -74,7 +72,7 @@ public  void  reset_lsq_terms_float(
     }
 }
 
-public  void  add_to_lsq_terms_float(
+BICAPI  void  add_to_lsq_terms_float(
     int              n_parameters,
     Real             *constant_term,
     float            linear_terms[],
@@ -121,7 +119,7 @@ public  void  add_to_lsq_terms_float(
     }
 }
 
-public  void  realloc_lsq_terms_float(
+BICAPI  void  realloc_lsq_terms_float(
     int              n_parameters,
     int              n_cross_terms[],
     int              *cross_parms[],
@@ -139,7 +137,7 @@ public  void  realloc_lsq_terms_float(
     }
 }
 
-public  void  delete_lsq_terms_float(
+BICAPI  void  delete_lsq_terms_float(
     int              n_parameters,
     float            linear_terms[],
     float            square_terms[],
@@ -165,7 +163,7 @@ public  void  delete_lsq_terms_float(
     FREE( cross_parms );
 }
 
-public  void  create_lsq_hypersurface_float(
+BICAPI  void  create_lsq_hypersurface_float(
     STRING           filename,
     int              parm1,
     int              parm2,

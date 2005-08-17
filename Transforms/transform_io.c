@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/trans.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transform_io.c,v 1.8 2000-02-06 15:30:51 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transform_io.c,v 1.9 2005-08-17 22:26:48 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -34,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/tran
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  write_transform_file(
+BICAPI  Status  write_transform_file(
     STRING       filename,
     STRING       comments,
     Transform    *transform )
@@ -74,7 +73,7 @@ public  Status  write_transform_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  read_transform_file(
+BICAPI  Status  read_transform_file(
     STRING       filename,
     Transform    *transform )
 {

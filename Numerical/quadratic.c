@@ -1,7 +1,6 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
-public  void  initialize_quadratic(
+BICAPI  void  initialize_quadratic(
     int              n_parameters,
     Real             *constant_term,
     float            *linear_terms[],
@@ -28,7 +27,7 @@ public  void  initialize_quadratic(
     }
 }
 
-public  void  zero_quadratic(
+BICAPI  void  zero_quadratic(
     int              n_parameters,
     Real             *constant_term,
     float            linear_terms[],
@@ -50,7 +49,7 @@ public  void  zero_quadratic(
     }
 }
 
-public  void  add_to_quadratic_cross_term(
+BICAPI  void  add_to_quadratic_cross_term(
     int              *n_cross_terms[],
     int              **cross_parms[],
     float            **cross_terms[],
@@ -83,7 +82,7 @@ public  void  add_to_quadratic_cross_term(
     (*cross_terms)[p1][t] += (float) value;
 }
 
-public  void  realloc_quadratic_cross_terms(
+BICAPI  void  realloc_quadratic_cross_terms(
     int              n_parameters,
     int              n_cross_terms[],
     int              **cross_parms[],
@@ -101,7 +100,7 @@ public  void  realloc_quadratic_cross_terms(
     }
 }
 
-public  void  delete_quadratic(
+BICAPI  void  delete_quadratic(
     int              n_parameters,
     float            linear_terms[],
     float            square_terms[],
@@ -127,7 +126,7 @@ public  void  delete_quadratic(
     FREE( cross_parms );
 }
 
-public  Real   evaluate_quadratic(
+BICAPI  Real   evaluate_quadratic(
     int           n_parameters,
     float         parameters[],
     Real          constant,
@@ -158,7 +157,7 @@ public  Real   evaluate_quadratic(
     return( fit );
 }
 
-public  void   evaluate_quadratic_deriv(
+BICAPI  void   evaluate_quadratic_deriv(
     int           n_parameters,
     float         parameters[],
     float         linear[],

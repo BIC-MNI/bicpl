@@ -2,8 +2,7 @@
 #include "config.h"
 #endif
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl.h>
+#include "bicpl_internal.h"
 
 #define   N_POINTS         10000
 #define   MAX_DIST         100.0
@@ -51,7 +50,7 @@ double gamma(double x)
 }
 #endif
 
-private  Real  evaluate_probability_t(
+static  Real  evaluate_probability_t(
     int    v,
     Real   t )
 {
@@ -68,7 +67,7 @@ private  Real  evaluate_probability_t(
     return( p );
 }
 
-private   Real  initialize_t_integral(
+static   Real  initialize_t_integral(
     int    v,
     int    n_points,
     Real   cumulative_probs[],
@@ -108,7 +107,7 @@ private   Real  initialize_t_integral(
     return( error );
 }
 
-private  Real  convert_t_stat_to_probability(
+static  Real  convert_t_stat_to_probability(
     int   n_points,
     Real  cumulative_probs[],
     Real  max_dist,
@@ -139,7 +138,7 @@ private  Real  convert_t_stat_to_probability(
     return( value );
 }
 
-public  void  initialize_cumulative_t_stat(
+BICAPI  void  initialize_cumulative_t_stat(
     t_stat_struct  *stat,
     int            degrees_freedom )
 {
@@ -156,13 +155,13 @@ public  void  initialize_cumulative_t_stat(
                                   N_STEPS_BETWEEN );
 }
 
-public  void  delete_cumulative_t_stat(
+BICAPI  void  delete_cumulative_t_stat(
     t_stat_struct  *stat )
 {
     FREE( stat->cumulative_probs );
 }
 
-public  Real  get_cumulative_t_stat(
+BICAPI  Real  get_cumulative_t_stat(
     t_stat_struct  *stat,
     Real           t )
 {

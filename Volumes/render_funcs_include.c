@@ -2,24 +2,24 @@
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_char
+static void render_one_rgb_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_char
+static void render_one_cmap_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_char
+static void render_many_rgb_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_char
+static void render_many_cmap_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -30,24 +30,24 @@ private  void render_many_cmap_unsigned_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_char_unsigned_char
+static void render_one_rgb_unsigned_char_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_char_unsigned_char
+static void render_one_cmap_unsigned_char_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_char_unsigned_char
+static void render_many_rgb_unsigned_char_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_char_unsigned_char
+static void render_many_cmap_unsigned_char_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -58,24 +58,24 @@ private  void render_many_cmap_unsigned_char_unsigned_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_char_unsigned_short
+static void render_one_rgb_unsigned_char_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_char_unsigned_short
+static void render_one_cmap_unsigned_char_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_char_unsigned_short
+static void render_many_rgb_unsigned_char_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_char_unsigned_short
+static void render_many_cmap_unsigned_char_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -86,24 +86,24 @@ private  void render_many_cmap_unsigned_char_unsigned_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_char_unsigned_int
+static void render_one_rgb_unsigned_char_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_char_unsigned_int
+static void render_one_cmap_unsigned_char_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_char_unsigned_int
+static void render_many_rgb_unsigned_char_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_char_unsigned_int
+static void render_many_cmap_unsigned_char_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -114,24 +114,24 @@ private  void render_many_cmap_unsigned_char_unsigned_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_char_signed_char
+static void render_one_rgb_unsigned_char_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_char_signed_char
+static void render_one_cmap_unsigned_char_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_char_signed_char
+static void render_many_rgb_unsigned_char_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_char_signed_char
+static void render_many_cmap_unsigned_char_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -142,24 +142,24 @@ private  void render_many_cmap_unsigned_char_signed_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_char_signed_short
+static void render_one_rgb_unsigned_char_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_char_signed_short
+static void render_one_cmap_unsigned_char_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_char_signed_short
+static void render_many_rgb_unsigned_char_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_char_signed_short
+static void render_many_cmap_unsigned_char_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -170,24 +170,24 @@ private  void render_many_cmap_unsigned_char_signed_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_char_signed_int
+static void render_one_rgb_unsigned_char_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_char_signed_int
+static void render_one_cmap_unsigned_char_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_char_signed_int
+static void render_many_rgb_unsigned_char_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_char_signed_int
+static void render_many_cmap_unsigned_char_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -198,24 +198,24 @@ private  void render_many_cmap_unsigned_char_signed_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_char_float
+static void render_one_rgb_unsigned_char_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_char_float
+static void render_one_cmap_unsigned_char_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_char_float
+static void render_many_rgb_unsigned_char_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_char_float
+static void render_many_cmap_unsigned_char_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -226,24 +226,24 @@ private  void render_many_cmap_unsigned_char_float
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_char_double
+static void render_one_rgb_unsigned_char_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_char_double
+static void render_one_cmap_unsigned_char_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_char_double
+static void render_many_rgb_unsigned_char_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_char_double
+static void render_many_cmap_unsigned_char_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -258,24 +258,24 @@ private  void render_many_cmap_unsigned_char_double
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_short
+static void render_one_rgb_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_short
+static void render_one_cmap_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_short
+static void render_many_rgb_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_short
+static void render_many_cmap_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -286,24 +286,24 @@ private  void render_many_cmap_unsigned_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_short_unsigned_char
+static void render_one_rgb_unsigned_short_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_short_unsigned_char
+static void render_one_cmap_unsigned_short_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_short_unsigned_char
+static void render_many_rgb_unsigned_short_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_short_unsigned_char
+static void render_many_cmap_unsigned_short_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -314,24 +314,24 @@ private  void render_many_cmap_unsigned_short_unsigned_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_short_unsigned_short
+static void render_one_rgb_unsigned_short_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_short_unsigned_short
+static void render_one_cmap_unsigned_short_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_short_unsigned_short
+static void render_many_rgb_unsigned_short_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_short_unsigned_short
+static void render_many_cmap_unsigned_short_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -342,24 +342,24 @@ private  void render_many_cmap_unsigned_short_unsigned_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_short_unsigned_int
+static void render_one_rgb_unsigned_short_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_short_unsigned_int
+static void render_one_cmap_unsigned_short_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_short_unsigned_int
+static void render_many_rgb_unsigned_short_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_short_unsigned_int
+static void render_many_cmap_unsigned_short_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -370,24 +370,24 @@ private  void render_many_cmap_unsigned_short_unsigned_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_short_signed_char
+static void render_one_rgb_unsigned_short_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_short_signed_char
+static void render_one_cmap_unsigned_short_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_short_signed_char
+static void render_many_rgb_unsigned_short_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_short_signed_char
+static void render_many_cmap_unsigned_short_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -398,24 +398,24 @@ private  void render_many_cmap_unsigned_short_signed_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_short_signed_short
+static void render_one_rgb_unsigned_short_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_short_signed_short
+static void render_one_cmap_unsigned_short_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_short_signed_short
+static void render_many_rgb_unsigned_short_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_short_signed_short
+static void render_many_cmap_unsigned_short_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -426,24 +426,24 @@ private  void render_many_cmap_unsigned_short_signed_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_short_signed_int
+static void render_one_rgb_unsigned_short_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_short_signed_int
+static void render_one_cmap_unsigned_short_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_short_signed_int
+static void render_many_rgb_unsigned_short_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_short_signed_int
+static void render_many_cmap_unsigned_short_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -454,24 +454,24 @@ private  void render_many_cmap_unsigned_short_signed_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_short_float
+static void render_one_rgb_unsigned_short_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_short_float
+static void render_one_cmap_unsigned_short_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_short_float
+static void render_many_rgb_unsigned_short_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_short_float
+static void render_many_cmap_unsigned_short_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -482,24 +482,24 @@ private  void render_many_cmap_unsigned_short_float
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_short_double
+static void render_one_rgb_unsigned_short_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_short_double
+static void render_one_cmap_unsigned_short_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_short_double
+static void render_many_rgb_unsigned_short_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_short_double
+static void render_many_cmap_unsigned_short_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -516,29 +516,29 @@ private  void render_many_cmap_unsigned_short_double
 
 #define NO_COLOUR_TABLE
 
-private  void render_one_rgb_unsigned_int_direct
+static void render_one_rgb_unsigned_int_direct
 #include "rend_f_include.c"
 
 #undef NO_COLOUR_TABLE
 
-private  void render_one_rgb_unsigned_int
+static void render_one_rgb_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_int
+static void render_one_cmap_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_int
+static void render_many_rgb_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_int
+static void render_many_cmap_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -549,24 +549,24 @@ private  void render_many_cmap_unsigned_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_int_unsigned_char
+static void render_one_rgb_unsigned_int_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_int_unsigned_char
+static void render_one_cmap_unsigned_int_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_int_unsigned_char
+static void render_many_rgb_unsigned_int_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_int_unsigned_char
+static void render_many_cmap_unsigned_int_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -577,24 +577,24 @@ private  void render_many_cmap_unsigned_int_unsigned_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_int_unsigned_short
+static void render_one_rgb_unsigned_int_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_int_unsigned_short
+static void render_one_cmap_unsigned_int_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_int_unsigned_short
+static void render_many_rgb_unsigned_int_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_int_unsigned_short
+static void render_many_cmap_unsigned_int_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -605,24 +605,24 @@ private  void render_many_cmap_unsigned_int_unsigned_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_int_unsigned_int
+static void render_one_rgb_unsigned_int_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_int_unsigned_int
+static void render_one_cmap_unsigned_int_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_int_unsigned_int
+static void render_many_rgb_unsigned_int_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_int_unsigned_int
+static void render_many_cmap_unsigned_int_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -633,24 +633,24 @@ private  void render_many_cmap_unsigned_int_unsigned_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_int_signed_char
+static void render_one_rgb_unsigned_int_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_int_signed_char
+static void render_one_cmap_unsigned_int_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_int_signed_char
+static void render_many_rgb_unsigned_int_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_int_signed_char
+static void render_many_cmap_unsigned_int_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -661,24 +661,24 @@ private  void render_many_cmap_unsigned_int_signed_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_int_signed_short
+static void render_one_rgb_unsigned_int_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_int_signed_short
+static void render_one_cmap_unsigned_int_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_int_signed_short
+static void render_many_rgb_unsigned_int_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_int_signed_short
+static void render_many_cmap_unsigned_int_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -689,24 +689,24 @@ private  void render_many_cmap_unsigned_int_signed_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_int_signed_int
+static void render_one_rgb_unsigned_int_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_int_signed_int
+static void render_one_cmap_unsigned_int_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_int_signed_int
+static void render_many_rgb_unsigned_int_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_int_signed_int
+static void render_many_cmap_unsigned_int_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -717,24 +717,24 @@ private  void render_many_cmap_unsigned_int_signed_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_int_float
+static void render_one_rgb_unsigned_int_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_int_float
+static void render_one_cmap_unsigned_int_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_int_float
+static void render_many_rgb_unsigned_int_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_int_float
+static void render_many_cmap_unsigned_int_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -745,24 +745,24 @@ private  void render_many_cmap_unsigned_int_float
 
 #define ONE_SLICE
 
-private  void render_one_rgb_unsigned_int_double
+static void render_one_rgb_unsigned_int_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_unsigned_int_double
+static void render_one_cmap_unsigned_int_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_unsigned_int_double
+static void render_many_rgb_unsigned_int_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_unsigned_int_double
+static void render_many_cmap_unsigned_int_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -777,24 +777,24 @@ private  void render_many_cmap_unsigned_int_double
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_char
+static void render_one_rgb_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_char
+static void render_one_cmap_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_char
+static void render_many_rgb_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_char
+static void render_many_cmap_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -805,24 +805,24 @@ private  void render_many_cmap_signed_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_char_unsigned_char
+static void render_one_rgb_signed_char_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_char_unsigned_char
+static void render_one_cmap_signed_char_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_char_unsigned_char
+static void render_many_rgb_signed_char_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_char_unsigned_char
+static void render_many_cmap_signed_char_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -833,24 +833,24 @@ private  void render_many_cmap_signed_char_unsigned_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_char_unsigned_short
+static void render_one_rgb_signed_char_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_char_unsigned_short
+static void render_one_cmap_signed_char_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_char_unsigned_short
+static void render_many_rgb_signed_char_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_char_unsigned_short
+static void render_many_cmap_signed_char_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -861,24 +861,24 @@ private  void render_many_cmap_signed_char_unsigned_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_char_unsigned_int
+static void render_one_rgb_signed_char_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_char_unsigned_int
+static void render_one_cmap_signed_char_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_char_unsigned_int
+static void render_many_rgb_signed_char_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_char_unsigned_int
+static void render_many_cmap_signed_char_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -889,24 +889,24 @@ private  void render_many_cmap_signed_char_unsigned_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_char_signed_char
+static void render_one_rgb_signed_char_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_char_signed_char
+static void render_one_cmap_signed_char_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_char_signed_char
+static void render_many_rgb_signed_char_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_char_signed_char
+static void render_many_cmap_signed_char_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -917,24 +917,24 @@ private  void render_many_cmap_signed_char_signed_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_char_signed_short
+static void render_one_rgb_signed_char_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_char_signed_short
+static void render_one_cmap_signed_char_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_char_signed_short
+static void render_many_rgb_signed_char_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_char_signed_short
+static void render_many_cmap_signed_char_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -945,24 +945,24 @@ private  void render_many_cmap_signed_char_signed_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_char_signed_int
+static void render_one_rgb_signed_char_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_char_signed_int
+static void render_one_cmap_signed_char_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_char_signed_int
+static void render_many_rgb_signed_char_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_char_signed_int
+static void render_many_cmap_signed_char_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -973,24 +973,24 @@ private  void render_many_cmap_signed_char_signed_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_char_float
+static void render_one_rgb_signed_char_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_char_float
+static void render_one_cmap_signed_char_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_char_float
+static void render_many_rgb_signed_char_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_char_float
+static void render_many_cmap_signed_char_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1001,24 +1001,24 @@ private  void render_many_cmap_signed_char_float
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_char_double
+static void render_one_rgb_signed_char_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_char_double
+static void render_one_cmap_signed_char_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_char_double
+static void render_many_rgb_signed_char_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_char_double
+static void render_many_cmap_signed_char_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1033,24 +1033,24 @@ private  void render_many_cmap_signed_char_double
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_short
+static void render_one_rgb_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_short
+static void render_one_cmap_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_short
+static void render_many_rgb_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_short
+static void render_many_cmap_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1061,24 +1061,24 @@ private  void render_many_cmap_signed_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_short_unsigned_char
+static void render_one_rgb_signed_short_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_short_unsigned_char
+static void render_one_cmap_signed_short_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_short_unsigned_char
+static void render_many_rgb_signed_short_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_short_unsigned_char
+static void render_many_cmap_signed_short_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1089,24 +1089,24 @@ private  void render_many_cmap_signed_short_unsigned_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_short_unsigned_short
+static void render_one_rgb_signed_short_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_short_unsigned_short
+static void render_one_cmap_signed_short_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_short_unsigned_short
+static void render_many_rgb_signed_short_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_short_unsigned_short
+static void render_many_cmap_signed_short_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1117,24 +1117,24 @@ private  void render_many_cmap_signed_short_unsigned_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_short_unsigned_int
+static void render_one_rgb_signed_short_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_short_unsigned_int
+static void render_one_cmap_signed_short_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_short_unsigned_int
+static void render_many_rgb_signed_short_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_short_unsigned_int
+static void render_many_cmap_signed_short_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1145,24 +1145,24 @@ private  void render_many_cmap_signed_short_unsigned_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_short_signed_char
+static void render_one_rgb_signed_short_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_short_signed_char
+static void render_one_cmap_signed_short_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_short_signed_char
+static void render_many_rgb_signed_short_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_short_signed_char
+static void render_many_cmap_signed_short_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1173,24 +1173,24 @@ private  void render_many_cmap_signed_short_signed_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_short_signed_short
+static void render_one_rgb_signed_short_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_short_signed_short
+static void render_one_cmap_signed_short_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_short_signed_short
+static void render_many_rgb_signed_short_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_short_signed_short
+static void render_many_cmap_signed_short_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1201,24 +1201,24 @@ private  void render_many_cmap_signed_short_signed_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_short_signed_int
+static void render_one_rgb_signed_short_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_short_signed_int
+static void render_one_cmap_signed_short_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_short_signed_int
+static void render_many_rgb_signed_short_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_short_signed_int
+static void render_many_cmap_signed_short_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1229,24 +1229,24 @@ private  void render_many_cmap_signed_short_signed_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_short_float
+static void render_one_rgb_signed_short_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_short_float
+static void render_one_cmap_signed_short_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_short_float
+static void render_many_rgb_signed_short_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_short_float
+static void render_many_cmap_signed_short_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1257,24 +1257,24 @@ private  void render_many_cmap_signed_short_float
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_short_double
+static void render_one_rgb_signed_short_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_short_double
+static void render_one_cmap_signed_short_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_short_double
+static void render_many_rgb_signed_short_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_short_double
+static void render_many_cmap_signed_short_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1289,24 +1289,24 @@ private  void render_many_cmap_signed_short_double
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_int
+static void render_one_rgb_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_int
+static void render_one_cmap_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_int
+static void render_many_rgb_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_int
+static void render_many_cmap_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1317,24 +1317,24 @@ private  void render_many_cmap_signed_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_int_unsigned_char
+static void render_one_rgb_signed_int_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_int_unsigned_char
+static void render_one_cmap_signed_int_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_int_unsigned_char
+static void render_many_rgb_signed_int_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_int_unsigned_char
+static void render_many_cmap_signed_int_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1345,24 +1345,24 @@ private  void render_many_cmap_signed_int_unsigned_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_int_unsigned_short
+static void render_one_rgb_signed_int_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_int_unsigned_short
+static void render_one_cmap_signed_int_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_int_unsigned_short
+static void render_many_rgb_signed_int_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_int_unsigned_short
+static void render_many_cmap_signed_int_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1373,24 +1373,24 @@ private  void render_many_cmap_signed_int_unsigned_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_int_unsigned_int
+static void render_one_rgb_signed_int_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_int_unsigned_int
+static void render_one_cmap_signed_int_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_int_unsigned_int
+static void render_many_rgb_signed_int_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_int_unsigned_int
+static void render_many_cmap_signed_int_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1401,24 +1401,24 @@ private  void render_many_cmap_signed_int_unsigned_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_int_signed_char
+static void render_one_rgb_signed_int_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_int_signed_char
+static void render_one_cmap_signed_int_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_int_signed_char
+static void render_many_rgb_signed_int_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_int_signed_char
+static void render_many_cmap_signed_int_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1429,24 +1429,24 @@ private  void render_many_cmap_signed_int_signed_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_int_signed_short
+static void render_one_rgb_signed_int_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_int_signed_short
+static void render_one_cmap_signed_int_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_int_signed_short
+static void render_many_rgb_signed_int_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_int_signed_short
+static void render_many_cmap_signed_int_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1457,24 +1457,24 @@ private  void render_many_cmap_signed_int_signed_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_int_signed_int
+static void render_one_rgb_signed_int_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_int_signed_int
+static void render_one_cmap_signed_int_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_int_signed_int
+static void render_many_rgb_signed_int_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_int_signed_int
+static void render_many_cmap_signed_int_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1485,24 +1485,24 @@ private  void render_many_cmap_signed_int_signed_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_int_float
+static void render_one_rgb_signed_int_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_int_float
+static void render_one_cmap_signed_int_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_int_float
+static void render_many_rgb_signed_int_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_int_float
+static void render_many_cmap_signed_int_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1513,24 +1513,24 @@ private  void render_many_cmap_signed_int_float
 
 #define ONE_SLICE
 
-private  void render_one_rgb_signed_int_double
+static void render_one_rgb_signed_int_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_signed_int_double
+static void render_one_cmap_signed_int_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_signed_int_double
+static void render_many_rgb_signed_int_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_signed_int_double
+static void render_many_cmap_signed_int_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1545,24 +1545,24 @@ private  void render_many_cmap_signed_int_double
 
 #define ONE_SLICE
 
-private  void render_one_rgb_float
+static void render_one_rgb_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_float
+static void render_one_cmap_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_float
+static void render_many_rgb_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_float
+static void render_many_cmap_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1573,24 +1573,24 @@ private  void render_many_cmap_float
 
 #define ONE_SLICE
 
-private  void render_one_rgb_float_unsigned_char
+static void render_one_rgb_float_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_float_unsigned_char
+static void render_one_cmap_float_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_float_unsigned_char
+static void render_many_rgb_float_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_float_unsigned_char
+static void render_many_cmap_float_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1601,24 +1601,24 @@ private  void render_many_cmap_float_unsigned_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_float_unsigned_short
+static void render_one_rgb_float_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_float_unsigned_short
+static void render_one_cmap_float_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_float_unsigned_short
+static void render_many_rgb_float_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_float_unsigned_short
+static void render_many_cmap_float_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1629,24 +1629,24 @@ private  void render_many_cmap_float_unsigned_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_float_unsigned_int
+static void render_one_rgb_float_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_float_unsigned_int
+static void render_one_cmap_float_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_float_unsigned_int
+static void render_many_rgb_float_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_float_unsigned_int
+static void render_many_cmap_float_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1657,24 +1657,24 @@ private  void render_many_cmap_float_unsigned_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_float_signed_char
+static void render_one_rgb_float_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_float_signed_char
+static void render_one_cmap_float_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_float_signed_char
+static void render_many_rgb_float_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_float_signed_char
+static void render_many_cmap_float_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1685,24 +1685,24 @@ private  void render_many_cmap_float_signed_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_float_signed_short
+static void render_one_rgb_float_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_float_signed_short
+static void render_one_cmap_float_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_float_signed_short
+static void render_many_rgb_float_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_float_signed_short
+static void render_many_cmap_float_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1713,24 +1713,24 @@ private  void render_many_cmap_float_signed_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_float_signed_int
+static void render_one_rgb_float_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_float_signed_int
+static void render_one_cmap_float_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_float_signed_int
+static void render_many_rgb_float_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_float_signed_int
+static void render_many_cmap_float_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1741,24 +1741,24 @@ private  void render_many_cmap_float_signed_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_float_float
+static void render_one_rgb_float_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_float_float
+static void render_one_cmap_float_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_float_float
+static void render_many_rgb_float_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_float_float
+static void render_many_cmap_float_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1769,24 +1769,24 @@ private  void render_many_cmap_float_float
 
 #define ONE_SLICE
 
-private  void render_one_rgb_float_double
+static void render_one_rgb_float_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_float_double
+static void render_one_cmap_float_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_float_double
+static void render_many_rgb_float_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_float_double
+static void render_many_cmap_float_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1801,24 +1801,24 @@ private  void render_many_cmap_float_double
 
 #define ONE_SLICE
 
-private  void render_one_rgb_double
+static void render_one_rgb_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_double
+static void render_one_cmap_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_double
+static void render_many_rgb_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_double
+static void render_many_cmap_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1829,24 +1829,24 @@ private  void render_many_cmap_double
 
 #define ONE_SLICE
 
-private  void render_one_rgb_double_unsigned_char
+static void render_one_rgb_double_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_double_unsigned_char
+static void render_one_cmap_double_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_double_unsigned_char
+static void render_many_rgb_double_unsigned_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_double_unsigned_char
+static void render_many_cmap_double_unsigned_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1857,24 +1857,24 @@ private  void render_many_cmap_double_unsigned_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_double_unsigned_short
+static void render_one_rgb_double_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_double_unsigned_short
+static void render_one_cmap_double_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_double_unsigned_short
+static void render_many_rgb_double_unsigned_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_double_unsigned_short
+static void render_many_cmap_double_unsigned_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1885,24 +1885,24 @@ private  void render_many_cmap_double_unsigned_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_double_unsigned_int
+static void render_one_rgb_double_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_double_unsigned_int
+static void render_one_cmap_double_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_double_unsigned_int
+static void render_many_rgb_double_unsigned_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_double_unsigned_int
+static void render_many_cmap_double_unsigned_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1913,24 +1913,24 @@ private  void render_many_cmap_double_unsigned_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_double_signed_char
+static void render_one_rgb_double_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_double_signed_char
+static void render_one_cmap_double_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_double_signed_char
+static void render_many_rgb_double_signed_char
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_double_signed_char
+static void render_many_cmap_double_signed_char
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1941,24 +1941,24 @@ private  void render_many_cmap_double_signed_char
 
 #define ONE_SLICE
 
-private  void render_one_rgb_double_signed_short
+static void render_one_rgb_double_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_double_signed_short
+static void render_one_cmap_double_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_double_signed_short
+static void render_many_rgb_double_signed_short
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_double_signed_short
+static void render_many_cmap_double_signed_short
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1969,24 +1969,24 @@ private  void render_many_cmap_double_signed_short
 
 #define ONE_SLICE
 
-private  void render_one_rgb_double_signed_int
+static void render_one_rgb_double_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_double_signed_int
+static void render_one_cmap_double_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_double_signed_int
+static void render_many_rgb_double_signed_int
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_double_signed_int
+static void render_many_cmap_double_signed_int
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -1997,24 +1997,24 @@ private  void render_many_cmap_double_signed_int
 
 #define ONE_SLICE
 
-private  void render_one_rgb_double_float
+static void render_one_rgb_double_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_double_float
+static void render_one_cmap_double_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_double_float
+static void render_many_rgb_double_float
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_double_float
+static void render_many_cmap_double_float
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
@@ -2025,24 +2025,24 @@ private  void render_many_cmap_double_float
 
 #define ONE_SLICE
 
-private  void render_one_rgb_double_double
+static void render_one_rgb_double_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_one_cmap_double_double
+static void render_one_cmap_double_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP
 
 #undef ONE_SLICE
 
-private  void render_many_rgb_double_double
+static void render_many_rgb_double_double
 #include "rend_f_include.c"
 
 #define COLOUR_MAP
 
-private  void render_many_cmap_double_double
+static void render_many_cmap_double_double
 #include "rend_f_include.c"
 
 #undef COLOUR_MAP

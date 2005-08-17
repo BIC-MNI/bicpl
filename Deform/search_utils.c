@@ -1,7 +1,7 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/deform.h>
+#include "bicpl_internal.h"
+#include "bicpl/deform.h"
 
-public  BOOLEAN  is_point_inside_surface(
+BICAPI  BOOLEAN  is_point_inside_surface(
     Volume                      volume,
     Volume                      label_volume,
     int                         continuity,
@@ -63,7 +63,7 @@ public  BOOLEAN  is_point_inside_surface(
     }
 }
 
-public  void   get_centre_of_cube(
+BICAPI  void   get_centre_of_cube(
     Point       *cube,
     int         sizes[3],
     Point       *centre )
@@ -81,7 +81,7 @@ public  void   get_centre_of_cube(
     }
 }
 
-public  BOOLEAN  contains_value(
+BICAPI  BOOLEAN  contains_value(
     Real  values[2][2][2],
     int   sizes[3] )
 {
@@ -122,7 +122,7 @@ public  BOOLEAN  contains_value(
     return( FALSE );
 }
 
-public  BOOLEAN  cube_is_small_enough(
+BICAPI  BOOLEAN  cube_is_small_enough(
     Point     cube[2],
     int       sizes[3],
     Real      min_cube_size )
@@ -147,7 +147,7 @@ public  BOOLEAN  cube_is_small_enough(
     return( small_enough );
 }
 
-public  void  initialize_deform_stats(
+BICAPI  void  initialize_deform_stats(
     deform_stats  *stats )
 {
     int  i;
@@ -159,7 +159,7 @@ public  void  initialize_deform_stats(
         stats->n_below[i] = 0;
 }
 
-public  void  record_error_in_deform_stats(
+BICAPI  void  record_error_in_deform_stats(
     deform_stats   *stats,
     Real           error )
 {
@@ -177,7 +177,7 @@ public  void  record_error_in_deform_stats(
     }
 }
 
-public  void  print_deform_stats(
+BICAPI  void  print_deform_stats(
     deform_stats   *stats,
     int            n_points )
 {
@@ -206,7 +206,7 @@ public  void  print_deform_stats(
     print( "\n" );
 }
 
-public  BOOLEAN   get_max_point_cube_distance(
+BICAPI  BOOLEAN   get_max_point_cube_distance(
     Point   cube[2],
     int     sizes[3],
     Point   *point,
@@ -242,7 +242,7 @@ public  BOOLEAN   get_max_point_cube_distance(
         return( FALSE );
 }
 
-public  void  initialize_deformation_parameters(
+BICAPI  void  initialize_deformation_parameters(
     deform_struct  *deform )
 {
     deform->deform_data.type = VOLUME_DATA;
@@ -266,7 +266,7 @@ public  void  initialize_deformation_parameters(
     deform->movement_threshold = 0.0;
 }
 
-public  void  delete_deformation_parameters(
+BICAPI  void  delete_deformation_parameters(
     deform_struct  *deform )
 {
     delete_deformation_model( &deform->deformation_model );
@@ -275,7 +275,7 @@ public  void  delete_deformation_parameters(
         FREE( deform->prev_movements );
 }
 
-public  void  set_boundary_definition(
+BICAPI  void  set_boundary_definition(
     boundary_definition_struct  *boundary_def,
     Real                        min_value,
     Real                        max_value,
@@ -316,13 +316,13 @@ public  void  set_boundary_definition(
     }
 }
 
-public  void  initialize_lookup_volume_coeficients(
+BICAPI  void  initialize_lookup_volume_coeficients(
     voxel_coef_struct  *lookup )
 {
     lookup->n_in_hash = 0;
 }
 
-public  void  lookup_volume_coeficients(
+BICAPI  void  lookup_volume_coeficients(
     voxel_coef_struct  *lookup,
     Volume             volume,
     int                degrees_continuity,
@@ -405,7 +405,7 @@ public  void  lookup_volume_coeficients(
         c[i] = data->coefs[i];
 }
 
-public  void  delete_lookup_volume_coeficients(
+BICAPI  void  delete_lookup_volume_coeficients(
     voxel_coef_struct  *lookup )
 {
     voxel_lin_coef_struct  *ptr, *next;

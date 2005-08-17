@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.12 2000-02-06 15:30:46 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.13 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 #define  NUM_PIXELS8   256
@@ -34,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_loo
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Colour     *get_8bit_rgb_pixel_lookup( void )
+BICAPI  Colour     *get_8bit_rgb_pixel_lookup( void )
 {
     static  BOOLEAN       initialized = FALSE;
     static  Colour        lookup_table[NUM_PIXELS8];
@@ -78,7 +77,7 @@ public  Colour     *get_8bit_rgb_pixel_lookup( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  convert_rgb_pixel_to_8bit_lookup(
+BICAPI  int  convert_rgb_pixel_to_8bit_lookup(
     Colour    colour )
 {
     int   ind, r, g, b, r_ind, g_ind, b_ind;

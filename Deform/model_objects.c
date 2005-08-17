@@ -1,8 +1,8 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/deform.h>
+#include "bicpl_internal.h"
+#include "bicpl/deform.h"
 #include  <limits.h>
 
-private  void  set_deformation_model(
+static  void  set_deformation_model(
     deformation_model_struct  *model,
     int                       up_to_n_points,
     Real                      model_weight,
@@ -11,7 +11,7 @@ private  void  set_deformation_model(
     Real                      min_curvature_offset,
     Real                      max_curvature_offset );
 
-public  void  initialize_deformation_model(
+BICAPI  void  initialize_deformation_model(
     deformation_model_struct  *model )
 {
     model->n_models = 0;
@@ -22,7 +22,7 @@ public  void  initialize_deformation_model(
     model->position_constrained = FALSE;
 }
 
-private  void  delete_model_points(
+static  void  delete_model_points(
     deform_model_struct   *model )
 {
     if( model->n_model_points > 0 )
@@ -34,7 +34,7 @@ private  void  delete_model_points(
     }
 }
 
-private  void  delete_deform_model(
+static  void  delete_deform_model(
     deform_model_struct   *model )
 {
     if( model->model_type == GENERAL_MODEL ||
@@ -50,7 +50,7 @@ private  void  delete_deform_model(
     }
 }
 
-private  void  set_deformation_model(
+static  void  set_deformation_model(
     deformation_model_struct  *model,
     int                       up_to_n_points,
     Real                      model_weight,
@@ -101,7 +101,7 @@ private  void  set_deformation_model(
     model->models[model_index].max_curvature_offset = max_curvature_offset;
 }
 
-private  void  print_deform_model(
+static  void  print_deform_model(
     deform_model_struct   *model )
 {
     STRING  model_object_name;
@@ -144,7 +144,7 @@ private  void  print_deform_model(
     print( "\n" );
 }
 
-public  void  print_deformation_model(
+BICAPI  void  print_deformation_model(
     deformation_model_struct   *deformation_model )
 {
     int   i;
@@ -161,7 +161,7 @@ public  void  print_deformation_model(
     }
 }
 
-public  Status   add_deformation_model(
+BICAPI  Status   add_deformation_model(
     deformation_model_struct   *deformation_model,
     int                        up_to_n_points,
     Real                       model_weight,
@@ -219,7 +219,7 @@ public  Status   add_deformation_model(
     return( status );
 }
 
-public  void  delete_deformation_model(
+BICAPI  void  delete_deformation_model(
     deformation_model_struct  *model )
 {
     int   i;
@@ -234,7 +234,7 @@ public  void  delete_deformation_model(
         FREE( model->original_positions );
 }
 
-public  Status  input_original_positions(
+BICAPI  Status  input_original_positions(
     deformation_model_struct  *deform_model,
     char                      position_filename[],
     Real                      max_position_offset,
@@ -301,7 +301,7 @@ public  Status  input_original_positions(
     return( status );
 }
 
-private  void  compute_line_model_info(
+static  void  compute_line_model_info(
     lines_struct   *lines,
     Point          centroids[],
     Vector         normals[] )
@@ -351,7 +351,7 @@ private  void  compute_line_model_info(
     }
 }
 
-private  void  compute_polygons_model_info(
+static  void  compute_polygons_model_info(
     polygons_struct   *polygons,
     Point             centroids[],
     Vector            normals[] )
@@ -391,7 +391,7 @@ private  void  compute_polygons_model_info(
     FREE( points_done );
 }
 
-private  BOOLEAN  check_correct_general_polygons(
+static  BOOLEAN  check_correct_general_polygons(
     polygons_struct      *polygons,
     deform_model_struct  *model )
 {
@@ -513,7 +513,7 @@ private  BOOLEAN  check_correct_general_polygons(
     return( TRUE );
 }
 
-private  BOOLEAN  check_correct_parametric_polygons(
+static  BOOLEAN  check_correct_parametric_polygons(
     polygons_struct       *polygons,
     deform_model_struct   *model )
 {
@@ -570,7 +570,7 @@ private  BOOLEAN  check_correct_parametric_polygons(
     return( correct );
 }
 
-private  BOOLEAN  check_correct_subsampled_polygons(
+static  BOOLEAN  check_correct_subsampled_polygons(
     polygons_struct       *polygons,
     deform_model_struct   *model )
 {
@@ -625,7 +625,7 @@ private  BOOLEAN  check_correct_subsampled_polygons(
     return( TRUE );
 }
 
-private  BOOLEAN  check_correct_model_polygons(
+static  BOOLEAN  check_correct_model_polygons(
     polygons_struct       *polygons,
     deform_model_struct   *model )
 {
@@ -643,7 +643,7 @@ private  BOOLEAN  check_correct_model_polygons(
     return( correct );
 }
 
-public  BOOLEAN  check_correct_deformation_polygons(
+BICAPI  BOOLEAN  check_correct_deformation_polygons(
     polygons_struct            *polygons,
     deformation_model_struct   *model )
 {
@@ -674,7 +674,7 @@ public  BOOLEAN  check_correct_deformation_polygons(
     return( model_correct );
 }
 
-private  BOOLEAN  check_correct_general_lines(
+static  BOOLEAN  check_correct_general_lines(
     lines_struct         *lines,
     deform_model_struct  *model )
 {
@@ -723,7 +723,7 @@ private  BOOLEAN  check_correct_general_lines(
     return( TRUE );
 }
 
-private  BOOLEAN  check_correct_parametric_lines(
+static  BOOLEAN  check_correct_parametric_lines(
     lines_struct          *lines,
     deform_model_struct   *model )
 {
@@ -755,7 +755,7 @@ private  BOOLEAN  check_correct_parametric_lines(
     return( correct );
 }
 
-private  BOOLEAN  check_correct_model_lines(
+static  BOOLEAN  check_correct_model_lines(
     lines_struct          *lines,
     deform_model_struct   *model )
 {
@@ -771,7 +771,7 @@ private  BOOLEAN  check_correct_model_lines(
     return( correct );
 }
 
-public  BOOLEAN  check_correct_deformation_lines(
+BICAPI  BOOLEAN  check_correct_deformation_lines(
     lines_struct               *lines,
     deformation_model_struct   *model )
 {
@@ -802,7 +802,7 @@ public  BOOLEAN  check_correct_deformation_lines(
     return( model_correct );
 }
 
-public  deform_model_struct  *find_relevent_model(
+BICAPI  deform_model_struct  *find_relevent_model(
     deformation_model_struct  *model,
     int                       point_index )
 {

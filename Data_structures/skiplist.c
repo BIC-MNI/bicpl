@@ -12,15 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/data_structures.h>
-#include  <bicpl/prog_utils.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.12 2000-02-06 15:30:12 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.13 2005-08-17 22:31:13 bert Exp $";
 #endif
 
-private  int  get_random_level( void );
+static  int  get_random_level( void );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : skip_list.c
@@ -60,7 +58,7 @@ typedef  struct
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   void  initialize_skiplist(
+BICAPI   void  initialize_skiplist(
     skiplist_struct  *skiplist )
 {
     int       i;
@@ -88,7 +86,7 @@ public   void  initialize_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  find_data_position(
+static  BOOLEAN  find_data_position(
     skiplist_struct    *skiplist,
     float              key,
     update_struct      *update )
@@ -130,7 +128,7 @@ private  BOOLEAN  find_data_position(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   void  insert_data_in_skiplist(
+static   void  insert_data_in_skiplist(
     skiplist_struct   *skiplist,
     update_struct     *update,
     float             key,
@@ -186,7 +184,7 @@ private   void  insert_data_in_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   void  delete_entry_from_skiplist(
+static   void  delete_entry_from_skiplist(
     skiplist_struct   *skiplist,
     update_struct     *update )
 {
@@ -225,7 +223,7 @@ private   void  delete_entry_from_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_random_level( void )
+static  int  get_random_level( void )
 {
     int    level;
 
@@ -250,7 +248,7 @@ private  int  get_random_level( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   void  delete_skiplist(
+BICAPI   void  delete_skiplist(
     skiplist_struct  *skiplist )
 {
     skip_struct   *ptr, *deleting;
@@ -281,7 +279,7 @@ public   void  delete_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  search_skiplist(
+BICAPI  BOOLEAN  search_skiplist(
     skiplist_struct          *skiplist,
     float                    key,
     void                     **data_ptr )
@@ -297,7 +295,7 @@ public  BOOLEAN  search_skiplist(
     return( found );
 }
 
-public  BOOLEAN  search_skiplist_and_return_pointer(
+BICAPI  BOOLEAN  search_skiplist_and_return_pointer(
     skiplist_struct          *skiplist,
     float                    key,
     skip_struct              **entry_ptr,
@@ -332,7 +330,7 @@ public  BOOLEAN  search_skiplist_and_return_pointer(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  insert_in_skiplist(
+BICAPI  BOOLEAN  insert_in_skiplist(
     skiplist_struct          *skiplist,
     float                    key,
     void                     *data_ptr )
@@ -363,7 +361,7 @@ public  BOOLEAN  insert_in_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  delete_from_skiplist(
+BICAPI  BOOLEAN  delete_from_skiplist(
     skiplist_struct  *skiplist,
     float            key,
     void             **data_ptr )
@@ -400,7 +398,7 @@ public  BOOLEAN  delete_from_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_first_skiplist_entry(
+BICAPI  BOOLEAN  get_first_skiplist_entry(
     skiplist_struct   *skiplist,
     skip_struct       **entry_ptr,
     float             *key,
@@ -432,7 +430,7 @@ public  BOOLEAN  get_first_skiplist_entry(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_next_skiplist_entry(
+BICAPI  BOOLEAN  get_next_skiplist_entry(
     skip_struct       **entry_ptr,
     float             *key,
     void              **data_ptr )
@@ -450,7 +448,7 @@ public  BOOLEAN  get_next_skiplist_entry(
 
 #ifdef DEBUG
 
-private  BOOLEAN  test_skiplist_integrity(
+static  BOOLEAN  test_skiplist_integrity(
     skiplist_struct  *skiplist )
 {
     int            i;

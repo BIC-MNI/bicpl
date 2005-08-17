@@ -1,7 +1,7 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/deform.h>
+#include "bicpl_internal.h"
+#include "bicpl/deform.h"
 
-private  BOOLEAN  voxel_might_contain_boundary(
+static  BOOLEAN  voxel_might_contain_boundary(
     Volume                      volume,
     bitlist_3d_struct           *done_bits,
     bitlist_3d_struct           *surface_bits,
@@ -9,7 +9,7 @@ private  BOOLEAN  voxel_might_contain_boundary(
     int                         voxel_indices[],
     boundary_definition_struct  *boundary_def );
 
-private  BOOLEAN  check_voxel_for_isovalue(
+static  BOOLEAN  check_voxel_for_isovalue(
     voxel_coef_struct   *lookup,
     Volume              volume,
     Volume              label_volume,
@@ -25,7 +25,7 @@ private  BOOLEAN  check_voxel_for_isovalue(
     BOOLEAN             already_found,
     Real                *dist_found );
 
-private  BOOLEAN  check_voxel_for_boundary(
+static  BOOLEAN  check_voxel_for_boundary(
     voxel_coef_struct           *lookup,
     Volume                      volume,
     Volume                      label_volume,
@@ -48,7 +48,7 @@ private  BOOLEAN  check_voxel_for_boundary(
         (result)[Z] = (origin)[Z] + (dist) * (direction)[Z]; \
     }
 
-private  void  clip_line_to_volume(
+static  void  clip_line_to_volume(
     Volume     volume,
     int        degrees_continuity,
     Real       line_origin[],
@@ -76,7 +76,7 @@ private  void  clip_line_to_volume(
                              t_min, t_max );
 }
 
-private  void  set_up_to_search_ray(
+static  void  set_up_to_search_ray(
     Volume                      volume,
     int                         degrees_continuity,
     Real                        ray_origin[],
@@ -259,7 +259,7 @@ private  void  set_up_to_search_ray(
 static  int  count = 0;
 #endif
 
-public  BOOLEAN  find_boundary_in_direction(
+BICAPI  BOOLEAN  find_boundary_in_direction(
     Volume                      volume,
     Volume                      label_volume,
     voxel_coef_struct           *lookup,
@@ -275,7 +275,7 @@ public  BOOLEAN  find_boundary_in_direction(
     boundary_definition_struct  *boundary_def,
     Real                        *boundary_distance )
 {
-    private const Real  TOLERANCE = 0.0001;
+    static const Real  TOLERANCE = 0.0001;
     BOOLEAN       found, done0, done1, second_leg0, second_leg1, isovalue;
     Real          next_closest0, next_closest1;
     int           voxel_index0[N_DIMENSIONS], voxel_index1[N_DIMENSIONS];
@@ -595,7 +595,7 @@ public  BOOLEAN  find_boundary_in_direction(
     return( found );
 }
 
-private  void   get_trilinear_gradient(
+static  void   get_trilinear_gradient(
     Real   coefs[],
     Real   u,
     Real   v,
@@ -646,7 +646,7 @@ private  void   get_trilinear_gradient(
 
 #define  MAX_DERIVS   2
 
-private  BOOLEAN  check_voxel_for_isovalue(
+static  BOOLEAN  check_voxel_for_isovalue(
     voxel_coef_struct   *lookup,
     Volume              volume,
     Volume              label_volume,
@@ -746,7 +746,7 @@ private  BOOLEAN  check_voxel_for_isovalue(
     return( found );
 }
 
-private  BOOLEAN  does_voxel_contain_value_range(
+static  BOOLEAN  does_voxel_contain_value_range(
     Volume          volume,
     int             degrees_continuity,
     int             voxel[],
@@ -838,7 +838,7 @@ private  BOOLEAN  does_voxel_contain_value_range(
     return( FALSE );
 }
 
-private  BOOLEAN  voxel_might_contain_boundary(
+static  BOOLEAN  voxel_might_contain_boundary(
     Volume                      volume,
     bitlist_3d_struct           *done_bits,
     bitlist_3d_struct           *surface_bits,
@@ -885,7 +885,7 @@ private  BOOLEAN  voxel_might_contain_boundary(
     return( TRUE );
 }
 
-private  BOOLEAN  check_voxel_for_boundary(
+static  BOOLEAN  check_voxel_for_boundary(
     voxel_coef_struct           *lookup,
     Volume                      volume,
     Volume                      label_volume,

@@ -16,8 +16,7 @@
 #include "config.h"
 #endif
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/prog_utils.h>
+#include "bicpl_internal.h"
 
 #if HAVE_SYS_TIME_H
 #include  <sys/time.h>
@@ -26,10 +25,10 @@
 #include <stdlib.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.14 2005-06-03 18:09:12 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.15 2005-08-17 22:27:56 bert Exp $";
 #endif
 
-private  BOOLEAN  initialized = FALSE;
+static  BOOLEAN  initialized = FALSE;
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : set_random_seed
@@ -44,7 +43,7 @@ private  BOOLEAN  initialized = FALSE;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_random_seed( int seed )
+BICAPI  void  set_random_seed( int seed )
 {
 #if HAVE_SRANDOM
     (void) srandom( (unsigned int) seed );
@@ -68,7 +67,7 @@ public  void  set_random_seed( int seed )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  check_initialized( void )
+static  void  check_initialized( void )
 {
 #if HAVE_GETTIMEOFDAY
     struct   timeval   t;
@@ -102,7 +101,7 @@ private  void  check_initialized( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_random( void )
+static  int  get_random( void )
 {
     check_initialized();
 
@@ -126,7 +125,7 @@ private  int  get_random( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_random_int( int n )
+BICAPI  int  get_random_int( int n )
 {
     return( get_random() % n );
 }
@@ -145,7 +144,7 @@ public  int  get_random_int( int n )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  get_random_0_to_1( void )
+BICAPI  Real  get_random_0_to_1( void )
 {
     return( (Real) get_random() / (Real) RAND_MAX );
 }

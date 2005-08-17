@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.9 2000-02-05 21:27:24 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.10 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define  MAX_BUFFER_SIZE  100000
@@ -37,7 +36,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_vo
 @MODIFIED   : Aug. 1, 1995    D. MacDonald   - made it faster
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  find_volume_crop_bounds(
+BICAPI BOOLEAN  find_volume_crop_bounds(
     Volume          volume,
     Real            min_crop_threshold,
     Real            max_crop_threshold,
@@ -162,7 +161,7 @@ public  BOOLEAN  find_volume_crop_bounds(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Volume  create_cropped_volume(
+BICAPI Volume  create_cropped_volume(
     Volume          volume,
     int             limits[2][MAX_DIMENSIONS] )
 {
@@ -282,7 +281,7 @@ public  Volume  create_cropped_volume(
 @MODIFIED   :
 ---------------------------------------------------------------------------- */
 
-public  Volume  autocrop_volume(
+BICAPI Volume  autocrop_volume(
     Volume    volume )
 {
     Volume  cropped;

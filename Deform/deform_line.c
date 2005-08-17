@@ -1,7 +1,7 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/deform.h>
+#include "bicpl_internal.h"
+#include "bicpl/deform.h"
 
-private  void  perturb_line_points(
+static  void  perturb_line_points(
     int                          axis,
     lines_struct                 *lines,
     Real                         curvature_factors[],
@@ -14,12 +14,12 @@ private  void  perturb_line_points(
     boundary_definition_struct   *boundary_def,
     deformation_model_struct     *deformation_model,
     deform_stats                 *stats );
-private  Real  one_iteration_lines(
+static  Real  one_iteration_lines(
     lines_struct      *lines,
     deform_struct     *deform_parms,
     int               iteration );
 
-public  void  deform_lines(
+BICAPI  void  deform_lines(
     lines_struct      *lines,
     deform_struct     *deform_parms )
 {
@@ -37,7 +37,7 @@ public  void  deform_lines(
            iteration < deform_parms->max_iterations );
 }
 
-public  void  deform_lines_one_iteration(
+BICAPI  void  deform_lines_one_iteration(
     lines_struct      *lines,
     deform_struct     *deform_parms,
     int               iteration )
@@ -45,7 +45,7 @@ public  void  deform_lines_one_iteration(
     (void) one_iteration_lines( lines, deform_parms, iteration );
 }
 
-private  Real  one_iteration_lines(
+static  Real  one_iteration_lines(
     lines_struct      *lines,
     deform_struct     *deform_parms,
     int               iteration )
@@ -105,7 +105,7 @@ private  Real  one_iteration_lines(
     return( stats.maximum );
 }
 
-public  void  get_line_equilibrium_point(
+BICAPI  void  get_line_equilibrium_point(
     lines_struct                 *lines,
     int                          axis,
     int                          point_index,
@@ -154,7 +154,7 @@ public  void  get_line_equilibrium_point(
                                equilibrium_point );
 }
 
-private  void  perturb_line_points(
+static  void  perturb_line_points(
     int                          axis,
     lines_struct                 *lines,
     Real                         curvature_factors[],
@@ -239,7 +239,7 @@ private  void  perturb_line_points(
     terminate_progress_report( &progress );
 }
 
-public  int  find_axial_plane(
+BICAPI  int  find_axial_plane(
     lines_struct   *lines )
 {
     int      axis, p;

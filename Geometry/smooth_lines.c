@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/data_structures.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_lines.c,v 1.11 2000-02-06 15:30:17 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_lines.c,v 1.12 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -34,7 +32,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  smooth_lines(
+BICAPI  void  smooth_lines(
     lines_struct  *lines,
     Real          smooth_length )
 {
@@ -130,7 +128,7 @@ public  void  smooth_lines(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_line_spline(
+BICAPI  void  create_line_spline(
     lines_struct  *lines,
     int           n_curve_segments,
     lines_struct  *new_lines )

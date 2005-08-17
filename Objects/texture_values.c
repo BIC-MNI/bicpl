@@ -13,14 +13,12 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.6 2001-04-21 17:06:53 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.7 2005-08-17 22:28:27 bert Exp $";
 #endif
 
-#include  <netcdf.h>
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
-private  Status  output_texture_values_ascii(
+static  Status  output_texture_values_ascii(
     STRING   filename,
     int      n_values,
     Real     values[] )
@@ -50,7 +48,7 @@ private  Status  output_texture_values_ascii(
     return( OK );
 }
 
-private  Status  input_texture_values_ascii(
+static  Status  input_texture_values_ascii(
     STRING   filename,
     int      *n_values,
     Real     *values[] )
@@ -77,7 +75,7 @@ private  Status  input_texture_values_ascii(
     return( OK );
 }
 
-private  Status  output_texture_values_binary(
+static  Status  output_texture_values_binary(
     STRING   filename,
     int      n_values,
     Real     values[] )
@@ -104,7 +102,7 @@ private  Status  output_texture_values_binary(
     return( status );
 }
 
-private  Status  input_texture_values_binary(
+static  Status  input_texture_values_binary(
     STRING   filename,
     int      *n_values,
     Real     *values[] )
@@ -141,7 +139,7 @@ private  Status  input_texture_values_binary(
  * The file will be created, if necessary.
  * BINARY_FORMAT files will not be portable.
  */
-public  Status  output_texture_values(
+BICAPI  Status  output_texture_values(
     STRING         filename,
     File_formats   format,
     int            n_values,
@@ -163,7 +161,7 @@ public  Status  output_texture_values(
  * Reading a BINARY_FORMAT file that was created
  * on another system will produce undefined behaviour.
  */
-public  Status  input_texture_values(
+BICAPI  Status  input_texture_values(
     STRING         filename,
     int            *n_values,
     Real           *values[] )

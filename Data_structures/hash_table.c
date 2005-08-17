@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/data_structures.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.13 2000-02-06 15:30:11 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.14 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 #define  HASH_FUNCTION_CONSTANT          0.6180339887498948482
@@ -38,7 +37,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   void  initialize_hash_table(
+BICAPI   void  initialize_hash_table(
     hash_table_struct  *hash_table,
     int                size,
     int                data_size,
@@ -72,7 +71,7 @@ public   void  initialize_hash_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   void  delete_hash_table_list(
+static   void  delete_hash_table_list(
     hash_table_struct  *hash_table )
 {
     if( hash_table->size > 0 )
@@ -92,7 +91,7 @@ private   void  delete_hash_table_list(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   void  delete_hash_table(
+BICAPI   void  delete_hash_table(
     hash_table_struct  *hash_table )
 {
     int                 i;
@@ -128,7 +127,7 @@ public   void  delete_hash_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   int  hash_function(
+static   int  hash_function(
     hash_table_struct   *hash_table,
     int                 key )
 {
@@ -157,7 +156,7 @@ private   int  hash_function(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   hash_entry_struct  **lookup(
+static   hash_entry_struct  **lookup(
     hash_table_struct  *hash_table,
     int                key )
 {
@@ -189,7 +188,7 @@ private   hash_entry_struct  **lookup(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  insert_in_hash_table(
+BICAPI  void  insert_in_hash_table(
     hash_table_struct  *hash_table,
     int                key,
     void               *data_ptr )
@@ -245,7 +244,7 @@ public  void  insert_in_hash_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  lookup_in_hash_table(
+BICAPI  BOOLEAN  lookup_in_hash_table(
     hash_table_struct  *hash_table,
     int                key,
     void               *data_ptr )
@@ -291,7 +290,7 @@ public  BOOLEAN  lookup_in_hash_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  remove_from_hash_table(
+BICAPI  BOOLEAN  remove_from_hash_table(
     hash_table_struct  *hash_table,
     int                key,
     void               *data_ptr )
@@ -341,7 +340,7 @@ public  BOOLEAN  remove_from_hash_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private   void  move_hash_entries_to_new_table(
+static   void  move_hash_entries_to_new_table(
     hash_table_struct  *dest,
     hash_table_struct  *src )
 {
@@ -384,7 +383,7 @@ private   void  move_hash_entries_to_new_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public   void  increase_hash_table_size(
+BICAPI   void  increase_hash_table_size(
     hash_table_struct   *hash_table,
     int                 new_size )
 {
@@ -415,7 +414,7 @@ public   void  increase_hash_table_size(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_hash_pointer(
+BICAPI  void  initialize_hash_pointer(
     hash_table_pointer  *ptr )
 {
     ptr->current_index = -1;
@@ -437,7 +436,7 @@ public  void  initialize_hash_pointer(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_next_hash_entry(
+BICAPI  BOOLEAN  get_next_hash_entry(
     hash_table_struct   *hash_table,
     hash_table_pointer  *ptr,
     void                *data_ptr )

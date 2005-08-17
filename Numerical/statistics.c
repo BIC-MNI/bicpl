@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/numerical.h>
-#include  <bicpl/data_structures.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.14 2000-02-06 15:30:41 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.15 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 #define  DEFAULT_N_MEDIAN_BOXES    100000
@@ -42,7 +40,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/stati
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  compute_statistics(
+BICAPI  void  compute_statistics(
     int      n,
     Real     samples[],
     Real     *min_value,
@@ -102,7 +100,7 @@ public  void  compute_statistics(
     terminate_statistics( &stats );
 }
 
-public  void  initialize_statistics(
+BICAPI  void  initialize_statistics(
     statistics_struct  *stats,
     Real               median_lower_bound,
     Real               median_upper_bound )
@@ -130,7 +128,7 @@ public  void  initialize_statistics(
     }
 }
 
-public  void  add_sample_to_statistics(
+BICAPI  void  add_sample_to_statistics(
     statistics_struct  *stats,
     Real               sample )
 {
@@ -179,7 +177,7 @@ public  void  add_sample_to_statistics(
     }
 }
 
-private  void  get_median(
+static  void  get_median(
     statistics_struct  *stats,
     Real               *min_range,
     Real               *max_range )
@@ -261,7 +259,7 @@ private  void  get_median(
     }
 }
 
-public  void  restart_statistics_with_narrower_median_range(
+BICAPI  void  restart_statistics_with_narrower_median_range(
     statistics_struct  *stats )
 {
     Real   min_median_range, max_median_range;
@@ -280,7 +278,7 @@ public  void  restart_statistics_with_narrower_median_range(
     initialize_statistics( stats, min_median_range, max_median_range );
 }
 
-public  void  get_statistics(
+BICAPI  void  get_statistics(
     statistics_struct  *stats,
     int                *n_samples,
     Real               *mean,
@@ -348,7 +346,7 @@ public  void  get_statistics(
     }
 }
 
-public  void  terminate_statistics(
+BICAPI  void  terminate_statistics(
     statistics_struct  *stats )
 {
     if( stats->n_samples > 0 && stats->n_samples <= MAX_SAMPLES_RECORDED )
@@ -361,7 +359,7 @@ public  void  terminate_statistics(
     }
 }
 
-public  void  compute_mean_and_variance(
+BICAPI  void  compute_mean_and_variance(
     int   n,
     Real  samples[],
     Real  *mean,
@@ -387,7 +385,7 @@ public  void  compute_mean_and_variance(
         *variance = (sum_xx - sum_x * sum_x / (Real) n) / (Real) (n - 1);
 }
 
-public  Real  compute_two_means_t_statistic(
+BICAPI  Real  compute_two_means_t_statistic(
     int    n1,
     Real   samples1[],
     int    n2,

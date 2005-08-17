@@ -12,18 +12,17 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gradient_minimize.c,v 1.5 2000-02-06 15:30:39 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gradient_minimize.c,v 1.6 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 #define  SMALLEST_STEP_SIZE     1.0e-20
 
 #define  STEP_RATIO   0.5
 
-private  Real  take_step(
+static  Real  take_step(
     int   n_dims,
     Real  current[],
     Real  current_value,
@@ -37,7 +36,7 @@ private  Real  take_step(
     int   max_pos[],
     int   pos[] );
 
-public  Real  gradient_steps_minimize_function(
+BICAPI  Real  gradient_steps_minimize_function(
     int   n_dims,
     Real  initial_parameters[],
     Real  initial_step_sizes[],
@@ -116,7 +115,7 @@ public  Real  gradient_steps_minimize_function(
     return( best_value );
 }
 
-private  Real  take_step(
+static  Real  take_step(
     int   n_dims,
     Real  current[],
     Real  current_value,

@@ -78,22 +78,21 @@ Tue Jun  8 08:44:59 EST 1993 LC
                                              systems properly
 ---------------------------------------------------------------------------- */
 
-#include <volume_io/internal_volume_io.h>
-#include <bicpl/trans.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.20 2000-02-06 15:30:51 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.21 2005-08-17 22:26:48 bert Exp $";
 #endif
 
 #ifdef DEBUG
-private  void  are_rotations_equivalent(
+static  void  are_rotations_equivalent(
     Transform  *rot_trans,
     Real       rx,
     Real       ry,
     Real       rz );
 #endif
 
-public  BOOLEAN  rotmat_to_ang(
+BICAPI  BOOLEAN  rotmat_to_ang(
     Transform   *rot_trans,
     Real        *ang )
 {
@@ -208,7 +207,7 @@ public  BOOLEAN  rotmat_to_ang(
 ---------------------------------------------------------------------------- */
 
 #ifdef DEBUG
-private  void  are_rotations_equivalent(
+static  void  are_rotations_equivalent(
     Transform  *rot_trans,
     Real       rx,
     Real       ry,

@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.43 2000-06-20 14:58:58 neelin Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.44 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -36,7 +35,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  clip(
+static void  clip(
     Real  left_edge,
     Real  right_edge,
     Real  origin,
@@ -119,7 +118,7 @@ render_storage_struct;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   *initialize_render_storage( void )
+BICAPI void   *initialize_render_storage( void )
 {
     render_storage_struct  *store;
     void                   *void_ptr;
@@ -154,7 +153,7 @@ public  void   *initialize_render_storage( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   delete_render_storage(
+BICAPI void   delete_render_storage(
     void  *ptr )
 {
     render_storage_struct  *store;
@@ -213,7 +212,7 @@ public  void   delete_render_storage(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  render_volume_to_slice(
+BICAPI void  render_volume_to_slice(
     int             n_dims1,
     int             sizes1[],
     void            *volume_data1,

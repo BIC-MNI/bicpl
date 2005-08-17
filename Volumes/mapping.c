@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
-#include  <bicpl/numerical.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.33 2000-02-06 15:30:55 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.34 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10
@@ -43,7 +41,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping
                               clipping.
 ---------------------------------------------------------------------------- */
 
-private  int  clip_points(
+static int  clip_points(
     int      n_dims,
     int      sizes[],
     Real     origin[],
@@ -167,7 +165,7 @@ private  int  clip_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int    get_cross_section(
+static int    get_cross_section(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
@@ -278,7 +276,7 @@ private  int    get_cross_section(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int    get_volume_cross_section(
+BICAPI int    get_volume_cross_section(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
@@ -332,7 +330,7 @@ public  int    get_volume_cross_section(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void    get_volume_slice_range(
+static void    get_volume_slice_range(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
@@ -399,7 +397,7 @@ private  void    get_volume_slice_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void    get_volume_mapping_range(
+BICAPI void    get_volume_mapping_range(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
@@ -444,7 +442,7 @@ public  void    get_volume_mapping_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void    clip_viewport_to_volume(
+BICAPI void    clip_viewport_to_volume(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
@@ -499,7 +497,7 @@ public  void    clip_viewport_to_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_mapping(
+BICAPI void  get_mapping(
     Volume          volume,
     Real            origin[],
     Real            x_axis[],
@@ -565,7 +563,7 @@ public  void  get_mapping(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  map_pixel_to_voxel(
+static void  map_pixel_to_voxel(
     Real   x_pixel,
     Real   y_pixel,
     int    n_dims,
@@ -598,7 +596,7 @@ private  void  map_pixel_to_voxel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real   dot(
+static Real   dot(
     int    n,
     Real   v1[],
     Real   v2[] )
@@ -632,7 +630,7 @@ private  Real   dot(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_two_axes_coordinates(
+static void  get_two_axes_coordinates(
     int   n,
     Real  vector[],
     Real  x_axis[],
@@ -672,7 +670,7 @@ private  void  get_two_axes_coordinates(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  map_voxel_to_pixel(
+BICAPI void  map_voxel_to_pixel(
     int    n,
     Real   voxel[],
     Real   origin[],
@@ -714,7 +712,7 @@ public  void  map_voxel_to_pixel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  convert_slice_pixel_to_voxel(
+BICAPI BOOLEAN  convert_slice_pixel_to_voxel(
     Volume          volume,
     Real            x_pixel,
     Real            y_pixel,
@@ -766,7 +764,7 @@ public  BOOLEAN  convert_slice_pixel_to_voxel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_voxel_to_slice_pixel(
+BICAPI void  convert_voxel_to_slice_pixel(
     Volume          volume,
     Real            voxel[],
     Real            origin[],
@@ -817,7 +815,7 @@ public  void  convert_voxel_to_slice_pixel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  resize_volume_slice(
+BICAPI void  resize_volume_slice(
     int          old_x_viewport_size,
     int          old_y_viewport_size,
     int          old_used_x_viewport_size,
@@ -889,7 +887,7 @@ public  void  resize_volume_slice(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  fit_volume_slice_to_viewport(
+BICAPI void  fit_volume_slice_to_viewport(
     Volume       volume,
     Real         origin[],
     Real         x_axis[],
@@ -966,7 +964,7 @@ public  void  fit_volume_slice_to_viewport(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   scale_slice_about_viewport_centre(
+BICAPI void   scale_slice_about_viewport_centre(
     Real        scale_factor,
     int         x_viewport_size,
     int         y_viewport_size,
@@ -997,7 +995,7 @@ public  void   scale_slice_about_viewport_centre(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  voxel_is_within_volume(
+BICAPI BOOLEAN  voxel_is_within_volume(
     Volume   volume,
     Real     voxel_position[] )
 {
@@ -1033,7 +1031,7 @@ public  BOOLEAN  voxel_is_within_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  int_voxel_is_within_volume(
+BICAPI BOOLEAN  int_voxel_is_within_volume(
     Volume   volume,
     int      indices[] )
 {
@@ -1071,7 +1069,7 @@ public  BOOLEAN  int_voxel_is_within_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_real_to_int_voxel(
+BICAPI void  convert_real_to_int_voxel(
     int      n_dimensions,
     Real     voxel[],
     int      int_voxel[] )
@@ -1096,7 +1094,7 @@ public  void  convert_real_to_int_voxel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_int_to_real_voxel(
+BICAPI void  convert_int_to_real_voxel(
     int      n_dimensions,
     int      int_voxel[],
     Real     voxel[] )
@@ -1121,7 +1119,7 @@ public  void  convert_int_to_real_voxel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  voxel_contains_range(
+BICAPI BOOLEAN  voxel_contains_range(
     Volume   volume,
     int      int_voxel[],
     Real     min_value,
@@ -1182,7 +1180,7 @@ public  BOOLEAN  voxel_contains_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  volumes_are_same_grid(
+BICAPI BOOLEAN  volumes_are_same_grid(
     Volume    volume1,
     Volume    volume2 )
 {

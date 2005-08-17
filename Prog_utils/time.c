@@ -12,15 +12,14 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/time.c,v 1.7 2000-02-05 21:27:13 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/time.c,v 1.8 2005-08-17 22:27:56 bert Exp $";
 #endif
 
-private  Real  cpu_start_time;
-private  Real  real_start_time;
+static  Real  cpu_start_time;
+static  Real  real_start_time;
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : start_timing
@@ -35,7 +34,7 @@ private  Real  real_start_time;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  start_timing( void )
+BICAPI  void  start_timing( void )
 {
     cpu_start_time = current_cpu_seconds();
     real_start_time = current_realtime_seconds();
@@ -56,7 +55,7 @@ public  void  start_timing( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  end_timing(
+BICAPI  void  end_timing(
     STRING   title,
     int      n )
 {

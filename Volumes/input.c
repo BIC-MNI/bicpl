@@ -1,7 +1,6 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl.h>
+#include  "bicpl_internal.h"
 
-public  Status  input_volume_header_only(
+BICAPI Status  input_volume_header_only(
     STRING               filename,
     int                  n_dimensions,
     STRING               dim_names[],

@@ -14,16 +14,12 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.13 2000-02-06 15:30:18 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.14 2005-08-17 22:30:25 bert Exp $";
 #endif
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/trans.h>
-#include  <bicpl/numerical.h>
-#include  <bicpl/prog_utils.h>
+#include "bicpl_internal.h"
 
-public  BOOLEAN  get_interpolation_weights_2d(
+BICAPI  BOOLEAN  get_interpolation_weights_2d(
     Real   x,
     Real   y,
     int    n_points,
@@ -78,10 +74,7 @@ public  BOOLEAN  get_interpolation_weights_2d(
 #ifdef   DEBUG
 #define  DEBUG
 
-#include <bicpl/prog_utils.h>
-#include <bicpl/numerical.h>
-
-private  void  test_solution(
+static  void  test_solution(
     int    dim,
     Real   x,
     Real   y,
@@ -129,7 +122,7 @@ private  void  test_solution(
 }
 #endif
 
-private  BOOLEAN   get_two_point_prediction(
+static  BOOLEAN   get_two_point_prediction(
     Real   x,
     Real   y,
     Real   x1,
@@ -171,7 +164,7 @@ private  BOOLEAN   get_two_point_prediction(
     return( TRUE );
 }
 
-public  BOOLEAN  get_prediction_weights_2d(
+BICAPI  BOOLEAN  get_prediction_weights_2d(
     Real   x,
     Real   y,
     int    n_points,
@@ -239,7 +232,7 @@ public  BOOLEAN  get_prediction_weights_2d(
 }
 
 #ifdef DEBUG
-private  void  test_solution_3d(
+static  void  test_solution_3d(
     int    dim,
     Real   x,
     Real   y,
@@ -297,7 +290,7 @@ private  void  test_solution_3d(
 
 #define  FACTOR 1.0e-6
 
-public  BOOLEAN  get_prediction_weights_3d(
+BICAPI  BOOLEAN  get_prediction_weights_3d(
     Real   x,
     Real   y,
     Real   z,

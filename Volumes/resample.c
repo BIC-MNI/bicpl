@@ -1,7 +1,6 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
-public  void  initialize_resample_volume(
+BICAPI void  initialize_resample_volume(
     resample_struct      *resample,
     Volume               src_volume,
     General_transform    *dest_to_src_transform,
@@ -34,7 +33,7 @@ public  void  initialize_resample_volume(
     resample->transform = tmp;
 }
 
-public  BOOLEAN  do_more_resampling(
+BICAPI BOOLEAN  do_more_resampling(
     resample_struct  *resample,
     Real             max_seconds,
     Real             *fraction_done )
@@ -106,7 +105,7 @@ public  BOOLEAN  do_more_resampling(
     return( resample->x < dest_sizes[X] );
 }
 
-public  void  resample_volume(
+BICAPI void  resample_volume(
     Volume                   src_volume,
     General_transform        *dest_to_src_transform,
     Volume                   dest_volume )

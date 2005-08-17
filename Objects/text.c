@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/text.c,v 1.10 2000-02-06 15:30:46 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/text.c,v 1.11 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -35,7 +34,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/text.c,
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   initialize_text(
+BICAPI  void   initialize_text(
     text_struct     *text,
     Point           *position,
     Colour          colour,
@@ -65,7 +64,7 @@ public  void   initialize_text(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   delete_text(
+BICAPI  void   delete_text(
     text_struct     *text )
 {
     delete_string( text->string );

@@ -5,14 +5,14 @@
 extern "C" {
 #endif
 
-public  double  fast_approx_sqrt(
+BICAPI  double  fast_approx_sqrt(
     double  y );
 
-public  Real  fast_approx_distance_between_points(
+BICAPI  Real  fast_approx_distance_between_points(
     Point  *p1,
     Point  *p2 );
 
-public  int  clip_polygon_against_box(
+BICAPI  int  clip_polygon_against_box(
     int     n_points,
     Point   points[],
     Real    x_min,
@@ -24,14 +24,14 @@ public  int  clip_polygon_against_box(
     int     n_output_points,
     Point   output_points[] );
 
-public  int  clip_polygon_against_plane(
+BICAPI  int  clip_polygon_against_plane(
     int     n_points,
     Point   points[],
     Real    plane_constant,
     Vector  *normal,
     Point   output_points[] );
 
-public  void  split_polygon_with_plane(
+BICAPI  void  split_polygon_with_plane(
     int     n_points,
     Point   points[],
     Real    plane_constant,
@@ -41,48 +41,48 @@ public  void  split_polygon_with_plane(
     int     *n_out,
     Point   out_points[] );
 
-public  void  get_closest_point_on_line_segment(
+BICAPI  void  get_closest_point_on_line_segment(
     Point  *point,
     Point  *p1,
     Point  *p2,
     Point  *closest_point );
 
-public  Real  get_distance_to_line_segment(
+BICAPI  Real  get_distance_to_line_segment(
     Point  *point,
     Point  *p1,
     Point  *p2,
     Real   *alpha );
 
-public  Real  get_point_object_distance_sq(
+BICAPI  Real  get_point_object_distance_sq(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
     Point                 *object_point );
 
-public  Real  get_point_object_distance(
+BICAPI  Real  get_point_object_distance(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
     Point                 *object_point );
 
-public  Real  get_point_object_vertex_distance(
+BICAPI  Real  get_point_object_vertex_distance(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
     int                   *object_vertex );
 
-public  Real  find_closest_point_on_object(
+BICAPI  Real  find_closest_point_on_object(
     Point           *point,
     object_struct   *object,
     int             *obj_index,
     Point           *point_on_object );
 
-public  Real  find_closest_vertex_on_object(
+BICAPI  Real  find_closest_vertex_on_object(
     Point           *point,
     object_struct   *object,
     int             *vertex_on_object );
 
-public  void  get_polygon_vertex_curvatures(
+BICAPI  void  get_polygon_vertex_curvatures(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
@@ -90,7 +90,7 @@ public  void  get_polygon_vertex_curvatures(
     Real              low_threshold,
     Real              curvatures[] );
 
-public  void  flatten_around_vertex(
+BICAPI  void  flatten_around_vertex(
     Point     *vertex,
     int       n_neighbours,
     Point     neighbours[],
@@ -98,7 +98,7 @@ public  void  flatten_around_vertex(
     Real      x_flat[],
     Real      y_flat[] );
 
-public  void  flatten_around_vertex_to_sphere(
+BICAPI  void  flatten_around_vertex_to_sphere(
     Real      radius,
     Point     *vertex,
     int       n_neighbours,
@@ -107,7 +107,7 @@ public  void  flatten_around_vertex_to_sphere(
     Real      y_sphere[],
     Real      z_sphere[] );
 
-public  int  compute_distances_from_point(
+BICAPI  int  compute_distances_from_point(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
@@ -118,49 +118,49 @@ public  int  compute_distances_from_point(
     float             distances[],
     int               *list[] ) ;
 
-public  void  find_polygon_normal_no_normalize(
+BICAPI  void  find_polygon_normal_no_normalize(
     int      n_points,
     Point    points[],
     Real     *nx,
     Real     *ny,
     Real     *nz );
 
-public  void  find_polygon_normal(
+BICAPI  void  find_polygon_normal(
     int      n_points,
     Point    points[],
     Vector   *normal );
 
-public  void   get_plane_through_points(
+BICAPI  void   get_plane_through_points(
     int      n_points,
     Point    points[],
     Vector   *normal,
     Real     *plane_constant );
 
-public  Real  distance_from_plane(
+BICAPI  Real  distance_from_plane(
     Point    *point,
     Vector   *plane_normal,
     Real     plane_constant );
 
-public  Real  distance_from_line(
+BICAPI  Real  distance_from_line(
     Point    *point,
     Point    *end_point1,
     Point    *end_point2 );
 
-public  BOOLEAN   line_segment_intersects_plane(
+BICAPI  BOOLEAN   line_segment_intersects_plane(
     Point   *p1,
     Point   *p2,
     Point   *plane_origin,
     Vector  *plane_normal,
     Point   *intersection_point );
 
-public  BOOLEAN  get_nearest_point_on_lines(
+BICAPI  BOOLEAN  get_nearest_point_on_lines(
     Point   *origin1,
     Vector  *delta1,
     Point   *origin2,
     Vector  *delta2,
     Point   *nearest_point );
 
-public  BOOLEAN  clip_line_to_box(
+BICAPI  BOOLEAN  clip_line_to_box(
     Point    *origin,
     Vector   *direction,
     Real     x_min,
@@ -172,7 +172,7 @@ public  BOOLEAN  clip_line_to_box(
     Real     *t_min,
     Real     *t_max );
 
-public  void  create_line_circle(
+BICAPI  void  create_line_circle(
     Point            *centre,
     int              plane_axis,
     Real             x_radius,
@@ -180,53 +180,53 @@ public  void  create_line_circle(
     int              n_points,
     lines_struct     *lines );
 
-public  void  get_polygon_interpolation_weights(
+BICAPI  void  get_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
     Point       points[],
     Real        weights[] );
 
-public  void  map_point_between_polygons(
+BICAPI  void  map_point_between_polygons(
     polygons_struct  *p1,
     int              poly_index,
     Point            *p1_point,
     polygons_struct  *p2,
     Point            *p2_point );
 
-public  Real  map_point_to_unit_sphere(
+BICAPI  Real  map_point_to_unit_sphere(
     polygons_struct  *p,
     Point            *point,
     polygons_struct  *unit_sphere,
     Point            *unit_sphere_point );
 
-public  void  map_unit_sphere_to_point(
+BICAPI  void  map_unit_sphere_to_point(
     polygons_struct  *unit_sphere,
     Point            *unit_sphere_point,
     polygons_struct  *p,
     Point            *point );
 
-public  void  polygon_transform_points(
+BICAPI  void  polygon_transform_points(
     polygons_struct   *src_polygons,
     polygons_struct   *dest_polygons,
     int               n_points,
     Point             src_points[],
     Point             dest_points[] );
 
-public  void  map_sphere_to_uv(
+BICAPI  void  map_sphere_to_uv(
     Real    x,
     Real    y,
     Real    z,
     Real    *u,
     Real    *v );
 
-public  void  map_uv_to_sphere(
+BICAPI  void  map_uv_to_sphere(
     Real    u,
     Real    v,
     Real    *x,
     Real    *y,
     Real    *z );
 
-public   void   find_path_between_polygons(
+BICAPI   void   find_path_between_polygons(
     int            polygon1,
     int            polygon2,
     int            n_polygons,
@@ -237,98 +237,98 @@ public   void   find_path_between_polygons(
     int            *path_length,
     int            *path[] );
 
-public  void  create_unit_tetrahedron(
+BICAPI  void  create_unit_tetrahedron(
     polygons_struct  *polygons );
 
-public  void  create_unit_cube(
+BICAPI  void  create_unit_cube(
     polygons_struct  *polygons );
 
-public  void  create_unit_octohedron(
+BICAPI  void  create_unit_octohedron(
     polygons_struct  *polygons );
 
-public  void  create_unit_icosahedron(
+BICAPI  void  create_unit_icosahedron(
     polygons_struct  *polygons );
 
-public  void   intersect_planes_with_polygons(
+BICAPI  void   intersect_planes_with_polygons(
     polygons_struct   *polygons,
     Point             *plane_origin,
     Vector            *plane_normal,
     lines_struct      *lines );
 
-public  void   intersect_planes_with_quadmesh(
+BICAPI  void   intersect_planes_with_quadmesh(
     quadmesh_struct   *quadmesh,
     Point             *plane_origin,
     Vector            *plane_normal,
     lines_struct      *lines );
 
-public  BOOLEAN  null_Point(
+BICAPI  BOOLEAN  null_Point(
     Point   *p );
 
-public  BOOLEAN  null_Vector(
+BICAPI  BOOLEAN  null_Vector(
     Vector   *v );
 
-public  Real  distance_between_points(
+BICAPI  Real  distance_between_points(
     Point  *p1,
     Point  *p2 );
 
-public  BOOLEAN  points_within_distance(
+BICAPI  BOOLEAN  points_within_distance(
     Point  *p1,
     Point  *p2,
     Real   distance );
 
-public  void  apply_point_to_min_and_max(
+BICAPI  void  apply_point_to_min_and_max(
     Point   *point,
     Point   *min_point,
     Point   *max_point );
 
-public  void  expand_min_and_max_points(
+BICAPI  void  expand_min_and_max_points(
     Point   *min_point,
     Point   *max_point,
     Point   *min_to_check,
     Point   *max_to_check );
 
-public  void  get_range_points(
+BICAPI  void  get_range_points(
     int                n_points,
     Point              points[],
     Point              *min_corner,
     Point              *max_corner );
 
-public  void  get_points_centroid(
+BICAPI  void  get_points_centroid(
     int     n_points,
     Point   points[],
     Point   *centroid );
 
-public   void     reverse_vectors(
+BICAPI   void     reverse_vectors(
     int       n_vectors,
     Vector    vectors[] );
 
-public  Real  get_angle_between_points(
+BICAPI  Real  get_angle_between_points(
     Point  *prev_point,
     Point  *this_point,
     Point  *next_point );
 
-public  Real  sq_distance_between_points(
+BICAPI  Real  sq_distance_between_points(
     Point  *p1,
     Point  *p2 );
 
-public  Real  find_point_polygon_distance_sq(
+BICAPI  Real  find_point_polygon_distance_sq(
     Point     *point,
     int       n_points,
     Point     poly_points[],
     Point     *closest_point );
 
-public  Real  find_point_polygon_distance(
+BICAPI  Real  find_point_polygon_distance(
     Point     *point,
     int       n_points,
     Point     poly_points[],
     Point     *closest_point );
 
-public  int  find_closest_polygon_point(
+BICAPI  int  find_closest_polygon_point(
     Point              *point,
     polygons_struct    *polygons,
     Point              *closest_point );
 
-public  void  create_polygons_sphere(
+BICAPI  void  create_polygons_sphere(
     Point            *centre,
     Real             x_size,
     Real             y_size,
@@ -338,37 +338,37 @@ public  void  create_polygons_sphere(
     BOOLEAN          subdividing_flag,
     polygons_struct  *polygons );
 
-public  int  get_sphere_point_index(
+BICAPI  int  get_sphere_point_index(
     int   up,
     int   around,
     int   n_up,
     int   n_around );
 
-public  BOOLEAN  is_this_sphere_topology(
+BICAPI  BOOLEAN  is_this_sphere_topology(
     polygons_struct  *polygons );
 
-public  BOOLEAN  get_tessellation_of_polygons_sphere(
+BICAPI  BOOLEAN  get_tessellation_of_polygons_sphere(
     polygons_struct  *polygons,
     int              *tess );
 
-public  int  get_tessellation_with_n_points(
+BICAPI  int  get_tessellation_with_n_points(
     int   n_points );
 
-public  void  half_sample_sphere_tessellation(
+BICAPI  void  half_sample_sphere_tessellation(
     polygons_struct   *polygons,
     polygons_struct   *half );
 
-public   void  initialize_intersect_directions( void );
+BICAPI   void  initialize_intersect_directions( void );
 
-public  Real  *get_intersect_directions( void );
+BICAPI  Real  *get_intersect_directions( void );
 
-public  BOOLEAN  point_within_polygon(
+BICAPI  BOOLEAN  point_within_polygon(
     Point   *pt,
     int     n_points,
     Point   points[],
     Vector  *polygon_normal );
 
-public  BOOLEAN  line_intersects_ellipsoid(
+BICAPI  BOOLEAN  line_intersects_ellipsoid(
     Point    *line_origin,
     Vector   *line_direction,
     Point    *sphere_centre,
@@ -378,14 +378,14 @@ public  BOOLEAN  line_intersects_ellipsoid(
     Real     *t_min,
     Real     *t_max );
 
-public  BOOLEAN  ray_intersects_sphere(
+BICAPI  BOOLEAN  ray_intersects_sphere(
     Point       *origin,
     Vector      *direction,
     Point       *centre,
     Real        radius,
     Real        *dist );
 
-public  void  intersect_ray_object(
+BICAPI  void  intersect_ray_object(
     Point                 *origin,
     Vector                *direction,
     object_struct         *object,
@@ -395,7 +395,7 @@ public  void  intersect_ray_object(
     int                   *n_intersections,
     Real                  *distances[] );
 
-public  int  intersect_ray_with_object(
+BICAPI  int  intersect_ray_with_object(
     Point           *origin,
     Vector          *direction,
     object_struct   *object,
@@ -403,11 +403,11 @@ public  int  intersect_ray_with_object(
     Real            *dist,
     Real            *distances[] );
 
-public  void   remove_invisible_polygons(
+BICAPI  void   remove_invisible_polygons(
     polygons_struct  *polygons,
     Smallest_int     visibilities[] );
 
-public  Real  get_smooth_surface_curvature(
+BICAPI  Real  get_smooth_surface_curvature(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
@@ -417,16 +417,16 @@ public  Real  get_smooth_surface_curvature(
     float             distances[],
     Real              smoothing_distance );
 
-public  void  smooth_lines(
+BICAPI  void  smooth_lines(
     lines_struct  *lines,
     Real          smooth_length );
 
-public  void  create_line_spline(
+BICAPI  void  create_line_spline(
     lines_struct  *lines,
     int           n_curve_segments,
     lines_struct  *new_lines );
 
-public  void  smooth_polygon(
+BICAPI  void  smooth_polygon(
     polygons_struct  *polygons,
     Real             max_dist_from_original,
     Real             fraction_to_move,
@@ -437,7 +437,7 @@ public  void  smooth_polygon(
     int              min_value,
     int              max_value );
 
-public  BOOLEAN  get_interpolation_weights_2d(
+BICAPI  BOOLEAN  get_interpolation_weights_2d(
     Real   x,
     Real   y,
     int    n_points,
@@ -445,7 +445,7 @@ public  BOOLEAN  get_interpolation_weights_2d(
     Real   ys[],
     Real   weights[] );
 
-public  BOOLEAN  get_prediction_weights_2d(
+BICAPI  BOOLEAN  get_prediction_weights_2d(
     Real   x,
     Real   y,
     int    n_points,
@@ -456,7 +456,7 @@ public  BOOLEAN  get_prediction_weights_2d(
     Real   *y_weights[2],
     Real   *y_constant );
 
-public  BOOLEAN  get_prediction_weights_3d(
+BICAPI  BOOLEAN  get_prediction_weights_3d(
     Real   x,
     Real   y,
     Real   z,
@@ -468,33 +468,33 @@ public  BOOLEAN  get_prediction_weights_3d(
     Real   *y_weights[3],
     Real   *z_weights[3] );
 
-public  BOOLEAN is_single_closed_curve(
+BICAPI  BOOLEAN is_single_closed_curve(
     lines_struct   *lines );
 
-public  void  subdivide_lines(
+BICAPI  void  subdivide_lines(
     lines_struct  *lines );
 
-public  void  subdivide_polygons(
+BICAPI  void  subdivide_polygons(
     polygons_struct  *polygons );
 
-public  Real  get_polygon_2d_area(
+BICAPI  Real  get_polygon_2d_area(
     int      n_points,
     Point    points[] );
 
-public  Real  get_polygon_surface_area(
+BICAPI  Real  get_polygon_surface_area(
     int      n_points,
     Point    points[] );
 
-public  Real  get_polygons_surface_area(
+BICAPI  Real  get_polygons_surface_area(
     polygons_struct  *polygons );
 
-public  BOOLEAN  is_this_tetrahedral_topology(
+BICAPI  BOOLEAN  is_this_tetrahedral_topology(
     polygons_struct   *polygons );
 
-public  int  get_tetra_tessellation_with_n_points(
+BICAPI  int  get_tetra_tessellation_with_n_points(
     int   n_points );
 
-public  void  create_tetrahedral_sphere(
+BICAPI  void  create_tetrahedral_sphere(
     Point            *centre,
     Real             rx,
     Real             ry,
@@ -502,17 +502,17 @@ public  void  create_tetrahedral_sphere(
     int              n_triangles,
     polygons_struct  *polygons );
 
-public  void  half_sample_tetrahedral_tessellation(
+BICAPI  void  half_sample_tetrahedral_tessellation(
     polygons_struct  *polygons,
     polygons_struct  *half );
 
-public  int  convert_lines_to_tubes(
+BICAPI  int  convert_lines_to_tubes(
     lines_struct     *lines,
     int              n_around,
     Real             radius,
     quadmesh_struct  *quadmeshes[] );
 
-public  void   create_slice_quadmesh(
+BICAPI  void   create_slice_quadmesh(
     Volume           volume,
     int              axis_index,
     Real             voxel_position,
@@ -524,7 +524,7 @@ public  void   create_slice_quadmesh(
     Real             y_max,
     quadmesh_struct  *quadmesh );
 
-public  void   create_slice_3d(
+BICAPI  void   create_slice_3d(
     Volume           volume,
     Point            *origin,
     Vector           *normal,

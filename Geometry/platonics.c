@@ -12,14 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/platonics.c,v 1.4 2000-02-06 15:30:16 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/platonics.c,v 1.5 2005-08-17 22:30:25 bert Exp $";
 #endif
 
-private  void  fill_in_indices(
+static  void  fill_in_indices(
     polygons_struct  *polygons,
     int              n_indices,
     int              indices[] )
@@ -38,7 +37,7 @@ private  void  fill_in_indices(
     compute_polygon_normals( polygons );
 }
 
-public  void  create_unit_tetrahedron(
+BICAPI  void  create_unit_tetrahedron(
     polygons_struct  *polygons )
 {
     Real         x, z, c;
@@ -63,7 +62,7 @@ public  void  create_unit_tetrahedron(
     fill_in_indices( polygons, SIZEOF_STATIC_ARRAY(indices), indices );
 }
 
-public  void  create_unit_cube(
+BICAPI  void  create_unit_cube(
     polygons_struct  *polygons )
 {
     Real         d;
@@ -92,7 +91,7 @@ public  void  create_unit_cube(
     fill_in_indices( polygons, SIZEOF_STATIC_ARRAY(indices), indices );
 }
 
-public  void  create_unit_octohedron(
+BICAPI  void  create_unit_octohedron(
     polygons_struct  *polygons )
 {
     static  int  indices[] = {
@@ -118,7 +117,7 @@ public  void  create_unit_octohedron(
     fill_in_indices( polygons, SIZEOF_STATIC_ARRAY(indices), indices );
 }
 
-public  void  create_unit_icosahedron(
+BICAPI  void  create_unit_icosahedron(
     polygons_struct  *polygons )
 {
     Real         a, b;

@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.19 2000-02-06 15:30:43 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c,v 1.20 2005-08-17 22:28:26 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -33,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_lines(
+BICAPI  void  initialize_lines(
     lines_struct    *lines,
     Colour          col )
 {
@@ -49,7 +47,7 @@ public  void  initialize_lines(
     lines->bintree = (bintree_struct_ptr) NULL;
 }
 
-public  void  initialize_lines_with_size(
+BICAPI  void  initialize_lines_with_size(
     lines_struct    *lines,
     Colour          col,
     int             size,
@@ -91,7 +89,7 @@ public  void  initialize_lines_with_size(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_lines( lines_struct *lines )
+BICAPI  void  delete_lines( lines_struct *lines )
 {
     free_colours( lines->colour_flag, lines->colours, lines->n_points,
                   lines->n_items );
@@ -122,7 +120,7 @@ public  void  delete_lines( lines_struct *lines )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  start_new_line( lines_struct *lines )
+BICAPI  void  start_new_line( lines_struct *lines )
 {
     int      n_indices;
 
@@ -146,7 +144,7 @@ public  void  start_new_line( lines_struct *lines )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  add_point_to_line(
+BICAPI  void  add_point_to_line(
     lines_struct   *lines,
     Point          *point )
 {
@@ -176,7 +174,7 @@ public  void  add_point_to_line(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_line_segment_index(
+BICAPI  void  get_line_segment_index(
     lines_struct  *lines,
     int           obj_index,
     int           *line,
@@ -224,7 +222,7 @@ static  void  (*bintree_delete_function) ( bintree_struct_ptr* ) = NULL;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_bintree_delete_function(
+BICAPI  void  set_bintree_delete_function(
     void  (*func)( bintree_struct_ptr * ) )
 {
     bintree_delete_function = func;
@@ -243,7 +241,7 @@ public  void  set_bintree_delete_function(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_bintree_if_any(
+BICAPI  void  delete_bintree_if_any(
     bintree_struct_ptr   *bintree )
 {
     if( bintree_delete_function != NULL )
@@ -263,7 +261,7 @@ public  void  delete_bintree_if_any(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  get_lines_length(
+BICAPI  Real  get_lines_length(
     lines_struct  *lines )
 {
     Real  len;
@@ -300,7 +298,7 @@ public  Real  get_lines_length(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_lines_arc_point(
+BICAPI  void  get_lines_arc_point(
     lines_struct  *lines,
     Real          arc_length,
     Point         *point )

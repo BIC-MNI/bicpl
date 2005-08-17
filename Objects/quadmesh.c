@@ -12,13 +12,11 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
+#include "bicpl_internal.h"
 #include  <assert.h>
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
-#include  <bicpl/geom.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.20 2002-04-29 18:31:06 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.21 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 
@@ -81,7 +79,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmes
  * \param m number of rows in mesh
  * \param n number of columns in mesh
  */
-public  void  initialize_quadmesh(
+BICAPI  void  initialize_quadmesh(
     quadmesh_struct   *quadmesh,
     Colour            col,
     Surfprop          *spr,
@@ -127,7 +125,7 @@ public  void  initialize_quadmesh(
 
 /*! \brief Delete quadmesh structure.
  */
-public  void  delete_quadmesh(
+BICAPI  void  delete_quadmesh(
     quadmesh_struct *quadmesh )
 {
     free_colours( quadmesh->colour_flag, quadmesh->colours,
@@ -173,7 +171,7 @@ public  void  delete_quadmesh(
  * \note The normal is ignored if the quadmesh does not already
  * have normals for each point.
  */
-public  void  set_quadmesh_point(
+BICAPI  void  set_quadmesh_point(
     quadmesh_struct  *quadmesh,
     int              i,
     int              j,
@@ -217,7 +215,7 @@ public  void  set_quadmesh_point(
  * \note The coordinates are written into \c point
  * only if (i,j) is a valid location.
  */
-public  BOOLEAN  get_quadmesh_point(
+BICAPI  BOOLEAN  get_quadmesh_point(
     const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
@@ -259,7 +257,7 @@ public  BOOLEAN  get_quadmesh_point(
  * \param mp location in which to store mp
  * \param np location in which to store np
  */
-public  void  get_quadmesh_n_objects(
+BICAPI  void  get_quadmesh_n_objects(
     const quadmesh_struct  *quadmesh,
     int              *mp,
     int              *np )
@@ -296,7 +294,7 @@ public  void  get_quadmesh_n_objects(
  * \bug Does not take into account the closed flags when 
  * computing the 4-neighbourhood.
  */
-public  void  compute_quadmesh_normals(
+BICAPI  void  compute_quadmesh_normals(
     quadmesh_struct  *quadmesh )
 {
     int                i, j, m, n, n_neighs;
@@ -381,7 +379,7 @@ public  void  compute_quadmesh_normals(
  * patch.  The point indices are returned in the following
  * order: (i,j), (i+1,j), (i+1,j+1), (i,j+1).
  */
-public  void  get_quadmesh_patch_indices(
+BICAPI  void  get_quadmesh_patch_indices(
     const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
@@ -419,7 +417,7 @@ public  void  get_quadmesh_patch_indices(
  * \param j column number of the patch
  * \points location in which to write coordinates for the 4 points
  */
-public  void  get_quadmesh_patch(
+BICAPI  void  get_quadmesh_patch(
     const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
@@ -439,7 +437,7 @@ public  void  get_quadmesh_patch(
  * Flip the quadmesh about its middle column, swapping point and
  * normal information in column 0 with column n-1, etc.
  */
-public  void  reverse_quadmesh_vertices(
+BICAPI  void  reverse_quadmesh_vertices(
     quadmesh_struct  *quadmesh )
 {
     int     i, j, i1, i2;

@@ -12,18 +12,16 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.16 2000-02-06 15:30:16 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.17 2005-08-17 22:30:25 bert Exp $";
 #endif
 
-private  int  get_n_sphere_points(
+static  int  get_n_sphere_points(
     int   n_up,
     int   n_around );
-private  void  get_sphere_point(
+static  void  get_sphere_point(
     Real     up,
     Real     around,
     Point    *centre,
@@ -31,7 +29,7 @@ private  void  get_sphere_point(
     Real     y_size,
     Real     z_size,
     Point    *point );
-private  void  get_subdivided_point(
+static  void  get_subdivided_point(
     int      up,
     int      around,
     Point    input_points[],
@@ -60,7 +58,7 @@ private  void  get_subdivided_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_polygons_sphere(
+BICAPI  void  create_polygons_sphere(
     Point            *centre,
     Real             x_size,
     Real             y_size,
@@ -249,7 +247,7 @@ public  void  create_polygons_sphere(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_sphere_point_index(
+BICAPI  int  get_sphere_point_index(
     int   up,
     int   around,
     int   n_up,
@@ -294,7 +292,7 @@ public  int  get_sphere_point_index(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_n_sphere_points(
+static  int  get_n_sphere_points(
     int   n_up,
     int   n_around )
 {
@@ -319,7 +317,7 @@ private  int  get_n_sphere_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_sphere_point(
+static  void  get_sphere_point(
     Real     up,
     Real     around,
     Point    *centre,
@@ -355,7 +353,7 @@ private  void  get_sphere_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_subdivided_point(
+static  void  get_subdivided_point(
     int      up,
     int      around,
     Point    input_points[],
@@ -412,7 +410,7 @@ private  void  get_subdivided_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  is_this_sphere_topology(
+BICAPI  BOOLEAN  is_this_sphere_topology(
     polygons_struct  *polygons )
 {
     int     tess;
@@ -434,7 +432,7 @@ public  BOOLEAN  is_this_sphere_topology(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_tessellation_of_polygons_sphere(
+BICAPI  BOOLEAN  get_tessellation_of_polygons_sphere(
     polygons_struct  *polygons,
     int              *tess )
 {
@@ -499,7 +497,7 @@ public  BOOLEAN  get_tessellation_of_polygons_sphere(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_tessellation_with_n_points(
+BICAPI  int  get_tessellation_with_n_points(
     int   n_points )
 {
     Real  a, b, c, s1, s2;
@@ -542,7 +540,7 @@ public  int  get_tessellation_with_n_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  half_sample_sphere_tessellation(
+BICAPI  void  half_sample_sphere_tessellation(
     polygons_struct   *polygons,
     polygons_struct   *half )
 {

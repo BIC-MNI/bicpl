@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/models.c,v 1.10 2000-02-06 15:30:43 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/models.c,v 1.11 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -32,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/models.
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_model(
+BICAPI  void  initialize_model(
     model_struct  *model )
 {
     model->filename = create_string( NULL );
@@ -53,7 +52,7 @@ public  void  initialize_model(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_model(
+BICAPI  void  delete_model(
     model_struct   *model )
 {
     int   i;
@@ -85,7 +84,7 @@ public  void  delete_model(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  assign_model_extra_ptr(
+BICAPI  void  assign_model_extra_ptr(
     model_struct   *model,
     void           *ptr )
 {
@@ -105,7 +104,7 @@ public  void  assign_model_extra_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  *get_model_extra_ptr(
+BICAPI  void  *get_model_extra_ptr(
     model_struct   *model )
 {
     return( model->extra_ptr );
@@ -126,7 +125,7 @@ public  void  *get_model_extra_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  add_object_to_list(
+BICAPI  void  add_object_to_list(
     int            *n_objects,
     object_struct  ***object_list,
     object_struct  *new_object )
@@ -150,7 +149,7 @@ public  void  add_object_to_list(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  remove_object_from_list(
+BICAPI  void  remove_object_from_list(
     int            *n_objects,
     object_struct  **object_list[],
     int            obj_index )
@@ -172,7 +171,7 @@ public  void  remove_object_from_list(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_object_list(
+BICAPI  void  delete_object_list(
     int              n_objects,
     object_struct    *object_list[] )
 {
@@ -203,7 +202,7 @@ public  void  delete_object_list(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  find_object_index_in_model(
+BICAPI  int  find_object_index_in_model(
     model_struct   *model,
     object_struct  *object )
 {
@@ -232,7 +231,7 @@ public  int  find_object_index_in_model(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  add_object_to_model(
+BICAPI  void  add_object_to_model(
     model_struct   *model,
     object_struct  *new_object )
 {
@@ -254,7 +253,7 @@ public  void  add_object_to_model(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  insert_object_in_model(
+BICAPI  void  insert_object_in_model(
     model_struct   *model,
     object_struct  *new_object,
     int            obj_index )
@@ -283,7 +282,7 @@ public  void  insert_object_in_model(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  remove_ith_object_from_model(
+BICAPI  void  remove_ith_object_from_model(
     model_struct   *model,
     int            obj_index )
 {
@@ -304,7 +303,7 @@ public  void  remove_ith_object_from_model(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  remove_object_from_model(
+BICAPI  void  remove_object_from_model(
     model_struct   *model,
     object_struct  *object )
 {

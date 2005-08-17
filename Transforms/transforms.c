@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/trans.h>
-#include  <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.13 2000-02-06 15:30:51 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.14 2005-08-17 22:26:48 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -35,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/tran
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  make_scale_transform( 
+BICAPI  void  make_scale_transform( 
     Real        sx,
     Real        sy,
     Real        sz,
@@ -69,7 +67,7 @@ public  void  make_scale_transform(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_transform_x_and_z_axes(
+BICAPI  void  set_transform_x_and_z_axes(
     Transform   *transform,
     Vector      *x_axis,
     Vector      *z_axis )
@@ -102,7 +100,7 @@ public  void  set_transform_x_and_z_axes(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  make_translation_transform(
+BICAPI  void  make_translation_transform(
     Real        x_trans,
     Real        y_trans,
     Real        z_trans,
@@ -128,7 +126,7 @@ public  void  make_translation_transform(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  make_origin_transform(
+BICAPI  void  make_origin_transform(
     Point       *origin,
     Transform   *transform )
 {
@@ -154,7 +152,7 @@ public  void  make_origin_transform(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  make_rotation_transform(
+BICAPI  void  make_rotation_transform(
     Real       radians,
     int        axis,
     Transform  *transform )
@@ -195,7 +193,7 @@ public  void  make_rotation_transform(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  make_transform_relative_to_point(
+BICAPI  void  make_transform_relative_to_point(
     Point      *point,
     Transform  *transform,
     Transform  *rel_transform )
@@ -234,7 +232,7 @@ public  void  make_transform_relative_to_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  make_transform_in_coordinate_system(
+BICAPI  void  make_transform_in_coordinate_system(
     Point      *origin,
     Vector     *x_axis,
     Vector     *y_axis,
@@ -267,7 +265,7 @@ public  void  make_transform_in_coordinate_system(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  make_rotation_about_axis(
+BICAPI  void  make_rotation_about_axis(
     Vector     *axis,
     Real       angle,
     Transform  *transform )
@@ -332,7 +330,7 @@ public  void  make_rotation_about_axis(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_2d_transform_to_rotation_translation(
+BICAPI  void  convert_2d_transform_to_rotation_translation(
     Transform  *transform,
     Real       *degrees_clockwise,
     Real       *x_trans,
@@ -364,7 +362,7 @@ public  void  convert_2d_transform_to_rotation_translation(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  compute_clockwise_rotation( Real x, Real y )
+BICAPI  Real  compute_clockwise_rotation( Real x, Real y )
 {
     Real   radians;
 
@@ -395,7 +393,7 @@ public  Real  compute_clockwise_rotation( Real x, Real y )
     }
 }
 
-public  BOOLEAN  is_transform_right_handed(
+BICAPI  BOOLEAN  is_transform_right_handed(
     Transform   *transform )
 {
     Real     volume;
@@ -424,7 +422,7 @@ public  BOOLEAN  is_transform_right_handed(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  make_identity_transform_2d(
+BICAPI  void  make_identity_transform_2d(
     Transform_2d *transform )
 {
     Transform_2d_elem( *transform, 0, 0 ) = 1.0;
@@ -448,7 +446,7 @@ public  void  make_identity_transform_2d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_inverse_transform_2d(
+BICAPI  void  get_inverse_transform_2d(
     Transform_2d   *transform,
     Transform_2d   *inverse )
 {
@@ -496,7 +494,7 @@ public  void  get_inverse_transform_2d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  transform_point_2d(
+BICAPI  void  transform_point_2d(
     Transform_2d   *transform,
     Real           x,
     Real           y,
@@ -530,7 +528,7 @@ public  void  transform_point_2d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_least_squares_transform_2d(
+BICAPI  void  get_least_squares_transform_2d(
     int           n_points,
     Real          x[],
     Real          y[],

@@ -12,32 +12,30 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/numerical.h>
+#include "bicpl_internal.h"
 
 #define  MAX_POINTS    30
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.31 2000-02-06 15:30:17 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.32 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 
 #define  TOLERANCE           1.0e-2
 #define  TRIANGLE_TOLERANCE  1.0e-3
 
-private  BOOLEAN  point_within_triangle_2d(
+static  BOOLEAN  point_within_triangle_2d(
     Point   *pt,
     Point   points[] );
-private  BOOLEAN  point_within_polygon_2d(
+static  BOOLEAN  point_within_polygon_2d(
     Point   *pt,
     int     n_points,
     Point   points[],
     Vector  *polygon_normal );
 
-private  int   n_dirs = -1;
-private  Real  *dirs = NULL;
+static  int   n_dirs = -1;
+static  Real  *dirs = NULL;
 
-public   void  initialize_intersect_directions( void )
+BICAPI   void  initialize_intersect_directions( void )
 {
     if( n_dirs > 0 )
     {
@@ -46,7 +44,7 @@ public   void  initialize_intersect_directions( void )
     n_dirs = 0;
 }
 
-public  Real  *get_intersect_directions( void )
+BICAPI  Real  *get_intersect_directions( void )
 {
     int  i;
     Real *d;
@@ -65,7 +63,7 @@ public  Real  *get_intersect_directions( void )
     return( d );
 }
 
-private  BOOLEAN   intersect_ray_triangle(
+static  BOOLEAN   intersect_ray_triangle(
     Point            *ray_origin,
     Vector           *ray_direction,
     Point            *point0,
@@ -169,7 +167,7 @@ private  BOOLEAN   intersect_ray_triangle(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN   intersect_ray_polygon_points(
+static  BOOLEAN   intersect_ray_polygon_points(
     Point            *ray_origin,
     Vector           *ray_direction,
     int              n_points,
@@ -209,7 +207,7 @@ private  BOOLEAN   intersect_ray_polygon_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN   intersect_ray_polygon(
+static  BOOLEAN   intersect_ray_polygon(
     Point            *ray_origin,
     Vector           *ray_direction,
     Real             *dist,
@@ -277,7 +275,7 @@ private  BOOLEAN   intersect_ray_polygon(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  point_within_polygon(
+BICAPI  BOOLEAN  point_within_polygon(
     Point   *pt,
     int     n_points,
     Point   points[],
@@ -309,7 +307,7 @@ public  BOOLEAN  point_within_polygon(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  point_within_triangle_2d(
+static  BOOLEAN  point_within_triangle_2d(
     Point   *pt,
     Point   points[] )
 {
@@ -363,7 +361,7 @@ private  BOOLEAN  point_within_triangle_2d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  point_within_polygon_2d(
+static  BOOLEAN  point_within_polygon_2d(
     Point   *pt,
     int     n_points,
     Point   points[],
@@ -518,7 +516,7 @@ private  BOOLEAN  point_within_polygon_2d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN   intersect_ray_quadmesh_patch(
+static  BOOLEAN   intersect_ray_quadmesh_patch(
     Point            *ray_origin,
     Vector           *ray_direction,
     Real             *dist,
@@ -562,7 +560,7 @@ private  BOOLEAN   intersect_ray_quadmesh_patch(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  line_intersects_ellipsoid(
+BICAPI  BOOLEAN  line_intersects_ellipsoid(
     Point    *line_origin,
     Vector   *line_direction,
     Point    *sphere_centre,
@@ -627,7 +625,7 @@ public  BOOLEAN  line_intersects_ellipsoid(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  ray_intersects_sphere(
+BICAPI  BOOLEAN  ray_intersects_sphere(
     Point       *origin,
     Vector      *direction,
     Point       *centre,
@@ -672,7 +670,7 @@ public  BOOLEAN  ray_intersects_sphere(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  ray_intersects_tube(
+static  BOOLEAN  ray_intersects_tube(
     Point       *origin,
     Vector      *direction,
     Point       *p1,
@@ -773,7 +771,7 @@ private  BOOLEAN  ray_intersects_tube(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN   intersect_ray_tube_segment(
+static  BOOLEAN   intersect_ray_tube_segment(
     Point            *origin,
     Vector           *direction,
     Real             *dist,
@@ -829,7 +827,7 @@ private  BOOLEAN   intersect_ray_tube_segment(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  intersect_ray_with_cube(
+static  BOOLEAN  intersect_ray_with_cube(
     Point            *ray_origin,
     Vector           *ray_direction,
     Point            *centre,
@@ -877,7 +875,7 @@ private  BOOLEAN  intersect_ray_with_cube(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  intersect_ray_with_marker(
+static  BOOLEAN  intersect_ray_with_marker(
     Point            *ray_origin,
     Vector           *ray_direction,
     marker_struct    *marker,
@@ -914,7 +912,7 @@ private  BOOLEAN  intersect_ray_with_marker(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  intersect_ray_object(
+BICAPI  void  intersect_ray_object(
     Point                 *origin,
     Vector                *direction,
     object_struct         *object,
@@ -985,7 +983,7 @@ public  void  intersect_ray_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  intersect_ray_with_object(
+BICAPI  int  intersect_ray_with_object(
     Point           *origin,
     Vector          *direction,
     object_struct   *object,

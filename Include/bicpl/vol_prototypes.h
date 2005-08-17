@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-public  Volume  create_box_filtered_volume(
+BICAPI  Volume  create_box_filtered_volume(
     Volume   volume,
     nc_type  nc_data_type,
     BOOLEAN  sign_flag,
@@ -15,7 +15,7 @@ public  Volume  create_box_filtered_volume(
     Real     y_width,
     Real     z_width );
 
-public  void  modify_labels_in_range(
+BICAPI  void  modify_labels_in_range(
     Volume   volume,
     Volume   label_volume,
     int      src_min,
@@ -25,7 +25,7 @@ public  void  modify_labels_in_range(
     Real     max_threshold,
     int      range_changed[2][N_DIMENSIONS] );
 
-public  void  initialize_colour_coding(
+BICAPI  void  initialize_colour_coding(
     colour_coding_struct   *colour_coding,
     Colour_coding_types    type,
     Colour                 under_colour,
@@ -33,64 +33,64 @@ public  void  initialize_colour_coding(
     Real                   min_value,
     Real                   max_value );
 
-public  void  delete_colour_coding(
+BICAPI  void  delete_colour_coding(
     colour_coding_struct   *colour_coding );
 
-public  void  set_colour_coding_type(
+BICAPI  void  set_colour_coding_type(
     colour_coding_struct   *colour_coding,
     Colour_coding_types    type );
 
-public  Colour_coding_types  get_colour_coding_type(
+BICAPI  Colour_coding_types  get_colour_coding_type(
     colour_coding_struct   *colour_coding );
 
-public  void  set_colour_coding_min_max(
+BICAPI  void  set_colour_coding_min_max(
     colour_coding_struct   *colour_coding,
     Real                   min_value,
     Real                   max_value );
 
-public  void  get_colour_coding_min_max(
+BICAPI  void  get_colour_coding_min_max(
     colour_coding_struct   *colour_coding,
     Real                   *min_value,
     Real                   *max_value );
 
-public  Colour  get_colour_coding_under_colour(
+BICAPI  Colour  get_colour_coding_under_colour(
     colour_coding_struct   *colour_coding );
 
-public  void  set_colour_coding_under_colour(
+BICAPI  void  set_colour_coding_under_colour(
     colour_coding_struct   *colour_coding,
     Colour                 under_colour );
 
-public  Colour  get_colour_coding_over_colour(
+BICAPI  Colour  get_colour_coding_over_colour(
     colour_coding_struct   *colour_coding );
 
-public  void  set_colour_coding_over_colour(
+BICAPI  void  set_colour_coding_over_colour(
     colour_coding_struct   *colour_coding,
     Colour                 over_colour );
 
-public  BOOLEAN  define_colour_coding_user_defined(
+BICAPI  BOOLEAN  define_colour_coding_user_defined(
     colour_coding_struct  *colour_code,
     int                   n_colours,
     Colour                colours[],
     Real                  positions[],
     Colour_spaces         interpolation_space );
 
-public  Colour  get_colour_code(
+BICAPI  Colour  get_colour_code(
     colour_coding_struct  *colour_coding,
     Real                  value );
 
-public  void  colour_code_object(
+BICAPI  void  colour_code_object(
     Volume                 volume,
     int                    continuity,
     colour_coding_struct   *colour_coding,
     object_struct          *object );
 
-public  STRING    get_default_user_def_colour_code_suffix( void );
+BICAPI  STRING    get_default_user_def_colour_code_suffix( void );
 
-public  Status  input_user_defined_colour_coding(
+BICAPI  Status  input_user_defined_colour_coding(
     colour_coding_struct   *colour_coding,
     STRING                 filename );
 
-public  void  create_volume_slice(
+BICAPI  void  create_volume_slice(
     Volume          volume1,
     Filter_types    filter_type1,
     Real            filter_width1,
@@ -127,7 +127,7 @@ public  void  create_volume_slice(
     int             *n_pixels_alloced,
     pixels_struct   *pixels );
 
-public  void  set_volume_slice_pixel_range(
+BICAPI  void  set_volume_slice_pixel_range(
     Volume          volume1,
     Filter_types    filter_type1,
     Real            filter_width1,
@@ -154,20 +154,20 @@ public  void  set_volume_slice_pixel_range(
     int             *n_pixels_alloced,
     pixels_struct   *pixels );
 
-public  BOOLEAN  find_volume_crop_bounds(
+BICAPI  BOOLEAN  find_volume_crop_bounds(
     Volume          volume,
     Real            min_crop_threshold,
     Real            max_crop_threshold,
     int             limits[2][MAX_DIMENSIONS] );
 
-public  Volume  create_cropped_volume(
+BICAPI  Volume  create_cropped_volume(
     Volume          volume,
     int             limits[2][MAX_DIMENSIONS] );
 
-public  Volume  autocrop_volume(
+BICAPI  Volume  autocrop_volume(
     Volume    volume );
 
-public  int  dilate_voxels_3d(
+BICAPI  int  dilate_voxels_3d(
     Volume          volume,
     Volume          label_volume,
     Real            min_inside_label,
@@ -182,7 +182,7 @@ public  int  dilate_voxels_3d(
     Neighbour_types connectivity,
     int             range_changed[2][N_DIMENSIONS] );
 
-public  int  get_slice_weights_for_filter(
+BICAPI  int  get_slice_weights_for_filter(
     Volume         volume,
     Real           voxel_position[],
     Real           voxel_direction[],   /* if filter_type != NEAREST */
@@ -191,7 +191,7 @@ public  int  get_slice_weights_for_filter(
     Real           ***positions,
     Real           *weights[] );
 
-public  BOOLEAN  fill_connected_voxels(
+BICAPI  BOOLEAN  fill_connected_voxels(
     Volume              volume,
     Volume              label_volume,
     Neighbour_types     connectivity,
@@ -203,18 +203,18 @@ public  BOOLEAN  fill_connected_voxels(
     Real                max_threshold,
     int                 range_changed[2][N_DIMENSIONS] );
 
-public  int  get_neighbour_directions(
+BICAPI  int  get_neighbour_directions(
     Neighbour_types   connectivity,
     int               *dx[],
     int               *dy[] );
 
-public  int  get_3D_neighbour_directions(
+BICAPI  int  get_3D_neighbour_directions(
     Neighbour_types   connectivity,
     int               *dx[],
     int               *dy[],
     int               *dz[] );
 
-public  BOOLEAN  should_change_this_one(
+BICAPI  BOOLEAN  should_change_this_one(
     Volume          volume,
     Volume          label_volume,
     int             voxel[],
@@ -224,7 +224,7 @@ public  BOOLEAN  should_change_this_one(
     int             label_max_threshold,
     int             desired_label );
 
-public  void  interpolate_volume_to_slice(
+BICAPI  void  interpolate_volume_to_slice(
     Volume          volume1,
     int             n_dims1,
     Real            origin1[],
@@ -245,28 +245,28 @@ public  void  interpolate_volume_to_slice(
     Colour          empty_colour,
     pixels_struct   *pixels );
 
-public  Status  input_volume_header_only(
+BICAPI  Status  input_volume_header_only(
     STRING               filename,
     int                  n_dimensions,
     STRING               dim_names[],
     Volume               *volume,
     minc_input_options   *options );
 
-public  void  set_label_volume_real_range(
+BICAPI  void  set_label_volume_real_range(
     Volume  volume );
 
-public  Volume  create_label_volume(
+BICAPI  Volume  create_label_volume(
     Volume  volume,
     nc_type type );
 
-public  BOOLEAN  is_label_volume_initialized(
+BICAPI  BOOLEAN  is_label_volume_initialized(
     Volume  volume );
 
-public  void  set_all_volume_label_data(
+BICAPI  void  set_all_volume_label_data(
     Volume    volume,
     int       value );
 
-public  void  set_volume_label_data_5d(
+BICAPI  void  set_volume_label_data_5d(
     Volume          volume,
     int             v0,
     int             v1,
@@ -275,16 +275,16 @@ public  void  set_volume_label_data_5d(
     int             v4,
     int             value );
 
-public  void  set_volume_label_data(
+BICAPI  void  set_volume_label_data(
     Volume          volume,
     int             voxel[],
     int             value );
 
-public  int  get_volume_label_data(
+BICAPI  int  get_volume_label_data(
     Volume          volume,
     int             voxel[] );
 
-public  int  get_volume_label_data_5d(
+BICAPI  int  get_volume_label_data_5d(
     Volume          volume,
     int             v0,
     int             v1,
@@ -292,54 +292,54 @@ public  int  get_volume_label_data_5d(
     int             v3,
     int             v4 );
 
-public  int  get_3D_volume_label_data(
+BICAPI  int  get_3D_volume_label_data(
     Volume          volume,
     int             x,
     int             y,
     int             z );
 
-public  BOOLEAN  get_voxel_label_bit(
+BICAPI  BOOLEAN  get_voxel_label_bit(
     Volume          volume,
     int             voxel[],
     int             bit );
 
-public  void  set_voxel_label_bit(
+BICAPI  void  set_voxel_label_bit(
     Volume          volume,
     int             voxel[],
     int             bit,
     BOOLEAN         value );
 
-public  void  set_all_volume_label_data_bit(
+BICAPI  void  set_all_volume_label_data_bit(
     Volume         volume,
     int            bit,
     BOOLEAN        value );
 
-public  BOOLEAN  get_volume_voxel_activity(
+BICAPI  BOOLEAN  get_volume_voxel_activity(
     Volume     volume,
     Real       voxel[],
     BOOLEAN    activity_if_mixed );
 
-public  Status  load_label_volume(
+BICAPI  Status  load_label_volume(
     STRING   filename,
     Volume   label_volume );
 
-public  Status  save_label_volume(
+BICAPI  Status  save_label_volume(
     STRING   filename,
     STRING   original_filename,
     Volume   label_volume,
     Real     crop_threshold );
 
-public  Status  input_tags_as_labels(
+BICAPI  Status  input_tags_as_labels(
     FILE    *file,
     Volume  volume,
     Volume  label_volume );
 
-public  Status  create_label_volume_from_file(
+BICAPI  Status  create_label_volume_from_file(
     STRING   filename,
     Volume   volume,
     Volume   *label_volume );
 
-public  Status  output_labels_as_tags(
+BICAPI  Status  output_labels_as_tags(
     FILE    *file,
     Volume  volume,
     Volume  label_volume,
@@ -347,19 +347,19 @@ public  Status  output_labels_as_tags(
     Real    size,
     int     patient_id );
 
-public  Status  input_landmarks_as_labels(
+BICAPI  Status  input_landmarks_as_labels(
     FILE    *file,
     Volume  volume,
     Volume  label_volume );
 
-public  int    get_volume_cross_section(
+BICAPI  int    get_volume_cross_section(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
     Real     y_axis[],
     Real     clipped_voxels[][MAX_DIMENSIONS] );
 
-public  void    get_volume_mapping_range(
+BICAPI  void    get_volume_mapping_range(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
@@ -373,7 +373,7 @@ public  void    get_volume_mapping_range(
     Real     *y_pixel_start,
     Real     *y_pixel_end );
 
-public  void    clip_viewport_to_volume(
+BICAPI  void    clip_viewport_to_volume(
     Volume   volume,
     Real     origin[],
     Real     x_axis[],
@@ -383,7 +383,7 @@ public  void    clip_viewport_to_volume(
     int      *y_pixel_start,
     int      *y_pixel_end );
 
-public  void  get_mapping(
+BICAPI  void  get_mapping(
     Volume          volume,
     Real            origin[],
     Real            x_axis[],
@@ -396,7 +396,7 @@ public  void  get_mapping(
     Real            pix_x_axis[],
     Real            pix_y_axis[] );
 
-public  void  map_voxel_to_pixel(
+BICAPI  void  map_voxel_to_pixel(
     int    n,
     Real   voxel[],
     Real   origin[],
@@ -405,7 +405,7 @@ public  void  map_voxel_to_pixel(
     Real   *x_pixel,
     Real   *y_pixel );
 
-public  BOOLEAN  convert_slice_pixel_to_voxel(
+BICAPI  BOOLEAN  convert_slice_pixel_to_voxel(
     Volume          volume,
     Real            x_pixel,
     Real            y_pixel,
@@ -418,7 +418,7 @@ public  BOOLEAN  convert_slice_pixel_to_voxel(
     Real            y_scale,
     Real            voxel[] );
 
-public  void  convert_voxel_to_slice_pixel(
+BICAPI  void  convert_voxel_to_slice_pixel(
     Volume          volume,
     Real            voxel[],
     Real            origin[],
@@ -431,7 +431,7 @@ public  void  convert_voxel_to_slice_pixel(
     Real            *x_pixel,
     Real            *y_pixel );
 
-public  void  resize_volume_slice(
+BICAPI  void  resize_volume_slice(
     int          old_x_viewport_size,
     int          old_y_viewport_size,
     int          old_used_x_viewport_size,
@@ -445,7 +445,7 @@ public  void  resize_volume_slice(
     int          *used_x_viewport_size,
     int          *used_y_viewport_size );
 
-public  void  fit_volume_slice_to_viewport(
+BICAPI  void  fit_volume_slice_to_viewport(
     Volume       volume,
     Real         origin[],
     Real         x_axis[],
@@ -460,7 +460,7 @@ public  void  fit_volume_slice_to_viewport(
     int          *used_x_viewport_size,
     int          *used_y_viewport_size );
 
-public  void   scale_slice_about_viewport_centre(
+BICAPI  void   scale_slice_about_viewport_centre(
     Real        scale_factor,
     int         x_viewport_size,
     int         y_viewport_size,
@@ -469,45 +469,45 @@ public  void   scale_slice_about_viewport_centre(
     Real        *x_scale,
     Real        *y_scale );
 
-public  BOOLEAN  voxel_is_within_volume(
+BICAPI  BOOLEAN  voxel_is_within_volume(
     Volume   volume,
     Real     voxel_position[] );
 
-public  BOOLEAN  int_voxel_is_within_volume(
+BICAPI  BOOLEAN  int_voxel_is_within_volume(
     Volume   volume,
     int      indices[] );
 
-public  void  convert_real_to_int_voxel(
+BICAPI  void  convert_real_to_int_voxel(
     int      n_dimensions,
     Real     voxel[],
     int      int_voxel[] );
 
-public  void  convert_int_to_real_voxel(
+BICAPI  void  convert_int_to_real_voxel(
     int      n_dimensions,
     int      int_voxel[],
     Real     voxel[] );
 
-public  BOOLEAN  voxel_contains_range(
+BICAPI  BOOLEAN  voxel_contains_range(
     Volume   volume,
     int      int_voxel[],
     Real     min_value,
     Real     max_value );
 
-public  BOOLEAN  volumes_are_same_grid(
+BICAPI  BOOLEAN  volumes_are_same_grid(
     Volume    volume1,
     Volume    volume2 );
 
-public  Status  output_volume_free_format(
+BICAPI  Status  output_volume_free_format(
     STRING         prefix,
     Volume         volume,
     int            axis_ordering[] );
 
-public  void   *initialize_render_storage( void );
+BICAPI  void   *initialize_render_storage( void );
 
-public  void   delete_render_storage(
+BICAPI  void   delete_render_storage(
     void  *ptr );
 
-public  void  render_volume_to_slice(
+BICAPI  void  render_volume_to_slice(
     int             n_dims1,
     int             sizes1[],
     void            *volume_data1,
@@ -538,7 +538,7 @@ public  void  render_volume_to_slice(
     void            *render_storage,
     pixels_struct   *pixels );
 
-public  void  render_one_row (
+BICAPI  void  render_one_row (
     void            *volume_data1,
     Data_types      volume1_type,
     int             y,
@@ -560,49 +560,49 @@ public  void  render_one_row (
     Colour          **rgb_colour_map,
     pixels_struct   *pixels );
 
-public  void  initialize_resample_volume(
+BICAPI  void  initialize_resample_volume(
     resample_struct      *resample,
     Volume               src_volume,
     General_transform    *dest_to_src_transform,
     Volume               dest_volume );
 
-public  BOOLEAN  do_more_resampling(
+BICAPI  BOOLEAN  do_more_resampling(
     resample_struct  *resample,
     Real             max_seconds,
     Real             *fraction_done );
 
-public  void  resample_volume(
+BICAPI  void  resample_volume(
     Volume                   src_volume,
     General_transform        *dest_to_src_transform,
     Volume                   dest_volume );
 
-public  void  scan_lines_to_voxels(
+BICAPI  void  scan_lines_to_voxels(
     lines_struct     *lines,
     Volume           volume,
     Volume           label_volume,
     int              label );
 
-public  void  scan_marker_to_voxels(
+BICAPI  void  scan_marker_to_voxels(
     marker_struct    *marker,
     Volume           volume,
     Volume           label_volume,
     int              label );
 
-public  void  scan_object_to_volume(
+BICAPI  void  scan_object_to_volume(
     object_struct    *object,
     Volume           volume,
     Volume           label_volume,
     int              label,
     Real             max_distance );
 
-public  void  scan_polygons_to_voxels(
+BICAPI  void  scan_polygons_to_voxels(
     polygons_struct     *polygons,
     Volume              volume,
     Volume              label_volume,
     int                 label,
     Real                max_distance );
 
-public  void  scan_a_polygon(
+BICAPI  void  scan_a_polygon(
     int                 size,
     Point               vertices[],
     Point               voxels[],
@@ -613,20 +613,20 @@ public  void  scan_a_polygon(
     int                 sizes[],
     int                 label );
 
-public  void  scan_quadmesh_to_voxels(
+BICAPI  void  scan_quadmesh_to_voxels(
     quadmesh_struct     *quadmesh,
     Volume              volume,
     Volume              label_volume,
     int                 label,
     Real                max_distance );
 
-public  Volume  smooth_resample_volume(
+BICAPI  Volume  smooth_resample_volume(
     Volume              volume,
     int                 new_nx,
     int                 new_ny,
     int                 new_nz );
 
-public  void  convert_voxel_to_talairach(
+BICAPI  void  convert_voxel_to_talairach(
     Real   x_voxel,
     Real   y_voxel,
     Real   z_voxel,
@@ -637,7 +637,7 @@ public  void  convert_voxel_to_talairach(
     Real   *y_tal,
     Real   *z_tal );
 
-public  void  convert_talairach_to_voxel(
+BICAPI  void  convert_talairach_to_voxel(
     Real   x_tal,
     Real   y_tal,
     Real   z_tal,
@@ -648,7 +648,7 @@ public  void  convert_talairach_to_voxel(
     Real   *y_voxel,
     Real   *z_voxel );
 
-public  void  convert_talairach_to_mm(
+BICAPI  void  convert_talairach_to_mm(
     Real   x_tal,
     Real   y_tal,
     Real   z_tal,
@@ -656,7 +656,7 @@ public  void  convert_talairach_to_mm(
     Real   *y_mm,
     Real   *z_mm );
 
-public  void  convert_mm_to_talairach(
+BICAPI  void  convert_mm_to_talairach(
     Real   x_mm,
     Real   y_mm,
     Real   z_mm,

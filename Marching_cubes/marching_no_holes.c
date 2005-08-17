@@ -1,6 +1,5 @@
-
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/marching.h>
+#include "bicpl_internal.h"
+#include "bicpl/marching.h"
 
 #define  MAX_POLYGONS_PER_VOXEL    4
 #define  MAX_INDICES_PER_VOXEL    12
@@ -28,57 +27,57 @@ typedef  struct
 typedef  enum  { PLUS_FLAG, MINUS_FLAG, MAX_CASES /*, ZERO_FLAG */ }
                Case_types;
 
-private  case_struct   cases[2][2][2][2][2][2][2][2];
+static  case_struct   cases[2][2][2][2][2][2][2][2];
 
-private   BOOLEAN  initialized = FALSE;
+static   BOOLEAN  initialized = FALSE;
 
-private  void  create_marching_cubes_lookup( void );
-private  void  create_case(
+static  void  create_marching_cubes_lookup( void );
+static  void  create_case(
     Case_types   case_flags[2][2][2],
     case_struct  *case_info );
-private  void  get_face_axes(
+static  void  get_face_axes(
     int          c,
     int          face,
     int          *a1,
     int          *a2 );
-private  void  create_face_indices(
+static  void  create_face_indices(
     int          c,
     int          face,
     face_struct  *face_indices );
-private  void  get_face_flags(
+static  void  get_face_flags(
     Case_types   case_flags[2][2][2],
     int          c,
     int          face,
     Case_types   face_flags[4] );
-private  BOOLEAN  ambiguous_face_case(
+static  BOOLEAN  ambiguous_face_case(
     Case_types   face_flags[4] );
-private  BOOLEAN  face_is_ambiguous(
+static  BOOLEAN  face_is_ambiguous(
     Case_types   case_flags[2][2][2],
     int          c,
     int          face );
-private  BOOLEAN  surface_edge(
+static  BOOLEAN  surface_edge(
     Case_types     face_flags[4],
     int            edge );
-private  void  get_edge_point(
+static  void  get_edge_point(
     voxel_point_type  *edge_point,
     int               c,
     int               face,
     int               edge );
-private  void  find_neighbour_face(
+static  void  find_neighbour_face(
     int    c,
     int    face,
     int    edge,
     int    *new_c,
     int    *new_face,
     int    *new_edge );
-private  void  delete_case(
+static  void  delete_case(
     case_struct  *case_info );
-private  void  create_case_polygons(
+static  void  create_case_polygons(
     Case_types     case_flags[2][2][2],
     BOOLEAN        face_ambiguity_flags[3][2],
     polygons_list  *polygons );
 
-private  void  check_initialized( void )
+static  void  check_initialized( void )
 {
     if( !initialized )
     {
@@ -89,7 +88,7 @@ private  void  check_initialized( void )
 }
 
 #ifdef DEBUG
-private  void  test_case(
+static  void  test_case(
     case_struct  *c )
 {
     int   p, n_sets, ind, poly, size, v, v1;
@@ -123,7 +122,7 @@ private  void  test_case(
 }
 #endif
 
-private  void  create_marching_cubes_lookup( void )
+static  void  create_marching_cubes_lookup( void )
 {
     Case_types   case_flags[2][2][2];
 
@@ -185,7 +184,7 @@ private  void  create_marching_cubes_lookup( void )
     }
 }
 
-private  void  create_case(
+static  void  create_case(
     Case_types   case_flags[2][2][2],
     case_struct  *case_info )
 {
@@ -256,7 +255,7 @@ private  void  create_case(
     }
 }
 
-private  void  get_face_axes(
+static  void  get_face_axes(
     int          c,
     int          face,
     int          *a1,
@@ -274,7 +273,7 @@ private  void  get_face_axes(
     }
 }
 
-private  void  create_face_indices(
+static  void  create_face_indices(
     int          c,
     int          face,
     face_struct  *face_indices )
@@ -300,7 +299,7 @@ private  void  create_face_indices(
     face_indices->offsets[3][c]  = face;
 }
 
-private  void  get_face_flags(
+static  void  get_face_flags(
     Case_types   case_flags[2][2][2],
     int          c,
     int          face,
@@ -319,7 +318,7 @@ private  void  get_face_flags(
     }
 }
 
-private  BOOLEAN  ambiguous_face_case(
+static  BOOLEAN  ambiguous_face_case(
     Case_types   face_flags[4] )
 {
     BOOLEAN      ambiguous;
@@ -332,7 +331,7 @@ private  BOOLEAN  ambiguous_face_case(
     return( ambiguous );
 }
 
-private  BOOLEAN  face_is_ambiguous(
+static  BOOLEAN  face_is_ambiguous(
     Case_types   case_flags[2][2][2],
     int          c,
     int          face )
@@ -351,28 +350,28 @@ typedef  struct
     BOOLEAN  edge_used[2];
 } edges_struct;
 
-private  void  follow_edge(
+static  void  follow_edge(
     polygons_list  *polygons,
     int            *ind,
     edges_struct   edges[3][2],
     int            c,
     int            face,
     int            edge_index );
-private  void  find_voxel_edge_index(
+static  void  find_voxel_edge_index(
     int            c,
     int            face,
     int            edge,
     edges_struct   edges[3][2],
     int            *edge_index );
-private  void  create_edges(
+static  void  create_edges(
     Case_types     case_flags[2][2][2],
     BOOLEAN        face_ambiguity_flags[3][2],
     edges_struct   edges[3][2] );
-private  void  create_edge_for_face(
+static  void  create_edge_for_face(
     Case_types     face_flags[4],
     BOOLEAN        face_ambiguity_flag,
     edges_struct   *edges );
-private  void  follow_edge(
+static  void  follow_edge(
     polygons_list  *polygons,
     int            *ind,
     edges_struct   edges[3][2],
@@ -380,7 +379,7 @@ private  void  follow_edge(
     int            face,
     int            edge_index );
 
-private  void  create_case_polygons(
+static  void  create_case_polygons(
     Case_types     case_flags[2][2][2],
     BOOLEAN        face_ambiguity_flags[3][2],
     polygons_list  *polygons )
@@ -428,7 +427,7 @@ private  void  create_case_polygons(
     }
 }
 
-private  void  create_edges(
+static  void  create_edges(
     Case_types     case_flags[2][2][2],
     BOOLEAN        face_ambiguity_flags[3][2],
     edges_struct   edges[3][2] )
@@ -448,7 +447,7 @@ private  void  create_edges(
     }
 }
 
-private  void  create_edge_for_face(
+static  void  create_edge_for_face(
     Case_types     face_flags[4],
     BOOLEAN        face_ambiguity_flag,
     edges_struct   *edges )
@@ -532,7 +531,7 @@ private  void  create_edge_for_face(
     }
 }
 
-private  BOOLEAN  surface_edge(
+static  BOOLEAN  surface_edge(
     Case_types     face_flags[4],
     int            edge )
 {
@@ -545,7 +544,7 @@ private  BOOLEAN  surface_edge(
             (flag1 == MINUS_FLAG && flag2 == PLUS_FLAG) );
 }
 
-private  void  follow_edge(
+static  void  follow_edge(
     polygons_list  *polygons,
     int            *ind,
     edges_struct   edges[3][2],
@@ -571,7 +570,7 @@ private  void  follow_edge(
     }
 }
 
-private  void  get_edge_point(
+static  void  get_edge_point(
     voxel_point_type  *edge_point,
     int               c,
     int               face,
@@ -610,7 +609,7 @@ private  void  get_edge_point(
     }
 }
 
-private  void  find_neighbour_face(
+static  void  find_neighbour_face(
     int    c,
     int    face,
     int    edge,
@@ -684,7 +683,7 @@ private  void  find_neighbour_face(
     }
 }
 
-private  void  find_voxel_edge_index(
+static  void  find_voxel_edge_index(
     int            c,
     int            face,
     int            edge,
@@ -710,7 +709,7 @@ private  void  find_voxel_edge_index(
     }
 }
 
-public  int  get_holeless_isosurface_polygons(
+BICAPI  int  get_holeless_isosurface_polygons(
     Real              corners[2][2][2],
     Real              isovalue,
     int               *sizes[],
@@ -799,7 +798,7 @@ public  int  get_holeless_isosurface_polygons(
     return( voxel_case->polygons[amb_index].n_polygons );
 }
 
-public  void  delete_marching_cubes_table( void )
+BICAPI  void  delete_marching_cubes_table( void )
 {
     Case_types   case_flags[2][2][2];
 
@@ -826,7 +825,7 @@ public  void  delete_marching_cubes_table( void )
     }
 }
 
-private  void  delete_case(
+static  void  delete_case(
     case_struct  *case_info )
 {
     if( case_info->n_ambiguities > 0 )

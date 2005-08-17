@@ -6,13 +6,13 @@
 extern "C" {
 #endif
 
-public  void  coalesce_object_points(
+BICAPI  void  coalesce_object_points(
     int      *n_points,
     Point    *points[],
     int      n_indices,
     int      indices[] );
 
-public  void  separate_object_points(
+BICAPI  void  separate_object_points(
     int           *new_n_points,
     Point         *points[],
     int           n_indices,
@@ -20,18 +20,18 @@ public  void  separate_object_points(
     Colour_flags  colour_flag,
     Colour        *colours[] );
 
-public  void  get_default_surfprop(
+BICAPI  void  get_default_surfprop(
     Surfprop  *surfprop );
 
-public  BOOLEAN  lookup_colour(
+BICAPI  BOOLEAN  lookup_colour(
     STRING    colour_name,
     Colour    *col );
 
-public  BOOLEAN  lookup_colour_name(
+BICAPI  BOOLEAN  lookup_colour_name(
     Colour  col,
     STRING  *colour_name );
 
-public  void  rgb_to_hsl(
+BICAPI  void  rgb_to_hsl(
     Real    r,
     Real    g,
     Real    b,
@@ -39,7 +39,7 @@ public  void  rgb_to_hsl(
     Real    *s,
     Real    *l );
 
-public  void  hsl_to_rgb(
+BICAPI  void  hsl_to_rgb(
     Real   h,
     Real   sl,
     Real   l,
@@ -47,57 +47,57 @@ public  void  hsl_to_rgb(
     Real   *g,
     Real   *b );
 
-public  void  convert_colour_to_hsl(
+BICAPI  void  convert_colour_to_hsl(
     Colour   rgb,
     Colour   *hsl );
 
-public  void  convert_colour_to_rgb(
+BICAPI  void  convert_colour_to_rgb(
     Colour   hsl,
     Colour   *rgb );
 
-public  BOOLEAN  equal_colours(
+BICAPI  BOOLEAN  equal_colours(
     Colour  col1,
     Colour  col2 );
 
-public  STRING  convert_colour_to_string(
+BICAPI  STRING  convert_colour_to_string(
     Colour   col );
 
-public  Colour  convert_string_to_colour(
+BICAPI  Colour  convert_string_to_colour(
     STRING     string );
 
-public  int  get_colour_distance(
+BICAPI  int  get_colour_distance(
     int      r,
     int      g,
     int      b,
     Colour   c2 );
 
-public  int   find_closest_colour(
+BICAPI  int   find_closest_colour(
     int     r,
     int     g,
     int     b,
     int     n_colours,
     Colour  colours[] );
 
-public  int  get_Colour_luminance(
+BICAPI  int  get_Colour_luminance(
     Colour   colour );
 
-public  Colour  scale_colour(
+BICAPI  Colour  scale_colour(
     Colour   colour,
     Real     factor );
 
-public  Status   input_graphics_file(
+BICAPI  Status   input_graphics_file(
     STRING         filename,
     File_formats   *format,
     int            *n_objects,
     object_struct  ***object_list );
 
-public  Status   output_graphics_file(
+BICAPI  Status   output_graphics_file(
     STRING         filename,
     File_formats   format,
     int            n_objects,
     object_struct  *object_list[] );
 
-public  Status   input_objects_any_format(
+BICAPI  Status   input_objects_any_format(
     Volume         volume,
     STRING         filename,
     Colour         marker_colour,
@@ -106,9 +106,9 @@ public  Status   input_objects_any_format(
     int            *n_objects,
     object_struct  **object_list[] );
 
-public  STRING  get_default_landmark_file_suffix( void );
+BICAPI  STRING  get_default_landmark_file_suffix( void );
 
-public  Status   input_landmark_file(
+BICAPI  Status   input_landmark_file(
     Volume         volume,
     STRING         filename,
     Colour         colour,
@@ -117,173 +117,173 @@ public  Status   input_landmark_file(
     int            *n_objects,
     object_struct  **object_list[] );
 
-public  Status  io_tag_point(
+BICAPI  Status  io_tag_point(
     FILE            *file,
     IO_types        io_direction,
     Volume          volume,
     Real            size,
     marker_struct   *marker );
 
-public  void  initialize_lines(
+BICAPI  void  initialize_lines(
     lines_struct    *lines,
     Colour          col );
 
-public  void  initialize_lines_with_size(
+BICAPI  void  initialize_lines_with_size(
     lines_struct    *lines,
     Colour          col,
     int             size,
     BOOLEAN         closed );
 
-public  void  delete_lines( lines_struct *lines );
+BICAPI  void  delete_lines( lines_struct *lines );
 
-public  void  start_new_line( lines_struct *lines );
+BICAPI  void  start_new_line( lines_struct *lines );
 
-public  void  add_point_to_line(
+BICAPI  void  add_point_to_line(
     lines_struct   *lines,
     Point          *point );
 
-public  void  get_line_segment_index(
+BICAPI  void  get_line_segment_index(
     lines_struct  *lines,
     int           obj_index,
     int           *line,
     int           *seg );
 
-public  void  set_bintree_delete_function(
+BICAPI  void  set_bintree_delete_function(
     void  (*func)( bintree_struct_ptr * ) );
 
-public  void  delete_bintree_if_any(
+BICAPI  void  delete_bintree_if_any(
     bintree_struct_ptr   *bintree );
 
-public  Real  get_lines_length(
+BICAPI  Real  get_lines_length(
     lines_struct  *lines );
 
-public  void  get_lines_arc_point(
+BICAPI  void  get_lines_arc_point(
     lines_struct  *lines,
     Real          arc_length,
     Point         *point );
 
-public  void   initialize_marker(
+BICAPI  void   initialize_marker(
     marker_struct     *marker,
     Marker_types      type,
     Colour            colour );
 
-public  void   delete_marker(
+BICAPI  void   delete_marker(
     marker_struct     *marker );
 
-public  void  initialize_model(
+BICAPI  void  initialize_model(
     model_struct  *model );
 
-public  void  delete_model(
+BICAPI  void  delete_model(
     model_struct   *model );
 
-public  void  assign_model_extra_ptr(
+BICAPI  void  assign_model_extra_ptr(
     model_struct   *model,
     void           *ptr );
 
-public  void  *get_model_extra_ptr(
+BICAPI  void  *get_model_extra_ptr(
     model_struct   *model );
 
-public  void  add_object_to_list(
+BICAPI  void  add_object_to_list(
     int            *n_objects,
     object_struct  ***object_list,
     object_struct  *new_object );
 
-public  void  remove_object_from_list(
+BICAPI  void  remove_object_from_list(
     int            *n_objects,
     object_struct  **object_list[],
     int            obj_index );
 
-public  void  delete_object_list(
+BICAPI  void  delete_object_list(
     int              n_objects,
     object_struct    *object_list[] );
 
-public  int  find_object_index_in_model(
+BICAPI  int  find_object_index_in_model(
     model_struct   *model,
     object_struct  *object );
 
-public  void  add_object_to_model(
+BICAPI  void  add_object_to_model(
     model_struct   *model,
     object_struct  *new_object );
 
-public  void  insert_object_in_model(
+BICAPI  void  insert_object_in_model(
     model_struct   *model,
     object_struct  *new_object,
     int            obj_index );
 
-public  void  remove_ith_object_from_model(
+BICAPI  void  remove_ith_object_from_model(
     model_struct   *model,
     int            obj_index );
 
-public  void  remove_object_from_model(
+BICAPI  void  remove_object_from_model(
     model_struct   *model,
     object_struct  *object );
 
-public  Status  io_lines(
+BICAPI  Status  io_lines(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
     lines_struct        *lines );
 
-public  Status  io_marker(
+BICAPI  Status  io_marker(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
     marker_struct       *marker );
 
-public  Status  io_model(
+BICAPI  Status  io_model(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     model_struct    *model );
 
-public  Status  io_pixels(
+BICAPI  Status  io_pixels(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
     pixels_struct       *pixels );
 
-public  void  set_use_compressed_polygons_flag(
+BICAPI  void  set_use_compressed_polygons_flag(
     BOOLEAN  value );
 
-public  BOOLEAN  get_use_compressed_polygons_flag( void );
+BICAPI  BOOLEAN  get_use_compressed_polygons_flag( void );
 
-public  Status  io_polygons(
+BICAPI  Status  io_polygons(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
     polygons_struct     *polygons );
 
-public  Status  io_quadmesh(
+BICAPI  Status  io_quadmesh(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
     quadmesh_struct     *quadmesh );
 
-public  Status  io_text(
+BICAPI  Status  io_text(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     text_struct     *text );
 
-public  Status  io_point(
+BICAPI  Status  io_point(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     Point           *point );
 
-public  Status  io_vector(
+BICAPI  Status  io_vector(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     Vector          *v );
 
-public  Status  io_colour(
+BICAPI  Status  io_colour(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     Colour          *colour );
 
-public  Status  io_colours(
+BICAPI  Status  io_colours(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -292,149 +292,149 @@ public  Status  io_colours(
     int             n_points,
     Colour          **colours );
 
-public  Status  io_surfprop(
+BICAPI  Status  io_surfprop(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     Surfprop        *surfprop );
 
-public  Status  io_object_type(
+BICAPI  Status  io_object_type(
     FILE           *file,
     IO_types       io_flag,
     File_formats   format,
     Object_types   type );
 
-public  Status  input_object_type(
+BICAPI  Status  input_object_type(
     FILE           *file,
     Object_types   *type,
     File_formats   *format,
     BOOLEAN        *eof );
 
-public  Status  io_pixel_colours(
+BICAPI  Status  io_pixel_colours(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     int             n,
     Colour          *pixel_colours[] );
 
-public  Status  io_pixel_colour(
+BICAPI  Status  io_pixel_colour(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     Colour          *pixel_colour );
 
-public  Status  input_object(
+BICAPI  Status  input_object(
     STRING         directory,
     FILE           *file,
     File_formats   *format,
     object_struct  **object,
     BOOLEAN        *eof );
 
-public  Status  output_object(
+BICAPI  Status  output_object(
     FILE           *file,
     File_formats   format,
     object_struct  *object );
 
-public  object_struct  *create_object(
+BICAPI  object_struct  *create_object(
     Object_types   object_type );
 
-public  Object_types  get_object_type(
+BICAPI  Object_types  get_object_type(
     object_struct   *object );
 
-public  BOOLEAN  get_object_visibility(
+BICAPI  BOOLEAN  get_object_visibility(
     object_struct  *object );
 
-public  void  set_object_visibility(
+BICAPI  void  set_object_visibility(
     object_struct  *object,
     BOOLEAN        visibility );
 
-public  lines_struct  *get_lines_ptr(
+BICAPI  lines_struct  *get_lines_ptr(
     object_struct  *object );
 
-public  marker_struct  *get_marker_ptr(
+BICAPI  marker_struct  *get_marker_ptr(
     object_struct  *object );
 
-public  model_struct  *get_model_ptr(
+BICAPI  model_struct  *get_model_ptr(
     object_struct  *object );
 
-public  pixels_struct  *get_pixels_ptr(
+BICAPI  pixels_struct  *get_pixels_ptr(
     object_struct  *object );
 
-public  polygons_struct  *get_polygons_ptr(
+BICAPI  polygons_struct  *get_polygons_ptr(
     object_struct  *object );
 
-public  quadmesh_struct  *get_quadmesh_ptr(
+BICAPI  quadmesh_struct  *get_quadmesh_ptr(
     object_struct  *object );
 
-public  text_struct  *get_text_ptr(
+BICAPI  text_struct  *get_text_ptr(
     object_struct  *object );
 
-public  void  delete_object(
+BICAPI  void  delete_object(
     object_struct  *object );
 
-public  int  get_object_points(
+BICAPI  int  get_object_points(
     object_struct   *object,
     Point           *points[] );
 
-public  int  get_object_normals(
+BICAPI  int  get_object_normals(
     object_struct   *object,
     Vector          *normals[] );
 
-public  Colour_flags  *get_object_colours(
+BICAPI  Colour_flags  *get_object_colours(
     object_struct   *object,
     Colour          *colours[] );
 
-public  void  set_object_colours(
+BICAPI  void  set_object_colours(
     object_struct   *object,
     Colour          colours[] );
 
-public  Surfprop  *get_object_surfprop(
+BICAPI  Surfprop  *get_object_surfprop(
     object_struct   *object );
 
-public  STRING  get_object_name(
+BICAPI  STRING  get_object_name(
     object_struct  *object );
 
-public  void  initialize_object_traverse(
+BICAPI  void  initialize_object_traverse(
     object_traverse_struct  *object_traverse,
     BOOLEAN                 visible_ones_only,
     int                     n_objects,
     object_struct           *object_list[] );
 
-public  BOOLEAN  get_next_object_traverse(
+BICAPI  BOOLEAN  get_next_object_traverse(
     object_traverse_struct  *object_traverse,
     object_struct           **object );
 
-public  void  terminate_object_traverse(
+BICAPI  void  terminate_object_traverse(
     object_traverse_struct   *object_traverse );
 
-public  BOOLEAN  get_range_of_object(
+BICAPI  BOOLEAN  get_range_of_object(
     object_struct   *object,
     BOOLEAN         visible_ones_only,
     Point           *min_corner,
     Point           *max_corner );
 
-public  void  reverse_object_normals(
+BICAPI  void  reverse_object_normals(
     object_struct   *object );
 
-public  BOOLEAN  get_object_colour(
+BICAPI  BOOLEAN  get_object_colour(
     object_struct  *object,
     Colour         *colour );
 
-public  void  set_object_colour(
+BICAPI  void  set_object_colour(
     object_struct  *object,
     Colour         col );
 
-public  void  set_object_surfprop(
+BICAPI  void  set_object_surfprop(
     object_struct  *object,
     Surfprop       *spr );
 
-public  void  free_colours(
+BICAPI  void  free_colours(
     Colour_flags   colour_flag,
     Colour         colours[],
     int            n_points,
     int            n_items );
 
-public  BOOLEAN  objects_are_same_topology(
+BICAPI  BOOLEAN  objects_are_same_topology(
     int    n_points1,
     int    n_items1,
     int    *end_indices1,
@@ -444,12 +444,12 @@ public  BOOLEAN  objects_are_same_topology(
     int    *end_indices2,
     int    *indices2 );
 
-public  int  get_n_colours(
+BICAPI  int  get_n_colours(
     Colour_flags  colour_flag,
     int           n_points,
     int           n_items );
 
-public  void  initialize_pixels(
+BICAPI  void  initialize_pixels(
     pixels_struct  *pixels,
     int            x_position,
     int            y_position,
@@ -459,48 +459,48 @@ public  void  initialize_pixels(
     Real           y_zoom,
     Pixel_types    pixel_type );
 
-public  void  delete_pixels( pixels_struct *pixels );
+BICAPI  void  delete_pixels( pixels_struct *pixels );
 
-public  void  modify_pixels_size(
+BICAPI  void  modify_pixels_size(
     int            *n_pixels_alloced,
     pixels_struct  *pixels,
     int            x_size,
     int            y_size,
     Pixel_types    pixel_type );
 
-public  void  convert_pixels24_to_pixels8(
+BICAPI  void  convert_pixels24_to_pixels8(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8 );
 
-public  void  convert_pixels24_to_index8(
+BICAPI  void  convert_pixels24_to_index8(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8,
     int             n_colours,
     Colour          colour_table[] );
 
-public  void  convert_index8_to_pixels24(
+BICAPI  void  convert_index8_to_pixels24(
     pixels_struct   *pixels_8,
     Colour          colour_table[],
     pixels_struct   *pixels_rgb );
 
-public  void  convert_pixels24_to_gray_scale(
+BICAPI  void  convert_pixels24_to_gray_scale(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8 );
 
-public  void  convert_pixels24_to_dithered(
+BICAPI  void  convert_pixels24_to_dithered(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8,
     int             n_colours,
     Colour          colour_table[] );
 
-public  void  resample_pixels(
+BICAPI  void  resample_pixels(
     pixels_struct   *pixels,
     Transform_2d    *transform,
     int             n_samples,
     pixels_struct   *new_pixels,
     Colour          background_colour );
 
-public  void  copy_pixel_region(
+BICAPI  void  copy_pixel_region(
     pixels_struct   *pixels,
     int             x_min,
     int             x_max,
@@ -508,17 +508,17 @@ public  void  copy_pixel_region(
     int             y_max,
     pixels_struct   *new_pixels );
 
-public  void  check_polygons_neighbours_computed(
+BICAPI  void  check_polygons_neighbours_computed(
     polygons_struct   *polygons );
 
-public  void  delete_polygon_point_neighbours(
+BICAPI  void  delete_polygon_point_neighbours(
     polygons_struct  *polygons,
     int              n_point_neighbours[],
     int              *point_neighbours[],
     Smallest_int     interior_flags[],
     int              *point_polygons[] );
 
-public   void   create_polygon_point_neighbours(
+BICAPI   void   create_polygon_point_neighbours(
     polygons_struct  *polygons,
     BOOLEAN          across_polygons_flag,
     int              *n_point_neighbours_ptr[],
@@ -526,12 +526,12 @@ public   void   create_polygon_point_neighbours(
     Smallest_int     *interior_flags_ptr[],
     int              **point_polygons_ptr[] );
 
-public  void  initialize_polygons(
+BICAPI  void  initialize_polygons(
     polygons_struct   *polygons,
     Colour            col,
     Surfprop          *spr );
 
-public  void  initialize_polygons_with_size(
+BICAPI  void  initialize_polygons_with_size(
     polygons_struct   *polygons,
     Colour            col,
     Surfprop          *spr,
@@ -539,73 +539,73 @@ public  void  initialize_polygons_with_size(
     int               n_polygons,
     int               size );
 
-public  void  free_polygon_neighbours(
+BICAPI  void  free_polygon_neighbours(
     polygons_struct   *polygons );
 
-public  void  delete_polygons( polygons_struct *polygons );
+BICAPI  void  delete_polygons( polygons_struct *polygons );
 
-public  void  copy_polygons(
+BICAPI  void  copy_polygons(
     polygons_struct   *src,
     polygons_struct   *dest );
 
-public  void  set_polygon_per_item_colours(
+BICAPI  void  set_polygon_per_item_colours(
     polygons_struct   *polygons );
 
-public  void  create_polygons_visibilities(
+BICAPI  void  create_polygons_visibilities(
     polygons_struct   *polygons );
 
-public  void  set_polygons_visibilities(
+BICAPI  void  set_polygons_visibilities(
     polygons_struct   *polygons,
     BOOLEAN           state );
 
-public  void  start_new_polygon(
+BICAPI  void  start_new_polygon(
     polygons_struct *polygons );
 
-public  void  add_point_to_polygon(
+BICAPI  void  add_point_to_polygon(
     polygons_struct   *polygons,
     Point             *point,
     Vector            *normal );
 
-public  int  get_polygon_points(
+BICAPI  int  get_polygon_points(
     polygons_struct   *polygons,
     int               poly,
     Point             points[] );
 
-public  void  get_polygon_centroid(
+BICAPI  void  get_polygon_centroid(
     polygons_struct   *polygons,
     int               poly,
     Point             *centroid );
 
-public  int  find_vertex_index(
+BICAPI  int  find_vertex_index(
     polygons_struct  *polygons,
     int              poly,
     int              point_index );
 
-public  int  find_edge_index(
+BICAPI  int  find_edge_index(
     polygons_struct  *polygons,
     int              poly,
     int              point_index1,
     int              point_index2 );
 
-public  BOOLEAN  find_polygon_with_edge(
+BICAPI  BOOLEAN  find_polygon_with_edge(
     polygons_struct  *polygons,
     int              point_index1,
     int              point_index2,
     int              *poly_containing_edge,
     int              *edge_index );
 
-public  BOOLEAN  find_polygon_with_vertex(
+BICAPI  BOOLEAN  find_polygon_with_vertex(
     polygons_struct   *polygons,
     int               point_index,
     int               *poly_index,
     int               *vertex_index );
 
-public  BOOLEAN  lookup_polygon_vertex(
+BICAPI  BOOLEAN  lookup_polygon_vertex(
     polygons_struct   *polygons,
     Point             *point,
     int               *point_index );
 
-public  BOOLEAN  find_next_edge_around_point(
+BICAPI  BOOLEAN  find_next_edge_around_point(
     polygons_struct   *polygons,
     int               poly,
     int               index_1,
@@ -614,7 +614,7 @@ public  BOOLEAN  find_next_edge_around_point(
     int               *next_index_1,
     int               *next_index_2 );
 
-public  int  get_neighbours_of_point(
+BICAPI  int  get_neighbours_of_point(
     polygons_struct   *polygons,
     int               poly,
     int               vertex_index,
@@ -622,7 +622,7 @@ public  int  get_neighbours_of_point(
     int               max_neighbours,
     BOOLEAN           *interior_point );
 
-public  int  get_polygons_around_vertex(
+BICAPI  int  get_polygons_around_vertex(
     polygons_struct   *polygons,
     int               poly,
     int               vertex_index,
@@ -630,44 +630,44 @@ public  int  get_polygons_around_vertex(
     int               n_polys_alloced,
     BOOLEAN           *closed_flag );
 
-public  void  compute_polygon_normal(
+BICAPI  void  compute_polygon_normal(
     polygons_struct  *polygons,
     int              poly,
     Vector           *normal );
 
-public  void  compute_polygon_normals(
+BICAPI  void  compute_polygon_normals(
     polygons_struct  *polygons );
 
-public  void  average_polygon_normals(
+BICAPI  void  average_polygon_normals(
     polygons_struct  *polygons,
     int              n_iters,
     Real             neighbour_weight );
 
-public  BOOLEAN  get_plane_polygon_intersection(
+BICAPI  BOOLEAN  get_plane_polygon_intersection(
     Vector           *normal,
     Real             d,
     polygons_struct  *polygons,
     int              poly,
     Point            intersection_points[] );
 
-public  BOOLEAN  get_plane_segment_intersection(
+BICAPI  BOOLEAN  get_plane_segment_intersection(
     Vector           *normal,
     Real             d,
     Point            *p1,
     Point            *p2,
     Point            *intersection_point );
 
-public  void   reverse_polygons_vertices(
+BICAPI  void   reverse_polygons_vertices(
     polygons_struct  *polygons );
 
-public  void   make_polygons_front_facing(
+BICAPI  void   make_polygons_front_facing(
     polygons_struct  *polygons );
 
-public  BOOLEAN  polygon_is_back_facing(
+BICAPI  BOOLEAN  polygon_is_back_facing(
     polygons_struct   *polygons,
     int               poly );
 
-public  void  compute_points_centroid_and_normal(
+BICAPI  void  compute_points_centroid_and_normal(
     polygons_struct  *polygons,
     int              point_index,
     int              n_neighbours,
@@ -677,7 +677,7 @@ public  void  compute_points_centroid_and_normal(
     Real             *base_length,
     Real             *curvature );
 
-public  void  compute_polygon_point_centroid(
+BICAPI  void  compute_polygon_point_centroid(
     polygons_struct  *polygons,
     int              poly,
     int              vertex_index,
@@ -687,71 +687,71 @@ public  void  compute_polygon_point_centroid(
     Real             *base_length,
     Real             *curvature );
 
-public  Real  compute_polygon_vertex_curvature(
+BICAPI  Real  compute_polygon_vertex_curvature(
     polygons_struct  *polygons,
     int              point_index );
 
-public  Real  get_polygon_edge_angle(
+BICAPI  Real  get_polygon_edge_angle(
     polygons_struct  *polygons,
     int              poly,
     int              edge );
 
-public  BOOLEAN  polygons_are_same_topology(
+BICAPI  BOOLEAN  polygons_are_same_topology(
     polygons_struct  *p1,
     polygons_struct  *p2 );
 
-public  void  initialize_quadmesh(
+BICAPI  void  initialize_quadmesh(
     quadmesh_struct   *quadmesh,
     Colour            col,
     Surfprop          *spr,
     int               m,
     int               n );
 
-public  void  delete_quadmesh(
+BICAPI  void  delete_quadmesh(
     quadmesh_struct *quadmesh );
 
-public  void  set_quadmesh_point(
+BICAPI  void  set_quadmesh_point(
     quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     Point            *point,
     Vector           *normal );
 
-public  BOOLEAN  get_quadmesh_point(
+BICAPI  BOOLEAN  get_quadmesh_point(
     const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     Point            *point );
 
-public  void  get_quadmesh_n_objects(
+BICAPI  void  get_quadmesh_n_objects(
     const quadmesh_struct  *quadmesh,
     int              *m,
     int              *n );
 
-public  void  compute_quadmesh_normals(
+BICAPI  void  compute_quadmesh_normals(
     quadmesh_struct  *quadmesh );
 
-public  void  get_quadmesh_patch_indices(
+BICAPI  void  get_quadmesh_patch_indices(
     const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     int              indices[] );
 
-public  void  get_quadmesh_patch(
+BICAPI  void  get_quadmesh_patch(
     const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
     Point            points[] );
 
-public  void  reverse_quadmesh_vertices(
+BICAPI  void  reverse_quadmesh_vertices(
     quadmesh_struct  *quadmesh );
 
-public  Colour     *get_8bit_rgb_pixel_lookup( void );
+BICAPI  Colour     *get_8bit_rgb_pixel_lookup( void );
 
-public  int  convert_rgb_pixel_to_8bit_lookup(
+BICAPI  int  convert_rgb_pixel_to_8bit_lookup(
     Colour    colour );
 
-public  Status   input_tag_objects_file(
+BICAPI  Status   input_tag_objects_file(
     STRING         filename,
     Colour         marker_colour,
     Real           default_size,
@@ -759,23 +759,23 @@ public  Status   input_tag_objects_file(
     int            *n_objects,
     object_struct  **object_list[] );
 
-public  void   initialize_text(
+BICAPI  void   initialize_text(
     text_struct     *text,
     Point           *position,
     Colour          colour,
     Font_types      text_font,
     Real            size );
 
-public  void   delete_text(
+BICAPI  void   delete_text(
     text_struct     *text );
 
-public  Status  output_texture_values(
+BICAPI  Status  output_texture_values(
     STRING         filename,
     File_formats   format,
     int            n_values,
     Real           values[] );
 
-public  Status  input_texture_values(
+BICAPI  Status  input_texture_values(
     STRING         filename,
     int            *n_values,
     Real           *values[] );

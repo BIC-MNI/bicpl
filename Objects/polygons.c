@@ -12,13 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/trans.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.43 2002-04-29 18:31:05 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.44 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 
@@ -35,10 +32,10 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygon
  */
 
 
-private  void  reverse_polygon_order(
+static  void  reverse_polygon_order(
     polygons_struct   *polygons,
     int               poly );
-private  Real  estimate_polygon_curvature(
+static  Real  estimate_polygon_curvature(
     Point   *point,
     int     n_neighs,
     Point   neighs[],
@@ -69,7 +66,7 @@ private  Real  estimate_polygon_curvature(
  * @param col colour for polygons
  * @param spr surface properties (or NULL for defaults)
  */
-public  void  initialize_polygons(
+BICAPI  void  initialize_polygons(
     polygons_struct   *polygons,
     Colour            col,
     Surfprop          *spr )
@@ -116,7 +113,7 @@ public  void  initialize_polygons(
  * @param n_polygons number of facets
  * @param size number of vertices per facet
  */
-public  void  initialize_polygons_with_size(
+BICAPI  void  initialize_polygons_with_size(
     polygons_struct   *polygons,
     Colour            col,
     Surfprop          *spr,
@@ -155,7 +152,7 @@ public  void  initialize_polygons_with_size(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  free_polygon_neighbours(
+BICAPI  void  free_polygon_neighbours(
     polygons_struct   *polygons )
 {
     if( polygons->neighbours != (int *) NULL )
@@ -178,7 +175,7 @@ public  void  free_polygon_neighbours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_polygons( polygons_struct *polygons )
+BICAPI  void  delete_polygons( polygons_struct *polygons )
 {
     free_colours( polygons->colour_flag, polygons->colours, polygons->n_points,
                   polygons->n_items );
@@ -218,7 +215,7 @@ public  void  delete_polygons( polygons_struct *polygons )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  copy_polygons(
+BICAPI  void  copy_polygons(
     polygons_struct   *src,
     polygons_struct   *dest )
 {
@@ -272,7 +269,7 @@ public  void  copy_polygons(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_polygon_per_item_colours(
+BICAPI  void  set_polygon_per_item_colours(
     polygons_struct   *polygons )
 {
     Colour   colour;
@@ -303,7 +300,7 @@ public  void  set_polygon_per_item_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_polygons_visibilities(
+BICAPI  void  create_polygons_visibilities(
     polygons_struct   *polygons )
 {
     int     i;
@@ -332,7 +329,7 @@ public  void  create_polygons_visibilities(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  set_polygons_visibilities(
+BICAPI  void  set_polygons_visibilities(
     polygons_struct   *polygons,
     BOOLEAN           state )
 {
@@ -358,7 +355,7 @@ public  void  set_polygons_visibilities(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  start_new_polygon(
+BICAPI  void  start_new_polygon(
     polygons_struct *polygons )
 {
     int      n_indices;
@@ -384,7 +381,7 @@ public  void  start_new_polygon(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  add_point_to_polygon(
+BICAPI  void  add_point_to_polygon(
     polygons_struct   *polygons,
     Point             *point,
     Vector            *normal )
@@ -433,7 +430,7 @@ public  void  add_point_to_polygon(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_polygon_points(
+BICAPI  int  get_polygon_points(
     polygons_struct   *polygons,
     int               poly,
     Point             points[] )
@@ -465,7 +462,7 @@ public  int  get_polygon_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_polygon_centroid(
+BICAPI  void  get_polygon_centroid(
     polygons_struct   *polygons,
     int               poly,
     Point             *centroid )
@@ -504,7 +501,7 @@ public  void  get_polygon_centroid(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  find_vertex_index(
+BICAPI  int  find_vertex_index(
     polygons_struct  *polygons,
     int              poly,
     int              point_index )
@@ -545,7 +542,7 @@ public  int  find_vertex_index(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  find_edge_index(
+BICAPI  int  find_edge_index(
     polygons_struct  *polygons,
     int              poly,
     int              point_index1,
@@ -591,7 +588,7 @@ public  int  find_edge_index(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  find_polygon_with_edge(
+BICAPI  BOOLEAN  find_polygon_with_edge(
     polygons_struct  *polygons,
     int              point_index1,
     int              point_index2,
@@ -630,7 +627,7 @@ public  BOOLEAN  find_polygon_with_edge(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  find_polygon_with_vertex(
+BICAPI  BOOLEAN  find_polygon_with_vertex(
     polygons_struct   *polygons,
     int               point_index,
     int               *poly_index,
@@ -674,7 +671,7 @@ public  BOOLEAN  find_polygon_with_vertex(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  lookup_polygon_vertex(
+BICAPI  BOOLEAN  lookup_polygon_vertex(
     polygons_struct   *polygons,
     Point             *point,
     int               *point_index )
@@ -714,7 +711,7 @@ public  BOOLEAN  lookup_polygon_vertex(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  find_next_edge_around_point(
+BICAPI  BOOLEAN  find_next_edge_around_point(
     polygons_struct   *polygons,
     int               poly,
     int               index_1,
@@ -780,7 +777,7 @@ public  BOOLEAN  find_next_edge_around_point(
                                               a closed surface.
 ---------------------------------------------------------------------------- */
 
-public  int  get_neighbours_of_point(
+BICAPI  int  get_neighbours_of_point(
     polygons_struct   *polygons,
     int               poly,
     int               vertex_index,
@@ -897,7 +894,7 @@ public  int  get_neighbours_of_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_polygons_around_vertex(
+BICAPI  int  get_polygons_around_vertex(
     polygons_struct   *polygons,
     int               poly,
     int               vertex_index,
@@ -966,7 +963,7 @@ public  int  get_polygons_around_vertex(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  compute_polygon_normal(
+BICAPI  void  compute_polygon_normal(
     polygons_struct  *polygons,
     int              poly,
     Vector           *normal )
@@ -1006,7 +1003,7 @@ public  void  compute_polygon_normal(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  compute_polygon_normals(
+BICAPI  void  compute_polygon_normals(
     polygons_struct  *polygons )
 {
     int                e, poly, size, point_index, prev_index, next_index;
@@ -1089,7 +1086,7 @@ public  void  compute_polygon_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  average_polygon_normals(
+BICAPI  void  average_polygon_normals(
     polygons_struct  *polygons,
     int              n_iters,
     Real             neighbour_weight )
@@ -1192,7 +1189,7 @@ public  void  average_polygon_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_plane_polygon_intersection(
+BICAPI  BOOLEAN  get_plane_polygon_intersection(
     Vector           *normal,
     Real             d,
     polygons_struct  *polygons,
@@ -1241,7 +1238,7 @@ public  BOOLEAN  get_plane_polygon_intersection(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_plane_segment_intersection(
+BICAPI  BOOLEAN  get_plane_segment_intersection(
     Vector           *normal,
     Real             d,
     Point            *p1,
@@ -1288,7 +1285,7 @@ public  BOOLEAN  get_plane_segment_intersection(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   reverse_polygons_vertices(
+BICAPI  void   reverse_polygons_vertices(
     polygons_struct  *polygons )
 {
     int         poly;
@@ -1314,7 +1311,7 @@ public  void   reverse_polygons_vertices(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   make_polygons_front_facing(
+BICAPI  void   make_polygons_front_facing(
     polygons_struct  *polygons )
 {
     int         poly;
@@ -1344,7 +1341,7 @@ public  void   make_polygons_front_facing(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  polygon_is_back_facing(
+BICAPI  BOOLEAN  polygon_is_back_facing(
     polygons_struct   *polygons,
     int               poly )
 {
@@ -1382,7 +1379,7 @@ public  BOOLEAN  polygon_is_back_facing(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  reverse_polygon_order(
+static  void  reverse_polygon_order(
     polygons_struct   *polygons,
     int               poly )
 {
@@ -1422,7 +1419,7 @@ private  void  reverse_polygon_order(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  compute_points_centroid_and_normal(
+BICAPI  void  compute_points_centroid_and_normal(
     polygons_struct  *polygons,
     int              point_index,
     int              n_neighbours,
@@ -1480,7 +1477,7 @@ public  void  compute_points_centroid_and_normal(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  compute_polygon_point_centroid(
+BICAPI  void  compute_polygon_point_centroid(
     polygons_struct  *polygons,
     int              poly,
     int              vertex_index,
@@ -1521,7 +1518,7 @@ public  void  compute_polygon_point_centroid(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  estimate_polygon_curvature(
+static  Real  estimate_polygon_curvature(
     Point   *point,
     int     n_neighs,
     Point   neighs[],
@@ -1569,7 +1566,7 @@ private  Real  estimate_polygon_curvature(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  compute_polygon_vertex_curvature(
+BICAPI  Real  compute_polygon_vertex_curvature(
     polygons_struct  *polygons,
     int              point_index )
 {
@@ -1606,7 +1603,7 @@ public  Real  compute_polygon_vertex_curvature(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  get_opposite_point(
+static  void  get_opposite_point(
     polygons_struct  *polygons,
     int              poly,
     int              edge,
@@ -1640,7 +1637,7 @@ private  void  get_opposite_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  get_polygon_edge_angle(
+BICAPI  Real  get_polygon_edge_angle(
     polygons_struct  *polygons,
     int              poly,
     int              edge )
@@ -1715,7 +1712,7 @@ public  Real  get_polygon_edge_angle(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  polygons_are_same_topology(
+BICAPI  BOOLEAN  polygons_are_same_topology(
     polygons_struct  *p1,
     polygons_struct  *p2 )
 {

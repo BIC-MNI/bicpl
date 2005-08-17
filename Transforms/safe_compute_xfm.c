@@ -22,7 +22,10 @@
 @GLOBALS    : 
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : $Log: safe_compute_xfm.c,v $
-@MODIFIED   : Revision 1.12  2005-06-03 18:08:37  bert
+@MODIFIED   : Revision 1.13  2005-08-17 22:26:48  bert
+@MODIFIED   : Replace public/private with BICAPI/static
+@MODIFIED   :
+@MODIFIED   : Revision 1.12  2005/06/03 18:08:37  bert
 @MODIFIED   : Include config.h and use HAVE_FORK rather than NO_FORK, also omit unistd.h
 @MODIFIED   :
 @MODIFIED   : Revision 1.11  2000/02/06 15:30:51  stever
@@ -73,11 +76,11 @@
 #if HAVE_FORK
 #include <sys/wait.h>
 #endif
-#include <volume_io/internal_volume_io.h>
-#include <bicpl/trans.h>
+
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.12 2005-06-03 18:08:37 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.13 2005-08-17 22:26:48 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -99,7 +102,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public void safe_compute_transform_from_tags(
+BICAPI void safe_compute_transform_from_tags(
     int                 npoints, 
     Real                **tag_list1, 
     Real                **tag_list2, 

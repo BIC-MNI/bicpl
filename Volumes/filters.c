@@ -12,11 +12,11 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
+#include  "bicpl_internal.h"
 #include  <bicpl/vols.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/filters.c,v 1.14 2000-02-06 15:30:55 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/filters.c,v 1.15 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define  N_STD_DEVIATIONS  3.0
@@ -40,7 +40,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/filters
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_slice_weights_for_filter(
+BICAPI int  get_slice_weights_for_filter(
     Volume         volume,
     Real           voxel_position[],
     Real           voxel_direction[],   /* if filter_type != NEAREST */

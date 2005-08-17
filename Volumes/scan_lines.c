@@ -12,14 +12,13 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.9 2000-02-05 21:27:28 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.10 2005-08-17 22:26:19 bert Exp $";
 #endif
 
-private  void  scan_line_segment_to_voxels(
+static void  scan_line_segment_to_voxels(
     Volume    volume,
     Volume    label_volume,
     int       label,
@@ -44,7 +43,7 @@ private  void  scan_line_segment_to_voxels(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  scan_lines_to_voxels(
+BICAPI void  scan_lines_to_voxels(
     lines_struct     *lines,
     Volume           volume,
     Volume           label_volume,
@@ -84,7 +83,7 @@ public  void  scan_lines_to_voxels(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  point_segment_distance_squared(
+static Real  point_segment_distance_squared(
     Point    *point,
     Point    *p1,
     Point    *p2 )
@@ -117,7 +116,7 @@ private  Real  point_segment_distance_squared(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  scan_line_segment_to_voxels(
+static void  scan_line_segment_to_voxels(
     Volume    volume,
     Volume    label_volume,
     int       label,

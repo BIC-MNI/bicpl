@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/line_circle.c,v 1.11 2000-02-06 15:30:15 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/line_circle.c,v 1.12 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -37,7 +36,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/line_c
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_line_circle(
+BICAPI  void  create_line_circle(
     Point            *centre,
     int              plane_axis,
     Real             x_radius,

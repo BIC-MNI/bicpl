@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gaussian.c,v 1.7 2000-02-05 21:27:02 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gaussian.c,v 1.8 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -37,7 +36,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gauss
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
+static  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
     int    n,
     float  **coefs,
     int    n_values,
@@ -95,7 +94,7 @@ private  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  solve_linear_system_float(
+BICAPI  BOOLEAN  solve_linear_system_float(
     int    n,
     float  **coefs,
     float  values[],
@@ -124,7 +123,7 @@ public  BOOLEAN  solve_linear_system_float(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  invert_square_matrix_float(
+BICAPI  BOOLEAN  invert_square_matrix_float(
     int    n,
     float  **matrix,
     float  **inverse )

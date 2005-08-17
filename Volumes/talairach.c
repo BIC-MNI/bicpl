@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.14 2000-02-06 15:30:57 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.15 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define  TALAIRACH_OFFSET   16.0
@@ -24,27 +23,27 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/talaira
 #define  FALSE  0
 #define  TRUE   1
 
-private  int   nx = 128;
-private  int   ny = 128;
-private  int   nz = 80;
+static int   nx = 128;
+static int   ny = 128;
+static int   nz = 80;
 
-private  Real  x_low  = -1.28;
-private  Real  x_high =  1.28;
-private  Real  y_low  = -1.28;
-private  Real  y_high =  1.28;
-private  Real  z_low  = -0.50;
-private  Real  z_high =  1.10;
+static Real  x_low  = -1.28;
+static Real  x_high =  1.28;
+static Real  y_low  = -1.28;
+static Real  y_high =  1.28;
+static Real  z_low  = -0.50;
+static Real  z_high =  1.10;
 
-private  Real  x_dist_minus_1 = -67.0;
-private  Real  x_dist_1       =  67.0;
-private  Real  y_dist_minus_1 = -86.0;
-private  Real  y_dist_1       =  86.0;
-private  Real  z_dist_0       =   0.0;
-private  Real  z_dist_1       =  75.0;
+static Real  x_dist_minus_1 = -67.0;
+static Real  x_dist_1       =  67.0;
+static Real  y_dist_minus_1 = -86.0;
+static Real  y_dist_1       =  86.0;
+static Real  z_dist_0       =   0.0;
+static Real  z_dist_1       =  75.0;
 
-private  BOOLEAN   initialized = FALSE;
+static BOOLEAN   initialized = FALSE;
 
-private  void  read_talairach_coordinate_system( void );
+static void  read_talairach_coordinate_system( void );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : check_initialized
@@ -60,7 +59,7 @@ private  void  read_talairach_coordinate_system( void );
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  check_initialized( void )
+static void  check_initialized( void )
 {
     if( !initialized )
     {
@@ -83,7 +82,7 @@ private  void  check_initialized( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  read_talairach_coordinate_system( void )
+static void  read_talairach_coordinate_system( void )
 {
     int     i, n_lines, ch;
     FILE    *file;
@@ -203,7 +202,7 @@ private  void  read_talairach_coordinate_system( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_voxel_to_talairach(
+BICAPI void  convert_voxel_to_talairach(
     Real   x_voxel,
     Real   y_voxel,
     Real   z_voxel,
@@ -241,7 +240,7 @@ public  void  convert_voxel_to_talairach(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_talairach_to_voxel(
+BICAPI void  convert_talairach_to_voxel(
     Real   x_tal,
     Real   y_tal,
     Real   z_tal,
@@ -279,7 +278,7 @@ public  void  convert_talairach_to_voxel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  convert_to_mm(
+static Real  convert_to_mm(
     Real    tal,
     int     n_planes,
     Real    limit_low,
@@ -317,7 +316,7 @@ private  Real  convert_to_mm(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_talairach_to_mm(
+BICAPI void  convert_talairach_to_mm(
     Real   x_tal,
     Real   y_tal,
     Real   z_tal,
@@ -357,7 +356,7 @@ public  void  convert_talairach_to_mm(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Real  convert_from_mm(
+static Real  convert_from_mm(
     Real    mm,
     int     n_planes,
     Real    limit_low,
@@ -394,7 +393,7 @@ private  Real  convert_from_mm(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  convert_mm_to_talairach(
+BICAPI void  convert_mm_to_talairach(
     Real   x_mm,
     Real   y_mm,
     Real   z_mm,

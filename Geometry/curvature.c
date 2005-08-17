@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.21 2002-11-27 22:48:11 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.22 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -38,7 +37,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvat
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_polygon_vertex_curvatures(
+BICAPI  void  get_polygon_vertex_curvatures(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],

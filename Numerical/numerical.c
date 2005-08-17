@@ -15,12 +15,13 @@
 #if HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/numerical.h>
+
+#include "bicpl_internal.h"
+
 #include  <limits.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.25 2005-06-03 18:10:04 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.26 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -40,7 +41,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numer
 
 #define  SMALLEST  1.0e-20
 
-public  BOOLEAN  numerically_close(
+BICAPI  BOOLEAN  numerically_close(
     Real  n1,
     Real  n2,
     Real  threshold_ratio )
@@ -80,7 +81,7 @@ public  BOOLEAN  numerically_close(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  get_good_round_value(
+BICAPI  Real  get_good_round_value(
     Real    value )
 {
     Real     rounded, sign, power_of_ten, power_of_ten_times_5;
@@ -122,7 +123,7 @@ public  Real  get_good_round_value(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  round_to_nearest_multiple(
+BICAPI  Real  round_to_nearest_multiple(
     Real    value,
     Real    multiple_value )
 {
@@ -159,7 +160,7 @@ public  Real  round_to_nearest_multiple(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  solve_quadratic(
+BICAPI  int  solve_quadratic(
     Real   a,
     Real   b,
     Real   c,
@@ -244,7 +245,7 @@ public  int  solve_quadratic(
 #define  SIN_60    0.86602540378443864676
 
 
-public  int solve_cubic(
+BICAPI  int solve_cubic(
     Real   a,
     Real   b,
     Real   c,
@@ -340,7 +341,7 @@ public  int solve_cubic(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  int  get_roots_of_cubic(
+static  int  get_roots_of_cubic(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -411,7 +412,7 @@ private  int  get_roots_of_cubic(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  evaluate_polynomial(
+BICAPI  Real  evaluate_polynomial(
     int     n,
     Real    poly[],
     Real    u )
@@ -448,7 +449,7 @@ public  Real  evaluate_polynomial(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  interval_value_range(
+static  void  interval_value_range(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -540,7 +541,7 @@ private  void  interval_value_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  interval_may_contain_zero(
+static  BOOLEAN  interval_may_contain_zero(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -571,7 +572,7 @@ private  BOOLEAN  interval_may_contain_zero(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  check_interval(
+static  void  check_interval(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -635,7 +636,7 @@ private  void  check_interval(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_roots_of_polynomial(
+BICAPI  int  get_roots_of_polynomial(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -674,7 +675,7 @@ public  int  get_roots_of_polynomial(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  BOOLEAN  polynomial_may_include_range(
+static  BOOLEAN  polynomial_may_include_range(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -689,7 +690,7 @@ private  BOOLEAN  polynomial_may_include_range(
     return( max_val >= min_range && min_val <= max_range );
 }
 
-private  BOOLEAN  check_range(
+static  BOOLEAN  check_range(
     int     n,
     Real    poly[],
     Real    u_min,
@@ -737,7 +738,7 @@ private  BOOLEAN  check_range(
         return( FALSE );
 }
 
-public  BOOLEAN  get_range_of_polynomial(
+BICAPI  BOOLEAN  get_range_of_polynomial(
     int     n,
     Real    poly[],
     Real    u_min,

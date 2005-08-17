@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/fill_volume.c,v 1.10 2000-02-06 15:30:54 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/fill_volume.c,v 1.11 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 typedef struct
@@ -45,7 +44,7 @@ typedef struct
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  fill_connected_voxels(
+BICAPI BOOLEAN  fill_connected_voxels(
     Volume              volume,
     Volume              label_volume,
     Neighbour_types     connectivity,
@@ -159,11 +158,11 @@ public  BOOLEAN  fill_connected_voxels(
     return( TRUE );
 }
 
-private   int   Dx4[4] = { 1, 0, -1,  0 };
-private   int   Dy4[4] = { 0, 1,  0, -1 };
+static  int   Dx4[4] = { 1, 0, -1,  0 };
+static  int   Dy4[4] = { 0, 1,  0, -1 };
 
-private   int   Dx8[8] = {  1,  1,  0, -1, -1, -1,  0,  1 };
-private   int   Dy8[8] = {  0,  1,  1,  1,  0, -1, -1, -1 };
+static  int   Dx8[8] = {  1,  1,  0, -1, -1, -1,  0,  1 };
+static  int   Dy8[8] = {  0,  1,  1,  1,  0, -1, -1, -1 };
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_neighbour_directions
@@ -179,7 +178,7 @@ private   int   Dy8[8] = {  0,  1,  1,  1,  0, -1, -1, -1 };
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_neighbour_directions(
+BICAPI int  get_neighbour_directions(
     Neighbour_types   connectivity,
     int               *dx[],
     int               *dy[] )
@@ -204,13 +203,13 @@ public  int  get_neighbour_directions(
     return( n_dirs );
 }
 
-private   int   Dx6[6] = { 1, 0, 0, -1,  0,  0 };
-private   int   Dy6[6] = { 0, 1, 0,  0, -1,  0 };
-private   int   Dz6[6] = { 0, 0, 1,  0,  0, -1 };
+static  int   Dx6[6] = { 1, 0, 0, -1,  0,  0 };
+static  int   Dy6[6] = { 0, 1, 0,  0, -1,  0 };
+static  int   Dz6[6] = { 0, 0, 1,  0,  0, -1 };
 
-private   int   Dx26[26];
-private   int   Dy26[26];
-private   int   Dz26[26];
+static  int   Dx26[26];
+static  int   Dy26[26];
+static  int   Dz26[26];
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_3D_neighbours
@@ -225,7 +224,7 @@ private   int   Dz26[26];
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  create_3D_neighbours( void )
+static void  create_3D_neighbours( void )
 {
     int   x, y, z, n;
 
@@ -264,7 +263,7 @@ private  void  create_3D_neighbours( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_3D_neighbour_directions(
+BICAPI int  get_3D_neighbour_directions(
     Neighbour_types   connectivity,
     int               *dx[],
     int               *dy[],
@@ -319,7 +318,7 @@ public  int  get_3D_neighbour_directions(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  should_change_this_one(
+BICAPI BOOLEAN  should_change_this_one(
     Volume          volume,
     Volume          label_volume,
     int             voxel[],

@@ -12,13 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/data_structures.h>
-#include  <bicpl/geom.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.12 2005-04-03 00:39:41 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -34,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_the_bintree(
+BICAPI  void  delete_the_bintree(
     bintree_struct_ptr  *bintree )
 {
     if( *bintree != (bintree_struct_ptr) NULL )
@@ -62,7 +59,7 @@ public  void  delete_the_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  check_install_bintree_delete_function( void )
+static  void  check_install_bintree_delete_function( void )
 {
     static  BOOLEAN  first = TRUE;
 
@@ -86,7 +83,7 @@ private  void  check_install_bintree_delete_function( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  bintree_struct_ptr allocate_bintree( void )
+BICAPI  bintree_struct_ptr allocate_bintree( void )
 {
     bintree_struct_ptr   bintree;
 
@@ -109,7 +106,7 @@ public  bintree_struct_ptr allocate_bintree( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_lines_bintree(
+BICAPI  void  create_lines_bintree(
     lines_struct   *lines,
     int            max_nodes )
 {
@@ -181,7 +178,7 @@ public  void  create_lines_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_polygons_bintree(
+BICAPI  void  create_polygons_bintree(
     polygons_struct   *polygons,
     int               max_nodes )
 {
@@ -230,7 +227,7 @@ public  void  create_polygons_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  create_quadmesh_bintree(
+BICAPI  void  create_quadmesh_bintree(
     quadmesh_struct   *quadmesh,
     int               max_nodes )
 {

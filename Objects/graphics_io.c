@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/graphics_io.c,v 1.8 2000-02-06 15:30:42 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/graphics_io.c,v 1.9 2005-08-17 22:28:26 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -34,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/graphic
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status   input_graphics_file(
+BICAPI  Status   input_graphics_file(
     STRING         filename,
     File_formats   *format,
     int            *n_objects,
@@ -90,7 +89,7 @@ public  Status   input_graphics_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status   output_graphics_file(
+BICAPI  Status   output_graphics_file(
     STRING         filename,
     File_formats   format,
     int            n_objects,
@@ -137,7 +136,7 @@ public  Status   output_graphics_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status   input_objects_any_format(
+BICAPI  Status   input_objects_any_format(
     Volume         volume,
     STRING         filename,
     Colour         marker_colour,

@@ -1,24 +1,24 @@
 #include  <volume_io/internal_volume_io.h>
 #include  <bicpl.h>
 
-private  Real   linear_coefs[2][2] = {
+static  Real   linear_coefs[2][2] = {
                                            {  1.0,  0.0 },
                                            { -1.0,  1.0 }
                                       };
-private  Real   quadratic_coefs[3][3] = {
+static  Real   quadratic_coefs[3][3] = {
                                            {  0.5,  0.5,  0.0 },
                                            { -1.0,  1.0,  0.0 },
                                            {  0.5, -1.0,  0.5 }
                                         };
 
-private  Real   cubic_coefs[4][4] = {
+static  Real   cubic_coefs[4][4] = {
                                         {  0.0,  1.0,  0.0,  0.0 },
                                         { -0.5,  0.0,  0.5,  0.0 },
                                         {  1.0, -2.5,  2.0, -0.5 },
                                         { -0.5,  1.5, -1.5,  0.5 }
                                     };
 
-public  void  get_linear_spline_coefs(
+BICAPI  void  get_linear_spline_coefs(
     Real  **coefs )
 {
     int    i, j;
@@ -28,7 +28,7 @@ public  void  get_linear_spline_coefs(
         coefs[i][j] = linear_coefs[i][j];
 }
 
-public  void  get_quadratic_spline_coefs(
+BICAPI  void  get_quadratic_spline_coefs(
     Real  **coefs )
 {
     int    i, j;
@@ -38,7 +38,7 @@ public  void  get_quadratic_spline_coefs(
         coefs[i][j] = quadratic_coefs[i][j];
 }
 
-public  void  get_cubic_spline_coefs(
+BICAPI  void  get_cubic_spline_coefs(
     Real  **coefs )
 {
     int    i, j;
@@ -48,7 +48,7 @@ public  void  get_cubic_spline_coefs(
         coefs[i][j] = cubic_coefs[i][j];
 }
 
-public  void  evaluate_univariate_catmull_spline(
+BICAPI  void  evaluate_univariate_catmull_spline(
     Real    u,
     int     degree,
     Real    coefs[],
@@ -74,7 +74,7 @@ public  void  evaluate_univariate_catmull_spline(
                            1, coefs, &n_derivs, derivs );
 }
 
-public  Real  cubic_interpolate(
+BICAPI  Real  cubic_interpolate(
     Real   u,
     Real   v0,
     Real   v1,
@@ -93,7 +93,7 @@ public  Real  cubic_interpolate(
     return( value );
 }
 
-public  void  evaluate_bivariate_catmull_spline(
+BICAPI  void  evaluate_bivariate_catmull_spline(
     Real    u,
     Real    v,
     int     degree,
@@ -133,7 +133,7 @@ public  void  evaluate_bivariate_catmull_spline(
                            n_derivs_list, derivs );
 }
 
-public  void  evaluate_trivariate_catmull_spline(
+BICAPI  void  evaluate_trivariate_catmull_spline(
     Real    u,
     Real    v,
     Real    w,

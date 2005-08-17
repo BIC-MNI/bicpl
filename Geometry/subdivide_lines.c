@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_lines.c,v 1.10 2000-02-06 15:30:18 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdivide_lines.c,v 1.11 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -37,7 +36,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/subdiv
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  subdivide_line(
+static  void  subdivide_line(
     lines_struct      *lines,
     int               l,
     int               *new_n_points,
@@ -91,7 +90,7 @@ private  void  subdivide_line(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  general_subdivide_lines(
+static  void  general_subdivide_lines(
     lines_struct  *lines )
 {
     int                size, i, new_n_points, new_n_indices, new_n_lines;
@@ -142,7 +141,7 @@ private  void  general_subdivide_lines(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  subdivide_closed_curve(
+static  void  subdivide_closed_curve(
     lines_struct      *lines )
 {
     int     i;
@@ -185,7 +184,7 @@ private  void  subdivide_closed_curve(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN is_single_closed_curve(
+BICAPI  BOOLEAN is_single_closed_curve(
     lines_struct   *lines )
 {
     int      i;
@@ -223,7 +222,7 @@ public  BOOLEAN is_single_closed_curve(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  subdivide_lines(
+BICAPI  void  subdivide_lines(
     lines_struct  *lines )
 {
     if( is_single_closed_curve( lines ) )

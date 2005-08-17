@@ -1,5 +1,4 @@
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #undef   USE_FAST_APPROX
 #define  USE_FAST_APPROX
@@ -14,7 +13,7 @@
 #define  MAX_SQRT_ARG              1000.0
 #define  N_SQRT_PRECOMPUTE         30000
 
-public  double  fast_approx_sqrt(
+BICAPI  double  fast_approx_sqrt(
     double  y )
 {
     Real     x;
@@ -54,7 +53,7 @@ public  double  fast_approx_sqrt(
     return( lookup->trans + lookup->scale * x );
 }
 
-public  Real  fast_approx_distance_between_points(
+BICAPI  Real  fast_approx_distance_between_points(
     Point  *p1,
     Point  *p2 )
 {

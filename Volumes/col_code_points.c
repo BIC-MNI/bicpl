@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/vols.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_points.c,v 1.8 2000-02-06 15:30:53 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_points.c,v 1.9 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -39,7 +38,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_cod
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  colour_code_points(
+static void  colour_code_points(
     colour_coding_struct  *colour_coding,
     Volume                volume,
     int                   continuity,
@@ -96,7 +95,7 @@ private  void  colour_code_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  colour_code_object(
+BICAPI void  colour_code_object(
     Volume                 volume,
     int                    continuity,
     colour_coding_struct   *colour_coding,

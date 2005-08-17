@@ -12,11 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/segment_polygons.c,v 1.8 2000-02-06 15:30:17 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/segment_polygons.c,v 1.9 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -34,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/segmen
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void   remove_invisible_polygons(
+BICAPI  void   remove_invisible_polygons(
     polygons_struct  *polygons,
     Smallest_int     visibilities[] )
 {

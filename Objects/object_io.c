@@ -12,12 +12,10 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/objects.h>
-#include  <bicpl/geom.h>
+#include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.29 2001-10-19 19:59:23 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.30 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 
@@ -166,25 +164,25 @@ A TEXT object consists of the following data items.
 */
 
 
-private  Status  io_vectors(
+static  Status  io_vectors(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     int             n,
     Vector          *vectors[] );
-private  Status  io_line_thickness(
+static  Status  io_line_thickness(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
     float           *line_thickness );
-private  Status  io_end_indices(
+static  Status  io_end_indices(
     FILE           *file,
     IO_types       io_flag,
     File_formats   format,
     int            n_items,
     int            *end_indices[],
     int            min_size );
-private  Status  io_points(
+static  Status  io_points(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -207,7 +205,7 @@ private  Status  io_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_lines(
+BICAPI  Status  io_lines(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
@@ -299,7 +297,7 @@ public  Status  io_lines(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_marker(
+BICAPI  Status  io_marker(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
@@ -356,7 +354,7 @@ public  Status  io_marker(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_model(
+BICAPI  Status  io_model(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -391,7 +389,7 @@ public  Status  io_model(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_pixels(
+BICAPI  Status  io_pixels(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
@@ -463,7 +461,7 @@ public  Status  io_pixels(
 static  BOOLEAN  use_compressed = FALSE;
 static  BOOLEAN  compressed_initialized = FALSE;
 
-private  BOOLEAN   use_compressed_polygons( void )
+static  BOOLEAN   use_compressed_polygons( void )
 {
     if( !compressed_initialized )
     {
@@ -474,14 +472,14 @@ private  BOOLEAN   use_compressed_polygons( void )
     return( use_compressed );
 }
 
-public  void  set_use_compressed_polygons_flag(
+BICAPI  void  set_use_compressed_polygons_flag(
     BOOLEAN  value )
 {
     use_compressed = value;
     compressed_initialized = TRUE;
 }
 
-public  BOOLEAN  get_use_compressed_polygons_flag( void )
+BICAPI  BOOLEAN  get_use_compressed_polygons_flag( void )
 {
     return( use_compressed_polygons() );
 }
@@ -502,7 +500,7 @@ public  BOOLEAN  get_use_compressed_polygons_flag( void )
 @MODIFIED   : Mar. 23, 1997   D. MacDonald - added compressed polygons.
 ---------------------------------------------------------------------------- */
 
-public  Status  io_polygons(
+BICAPI  Status  io_polygons(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
@@ -651,7 +649,7 @@ public  Status  io_polygons(
  * \param io_flag one of READ_FILE or WRITE_FILE
  * \param format one of ASCII_FORMAT or BINARY_FORMAT
  */
-public  Status  io_quadmesh(
+BICAPI  Status  io_quadmesh(
     FILE                *file,
     IO_types            io_flag,
     File_formats        format,
@@ -737,7 +735,7 @@ public  Status  io_quadmesh(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_text(
+BICAPI  Status  io_text(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -784,7 +782,7 @@ public  Status  io_text(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_point(
+BICAPI  Status  io_point(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -829,7 +827,7 @@ public  Status  io_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_vector(
+BICAPI  Status  io_vector(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -873,7 +871,7 @@ public  Status  io_vector(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_colour(
+BICAPI  Status  io_colour(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -950,7 +948,7 @@ public  Status  io_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_colours(
+BICAPI  Status  io_colours(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -1011,7 +1009,7 @@ public  Status  io_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_surfprop(
+BICAPI  Status  io_surfprop(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -1068,7 +1066,7 @@ public  Status  io_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  io_points(
+static  Status  io_points(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -1127,7 +1125,7 @@ private  Status  io_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  io_vectors(
+static  Status  io_vectors(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -1183,7 +1181,7 @@ private  Status  io_vectors(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_object_type(
+BICAPI  Status  io_object_type(
     FILE           *file,
     IO_types       io_flag,
     File_formats   format,
@@ -1241,7 +1239,7 @@ public  Status  io_object_type(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  input_object_type(
+BICAPI  Status  input_object_type(
     FILE           *file,
     Object_types   *type,
     File_formats   *format,
@@ -1314,7 +1312,7 @@ public  Status  input_object_type(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_pixel_colours(
+BICAPI  Status  io_pixel_colours(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -1415,7 +1413,7 @@ public  Status  io_pixel_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_pixel_colour(
+BICAPI  Status  io_pixel_colour(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -1471,7 +1469,7 @@ public  Status  io_pixel_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  io_line_thickness(
+static  Status  io_line_thickness(
     FILE            *file,
     IO_types        io_flag,
     File_formats    format,
@@ -1504,7 +1502,7 @@ private  Status  io_line_thickness(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  input_object(
+BICAPI  Status  input_object(
     STRING         directory,
     FILE           *file,
     File_formats   *format,
@@ -1598,7 +1596,7 @@ public  Status  input_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  output_object(
+BICAPI  Status  output_object(
     FILE           *file,
     File_formats   format,
     object_struct  *object )
@@ -1667,7 +1665,7 @@ public  Status  output_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  io_end_indices(
+static  Status  io_end_indices(
     FILE           *file,
     IO_types       io_flag,
     File_formats   format,

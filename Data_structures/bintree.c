@@ -13,23 +13,22 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#include  <volume_io/internal_volume_io.h>
-#include  <bicpl/data_structures.h>
+#include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bintree.c,v 1.9 2000-02-06 15:30:09 stever Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bintree.c,v 1.10 2005-08-17 22:31:12 bert Exp $";
 #endif
 
-private  Status  io_range(
+static  Status  io_range(
     FILE             *file,
     IO_types         direction,
     File_formats     format,
     range_struct     *range );
-private  Status  output_bintree_node(
+static  Status  output_bintree_node(
     FILE                    *file,
     File_formats            format,
     bintree_node_struct     *node );
-private  Status  input_bintree_node(
+static  Status  input_bintree_node(
     FILE                    *file,
     File_formats            format,
     bintree_node_struct     **node );
@@ -54,7 +53,7 @@ private  Status  input_bintree_node(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  initialize_bintree(
+BICAPI  void  initialize_bintree(
     Real                 x_min,
     Real                 x_max,
     Real                 y_min,
@@ -87,7 +86,7 @@ public  void  initialize_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_bintree_node(
+BICAPI  void  delete_bintree_node(
     bintree_node_struct   *node )
 {
     FREE( node );
@@ -106,7 +105,7 @@ public  void  delete_bintree_node(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  recursive_delete_bintree(
+static  void  recursive_delete_bintree(
     bintree_node_struct   *node )
 {
     bintree_node_struct  *left, *right;
@@ -132,7 +131,7 @@ private  void  recursive_delete_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  delete_bintree(
+BICAPI  void  delete_bintree(
     bintree_struct_ptr   bintree )
 {
     if( bintree->root != NULL )
@@ -152,7 +151,7 @@ public  void  delete_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  void  get_bintree_limits(
+BICAPI  void  get_bintree_limits(
     bintree_struct_ptr    bintree,
     range_struct          *limits )
 {
@@ -174,7 +173,7 @@ public  void  get_bintree_limits(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  void  set_bintree_child(
+static  void  set_bintree_child(
     bintree_node_struct   *node,
     int                   which,
     bintree_node_struct   *child )
@@ -207,7 +206,7 @@ private  void  set_bintree_child(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  bintree_node_struct  *create_bintree_internal_node(
+BICAPI  bintree_node_struct  *create_bintree_internal_node(
     int                   split_coord,
     Real                  split_position,
     bintree_node_struct   *left,
@@ -268,7 +267,7 @@ public  bintree_node_struct  *create_bintree_internal_node(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  bintree_node_struct  *create_bintree_leaf(
+BICAPI  bintree_node_struct  *create_bintree_leaf(
     Real                  split_position,
     int                   n_objects,
     int                   object_list[] )
@@ -321,7 +320,7 @@ public  bintree_node_struct  *create_bintree_leaf(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  bintree_node_is_leaf(
+BICAPI  BOOLEAN  bintree_node_is_leaf(
     bintree_node_struct  *node )
 {
     return( (node->node_info & SUBDIVISION_AXIS_BITS) == LEAF_SIGNAL );
@@ -341,7 +340,7 @@ public  BOOLEAN  bintree_node_is_leaf(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_bintree_leaf_objects(
+BICAPI  int  get_bintree_leaf_objects(
     bintree_node_struct  *node,
     int                  *object_list[] )
 {
@@ -377,7 +376,7 @@ public  int  get_bintree_leaf_objects(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_bintree_left_child_ptr(
+BICAPI BOOLEAN  get_bintree_left_child_ptr(
     bintree_node_struct  *node,
     bintree_node_struct  ***ptr_to_left_child )
 {
@@ -406,7 +405,7 @@ public  BOOLEAN  get_bintree_left_child_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_bintree_left_child(
+BICAPI  BOOLEAN  get_bintree_left_child(
     bintree_node_struct  *node,
     bintree_node_struct  **left_child )
 {
@@ -435,7 +434,7 @@ public  BOOLEAN  get_bintree_left_child(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_bintree_right_child_ptr(
+BICAPI  BOOLEAN  get_bintree_right_child_ptr(
     bintree_node_struct  *node,
     bintree_node_struct  ***ptr_to_right_child )
 {
@@ -472,7 +471,7 @@ public  BOOLEAN  get_bintree_right_child_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  get_bintree_right_child(
+BICAPI  BOOLEAN  get_bintree_right_child(
     bintree_node_struct  *node,
     bintree_node_struct  **right_child )
 {
@@ -501,7 +500,7 @@ public  BOOLEAN  get_bintree_right_child(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  int  get_node_split_axis(
+BICAPI  int  get_node_split_axis(
     bintree_node_struct  *node )
 {
     return( node->node_info & SUBDIVISION_AXIS_BITS );
@@ -520,7 +519,7 @@ public  int  get_node_split_axis(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  get_node_split_position(
+BICAPI  Real  get_node_split_position(
     bintree_node_struct  *node )
 {
     return( (Real) node->split_position );
@@ -540,7 +539,7 @@ public  Real  get_node_split_position(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  BOOLEAN  point_within_range(
+BICAPI  BOOLEAN  point_within_range(
     Point         *point,
     range_struct  *range )
 {
@@ -569,7 +568,7 @@ public  BOOLEAN  point_within_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  range_volume(
+BICAPI  Real  range_volume(
     range_struct  *range )
 {
     return( ((Real) range->limits[X][1] - (Real) range->limits[X][0]) *
@@ -590,7 +589,7 @@ public  Real  range_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Real  range_surface_area(
+BICAPI  Real  range_surface_area(
     range_struct  *range )
 {
     Real   dx, dy, dz;
@@ -619,7 +618,7 @@ public  Real  range_surface_area(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-public  Status  io_bintree(
+BICAPI  Status  io_bintree(
     FILE                 *file,
     IO_types             direction,
     File_formats         format,
@@ -653,7 +652,7 @@ public  Status  io_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  io_range(
+static  Status  io_range(
     FILE             *file,
     IO_types         direction,
     File_formats     format,
@@ -694,7 +693,7 @@ private  Status  io_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  output_leaf_node(
+static  Status  output_leaf_node(
     FILE                    *file,
     File_formats            format,
     bintree_node_struct     *node )
@@ -730,7 +729,7 @@ private  Status  output_leaf_node(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  output_bintree_node(
+static  Status  output_bintree_node(
     FILE                    *file,
     File_formats            format,
     bintree_node_struct     *node )
@@ -776,7 +775,7 @@ private  Status  output_bintree_node(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-private  Status  input_bintree_node(
+static  Status  input_bintree_node(
     FILE                    *file,
     File_formats            format,
     bintree_node_struct     **node )
