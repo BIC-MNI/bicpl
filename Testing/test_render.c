@@ -76,7 +76,7 @@ int  main(
                          0.0, 0.0, 0.0, 0.0,
                          x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, FALSE,
                          (unsigned short **) NULL,
-                         &rgb_map, BLACK, NULL, &n_alloced, &pixels );
+                         &rgb_map, BLACK, NULL, FALSE, &n_alloced, &pixels );
     }
 
     end_time = current_cpu_seconds();

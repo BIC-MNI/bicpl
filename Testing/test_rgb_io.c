@@ -1,4 +1,4 @@
-#include <bicpl/images.h>
+#include <bicpl.h>
 
 
 int main( int ac, char* av[] )
