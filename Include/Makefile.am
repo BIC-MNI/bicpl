@@ -6,3 +6,4 @@
 
 SUBDIRS = bicpl
 include_HEADERS = bicpl.h
+noinst_HEADERS = bicpl_internal.h
