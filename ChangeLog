@@ -1,3 +1,7 @@
+2007-06-27  Claude Lepage <claude@bic.mni.mcgill.ca>
+        * Added a bunch of new colour maps
+        * Moved the surface utilities from conglomerate to bicpl/tools
+
 2005-08-17  Bert Vincent <bert@bic.mni.mcgill.ca>
 	* Added Include/bicpl_internal.h
 	* Replaced public/private pseudokeywords with BICAPI/static

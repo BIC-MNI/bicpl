@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.27 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.28 2007-07-03 22:25:06 claude Exp $";
 #endif
 
 static void  interpolate_colours(
@@ -299,6 +299,72 @@ static void  recreate_piecewise_function(
                          {0.5,  1.0, 0.5, 0.0, 1.0, RGB_SPACE },
                          {0.75, 1.0, 1.0, 0.5, 1.0, RGB_SPACE },
                          {1.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE } };
+    static  colour_point  hot_metal_neg_points[] = 
+                       { {0.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {0.25, 1.0, 1.0, 0.5, 1.0, RGB_SPACE },
+                         {0.5,  1.0, 0.5, 0.0, 1.0, RGB_SPACE },
+                         {0.75, 0.5, 0.0, 0.0, 1.0, RGB_SPACE },
+                         {1.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE } };
+    static  colour_point  cold_metal_points[] = 
+                       { {0.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE },
+                         {0.25, 0.0, 0.0, 0.5, 1.0, RGB_SPACE },
+                         {0.5,  0.0, 0.5, 1.0, 1.0, RGB_SPACE },
+                         {0.75, 0.5, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {1.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE } };
+    static  colour_point  cold_metal_neg_points[] = 
+                       { {0.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {0.25, 0.5, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {0.5,  0.0, 0.5, 1.0, 1.0, RGB_SPACE },
+                         {0.75, 0.0, 0.0, 0.5, 1.0, RGB_SPACE },
+                         {1.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE } };
+    static  colour_point  green_metal_points[] = 
+                       { {0.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE },
+                         {0.25, 0.0, 0.5, 0.0, 1.0, RGB_SPACE },
+                         {0.5,  0.0, 1.0, 0.5, 1.0, RGB_SPACE },
+                         {0.75, 0.5, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {1.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE } };
+    static  colour_point  green_metal_neg_points[] = 
+                       { {0.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {0.25, 0.5, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {0.5,  0.0, 1.0, 0.5, 1.0, RGB_SPACE },
+                         {0.75, 0.0, 0.5, 0.0, 1.0, RGB_SPACE },
+                         {1.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE } };
+    static  colour_point  lime_metal_points[] = 
+                       { {0.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE },
+                         {0.25, 0.0, 0.5, 0.0, 1.0, RGB_SPACE },
+                         {0.5,  0.5, 1.0, 0.0, 1.0, RGB_SPACE },
+                         {0.75, 1.0, 1.0, 0.5, 1.0, RGB_SPACE },
+                         {1.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE } };
+    static  colour_point  lime_metal_neg_points[] = 
+                       { {0.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {0.25, 1.0, 1.0, 0.5, 1.0, RGB_SPACE },
+                         {0.5,  0.5, 1.0, 0.0, 1.0, RGB_SPACE },
+                         {0.75, 0.0, 0.5, 0.0, 1.0, RGB_SPACE },
+                         {1.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE } };
+    static  colour_point  red_metal_points[] = 
+                       { {0.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE },
+                         {0.25, 0.5, 0.0, 0.0, 1.0, RGB_SPACE },
+                         {0.5,  1.0, 0.0, 0.5, 1.0, RGB_SPACE },
+                         {0.75, 1.0, 0.5, 1.0, 1.0, RGB_SPACE },
+                         {1.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE } };
+    static  colour_point  red_metal_neg_points[] = 
+                       { {0.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {0.25, 1.0, 0.5, 1.0, 1.0, RGB_SPACE },
+                         {0.5,  1.0, 0.0, 0.5, 1.0, RGB_SPACE },
+                         {0.75, 0.5, 0.0, 0.0, 1.0, RGB_SPACE },
+                         {1.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE } };
+    static  colour_point  purple_metal_points[] = 
+                       { {0.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE },
+                         {0.25, 0.0, 0.0, 0.5, 1.0, RGB_SPACE },
+                         {0.5,  0.5, 0.0, 1.0, 1.0, RGB_SPACE },
+                         {0.75, 1.0, 0.5, 1.0, 1.0, RGB_SPACE },
+                         {1.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE } };
+    static  colour_point  purple_metal_neg_points[] = 
+                       { {0.0,  1.0, 1.0, 1.0, 1.0, RGB_SPACE },
+                         {0.25, 1.0, 0.5, 1.0, 1.0, RGB_SPACE },
+                         {0.5,  0.5, 0.0, 1.0, 1.0, RGB_SPACE },
+                         {0.75, 0.0, 0.0, 0.5, 1.0, RGB_SPACE },
+                         {1.0,  0.0, 0.0, 0.0, 1.0, RGB_SPACE } };
     static  colour_point  spectral_points[] =
                     { { 0.00, 0.0000,0.0000,0.0000, 1.0, RGB_SPACE},
                       { 0.05, 0.4667,0.0000,0.5333, 1.0, RGB_SPACE},
@@ -359,6 +425,61 @@ static void  recreate_piecewise_function(
     case  HOT_METAL:
         n_points = SIZEOF_STATIC_ARRAY( hot_metal_points );
         points = hot_metal_points;
+        break;
+
+    case  HOT_METAL_NEG:
+        n_points = SIZEOF_STATIC_ARRAY( hot_metal_neg_points );
+        points = hot_metal_neg_points;
+        break;
+
+    case  COLD_METAL:
+        n_points = SIZEOF_STATIC_ARRAY( cold_metal_points );
+        points = cold_metal_points;
+        break;
+
+    case  COLD_METAL_NEG:
+        n_points = SIZEOF_STATIC_ARRAY( cold_metal_neg_points );
+        points = cold_metal_neg_points;
+        break;
+
+    case  GREEN_METAL:
+        n_points = SIZEOF_STATIC_ARRAY( green_metal_points );
+        points = green_metal_points;
+        break;
+
+    case  GREEN_METAL_NEG:
+        n_points = SIZEOF_STATIC_ARRAY( green_metal_neg_points );
+        points = green_metal_neg_points;
+        break;
+
+    case  LIME_METAL:
+        n_points = SIZEOF_STATIC_ARRAY( lime_metal_points );
+        points = lime_metal_points;
+        break;
+
+    case  LIME_METAL_NEG:
+        n_points = SIZEOF_STATIC_ARRAY( lime_metal_neg_points );
+        points = lime_metal_neg_points;
+        break;
+
+    case  RED_METAL:
+        n_points = SIZEOF_STATIC_ARRAY( red_metal_points );
+        points = red_metal_points;
+        break;
+
+    case  RED_METAL_NEG:
+        n_points = SIZEOF_STATIC_ARRAY( red_metal_neg_points );
+        points = red_metal_neg_points;
+        break;
+
+    case  PURPLE_METAL:
+        n_points = SIZEOF_STATIC_ARRAY( purple_metal_points );
+        points = purple_metal_points;
+        break;
+
+    case  PURPLE_METAL_NEG:
+        n_points = SIZEOF_STATIC_ARRAY( purple_metal_neg_points );
+        points = purple_metal_neg_points;
         break;
 
     case  SPECTRAL:

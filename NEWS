@@ -1,3 +1,8 @@
+New in Release 1.4.4
+
+* new cool colour maps
+* moved the surface utilities from conglomerate to bicpl/tools
+
 New in Release 1.4.3
 
 * add check for sys/times.h for autoconf
