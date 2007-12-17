@@ -159,22 +159,24 @@ int main( int argc, char * argv[] ) {
 
     // Concatenate the texture files for this object.
 
-    if( strcmp( argv[n_input_objs+i+1], "none" ) == 0 ) {
-      for( j = 0; j < surface->n_points; j++ ) {
-        fprintf( fp, "%g\n", 0.0 );
-      }
-    } else {
-      char * buf[80];
-      FILE * fp2 = fopen( argv[n_input_objs+i+1], "r+t" );
-      if( fp2 != NULL ) {
-        for( j = 0; j < surface->n_points; j++ ) {
-          fscanf( fp2, "%s", buf );
-          fprintf( fp, "%s\n", buf );
-        }
-        fclose( fp2 );
-      } else {
+    if( fp ) {
+      if( strcmp( argv[n_input_objs+i+1], "none" ) == 0 ) {
         for( j = 0; j < surface->n_points; j++ ) {
           fprintf( fp, "%g\n", 0.0 );
+        }
+      } else {
+        char * buf[80];
+        FILE * fp2 = fopen( argv[n_input_objs+i+1], "r+t" );
+        if( fp2 != NULL ) {
+          for( j = 0; j < surface->n_points; j++ ) {
+            fscanf( fp2, "%s", buf );
+            fprintf( fp, "%s\n", buf );
+          }
+          fclose( fp2 );
+        } else {
+          for( j = 0; j < surface->n_points; j++ ) {
+            fprintf( fp, "%g\n", 0.0 );
+          }
         }
       }
     }
