@@ -1,3 +1,6 @@
+2007-12-17  Claude Lepage <claude@bic.mni.mcgill.ca>
+        * Added objconcat for concatenation of .obj and .txt.
+
 2007-06-27  Claude Lepage <claude@bic.mni.mcgill.ca>
         * Added a bunch of new colour maps
         * Moved the surface utilities from conglomerate to bicpl/tools

@@ -27,6 +27,7 @@ bin_PROGRAMS = add_surfaces \
                manifold_polygons \
                measure_surface_area \
                merge_polygons \
+               objconcat \
                perturb_surface \
                polygon_map \
                polygons_to_lines \
@@ -76,6 +77,7 @@ make_concentric_surface_SOURCES = make_concentric_surface.c
 manifold_polygons_SOURCES = manifold_polygons.c
 measure_surface_area_SOURCES = measure_surface_area.c
 merge_polygons_SOURCES = merge_polygons.c
+objconcat_SOURCES = objconcat.c
 perturb_surface_SOURCES = perturb_surface.c
 polygon_map_SOURCES = polygon_map.c
 polygons_to_lines_SOURCES = polygons_to_lines.c
