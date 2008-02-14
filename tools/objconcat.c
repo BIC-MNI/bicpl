@@ -199,13 +199,17 @@ int main( int argc, char * argv[] ) {
   surface->normals = total_normals;
   surface->end_indices = total_indices;
   surface->indices = total_connec;
-  expanded = expand_filename( out_obj );
-  
-  if( output_graphics_file( expanded, format, n_objects[0], object_list[0] ) != OK) {
-    return( 1 );
-  }
+ 
+  // ok, this could be done more efficiently if we don't want the merged surface. 
+  if( strcmp( out_obj, "none" ) != 0 ) {
+    expanded = expand_filename( out_obj );
 
-  delete_string( expanded );
+    if( output_graphics_file( expanded, format, n_objects[0], object_list[0] ) != OK) {
+      return( 1 );
+    }
+
+    delete_string( expanded );
+  }
 
   if( fp ) {
     fclose( fp );
