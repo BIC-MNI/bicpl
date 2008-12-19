@@ -28,6 +28,7 @@ bin_PROGRAMS = add_surfaces \
                measure_surface_area \
                merge_polygons \
                objconcat \
+               obj2brainvisa \
                perturb_surface \
                polygon_map \
                polygons_to_lines \
@@ -78,6 +79,7 @@ manifold_polygons_SOURCES = manifold_polygons.c
 measure_surface_area_SOURCES = measure_surface_area.c
 merge_polygons_SOURCES = merge_polygons.c
 objconcat_SOURCES = objconcat.c
+obj2brainvisa_SOURCES = obj2brainvisa.c
 perturb_surface_SOURCES = perturb_surface.c
 polygon_map_SOURCES = polygon_map.c
 polygons_to_lines_SOURCES = polygons_to_lines.c

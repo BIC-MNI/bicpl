@@ -1,3 +1,9 @@
+2008-12-19  Claude Lepage <claude@bic.mni.mcgill.ca>
+	* Added obj2brainvisa for conversion from .obj to brainvisa
+	* Added rgb option to colour_object for colouring of DTI tracks in .obj
+	* Modified Volumes/rend*.c to use size_t as type for loop index
+	to allow reading large volumes with more than 2^31 voxels
+
 2007-12-17  Claude Lepage <claude@bic.mni.mcgill.ca>
         * Added objconcat for concatenation of .obj and .txt.
 

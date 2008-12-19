@@ -22,7 +22,7 @@
 #include <float.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.9 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.10 2008-12-19 00:07:55 claude Exp $";
 #endif
 
 #include  "render_funcs_include.c"
@@ -47,15 +47,15 @@ BICAPI void  render_one_row (
     int             y,
     int             start_x,
     int             end_x,
-    int             **y_offsets1,
-    int             **row_offsets1,
+    size_t          **y_offsets1,
+    size_t          **row_offsets1,
     void            **start_slices1,
     int             n_slices1,
     Real            weights1[],
     void            *volume_data2,
     Data_types      volume2_type,
-    int             **y_offsets2,
-    int             **row_offsets2,
+    size_t          **y_offsets2,
+    size_t          **row_offsets2,
     void            **start_slices2,
     int             n_slices2,
     Real            weights2[],

@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.44 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.45 2008-12-19 00:07:55 claude Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -77,17 +77,17 @@ static void  clip(
 
 typedef  struct
 {
-    int     **x_offsets1;
-    int     **y_offsets1;
-    int     ***which_x_offsets1;
+    size_t  **x_offsets1;
+    size_t  **y_offsets1;
+    size_t  ***which_x_offsets1;
     void    **start_slices1;
-    int     **row_offsets1;
+    size_t  **row_offsets1;
 
-    int     **x_offsets2;
-    int     **y_offsets2;
-    int     ***which_x_offsets2;
+    size_t  **x_offsets2;
+    size_t  **y_offsets2;
+    size_t  ***which_x_offsets2;
     void    **start_slices2;
-    int     **row_offsets2;
+    size_t  **row_offsets2;
 
     int     *start_x;
     int     *end_x;
@@ -244,13 +244,15 @@ BICAPI void  render_volume_to_slice(
     pixels_struct   *pixels )
 {
     int     i, c, p, total_cases1, total_cases2, case_index, case_multiplier;
-    int     max_offset, offset, int_start;
+    int     int_start;
+    int     *start_x, *end_x;
     int     s, x, y, n_cases1[MAX_DIMENSIONS], n_cases2[MAX_DIMENSIONS];
-    int     **x_offsets1, **y_offsets1, *start_x, *end_x;
-    int     **x_offsets2, **y_offsets2;
-    int     ***which_x_offsets1, ***which_x_offsets2;
+    size_t  offset;
+    size_t  **x_offsets1, **y_offsets1;
+    size_t  **x_offsets2, **y_offsets2;
+    size_t  ***which_x_offsets1, ***which_x_offsets2;
+    size_t  **row_offsets1, **row_offsets2;
     int     remainder_case, x_size, y_size;
-    int     **row_offsets1, **row_offsets2;
     int     x_left, x_right, n_non_zero;
     void    **start_slices1, **start_slices2;
     Real    start_c, x_start, x_end, remainder, tmp_origin[MAX_DIMENSIONS];
@@ -444,7 +446,7 @@ BICAPI void  render_volume_to_slice(
             for_less( c, 0, n_dims1 )
             {
                 start_c = tmp_origin[c] + (Real) x * x_axis1[c];
-                offset += strides1[c] * FLOOR( start_c );
+                offset += (size_t)strides1[c] * (size_t)FLOOR( start_c );
             }
             x_offsets1[i][x] = offset;
         }
@@ -472,7 +474,7 @@ BICAPI void  render_volume_to_slice(
                 for_less( c, 0, n_dims2 )
                 {
                     start_c = tmp_origin[c] + (Real) x * x_axis2[c];
-                    offset += strides2[c] * FLOOR( start_c );
+                    offset += (size_t)strides2[c] * (size_t)FLOOR( start_c );
                 }
                 x_offsets2[i][x] = offset;
             }
@@ -508,7 +510,7 @@ BICAPI void  render_volume_to_slice(
 
                 case_index += case_multiplier * remainder_case;
                 case_multiplier *= n_cases1[c];
-                offset += strides1[c] * int_start;
+                offset += (size_t)strides1[c] * (size_t)int_start;
 
                 left_edge = 0.0;
                 right_edge = (Real) sizes1[c];
@@ -553,7 +555,7 @@ BICAPI void  render_volume_to_slice(
 
                     case_index += case_multiplier * remainder_case;
                     case_multiplier *= n_cases2[c];
-                    offset += strides2[c] * int_start;
+                    offset += (size_t)strides2[c] * (size_t)int_start;
 
                     left_edge = 0.0;
                     right_edge = (Real) sizes2[c];
@@ -596,37 +598,6 @@ BICAPI void  render_volume_to_slice(
 
         x_left = MAX( x_pixel_start, start_x[y] );
         x_right = MIN( x_pixel_end, end_x[y] );
-
-        /* there is a core-dumping bug somewhere */
-        /* this is a temporary fix for register */
-        /* The problem arises from bogus offsets, so test them (P.N.)*/
-
-        max_offset = 1;
-        for_less( c, 0, n_dims1 ) {
-           max_offset *= sizes1[c];
-        }
-        for_less( s, 0, n_slices1 ) {
-           offset = y_offsets1[s][y] + row_offsets1[s][x_left];
-           if ((offset < 0) || (offset >= max_offset)) 
-              x_left++;
-           offset = y_offsets1[s][y] + row_offsets1[s][x_right];
-           if ((offset < 0) || (offset >= max_offset))
-              x_right--;
-        }
-        if (volume_data2 != NULL) {
-           max_offset = 1;
-           for_less( c, 0, n_dims2 ) {
-              max_offset *= sizes2[c];
-           }
-           for_less( s, 0, n_slices2 ) {
-              offset = y_offsets2[s][y] + row_offsets2[s][x_left];
-              if ((offset < 0) || (offset >= max_offset))
-                 x_left++;
-              offset = y_offsets2[s][y] + row_offsets2[s][x_right];
-              if ((offset < 0) || (offset >= max_offset))
-                 x_right--;
-           }
-        }
 
         if( x_left <= x_right )
         {

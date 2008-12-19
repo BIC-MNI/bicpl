@@ -13,8 +13,8 @@
     int             y,
     int             start_x,
     int             end_x,
-    int             **y_offsets1,
-    int             **row_offsets1,
+    size_t          **y_offsets1,
+    size_t          **row_offsets1,
 #ifndef  ONE_SLICE
     void            **start_slices1,
     int             n_slices1,
@@ -22,8 +22,8 @@
 #endif
 #ifdef  TWO_VOLUMES
     void            *volume_data2,
-    int             **y_offsets2,
-    int             **row_offsets2,
+    size_t          **y_offsets2,
+    size_t          **row_offsets2,
 #ifndef  ONE_SLICE
     void            **start_slices2,
     int             n_slices2,
@@ -45,10 +45,10 @@
     int            x;
 #ifdef  ONE_SLICE
     TYPE1          *ptr1;
-    int            *offset_ptr1;
+    size_t         *offset_ptr1;
 #ifdef  TWO_VOLUMES
     TYPE2          *ptr2;
-    int            *offset_ptr2;
+    size_t         *offset_ptr2;
 #endif
 #else
     int            s;
@@ -93,20 +93,20 @@
 #ifdef ONE_SLICE
 #ifdef TWO_VOLUMES
 #ifdef COLOUR_MAP
-        *pixel_ptr++ = cmode_colour_map[(long) ptr1[*offset_ptr1++]]
-                                       [(long) ptr2[*offset_ptr2++]];
+        *pixel_ptr++ = cmode_colour_map[(size_t) ptr1[*offset_ptr1++]]
+                                       [(size_t) ptr2[*offset_ptr2++]];
 #else
-        *pixel_ptr++ = rgb_colour_map[(long) ptr1[*offset_ptr1++]]
-                                     [(long) ptr2[*offset_ptr2++]];
+        *pixel_ptr++ = rgb_colour_map[(size_t) ptr1[*offset_ptr1++]]
+                                     [(size_t) ptr2[*offset_ptr2++]];
 #endif
 #else
 #ifdef COLOUR_MAP
-        *pixel_ptr++ = single_cmode_map[(long) ptr1[*offset_ptr1++]];
+        *pixel_ptr++ = single_cmode_map[(size_t) ptr1[*offset_ptr1++]];
 #else
 #ifdef  NO_COLOUR_TABLE
         *pixel_ptr++ = ptr1[*offset_ptr1++];
 #else
-        *pixel_ptr++ = single_rgb_map[(long) ptr1[*offset_ptr1++]];
+        *pixel_ptr++ = single_rgb_map[(size_t) ptr1[*offset_ptr1++]];
 #endif
 #endif 
 #endif /* TWO_VOLUMES */
@@ -127,18 +127,18 @@
         }
 
 #ifdef COLOUR_MAP
-        *pixel_ptr++ = cmode_colour_map[(long) real_voxel_data1]
-                                       [(long) real_voxel_data2];
+        *pixel_ptr++ = cmode_colour_map[(size_t) real_voxel_data1]
+                                       [(size_t) real_voxel_data2];
 #else
-        *pixel_ptr++ = rgb_colour_map[(long) real_voxel_data1]
-                                     [(long) real_voxel_data2];
+        *pixel_ptr++ = rgb_colour_map[(size_t) real_voxel_data1]
+                                     [(size_t) real_voxel_data2];
 #endif
 #else
 
 #ifdef COLOUR_MAP
-        *pixel_ptr++ = single_cmode_map[(long) real_voxel_data1];
+        *pixel_ptr++ = single_cmode_map[(size_t) real_voxel_data1];
 #else
-        *pixel_ptr++ = single_rgb_map[(long) real_voxel_data1];
+        *pixel_ptr++ = single_rgb_map[(size_t) real_voxel_data1];
 #endif
 #endif /* TWO_VOLUMES */
 #endif /* ONE_SLICE */

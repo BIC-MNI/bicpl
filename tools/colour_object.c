@@ -11,7 +11,7 @@ Usage: %s  src.obj values_file dest.obj\n\
                 gray, hot, hot_inv, cold_metal, cold_metal_inv,\n\
                 green_metal, green_metal_inv, lime_metal, lime_metal_inv,\n\
                 red_metal, red_metal_inv, purple_metal, purple_metal_inv,\n\
-                spectral, red, green, blue\n\n";
+                spectral, red, green, blue, rgba\n\n";
     print_error( usage_str, executable );
 }
 
@@ -33,6 +33,7 @@ Usage: %s  src.obj values_file dest.obj\n\
 #define  GREEN_STRING               "green"
 #define  BLUE_STRING                "blue"
 #define  USER_STRING                "user"
+#define  RGBA_STRING                "rgba"
 
 typedef  enum { REPLACE_COLOUR, COMPOSITE_COLOUR, MULTIPLY_COLOUR }
               Composite_methods;
@@ -47,11 +48,12 @@ int  main(
     STRING               under_colour_name, over_colour_name;
     STRING               user_def_filename;
     int                  i, p, n_objects, n_points, n_values, value_index;
-    Point                *points;
+    Point                *points;   // anything
     File_formats         format;
     object_struct        **object_list;
     Colour               *colours, under_colour, over_colour, prev_colour, col;
     STRING               default_over;
+    int                  rgba_type;
     Colour_coding_types  coding_type;
     colour_coding_struct colour_coding;
     Colour_flags         *colour_flag_ptr;
@@ -73,6 +75,7 @@ int  main(
     }
 
     default_over = "WHITE";
+    rgba_type = 0;
 
     if( equal_strings( coding_type_string, GRAY_STRING ) )
         coding_type = GRAY_SCALE;
@@ -108,8 +111,10 @@ int  main(
         coding_type = GREEN_COLOUR_MAP;
     else if( equal_strings( coding_type_string, BLUE_STRING ) )
         coding_type = BLUE_COLOUR_MAP;
-    else if( equal_strings( coding_type_string, USER_STRING ) )
-    {
+    else if( equal_strings( coding_type_string, RGBA_STRING ) ) {
+        coding_type = SPECTRAL;   // anything
+        rgba_type = 1;
+    } else if( equal_strings( coding_type_string, USER_STRING ) ) {
         coding_type = USER_DEFINED_COLOUR_MAP;
         if( !get_string_argument( NULL, &user_def_filename ) )
         {
@@ -204,7 +209,11 @@ int  main(
             value = values[value_index];
             ++value_index;
 
-            col = get_colour_code( &colour_coding, value );
+            if( rgba_type ) {
+              col = (Colour)value;
+            } else {
+              col = get_colour_code( &colour_coding, value );
+            }
 
             if( per_vertex )
                 prev_colour = colours[p];
