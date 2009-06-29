@@ -1,5 +1,7 @@
 New in Release 1.4.6
 
+* Fixed bug in viewport clipping in render.c (offset out of range would
+  cause seg fault in register)
 * added obj2brainvisa for conversion from .obj to brainvisa
 * added rgb option to colour_object for colouring of DTI tracks in .obj
 * modified Volumes/rend*.c to use size_t as type for loop index

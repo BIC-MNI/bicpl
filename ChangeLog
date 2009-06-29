@@ -1,3 +1,7 @@
+2009-06-29  Claude Lepage <claude@bic.mni.mcgill.ca>
+	* Fixed bug in viewport clipping in render.c (offset out of range would
+	  cause seg fault in register)
+
 2008-12-19  Claude Lepage <claude@bic.mni.mcgill.ca>
 	* Added obj2brainvisa for conversion from .obj to brainvisa
 	* Added rgb option to colour_object for colouring of DTI tracks in .obj
