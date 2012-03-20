@@ -50,53 +50,54 @@ ADD_EXECUTABLE(subdivide_values  subdivide_values.c)
 ADD_EXECUTABLE(triangulate_polygons  triangulate_polygons.c)
 
 
-INSTALL(TARGETS 
-add_surfaces
-ascii_binary
-average_objects
-average_surfaces
-bicobj2oogl
-bicobj2vtk
-check_polygons
-colour_object
-convert_object
-copy_colours
-create_grid
-create_rectangle
-create_tetra
-diff_points
-diff_surfaces
-dump_curvatures
-dump_point_diffs
-dump_points
-dump_polygons
-dump_vertex_normal_diffs
-half_polygons
-make_colour_bar
-make_concentric_surface
-manifold_polygons
-measure_surface_area
-merge_polygons
-obj2brainvisa
-objconcat
-perturb_surface
-polygon_map
-polygons_to_lines
-print_n_polygons
-print_object_centroid
-print_object_limits
-reconstitute_points
-refine_mesh
-separate_polygons
-set_line_width
-set_object_colour
-set_object_opacity
-set_object_surfprop
-smooth_lines
-smooth_normals
-spline_lines
-split_polygons
-subdivide_polygons
-subdivide_values
-triangulate_polygons  
+INSTALL(
+  TARGETS 
+    add_surfaces
+    ascii_binary
+    average_objects
+    average_surfaces
+    bicobj2oogl
+    bicobj2vtk
+    check_polygons
+    colour_object
+    convert_object
+    copy_colours
+    create_grid
+    create_rectangle
+    create_tetra
+    diff_points
+    diff_surfaces
+    dump_curvatures
+    dump_point_diffs
+    dump_points
+    dump_polygons
+    dump_vertex_normal_diffs
+    half_polygons
+    make_colour_bar
+    make_concentric_surface
+    manifold_polygons
+    measure_surface_area
+    merge_polygons
+    obj2brainvisa
+    objconcat
+    perturb_surface
+    polygon_map
+    polygons_to_lines
+    print_n_polygons
+    print_object_centroid
+    print_object_limits
+    reconstitute_points
+    refine_mesh
+    separate_polygons
+    set_line_width
+    set_object_colour
+    set_object_opacity
+    set_object_surfprop
+    smooth_lines
+    smooth_normals
+    spline_lines
+    split_polygons
+    subdivide_polygons
+    subdivide_values
+    triangulate_polygons  
   DESTINATION bin)
