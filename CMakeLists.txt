@@ -17,12 +17,15 @@ INCLUDE(CTest)
 
 # Packaging defines
 IF(NOT MINC_TOOLKIT_BUILD)
-PROJECT(bicpl "C" )
-SET(CPACK_GENERATOR TGZ)
-SET(CPACK_PACKAGE_VERSION_MAJOR ${BICPL_PACKAGE_VERSION_MAJOR})
-SET(CPACK_PACKAGE_VERSION_MINOR ${BICPL_PACKAGE_VERSION_MINOR})
-SET(CPACK_PACKAGE_VERSION_PATCH ${BICPL_PACKAGE_VERSION_PATCH})
-INCLUDE(CPack)
+  PROJECT(bicpl "C" )
+  SET(CPACK_GENERATOR TGZ)
+  SET(CPACK_PACKAGE_VERSION_MAJOR ${BICPL_PACKAGE_VERSION_MAJOR})
+  SET(CPACK_PACKAGE_VERSION_MINOR ${BICPL_PACKAGE_VERSION_MINOR})
+  SET(CPACK_PACKAGE_VERSION_PATCH ${BICPL_PACKAGE_VERSION_PATCH})
+  INCLUDE(CPack)
+  
+  FIND_PACKAGE( MINC2 REQUIRED )
+  FIND_PACKAGE(NETPBM REQUIRED )
 ENDIF(NOT MINC_TOOLKIT_BUILD)
 
 
@@ -35,14 +38,7 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 
 OPTION(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 
-IF(NOT MINC_TOOLKIT_BUILD)
- FIND_PACKAGE( MINC2 REQUIRED )
-ELSE(NOT MINC_TOOLKIT_BUILD)
- #TODO
-ENDIF(NOT MINC_TOOLKIT_BUILD)
-
 INCLUDE( ${MINC2_USE_FILE} )
-FIND_PACKAGE(NETPBM REQUIRED )
 
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
 
@@ -115,46 +111,46 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/epm-header.in ${CMAKE_CURRENT_BINARY_
 INCLUDE_DIRECTORIES( ${NETPBM_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Include )
 
 SET(bicpl_HEADERS
-Include/bicpl/amoeba.h 
-Include/bicpl/bintree.h 
-Include/bicpl/bitlist.h 
-Include/bicpl/colour_coding.h 
-Include/bicpl/colours.h 
-Include/bicpl/compute_xfm.h 
-Include/bicpl/data_structures.h 
-Include/bicpl/deform.h 
-Include/bicpl/deform_prototypes.h 
-Include/bicpl/ds_prototypes.h 
-Include/bicpl/geom.h 
-Include/bicpl/geom_prototypes.h 
-Include/bicpl/global_lookup.h 
-Include/bicpl/globals.h 
-Include/bicpl/hash.h 
-Include/bicpl/histogram.h 
-Include/bicpl/image_prototypes.h 
-Include/bicpl/images.h 
-Include/bicpl/march_prototypes.h 
-Include/bicpl/marching.h 
-Include/bicpl/marching_cubes.h 
-Include/bicpl/marching_cube_data.h 
-Include/bicpl/minimization.h 
-Include/bicpl/numeric_prototypes.h 
-Include/bicpl/numerical.h 
-Include/bicpl/obj_defs.h 
-Include/bicpl/object_prototypes.h 
-Include/bicpl/objects.h 
-Include/bicpl/priority_queue.h 
-Include/bicpl/prog_prototypes.h 
-Include/bicpl/prog_utils.h 
-Include/bicpl/queue.h 
-Include/bicpl/skiplist.h 
-Include/bicpl/splines.h 
-Include/bicpl/stack.h 
-Include/bicpl/statistics.h 
-Include/bicpl/trans.h 
-Include/bicpl/trans_prototypes.h 
-Include/bicpl/vol_prototypes.h 
-Include/bicpl/vols.h
+  Include/bicpl/amoeba.h 
+  Include/bicpl/bintree.h 
+  Include/bicpl/bitlist.h 
+  Include/bicpl/colour_coding.h 
+  Include/bicpl/colours.h 
+  Include/bicpl/compute_xfm.h 
+  Include/bicpl/data_structures.h 
+  Include/bicpl/deform.h 
+  Include/bicpl/deform_prototypes.h 
+  Include/bicpl/ds_prototypes.h 
+  Include/bicpl/geom.h 
+  Include/bicpl/geom_prototypes.h 
+  Include/bicpl/global_lookup.h 
+  Include/bicpl/globals.h 
+  Include/bicpl/hash.h 
+  Include/bicpl/histogram.h 
+  Include/bicpl/image_prototypes.h 
+  Include/bicpl/images.h 
+  Include/bicpl/march_prototypes.h 
+  Include/bicpl/marching.h 
+  Include/bicpl/marching_cubes.h 
+  Include/bicpl/marching_cube_data.h 
+  Include/bicpl/minimization.h 
+  Include/bicpl/numeric_prototypes.h 
+  Include/bicpl/numerical.h 
+  Include/bicpl/obj_defs.h 
+  Include/bicpl/object_prototypes.h 
+  Include/bicpl/objects.h 
+  Include/bicpl/priority_queue.h 
+  Include/bicpl/prog_prototypes.h 
+  Include/bicpl/prog_utils.h 
+  Include/bicpl/queue.h 
+  Include/bicpl/skiplist.h 
+  Include/bicpl/splines.h 
+  Include/bicpl/stack.h 
+  Include/bicpl/statistics.h 
+  Include/bicpl/trans.h 
+  Include/bicpl/trans_prototypes.h 
+  Include/bicpl/vol_prototypes.h 
+  Include/bicpl/vols.h
 )
 
 # some variables
@@ -274,6 +270,7 @@ SET(bicpl_LIB_SRCS
   Deform/intersect_voxel.c 
   Deform/model_objects.c 
   Deform/deform_line.c 
+  Deform/find_in_direction.c
   Deform/models.c
   bicpl_clapack/blaswrap.h
   bicpl_clapack/f2c.h
