@@ -4,35 +4,41 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-PROJECT(bicpl "C" )
+SET(BICPL_PACKAGE_VERSION_MAJOR 1)
+SET(BICPL_PACKAGE_VERSION_MINOR 4)
+SET(BICPL_PACKAGE_VERSION_PATCH 60)
 
-SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
+
+SET(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 ENABLE_TESTING()
 INCLUDE(CTest)
 
 #ADD_SUBDIRECTORY( doc )
 
 # Packaging defines
-SET(CPACK_GENERATOR TGZ)
-SET(CPACK_PACKAGE_VERSION_MAJOR 1)
-SET(CPACK_PACKAGE_VERSION_MINOR 4)
-SET(CPACK_PACKAGE_VERSION_PATCH 60)
-INCLUDE(CPack)
+IF(NOT MINC_TOOLKIT_BUILD)
+  PROJECT(bicpl "C" )
+  SET(CPACK_GENERATOR TGZ)
+  SET(CPACK_PACKAGE_VERSION_MAJOR ${BICPL_PACKAGE_VERSION_MAJOR})
+  SET(CPACK_PACKAGE_VERSION_MINOR ${BICPL_PACKAGE_VERSION_MINOR})
+  SET(CPACK_PACKAGE_VERSION_PATCH ${BICPL_PACKAGE_VERSION_PATCH})
+  INCLUDE(CPack)
+  
+  FIND_PACKAGE( MINC2 REQUIRED )
+  FIND_PACKAGE(NETPBM REQUIRED )
+ENDIF(NOT MINC_TOOLKIT_BUILD)
 
 
 SET(PACKAGE "bicpl")
 SET(PACKAGE_BUGREPORT "a.janke@gmail.com")
 
 SET(PACKAGE_NAME "bicpl")
-SET(PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+SET(PACKAGE_VERSION "${BICPL_PACKAGE_VERSION_MAJOR}.${BICPL_PACKAGE_VERSION_MINOR}.${BICPL_PACKAGE_VERSION_PATCH}")
 SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 
 OPTION(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 
-FIND_PACKAGE( MINC2 REQUIRED )
 INCLUDE( ${MINC2_USE_FILE} )
-
-FIND_PACKAGE(NETPBM REQUIRED )
 
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
 
@@ -89,7 +95,7 @@ CHECK_INCLUDE_FILES(pwd.h       HAVE_PWD_H)
 IF(NETPBM_FOUND)
   SET(HAVE_LIBNETPBM ON)
   SET(imageio_GLUE_CODE "rgb_io_ppm.c")
-  SET(BICPL_LIBRARIES bicpl netpbm)
+  SET(BICPL_LIBRARIES bicpl ${NETPBM_LIBRARY})
 ELSE(NETPBM_FOUND)
   SET( HAVE_LIBNETPBM OFF)
   SET(imageio_GLUE_CODE "rgb_io_none.c")
@@ -97,54 +103,54 @@ ELSE(NETPBM_FOUND)
 ENDIF(NETPBM_FOUND)
 
 # config files for build
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config.h.cmake ${CMAKE_BINARY_DIR}/config.h @ONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 # others
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/epm-header.in ${CMAKE_BINARY_DIR}/epm-header)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/epm-header.in ${CMAKE_CURRENT_BINARY_DIR}/epm-header)
 
-INCLUDE_DIRECTORIES( ${NETPBM_INCLUDE_DIR} ${CMAKE_BINARY_DIR} Include )
+INCLUDE_DIRECTORIES( ${NETPBM_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Include )
 
 SET(bicpl_HEADERS
-Include/bicpl/amoeba.h 
-Include/bicpl/bintree.h 
-Include/bicpl/bitlist.h 
-Include/bicpl/colour_coding.h 
-Include/bicpl/colours.h 
-Include/bicpl/compute_xfm.h 
-Include/bicpl/data_structures.h 
-Include/bicpl/deform.h 
-Include/bicpl/deform_prototypes.h 
-Include/bicpl/ds_prototypes.h 
-Include/bicpl/geom.h 
-Include/bicpl/geom_prototypes.h 
-Include/bicpl/global_lookup.h 
-Include/bicpl/globals.h 
-Include/bicpl/hash.h 
-Include/bicpl/histogram.h 
-Include/bicpl/image_prototypes.h 
-Include/bicpl/images.h 
-Include/bicpl/march_prototypes.h 
-Include/bicpl/marching.h 
-Include/bicpl/marching_cubes.h 
-Include/bicpl/marching_cube_data.h 
-Include/bicpl/minimization.h 
-Include/bicpl/numeric_prototypes.h 
-Include/bicpl/numerical.h 
-Include/bicpl/obj_defs.h 
-Include/bicpl/object_prototypes.h 
-Include/bicpl/objects.h 
-Include/bicpl/priority_queue.h 
-Include/bicpl/prog_prototypes.h 
-Include/bicpl/prog_utils.h 
-Include/bicpl/queue.h 
-Include/bicpl/skiplist.h 
-Include/bicpl/splines.h 
-Include/bicpl/stack.h 
-Include/bicpl/statistics.h 
-Include/bicpl/trans.h 
-Include/bicpl/trans_prototypes.h 
-Include/bicpl/vol_prototypes.h 
-Include/bicpl/vols.h
+  Include/bicpl/amoeba.h 
+  Include/bicpl/bintree.h 
+  Include/bicpl/bitlist.h 
+  Include/bicpl/colour_coding.h 
+  Include/bicpl/colours.h 
+  Include/bicpl/compute_xfm.h 
+  Include/bicpl/data_structures.h 
+  Include/bicpl/deform.h 
+  Include/bicpl/deform_prototypes.h 
+  Include/bicpl/ds_prototypes.h 
+  Include/bicpl/geom.h 
+  Include/bicpl/geom_prototypes.h 
+  Include/bicpl/global_lookup.h 
+  Include/bicpl/globals.h 
+  Include/bicpl/hash.h 
+  Include/bicpl/histogram.h 
+  Include/bicpl/image_prototypes.h 
+  Include/bicpl/images.h 
+  Include/bicpl/march_prototypes.h 
+  Include/bicpl/marching.h 
+  Include/bicpl/marching_cubes.h 
+  Include/bicpl/marching_cube_data.h 
+  Include/bicpl/minimization.h 
+  Include/bicpl/numeric_prototypes.h 
+  Include/bicpl/numerical.h 
+  Include/bicpl/obj_defs.h 
+  Include/bicpl/object_prototypes.h 
+  Include/bicpl/objects.h 
+  Include/bicpl/priority_queue.h 
+  Include/bicpl/prog_prototypes.h 
+  Include/bicpl/prog_utils.h 
+  Include/bicpl/queue.h 
+  Include/bicpl/skiplist.h 
+  Include/bicpl/splines.h 
+  Include/bicpl/stack.h 
+  Include/bicpl/statistics.h 
+  Include/bicpl/trans.h 
+  Include/bicpl/trans_prototypes.h 
+  Include/bicpl/vol_prototypes.h 
+  Include/bicpl/vols.h
 )
 
 # some variables
@@ -264,6 +270,7 @@ SET(bicpl_LIB_SRCS
   Deform/intersect_voxel.c 
   Deform/model_objects.c 
   Deform/deform_line.c 
+  Deform/find_in_direction.c
   Deform/models.c
   Deform/find_in_direction.c
   bicpl_clapack/blaswrap.h
@@ -343,8 +350,7 @@ ENDIF(BUILD_SHARED_LIBS)
 
 
 ADD_LIBRARY(bicpl ${LIBRARY_TYPE} ${bicpl_LIB_SRCS})
-target_link_libraries(bicpl ${NETPBM_LIBRARY} )
-
+TARGET_LINK_LIBRARIES(bicpl ${VOLUME_IO_LIBRARIES} ${MINC2_LIBRARIES} ${NETPBM_LIBRARY} )
 
 ADD_SUBDIRECTORY( tools )
 
@@ -357,8 +363,9 @@ INSTALL(FILES ${bicpl_HEADERS}
 INSTALL(TARGETS bicpl ${LIBRARY_INSTALL} DESTINATION lib)
 
 set(BICPL_USE_FILE_CONFIG      "${CMAKE_CURRENT_BINARY_DIR}/UseBICPL.cmake")
-set(BICPL_INCLUDE_DIRS_CONFIG   ${CMAKE_SOURCE_DIR}/Include)
-set(BICPL_LIBRARY_DIRS_CONFIG   ${CMAKE_CURRENT_BINARY_DIR})
+set(BICPL_INCLUDE_DIRS_CONFIG   ${CMAKE_CURRENT_SOURCE_DIR}/Include ${NETPBM_INCLUDE_DIR})
+set(BICPL_LIBRARY_DIRS_CONFIG   ${CMAKE_CURRENT_BINARY_DIR} )
+set(BICPL_LIBRARIES_CONFIG      bicpl ${NETPBM_LIBRARY})
 
 configure_file(BICPLConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/BICPLConfig.cmake @ONLY )
@@ -368,8 +375,9 @@ configure_file(UseBICPL.cmake.in
 
 # config for install dir
 set(BICPL_USE_FILE_CONFIG "${CMAKE_INSTALL_PREFIX}/lib/UseBICPL.cmake")
-set(BICPL_INCLUDE_DIRS_CONFIG  ${CMAKE_INSTALL_PREFIX}/include)
-set(BICPL_LIBRARY_DIRS_CONFIG ${CMAKE_INSTALL_PREFIX}/lib)
+set(BICPL_INCLUDE_DIRS_CONFIG  ${CMAKE_INSTALL_PREFIX}/include ${NETPBM_INCLUDE_DIR})
+set(BICPL_LIBRARY_DIRS_CONFIG  ${CMAKE_INSTALL_PREFIX}/lib ${NETPBM_LIBRARY_DIR})
+set(BICPL_LIBRARIES_CONFIG     bicpl ${NETPBM_LIBRARY})
 
 configure_file(BICPLConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/BICPLConfig.cmake @ONLY )
