@@ -41,14 +41,13 @@ BICAPI  Status  input_rgb_file(
        to the smallest. */
 
     for ( y = n_rows - 1; y >= 0; --y ) {
-	ppm_readppmrow( f, rowbuf, n_cols, max_pixval, format );
-	for( x = 0; x < n_cols; ++x ) {
-	    PIXEL_RGB_COLOUR( *pixels, x, y ) 
-		= make_rgba_Colour( PPM_GETR( rowbuf[x] ),
-				    PPM_GETG( rowbuf[x] ),
-				    PPM_GETB( rowbuf[x] ),
-				    255 );
-	}
+      ppm_readppmrow( f, rowbuf, n_cols, max_pixval, format );
+      for( x = 0; x < n_cols; ++x ) {
+          PIXEL_RGB_COLOUR( *pixels, x, y ) = make_rgba_Colour( PPM_GETR( rowbuf[x] ),
+                PPM_GETG( rowbuf[x] ),
+                PPM_GETB( rowbuf[x] ),
+                255 );
+      }
     }
 
     ppm_freerow( rowbuf );
@@ -105,15 +104,15 @@ BICAPI  Status  output_rgb_file(
        to the smallest. */
 
     for ( y = pixels->y_size - 1; y >= 0; --y ) {
-	for( x = 0; x < pixels->x_size; ++x ) {
-            Colour col = PIXEL_RGB_COLOUR( *pixels, x, y );
-	    PPM_ASSIGN( rowbuf[x], 
-			get_Colour_r( col ),
-			get_Colour_g( col ),
-			get_Colour_b( col ) );
-	}
+        for( x = 0; x < pixels->x_size; ++x ) {
+                  Colour col = PIXEL_RGB_COLOUR( *pixels, x, y );
+            PPM_ASSIGN( rowbuf[x], 
+            get_Colour_r( col ),
+            get_Colour_g( col ),
+            get_Colour_b( col ) );
+      }
 
-	ppm_writeppmrow( f, rowbuf, pixels->x_size, 255, 0 );
+      ppm_writeppmrow( f, rowbuf, pixels->x_size, 255, 0 );
     }
 
     ppm_freerow( rowbuf );
