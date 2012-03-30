@@ -1,76 +1,76 @@
 
 
-#cmakedefine01 HAVE_LIBIMAGE
+#cmakedefine HAVE_LIBIMAGE 1
 
-#cmakedefine01 HAVE_LIBNETPBM
+#cmakedefine HAVE_LIBNETPBM 1
 
-#cmakedefine01 HAVE_LIBPPM
+#cmakedefine HAVE_LIBPPM 1
 
 
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
 /* Define to 1 if you have the `cbrt' function. */
-#cmakedefine01 HAVE_CBRT
+#cmakedefine HAVE_CBRT 1
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-#cmakedefine01 HAVE_DLFCN_H
+#cmakedefine HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the `fork' function. */
-#cmakedefine01 HAVE_FORK
+#cmakedefine HAVE_FORK 1
 
 /* Define to 1 if you have the `gamma' function. */
-#cmakedefine01 HAVE_GAMMA
+#cmakedefine HAVE_GAMMA 1
 
 /* Define to 1 if you have the `gettimeofday' function. */
-#cmakedefine01 HAVE_GETTIMEOFDAY
+#cmakedefine HAVE_GETTIMEOFDAY 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#cmakedefine01 HAVE_INTTYPES_H
+#cmakedefine HAVE_INTTYPES_H 1
 
 /* Define to 1 if you have the <memory.h> header file. */
-#cmakedefine01 HAVE_MEMORY_H
+#cmakedefine HAVE_MEMORY_H 1
 
 /* Define to 1 if you have the `random' function. */
-#cmakedefine01 HAVE_RANDOM
+#cmakedefine HAVE_RANDOM 1
 
 /* Define to 1 if you have the `srandom' function. */
-#cmakedefine01 HAVE_SRANDOM
+#cmakedefine HAVE_SRANDOM 1
 
 /* Define to 1 if you have the <stdint.h> header file. */
-#cmakedefine01 HAVE_STDINT_H
+#cmakedefine HAVE_STDINT_H 1
 
 /* Define to 1 if you have the <stdlib.h> header file. */
-#cmakedefine01 HAVE_STDLIB_H
+#cmakedefine HAVE_STDLIB_H 1
 
 /* Define to 1 if you have the <strings.h> header file. */
-#cmakedefine01 HAVE_STRINGS_H
+#cmakedefine HAVE_STRINGS_H 1
 
 /* Define to 1 if you have the <string.h> header file. */
-#cmakedefine01 HAVE_STRING_H
+#cmakedefine HAVE_STRING_H 1
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
-#cmakedefine01 HAVE_SYS_STAT_H
+#cmakedefine HAVE_SYS_STAT_H 1
 
 /* Define to 1 if you have the <sys/time.h> header file. */
-#cmakedefine01 HAVE_SYS_TIME_H
+#cmakedefine HAVE_SYS_TIME_H 1
 
 /* Define to 1 if you have the <sys/types.h> header file. */
-#cmakedefine01 HAVE_SYS_TYPES_H
+#cmakedefine HAVE_SYS_TYPES_H 1
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#cmakedefine01 HAVE_UNISTD_H
+#cmakedefine HAVE_UNISTD_H 1
 
 /* Define to 1 if you have the `vfork' function. */
-#cmakedefine01 HAVE_VFORK
+#cmakedefine HAVE_VFORK 1
 
 /* Define to 1 if you have the <vfork.h> header file. */
-#cmakedefine01 HAVE_VFORK_H
+#cmakedefine HAVE_VFORK_H 1
 
 /* Define to 1 if `fork' works. */
-#cmakedefine01 HAVE_WORKING_FORK
+#cmakedefine HAVE_WORKING_FORK 1
 
 /* Define to 1 if `vfork' works. */
-#cmakedefine01 HAVE_WORKING_VFORK
+#cmakedefine HAVE_WORKING_VFORK 1
 
 #define PACKAGE "@PACKAGE@"
 #define PACKAGE_NAME "@PACKAGE_NAME@"

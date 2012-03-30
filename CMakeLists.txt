@@ -265,6 +265,7 @@ SET(bicpl_LIB_SRCS
   Deform/model_objects.c 
   Deform/deform_line.c 
   Deform/models.c
+  Deform/find_in_direction.c
   bicpl_clapack/blaswrap.h
   bicpl_clapack/f2c.h
   bicpl_clapack/dbdsqr.c 
