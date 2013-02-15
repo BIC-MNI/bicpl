@@ -1,6 +1,9 @@
 /* $Id: ppm.c 8 2008-10-03 02:18:17Z gophi $ */
 
 #define _XOPEN_SOURCE
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif //HAVE_CONFIG_H
 
 #ifdef HAVE_UNISTD_H
   #include <unistd.h>

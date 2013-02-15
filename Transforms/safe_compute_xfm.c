@@ -77,6 +77,10 @@
 #include <sys/wait.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include "bicpl_internal.h"
 
 #ifndef lint
