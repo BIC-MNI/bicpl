@@ -10,21 +10,21 @@ BICAPI  int  compute_isosurface_in_voxel(
     int                     x,
     int                     y,
     int                     z,
-    Real                    corners[2][2][2],
-    BOOLEAN                 binary_flag,
-    Real                    min_value,
-    Real                    max_value,
+    VIO_Real                    corners[2][2][2],
+    VIO_BOOL                 binary_flag,
+    VIO_Real                    min_value,
+    VIO_Real                    max_value,
     int                     *sizes[],
     voxel_point_type        *points[] );
 
 BICAPI  Point_classes  get_isosurface_point(
-    Real              corners[2][2][2],
+    VIO_Real              corners[2][2][2],
     int               voxel[],
     int               edge_intersected,
-    BOOLEAN           binary_flag,
-    Real              min_value,
-    Real              max_value,
-    Real              point[] );
+    VIO_BOOL           binary_flag,
+    VIO_Real              min_value,
+    VIO_Real              max_value,
+    VIO_Real              point[] );
 
 BICAPI  int  get_max_marching_edges(
     Marching_cubes_methods  method );
@@ -33,13 +33,13 @@ BICAPI  int  get_max_marching_polygons_per_voxel(
     Marching_cubes_methods  method );
 
 BICAPI  int  compute_isotriangles_in_voxel(
-    Real                corner_values[2][2][2],
-    Real                target_value,
+    VIO_Real                corner_values[2][2][2],
+    VIO_Real                target_value,
     voxel_point_type    *points_list_ptr[] );
 
 BICAPI  int  get_holeless_isosurface_polygons(
-    Real              corners[2][2][2],
-    Real              isovalue,
+    VIO_Real              corners[2][2][2],
+    VIO_Real              isovalue,
     int               *sizes[],
     voxel_point_type  *points[] );
 
@@ -62,8 +62,8 @@ BICAPI  int  get_tetra_isosurface_polygons(
     int               x,
     int               y,
     int               z,
-    Real              corners[2][2][2],
-    Real              isovalue,
+    VIO_Real              corners[2][2][2],
+    VIO_Real              isovalue,
     int               *sizes[],
     voxel_point_type  *points[] );
 

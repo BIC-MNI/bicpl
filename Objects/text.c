@@ -39,7 +39,7 @@ BICAPI  void   initialize_text(
     Point           *position,
     Colour          colour,
     Font_types      text_font,
-    Real            size )
+    VIO_Real            size )
 {
     if( position != NULL )
         text->origin = *position;

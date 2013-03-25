@@ -5,7 +5,7 @@ int  main(
     char  *argv[] )
 {
     STRING               output_filename;
-    Real                 limits[2][3];
+    VIO_Real                 limits[2][3];
     int                  a1, a2, axis;
     object_struct        *object;
     polygons_struct      *polygons;

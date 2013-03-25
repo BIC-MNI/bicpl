@@ -36,18 +36,18 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_vo
 @MODIFIED   : Aug. 1, 1995    D. MacDonald   - made it faster
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  find_volume_crop_bounds(
+BICAPI VIO_BOOL  find_volume_crop_bounds(
     Volume          volume,
-    Real            min_crop_threshold,
-    Real            max_crop_threshold,
+    VIO_Real            min_crop_threshold,
+    VIO_Real            max_crop_threshold,
     int             limits[2][MAX_DIMENSIONS] )
 {
     int      dim, n_dims, lim, voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
     int      start, end, step, voxel_pos, new_limits[2];
     int      start0, start1, start2, start3, start4;
     int      end0, end1, end2, end3, end4;
-    Real     value;
-    BOOLEAN  found;
+    VIO_Real     value;
+    VIO_BOOL  found;
 
     n_dims = get_volume_n_dimensions( volume );
     get_volume_sizes( volume, sizes );
@@ -170,14 +170,14 @@ BICAPI Volume  create_cropped_volume(
     int                v0, v1, v2, v3, v4, offset[MAX_DIMENSIONS];
     int                start[MAX_DIMENSIONS], end[MAX_DIMENSIONS];
     nc_type            nc_data_type;
-    Real               separations[MAX_DIMENSIONS];
-    Real               start_voxel[MAX_DIMENSIONS];
-    Real               xyz[N_DIMENSIONS], voxel_value;
-    Real               min_voxel, max_voxel;
-    BOOLEAN            signed_flag, is_fully_inside;
+    VIO_Real               separations[MAX_DIMENSIONS];
+    VIO_Real               start_voxel[MAX_DIMENSIONS];
+    VIO_Real               xyz[N_DIMENSIONS], voxel_value;
+    VIO_Real               min_voxel, max_voxel;
+    VIO_BOOL            signed_flag, is_fully_inside;
     STRING             *dim_names;
     Volume             cropped_volume;
-    General_transform  cropped_transform, offset_transform;
+    VIO_General_transform  cropped_transform, offset_transform;
     Transform          translation;
 
     n_dims = get_volume_n_dimensions( volume );
@@ -215,7 +215,7 @@ BICAPI Volume  create_cropped_volume(
     set_volume_separations( cropped_volume, separations );
 
     for_less( dim, 0, n_dims )
-        start_voxel[dim] = (Real) limits[0][dim];
+        start_voxel[dim] = (VIO_Real) limits[0][dim];
 
     reorder_voxel_to_xyz( volume, start_voxel, xyz );
 

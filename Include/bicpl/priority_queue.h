@@ -105,7 +105,7 @@
              while( _index > 1 ) \
              { \
                  _next_index = _index >> 1; \
-                 if( (Real) (q).priorities[_next_index] > (Real) (priority) ) \
+                 if( (VIO_Real) (q).priorities[_next_index] > (VIO_Real) (priority) ) \
                      break; \
                  (q).priorities[_index] = (float) (q).priorities[_next_index]; \
                  (q).entries[_index] = (q).entries[_next_index]; \
@@ -174,7 +174,7 @@
                  int  _index, _next_index; \
  \
                  entry = (q).entries[1]; \
-                 priority = (Real) (q).priorities[1]; \
+                 priority = (VIO_Real) (q).priorities[1]; \
  \
                  _index = 1; \
                  _next_index = 2; \
@@ -214,7 +214,7 @@
          }
 
 #define  GET_TOP_PRIORITY( q ) \
-             ( IS_PRIORITY_QUEUE_EMPTY(q) ? 0.0 : (Real) (q).priorities[1] )
+             ( IS_PRIORITY_QUEUE_EMPTY(q) ? 0.0 : (VIO_Real) (q).priorities[1] )
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : DELETE_PRIORITY_QUEUE

@@ -42,7 +42,7 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    Real                 value, *values, min_range, max_range;
+    VIO_Real                 value, *values, min_range, max_range;
     Status               status;
     STRING               src_filename, dest_filename, values_filename;
     STRING               under_colour_name, over_colour_name;
@@ -58,8 +58,8 @@ int  main(
     colour_coding_struct colour_coding;
     Colour_flags         *colour_flag_ptr;
     STRING               coding_type_string;
-    Real                 low, high, r, g, b, a, opacity;
-    BOOLEAN              per_vertex;
+    VIO_Real                 low, high, r, g, b, a, opacity;
+    VIO_BOOL              per_vertex;
     Composite_methods    composite_method;
     STRING               composite_method_name;
 

@@ -29,7 +29,7 @@ int  main(
     object_struct    **object_list;
     polygons_struct  *polygons;
     int              new_n_polygons;
-    BOOLEAN          sampling_specified;
+    VIO_BOOL          sampling_specified;
 
     initialize_argument_processing( argc, argv );
 
@@ -93,7 +93,7 @@ private  void  resample_polygons(
                                new_n_polygons, &dest_unit_sphere );
 
     create_polygons_bintree( &src_unit_sphere,
-                             ROUND( (Real) src_unit_sphere.n_items *
+                             ROUND( (VIO_Real) src_unit_sphere.n_items *
                                     BINTREE_FACTOR ) );
 
     ALLOC( points, dest_unit_sphere.n_points );

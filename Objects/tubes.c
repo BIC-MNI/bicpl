@@ -5,7 +5,7 @@ public  void  create_tube(
     int               n_points,
     Point             points[],
     int               n_around,
-    Real              radius,
+    VIO_Real              radius,
     Colour            colour,
     quadmesh_struct   *quadmesh )
 {

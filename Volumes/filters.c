@@ -42,18 +42,18 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/filters
 
 BICAPI int  get_slice_weights_for_filter(
     Volume         volume,
-    Real           voxel_position[],
-    Real           voxel_direction[],   /* if filter_type != NEAREST */
+    VIO_Real           voxel_position[],
+    VIO_Real           voxel_direction[],   /* if filter_type != NEAREST */
     Filter_types   filter_type,
-    Real           full_width_half_max,
-    Real           ***positions,
-    Real           *weights[] )
+    VIO_Real           full_width_half_max,
+    VIO_Real           ***positions,
+    VIO_Real           *weights[] )
 {
     int   i, c, n_slices, n_dims, axis;
     int   slice, first_slice, last_slice, s;
-    Real  sum_weights, frac, start, end, weight;
-    Real  half_width, sigma, start_interval, end_interval, x;
-    Real  *origins;
+    VIO_Real  sum_weights, frac, start, end, weight;
+    VIO_Real  half_width, sigma, start_interval, end_interval, x;
+    VIO_Real  *origins;
 
     n_dims = get_volume_n_dimensions( volume );
 
@@ -88,13 +88,13 @@ BICAPI int  get_slice_weights_for_filter(
             }
         }
         frac = FRACTION( voxel_position[c] );
-        origins[0] = (Real) (int) voxel_position[c];
+        origins[0] = (VIO_Real) (int) voxel_position[c];
         (*weights)[0] = frac;
         n_slices = 1;
 
         if( frac > 0.0 )
         {
-            origins[1] = (Real) ((int) voxel_position[c] + 1);
+            origins[1] = (VIO_Real) ((int) voxel_position[c] + 1);
             (*weights)[1] = 1.0 - frac;
             n_slices = 2;
         }
@@ -121,17 +121,17 @@ BICAPI int  get_slice_weights_for_filter(
 
         for_inclusive( slice, first_slice, last_slice )
         {
-            origins[slice-first_slice] = (Real) slice;
+            origins[slice-first_slice] = (VIO_Real) slice;
 
             if( slice == first_slice )
                 start_interval = -half_width;
             else
-                start_interval = (Real) slice - 0.5;
+                start_interval = (VIO_Real) slice - 0.5;
 
             if( slice == last_slice )
                 end_interval = half_width;
             else
-                end_interval = (Real) slice + 0.5;
+                end_interval = (VIO_Real) slice + 0.5;
 
             switch( filter_type )
             {
@@ -162,7 +162,7 @@ BICAPI int  get_slice_weights_for_filter(
                     for_less( s, 0, N_SAMPLES )
                     {
                         x = start_interval + (end_interval - start_interval) *
-                            ((Real) s + 0.5) / (Real) N_SAMPLES;
+                            ((VIO_Real) s + 0.5) / (VIO_Real) N_SAMPLES;
                         weight += (end_interval - start_interval) *
                                   exp ( - x * x / sigma / sigma );
                     }
@@ -190,7 +190,7 @@ BICAPI int  get_slice_weights_for_filter(
     for_less( i, 0, n_slices )
     {
         if( sum_weights == 0.0 )
-            (*weights)[i] = 1.0 / (Real) n_slices;
+            (*weights)[i] = 1.0 / (VIO_Real) n_slices;
         else
             (*weights)[i] /= sum_weights;
 

@@ -18,7 +18,7 @@ int  main(
 {
     STRING               src_filename, dest_filename;
     File_formats         format;
-    Real                 smooth_distance;
+    VIO_Real                 smooth_distance;
     int                  i;
     int                  n_objects;
     object_struct        **objects;

@@ -40,7 +40,7 @@ BICAPI Status  output_volume_free_format(
     int            axis_ordering[] )
 {
     Status             status;
-    Real               trans, separations[MAX_DIMENSIONS];
+    VIO_Real               trans, separations[MAX_DIMENSIONS];
     int                sizes[MAX_DIMENSIONS];
     int                a1, a2, a3;
     int                n_bytes_per_voxel, indices[MAX_DIMENSIONS];
@@ -50,7 +50,7 @@ BICAPI Status  output_volume_free_format(
     STRING             filename_no_dirs;
     int                axis;
     progress_struct    progress;
-    General_transform  *voxel_to_world;
+    VIO_General_transform  *voxel_to_world;
     Transform          *transform;
 
     header_filename = concat_strings( prefix, ".fre" );
@@ -91,7 +91,7 @@ BICAPI Status  output_volume_free_format(
             {
                 trans = Transform_elem(*transform,axis,3);
                 if( separations[axis] < 0.0 )
-                    trans += separations[axis] * (Real) (sizes[axis]-1);
+                    trans += separations[axis] * (VIO_Real) (sizes[axis]-1);
             }
             else
                 trans = 0.0;

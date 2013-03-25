@@ -7,7 +7,7 @@ int  main(
 {
     int      i, n_points;
     Point    vertex, neighbours[10];
-    Real     x_flat[10], y_flat[10];
+    VIO_Real     x_flat[10], y_flat[10];
 
     n_points = 4;
 

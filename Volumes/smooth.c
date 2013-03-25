@@ -18,11 +18,11 @@
 static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/smooth.c,v 1.22 2005-08-17 22:26:19 bert Exp $";
 #endif
 
-static Real  calculate_weight(
+static VIO_Real  calculate_weight(
     int      x,
-    Real     dx,
-    Real     x_min,
-    Real     x_max );
+    VIO_Real     dx,
+    VIO_Real     x_min,
+    VIO_Real     x_max );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : smooth_resample_volume
@@ -50,15 +50,15 @@ BICAPI Volume  smooth_resample_volume(
     Volume             resampled_volume;
     int                sizes[MAX_DIMENSIONS], new_sizes[MAX_DIMENSIONS];
     int                dest_voxel[N_DIMENSIONS], src_voxel[N_DIMENSIONS], c;
-    Real               x_min, x_max, y_min, y_max, z_min, z_max;
-    Real               separations[N_DIMENSIONS];
-    Real               dx, dy, dz;
-    Real               voxel;
-    Real               x_weight, xy_weight, weight;
-    Real               *y_weights, *z_weights;
-    Real               val;
+    VIO_Real               x_min, x_max, y_min, y_max, z_min, z_max;
+    VIO_Real               separations[N_DIMENSIONS];
+    VIO_Real               dx, dy, dz;
+    VIO_Real               voxel;
+    VIO_Real               x_weight, xy_weight, weight;
+    VIO_Real               *y_weights, *z_weights;
+    VIO_Real               val;
     Transform          scale_transform, translation_transform, transform;
-    General_transform  general_transform, tmp;
+    VIO_General_transform  general_transform, tmp;
     progress_struct    progress;
 
     if( get_volume_n_dimensions(volume) != 3 )
@@ -87,9 +87,9 @@ BICAPI Volume  smooth_resample_volume(
     set_volume_real_range( resampled_volume, get_volume_real_min(volume),
                            get_volume_real_max(volume) );
 
-    dx = (Real) sizes[X] / (Real) new_sizes[X];
-    dy = (Real) sizes[Y] / (Real) new_sizes[Y];
-    dz = (Real) sizes[Z] / (Real) new_sizes[Z];
+    dx = (VIO_Real) sizes[X] / (VIO_Real) new_sizes[X];
+    dy = (VIO_Real) sizes[Y] / (VIO_Real) new_sizes[Y];
+    dz = (VIO_Real) sizes[Z] / (VIO_Real) new_sizes[Z];
 
     get_volume_separations( volume, separations );
 
@@ -123,18 +123,18 @@ BICAPI Volume  smooth_resample_volume(
 
     for_less( dest_voxel[X], 0, new_nx )
     {
-        x_min = (Real)   dest_voxel[X]    * dx;
-        x_max = (Real)  (dest_voxel[X]+1) * dx;
+        x_min = (VIO_Real)   dest_voxel[X]    * dx;
+        x_max = (VIO_Real)  (dest_voxel[X]+1) * dx;
 
         for_less( dest_voxel[Y], 0, new_ny )
         {
-            y_min = (Real)  dest_voxel[Y]    * dy;
-            y_max = (Real) (dest_voxel[Y]+1) * dy;
+            y_min = (VIO_Real)  dest_voxel[Y]    * dy;
+            y_max = (VIO_Real) (dest_voxel[Y]+1) * dy;
 
             for_less( dest_voxel[Z], 0, new_nz )
             {
-                z_min = (Real)  dest_voxel[Z]    * dz;
-                z_max = (Real) (dest_voxel[Z]+1) * dz;
+                z_min = (VIO_Real)  dest_voxel[Z]    * dz;
+                z_max = (VIO_Real) (dest_voxel[Z]+1) * dz;
 
                 for_inclusive( src_voxel[Y], (int) y_min, (int) y_max )
                 {
@@ -210,16 +210,16 @@ BICAPI Volume  smooth_resample_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static Real  calculate_weight(
+static VIO_Real  calculate_weight(
     int      x,
-    Real     dx,
-    Real     x_min,
-    Real     x_max )
+    VIO_Real     dx,
+    VIO_Real     x_min,
+    VIO_Real     x_max )
 {
-    Real   start, end, weight;
+    VIO_Real   start, end, weight;
 
-    start = MAX( x_min, (Real) x );
-    end = MIN( x_max, (Real) (x+1) );
+    start = MAX( x_min, (VIO_Real) x );
+    end = MIN( x_max, (VIO_Real) (x+1) );
 
     if( end < start || end - start > 1.0 )
     {

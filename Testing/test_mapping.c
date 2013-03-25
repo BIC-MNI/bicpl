@@ -5,16 +5,16 @@ int  main(
     char  *argv[] )
 {
     int            i, n_points;
-    Real           x_min, x_max, y_min, y_max;
-    Real           x_axis[N_DIMENSIONS];
-    Real           y_axis[N_DIMENSIONS];
-    Real           origin[N_DIMENSIONS];
-    Real           x_trans, y_trans, x_scale, y_scale;
+    VIO_Real           x_min, x_max, y_min, y_max;
+    VIO_Real           x_axis[N_DIMENSIONS];
+    VIO_Real           y_axis[N_DIMENSIONS];
+    VIO_Real           origin[N_DIMENSIONS];
+    VIO_Real           x_trans, y_trans, x_scale, y_scale;
     int            x_width, y_width;
     Volume         volume;
     char           *filename;
     static char    *dim_names[] = { MIxspace, MIyspace, MIzspace };
-    Real           clipped_voxels[2*MAX_DIMENSIONS][MAX_DIMENSIONS];
+    VIO_Real           clipped_voxels[2*MAX_DIMENSIONS][MAX_DIMENSIONS];
 
     initialize_argument_processing( argc, argv );
     (void) get_string_argument( "$AVG128", &filename );

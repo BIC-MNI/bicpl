@@ -1,30 +1,30 @@
 
 #define   DEFAULT_RATIO      1.0
 
-static  Real  evaluate_fit(
+static  VIO_Real  evaluate_fit(
     int              n_parameters,
-    Real             constant_term,
+    VIO_Real             constant_term,
     LSQ_TYPE         *linear_terms,
     LSQ_TYPE         *square_terms,
     int              n_cross_terms[],
     int              *cross_parms[],
     LSQ_TYPE         *cross_terms[],
-    Real             parm_values[] )
+    VIO_Real             parm_values[] )
 {
     int   parm, n;
-    Real  fit, parm_val;
+    VIO_Real  fit, parm_val;
 
     fit = constant_term;
 
     for_less( parm, 0, n_parameters )
     {
         parm_val = parm_values[parm];
-        fit += parm_val * ((Real) linear_terms[parm] +
-                            parm_val * (Real) square_terms[parm]);
+        fit += parm_val * ((VIO_Real) linear_terms[parm] +
+                            parm_val * (VIO_Real) square_terms[parm]);
 
         for_less( n, 0, n_cross_terms[parm] )
             fit += parm_val * parm_values[cross_parms[parm][n]] *
-                   (Real) cross_terms[parm][n];
+                   (VIO_Real) cross_terms[parm][n];
     }
 
     return( fit );
@@ -32,17 +32,17 @@ static  Real  evaluate_fit(
 
 static  void  evaluate_fit_derivative(
     int              n_parameters,
-    Real             constant_term,
+    VIO_Real             constant_term,
     LSQ_TYPE         *linear_terms,
     LSQ_TYPE         *square_terms,
     int              n_cross_terms[],
     int              *cross_parms[],
     LSQ_TYPE         *cross_terms[],
-    Real             parm_values[],
-    Real             derivatives[] )
+    VIO_Real             parm_values[],
+    VIO_Real             derivatives[] )
 {
     int        parm, n, neigh_parm, n_terms, *cp;
-    Real       term, parm_val, deriv_p;
+    VIO_Real       term, parm_val, deriv_p;
     LSQ_TYPE   *ct;
 
     for_less( parm, 0, n_parameters )
@@ -52,8 +52,8 @@ static  void  evaluate_fit_derivative(
     {
         parm_val = parm_values[parm];
 
-        deriv_p = (Real) linear_terms[parm] +
-                         2.0 * parm_val * (Real) square_terms[parm];
+        deriv_p = (VIO_Real) linear_terms[parm] +
+                         2.0 * parm_val * (VIO_Real) square_terms[parm];
 
         ct = cross_terms[parm];
         cp = cross_parms[parm];
@@ -61,7 +61,7 @@ static  void  evaluate_fit_derivative(
         for_less( n, 0, n_terms )
         {
             neigh_parm = *cp++;
-            term = (Real) (*ct++);
+            term = (VIO_Real) (*ct++);
             deriv_p += term * parm_values[neigh_parm];
             derivatives[neigh_parm] += term * parm_val;
         }
@@ -71,21 +71,21 @@ static  void  evaluate_fit_derivative(
 
 static  void  evaluate_fit_along_line(
     int              n_parameters,
-    Real             constant_term,
+    VIO_Real             constant_term,
     LSQ_TYPE         *linear_terms,
     LSQ_TYPE         *square_terms,
     int              n_cross_terms[],
     int              *cross_parms[],
     LSQ_TYPE         *cross_terms[],
-    Real             parm_values[],
-    Real             negative_gradient[],
-    Real             line_coefs[],
-    Real             *a_ptr,
-    Real             *b_ptr )
+    VIO_Real             parm_values[],
+    VIO_Real             negative_gradient[],
+    VIO_Real             line_coefs[],
+    VIO_Real             *a_ptr,
+    VIO_Real             *b_ptr )
 {
     int        parm, n, n_terms, *cp;
-    Real       a, b, line_coef;
-    Real       a_inc;
+    VIO_Real       a, b, line_coef;
+    VIO_Real       a_inc;
     LSQ_TYPE   *ct;
 
     a = 0.0;
@@ -94,13 +94,13 @@ static  void  evaluate_fit_along_line(
     for_less( parm, 0, n_parameters )
     {
         line_coef = line_coefs[parm];
-        a_inc = line_coef * (Real) square_terms[parm];
+        a_inc = line_coef * (VIO_Real) square_terms[parm];
 
         ct = cross_terms[parm];
         cp = cross_parms[parm];
         n_terms = n_cross_terms[parm];
         for_less( n, 0, n_terms )
-            a_inc += (Real) (*ct++) * line_coefs[*cp++];
+            a_inc += (VIO_Real) (*ct++) * line_coefs[*cp++];
 
         a += line_coef * a_inc;
         b += line_coef * (-negative_gradient[parm]);
@@ -112,21 +112,21 @@ static  void  evaluate_fit_along_line(
 
 static  void  minimize_along_line(
     int              n_parameters,
-    Real             constant_term,
+    VIO_Real             constant_term,
     LSQ_TYPE         *linear_terms,
     LSQ_TYPE         *square_terms,
     int              n_cross_terms[],
     int              *cross_parms[],
     LSQ_TYPE         *cross_terms[],
-    Real             max_step_size,
-    Real             parm_values[],
-    Real             negative_gradient[],
-    Real             line_coefs[] )
+    VIO_Real             max_step_size,
+    VIO_Real             parm_values[],
+    VIO_Real             negative_gradient[],
+    VIO_Real             line_coefs[] )
 {
     int     parm;
-    Real    a, b, t, step_size;
-    static  Real     ratio;
-    static  BOOLEAN  first = TRUE;
+    VIO_Real    a, b, t, step_size;
+    static  VIO_Real     ratio;
+    static  VIO_BOOL  first = TRUE;
 
     if( first )
     {
@@ -161,23 +161,23 @@ static  void  minimize_along_line(
         parm_values[parm] += t * line_coefs[parm];
 }
 
-static  Real   private_minimize_lsq(
+static  VIO_Real   private_minimize_lsq(
     int              n_parameters,
-    Real             constant_term,
+    VIO_Real             constant_term,
     LSQ_TYPE         *linear_terms,
     LSQ_TYPE         *square_terms,
     int              n_cross_terms[],
     int              *cross_parms[],
     LSQ_TYPE         *cross_terms[],
-    Real             max_step_size,
+    VIO_Real             max_step_size,
     int              n_iters,
-    Real             parm_values[] )
+    VIO_Real             parm_values[] )
 {
-    Real              fit, len, gg, dgg, gam;
+    VIO_Real              fit, len, gg, dgg, gam;
     int               iter, p;
     int               update_rate;
-    Real              *unit_dir, *g, *h, *xi;
-    Real              last_update_time, current_time;
+    VIO_Real              *unit_dir, *g, *h, *xi;
+    VIO_Real              last_update_time, current_time;
 
     ALLOC( g, n_parameters );
     ALLOC( h, n_parameters );

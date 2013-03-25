@@ -34,7 +34,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrah
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  is_this_tetrahedral_topology(
+BICAPI  VIO_BOOL  is_this_tetrahedral_topology(
     polygons_struct   *polygons )
 {
     int    n_polygons;
@@ -99,16 +99,16 @@ BICAPI  int  get_tetra_tessellation_with_n_points(
 
 BICAPI  void  create_tetrahedral_sphere(
     Point            *centre,
-    Real             rx,
-    Real             ry,
-    Real             rz,
+    VIO_Real             rx,
+    VIO_Real             ry,
+    VIO_Real             rz,
     int              n_triangles,
     polygons_struct  *polygons )
 {
     static  int     possible_sizes[] = { 4, 6, 8, 20 };
     int             p, start_size, s, size, best_size, prev_size;
-    Real            cx, cy, cz, dx, dy, dz, scale;
-    Real            x, y, z;
+    VIO_Real            cx, cy, cz, dx, dy, dz, scale;
+    VIO_Real            x, y, z;
     Point           origin;
 
     /*--- determine the base object, either 4, 6, or 8, 20 */
@@ -157,15 +157,15 @@ BICAPI  void  create_tetrahedral_sphere(
         create_unit_tetrahedron( polygons );
     }
 
-    cx = (Real) Point_x( *centre );
-    cy = (Real) Point_y( *centre );
-    cz = (Real) Point_z( *centre );
+    cx = (VIO_Real) Point_x( *centre );
+    cy = (VIO_Real) Point_y( *centre );
+    cz = (VIO_Real) Point_z( *centre );
 
     for_less( p, 0, polygons->n_points )
     {
-        x = cx + rx * (Real) Point_x(polygons->points[p]);
-        y = cy + ry * (Real) Point_y(polygons->points[p]);
-        z = cz + rz * (Real) Point_z(polygons->points[p]);
+        x = cx + rx * (VIO_Real) Point_x(polygons->points[p]);
+        y = cy + ry * (VIO_Real) Point_y(polygons->points[p]);
+        z = cz + rz * (VIO_Real) Point_z(polygons->points[p]);
         fill_Point( polygons->points[p], x, y, z );
     }
 
@@ -180,9 +180,9 @@ BICAPI  void  create_tetrahedral_sphere(
 
         for_less( p, 0, polygons->n_points )
         {
-            dx = (Real) Point_x(polygons->points[p]) - cx;
-            dy = (Real) Point_y(polygons->points[p]) - cy;
-            dz = (Real) Point_z(polygons->points[p]) - cz;
+            dx = (VIO_Real) Point_x(polygons->points[p]) - cx;
+            dy = (VIO_Real) Point_y(polygons->points[p]) - cy;
+            dz = (VIO_Real) Point_z(polygons->points[p]) - cz;
             scale = dx * dx / rx / rx + dy * dy / ry / ry + dz * dz / rz / rz;
             scale = 1.0 / sqrt( scale );
             dx *= scale;

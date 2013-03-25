@@ -23,11 +23,11 @@ BICAPI  void  flatten_around_vertex(
     Point     *vertex,
     int       n_neighbours,
     Point     neighbours[],
-    BOOLEAN   closed_flag,
-    Real      x_flat[],
-    Real      y_flat[] )
+    VIO_BOOL   closed_flag,
+    VIO_Real      x_flat[],
+    VIO_Real      y_flat[] )
 {
-    Real  sum_angles, factor, angle, dist;
+    VIO_Real  sum_angles, factor, angle, dist;
     int   i;
 
     sum_angles = 0.0;
@@ -70,16 +70,16 @@ BICAPI  void  flatten_around_vertex(
 }
 
 BICAPI  void  flatten_around_vertex_to_sphere(
-    Real      radius,
+    VIO_Real      radius,
     Point     *vertex,
     int       n_neighbours,
     Point     neighbours[],
-    Real      x_sphere[],
-    Real      y_sphere[],
-    Real      z_sphere[] )
+    VIO_Real      x_sphere[],
+    VIO_Real      y_sphere[],
+    VIO_Real      z_sphere[] )
 {
     int        n;
-    Real       *x_flat, *y_flat, angle, x, y, z, dist;
+    VIO_Real       *x_flat, *y_flat, angle, x, y, z, dist;
     Vector     axis;
     Transform  transform;
 

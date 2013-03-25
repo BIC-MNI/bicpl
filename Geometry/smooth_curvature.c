@@ -24,11 +24,11 @@ static  int  get_smoothing_points(
     int               *neighbours[],
     int               n_found,
     int               list[],
-    Real              smoothing_distance,
+    VIO_Real              smoothing_distance,
     float             distances[],
     Point             *smoothing_points[] );
 
-static  Real  get_average_curvature(
+static  VIO_Real  get_average_curvature(
     Point   *point,
     Vector  *normal,
     int     n_smoothing_points,
@@ -73,20 +73,20 @@ static  Real  get_average_curvature(
  * \a vertex, and the i'th smoothing point.
  *
  */
-BICAPI  Real  get_smooth_surface_curvature(
+BICAPI  VIO_Real  get_smooth_surface_curvature(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
     int               poly,
     int               vertex,
-    BOOLEAN           distances_initialized,
+    VIO_BOOL           distances_initialized,
     float             distances[],
-    Real              smoothing_distance )
+    VIO_Real              smoothing_distance )
 {
     int      n_smoothing_points, point_index, n_found, *list, p;
     Point    *smoothing_points;
-    Real     curvature;
-    BOOLEAN  alloced_distances;
+    VIO_Real     curvature;
+    VIO_BOOL  alloced_distances;
 
     if( distances == NULL )
     {
@@ -175,13 +175,13 @@ static  int  get_smoothing_points(
     int               *neighbours[],
     int               n_found,
     int               list[],
-    Real              smoothing_distance,
+    VIO_Real              smoothing_distance,
     float             distances[],
     Point             *smoothing_points[] )
 {
     int      p, neigh, point_index, prev_index, inside, outside;
     int      n_smoothing_points;
-    Real     dist, ratio;
+    VIO_Real     dist, ratio;
     Point    point;
 
     n_smoothing_points = 0;
@@ -209,15 +209,15 @@ static  int  get_smoothing_points(
                 inside = point_index;
                 outside = prev_index;
 
-                dist = (Real) distances[inside] +
+                dist = (VIO_Real) distances[inside] +
                                    distance_between_points(
                                          &polygons->points[inside],
                                          &polygons->points[outside] );
 
-                if( dist != (Real) distances[inside] )
+                if( dist != (VIO_Real) distances[inside] )
                 {
-                    ratio = (smoothing_distance - (Real) distances[inside]) /
-                            (dist - (Real) distances[inside]);
+                    ratio = (smoothing_distance - (VIO_Real) distances[inside]) /
+                            (dist - (VIO_Real) distances[inside]);
                     INTERPOLATE_POINTS( point,
                                         polygons->points[inside],
                                         polygons->points[outside],
@@ -248,14 +248,14 @@ static  int  get_smoothing_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  get_average_curvature(
+static  VIO_Real  get_average_curvature(
     Point   *point,
     Vector  *normal,
     int     n_smoothing_points,
     Point   smoothing_points[] )
 {
     int      i;
-    Real     sum_curvature, curvature, angle, sign_curvature;
+    VIO_Real     sum_curvature, curvature, angle, sign_curvature;
     Point    centroid;
     Vector   offset;
 
@@ -277,12 +277,12 @@ static  Real  get_average_curvature(
         sum_curvature += curvature;
     }
 
-    curvature = sum_curvature * sign_curvature / (Real) n_smoothing_points;
+    curvature = sum_curvature * sign_curvature / (VIO_Real) n_smoothing_points;
 
 #ifdef DEBUG
 {
-static  BOOLEAN  first = TRUE;
-Real  **tags;
+static  VIO_BOOL  first = TRUE;
+VIO_Real  **tags;
 if( first )
 {
     first = FALSE;

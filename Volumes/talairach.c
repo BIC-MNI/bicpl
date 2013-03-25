@@ -27,21 +27,21 @@ static int   nx = 128;
 static int   ny = 128;
 static int   nz = 80;
 
-static Real  x_low  = -1.28;
-static Real  x_high =  1.28;
-static Real  y_low  = -1.28;
-static Real  y_high =  1.28;
-static Real  z_low  = -0.50;
-static Real  z_high =  1.10;
+static VIO_Real  x_low  = -1.28;
+static VIO_Real  x_high =  1.28;
+static VIO_Real  y_low  = -1.28;
+static VIO_Real  y_high =  1.28;
+static VIO_Real  z_low  = -0.50;
+static VIO_Real  z_high =  1.10;
 
-static Real  x_dist_minus_1 = -67.0;
-static Real  x_dist_1       =  67.0;
-static Real  y_dist_minus_1 = -86.0;
-static Real  y_dist_1       =  86.0;
-static Real  z_dist_0       =   0.0;
-static Real  z_dist_1       =  75.0;
+static VIO_Real  x_dist_minus_1 = -67.0;
+static VIO_Real  x_dist_1       =  67.0;
+static VIO_Real  y_dist_minus_1 = -86.0;
+static VIO_Real  y_dist_1       =  86.0;
+static VIO_Real  z_dist_0       =   0.0;
+static VIO_Real  z_dist_1       =  75.0;
 
-static BOOLEAN   initialized = FALSE;
+static VIO_BOOL   initialized = FALSE;
 
 static void  read_talairach_coordinate_system( void );
 
@@ -90,9 +90,9 @@ static void  read_talairach_coordinate_system( void )
     STRING  filename;
     int     okay;
     int     tmp_nx, tmp_ny, tmp_nz;
-    Real    tmp_x_low, tmp_x_high, tmp_y_low, tmp_y_high, tmp_z_low;
-    Real    tmp_z_high, tmp_x_dist_minus_1, tmp_x_dist_1, tmp_y_dist_minus_1;
-    Real    tmp_y_dist_1, tmp_z_dist_0, tmp_z_dist_1;
+    VIO_Real    tmp_x_low, tmp_x_high, tmp_y_low, tmp_y_high, tmp_z_low;
+    VIO_Real    tmp_z_high, tmp_x_dist_minus_1, tmp_x_dist_1, tmp_y_dist_minus_1;
+    VIO_Real    tmp_y_dist_1, tmp_z_dist_0, tmp_z_dist_1;
 
     okay = TRUE;
 
@@ -203,21 +203,21 @@ static void  read_talairach_coordinate_system( void )
 ---------------------------------------------------------------------------- */
 
 BICAPI void  convert_voxel_to_talairach(
-    Real   x_voxel,
-    Real   y_voxel,
-    Real   z_voxel,
+    VIO_Real   x_voxel,
+    VIO_Real   y_voxel,
+    VIO_Real   z_voxel,
     int    nx_voxels,
     int    ny_voxels,
     int    nz_voxels,
-    Real   *x_tal,
-    Real   *y_tal,
-    Real   *z_tal )
+    VIO_Real   *x_tal,
+    VIO_Real   *y_tal,
+    VIO_Real   *z_tal )
 {
     check_initialized();
 
-    *x_tal = x_voxel / (Real) nx_voxels * (Real) nx;
-    *y_tal = y_voxel / (Real) ny_voxels * (Real) ny;
-    *z_tal = z_voxel / (Real) nz_voxels * (Real) nz;
+    *x_tal = x_voxel / (VIO_Real) nx_voxels * (VIO_Real) nx;
+    *y_tal = y_voxel / (VIO_Real) ny_voxels * (VIO_Real) ny;
+    *z_tal = z_voxel / (VIO_Real) nz_voxels * (VIO_Real) nz;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -241,21 +241,21 @@ BICAPI void  convert_voxel_to_talairach(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  convert_talairach_to_voxel(
-    Real   x_tal,
-    Real   y_tal,
-    Real   z_tal,
+    VIO_Real   x_tal,
+    VIO_Real   y_tal,
+    VIO_Real   z_tal,
     int    nx_voxels,
     int    ny_voxels,
     int    nz_voxels,
-    Real   *x_voxel,
-    Real   *y_voxel,
-    Real   *z_voxel )
+    VIO_Real   *x_voxel,
+    VIO_Real   *y_voxel,
+    VIO_Real   *z_voxel )
 {
     check_initialized();
 
-    *x_voxel = x_tal / (Real) nx * (Real) nx_voxels;
-    *y_voxel = y_tal / (Real) ny * (Real) ny_voxels;
-    *z_voxel = z_tal / (Real) nz * (Real) nz_voxels;
+    *x_voxel = x_tal / (VIO_Real) nx * (VIO_Real) nx_voxels;
+    *y_voxel = y_tal / (VIO_Real) ny * (VIO_Real) ny_voxels;
+    *z_voxel = z_tal / (VIO_Real) nz * (VIO_Real) nz_voxels;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -278,20 +278,20 @@ BICAPI void  convert_talairach_to_voxel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static Real  convert_to_mm(
-    Real    tal,
+static VIO_Real  convert_to_mm(
+    VIO_Real    tal,
     int     n_planes,
-    Real    limit_low,
-    Real    limit_high,
-    Real    brain_dist_low,
-    Real    brain_dist_high,
-    Real    brain_limit_low,
-    Real    brain_limit_high )
+    VIO_Real    limit_low,
+    VIO_Real    limit_high,
+    VIO_Real    brain_dist_low,
+    VIO_Real    brain_dist_high,
+    VIO_Real    brain_limit_low,
+    VIO_Real    brain_limit_high )
 {
-    Real   mm;
-    Real   stereotactic;
+    VIO_Real   mm;
+    VIO_Real   stereotactic;
 
-    stereotactic = limit_low + (limit_high - limit_low) * tal / (Real) n_planes;
+    stereotactic = limit_low + (limit_high - limit_low) * tal / (VIO_Real) n_planes;
 
     mm = brain_dist_low + (brain_dist_high - brain_dist_low) *
       (stereotactic - brain_limit_low) / (brain_limit_high - brain_limit_low);
@@ -317,12 +317,12 @@ static Real  convert_to_mm(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  convert_talairach_to_mm(
-    Real   x_tal,
-    Real   y_tal,
-    Real   z_tal,
-    Real   *x_mm,
-    Real   *y_mm,
-    Real   *z_mm )
+    VIO_Real   x_tal,
+    VIO_Real   y_tal,
+    VIO_Real   z_tal,
+    VIO_Real   *x_mm,
+    VIO_Real   *y_mm,
+    VIO_Real   *z_mm )
 {
     check_initialized();
 
@@ -356,23 +356,23 @@ BICAPI void  convert_talairach_to_mm(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static Real  convert_from_mm(
-    Real    mm,
+static VIO_Real  convert_from_mm(
+    VIO_Real    mm,
     int     n_planes,
-    Real    limit_low,
-    Real    limit_high,
-    Real    brain_dist_low,
-    Real    brain_dist_high,
-    Real    brain_limit_low,
-    Real    brain_limit_high )
+    VIO_Real    limit_low,
+    VIO_Real    limit_high,
+    VIO_Real    brain_dist_low,
+    VIO_Real    brain_dist_high,
+    VIO_Real    brain_limit_low,
+    VIO_Real    brain_limit_high )
 {
-    Real  stereotactic;
+    VIO_Real  stereotactic;
 
     stereotactic = brain_limit_low +
                    (mm - brain_dist_low) * (brain_limit_high - brain_limit_low)
                    / (brain_dist_high - brain_dist_low);
 
-    return( (stereotactic - limit_low) * (Real) n_planes /
+    return( (stereotactic - limit_low) * (VIO_Real) n_planes /
             (limit_high - limit_low) );
 }
 
@@ -394,12 +394,12 @@ static Real  convert_from_mm(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  convert_mm_to_talairach(
-    Real   x_mm,
-    Real   y_mm,
-    Real   z_mm,
-    Real   *x_tal,
-    Real   *y_tal,
-    Real   *z_tal )
+    VIO_Real   x_mm,
+    VIO_Real   y_mm,
+    VIO_Real   z_mm,
+    VIO_Real   *x_tal,
+    VIO_Real   *y_tal,
+    VIO_Real   *z_tal )
 {
     check_initialized();
 

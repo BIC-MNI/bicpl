@@ -38,7 +38,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/tag_obj
 BICAPI  Status   input_tag_objects_file(
     STRING         filename,
     Colour         marker_colour,
-    Real           default_size,
+    VIO_Real           default_size,
     Marker_types   default_type,
     int            *n_objects,
     object_struct  **object_list[] )

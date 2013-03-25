@@ -1,11 +1,11 @@
 #include  <bicpl.h>
 
 
-private  BOOLEAN  get_axis_from_name(
+private  VIO_BOOL  get_axis_from_name(
     STRING   axis_name,
     int      *slice_axis )
 {
-    BOOLEAN  found;
+    VIO_BOOL  found;
 
     found = FALSE;
 
@@ -40,9 +40,9 @@ int  main(
     char  *argv[] )
 {
     STRING               dest_lines_filename, axis_name;
-    Real                 limits[2][2], slice_pos, line_pos, *positions;
+    VIO_Real                 limits[2][2], slice_pos, line_pos, *positions;
     int                  i, n_grids, a1, a2, a, slice_axis, line_axis, *axes;
-    BOOLEAN              found[2];
+    VIO_BOOL              found[2];
     object_struct        *object;
     lines_struct         *lines;
     Point                point1, point2;

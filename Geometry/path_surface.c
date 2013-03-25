@@ -56,11 +56,11 @@ BICAPI   void   find_path_between_polygons(
     int            end_indices[],
     Smallest_int   visibilities[],
     int            neighbours[],
-    BOOLEAN        *path_exists,
+    VIO_BOOL        *path_exists,
     int            *path_length,
     int            *path[] )
 {
-    BOOLEAN    found_polygon1;
+    VIO_BOOL    found_polygon1;
     int        start_index, end_index, neighbour;
     int        i, n, *distances, distance, curr_index, prev_index;
     int        n_step[2], n_step_alloced[2], *step_list[2];

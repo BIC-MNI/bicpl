@@ -44,7 +44,7 @@ typedef struct
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  fill_connected_voxels(
+BICAPI VIO_BOOL  fill_connected_voxels(
     Volume              volume,
     Volume              label_volume,
     Neighbour_types     connectivity,
@@ -52,8 +52,8 @@ BICAPI BOOLEAN  fill_connected_voxels(
     int                 min_label_threshold,
     int                 max_label_threshold,
     int                 desired_label,
-    Real                min_threshold,
-    Real                max_threshold,
+    VIO_Real                min_threshold,
+    VIO_Real                max_threshold,
     int                 range_changed[2][N_DIMENSIONS] )
 {
     int                          dir, n_dirs, *dx, *dy, *dz, dim;
@@ -63,7 +63,7 @@ BICAPI BOOLEAN  fill_connected_voxels(
     xyz_struct                   entry;
     QUEUE_STRUCT( xyz_struct )   queue;
     bitlist_3d_struct            checked_flags, change_flags;
-    BOOLEAN                      first;
+    VIO_BOOL                      first;
 
     if( !should_change_this_one( volume, label_volume, voxel,
                                  min_threshold, max_threshold,
@@ -269,7 +269,7 @@ BICAPI int  get_3D_neighbour_directions(
     int               *dy[],
     int               *dz[] )
 {
-    static  BOOLEAN  first = TRUE;
+    static  VIO_BOOL  first = TRUE;
     int              n_dirs;
 
     if( first )
@@ -318,18 +318,18 @@ BICAPI int  get_3D_neighbour_directions(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  should_change_this_one(
+BICAPI VIO_BOOL  should_change_this_one(
     Volume          volume,
     Volume          label_volume,
     int             voxel[],
-    Real            min_threshold,
-    Real            max_threshold,
+    VIO_Real            min_threshold,
+    VIO_Real            max_threshold,
     int             label_min_threshold,
     int             label_max_threshold,
     int             desired_label )
 {
     int      label;
-    Real     value;
+    VIO_Real     value;
 
     label = get_volume_label_data( label_volume, voxel );
 

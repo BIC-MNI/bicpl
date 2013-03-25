@@ -6,12 +6,12 @@
 #define   DEFAULT_TOLERANCE        1.0e-6
 #define   DEFAULT_MAX_ITERATIONS   10000
 
-private  Real  minimize_function(
+private  VIO_Real  minimize_function(
     int    n_dims,
-    Real   initial_guess[],
-    Real   initial_steps[],
-    Real   solution[],
-    Real   tolerance,
+    VIO_Real   initial_guess[],
+    VIO_Real   initial_steps[],
+    VIO_Real   solution[],
+    VIO_Real   tolerance,
     int    max_iterations );
 
 int  main(
@@ -19,8 +19,8 @@ int  main(
     char  *argv[] )
 {
     int    i, max_iterations;
-    Real   initial_values[N_DIMS], initial_steps[N_DIMS], parameters[N_DIMS];
-    Real   value, tolerance;
+    VIO_Real   initial_values[N_DIMS], initial_steps[N_DIMS], parameters[N_DIMS];
+    VIO_Real   value, tolerance;
 
     initialize_argument_processing( argc, argv );
 
@@ -52,19 +52,19 @@ typedef  struct
     int  n_dims;
 } function_data;
 
-private  Real  func(
+private  VIO_Real  func(
     void   *data,
     float  parameters[] )
 {
-    Real   x;
+    VIO_Real   x;
 #if N_DIMS > 1
-    Real   y, x_len, y_len;
+    VIO_Real   y, x_len, y_len;
 #endif
 
-    x = (Real) parameters[0];
+    x = (VIO_Real) parameters[0];
 
 #if N_DIMS > 1
-    y = (Real) parameters[1];
+    y = (VIO_Real) parameters[1];
 #endif
 
 #if N_DIMS == 1
@@ -84,17 +84,17 @@ private  Real  func(
 #endif
 }
 
-private  Real  minimize_function(
+private  VIO_Real  minimize_function(
     int    n_dims,
-    Real   initial_guess[],
-    Real   initial_steps[],
-    Real   solution[],
-    Real   tolerance,
+    VIO_Real   initial_guess[],
+    VIO_Real   initial_steps[],
+    VIO_Real   solution[],
+    VIO_Real   tolerance,
     int    max_iterations )
 {
     int             iter;
     amoeba_struct   amoeba;
-    Real            value;
+    VIO_Real            value;
     function_data   func_data;
 
     func_data.n_dims = n_dims;

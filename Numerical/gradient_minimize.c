@@ -22,34 +22,34 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gradi
 
 #define  STEP_RATIO   0.5
 
-static  Real  take_step(
+static  VIO_Real  take_step(
     int   n_dims,
-    Real  current[],
-    Real  current_value,
-    Real  (*func) ( Real [], void * ),
+    VIO_Real  current[],
+    VIO_Real  current_value,
+    VIO_Real  (*func) ( VIO_Real [], void * ),
     void  *func_data,
-    Real  step_sizes[],
+    VIO_Real  step_sizes[],
     int   n_search_dims,
-    Real  parameters[],
-    Real  best[],
+    VIO_Real  parameters[],
+    VIO_Real  best[],
     int   min_pos[],
     int   max_pos[],
     int   pos[] );
 
-BICAPI  Real  gradient_steps_minimize_function(
+BICAPI  VIO_Real  gradient_steps_minimize_function(
     int   n_dims,
-    Real  initial_parameters[],
-    Real  initial_step_sizes[],
-    Real  (*func) ( Real [], void * ),
+    VIO_Real  initial_parameters[],
+    VIO_Real  initial_step_sizes[],
+    VIO_Real  (*func) ( VIO_Real [], void * ),
     void  *func_data,
     int   n_search_dims,
     int   max_iterations,
-    Real  tolerance,
-    Real  solution[] )
+    VIO_Real  tolerance,
+    VIO_Real  solution[] )
 {
-    BOOLEAN  done;
+    VIO_BOOL  done;
     int      iteration, dim, *min_pos, *max_pos, *pos;
-    Real     *step_sizes, *parameters, *best, best_value, next_value;
+    VIO_Real     *step_sizes, *parameters, *best, best_value, next_value;
 
     ALLOC( step_sizes, n_dims );
 
@@ -115,22 +115,22 @@ BICAPI  Real  gradient_steps_minimize_function(
     return( best_value );
 }
 
-static  Real  take_step(
+static  VIO_Real  take_step(
     int   n_dims,
-    Real  current[],
-    Real  current_value,
-    Real  (*func) ( Real [], void * ),
+    VIO_Real  current[],
+    VIO_Real  current_value,
+    VIO_Real  (*func) ( VIO_Real [], void * ),
     void  *func_data,
-    Real  step_sizes[],
+    VIO_Real  step_sizes[],
     int   n_search_dims,
-    Real  parameters[],
-    Real  best[],
+    VIO_Real  parameters[],
+    VIO_Real  best[],
     int   min_pos[],
     int   max_pos[],
     int   pos[] )
 {
     int   dim, fit_dim, changed_from, n_fit_dims;
-    Real  best_value, value;
+    VIO_Real  best_value, value;
 
     for_less( dim, 0, n_dims )
         best[dim] = current[dim];
@@ -165,7 +165,7 @@ static  Real  take_step(
             for_less( dim, changed_from, n_fit_dims )
             {
                 parameters[fit_dim+dim] = current[fit_dim+dim] +
-                            step_sizes[fit_dim+dim] * (Real) pos[fit_dim+dim];
+                            step_sizes[fit_dim+dim] * (VIO_Real) pos[fit_dim+dim];
             }
 
             value = func( parameters, func_data );

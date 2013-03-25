@@ -35,13 +35,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_po
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  get_baricentric(
+static  VIO_Real  get_baricentric(
     Point       *point,
     Point       *p1,
     Point       *p2,
     Point       *p3 )
 {
-    Real     weight;
+    VIO_Real     weight;
     Vector   hor, up, normal, vert, point_offset;
 
     SUB_POINTS( point_offset, *point, *p1 );
@@ -77,7 +77,7 @@ static  Real  get_baricentric(
 static  void  get_triangle_interpolation_weights(
     Point       *point,
     Point       points[],
-    Real        weights[] )
+    VIO_Real        weights[] )
 {
     weights[0] = get_baricentric( point, &points[1], &points[2], &points[0] );
     weights[1] = get_baricentric( point, &points[2], &points[0], &points[1] );
@@ -101,16 +101,16 @@ static  void  get_triangle_interpolation_weights(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  BOOLEAN  intersect_lines_2d(
-    Real    p1[],
-    Real    p2[],
-    Real    q1[],
-    Real    q2[],
-    Real    intersect[] )
+static  VIO_BOOL  intersect_lines_2d(
+    VIO_Real    p1[],
+    VIO_Real    p2[],
+    VIO_Real    q1[],
+    VIO_Real    q2[],
+    VIO_Real    intersect[] )
 {
-    BOOLEAN  intersects;
-    Real     t, bottom;
-    Real     dp[2], dq[2];
+    VIO_BOOL  intersects;
+    VIO_Real     t, bottom;
+    VIO_Real     dp[2], dq[2];
 
     dp[0] = p2[0] - p1[0];
     dp[1] = p2[1] - p1[1];
@@ -152,19 +152,19 @@ static  BOOLEAN  intersect_lines_2d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  get_two_d_coordinate(
+static  VIO_Real  get_two_d_coordinate(
     Point    *p,
     Point    *p1,
     Point    *p2,
     Point    *q1,
     Point    *q2 )
 {
-    Real     coords[4][2], coord[2], intersect[2];
-    Real     intersect_point[2], len2, dx, dy, idx, idy, factor;
+    VIO_Real     coords[4][2], coord[2], intersect[2];
+    VIO_Real     intersect_point[2], len2, dx, dy, idx, idy, factor;
     Vector   cross, offset, hor, vert, v1, v2;
     int      i, j;
     Point    points[4];
-    BOOLEAN  found;
+    VIO_BOOL  found;
 
     points[0] = *p1;
     points[1] = *p2;
@@ -250,9 +250,9 @@ static  Real  get_two_d_coordinate(
 static  void  get_quadrilateral_interpolation_weights(
     Point       *point,
     Point       points[],
-    Real        weights[] )
+    VIO_Real        weights[] )
 {
-    Real     u, v;
+    VIO_Real     u, v;
 
     u = get_two_d_coordinate( point,
                               &points[0], &points[3], &points[1], &points[2] );
@@ -283,10 +283,10 @@ static  void  get_arbitrary_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
     Point       points[],
-    Real        weights[] )
+    VIO_Real        weights[] )
 {
     int      i, j;
-    Real     sum_weights, alpha, dist;
+    VIO_Real     sum_weights, alpha, dist;
 
     for_less( i, 0, n_points )
         weights[i] = 0.0;
@@ -338,7 +338,7 @@ BICAPI  void  get_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
     Point       points[],
-    Real        weights[] )
+    VIO_Real        weights[] )
 {
     if( n_points == 3 )
     {
@@ -383,7 +383,7 @@ BICAPI  void  map_point_between_polygons(
     Point   poly1_points[MAX_POINTS_PER_POLYGON];
     Point   poly2_points[MAX_POINTS_PER_POLYGON];
     Point   scaled_point;
-    Real    weights[MAX_POINTS_PER_POLYGON];
+    VIO_Real    weights[MAX_POINTS_PER_POLYGON];
 
     size = get_polygon_points( p1, poly_index, poly1_points );
 
@@ -422,13 +422,13 @@ BICAPI  void  map_point_between_polygons(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  map_point_to_unit_sphere(
+BICAPI  VIO_Real  map_point_to_unit_sphere(
     polygons_struct  *p,
     Point            *point,
     polygons_struct  *unit_sphere,
     Point            *unit_sphere_point )
 {
-    Real     mag, dist;
+    VIO_Real     mag, dist;
     Point    poly_point;
     Vector   offset;
     int      poly;
@@ -550,13 +550,13 @@ BICAPI  void  polygon_transform_points(
 }
 
 BICAPI  void  map_sphere_to_uv(
-    Real    x,
-    Real    y,
-    Real    z,
-    Real    *u,
-    Real    *v )
+    VIO_Real    x,
+    VIO_Real    y,
+    VIO_Real    z,
+    VIO_Real    *u,
+    VIO_Real    *v )
 {
-    Real    angle_up, angle_around;
+    VIO_Real    angle_up, angle_around;
 
     angle_up = acos( z );
 
@@ -568,13 +568,13 @@ BICAPI  void  map_sphere_to_uv(
 }
 
 BICAPI  void  map_uv_to_sphere(
-    Real    u,
-    Real    v,
-    Real    *x,
-    Real    *y,
-    Real    *z )
+    VIO_Real    u,
+    VIO_Real    v,
+    VIO_Real    *x,
+    VIO_Real    *y,
+    VIO_Real    *z )
 {
-    Real   r;
+    VIO_Real   r;
 
     *z = cos( (1.0 - v) * PI );
     r = sin( (1.0 - v) * PI );

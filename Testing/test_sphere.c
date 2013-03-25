@@ -6,8 +6,8 @@ int  main(
     char    *argv[] )
 {
     int      i, n_points;
-    Real     dx, dy, dz, dist1, dist2;
-    Real     x_sphere[10], y_sphere[10], z_sphere[10];
+    VIO_Real     dx, dy, dz, dist1, dist2;
+    VIO_Real     x_sphere[10], y_sphere[10], z_sphere[10];
     Point    points[10], vertex;
 
     fill_Point( points[0], 1.0, 0.3, 3.0 );

@@ -123,8 +123,8 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  QUADRATIC_BIVAR( v00, v01, v02, v10, v11, v12, v20, v21, v22, u_parm, v_parm, val ) \
      { \
-         Real  wv0, wv1, wv2; \
-         Real  v0, v1, v2; \
+         VIO_Real  wv0, wv1, wv2; \
+         VIO_Real  v0, v1, v2; \
  \
          COMPUTE_QUADRATIC_COEFFS( v_parm, wv0, wv1, wv2 ); \
  \
@@ -136,11 +136,11 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  QUADRATIC_BIVAR_DERIV( v00, v01, v02, v10, v11, v12, v20, v21, v22, u, v, val, du, dv ) \
      { \
-         Real  wu0, wu1, wu2; \
-         Real  wv0, wv1, wv2; \
-         Real  wdv0, wdv1, wdv2; \
-         Real  v0, v1, v2; \
-         Real  dv0, dv1, dv2; \
+         VIO_Real  wu0, wu1, wu2; \
+         VIO_Real  wv0, wv1, wv2; \
+         VIO_Real  wdv0, wdv1, wdv2; \
+         VIO_Real  v0, v1, v2; \
+         VIO_Real  dv0, dv1, dv2; \
  \
          COMPUTE_QUADRATIC_COEFFS( u_parm, wu0, wu1, wu2 ); \
          COMPUTE_QUADRATIC_COEFFS( v_parm, wv0, wv1, wv2 ); \
@@ -159,14 +159,14 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  QUADRATIC_BIVAR_DERIV2( v00, v01, v02, v10, v11, v12, v20, v21, v22, u_parm, v_parm, val, du, dv, duu, duv, dvv ) \
      { \
-         Real  wu0, wu1, wu2; \
-         Real  wdu0, wdu1, wdu2; \
-         Real  wv0, wv1, wv2; \
-         Real  wdv0, wdv1, wdv2; \
-         Real  wdvv0, wdvv1, wdvv2; \
-         Real  v0, v1, v2; \
-         Real  dv0, dv1, dv2; \
-         Real  dvv0, dvv1, dvv2; \
+         VIO_Real  wu0, wu1, wu2; \
+         VIO_Real  wdu0, wdu1, wdu2; \
+         VIO_Real  wv0, wv1, wv2; \
+         VIO_Real  wdv0, wdv1, wdv2; \
+         VIO_Real  wdvv0, wdvv1, wdvv2; \
+         VIO_Real  v0, v1, v2; \
+         VIO_Real  dv0, dv1, dv2; \
+         VIO_Real  dvv0, dvv1, dvv2; \
  \
          COMPUTE_QUADRATIC_COEFFS( u_parm, wu0, wu1, wu2 ); \
          COMPUTE_QUADRATIC_DERIV_COEFFS( u_parm, wdu0, wdu1, wdu2 ); \
@@ -191,10 +191,10 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  QUADRATIC_TRIVAR( c, u_parm, v_parm, w_parm, val ) \
     { \
-         Real  wv0, wv1, wv2; \
-         Real  ww0, ww1, ww2; \
-         Real  v00, v01, v02, v10, v11, v12, v20, v21, v22; \
-         Real  v0, v1, v2; \
+         VIO_Real  wv0, wv1, wv2; \
+         VIO_Real  ww0, ww1, ww2; \
+         VIO_Real  v00, v01, v02, v10, v11, v12, v20, v21, v22; \
+         VIO_Real  v0, v1, v2; \
  \
          COMPUTE_QUADRATIC_COEFFS( v_parm, wv0, wv1, wv2 ); \
          COMPUTE_QUADRATIC_COEFFS( w_parm, ww0, ww1, ww2 ); \
@@ -220,16 +220,16 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  QUADRATIC_TRIVAR_DERIV( c, u_parm, v_parm, w_parm, val, du, dv, dw ) \
     { \
-         Real  wu0, wu1, wu2; \
-         Real  wv0, wv1, wv2; \
-         Real  wdv0, wdv1, wdv2; \
-         Real  ww0, ww1, ww2; \
-         Real  wdw0, wdw1, wdw2; \
-         Real  v00, v01, v02, v10, v11, v12, v20, v21, v22; \
-         Real  dw00, dw01, dw02, dw10, dw11, dw12, dw20, dw21, dw22; \
-         Real  v0, v1, v2; \
-         Real  dv0, dv1, dv2; \
-         Real  dw0, dw1, dw2; \
+         VIO_Real  wu0, wu1, wu2; \
+         VIO_Real  wv0, wv1, wv2; \
+         VIO_Real  wdv0, wdv1, wdv2; \
+         VIO_Real  ww0, ww1, ww2; \
+         VIO_Real  wdw0, wdw1, wdw2; \
+         VIO_Real  v00, v01, v02, v10, v11, v12, v20, v21, v22; \
+         VIO_Real  dw00, dw01, dw02, dw10, dw11, dw12, dw20, dw21, dw22; \
+         VIO_Real  v0, v1, v2; \
+         VIO_Real  dv0, dv1, dv2; \
+         VIO_Real  dw0, dw1, dw2; \
  \
          COMPUTE_QUADRATIC_COEFFS( u_parm, wu0, wu1, wu2 ); \
          COMPUTE_QUADRATIC_COEFFS( v_parm, wv0, wv1, wv2 ); \
@@ -278,23 +278,23 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  QUADRATIC_TRIVAR_DERIV2( c, u_parm, v_parm, w_parm, val, du, dv, dw, duu, duv, duw, dvv, dvw, dww ) \
     { \
-         Real  wu0, wu1, wu2; \
-         Real  wdu0, wdu1, wdu2; \
-         Real  wv0, wv1, wv2; \
-         Real  wdv0, wdv1, wdv2; \
-         Real  wdvv0, wdvv1, wdvv2; \
-         Real  ww0, ww1, ww2; \
-         Real  wdw0, wdw1, wdw2; \
-         Real  wdww0, wdww1, wdww2; \
-         Real  v00, v01, v02, v10, v11, v12, v20, v21, v22; \
-         Real  dw00, dw01, dw02, dw10, dw11, dw12, dw20, dw21, dw22; \
-         Real  dww00, dww01, dww02, dww10, dww11, dww12, dww20, dww21,dww22;\
-         Real  v0, v1, v2; \
-         Real  dv0, dv1, dv2; \
-         Real  dvv0, dvv1, dvv2; \
-         Real  dw0, dw1, dw2; \
-         Real  dww0, dww1, dww2; \
-         Real  dvw0, dvw1, dvw2; \
+         VIO_Real  wu0, wu1, wu2; \
+         VIO_Real  wdu0, wdu1, wdu2; \
+         VIO_Real  wv0, wv1, wv2; \
+         VIO_Real  wdv0, wdv1, wdv2; \
+         VIO_Real  wdvv0, wdvv1, wdvv2; \
+         VIO_Real  ww0, ww1, ww2; \
+         VIO_Real  wdw0, wdw1, wdw2; \
+         VIO_Real  wdww0, wdww1, wdww2; \
+         VIO_Real  v00, v01, v02, v10, v11, v12, v20, v21, v22; \
+         VIO_Real  dw00, dw01, dw02, dw10, dw11, dw12, dw20, dw21, dw22; \
+         VIO_Real  dww00, dww01, dww02, dww10, dww11, dww12, dww20, dww21,dww22;\
+         VIO_Real  v0, v1, v2; \
+         VIO_Real  dv0, dv1, dv2; \
+         VIO_Real  dvv0, dvv1, dvv2; \
+         VIO_Real  dw0, dw1, dw2; \
+         VIO_Real  dww0, dww1, dww2; \
+         VIO_Real  dvw0, dvw1, dvw2; \
  \
          COMPUTE_QUADRATIC_COEFFS( u_parm, wu0, wu1, wu2 ); \
          COMPUTE_QUADRATIC_COEFFS( v_parm, wv0, wv1, wv2 ); \
@@ -496,8 +496,8 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  CUBIC_BIVAR(cv,u_parm,v_parm,val) \
      { \
-         Real  wv0, wv1, wv2, wv3; \
-         Real  v0, v1, v2, v3; \
+         VIO_Real  wv0, wv1, wv2, wv3; \
+         VIO_Real  v0, v1, v2, v3; \
  \
          COMPUTE_CUBIC_COEFFS( v_parm, wv0, wv1, wv2, wv3 ); \
  \
@@ -508,11 +508,11 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  CUBIC_BIVAR_DERIV( cv, u_parm, v_parm, val, du, dv ) \
      { \
-         Real  wu0, wu1, wu2, wu3; \
-         Real  wv0, wv1, wv2, wv3; \
-         Real  wdv0, wdv1, wdv2, wdv3; \
-         Real  v0, v1, v2, v3; \
-         Real  dv0, dv1, dv2, dv3; \
+         VIO_Real  wu0, wu1, wu2, wu3; \
+         VIO_Real  wv0, wv1, wv2, wv3; \
+         VIO_Real  wdv0, wdv1, wdv2, wdv3; \
+         VIO_Real  v0, v1, v2, v3; \
+         VIO_Real  dv0, dv1, dv2, dv3; \
  \
          COMPUTE_CUBIC_COEFFS( u_parm, wu0, wu1, wu2, wu3 ); \
          COMPUTE_CUBIC_COEFFS( v_parm, wv0, wv1, wv2, wv3 ); \
@@ -528,14 +528,14 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  CUBIC_BIVAR_DERIV2( cv, u_parm, v_parm, val, du, dv, duu, duv, dvv ) \
      { \
-         Real  wu0, wu1, wu2, wu3; \
-         Real  wdu0, wdu1, wdu2, wdu3; \
-         Real  wv0, wv1, wv2, wv3; \
-         Real  wdv0, wdv1, wdv2, wdv3; \
-         Real  wdvv0, wdvv1, wdvv2, wdvv3; \
-         Real  v0, v1, v2, v3; \
-         Real  dv0, dv1, dv2, dv3; \
-         Real  dvv0, dvv1, dvv2, dvv3; \
+         VIO_Real  wu0, wu1, wu2, wu3; \
+         VIO_Real  wdu0, wdu1, wdu2, wdu3; \
+         VIO_Real  wv0, wv1, wv2, wv3; \
+         VIO_Real  wdv0, wdv1, wdv2, wdv3; \
+         VIO_Real  wdvv0, wdvv1, wdvv2, wdvv3; \
+         VIO_Real  v0, v1, v2, v3; \
+         VIO_Real  dv0, dv1, dv2, dv3; \
+         VIO_Real  dvv0, dvv1, dvv2, dvv3; \
  \
          COMPUTE_CUBIC_COEFFS( u_parm, wu0, wu1, wu2, wu3 ); \
          COMPUTE_CUBIC_DERIV_COEFFS( u_parm, wdu0, wdu1, wdu2, wdu3 ); \
@@ -557,11 +557,11 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  CUBIC_TRIVAR( c, u_parm, v_parm, w_parm, val ) \
     { \
-         Real  wv0, wv1, wv2, wv3; \
-         Real  ww0, ww1, ww2, ww3; \
-         Real  v00, v01, v02, v03, v10, v11, v12, v13; \
-         Real  v20, v21, v22, v23, v30, v31, v32, v33; \
-         Real  v0, v1, v2, v3; \
+         VIO_Real  wv0, wv1, wv2, wv3; \
+         VIO_Real  ww0, ww1, ww2, ww3; \
+         VIO_Real  v00, v01, v02, v03, v10, v11, v12, v13; \
+         VIO_Real  v20, v21, v22, v23, v30, v31, v32, v33; \
+         VIO_Real  v0, v1, v2, v3; \
  \
          COMPUTE_CUBIC_COEFFS( v_parm, wv0, wv1, wv2, wv3 ); \
          COMPUTE_CUBIC_COEFFS( w_parm, ww0, ww1, ww2, ww3 ); \
@@ -578,18 +578,18 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  CUBIC_TRIVAR_DERIV( c, u_parm, v_parm, w_parm, val, deriv_u, deriv_v, deriv_w ) \
     { \
-         Real  wu0, wu1, wu2, wu3; \
-         Real  wv0, wv1, wv2, wv3; \
-         Real  wdv0, wdv1, wdv2, wdv3; \
-         Real  ww0, ww1, ww2, ww3; \
-         Real  wdw0, wdw1, wdw2, wdw3; \
-         Real  v00, v01, v02, v03, v10, v11, v12, v13; \
-         Real  v20, v21, v22, v23, v30, v31, v32, v33; \
-         Real  dw00, dw01, dw02, dw03, dw10, dw11, dw12, dw13; \
-         Real  dw20, dw21, dw22, dw23, dw30, dw31, dw32, dw33; \
-         Real  v0, v1, v2, v3; \
-         Real  dv0, dv1, dv2, dv3; \
-         Real  dw0, dw1, dw2, dw3; \
+         VIO_Real  wu0, wu1, wu2, wu3; \
+         VIO_Real  wv0, wv1, wv2, wv3; \
+         VIO_Real  wdv0, wdv1, wdv2, wdv3; \
+         VIO_Real  ww0, ww1, ww2, ww3; \
+         VIO_Real  wdw0, wdw1, wdw2, wdw3; \
+         VIO_Real  v00, v01, v02, v03, v10, v11, v12, v13; \
+         VIO_Real  v20, v21, v22, v23, v30, v31, v32, v33; \
+         VIO_Real  dw00, dw01, dw02, dw03, dw10, dw11, dw12, dw13; \
+         VIO_Real  dw20, dw21, dw22, dw23, dw30, dw31, dw32, dw33; \
+         VIO_Real  v0, v1, v2, v3; \
+         VIO_Real  dv0, dv1, dv2, dv3; \
+         VIO_Real  dw0, dw1, dw2, dw3; \
  \
          COMPUTE_CUBIC_COEFFS( u_parm, wu0, wu1, wu2, wu3 ); \
          COMPUTE_CUBIC_COEFFS( v_parm, wv0, wv1, wv2, wv3 ); \
@@ -619,26 +619,26 @@ static char splines_rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Include
 
 #define  CUBIC_TRIVAR_DERIV2( c, u_parm, v_parm, w_parm, val, deriv_u, deriv_v, deriv_w, deriv_uu, deriv_uv, deriv_uw, deriv_vv, deriv_vw, deriv_ww ) \
     { \
-         Real  wu0, wu1, wu2, wu3; \
-         Real  wdu0, wdu1, wdu2, wdu3; \
-         Real  wv0, wv1, wv2, wv3; \
-         Real  wdv0, wdv1, wdv2, wdv3; \
-         Real  wdvv0, wdvv1, wdvv2, wdvv3; \
-         Real  ww0, ww1, ww2, ww3; \
-         Real  wdw0, wdw1, wdw2, wdw3; \
-         Real  wdww0, wdww1, wdww2, wdww3; \
-         Real  v00, v01, v02, v03, v10, v11, v12, v13; \
-         Real  v20, v21, v22, v23, v30, v31, v32, v33; \
-         Real  dw00, dw01, dw02, dw03, dw10, dw11, dw12, dw13; \
-         Real  dw20, dw21, dw22, dw23, dw30, dw31, dw32, dw33; \
-         Real  dww00, dww01, dww02, dww03, dww10, dww11, dww12, dww13; \
-         Real  dww20, dww21, dww22, dww23, dww30, dww31, dww32, dww33; \
-         Real  v0, v1, v2, v3; \
-         Real  dv0, dv1, dv2, dv3; \
-         Real  dvv0, dvv1, dvv2, dvv3; \
-         Real  dw0, dw1, dw2, dw3; \
-         Real  dww0, dww1, dww2, dww3; \
-         Real  dvw0, dvw1, dvw2, dvw3; \
+         VIO_Real  wu0, wu1, wu2, wu3; \
+         VIO_Real  wdu0, wdu1, wdu2, wdu3; \
+         VIO_Real  wv0, wv1, wv2, wv3; \
+         VIO_Real  wdv0, wdv1, wdv2, wdv3; \
+         VIO_Real  wdvv0, wdvv1, wdvv2, wdvv3; \
+         VIO_Real  ww0, ww1, ww2, ww3; \
+         VIO_Real  wdw0, wdw1, wdw2, wdw3; \
+         VIO_Real  wdww0, wdww1, wdww2, wdww3; \
+         VIO_Real  v00, v01, v02, v03, v10, v11, v12, v13; \
+         VIO_Real  v20, v21, v22, v23, v30, v31, v32, v33; \
+         VIO_Real  dw00, dw01, dw02, dw03, dw10, dw11, dw12, dw13; \
+         VIO_Real  dw20, dw21, dw22, dw23, dw30, dw31, dw32, dw33; \
+         VIO_Real  dww00, dww01, dww02, dww03, dww10, dww11, dww12, dww13; \
+         VIO_Real  dww20, dww21, dww22, dww23, dww30, dww31, dww32, dww33; \
+         VIO_Real  v0, v1, v2, v3; \
+         VIO_Real  dv0, dv1, dv2, dv3; \
+         VIO_Real  dvv0, dvv1, dvv2, dvv3; \
+         VIO_Real  dw0, dw1, dw2, dw3; \
+         VIO_Real  dww0, dww1, dww2, dww3; \
+         VIO_Real  dvw0, dvw1, dvw2, dvw3; \
  \
          COMPUTE_CUBIC_COEFFS( u_parm, wu0, wu1, wu2, wu3 ); \
          COMPUTE_CUBIC_COEFFS( v_parm, wv0, wv1, wv2, wv3 ); \

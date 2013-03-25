@@ -3,10 +3,10 @@
 BICAPI void  initialize_resample_volume(
     resample_struct      *resample,
     Volume               src_volume,
-    General_transform    *dest_to_src_transform,
+    VIO_General_transform    *dest_to_src_transform,
     Volume               dest_volume )
 {
-    General_transform  inverse, tmp;
+    VIO_General_transform  inverse, tmp;
 
     resample->src_volume = src_volume;
     resample->dest_volume = dest_volume;
@@ -16,7 +16,7 @@ BICAPI void  initialize_resample_volume(
     copy_general_transform( get_voxel_to_world_transform(dest_volume),
                             &resample->transform );
 
-    if( dest_to_src_transform != (General_transform *) NULL )
+    if( dest_to_src_transform != (VIO_General_transform *) NULL )
     {
         create_inverse_general_transform( dest_to_src_transform, &inverse );
 
@@ -33,17 +33,17 @@ BICAPI void  initialize_resample_volume(
     resample->transform = tmp;
 }
 
-BICAPI BOOLEAN  do_more_resampling(
+BICAPI VIO_BOOL  do_more_resampling(
     resample_struct  *resample,
-    Real             max_seconds,
-    Real             *fraction_done )
+    VIO_Real             max_seconds,
+    VIO_Real             *fraction_done )
 {
-    Real            value;
-    BOOLEAN         linear;
+    VIO_Real            value;
+    VIO_BOOL         linear;
     Vector          z_axis;
     int             z;
-    Real            xv, yv, zv, voxel[MAX_DIMENSIONS];
-    Real            end_time;
+    VIO_Real            xv, yv, zv, voxel[MAX_DIMENSIONS];
+    VIO_Real            end_time;
     int             dest_sizes[MAX_DIMENSIONS], src_sizes[MAX_DIMENSIONS];
 
     if( max_seconds >= 0.0 )
@@ -65,9 +65,9 @@ BICAPI BOOLEAN  do_more_resampling(
         {
             if( !linear || z == 0 )
                 general_transform_point( &resample->transform,
-                                         (Real) resample->x,
-                                         (Real) resample->y,
-                                         (Real) z,
+                                         (VIO_Real) resample->x,
+                                         (VIO_Real) resample->y,
+                                         (VIO_Real) z,
                                          &xv, &yv, &zv );
 
             voxel[X] = xv;
@@ -82,9 +82,9 @@ BICAPI BOOLEAN  do_more_resampling(
 
             if( linear )
             {
-                xv += (Real) Vector_x(z_axis);
-                yv += (Real) Vector_y(z_axis);
-                zv += (Real) Vector_z(z_axis);
+                xv += (VIO_Real) Vector_x(z_axis);
+                yv += (VIO_Real) Vector_y(z_axis);
+                zv += (VIO_Real) Vector_z(z_axis);
             }
         }
 
@@ -99,20 +99,20 @@ BICAPI BOOLEAN  do_more_resampling(
             break;
     }
 
-    *fraction_done = (Real) (resample->x * dest_sizes[Y] + resample->y) /
-                     (Real) dest_sizes[Y] / (Real) dest_sizes[X];
+    *fraction_done = (VIO_Real) (resample->x * dest_sizes[Y] + resample->y) /
+                     (VIO_Real) dest_sizes[Y] / (VIO_Real) dest_sizes[X];
 
     return( resample->x < dest_sizes[X] );
 }
 
 BICAPI void  resample_volume(
     Volume                   src_volume,
-    General_transform        *dest_to_src_transform,
+    VIO_General_transform        *dest_to_src_transform,
     Volume                   dest_volume )
 {
     static const     int  FACTOR = 1000;
     resample_struct  resample;
-    Real             amount_done;
+    VIO_Real             amount_done;
     progress_struct  progress;
 
     initialize_resample_volume( &resample, src_volume, dest_to_src_transform,
@@ -122,7 +122,7 @@ BICAPI void  resample_volume(
 
     while( do_more_resampling( &resample, 5.0, &amount_done ) )
     {
-        update_progress_report( &progress, ROUND(amount_done*(Real)FACTOR) );
+        update_progress_report( &progress, ROUND(amount_done*(VIO_Real)FACTOR) );
     }
 
     terminate_progress_report( &progress );

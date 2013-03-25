@@ -61,7 +61,7 @@ BICAPI  void  delete_the_bintree(
 
 static  void  check_install_bintree_delete_function( void )
 {
-    static  BOOLEAN  first = TRUE;
+    static  VIO_BOOL  first = TRUE;
 
     if( first )
     {
@@ -110,7 +110,7 @@ BICAPI  void  create_lines_bintree(
     lines_struct   *lines,
     int            max_nodes )
 {
-    Real             radius;
+    VIO_Real             radius;
     int              line, size, n_segments, seg, object_id;
     range_struct     *bound_vols;
     Point            min_range, max_range;
@@ -126,7 +126,7 @@ BICAPI  void  create_lines_bintree(
 
     ALLOC( bound_vols, n_segments );
 
-    radius = (Real) lines->line_thickness;
+    radius = (VIO_Real) lines->line_thickness;
 
     object_id = 0;
     for_less( line, 0, lines->n_items )
@@ -142,17 +142,17 @@ BICAPI  void  create_lines_bintree(
 
             get_range_points( 2, points, &min_range, &max_range );
             bound_vols[object_id].limits[X][0] =
-                                 (float) ((Real) Point_x(min_range) - radius);
+                                 (float) ((VIO_Real) Point_x(min_range) - radius);
             bound_vols[object_id].limits[Y][0] =
-                                 (float) ((Real) Point_y(min_range) - radius);
+                                 (float) ((VIO_Real) Point_y(min_range) - radius);
             bound_vols[object_id].limits[Z][0] =
-                                 (float) ((Real) Point_z(min_range) - radius);
+                                 (float) ((VIO_Real) Point_z(min_range) - radius);
             bound_vols[object_id].limits[X][1] =
-                                 (float) ((Real) Point_x(max_range) + radius);
+                                 (float) ((VIO_Real) Point_x(max_range) + radius);
             bound_vols[object_id].limits[Y][1] =
-                                 (float) ((Real) Point_y(max_range) + radius);
+                                 (float) ((VIO_Real) Point_y(max_range) + radius);
             bound_vols[object_id].limits[Z][1] =
-                                 (float) ((Real) Point_z(max_range) + radius);
+                                 (float) ((VIO_Real) Point_z(max_range) + radius);
             ++object_id;
         }
     }

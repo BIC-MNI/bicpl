@@ -5,17 +5,17 @@ int  main(
     char  *argv[] )
 {
     int            n_alloced, x_size, y_size, i, sizes[MAX_DIMENSIONS];
-    Real           intensity, separations[MAX_DIMENSIONS];
-    Real           min_value, max_value;
-    Real           x_axis[N_DIMENSIONS];
-    Real           y_axis[N_DIMENSIONS];
-    Real           origin[N_DIMENSIONS];
+    VIO_Real           intensity, separations[MAX_DIMENSIONS];
+    VIO_Real           min_value, max_value;
+    VIO_Real           x_axis[N_DIMENSIONS];
+    VIO_Real           y_axis[N_DIMENSIONS];
+    VIO_Real           origin[N_DIMENSIONS];
     int            used_x_viewport_size, used_y_viewport_size, n_iters;
-    Real           start_time, end_time;
+    VIO_Real           start_time, end_time;
     pixels_struct  pixels;
     Volume         volume;
-    Real           x_scale, y_scale, x_translation, y_translation;
-    Real           slice_fit_oversize = 0.1;
+    VIO_Real           x_scale, y_scale, x_translation, y_translation;
+    VIO_Real           slice_fit_oversize = 0.1;
     Colour         *rgb_map;
     char           *filename;
     static char    *dim_names[] = { MIxspace, MIyspace, MIzspace };
@@ -44,13 +44,13 @@ int  main(
 
     for_less( i, 0, (int) max_value+1 )
     {
-        intensity = (Real) i / max_value;
+        intensity = (VIO_Real) i / max_value;
         rgb_map[i] = make_Colour_0_1( intensity, intensity, intensity );
     }
 
     origin[X] = 0.0;
     origin[Y] = 0.0;
-    origin[Z] = (Real) (sizes[Z] - 1) / 2.0;
+    origin[Z] = (VIO_Real) (sizes[Z] - 1) / 2.0;
     x_axis[X] = 1.0;
     x_axis[Y] = 0.0;
     x_axis[Z] = 0.0;
@@ -72,7 +72,7 @@ int  main(
                          x_translation, y_translation,
                          x_scale, y_scale,
                          (Volume) NULL, BOX_FILTER, 0.0,
-                         (Real *) NULL, (Real *) NULL, (Real *) NULL,
+                         (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                          0.0, 0.0, 0.0, 0.0,
                          x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, FALSE,
                          (unsigned short **) NULL,
@@ -81,7 +81,7 @@ int  main(
 
     end_time = current_cpu_seconds();
 
-    print( "Time: %g per render.\n", (end_time - start_time) / (Real) n_iters );
+    print( "Time: %g per render.\n", (end_time - start_time) / (VIO_Real) n_iters );
 
     return( 0 );
 }

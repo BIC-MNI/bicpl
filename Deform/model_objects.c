@@ -5,11 +5,11 @@
 static  void  set_deformation_model(
     deformation_model_struct  *model,
     int                       up_to_n_points,
-    Real                      model_weight,
+    VIO_Real                      model_weight,
     Deformation_model_types   model_type,
     object_struct             *model_object,
-    Real                      min_curvature_offset,
-    Real                      max_curvature_offset );
+    VIO_Real                      min_curvature_offset,
+    VIO_Real                      max_curvature_offset );
 
 BICAPI  void  initialize_deformation_model(
     deformation_model_struct  *model )
@@ -53,11 +53,11 @@ static  void  delete_deform_model(
 static  void  set_deformation_model(
     deformation_model_struct  *model,
     int                       up_to_n_points,
-    Real                      model_weight,
+    VIO_Real                      model_weight,
     Deformation_model_types   model_type,
     object_struct             *model_object,
-    Real                      min_curvature_offset,
-    Real                      max_curvature_offset )
+    VIO_Real                      min_curvature_offset,
+    VIO_Real                      max_curvature_offset )
 {
     int    i, model_index;
 
@@ -164,10 +164,10 @@ BICAPI  void  print_deformation_model(
 BICAPI  Status   add_deformation_model(
     deformation_model_struct   *deformation_model,
     int                        up_to_n_points,
-    Real                       model_weight,
+    VIO_Real                       model_weight,
     char                       model_filename[],
-    Real                       min_curvature_offset,
-    Real                       max_curvature_offset )
+    VIO_Real                       min_curvature_offset,
+    VIO_Real                       max_curvature_offset )
 {
     Status                    status;
     int                       n_objects;
@@ -237,7 +237,7 @@ BICAPI  void  delete_deformation_model(
 BICAPI  Status  input_original_positions(
     deformation_model_struct  *deform_model,
     char                      position_filename[],
-    Real                      max_position_offset,
+    VIO_Real                      max_position_offset,
     int                       n_deforming_points )
 {
     Status            status, input_status;
@@ -309,7 +309,7 @@ static  void  compute_line_model_info(
     int      size, axis, a1, a2, start_index, end_index, vertex_index;
     int      point_index, neighbours[2], i;
     Vector   dir_to_next;
-    BOOLEAN  closed;
+    VIO_BOOL  closed;
 
     axis = find_axial_plane( lines );
     a1 = (axis + 1) % 3;
@@ -358,7 +358,7 @@ static  void  compute_polygons_model_info(
 {
     Smallest_int   *points_done;
     int            p, size, poly, vertex_index, point_index;
-    Real           base_length, curvature;
+    VIO_Real           base_length, curvature;
 
     ALLOC( points_done, polygons->n_points );
 
@@ -391,13 +391,13 @@ static  void  compute_polygons_model_info(
     FREE( points_done );
 }
 
-static  BOOLEAN  check_correct_general_polygons(
+static  VIO_BOOL  check_correct_general_polygons(
     polygons_struct      *polygons,
     deform_model_struct  *model )
 {
     int               i, n_up, n_model_up, n_polygon_points;
-    BOOLEAN           sphere_topology, model_sphere_topology;
-    BOOLEAN           tetra_topology, model_tetra_topology;
+    VIO_BOOL           sphere_topology, model_sphere_topology;
+    VIO_BOOL           tetra_topology, model_tetra_topology;
     polygons_struct   *model_polygons, *resized_model_polygons;
     polygons_struct   resized_polygons, half_polygons;
 
@@ -513,13 +513,13 @@ static  BOOLEAN  check_correct_general_polygons(
     return( TRUE );
 }
 
-static  BOOLEAN  check_correct_parametric_polygons(
+static  VIO_BOOL  check_correct_parametric_polygons(
     polygons_struct       *polygons,
     deform_model_struct   *model )
 {
     int               n_up, n_model_up, n_polygon_points, n_items;
     Point             centre;
-    BOOLEAN           model_sphere_topology, sphere_topology, correct;
+    VIO_BOOL           model_sphere_topology, sphere_topology, correct;
     polygons_struct   *model_polygons;
 
     n_polygon_points = MIN( model->up_to_n_points, polygons->n_points );
@@ -570,13 +570,13 @@ static  BOOLEAN  check_correct_parametric_polygons(
     return( correct );
 }
 
-static  BOOLEAN  check_correct_subsampled_polygons(
+static  VIO_BOOL  check_correct_subsampled_polygons(
     polygons_struct       *polygons,
     deform_model_struct   *model )
 {
     int               n_up, n_model_up, n_polygon_points, n_items;
     Point             centre;
-    BOOLEAN           model_sphere_topology, sphere_topology;
+    VIO_BOOL           model_sphere_topology, sphere_topology;
     polygons_struct   *model_polygons;
 
     sphere_topology = get_tessellation_of_polygons_sphere( polygons, &n_up);
@@ -625,11 +625,11 @@ static  BOOLEAN  check_correct_subsampled_polygons(
     return( TRUE );
 }
 
-static  BOOLEAN  check_correct_model_polygons(
+static  VIO_BOOL  check_correct_model_polygons(
     polygons_struct       *polygons,
     deform_model_struct   *model )
 {
-    BOOLEAN   correct;
+    VIO_BOOL   correct;
 
     if( model->model_type == PARAMETRIC_MODEL )
         correct = check_correct_parametric_polygons( polygons, model );
@@ -643,12 +643,12 @@ static  BOOLEAN  check_correct_model_polygons(
     return( correct );
 }
 
-BICAPI  BOOLEAN  check_correct_deformation_polygons(
+BICAPI  VIO_BOOL  check_correct_deformation_polygons(
     polygons_struct            *polygons,
     deformation_model_struct   *model )
 {
     int              model_index;
-    BOOLEAN          model_correct;
+    VIO_BOOL          model_correct;
 
     model_index = 0;
 
@@ -674,7 +674,7 @@ BICAPI  BOOLEAN  check_correct_deformation_polygons(
     return( model_correct );
 }
 
-static  BOOLEAN  check_correct_general_lines(
+static  VIO_BOOL  check_correct_general_lines(
     lines_struct         *lines,
     deform_model_struct  *model )
 {
@@ -723,12 +723,12 @@ static  BOOLEAN  check_correct_general_lines(
     return( TRUE );
 }
 
-static  BOOLEAN  check_correct_parametric_lines(
+static  VIO_BOOL  check_correct_parametric_lines(
     lines_struct          *lines,
     deform_model_struct   *model )
 {
     Point             centre;
-    BOOLEAN           correct;
+    VIO_BOOL           correct;
     lines_struct      *model_lines;
 
     if( model->model_object != (object_struct *) NULL )
@@ -755,11 +755,11 @@ static  BOOLEAN  check_correct_parametric_lines(
     return( correct );
 }
 
-static  BOOLEAN  check_correct_model_lines(
+static  VIO_BOOL  check_correct_model_lines(
     lines_struct          *lines,
     deform_model_struct   *model )
 {
-    BOOLEAN   correct;
+    VIO_BOOL   correct;
 
     if( model->model_type == PARAMETRIC_MODEL )
         correct = check_correct_parametric_lines( lines, model );
@@ -771,12 +771,12 @@ static  BOOLEAN  check_correct_model_lines(
     return( correct );
 }
 
-BICAPI  BOOLEAN  check_correct_deformation_lines(
+BICAPI  VIO_BOOL  check_correct_deformation_lines(
     lines_struct               *lines,
     deformation_model_struct   *model )
 {
     int              model_index;
-    BOOLEAN          model_correct;
+    VIO_BOOL          model_correct;
 
     model_index = 0;
 

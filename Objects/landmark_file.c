@@ -58,7 +58,7 @@ BICAPI  Status   input_landmark_file(
     Volume         volume,
     STRING         filename,
     Colour         colour,
-    Real           size,
+    VIO_Real           size,
     Marker_types   type,
     int            *n_objects,
     object_struct  **object_list[] )
@@ -113,7 +113,7 @@ BICAPI  Status  io_tag_point(
     FILE            *file,
     IO_types        io_direction,
     Volume          volume,
-    Real            size,
+    VIO_Real            size,
     marker_struct   *marker )
 {
     Status   status;
@@ -121,9 +121,9 @@ BICAPI  Status  io_tag_point(
     Point    position;
     int      sizes[MAX_DIMENSIONS];
     int      len, offset;
-    Real     voxel[MAX_DIMENSIONS];
-    Real     x, y, z;
-    Real     x_w, y_w, z_w;
+    VIO_Real     voxel[MAX_DIMENSIONS];
+    VIO_Real     x, y, z;
+    VIO_Real     x_w, y_w, z_w;
 
     status = OK;
 
@@ -142,9 +142,9 @@ BICAPI  Status  io_tag_point(
         else
         {
             convert_world_to_voxel( volume,
-                                    (Real) Point_x(marker->position),
-                                    (Real) Point_y(marker->position),
-                                    (Real) Point_z(marker->position),
+                                    (VIO_Real) Point_x(marker->position),
+                                    (VIO_Real) Point_y(marker->position),
+                                    (VIO_Real) Point_z(marker->position),
                                     voxel );
 
             get_volume_sizes( volume, sizes );
@@ -173,9 +173,9 @@ BICAPI  Status  io_tag_point(
         {
             get_volume_sizes( volume, sizes );
 
-            convert_talairach_to_voxel( (Real) Point_x(position),
-                                        (Real) Point_y(position),
-                                        (Real) Point_z(position),
+            convert_talairach_to_voxel( (VIO_Real) Point_x(position),
+                                        (VIO_Real) Point_y(position),
+                                        (VIO_Real) Point_z(position),
                                         sizes[X], sizes[Y], sizes[Z],
                                         &voxel[X], &voxel[Y], &voxel[Z] );
 

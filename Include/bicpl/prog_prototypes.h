@@ -11,19 +11,19 @@ BICAPI  void  initialize_argument_processing(
     int     argc,
     char    *argv[] );
 
-BICAPI  BOOLEAN  get_int_argument(
+BICAPI  VIO_BOOL  get_int_argument(
     int   default_value,
     int   *value );
 
-BICAPI  BOOLEAN  get_real_argument(
-    Real   default_value,
-    Real   *value );
+BICAPI  VIO_BOOL  get_real_argument(
+    VIO_Real   default_value,
+    VIO_Real   *value );
 
-BICAPI  BOOLEAN  get_string_argument(
+BICAPI  VIO_BOOL  get_string_argument(
     STRING   default_value,
     STRING   *value );
 
-BICAPI  BOOLEAN  get_prefix_argument(
+BICAPI  VIO_BOOL  get_prefix_argument(
     STRING  prefix );
 
 BICAPI  Status  input_globals_file(
@@ -58,7 +58,7 @@ BICAPI  void  set_random_seed( int seed );
 
 BICAPI  int  get_random_int( int n );
 
-BICAPI  Real  get_random_0_to_1( void );
+BICAPI  VIO_Real  get_random_0_to_1( void );
 
 BICAPI  void  start_timing( void );
 

@@ -11,7 +11,7 @@ int  main(
     int                  *n_neighbours, **neighbours;
     object_struct        **objects;
     polygons_struct      *polygons;
-    Real                 curvature_distance, *curvatures;
+    VIO_Real                 curvature_distance, *curvatures;
 
     initialize_argument_processing( argc, argv );
 

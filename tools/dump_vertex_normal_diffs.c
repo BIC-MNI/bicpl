@@ -9,7 +9,7 @@ int  main(
     int            i, n, n_objects1, n_objects2, n_normals1, n_normals2;
     Vector          *normals1, *normals2;
 	 Point          p1, p2;
-    Real           dist;
+    VIO_Real           dist;
     File_formats   format;
     object_struct  **object_list1, **object_list2;
 

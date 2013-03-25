@@ -106,7 +106,7 @@ private  void   merge_polygons(
     int               n_points, *translation[2], p, poly, size, vertex;
     int               n_indices, ind, new_index, point_index;
     int               n_pairs;
-    Real              *x1, *y1, *x2, *y2, x_trans, y_trans;
+    VIO_Real              *x1, *y1, *x2, *y2, x_trans, y_trans;
     Point             point;
     polygons_struct   in[2];
     int               *pair_index;

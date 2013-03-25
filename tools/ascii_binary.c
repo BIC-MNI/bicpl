@@ -21,7 +21,7 @@ int  main(
     int            n_objects;
     File_formats   format, file_format;
     object_struct  **object_list;
-    BOOLEAN        format_specified;
+    VIO_BOOL        format_specified;
 
     initialize_argument_processing( argc, argv );
 

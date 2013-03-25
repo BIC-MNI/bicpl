@@ -36,15 +36,15 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/gauss
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
+static  VIO_BOOL  scaled_maximal_pivoting_gaussian_elimination_float(
     int    n,
     float  **coefs,
     int    n_values,
     float  **values )
 {
     int       i, j, v, *row;
-    Real      **a, **solution;
-    BOOLEAN   success;
+    VIO_Real      **a, **solution;
+    VIO_BOOL   success;
 
     ALLOC( row, n );
     ALLOC2D( a, n, n );
@@ -53,9 +53,9 @@ static  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
     for_less( i, 0, n )
     {
         for_less( j, 0, n )
-            a[i][j] = (Real) coefs[i][j];
+            a[i][j] = (VIO_Real) coefs[i][j];
         for_less( v, 0, n_values )
-            solution[i][v] = (Real) values[v][i];
+            solution[i][v] = (VIO_Real) values[v][i];
     }
 
     success = scaled_maximal_pivoting_gaussian_elimination( n, row, a, n_values,
@@ -94,7 +94,7 @@ static  BOOLEAN  scaled_maximal_pivoting_gaussian_elimination_float(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  solve_linear_system_float(
+BICAPI  VIO_BOOL  solve_linear_system_float(
     int    n,
     float  **coefs,
     float  values[],
@@ -123,13 +123,13 @@ BICAPI  BOOLEAN  solve_linear_system_float(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  invert_square_matrix_float(
+BICAPI  VIO_BOOL  invert_square_matrix_float(
     int    n,
     float  **matrix,
     float  **inverse )
 {
     float     tmp;
-    BOOLEAN   success;
+    VIO_BOOL   success;
     int       i, j;
 
     for_less( i, 0, n )

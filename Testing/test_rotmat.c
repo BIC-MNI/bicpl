@@ -5,8 +5,8 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    Real        x_rot, y_rot, z_rot;
-    Real        **mat, angles[3];
+    VIO_Real        x_rot, y_rot, z_rot;
+    VIO_Real        **mat, angles[3];
     int         i, n_iters, m, n;
     Transform   tx, ty, tz, transform;
 

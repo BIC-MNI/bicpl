@@ -6,8 +6,8 @@ int  main(
     char    *argv[] )
 {
     int      i, j, n_points;
-    Real     x, y, value;
-    Real     xs[10], ys[10], weights[10], values[10];
+    VIO_Real     x, y, value;
+    VIO_Real     xs[10], ys[10], weights[10], values[10];
 
     xs[0] = 1.0;
     ys[0] = 1.0;

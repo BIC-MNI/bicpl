@@ -37,7 +37,7 @@ int  main(
     return( 0 );
 }
 
-private  BOOLEAN  recursive_triangulate_one_polygon(
+private  VIO_BOOL  recursive_triangulate_one_polygon(
     int     size,
     int     poly[],
     int     n_neighbours[],
@@ -46,7 +46,7 @@ private  BOOLEAN  recursive_triangulate_one_polygon(
 {
     int       *left, *right, n_left, n_right, p1, p2;
     int       start_index, end_index, count, i, n;
-    BOOLEAN   found;
+    VIO_BOOL   found;
 
     if( size < 3 )
         handle_internal_error( "recursive_triangulate_one_polygon" );
@@ -121,7 +121,7 @@ private  BOOLEAN  recursive_triangulate_one_polygon(
     return( found );
 }
 
-private  BOOLEAN  triangulate_one_polygon(
+private  VIO_BOOL  triangulate_one_polygon(
     int     size,
     int     poly[],
     int     n_neighbours[],
@@ -139,7 +139,7 @@ private  void  triangulate_polygons(
     int                poly, size, index, ind, n_matches, n;
     int                *n_neighbours, **neighbours, *indices, max_size;
     progress_struct    progress;
-    BOOLEAN            done;
+    VIO_BOOL            done;
 
     create_polygon_point_neighbours( polygons, TRUE,
                                      &n_neighbours, &neighbours,

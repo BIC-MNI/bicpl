@@ -41,8 +41,8 @@ typedef enum { GRAY_SCALE,
              Colour_coding_types;
 
 typedef struct {
-    Real           position;
-    Real           r, g, b, a;
+    VIO_Real           position;
+    VIO_Real           r, g, b, a;
     Colour_spaces  interpolation_space;
 } colour_point;
 
@@ -53,8 +53,8 @@ typedef  struct
     Colour                under_colour;
     Colour                over_colour;
 
-    Real                  min_value;
-    Real                  max_value;
+    VIO_Real                  min_value;
+    VIO_Real                  max_value;
 
     int                   n_colour_points;
     colour_point          *colour_points;

@@ -2,12 +2,12 @@
 #define  DEF_ds_prototypes
 
 public  void  initialize_bintree(
-    Real                 x_min,
-    Real                 x_max,
-    Real                 y_min,
-    Real                 y_max,
-    Real                 z_min,
-    Real                 z_max,
+    VIO_Real                 x_min,
+    VIO_Real                 x_max,
+    VIO_Real                 y_min,
+    VIO_Real                 y_max,
+    VIO_Real                 z_min,
+    VIO_Real                 z_max,
     bintree_struct_ptr   bintree );
 
 public  void  delete_bintree_node(
@@ -22,52 +22,52 @@ public  void  get_bintree_limits(
 
 public  bintree_node_struct  *create_bintree_internal_node(
     int                   split_coord,
-    Real                  split_position,
+    VIO_Real                  split_position,
     bintree_node_struct   *left,
     bintree_node_struct   *right );
 
 public  bintree_node_struct  *create_bintree_leaf(
-    Real                  split_position,
+    VIO_Real                  split_position,
     int                   n_objects,
     int                   object_list[] );
 
-public  BOOLEAN  bintree_node_is_leaf(
+public  VIO_BOOL  bintree_node_is_leaf(
     bintree_node_struct  *node );
 
 public  int  get_bintree_leaf_objects(
     bintree_node_struct  *node,
     int                  *object_list[] );
 
-public  BOOLEAN  get_bintree_left_child_ptr(
+public  VIO_BOOL  get_bintree_left_child_ptr(
     bintree_node_struct  *node,
     bintree_node_struct  ***ptr_to_left_child );
 
-public  BOOLEAN  get_bintree_left_child(
+public  VIO_BOOL  get_bintree_left_child(
     bintree_node_struct  *node,
     bintree_node_struct  **left_child );
 
-public  BOOLEAN  get_bintree_right_child_ptr(
+public  VIO_BOOL  get_bintree_right_child_ptr(
     bintree_node_struct  *node,
     bintree_node_struct  ***ptr_to_right_child );
 
-public  BOOLEAN  get_bintree_right_child(
+public  VIO_BOOL  get_bintree_right_child(
     bintree_node_struct  *node,
     bintree_node_struct  **right_child );
 
 public  int  get_node_split_axis(
     bintree_node_struct  *node );
 
-public  Real  get_node_split_position(
+public  VIO_Real  get_node_split_position(
     bintree_node_struct  *node );
 
-public  BOOLEAN  point_within_range(
+public  VIO_BOOL  point_within_range(
     Point         *point,
     range_struct  *range );
 
-public  Real  range_volume(
+public  VIO_Real  range_volume(
     range_struct  *range );
 
-public  Real  range_surface_area(
+public  VIO_Real  range_surface_area(
     range_struct  *range );
 
 public  Status  io_bintree(
@@ -89,9 +89,9 @@ public  void  fill_bitlist(
 public  void     set_bitlist_bit(
     bitlist_struct  *bitlist,
     int             bit_index,
-    BOOLEAN         value );
+    VIO_BOOL         value );
 
-public  BOOLEAN     get_bitlist_bit(
+public  VIO_BOOL     get_bitlist_bit(
     bitlist_struct  *bitlist,
     int             bit_index );
 
@@ -115,9 +115,9 @@ public  void     set_bitlist_bit_3d(
     int                x,
     int                y,
     int                z,
-    BOOLEAN            value );
+    VIO_BOOL            value );
 
-public  BOOLEAN     get_bitlist_bit_3d(
+public  VIO_BOOL     get_bitlist_bit_3d(
     bitlist_3d_struct  *bitlist,
     int                x,
     int                y,
@@ -139,15 +139,15 @@ public  void  create_object_bintree(
 
 public  void  evaluate_bintree_efficiency(
     bintree_struct_ptr   bintree,
-    Real                 *avg_nodes_visited,
-    Real                 *avg_objects_visited );
+    VIO_Real                 *avg_nodes_visited,
+    VIO_Real                 *avg_objects_visited );
 
 public   void  initialize_hash_table(
     hash_table_struct  *hash_table,
     int                n_keys,
     int                size,
-    Real               enlarge_threshold,
-    Real               new_density );
+    VIO_Real               enlarge_threshold,
+    VIO_Real               new_density );
 
 public   void  delete_hash_table(
     hash_table_struct  *hash_table );
@@ -157,12 +157,12 @@ public  void  insert_in_hash_table(
     int                keys[],
     void               *data_ptr );
 
-public  BOOLEAN  lookup_in_hash_table(
+public  VIO_BOOL  lookup_in_hash_table(
     hash_table_struct  *hash_table,
     int                keys[],
     void               **data_ptr );
 
-public  BOOLEAN  remove_from_hash_table(
+public  VIO_BOOL  remove_from_hash_table(
     hash_table_struct  *hash_table,
     int                keys[],
     void               **data_ptr );
@@ -174,7 +174,7 @@ public   void  increase_hash_table_size(
 public  void  initialize_hash_pointer(
     hash_table_pointer  *ptr );
 
-public  BOOLEAN  get_next_hash_entry(
+public  VIO_BOOL  get_next_hash_entry(
     hash_table_struct   *hash_table,
     hash_table_pointer  *ptr,
     void                **data_ptr );
@@ -196,7 +196,7 @@ public  void  create_quadmesh_bintree(
     quadmesh_struct   *quadmesh,
     int               max_nodes );
 
-public  Real  find_closest_point_in_bintree(
+public  VIO_Real  find_closest_point_in_bintree(
     Point               *point,
     bintree_struct_ptr  bintree,
     object_struct       *object,
@@ -212,15 +212,15 @@ public  int  intersect_ray_with_bintree(
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *obj_index,
-    Real                *dist,
-    Real                *distances[] );
+    VIO_Real                *dist,
+    VIO_Real                *distances[] );
 
-public  BOOLEAN  ray_intersects_range(
+public  VIO_BOOL  ray_intersects_range(
     range_struct  *range,
     Point         *origin,
     Vector        *direction,
-    Real          *t_min,
-    Real          *t_max );
+    VIO_Real          *t_min,
+    VIO_Real          *t_max );
 
 public   void  initialize_skiplist(
     skiplist_struct  *skiplist,
@@ -229,26 +229,26 @@ public   void  initialize_skiplist(
 public   void  delete_skiplist(
     skiplist_struct  *skiplist );
 
-public  BOOLEAN  search_skiplist(
+public  VIO_BOOL  search_skiplist(
     skiplist_struct          *skiplist,
     void                     *key_data_ptr,
     void                     **data_ptr );
 
-public  BOOLEAN  insert_in_skiplist(
+public  VIO_BOOL  insert_in_skiplist(
     skiplist_struct          *skiplist,
     void                     *data_ptr );
 
-public  BOOLEAN  delete_from_skiplist(
+public  VIO_BOOL  delete_from_skiplist(
     skiplist_struct  *skiplist,
     void             *key_ptr,
     void             **data_ptr );
 
-public  BOOLEAN  get_first_skiplist_entry(
+public  VIO_BOOL  get_first_skiplist_entry(
     skiplist_struct   *skiplist,
     skip_struct       **entry_ptr,
     void              **data_ptr );
 
-public  BOOLEAN  get_next_skiplist_entry(
+public  VIO_BOOL  get_next_skiplist_entry(
     skip_struct       **entry_ptr,
     void              **data_ptr );
 #endif

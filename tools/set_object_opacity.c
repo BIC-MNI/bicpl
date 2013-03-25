@@ -19,7 +19,7 @@ int  main(
     STRING               src_filename, dest_filename;
     File_formats         format;
     Surfprop             *spr;
-    Real                 opacity;
+    VIO_Real                 opacity;
     Colour_flags         colour_flag;
     Colour               col, *colours;
     int                  i, n_colours, n_points, c;

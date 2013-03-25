@@ -16,8 +16,8 @@
 BICAPI  double  fast_approx_sqrt(
     double  y )
 {
-    Real     x;
-    static   BOOLEAN  first = TRUE;
+    VIO_Real     x;
+    static   VIO_BOOL  first = TRUE;
     static   struct {  double  scale; double trans; }
                                  precomp_sqrt[N_SQRT_PRECOMPUTE], *lookup;
 
@@ -29,7 +29,7 @@ BICAPI  double  fast_approx_sqrt(
     if( first )
     {
         int    i;
-        Real   next_sqrt, this_sqrt;
+        VIO_Real   next_sqrt, this_sqrt;
 
         first = FALSE;
 
@@ -37,31 +37,31 @@ BICAPI  double  fast_approx_sqrt(
         for_less( i, 0, N_SQRT_PRECOMPUTE )
         {
             this_sqrt = next_sqrt;
-            next_sqrt = sqrt( (Real) (i+1) / (Real) N_SQRT_PRECOMPUTE *
+            next_sqrt = sqrt( (VIO_Real) (i+1) / (VIO_Real) N_SQRT_PRECOMPUTE *
                               MAX_SQRT_ARG );
 
             precomp_sqrt[i].scale = next_sqrt - this_sqrt;
             precomp_sqrt[i].trans = this_sqrt -
-                                    precomp_sqrt[i].scale * (Real) i;
+                                    precomp_sqrt[i].scale * (VIO_Real) i;
         }
     }
 
-    x = ((Real) N_SQRT_PRECOMPUTE / MAX_SQRT_ARG) * y;
+    x = ((VIO_Real) N_SQRT_PRECOMPUTE / MAX_SQRT_ARG) * y;
 
     lookup = &precomp_sqrt[(int) x];
 
     return( lookup->trans + lookup->scale * x );
 }
 
-BICAPI  Real  fast_approx_distance_between_points(
+BICAPI  VIO_Real  fast_approx_distance_between_points(
     Point  *p1,
     Point  *p2 )
 {
-    Real   dx, dy, dz;
+    VIO_Real   dx, dy, dz;
 
-    dx = (Real) Point_x(*p2) - (Real) Point_x(*p1);
-    dy = (Real) Point_y(*p2) - (Real) Point_y(*p1);
-    dz = (Real) Point_z(*p2) - (Real) Point_z(*p1);
+    dx = (VIO_Real) Point_x(*p2) - (VIO_Real) Point_x(*p1);
+    dy = (VIO_Real) Point_y(*p2) - (VIO_Real) Point_y(*p1);
+    dz = (VIO_Real) Point_z(*p2) - (VIO_Real) Point_z(*p1);
 
     return( FAST_SQRT( dx * dx + dy * dy + dz * dz ) );
 }

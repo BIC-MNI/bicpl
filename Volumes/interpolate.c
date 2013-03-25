@@ -50,14 +50,14 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpo
 BICAPI void  interpolate_volume_to_slice(
     Volume          volume1,
     int             n_dims1,
-    Real            origin1[],
-    Real            x_axis1[],
-    Real            y_axis1[],
+    VIO_Real            origin1[],
+    VIO_Real            x_axis1[],
+    VIO_Real            y_axis1[],
     Volume          volume2,
     int             n_dims2,
-    Real            origin2[],
-    Real            x_axis2[],
-    Real            y_axis2[],
+    VIO_Real            origin2[],
+    VIO_Real            x_axis2[],
+    VIO_Real            y_axis2[],
     int             x_pixel_start,
     int             x_pixel_end,
     int             y_pixel_start,
@@ -70,14 +70,14 @@ BICAPI void  interpolate_volume_to_slice(
 {
     int              dim, x, y;
     int              int_voxel_value1, int_voxel_value2;
-    Real             outside_value1, outside_value2;
-    Real             start_voxel1[MAX_DIMENSIONS], voxel1[MAX_DIMENSIONS];
-    Real             start_voxel2[MAX_DIMENSIONS], voxel2[MAX_DIMENSIONS];
-    Real             value1, voxel_value1, value2, voxel_value2;
-    Real             min_voxel1, max_voxel1, min_voxel2, max_voxel2;
+    VIO_Real             outside_value1, outside_value2;
+    VIO_Real             start_voxel1[MAX_DIMENSIONS], voxel1[MAX_DIMENSIONS];
+    VIO_Real             start_voxel2[MAX_DIMENSIONS], voxel2[MAX_DIMENSIONS];
+    VIO_Real             value1, voxel_value1, value2, voxel_value2;
+    VIO_Real             min_voxel1, max_voxel1, min_voxel2, max_voxel2;
     unsigned short   *cmode_ptr;
     Colour           *rgb_ptr;
-    BOOLEAN          inside1, inside2;
+    VIO_BOOL          inside1, inside2;
     Pixel_types      pixel_type;
 #ifdef  REPORT_PROGRESS
     progress_struct  progress;
@@ -93,8 +93,8 @@ BICAPI void  interpolate_volume_to_slice(
 
     for_less( dim, 0, n_dims1 )
     {
-        start_voxel1[dim] = origin1[dim] + (Real) x_pixel_start * x_axis1[dim] +
-                                           (Real) y_pixel_start * y_axis1[dim];
+        start_voxel1[dim] = origin1[dim] + (VIO_Real) x_pixel_start * x_axis1[dim] +
+                                           (VIO_Real) y_pixel_start * y_axis1[dim];
     }
 
     outside_value1 = 0.0;
@@ -105,8 +105,8 @@ BICAPI void  interpolate_volume_to_slice(
         for_less( dim, 0, n_dims2 )
         {
             start_voxel2[dim] = origin2[dim] +
-                                (Real) x_pixel_start * x_axis2[dim] +
-                                (Real) y_pixel_start * y_axis2[dim];
+                                (VIO_Real) x_pixel_start * x_axis2[dim] +
+                                (VIO_Real) y_pixel_start * y_axis2[dim];
         }
 
         outside_value2 = 0.0;

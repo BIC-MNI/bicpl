@@ -41,7 +41,7 @@ static  arguments_struct   arguments;
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  BOOLEAN  arguments_remaining( void )
+static  VIO_BOOL  arguments_remaining( void )
 {
     return( arguments.current_arg < arguments.argc );
 }
@@ -133,11 +133,11 @@ BICAPI  void  initialize_argument_processing(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_int_argument(
+BICAPI  VIO_BOOL  get_int_argument(
     int   default_value,
     int   *value )
 {
-    BOOLEAN   found;
+    VIO_BOOL   found;
 
     if( arguments_remaining() &&
         sscanf( get_current_argument_string(), "%d", value ) == 1 )
@@ -169,11 +169,11 @@ BICAPI  BOOLEAN  get_int_argument(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_real_argument(
-    Real   default_value,
-    Real   *value )
+BICAPI  VIO_BOOL  get_real_argument(
+    VIO_Real   default_value,
+    VIO_Real   *value )
 {
-    BOOLEAN   found;
+    VIO_BOOL   found;
 
     if( arguments_remaining() &&
         ((real_is_double() &&
@@ -209,11 +209,11 @@ BICAPI  BOOLEAN  get_real_argument(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_string_argument(
+BICAPI  VIO_BOOL  get_string_argument(
     STRING   default_value,
     STRING   *value )
 {
-    BOOLEAN   found;
+    VIO_BOOL   found;
 
     if( arguments_remaining() )
     {
@@ -245,11 +245,11 @@ BICAPI  BOOLEAN  get_string_argument(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_prefix_argument(
+BICAPI  VIO_BOOL  get_prefix_argument(
     STRING  prefix )
 {
     char      *next_str;
-    BOOLEAN   found;
+    VIO_BOOL   found;
 
     if( arguments_remaining() &&
         string_length(get_current_argument_string()) >= string_length(prefix) &&

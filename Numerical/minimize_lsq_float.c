@@ -5,17 +5,17 @@
 
 #include  "minimize_lsq_include.c"
 
-BICAPI  Real   minimize_lsq_float(
+BICAPI  VIO_Real   minimize_lsq_float(
     int              n_parameters,
-    Real             constant_term,
+    VIO_Real             constant_term,
     float            linear_terms[],
     float            square_terms[],
     int              n_cross_terms[],
     int              *cross_parms[],
     float            *cross_terms[],
-    Real             max_step_size,
+    VIO_Real             max_step_size,
     int              n_iters,
-    Real             node_values[] )
+    VIO_Real             node_values[] )
 {
     return( private_minimize_lsq( n_parameters, constant_term,
                                   linear_terms, square_terms,
@@ -25,7 +25,7 @@ BICAPI  Real   minimize_lsq_float(
 
 BICAPI  void  initialize_lsq_terms_float(
     int              n_parameters,
-    Real             *constant_term,
+    VIO_Real             *constant_term,
     float            *linear_terms[],
     float            *square_terms[],
     int              *n_cross_terms[],
@@ -52,7 +52,7 @@ BICAPI  void  initialize_lsq_terms_float(
 
 BICAPI  void  reset_lsq_terms_float(
     int              n_parameters,
-    Real             *constant_term,
+    VIO_Real             *constant_term,
     float            linear_terms[],
     float            square_terms[],
     int              n_cross_terms[],
@@ -74,7 +74,7 @@ BICAPI  void  reset_lsq_terms_float(
 
 BICAPI  void  add_to_lsq_terms_float(
     int              n_parameters,
-    Real             *constant_term,
+    VIO_Real             *constant_term,
     float            linear_terms[],
     float            square_terms[],
     int              n_cross_terms[],
@@ -82,8 +82,8 @@ BICAPI  void  add_to_lsq_terms_float(
     float            *cross_terms[],
     int              n_in_list,
     int              list[],
-    Real             weights[],
-    Real             constant,
+    VIO_Real             weights[],
+    VIO_Real             constant,
     int              alloc_increment )
 {
     int   p, q, p1, p2, t;
@@ -169,21 +169,21 @@ BICAPI  void  create_lsq_hypersurface_float(
     int              parm2,
     int              x_size,
     int              y_size,
-    Real             x_min,
-    Real             x_max,
-    Real             y_min,
-    Real             y_max,
-    Real             scale,
+    VIO_Real             x_min,
+    VIO_Real             x_max,
+    VIO_Real             y_min,
+    VIO_Real             y_max,
+    VIO_Real             scale,
     int              n_parameters,
-    Real             constant,
+    VIO_Real             constant,
     float            linear_terms[],
     float            square_terms[],
     int              n_cross_terms[],
     int              *cross_parms[],
     float            *cross_terms[],
-    Real             parameters[] )
+    VIO_Real             parameters[] )
 {
-    Real             save1, save2, p1, p2, val;
+    VIO_Real             save1, save2, p1, p2, val;
     object_struct    *object;
     quadmesh_struct  *quadmesh;
     Point            point;
@@ -201,8 +201,8 @@ BICAPI  void  create_lsq_hypersurface_float(
     for_less( x, 0, x_size )
     for_less( y, 0, x_size )
     {
-        p1 = INTERPOLATE( (Real) x / (Real) (x_size-1), x_min, x_max );
-        p2 = INTERPOLATE( (Real) y / (Real) (y_size-1), y_min, y_max );
+        p1 = INTERPOLATE( (VIO_Real) x / (VIO_Real) (x_size-1), x_min, x_max );
+        p2 = INTERPOLATE( (VIO_Real) y / (VIO_Real) (y_size-1), y_min, y_max );
         parameters[parm1] = p1;
         parameters[parm2] = p2;
         val = evaluate_fit( n_parameters, constant, linear_terms, square_terms,

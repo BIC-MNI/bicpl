@@ -170,16 +170,16 @@ private  void  compute_point_to_point_transform(
     Transform  *transform )
 {
     int    p, dim;
-    Real   **coords, *target, coefs[4];
+    VIO_Real   **coords, *target, coefs[4];
 
     ALLOC2D( coords, n_points, 3 );
     ALLOC( target, n_points );
 
     for_less( p, 0, n_points )
     {
-        coords[p][X] = (Real) Point_x(src_points[p]);
-        coords[p][Y] = (Real) Point_y(src_points[p]);
-        coords[p][Z] = (Real) Point_z(src_points[p]);
+        coords[p][X] = (VIO_Real) Point_x(src_points[p]);
+        coords[p][Y] = (VIO_Real) Point_y(src_points[p]);
+        coords[p][Z] = (VIO_Real) Point_z(src_points[p]);
     }
 
     make_identity_transform( transform );
@@ -187,7 +187,7 @@ private  void  compute_point_to_point_transform(
     for_less( dim, 0, N_DIMENSIONS )
     {
         for_less( p, 0, n_points )
-            target[p] = (Real) Point_coord(dest_points[p],dim);
+            target[p] = (VIO_Real) Point_coord(dest_points[p],dim);
 
         least_squares( n_points, N_DIMENSIONS, coords, target, coefs );
 
@@ -233,14 +233,14 @@ private  void  compute_transforms(
 {
     int                    dim, s, i, j;
     linear_least_squares   lsq;
-    Real                   *coefs, n, constant;
+    VIO_Real                   *coefs, n, constant;
 
     ALLOC( coefs, (n_surfaces-1) * 4 );
 
     for_less( s, 0, n_surfaces )
         make_identity_transform( &transforms[s] );
 
-    n = (Real) n_surfaces;
+    n = (VIO_Real) n_surfaces;
 
     for_less( dim, 0, N_DIMENSIONS )
     {
@@ -301,16 +301,16 @@ private  void  compute_transforms(
 
 #endif
 
-private  Real  get_rms_points(
+private  VIO_Real  get_rms_points(
     int                   n_surfaces,
     int                   n_groups,
     Point                 samples[],
     Point                 *centroid,
-    Real                  inv_variance[3][3] )
+    VIO_Real                  inv_variance[3][3] )
 {
     int    i, j, s;
-    Real   rms, dx, dy, dz;
-    Real   variance[3][3], inverse[3][3];
+    VIO_Real   rms, dx, dy, dz;
+    VIO_Real   variance[3][3], inverse[3][3];
 
     rms = 0.0;
 
@@ -320,9 +320,9 @@ private  Real  get_rms_points(
 
     for_less( s, 0, n_surfaces )
     {
-        dx = (Real) Point_x(samples[s]) - (Real) Point_x(*centroid);
-        dy = (Real) Point_y(samples[s]) - (Real) Point_y(*centroid);
-        dz = (Real) Point_z(samples[s]) - (Real) Point_z(*centroid);
+        dx = (VIO_Real) Point_x(samples[s]) - (VIO_Real) Point_x(*centroid);
+        dy = (VIO_Real) Point_y(samples[s]) - (VIO_Real) Point_y(*centroid);
+        dz = (VIO_Real) Point_z(samples[s]) - (VIO_Real) Point_z(*centroid);
 
         variance[0][0] += dx * dx;
         variance[0][1] += dx * dy;
@@ -340,9 +340,9 @@ private  Real  get_rms_points(
 
     for_less( i, 0, 3 )
     for_less( j, 0, 3 )
-        variance[i][j] /= (Real) (n_surfaces-n_groups);
+        variance[i][j] /= (VIO_Real) (n_surfaces-n_groups);
 
-    if( !invert_square_matrix( 3, (Real**)variance, (Real**)inverse ) ) {
+    if( !invert_square_matrix( 3, (VIO_Real**)variance, (VIO_Real**)inverse ) ) {
         print_error( "Error getting inverse of variance\n" );
     }
 
@@ -350,7 +350,7 @@ private  Real  get_rms_points(
     for_less( j, 0, 3 )
         inv_variance[i][j] = inverse[i][j];
 
-    rms /= (Real) n_surfaces;
+    rms /= (VIO_Real) n_surfaces;
 
     rms = sqrt( rms );
 
@@ -367,9 +367,9 @@ private  void  create_average_polygons(
     FILE                  *variance_file,
     polygons_struct       *polygons )
 {
-    Real   x, y, z;
+    VIO_Real   x, y, z;
     int    i, j, p, s;
-    Real   rms, inv_variance[3][3];
+    VIO_Real   rms, inv_variance[3][3];
     Point  *samples;
 
     ALLOC( samples, n_surfaces );
@@ -379,9 +379,9 @@ private  void  create_average_polygons(
         for_less( s, 0, n_surfaces )
         {
             transform_point( &transforms[s],
-                             (Real) Point_x(points[s][p]),
-                             (Real) Point_y(points[s][p]),
-                             (Real) Point_z(points[s][p]), &x, &y, &z );
+                             (VIO_Real) Point_x(points[s][p]),
+                             (VIO_Real) Point_y(points[s][p]),
+                             (VIO_Real) Point_z(points[s][p]), &x, &y, &z );
 
             fill_Point( samples[s], x, y, z );
         }

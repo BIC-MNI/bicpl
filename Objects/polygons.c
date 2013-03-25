@@ -35,13 +35,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygon
 static  void  reverse_polygon_order(
     polygons_struct   *polygons,
     int               poly );
-static  Real  estimate_polygon_curvature(
+static  VIO_Real  estimate_polygon_curvature(
     Point   *point,
     int     n_neighs,
     Point   neighs[],
     Point   *centroid,
     Vector  *normal,
-    Real    *base_length );
+    VIO_Real    *base_length );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_polygons
@@ -331,7 +331,7 @@ BICAPI  void  create_polygons_visibilities(
 
 BICAPI  void  set_polygons_visibilities(
     polygons_struct   *polygons,
-    BOOLEAN           state )
+    VIO_BOOL           state )
 {
     int   i;
 
@@ -482,7 +482,7 @@ BICAPI  void  get_polygon_centroid(
     }
 
     if( size > 0 )
-        SCALE_POINT( *centroid, *centroid, 1.0 / (Real) size );
+        SCALE_POINT( *centroid, *centroid, 1.0 / (VIO_Real) size );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -588,7 +588,7 @@ BICAPI  int  find_edge_index(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  find_polygon_with_edge(
+BICAPI  VIO_BOOL  find_polygon_with_edge(
     polygons_struct  *polygons,
     int              point_index1,
     int              point_index2,
@@ -627,14 +627,14 @@ BICAPI  BOOLEAN  find_polygon_with_edge(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  find_polygon_with_vertex(
+BICAPI  VIO_BOOL  find_polygon_with_vertex(
     polygons_struct   *polygons,
     int               point_index,
     int               *poly_index,
     int               *vertex_index )
 {
     int      poly, size, i;
-    BOOLEAN  found;
+    VIO_BOOL  found;
 
     found = FALSE;
 
@@ -671,7 +671,7 @@ BICAPI  BOOLEAN  find_polygon_with_vertex(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  lookup_polygon_vertex(
+BICAPI  VIO_BOOL  lookup_polygon_vertex(
     polygons_struct   *polygons,
     Point             *point,
     int               *point_index )
@@ -711,7 +711,7 @@ BICAPI  BOOLEAN  lookup_polygon_vertex(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  find_next_edge_around_point(
+BICAPI  VIO_BOOL  find_next_edge_around_point(
     polygons_struct   *polygons,
     int               poly,
     int               index_1,
@@ -783,11 +783,11 @@ BICAPI  int  get_neighbours_of_point(
     int               vertex_index,
     int               neighbours[],
     int               max_neighbours,
-    BOOLEAN           *interior_point )
+    VIO_BOOL           *interior_point )
 {
     int      p, n_neighbours, current_poly, current_index_within_poly;
     int      size, neighbour_index_within_poly;
-    BOOLEAN  found;
+    VIO_BOOL  found;
 
     size = GET_OBJECT_SIZE( *polygons, poly );
 
@@ -900,12 +900,12 @@ BICAPI  int  get_polygons_around_vertex(
     int               vertex_index,
     int               poly_indices[],
     int               n_polys_alloced,
-    BOOLEAN           *closed_flag )
+    VIO_BOOL           *closed_flag )
 {
     int      current_poly, current_index_within_poly;
     int      size, neighbour_index_within_poly;
     int      n_polys, dir;
-    BOOLEAN  found;
+    VIO_BOOL  found;
 
     size = GET_OBJECT_SIZE( *polygons, poly );
 
@@ -1007,7 +1007,7 @@ BICAPI  void  compute_polygon_normals(
     polygons_struct  *polygons )
 {
     int                e, poly, size, point_index, prev_index, next_index;
-    Real               scale;
+    VIO_Real               scale;
     Vector             normal, normal_scaled;
     progress_struct    progress;
 
@@ -1089,9 +1089,9 @@ BICAPI  void  compute_polygon_normals(
 BICAPI  void  average_polygon_normals(
     polygons_struct  *polygons,
     int              n_iters,
-    Real             neighbour_weight )
+    VIO_Real             neighbour_weight )
 {
-    Real               avg_dot_prod;
+    VIO_Real               avg_dot_prod;
     int                e, poly, size, point_index, neigh_index, i;
     Vector             *neigh_normal_sum, *new_normals, new_normal;
     progress_struct    progress;
@@ -1160,7 +1160,7 @@ BICAPI  void  average_polygon_normals(
             new_normals[point_index] = new_normal;
         }
 
-        avg_dot_prod /= (Real) polygons->n_points;
+        avg_dot_prod /= (VIO_Real) polygons->n_points;
 
         print( "Average dot product: %g\n", avg_dot_prod );
     }
@@ -1189,9 +1189,9 @@ BICAPI  void  average_polygon_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_plane_polygon_intersection(
+BICAPI  VIO_BOOL  get_plane_polygon_intersection(
     Vector           *normal,
-    Real             d,
+    VIO_Real             d,
     polygons_struct  *polygons,
     int              poly,
     Point            intersection_points[] )
@@ -1238,15 +1238,15 @@ BICAPI  BOOLEAN  get_plane_polygon_intersection(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_plane_segment_intersection(
+BICAPI  VIO_BOOL  get_plane_segment_intersection(
     Vector           *normal,
-    Real             d,
+    VIO_Real             d,
     Point            *p1,
     Point            *p2,
     Point            *intersection_point )
 {
-    Real     dist1, dist2, t;
-    BOOLEAN  intersects;
+    VIO_Real     dist1, dist2, t;
+    VIO_BOOL  intersects;
 
     dist1 = DIST_FROM_PLANE( *normal, d, *p1 );
     dist2 = DIST_FROM_PLANE( *normal, d, *p2 );
@@ -1341,7 +1341,7 @@ BICAPI  void   make_polygons_front_facing(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  polygon_is_back_facing(
+BICAPI  VIO_BOOL  polygon_is_back_facing(
     polygons_struct   *polygons,
     int               poly )
 {
@@ -1426,8 +1426,8 @@ BICAPI  void  compute_points_centroid_and_normal(
     int              neighbours[],
     Point            *centroid,
     Vector           *normal,
-    Real             *base_length,
-    Real             *curvature )
+    VIO_Real             *base_length,
+    VIO_Real             *curvature )
 {
 #define  MAX_NEIGHBOURS   1000
     int              i;
@@ -1484,12 +1484,12 @@ BICAPI  void  compute_polygon_point_centroid(
     int              point_index,
     Point            *centroid,
     Vector           *normal,
-    Real             *base_length,
-    Real             *curvature )
+    VIO_Real             *base_length,
+    VIO_Real             *curvature )
 {
     int              n_neighbours;
     int              neighbours[MAX_NEIGHBOURS];
-    BOOLEAN          interior_point;
+    VIO_BOOL          interior_point;
 
     n_neighbours = get_neighbours_of_point( polygons, poly, vertex_index,
                                             neighbours, MAX_NEIGHBOURS,
@@ -1518,16 +1518,16 @@ BICAPI  void  compute_polygon_point_centroid(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  estimate_polygon_curvature(
+static  VIO_Real  estimate_polygon_curvature(
     Point   *point,
     int     n_neighs,
     Point   neighs[],
     Point   *centroid,
     Vector  *normal,
-    Real    *base_length )
+    VIO_Real    *base_length )
 {
     int    i;
-    Real   curvature, len;
+    VIO_Real   curvature, len;
     Vector to_point;
 
     len = 0.0;
@@ -1535,7 +1535,7 @@ static  Real  estimate_polygon_curvature(
         len += distance_between_points( &neighs[i], centroid );
 
     if( n_neighs > 0 )
-        len = 2.0 * len / (Real) n_neighs;
+        len = 2.0 * len / (VIO_Real) n_neighs;
 
     if( len == 0.0 )
         len = 1.0;
@@ -1566,11 +1566,11 @@ static  Real  estimate_polygon_curvature(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  compute_polygon_vertex_curvature(
+BICAPI  VIO_Real  compute_polygon_vertex_curvature(
     polygons_struct  *polygons,
     int              point_index )
 {
-    Real      curvature, base_length;
+    VIO_Real      curvature, base_length;
     int       poly, vertex;
     Point     centroid;
     Vector    normal;
@@ -1637,13 +1637,13 @@ static  void  get_opposite_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_polygon_edge_angle(
+BICAPI  VIO_Real  get_polygon_edge_angle(
     polygons_struct  *polygons,
     int              poly,
     int              edge )
 {
     int     size, i, point_index1, point_index2, neighbour_poly;
-    Real    angle, edge_len_squared, scale, x, y;
+    VIO_Real    angle, edge_len_squared, scale, x, y;
     Point   p1, p2, poly1_point, poly2_point;
     Vector  v1, v2, normal, diff, edge_vec;
 
@@ -1712,7 +1712,7 @@ BICAPI  Real  get_polygon_edge_angle(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  polygons_are_same_topology(
+BICAPI  VIO_BOOL  polygons_are_same_topology(
     polygons_struct  *p1,
     polygons_struct  *p2 )
 {

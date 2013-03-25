@@ -3,9 +3,9 @@
 #ifdef ADJUST
 private  void  adjust_tetrahedral_sphere(
     Point            *centre,
-    Real             rx,
-    Real             ry,
-    Real             rz,
+    VIO_Real             rx,
+    VIO_Real             ry,
+    VIO_Real             rz,
     polygons_struct  *polygons,
     int              n_iters );
 #endif
@@ -23,7 +23,7 @@ int  main(
     Point           centre;
     object_struct   *object;
     polygons_struct *polygons;
-    Real            cx, cy, cz, rx, ry, rz;
+    VIO_Real            cx, cy, cz, rx, ry, rz;
 
     status = OK;
 
@@ -77,14 +77,14 @@ int  main(
 #ifdef ADJUST
 private  void  convert_uv_to_point(
     Point            *centre,
-    Real             rx,
-    Real             ry,
-    Real             rz,
-    Real             u,
-    Real             v,
+    VIO_Real             rx,
+    VIO_Real             ry,
+    VIO_Real             rz,
+    VIO_Real             u,
+    VIO_Real             v,
     Point            *point )
 {
-    Real   x, y, z, theta, phi, cos_u, sin_u, cos_v, sin_v;
+    VIO_Real   x, y, z, theta, phi, cos_u, sin_u, cos_v, sin_v;
 
     theta = u * PI * 2.0;
     phi = v * PI;
@@ -94,27 +94,27 @@ private  void  convert_uv_to_point(
     cos_v = cos( phi );
     sin_v = sin( phi );
 
-    z = (Real) Point_z(*centre) - rz * cos_v;
-    x = (Real) Point_x(*centre) + rx * sin_v * cos_u;
-    y = (Real) Point_y(*centre) + ry * sin_v * sin_u;
+    z = (VIO_Real) Point_z(*centre) - rz * cos_v;
+    x = (VIO_Real) Point_x(*centre) + rx * sin_v * cos_u;
+    y = (VIO_Real) Point_y(*centre) + ry * sin_v * sin_u;
 
     fill_Point( *point, x, y, z );
 }
 
 private  void  convert_point_to_uv(
     Point            *centre,
-    Real             rx,
-    Real             ry,
-    Real             rz,
+    VIO_Real             rx,
+    VIO_Real             ry,
+    VIO_Real             rz,
     Point            *point,
-    Real             *u,
-    Real             *v )
+    VIO_Real             *u,
+    VIO_Real             *v )
 {
-    Real   x, y, z, theta, phi;
+    VIO_Real   x, y, z, theta, phi;
 
-    x = ((Real) Point_x(*point) - (Real) Point_x(*centre)) / rx;
-    y = ((Real) Point_y(*point) - (Real) Point_y(*centre)) / ry;
-    z = ((Real) Point_z(*point) - (Real) Point_z(*centre)) / rz;
+    x = ((VIO_Real) Point_x(*point) - (VIO_Real) Point_x(*centre)) / rx;
+    y = ((VIO_Real) Point_y(*point) - (VIO_Real) Point_y(*centre)) / ry;
+    z = ((VIO_Real) Point_z(*point) - (VIO_Real) Point_z(*centre)) / rz;
 
     phi = acos( -z );
     theta = 2.0 * PI - compute_clockwise_rotation( x, y );
@@ -123,14 +123,14 @@ private  void  convert_point_to_uv(
     *v = phi / PI;
 }
 
-private  Real  evaluate_rms(
+private  VIO_Real  evaluate_rms(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               **neighbours,
-    Real              parameters[] )
+    VIO_Real              parameters[] )
 {
     int    p, p1;
-    Real   dist, sum_dist;
+    VIO_Real   dist, sum_dist;
     Point  centre = { 0.0f, 0.0f, 0.0f };
 
     for_less( p, 0, polygons->n_points )
@@ -170,8 +170,8 @@ typedef  struct
     int              **neighbours;
 } func_data;
 
-private  Real  evaluate_rms_func(
-    Real   coefs[],
+private  VIO_Real  evaluate_rms_func(
+    VIO_Real   coefs[],
     void   *void_data )
 {
     func_data   *data;
@@ -184,9 +184,9 @@ private  Real  evaluate_rms_func(
 
 private  void  adjust_tetrahedral_sphere(
     Point            *centre,
-    Real             rx,
-    Real             ry,
-    Real             rz,
+    VIO_Real             rx,
+    VIO_Real             ry,
+    VIO_Real             rz,
     polygons_struct  *polygons,
     int              n_iters )
 {
@@ -194,8 +194,8 @@ private  void  adjust_tetrahedral_sphere(
     int         *n_neighbours, **neighbours, *total_neighbours;
     int         total_n_neighbours;
     func_data   data;
-    Real        *step_sizes, *improved, *initial, rms;
-    BOOLEAN     interior;
+    VIO_Real        *step_sizes, *improved, *initial, rms;
+    VIO_BOOL     interior;
 
     ALLOC( step_sizes, polygons->n_points * 2 );
     ALLOC( initial, polygons->n_points * 2 );

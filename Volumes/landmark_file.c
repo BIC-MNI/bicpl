@@ -40,7 +40,7 @@ BICAPI Status   input_landmark_file(
     Volume         volume,
     char           filename[],
     Colour         colour,
-    Real           size,
+    VIO_Real           size,
     Marker_types   type,
     int            *n_objects,
     object_struct  **object_list[] )
@@ -93,7 +93,7 @@ BICAPI Status  io_tag_point(
     FILE            *file,
     IO_types        io_direction,
     Volume          volume,
-    Real            size,
+    VIO_Real            size,
     marker_struct   *marker )
 {
     Status   status;
@@ -101,9 +101,9 @@ BICAPI Status  io_tag_point(
     Point    position;
     int      sizes[MAX_DIMENSIONS];
     int      len, offset;
-    Real     voxel[MAX_DIMENSIONS];
-    Real     x, y, z;
-    Real     x_w, y_w, z_w;
+    VIO_Real     voxel[MAX_DIMENSIONS];
+    VIO_Real     x, y, z;
+    VIO_Real     x_w, y_w, z_w;
 
     status = OK;
 

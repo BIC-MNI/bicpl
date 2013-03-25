@@ -48,7 +48,7 @@ static void  colour_code_points(
     Point                 points[] )
 {
     int      i;
-    Real     val;
+    VIO_Real     val;
 
     if( *colour_flag != PER_VERTEX_COLOURS )
     {
@@ -66,15 +66,15 @@ static void  colour_code_points(
     for_less( i, 0, n_points )
     {
         (void) evaluate_volume_in_world( volume,
-                                  (Real) Point_x(points[i]),
-                                  (Real) Point_y(points[i]),
-                                  (Real) Point_z(points[i]), continuity, FALSE,
+                                  (VIO_Real) Point_x(points[i]),
+                                  (VIO_Real) Point_y(points[i]),
+                                  (VIO_Real) Point_z(points[i]), continuity, FALSE,
                                   get_volume_real_min(volume),
-                                  &val, (Real *) NULL,
-                                  (Real *) NULL, (Real *) NULL,
-                                  (Real *) NULL, (Real *) NULL,
-                                  (Real *) NULL, (Real *) NULL,
-                                  (Real *) NULL, (Real *) NULL );
+                                  &val, (VIO_Real *) NULL,
+                                  (VIO_Real *) NULL, (VIO_Real *) NULL,
+                                  (VIO_Real *) NULL, (VIO_Real *) NULL,
+                                  (VIO_Real *) NULL, (VIO_Real *) NULL,
+                                  (VIO_Real *) NULL, (VIO_Real *) NULL );
 
         (*colours)[i] = get_colour_code( colour_coding, val );
     }

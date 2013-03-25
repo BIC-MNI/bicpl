@@ -87,16 +87,16 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotm
 #ifdef DEBUG
 static  void  are_rotations_equivalent(
     Transform  *rot_trans,
-    Real       rx,
-    Real       ry,
-    Real       rz );
+    VIO_Real       rx,
+    VIO_Real       ry,
+    VIO_Real       rz );
 #endif
 
-BICAPI  BOOLEAN  rotmat_to_ang(
+BICAPI  VIO_BOOL  rotmat_to_ang(
     Transform   *rot_trans,
-    Real        *ang )
+    VIO_Real        *ang )
 {
-    Real       rx, ry, rz, vx, vy, vz, d;
+    VIO_Real       rx, ry, rz, vx, vy, vz, d;
     Vector     x_axis, z_axis, y_axis, cross;
     Transform  z_rot, y_rot;
 
@@ -130,8 +130,8 @@ BICAPI  BOOLEAN  rotmat_to_ang(
     /*--- step one,  find the RZ rotation reqd to bring 
                      the local x into the world XZ plane with a positive X */
 
-    rz = compute_clockwise_rotation( (Real) Vector_x(x_axis),
-                                     (Real) Vector_y(x_axis) );
+    rz = compute_clockwise_rotation( (VIO_Real) Vector_x(x_axis),
+                                     (VIO_Real) Vector_y(x_axis) );
 
     if( rz >= PI )
         rz -= 2.0 * PI;
@@ -141,8 +141,8 @@ BICAPI  BOOLEAN  rotmat_to_ang(
 
     make_rotation_transform( -rz, Z, &z_rot );
 
-    transform_vector( &z_rot, (Real) Vector_x(x_axis), (Real) Vector_y(x_axis),
-                      (Real) Vector_z(x_axis), &vx, &vy, &vz );
+    transform_vector( &z_rot, (VIO_Real) Vector_x(x_axis), (VIO_Real) Vector_y(x_axis),
+                      (VIO_Real) Vector_z(x_axis), &vx, &vy, &vz );
 
     ry = - compute_clockwise_rotation( vx, vz );
 
@@ -153,8 +153,8 @@ BICAPI  BOOLEAN  rotmat_to_ang(
 
     make_rotation_transform( -ry, Y, &y_rot );
 
-    transform_vector( &z_rot, (Real) Vector_x(z_axis), (Real) Vector_y(z_axis),
-                      (Real) Vector_z(z_axis), &vx, &vy, &vz );
+    transform_vector( &z_rot, (VIO_Real) Vector_x(z_axis), (VIO_Real) Vector_y(z_axis),
+                      (VIO_Real) Vector_z(z_axis), &vx, &vy, &vz );
     transform_vector( &y_rot, vx, vy, vz, &vx, &vy, &vz );
 
     rx = - compute_clockwise_rotation( vz, vy );
@@ -209,11 +209,11 @@ BICAPI  BOOLEAN  rotmat_to_ang(
 #ifdef DEBUG
 static  void  are_rotations_equivalent(
     Transform  *rot_trans,
-    Real       rx,
-    Real       ry,
-    Real       rz )
+    VIO_Real       rx,
+    VIO_Real       ry,
+    VIO_Real       rz )
 {
-    BOOLEAN  error;
+    VIO_BOOL  error;
     Transform  test, Rx, Ry, Rz;
 
     /*--- use negatives, since make_rotation_transform assumes clockwise */

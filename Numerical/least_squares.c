@@ -41,17 +41,17 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/least
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  least_squares(
+BICAPI  VIO_BOOL  least_squares(
     int     n_points,
     int     n_dims,
-    Real    **points,
-    Real    values[],
-    Real    parameters[] )
+    VIO_Real    **points,
+    VIO_Real    values[],
+    VIO_Real    parameters[] )
 {
     int                   pt, i;
     linear_least_squares  lsq;
-    Real                  *p;
-    BOOLEAN               success;
+    VIO_Real                  *p;
+    VIO_BOOL               success;
 
     initialize_linear_least_squares( &lsq, n_dims+1 );
 
@@ -137,8 +137,8 @@ BICAPI  void  initialize_linear_least_squares(
 
 BICAPI  void  add_to_linear_least_squares(
     linear_least_squares   *lsq,
-    Real                   parameter_coefs[],
-    Real                   constant )
+    VIO_Real                   parameter_coefs[],
+    VIO_Real                   constant )
 {
     int   i, j;
 
@@ -164,11 +164,11 @@ BICAPI  void  add_to_linear_least_squares(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_linear_least_squares_solution(
+BICAPI  VIO_BOOL  get_linear_least_squares_solution(
     linear_least_squares   *lsq,
-    Real                   solution[] )
+    VIO_Real                   solution[] )
 {
-    BOOLEAN  solved;
+    VIO_BOOL  solved;
     int      i, j;
 
     for_less( i, 0, lsq->n_parameters )

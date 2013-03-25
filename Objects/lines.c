@@ -51,7 +51,7 @@ BICAPI  void  initialize_lines_with_size(
     lines_struct    *lines,
     Colour          col,
     int             size,
-    BOOLEAN         closed )
+    VIO_BOOL         closed )
 {
     int  i, n_indices;
 
@@ -261,10 +261,10 @@ BICAPI  void  delete_bintree_if_any(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_lines_length(
+BICAPI  VIO_Real  get_lines_length(
     lines_struct  *lines )
 {
-    Real  len;
+    VIO_Real  len;
     int   line, i, p0, p1, size;
 
     len = 0.0;
@@ -300,12 +300,12 @@ BICAPI  Real  get_lines_length(
 
 BICAPI  void  get_lines_arc_point(
     lines_struct  *lines,
-    Real          arc_length,
+    VIO_Real          arc_length,
     Point         *point )
 {
-    Real     len, segment_length, ratio;
+    VIO_Real     len, segment_length, ratio;
     int      line, i, p0, p1, size;
-    BOOLEAN  found;
+    VIO_BOOL  found;
 
     if( arc_length < 0.0 )
     {

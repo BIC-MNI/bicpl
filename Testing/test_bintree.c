@@ -9,12 +9,12 @@ int  main(
     STRING               src_polygons_filename;
     File_formats         format;
     int                  n_src_objects, n_rays, ray, dim, obj_index;
-    Real                 ratio, dist;
+    VIO_Real                 ratio, dist;
     object_struct        **src_objects;
     polygons_struct      *polygons;
     Point                min_range, max_range, origin;
     Vector               direction;
-    BOOLEAN              n_intersects;
+    VIO_BOOL              n_intersects;
 
     initialize_argument_processing( argc, argv );
 
@@ -36,7 +36,7 @@ int  main(
     print( "File input: %d items\n", polygons->n_items );
 
     create_polygons_bintree( polygons,
-                             ROUND( (Real) polygons->n_items * ratio ) );
+                             ROUND( (VIO_Real) polygons->n_items * ratio ) );
 
     get_range_points( polygons->n_points, polygons->points, &min_range,
                       &max_range );

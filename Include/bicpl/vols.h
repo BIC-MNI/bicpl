@@ -26,7 +26,7 @@ typedef struct
     int                    x, y;
     Volume                 src_volume;
     Volume                 dest_volume;
-    General_transform      transform;
+    VIO_General_transform      transform;
 } resample_struct;
 
 #include  <bicpl/vol_prototypes.h>

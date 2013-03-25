@@ -16,7 +16,7 @@
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : compute_xfm.c
-@DESCRIPTION: Routine to calculate a General_transform from a pair of tag
+@DESCRIPTION: Routine to calculate a VIO_General_transform from a pair of tag
               point lists.
 @METHOD     : 
 @GLOBALS    : 
@@ -102,32 +102,32 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/comp
 /* Function declarations */
 
 static void compute_procrustes_transform(int npoints, 
-                                          Real **tag_list1, 
-                                          Real **tag_list2, 
+                                          VIO_Real **tag_list1, 
+                                          VIO_Real **tag_list2, 
                                           Trans_type trans_type,
-                                          General_transform *transform);
+                                          VIO_General_transform *transform);
 static void compute_arb_param_transform(int npoints, 
-                                         Real **tag_list1, 
-                                         Real **tag_list2, 
+                                         VIO_Real **tag_list1, 
+                                         VIO_Real **tag_list2, 
                                          Trans_type trans_type,
-                                         General_transform *transform);
+                                         VIO_General_transform *transform);
 static void compute_12param_transform(int npoints, 
-                                       Real **tag_list1, 
-                                       Real **tag_list2, 
+                                       VIO_Real **tag_list1, 
+                                       VIO_Real **tag_list2, 
                                        Trans_type trans_type,
-                                       General_transform *transform);
+                                       VIO_General_transform *transform);
 static void compute_tps_transform(int npoints, 
-                                   Real **tag_list1, 
-                                   Real **tag_list2, 
+                                   VIO_Real **tag_list1, 
+                                   VIO_Real **tag_list2, 
                                    Trans_type trans_type,
-                                   General_transform *transform);
+                                   VIO_General_transform *transform);
 
 static  void  concat_transformation_matrix(
     Transform   *lt, 
-    Real        center[],
-    Real        translations[],
-    Real        scales[],
-    Real        shears[],
+    VIO_Real        center[],
+    VIO_Real        translations[],
+    VIO_Real        scales[],
+    VIO_Real        shears[],
     Transform   *rotation );
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -149,10 +149,10 @@ static  void  concat_transformation_matrix(
 
 BICAPI  void  compute_transform_from_tags(
     int                 npoints, 
-    Real                **tag_list1, 
-    Real                **tag_list2, 
+    VIO_Real                **tag_list1, 
+    VIO_Real                **tag_list2, 
     Trans_type          trans_type,
-    General_transform   *transform)
+    VIO_General_transform   *transform)
 {
     /* Check number of points for linear transformation */
 
@@ -227,17 +227,17 @@ BICAPI  void  compute_transform_from_tags(
 
 static  void  compute_procrustes_transform(
     int                 npoints, 
-    Real                **tag_list1, 
-    Real                **tag_list2, 
+    VIO_Real                **tag_list1, 
+    VIO_Real                **tag_list2, 
     Trans_type          trans_type,
-    General_transform   *transform)
+    VIO_General_transform   *transform)
 {
     Transform   rotation;
     int         i;
-    Real        translation[N_DIMENSIONS];
-    Real        centre_of_rotation[N_DIMENSIONS];
-    Real        scale, scales[N_DIMENSIONS];
-    Real        shears[N_DIMENSIONS];
+    VIO_Real        translation[N_DIMENSIONS];
+    VIO_Real        centre_of_rotation[N_DIMENSIONS];
+    VIO_Real        scale, scales[N_DIMENSIONS];
+    VIO_Real        shears[N_DIMENSIONS];
     Transform   linear_transform;
 
     /* Do procrustes fit */
@@ -284,16 +284,16 @@ static  void  compute_procrustes_transform(
 
 static  void  compute_arb_param_transform(
     int                 npoints, 
-    Real                **tag_list1, 
-    Real                **tag_list2, 
+    VIO_Real                **tag_list1, 
+    VIO_Real                **tag_list2, 
     Trans_type          trans_type,
-    General_transform   *transform )
+    VIO_General_transform   *transform )
 {
     Transform  rotation;
-    Real       translation[N_DIMENSIONS];
-    Real       centre_of_rotation[N_DIMENSIONS], scale;
-    Real       scales[N_DIMENSIONS];
-    Real       shears[N_DIMENSIONS], angles[N_DIMENSIONS];
+    VIO_Real       translation[N_DIMENSIONS];
+    VIO_Real       centre_of_rotation[N_DIMENSIONS], scale;
+    VIO_Real       scales[N_DIMENSIONS];
+    VIO_Real       shears[N_DIMENSIONS], angles[N_DIMENSIONS];
     int        i;
     Transform  linear_transform;
   
@@ -362,9 +362,9 @@ static  void  compute_arb_param_transform(
 
 static  void   make_rots(
     Transform   *xmat,
-    Real        rot_x,
-    Real        rot_y,
-    Real        rot_z )
+    VIO_Real        rot_x,
+    VIO_Real        rot_y,
+    VIO_Real        rot_z )
 {
     Transform  tx, ty, tz;
 
@@ -393,10 +393,10 @@ static  void   make_rots(
 
 static  void  concat_transformation_matrix(
     Transform   *lt, 
-    Real        center[],
-    Real        translations[],
-    Real        scales[],
-    Real        shears[],
+    VIO_Real        center[],
+    VIO_Real        translations[],
+    VIO_Real        scales[],
+    VIO_Real        shears[],
     Transform   *rotation )
 {
     Transform    T, SH, S, C;
@@ -444,11 +444,11 @@ static  void  concat_transformation_matrix(
 
 BICAPI  void  build_transformation_matrix(
     Transform   *lt, 
-    Real        center[],
-    Real        translations[],
-    Real        scales[],
-    Real        shears[],
-    Real        rotations[] )
+    VIO_Real        center[],
+    VIO_Real        translations[],
+    VIO_Real        scales[],
+    VIO_Real        shears[],
+    VIO_Real        rotations[] )
 {
     Transform    R;
 
@@ -483,12 +483,12 @@ BICAPI  void  build_transformation_matrix(
 
 static  void  compute_12param_transform(
     int                 npoints, 
-    Real                **tag_list1, 
-    Real                **tag_list2, 
+    VIO_Real                **tag_list1, 
+    VIO_Real                **tag_list2, 
     Trans_type          trans_type,
-    General_transform   *transform)
+    VIO_General_transform   *transform)
 {
-    Real       *x, solution[N_DIMENSIONS + 1];
+    VIO_Real       *x, solution[N_DIMENSIONS + 1];
     int        d, dim;
     int        point;
     Transform  linear_transform;
@@ -559,13 +559,13 @@ static  void  compute_12param_transform(
  
 static  void  compute_tps_transform(
     int                 npoints, 
-    Real                **tag_list1, 
-    Real                **tag_list2, 
+    VIO_Real                **tag_list1, 
+    VIO_Real                **tag_list2, 
     Trans_type          trans_type,
-    General_transform   *transform)
+    VIO_General_transform   *transform)
 {
-    Real               **displacements;
-    General_transform  inv_transform;
+    VIO_Real               **displacements;
+    VIO_General_transform  inv_transform;
 
     /* Check trans_type */
 

@@ -21,7 +21,7 @@ int  main(
     Status               status;
     STRING               src_filename, dest_filename;
     int                  i, n_iters, n_objects;
-    Real                 threshold;
+    VIO_Real                 threshold;
     File_formats         format;
     object_struct        **object_list;
     polygons_struct      *polygons;

@@ -41,8 +41,8 @@ BICAPI   void  initialize_hash_table(
     hash_table_struct  *hash_table,
     int                size,
     int                data_size,
-    Real               enlarge_threshold,
-    Real               new_density )
+    VIO_Real               enlarge_threshold,
+    VIO_Real               new_density )
 {
     int        i;
 
@@ -132,11 +132,11 @@ static   int  hash_function(
     int                 key )
 {
     int    index;
-    Real   v;
+    VIO_Real   v;
 
-    v = (Real) key * HASH_FUNCTION_CONSTANT;
+    v = (VIO_Real) key * HASH_FUNCTION_CONSTANT;
 
-    index = (int) (FRACTION(v) * (Real) hash_table->size);
+    index = (int) (FRACTION(v) * (VIO_Real) hash_table->size);
 
     return( index );
 }
@@ -213,12 +213,12 @@ BICAPI  void  insert_in_hash_table(
 
         ++hash_table->n_entries;
 
-        if( (Real) hash_table->n_entries / (Real) hash_table->size >
+        if( (VIO_Real) hash_table->n_entries / (VIO_Real) hash_table->size >
             hash_table->enlarge_threshold )
         {
             int   new_size;
 
-            new_size = ROUND( (Real) hash_table->n_entries /
+            new_size = ROUND( (VIO_Real) hash_table->n_entries /
                               hash_table->new_density );
             increase_hash_table_size( hash_table, new_size );
         }
@@ -244,12 +244,12 @@ BICAPI  void  insert_in_hash_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  lookup_in_hash_table(
+BICAPI  VIO_BOOL  lookup_in_hash_table(
     hash_table_struct  *hash_table,
     int                key,
     void               *data_ptr )
 {
-    BOOLEAN             found;
+    VIO_BOOL             found;
     hash_entry_struct   **ptr_to_entry;
     hash_entry_struct   *entry;
 
@@ -290,12 +290,12 @@ BICAPI  BOOLEAN  lookup_in_hash_table(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  remove_from_hash_table(
+BICAPI  VIO_BOOL  remove_from_hash_table(
     hash_table_struct  *hash_table,
     int                key,
     void               *data_ptr )
 {
-    BOOLEAN             removed;
+    VIO_BOOL             removed;
     hash_entry_struct   **ptr_to_entry;
     hash_entry_struct   *entry;
 
@@ -436,12 +436,12 @@ BICAPI  void  initialize_hash_pointer(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_next_hash_entry(
+BICAPI  VIO_BOOL  get_next_hash_entry(
     hash_table_struct   *hash_table,
     hash_table_pointer  *ptr,
     void                *data_ptr )
 {
-    BOOLEAN   found;
+    VIO_BOOL   found;
 
     if( ptr->current_entry != NULL )
         ptr->current_entry = ptr->current_entry->next;

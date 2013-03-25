@@ -19,7 +19,7 @@ int  main(
 {
     STRING               src_filename, dest_filename;
     File_formats         format;
-    Real                 amb_coef, diff_coef, spec_coef, spec_exp, opacity;
+    VIO_Real                 amb_coef, diff_coef, spec_coef, spec_exp, opacity;
     Surfprop             spr;
     int                  i;
     int                  n_objects;

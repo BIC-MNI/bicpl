@@ -8,33 +8,33 @@ extern "C" {
 BICAPI  double  fast_approx_sqrt(
     double  y );
 
-BICAPI  Real  fast_approx_distance_between_points(
+BICAPI  VIO_Real  fast_approx_distance_between_points(
     Point  *p1,
     Point  *p2 );
 
 BICAPI  int  clip_polygon_against_box(
     int     n_points,
     Point   points[],
-    Real    x_min,
-    Real    x_max,
-    Real    y_min,
-    Real    y_max,
-    Real    z_min,
-    Real    z_max,
+    VIO_Real    x_min,
+    VIO_Real    x_max,
+    VIO_Real    y_min,
+    VIO_Real    y_max,
+    VIO_Real    z_min,
+    VIO_Real    z_max,
     int     n_output_points,
     Point   output_points[] );
 
 BICAPI  int  clip_polygon_against_plane(
     int     n_points,
     Point   points[],
-    Real    plane_constant,
+    VIO_Real    plane_constant,
     Vector  *normal,
     Point   output_points[] );
 
 BICAPI  void  split_polygon_with_plane(
     int     n_points,
     Point   points[],
-    Real    plane_constant,
+    VIO_Real    plane_constant,
     Vector  *normal,
     int     *n_in,
     Point   in_points[],
@@ -47,37 +47,37 @@ BICAPI  void  get_closest_point_on_line_segment(
     Point  *p2,
     Point  *closest_point );
 
-BICAPI  Real  get_distance_to_line_segment(
+BICAPI  VIO_Real  get_distance_to_line_segment(
     Point  *point,
     Point  *p1,
     Point  *p2,
-    Real   *alpha );
+    VIO_Real   *alpha );
 
-BICAPI  Real  get_point_object_distance_sq(
+BICAPI  VIO_Real  get_point_object_distance_sq(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
     Point                 *object_point );
 
-BICAPI  Real  get_point_object_distance(
+BICAPI  VIO_Real  get_point_object_distance(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
     Point                 *object_point );
 
-BICAPI  Real  get_point_object_vertex_distance(
+BICAPI  VIO_Real  get_point_object_vertex_distance(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
     int                   *object_vertex );
 
-BICAPI  Real  find_closest_point_on_object(
+BICAPI  VIO_Real  find_closest_point_on_object(
     Point           *point,
     object_struct   *object,
     int             *obj_index,
     Point           *point_on_object );
 
-BICAPI  Real  find_closest_vertex_on_object(
+BICAPI  VIO_Real  find_closest_vertex_on_object(
     Point           *point,
     object_struct   *object,
     int             *vertex_on_object );
@@ -86,26 +86,26 @@ BICAPI  void  get_polygon_vertex_curvatures(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
-    Real              smoothing_distance,
-    Real              low_threshold,
-    Real              curvatures[] );
+    VIO_Real              smoothing_distance,
+    VIO_Real              low_threshold,
+    VIO_Real              curvatures[] );
 
 BICAPI  void  flatten_around_vertex(
     Point     *vertex,
     int       n_neighbours,
     Point     neighbours[],
-    BOOLEAN   closed_flag,
-    Real      x_flat[],
-    Real      y_flat[] );
+    VIO_BOOL   closed_flag,
+    VIO_Real      x_flat[],
+    VIO_Real      y_flat[] );
 
 BICAPI  void  flatten_around_vertex_to_sphere(
-    Real      radius,
+    VIO_Real      radius,
     Point     *vertex,
     int       n_neighbours,
     Point     neighbours[],
-    Real      x_sphere[],
-    Real      y_sphere[],
-    Real      z_sphere[] );
+    VIO_Real      x_sphere[],
+    VIO_Real      y_sphere[],
+    VIO_Real      z_sphere[] );
 
 BICAPI  int  compute_distances_from_point(
     polygons_struct   *polygons,
@@ -113,17 +113,17 @@ BICAPI  int  compute_distances_from_point(
     int               *neighbours[],
     Point             *point,
     int               poly,
-    Real              max_distance,
-    BOOLEAN           distances_initialized,
+    VIO_Real              max_distance,
+    VIO_BOOL           distances_initialized,
     float             distances[],
     int               *list[] ) ;
 
 BICAPI  void  find_polygon_normal_no_normalize(
     int      n_points,
     Point    points[],
-    Real     *nx,
-    Real     *ny,
-    Real     *nz );
+    VIO_Real     *nx,
+    VIO_Real     *ny,
+    VIO_Real     *nz );
 
 BICAPI  void  find_polygon_normal(
     int      n_points,
@@ -134,49 +134,49 @@ BICAPI  void   get_plane_through_points(
     int      n_points,
     Point    points[],
     Vector   *normal,
-    Real     *plane_constant );
+    VIO_Real     *plane_constant );
 
-BICAPI  Real  distance_from_plane(
+BICAPI  VIO_Real  distance_from_plane(
     Point    *point,
     Vector   *plane_normal,
-    Real     plane_constant );
+    VIO_Real     plane_constant );
 
-BICAPI  Real  distance_from_line(
+BICAPI  VIO_Real  distance_from_line(
     Point    *point,
     Point    *end_point1,
     Point    *end_point2 );
 
-BICAPI  BOOLEAN   line_segment_intersects_plane(
+BICAPI  VIO_BOOL   line_segment_intersects_plane(
     Point   *p1,
     Point   *p2,
     Point   *plane_origin,
     Vector  *plane_normal,
     Point   *intersection_point );
 
-BICAPI  BOOLEAN  get_nearest_point_on_lines(
+BICAPI  VIO_BOOL  get_nearest_point_on_lines(
     Point   *origin1,
     Vector  *delta1,
     Point   *origin2,
     Vector  *delta2,
     Point   *nearest_point );
 
-BICAPI  BOOLEAN  clip_line_to_box(
+BICAPI  VIO_BOOL  clip_line_to_box(
     Point    *origin,
     Vector   *direction,
-    Real     x_min,
-    Real     x_max,
-    Real     y_min,
-    Real     y_max,
-    Real     z_min,
-    Real     z_max,
-    Real     *t_min,
-    Real     *t_max );
+    VIO_Real     x_min,
+    VIO_Real     x_max,
+    VIO_Real     y_min,
+    VIO_Real     y_max,
+    VIO_Real     z_min,
+    VIO_Real     z_max,
+    VIO_Real     *t_min,
+    VIO_Real     *t_max );
 
 BICAPI  void  create_line_circle(
     Point            *centre,
     int              plane_axis,
-    Real             x_radius,
-    Real             y_radius,
+    VIO_Real             x_radius,
+    VIO_Real             y_radius,
     int              n_points,
     lines_struct     *lines );
 
@@ -184,7 +184,7 @@ BICAPI  void  get_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
     Point       points[],
-    Real        weights[] );
+    VIO_Real        weights[] );
 
 BICAPI  void  map_point_between_polygons(
     polygons_struct  *p1,
@@ -193,7 +193,7 @@ BICAPI  void  map_point_between_polygons(
     polygons_struct  *p2,
     Point            *p2_point );
 
-BICAPI  Real  map_point_to_unit_sphere(
+BICAPI  VIO_Real  map_point_to_unit_sphere(
     polygons_struct  *p,
     Point            *point,
     polygons_struct  *unit_sphere,
@@ -213,18 +213,18 @@ BICAPI  void  polygon_transform_points(
     Point             dest_points[] );
 
 BICAPI  void  map_sphere_to_uv(
-    Real    x,
-    Real    y,
-    Real    z,
-    Real    *u,
-    Real    *v );
+    VIO_Real    x,
+    VIO_Real    y,
+    VIO_Real    z,
+    VIO_Real    *u,
+    VIO_Real    *v );
 
 BICAPI  void  map_uv_to_sphere(
-    Real    u,
-    Real    v,
-    Real    *x,
-    Real    *y,
-    Real    *z );
+    VIO_Real    u,
+    VIO_Real    v,
+    VIO_Real    *x,
+    VIO_Real    *y,
+    VIO_Real    *z );
 
 BICAPI   void   find_path_between_polygons(
     int            polygon1,
@@ -233,7 +233,7 @@ BICAPI   void   find_path_between_polygons(
     int            end_indices[],
     Smallest_int   visibilities[],
     int            neighbours[],
-    BOOLEAN        *path_exists,
+    VIO_BOOL        *path_exists,
     int            *path_length,
     int            *path[] );
 
@@ -261,20 +261,20 @@ BICAPI  void   intersect_planes_with_quadmesh(
     Vector            *plane_normal,
     lines_struct      *lines );
 
-BICAPI  BOOLEAN  null_Point(
+BICAPI  VIO_BOOL  null_Point(
     Point   *p );
 
-BICAPI  BOOLEAN  null_Vector(
+BICAPI  VIO_BOOL  null_Vector(
     Vector   *v );
 
-BICAPI  Real  distance_between_points(
+BICAPI  VIO_Real  distance_between_points(
     Point  *p1,
     Point  *p2 );
 
-BICAPI  BOOLEAN  points_within_distance(
+BICAPI  VIO_BOOL  points_within_distance(
     Point  *p1,
     Point  *p2,
-    Real   distance );
+    VIO_Real   distance );
 
 BICAPI  void  apply_point_to_min_and_max(
     Point   *point,
@@ -302,22 +302,22 @@ BICAPI   void     reverse_vectors(
     int       n_vectors,
     Vector    vectors[] );
 
-BICAPI  Real  get_angle_between_points(
+BICAPI  VIO_Real  get_angle_between_points(
     Point  *prev_point,
     Point  *this_point,
     Point  *next_point );
 
-BICAPI  Real  sq_distance_between_points(
+BICAPI  VIO_Real  sq_distance_between_points(
     Point  *p1,
     Point  *p2 );
 
-BICAPI  Real  find_point_polygon_distance_sq(
+BICAPI  VIO_Real  find_point_polygon_distance_sq(
     Point     *point,
     int       n_points,
     Point     poly_points[],
     Point     *closest_point );
 
-BICAPI  Real  find_point_polygon_distance(
+BICAPI  VIO_Real  find_point_polygon_distance(
     Point     *point,
     int       n_points,
     Point     poly_points[],
@@ -330,12 +330,12 @@ BICAPI  int  find_closest_polygon_point(
 
 BICAPI  void  create_polygons_sphere(
     Point            *centre,
-    Real             x_size,
-    Real             y_size,
-    Real             z_size,
+    VIO_Real             x_size,
+    VIO_Real             y_size,
+    VIO_Real             z_size,
     int              n_up,
     int              n_around,
-    BOOLEAN          subdividing_flag,
+    VIO_BOOL          subdividing_flag,
     polygons_struct  *polygons );
 
 BICAPI  int  get_sphere_point_index(
@@ -344,10 +344,10 @@ BICAPI  int  get_sphere_point_index(
     int   n_up,
     int   n_around );
 
-BICAPI  BOOLEAN  is_this_sphere_topology(
+BICAPI  VIO_BOOL  is_this_sphere_topology(
     polygons_struct  *polygons );
 
-BICAPI  BOOLEAN  get_tessellation_of_polygons_sphere(
+BICAPI  VIO_BOOL  get_tessellation_of_polygons_sphere(
     polygons_struct  *polygons,
     int              *tess );
 
@@ -360,30 +360,30 @@ BICAPI  void  half_sample_sphere_tessellation(
 
 BICAPI   void  initialize_intersect_directions( void );
 
-BICAPI  Real  *get_intersect_directions( void );
+BICAPI  VIO_Real  *get_intersect_directions( void );
 
-BICAPI  BOOLEAN  point_within_polygon(
+BICAPI  VIO_BOOL  point_within_polygon(
     Point   *pt,
     int     n_points,
     Point   points[],
     Vector  *polygon_normal );
 
-BICAPI  BOOLEAN  line_intersects_ellipsoid(
+BICAPI  VIO_BOOL  line_intersects_ellipsoid(
     Point    *line_origin,
     Vector   *line_direction,
     Point    *sphere_centre,
-    Real     x_size,
-    Real     y_size,
-    Real     z_size,
-    Real     *t_min,
-    Real     *t_max );
+    VIO_Real     x_size,
+    VIO_Real     y_size,
+    VIO_Real     z_size,
+    VIO_Real     *t_min,
+    VIO_Real     *t_max );
 
-BICAPI  BOOLEAN  ray_intersects_sphere(
+BICAPI  VIO_BOOL  ray_intersects_sphere(
     Point       *origin,
     Vector      *direction,
     Point       *centre,
-    Real        radius,
-    Real        *dist );
+    VIO_Real        radius,
+    VIO_Real        *dist );
 
 BICAPI  void  intersect_ray_object(
     Point                 *origin,
@@ -391,35 +391,35 @@ BICAPI  void  intersect_ray_object(
     object_struct         *object,
     int                   obj_index,
     int                   *closest_obj_index,
-    Real                  *closest_dist,
+    VIO_Real                  *closest_dist,
     int                   *n_intersections,
-    Real                  *distances[] );
+    VIO_Real                  *distances[] );
 
 BICAPI  int  intersect_ray_with_object(
     Point           *origin,
     Vector          *direction,
     object_struct   *object,
     int             *obj_index,
-    Real            *dist,
-    Real            *distances[] );
+    VIO_Real            *dist,
+    VIO_Real            *distances[] );
 
 BICAPI  void   remove_invisible_polygons(
     polygons_struct  *polygons,
     Smallest_int     visibilities[] );
 
-BICAPI  Real  get_smooth_surface_curvature(
+BICAPI  VIO_Real  get_smooth_surface_curvature(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
     int               poly,
     int               vertex,
-    BOOLEAN           distances_initialized,
+    VIO_BOOL           distances_initialized,
     float             distances[],
-    Real              smoothing_distance );
+    VIO_Real              smoothing_distance );
 
 BICAPI  void  smooth_lines(
     lines_struct  *lines,
-    Real          smooth_length );
+    VIO_Real          smooth_length );
 
 BICAPI  void  create_line_spline(
     lines_struct  *lines,
@@ -428,47 +428,47 @@ BICAPI  void  create_line_spline(
 
 BICAPI  void  smooth_polygon(
     polygons_struct  *polygons,
-    Real             max_dist_from_original,
-    Real             fraction_to_move,
-    Real             stop_threshold,
-    Real             normal_ratio,
-    BOOLEAN          range_flag,
+    VIO_Real             max_dist_from_original,
+    VIO_Real             fraction_to_move,
+    VIO_Real             stop_threshold,
+    VIO_Real             normal_ratio,
+    VIO_BOOL          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value );
 
-BICAPI  BOOLEAN  get_interpolation_weights_2d(
-    Real   x,
-    Real   y,
+BICAPI  VIO_BOOL  get_interpolation_weights_2d(
+    VIO_Real   x,
+    VIO_Real   y,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   weights[] );
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   weights[] );
 
-BICAPI  BOOLEAN  get_prediction_weights_2d(
-    Real   x,
-    Real   y,
+BICAPI  VIO_BOOL  get_prediction_weights_2d(
+    VIO_Real   x,
+    VIO_Real   y,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   *x_weights[2],
-    Real   *x_constant,
-    Real   *y_weights[2],
-    Real   *y_constant );
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   *x_weights[2],
+    VIO_Real   *x_constant,
+    VIO_Real   *y_weights[2],
+    VIO_Real   *y_constant );
 
-BICAPI  BOOLEAN  get_prediction_weights_3d(
-    Real   x,
-    Real   y,
-    Real   z,
+BICAPI  VIO_BOOL  get_prediction_weights_3d(
+    VIO_Real   x,
+    VIO_Real   y,
+    VIO_Real   z,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   zs[],
-    Real   *x_weights[3],
-    Real   *y_weights[3],
-    Real   *z_weights[3] );
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   zs[],
+    VIO_Real   *x_weights[3],
+    VIO_Real   *y_weights[3],
+    VIO_Real   *z_weights[3] );
 
-BICAPI  BOOLEAN is_single_closed_curve(
+BICAPI  VIO_BOOL is_single_closed_curve(
     lines_struct   *lines );
 
 BICAPI  void  subdivide_lines(
@@ -477,18 +477,18 @@ BICAPI  void  subdivide_lines(
 BICAPI  void  subdivide_polygons(
     polygons_struct  *polygons );
 
-BICAPI  Real  get_polygon_2d_area(
+BICAPI  VIO_Real  get_polygon_2d_area(
     int      n_points,
     Point    points[] );
 
-BICAPI  Real  get_polygon_surface_area(
+BICAPI  VIO_Real  get_polygon_surface_area(
     int      n_points,
     Point    points[] );
 
-BICAPI  Real  get_polygons_surface_area(
+BICAPI  VIO_Real  get_polygons_surface_area(
     polygons_struct  *polygons );
 
-BICAPI  BOOLEAN  is_this_tetrahedral_topology(
+BICAPI  VIO_BOOL  is_this_tetrahedral_topology(
     polygons_struct   *polygons );
 
 BICAPI  int  get_tetra_tessellation_with_n_points(
@@ -496,9 +496,9 @@ BICAPI  int  get_tetra_tessellation_with_n_points(
 
 BICAPI  void  create_tetrahedral_sphere(
     Point            *centre,
-    Real             rx,
-    Real             ry,
-    Real             rz,
+    VIO_Real             rx,
+    VIO_Real             ry,
+    VIO_Real             rz,
     int              n_triangles,
     polygons_struct  *polygons );
 
@@ -509,19 +509,19 @@ BICAPI  void  half_sample_tetrahedral_tessellation(
 BICAPI  int  convert_lines_to_tubes(
     lines_struct     *lines,
     int              n_around,
-    Real             radius,
+    VIO_Real             radius,
     quadmesh_struct  *quadmeshes[] );
 
 BICAPI  void   create_slice_quadmesh(
     Volume           volume,
     int              axis_index,
-    Real             voxel_position,
+    VIO_Real             voxel_position,
     int              x_tess,
     int              y_tess,
-    Real             x_min,
-    Real             x_max,
-    Real             y_min,
-    Real             y_max,
+    VIO_Real             x_min,
+    VIO_Real             x_max,
+    VIO_Real             y_min,
+    VIO_Real             y_max,
     quadmesh_struct  *quadmesh );
 
 BICAPI  void   create_slice_3d(

@@ -1,8 +1,8 @@
 #include  <bicpl.h>
 
-private   Real  evaluate_gaussian(
-    Real   d,
-    Real   fwhm );
+private   VIO_Real  evaluate_gaussian(
+    VIO_Real   d,
+    VIO_Real   fwhm );
 
 int  main(
     int    argc,
@@ -14,7 +14,7 @@ int  main(
     object_struct    **object_list;
     polygons_struct  *polygons;
     Point            centre;
-    Real             fwhm, distance, dist, x, y, z;
+    VIO_Real             fwhm, distance, dist, x, y, z;
 
     initialize_argument_processing( argc, argv );
 
@@ -56,11 +56,11 @@ int  main(
     return( 0 );
 }
 
-private   Real  evaluate_gaussian(
-    Real   d,
-    Real   fwhm )
+private   VIO_Real  evaluate_gaussian(
+    VIO_Real   d,
+    VIO_Real   fwhm )
 {
-    Real  e;
+    VIO_Real  e;
 
     e = -0.5 * d * d * 8.0 * log( 2.0 ) / fwhm / fwhm;
 

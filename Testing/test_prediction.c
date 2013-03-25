@@ -6,8 +6,8 @@ int  main(
     char    *argv[] )
 {
     int      i, j, n_points, dim;
-    Real     x, y, value;
-    Real     xs[10], ys[10], *weights[2][2], constants[2];
+    VIO_Real     x, y, value;
+    VIO_Real     xs[10], ys[10], *weights[2][2], constants[2];
 
     ALLOC( weights[0][0], 10 );
     ALLOC( weights[0][1], 10 );

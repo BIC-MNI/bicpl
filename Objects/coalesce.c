@@ -18,7 +18,7 @@ static  void  get_box_index(
     int     *j,
     int     *k )
 {
-    Real  diff, p, min_p, max_p;
+    VIO_Real  diff, p, min_p, max_p;
     int   dim, *coords[N_DIMENSIONS];
 
     coords[X] = i;
@@ -27,9 +27,9 @@ static  void  get_box_index(
 
     for_less( dim, 0, N_DIMENSIONS )
     {
-        p = (Real) Point_coord(*point,dim);
-        min_p = (Real) Point_coord(*min_point,dim);
-        max_p = (Real) Point_coord(*max_point,dim);
+        p = (VIO_Real) Point_coord(*point,dim);
+        min_p = (VIO_Real) Point_coord(*min_point,dim);
+        max_p = (VIO_Real) Point_coord(*max_point,dim);
         if( p <= min_p )
             *(coords[dim]) = 0;
         else if( p >= max_p )
@@ -40,7 +40,7 @@ static  void  get_box_index(
             if( diff <= 0.0 )
                 *(coords[dim]) = 0;
             else
-                *(coords[dim]) = (int) ((Real) n_boxes[dim] *
+                *(coords[dim]) = (int) ((VIO_Real) n_boxes[dim] *
                                         (p - min_p) / diff);
         }
     } 
@@ -64,7 +64,7 @@ BICAPI  void  coalesce_object_points(
 
     for_less( dim, 0, N_DIMENSIONS )
     {
-        n_boxes[dim] = (int) pow( (Real) *n_points * N_BOX_RATIO, 0.3333 );
+        n_boxes[dim] = (int) pow( (VIO_Real) *n_points * N_BOX_RATIO, 0.3333 );
         if( n_boxes[dim] < MIN_N_BOXES )
             n_boxes[dim] = MIN_N_BOXES;
         if( Point_coord(min_point,dim) == Point_coord(max_point,dim) )

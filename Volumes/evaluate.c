@@ -2,16 +2,16 @@
 
 static void   trilinear_interpolate_volume(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
-    BOOLEAN        x_use_higher,
-    BOOLEAN        y_use_higher,
-    BOOLEAN        z_use_higher,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_z );
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
+    VIO_BOOL        x_use_higher,
+    VIO_BOOL        y_use_higher,
+    VIO_BOOL        z_use_higher,
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_z );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : evaluate_3D_volume_in_world
@@ -35,27 +35,27 @@ static void   trilinear_interpolate_volume(
 
 BICAPI void   evaluate_3D_volume_in_world(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
     int            degrees_continuity,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_z,
-    Real           *deriv_xx,
-    Real           *deriv_xy,
-    Real           *deriv_xz,
-    Real           *deriv_yy,
-    Real           *deriv_yz,
-    Real           *deriv_zz )
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_z,
+    VIO_Real           *deriv_xx,
+    VIO_Real           *deriv_xy,
+    VIO_Real           *deriv_xz,
+    VIO_Real           *deriv_yy,
+    VIO_Real           *deriv_yz,
+    VIO_Real           *deriv_zz )
 {
-    Real      ignore, dxx, dxy, dxz, dyy, dyz, dzz;
-    Real      voxel[MAX_DIMENSIONS];
-    Real      txx, txy, txz;
-    Real      tyx, tyy, tyz;
-    Real      tzx, tzy, tzz;
-    Real      derivs[MAX_DIMENSIONS];
+    VIO_Real      ignore, dxx, dxy, dxz, dyy, dyz, dzz;
+    VIO_Real      voxel[MAX_DIMENSIONS];
+    VIO_Real      txx, txy, txz;
+    VIO_Real      tyx, tyy, tyz;
+    VIO_Real      tzx, tzy, tzz;
+    VIO_Real      derivs[MAX_DIMENSIONS];
 
     if( get_volume_n_dimensions(volume) != 3 )
     {
@@ -70,7 +70,7 @@ BICAPI void   evaluate_3D_volume_in_world(
                         deriv_xx, deriv_xy, deriv_xz,
                         deriv_yy, deriv_yz, deriv_zz );
 
-    if( deriv_x != (Real *) 0 )
+    if( deriv_x != (VIO_Real *) 0 )
     {
         derivs[0] = *deriv_x;
         derivs[1] = *deriv_y;
@@ -79,7 +79,7 @@ BICAPI void   evaluate_3D_volume_in_world(
                                               deriv_x, deriv_y, deriv_z );
     }
 
-    if( deriv_xx != (Real *) 0 )
+    if( deriv_xx != (VIO_Real *) 0 )
     {
         dxx = *deriv_xx;
         dxy = *deriv_xy;
@@ -111,29 +111,29 @@ BICAPI void   evaluate_3D_volume_in_world(
 
 BICAPI void   special_evaluate_3D_volume_in_world(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
-    BOOLEAN        x_use_higher,
-    BOOLEAN        y_use_higher,
-    BOOLEAN        z_use_higher,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_z )
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
+    VIO_BOOL        x_use_higher,
+    VIO_BOOL        y_use_higher,
+    VIO_BOOL        z_use_higher,
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_z )
 {
-    Real      voxel[MAX_DIMENSIONS];
+    VIO_Real      voxel[MAX_DIMENSIONS];
     int       sizes[MAX_DIMENSIONS];
 
     convert_world_to_voxel( volume, x, y, z, voxel );
 
     get_volume_sizes( volume, sizes );
-    if( x < -0.5 || x > (Real) sizes[X] - 0.5 ||
-        y < -0.5 || y > (Real) sizes[Y] - 0.5 ||
-        z < -0.5 || z > (Real) sizes[Z] - 0.5 )
+    if( x < -0.5 || x > (VIO_Real) sizes[X] - 0.5 ||
+        y < -0.5 || y > (VIO_Real) sizes[Y] - 0.5 ||
+        z < -0.5 || z > (VIO_Real) sizes[Z] - 0.5 )
     {
         *value = get_volume_voxel_min( volume );
-        if( deriv_x != (Real *) NULL )
+        if( deriv_x != (VIO_Real *) NULL )
         {
             *deriv_x = 0.0;
             *deriv_y = 0.0;
@@ -146,7 +146,7 @@ BICAPI void   special_evaluate_3D_volume_in_world(
                                   x_use_higher, y_use_higher, z_use_higher,
                                   value, deriv_x, deriv_y, deriv_z );
 
-    if( deriv_x != (Real *) 0 )
+    if( deriv_x != (VIO_Real *) 0 )
     {
         convert_voxel_normal_vector_to_world( volume,
                                               *deriv_x, *deriv_y, *deriv_z,
@@ -177,21 +177,21 @@ BICAPI void   special_evaluate_3D_volume_in_world(
 
 BICAPI void   evaluate_3D_slice_in_world(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_xx,
-    Real           *deriv_xy,
-    Real           *deriv_yy )
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_xx,
+    VIO_Real           *deriv_xy,
+    VIO_Real           *deriv_yy )
 {
-    Real      ignore, dxx, dxy, dyy;
-    Real      voxel[MAX_DIMENSIONS];
-    Real      txx, txy, txz;
-    Real      tyx, tyy, tyz;
-    Real      tzx, tzy, tzz;
+    VIO_Real      ignore, dxx, dxy, dyy;
+    VIO_Real      voxel[MAX_DIMENSIONS];
+    VIO_Real      txx, txy, txz;
+    VIO_Real      tyx, tyy, tyz;
+    VIO_Real      tzx, tzy, tzz;
 
     if( get_volume_n_dimensions(volume) != 3 )
     {
@@ -205,14 +205,14 @@ BICAPI void   evaluate_3D_slice_in_world(
                        value, deriv_x, deriv_y,
                        deriv_xx, deriv_xy, deriv_yy );
 
-    if( deriv_x != (Real *) 0 )
+    if( deriv_x != (VIO_Real *) 0 )
     {
         convert_voxel_normal_vector_to_world( volume,
                                               *deriv_x, *deriv_y, 0.0,
                                               deriv_x, deriv_y, &ignore );
     }
 
-    if( deriv_xx != (Real *) 0 )
+    if( deriv_xx != (VIO_Real *) 0 )
     {
         dxx = *deriv_xx;
         dxy = *deriv_xy;
@@ -258,16 +258,16 @@ BICAPI void   evaluate_3D_slice_in_world(
 
 static void   triconstant_interpolate_volume(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_z )
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_z )
 {
     int                i, j, k, sizes[MAX_DIMENSIONS];
-    Real               prev, next, dx, dy, dz, voxel_value;
+    VIO_Real               prev, next, dx, dy, dz, voxel_value;
 
     get_volume_sizes( volume, sizes );
 
@@ -283,10 +283,10 @@ static void   triconstant_interpolate_volume(
 
     GET_VALUE_3D( voxel_value, volume, i, j, k );
 
-    if( value != (Real *) 0 )
+    if( value != (VIO_Real *) 0 )
         *value = voxel_value;
 
-    if( deriv_x != (Real *) NULL )
+    if( deriv_x != (VIO_Real *) NULL )
     {
         /* --- get derivative wrt x */
 
@@ -310,7 +310,7 @@ static void   triconstant_interpolate_volume(
         if( dx == 0 )
             *deriv_x = 0.0;
         else
-            *deriv_x = (next - prev) / (Real) dx;
+            *deriv_x = (next - prev) / (VIO_Real) dx;
 
         /* --- get derivative wrt y */
 
@@ -334,7 +334,7 @@ static void   triconstant_interpolate_volume(
         if( dy == 0 )
             *deriv_y = 0.0;
         else
-            *deriv_y = (next - prev) / (Real) dy;
+            *deriv_y = (next - prev) / (VIO_Real) dy;
 
         /* --- get derivative wrt z */
 
@@ -358,7 +358,7 @@ static void   triconstant_interpolate_volume(
         if( dz == 0 )
             *deriv_z = 0.0;
         else
-            *deriv_z = (next - prev) / (Real) dz;
+            *deriv_z = (next - prev) / (VIO_Real) dz;
     }
 }
 
@@ -384,28 +384,28 @@ static void   triconstant_interpolate_volume(
 
 static void   trilinear_interpolate_volume(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
-    BOOLEAN        x_use_higher,
-    BOOLEAN        y_use_higher,
-    BOOLEAN        z_use_higher,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_z )
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
+    VIO_BOOL        x_use_higher,
+    VIO_BOOL        y_use_higher,
+    VIO_BOOL        z_use_higher,
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_z )
 {
     int                i, j, k, sizes[MAX_DIMENSIONS];
-    Real               u, v, w;
-    Real               c000, c001, c010, c011, c100, c101, c110, c111;
-    Real               c00, c01, c10, c11;
-    Real               c0, c1;
-    Real               du00, du01, du10, du11, du0, du1;
-    Real               dv0, dv1;
+    VIO_Real               u, v, w;
+    VIO_Real               c000, c001, c010, c011, c100, c101, c110, c111;
+    VIO_Real               c00, c01, c10, c11;
+    VIO_Real               c0, c1;
+    VIO_Real               du00, du01, du10, du11, du0, du1;
+    VIO_Real               dv0, dv1;
 
     get_volume_sizes( volume, sizes );
 
-    if( x == (Real) (sizes[X]-1) )
+    if( x == (VIO_Real) (sizes[X]-1) )
     {
         i = sizes[X]-2;
         u = 1.0;
@@ -421,7 +421,7 @@ static void   trilinear_interpolate_volume(
         }
     }
 
-    if( y == (Real) (sizes[Y]-1) )
+    if( y == (VIO_Real) (sizes[Y]-1) )
     {
         j = sizes[Y]-2;
         v = 1.0;
@@ -437,7 +437,7 @@ static void   trilinear_interpolate_volume(
         }
     }
 
-    if( z == (Real) (sizes[Z]-1) )
+    if( z == (VIO_Real) (sizes[Z]-1) )
     {
         k = sizes[Z]-2;
         w = 1.0;
@@ -478,10 +478,10 @@ static void   trilinear_interpolate_volume(
     c0 = c00 + v * dv0;
     c1 = c01 + v * dv1;
 
-    if( value != (Real *) 0 )
+    if( value != (VIO_Real *) 0 )
         *value = INTERPOLATE( w, c0, c1 );
 
-    if( deriv_x != (Real *) 0 )
+    if( deriv_x != (VIO_Real *) 0 )
     {
         du0 = INTERPOLATE( v, du00, du10 );
         du1 = INTERPOLATE( v, du01, du11 );
@@ -494,32 +494,32 @@ static void   trilinear_interpolate_volume(
 
 static void   trivar_interpolate_volume(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
     int            degree,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_z,
-    Real           *deriv_xx,
-    Real           *deriv_xy,
-    Real           *deriv_xz,
-    Real           *deriv_yy,
-    Real           *deriv_yz,
-    Real           *deriv_zz )
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_z,
+    VIO_Real           *deriv_xx,
+    VIO_Real           *deriv_xy,
+    VIO_Real           *deriv_xz,
+    VIO_Real           *deriv_yy,
+    VIO_Real           *deriv_yz,
+    VIO_Real           *deriv_zz )
 {
     int                i, j, k, tu, tv, tw, ind, n_derivs;
-    Real               u, v, w, bound;
-    Real               coefs[4*4*4];
-    Real               derivs[3*3*3];
+    VIO_Real               u, v, w, bound;
+    VIO_Real               coefs[4*4*4];
+    VIO_Real               derivs[3*3*3];
     int                sizes[MAX_DIMENSIONS];
 
     get_volume_sizes( volume, sizes );
 
     bound = (degree - 2) / 2.0;
 
-    if( x >= (Real) sizes[X] - 1.0 - bound )
+    if( x >= (VIO_Real) sizes[X] - 1.0 - bound )
     {
         i = sizes[X] - degree;
         u = 1.0;
@@ -533,7 +533,7 @@ static void   trivar_interpolate_volume(
         u = FRACTION( x - bound );
     }
 
-    if( y >= (Real) sizes[Y] - 1.0 - bound )
+    if( y >= (VIO_Real) sizes[Y] - 1.0 - bound )
     {
         j = sizes[Y] - degree;
         v = 1.0;
@@ -547,7 +547,7 @@ static void   trivar_interpolate_volume(
         v = FRACTION( y - bound );
     }
 
-    if( z >= (Real) sizes[Z] - 1.0 - bound )
+    if( z >= (VIO_Real) sizes[Z] - 1.0 - bound )
     {
         k = sizes[Z] - degree;
         w = 1.0;
@@ -603,25 +603,25 @@ static void   trivar_interpolate_volume(
 
 static void   bicubic_interpolate_volume(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_xx,
-    Real           *deriv_xy,
-    Real           *deriv_yy )
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_xx,
+    VIO_Real           *deriv_xy,
+    VIO_Real           *deriv_yy )
 {
     int                i, j, k, tu, tv, ind, n_derivs;
-    Real               u, v;
-    Real               coefs[4*4];
-    Real               derivs[3*3];
+    VIO_Real               u, v;
+    VIO_Real               coefs[4*4];
+    VIO_Real               derivs[3*3];
     int                sizes[MAX_DIMENSIONS];
 
     get_volume_sizes( volume, sizes );
 
-    if( x >= (Real) sizes[X] - 1.5 )
+    if( x >= (VIO_Real) sizes[X] - 1.5 )
     {
         i = sizes[X]-2;
         u = 1.0;
@@ -632,7 +632,7 @@ static void   bicubic_interpolate_volume(
         u = FRACTION( x );
     }
 
-    if( y >= (Real) sizes[Y] - 1.5 )
+    if( y >= (VIO_Real) sizes[Y] - 1.5 )
     {
         j = sizes[Y]-2;
         v = 1.0;
@@ -643,7 +643,7 @@ static void   bicubic_interpolate_volume(
         v = FRACTION( y );
     }
 
-    if( z == (Real) sizes[Z] - 1.5 )
+    if( z == (VIO_Real) sizes[Z] - 1.5 )
     {
         k = sizes[Z]-2;
     }
@@ -707,20 +707,20 @@ static void   bicubic_interpolate_volume(
 
 BICAPI void   evaluate_3D_volume(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
     int            degrees_continuity,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_z,
-    Real           *deriv_xx,
-    Real           *deriv_xy,
-    Real           *deriv_xz,
-    Real           *deriv_yy,
-    Real           *deriv_yz,
-    Real           *deriv_zz )
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_z,
+    VIO_Real           *deriv_xx,
+    VIO_Real           *deriv_xy,
+    VIO_Real           *deriv_xz,
+    VIO_Real           *deriv_yy,
+    VIO_Real           *deriv_yz,
+    VIO_Real           *deriv_zz )
 {
     int         sizes[MAX_DIMENSIONS];
 
@@ -731,18 +731,18 @@ BICAPI void   evaluate_3D_volume(
 
     get_volume_sizes( volume, sizes );
 
-    if( x < -0.5 || x > (Real) sizes[X] - 0.5 ||
-        y < -0.5 || y > (Real) sizes[Y] - 0.5 ||
-        z < -0.5 || z > (Real) sizes[Z] - 0.5 )
+    if( x < -0.5 || x > (VIO_Real) sizes[X] - 0.5 ||
+        y < -0.5 || y > (VIO_Real) sizes[Y] - 0.5 ||
+        z < -0.5 || z > (VIO_Real) sizes[Z] - 0.5 )
     {
         *value = get_volume_voxel_min( volume );
-        if( deriv_x != (Real *) NULL )
+        if( deriv_x != (VIO_Real *) NULL )
         {
             *deriv_x = 0.0;
             *deriv_y = 0.0;
             *deriv_z = 0.0;
         }
-        if( deriv_xx != (Real *) NULL )
+        if( deriv_xx != (VIO_Real *) NULL )
         {
             *deriv_xx = 0.0;
             *deriv_xy = 0.0;
@@ -754,17 +754,17 @@ BICAPI void   evaluate_3D_volume(
         return;
     }
 
-    if( x < (Real) degrees_continuity * 0.5 ||
-        x > (Real) (sizes[X]-1) - (Real) degrees_continuity * 0.5 ||
-        y < (Real) degrees_continuity * 0.5 ||
-        y > (Real) (sizes[Y]-1) - (Real) degrees_continuity * 0.5 ||
-        z < (Real) degrees_continuity * 0.5 ||
-        z > (Real) (sizes[Z]-1) - (Real) degrees_continuity * 0.5 )
+    if( x < (VIO_Real) degrees_continuity * 0.5 ||
+        x > (VIO_Real) (sizes[X]-1) - (VIO_Real) degrees_continuity * 0.5 ||
+        y < (VIO_Real) degrees_continuity * 0.5 ||
+        y > (VIO_Real) (sizes[Y]-1) - (VIO_Real) degrees_continuity * 0.5 ||
+        z < (VIO_Real) degrees_continuity * 0.5 ||
+        z > (VIO_Real) (sizes[Z]-1) - (VIO_Real) degrees_continuity * 0.5 )
     {
         degrees_continuity = -1;
     }
 
-    if( degrees_continuity < 1 && deriv_xx != (Real *) NULL )
+    if( degrees_continuity < 1 && deriv_xx != (VIO_Real *) NULL )
     {
         *deriv_xx = 0.0;
         *deriv_xy = 0.0;
@@ -824,15 +824,15 @@ BICAPI void   evaluate_3D_volume(
 
 BICAPI void   evaluate_3D_slice(
     Volume         volume,
-    Real           x,
-    Real           y,
-    Real           z,
-    Real           *value,
-    Real           *deriv_x,
-    Real           *deriv_y,
-    Real           *deriv_xx,
-    Real           *deriv_xy,
-    Real           *deriv_yy )
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           z,
+    VIO_Real           *value,
+    VIO_Real           *deriv_x,
+    VIO_Real           *deriv_y,
+    VIO_Real           *deriv_xx,
+    VIO_Real           *deriv_xy,
+    VIO_Real           *deriv_yy )
 {
     int           sizes[MAX_DIMENSIONS];
 
@@ -843,17 +843,17 @@ BICAPI void   evaluate_3D_slice(
 
     get_volume_sizes( volume, sizes );
 
-    if( x < 1.0 || x > (Real) sizes[X] - 2.0 ||
-        y < 1.0 || y > (Real) sizes[Y] - 2.0 ||
-        z < 1.0 || z > (Real) sizes[Z] - 2.0 )
+    if( x < 1.0 || x > (VIO_Real) sizes[X] - 2.0 ||
+        y < 1.0 || y > (VIO_Real) sizes[Y] - 2.0 ||
+        z < 1.0 || z > (VIO_Real) sizes[Z] - 2.0 )
     {
         *value = get_volume_voxel_min( volume );
-        if( deriv_x != (Real *) NULL )
+        if( deriv_x != (VIO_Real *) NULL )
         {
             *deriv_x = 0.0;
             *deriv_y = 0.0;
         }
-        if( deriv_xx != (Real *) NULL )
+        if( deriv_xx != (VIO_Real *) NULL )
         {
             *deriv_xx = 0.0;
             *deriv_xy = 0.0;

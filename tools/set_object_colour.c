@@ -23,7 +23,7 @@ int  main(
     Colour               colour, *colours;
     int                  n_objects;
     object_struct        **objects;
-    BOOLEAN              setting_flag;
+    VIO_BOOL              setting_flag;
 
     initialize_argument_processing( argc, argv );
 

@@ -1,11 +1,11 @@
 #include  <volume_io/internal_volume_io.h>
 #include  <bicpl.h>
 
-private  Real  function(
-    Real   parameters[],
+private  VIO_Real  function(
+    VIO_Real   parameters[],
     void   *data )
 {
-    Real  value;
+    VIO_Real  value;
 
     value = parameters[0] * parameters[0] + parameters[1] * parameters[1];
 
@@ -16,7 +16,7 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    Real  m, parameters[2], solution[2], steps[2];
+    VIO_Real  m, parameters[2], solution[2], steps[2];
 
     parameters[0] = 1.0;
     parameters[1] = 2.0;

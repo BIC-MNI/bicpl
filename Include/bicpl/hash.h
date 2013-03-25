@@ -43,8 +43,8 @@ typedef  struct
     int                 data_size;
     int                 size;
     int                 n_entries;
-    Real                enlarge_threshold;
-    Real                new_density;
+    VIO_Real                enlarge_threshold;
+    VIO_Real                new_density;
     hash_entry_struct   **table;
 } hash_table_struct;
 
@@ -69,8 +69,8 @@ typedef  struct
     int                 data_size;
     int                 size;
     int                 n_entries;
-    Real                enlarge_threshold;
-    Real                new_density;
+    VIO_Real                enlarge_threshold;
+    VIO_Real                new_density;
     hash2_entry_struct   **table;
 } hash2_table_struct;
 

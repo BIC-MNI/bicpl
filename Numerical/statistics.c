@@ -42,17 +42,17 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/stati
 
 BICAPI  void  compute_statistics(
     int      n,
-    Real     samples[],
-    Real     *min_value,
-    Real     *max_value,
-    Real     *mean_value,
-    Real     *std_dev,
-    Real     *median )
+    VIO_Real     samples[],
+    VIO_Real     *min_value,
+    VIO_Real     *max_value,
+    VIO_Real     *mean_value,
+    VIO_Real     *std_dev,
+    VIO_Real     *median )
 {
     int                   i;
-    Real                  x, min_median, max_median, median_error;
+    VIO_Real                  x, min_median, max_median, median_error;
     statistics_struct     stats;
-    BOOLEAN               done;
+    VIO_BOOL               done;
 
     if( median != NULL )
     {
@@ -102,8 +102,8 @@ BICAPI  void  compute_statistics(
 
 BICAPI  void  initialize_statistics(
     statistics_struct  *stats,
-    Real               median_lower_bound,
-    Real               median_upper_bound )
+    VIO_Real               median_lower_bound,
+    VIO_Real               median_upper_bound )
 {
     int    i;
 
@@ -130,7 +130,7 @@ BICAPI  void  initialize_statistics(
 
 BICAPI  void  add_sample_to_statistics(
     statistics_struct  *stats,
-    Real               sample )
+    VIO_Real               sample )
 {
     int         median_box;
 
@@ -166,7 +166,7 @@ BICAPI  void  add_sample_to_statistics(
             ++stats->n_above_median_range;
         else
         {
-            median_box = (int) ((Real) stats->n_median_boxes *
+            median_box = (int) ((VIO_Real) stats->n_median_boxes *
                            (sample - stats->min_median_range)/
                            (stats->max_median_range - stats->min_median_range));
 
@@ -179,8 +179,8 @@ BICAPI  void  add_sample_to_statistics(
 
 static  void  get_median(
     statistics_struct  *stats,
-    Real               *min_range,
-    Real               *max_range )
+    VIO_Real               *min_range,
+    VIO_Real               *max_range )
 {
     int   box_index, median_index;
 
@@ -189,7 +189,7 @@ static  void  get_median(
     if( stats->n_samples <= MAX_SAMPLES_RECORDED )
     {
         int  i, j, best_index;
-        Real tmp;
+        VIO_Real tmp;
 
         for_less( i, 0, stats->n_samples-1 )
         {
@@ -251,10 +251,10 @@ static  void  get_median(
         {
             *min_range = stats->min_median_range +
                          (stats->max_median_range - stats->min_median_range) *
-                          (Real) box_index / (Real) stats->n_median_boxes;
+                          (VIO_Real) box_index / (VIO_Real) stats->n_median_boxes;
             *max_range = stats->min_median_range +
                          (stats->max_median_range - stats->min_median_range) *
-                          (Real) (box_index+1) / (Real) stats->n_median_boxes;
+                          (VIO_Real) (box_index+1) / (VIO_Real) stats->n_median_boxes;
         }
     }
 }
@@ -262,7 +262,7 @@ static  void  get_median(
 BICAPI  void  restart_statistics_with_narrower_median_range(
     statistics_struct  *stats )
 {
-    Real   min_median_range, max_median_range;
+    VIO_Real   min_median_range, max_median_range;
 
     get_median( stats, &min_median_range, &max_median_range );
 
@@ -281,15 +281,15 @@ BICAPI  void  restart_statistics_with_narrower_median_range(
 BICAPI  void  get_statistics(
     statistics_struct  *stats,
     int                *n_samples,
-    Real               *mean,
-    Real               *median,
-    Real               *median_error,
-    Real               *min_value,
-    Real               *max_value,
-    Real               *std_deviation )
+    VIO_Real               *mean,
+    VIO_Real               *median,
+    VIO_Real               *median_error,
+    VIO_Real               *min_value,
+    VIO_Real               *max_value,
+    VIO_Real               *std_deviation )
 {
     int      n;
-    Real     sum_x, sum_xx, min_median_range, max_median_range, variance;
+    VIO_Real     sum_x, sum_xx, min_median_range, max_median_range, variance;
 
     if( n_samples != NULL )
         *n_samples = stats->n_samples;
@@ -330,12 +330,12 @@ BICAPI  void  get_statistics(
     sum_xx = stats->sum_xx;
 
     if( mean != NULL )
-        *mean = sum_x / (Real) n;
+        *mean = sum_x / (VIO_Real) n;
 
     if( n == 1 )
         variance = 0.0;
     else
-        variance = (sum_xx - sum_x * sum_x / (Real) n) / (Real) (n - 1);
+        variance = (sum_xx - sum_x * sum_x / (VIO_Real) n) / (VIO_Real) (n - 1);
 
     if( std_deviation != NULL )
     {
@@ -361,12 +361,12 @@ BICAPI  void  terminate_statistics(
 
 BICAPI  void  compute_mean_and_variance(
     int   n,
-    Real  samples[],
-    Real  *mean,
-    Real  *variance )
+    VIO_Real  samples[],
+    VIO_Real  *mean,
+    VIO_Real  *variance )
 {
     int    i;
-    Real   sum_x, sum_xx;
+    VIO_Real   sum_x, sum_xx;
 
     sum_x = 0.0;
     sum_xx = 0.0;
@@ -377,30 +377,30 @@ BICAPI  void  compute_mean_and_variance(
         sum_xx += samples[i] * samples[i];
     }
 
-    *mean = sum_x / (Real) n;
+    *mean = sum_x / (VIO_Real) n;
 
     if( n == 1 )
         *variance = 0.0;
     else
-        *variance = (sum_xx - sum_x * sum_x / (Real) n) / (Real) (n - 1);
+        *variance = (sum_xx - sum_x * sum_x / (VIO_Real) n) / (VIO_Real) (n - 1);
 }
 
-BICAPI  Real  compute_two_means_t_statistic(
+BICAPI  VIO_Real  compute_two_means_t_statistic(
     int    n1,
-    Real   samples1[],
+    VIO_Real   samples1[],
     int    n2,
-    Real   samples2[] )
+    VIO_Real   samples2[] )
 {
-    Real   mean1, mean2, variance1, variance2, std_dev, std_err;
-    Real   t;
+    VIO_Real   mean1, mean2, variance1, variance2, std_dev, std_err;
+    VIO_Real   t;
 
     compute_mean_and_variance( n1, samples1, &mean1, &variance1 );
     compute_mean_and_variance( n2, samples2, &mean2, &variance2 );
 
-    std_dev = sqrt( ((Real) n1 * variance1 + (Real) n2 * variance2) /
-                    (Real) (n1 + n2 - 2) );
+    std_dev = sqrt( ((VIO_Real) n1 * variance1 + (VIO_Real) n2 * variance2) /
+                    (VIO_Real) (n1 + n2 - 2) );
 
-    std_err = std_dev * sqrt( 1.0 / (Real) n1 + 1.0 / (Real) n2 );
+    std_err = std_dev * sqrt( 1.0 / (VIO_Real) n1 + 1.0 / (VIO_Real) n2 );
 
     if( std_err == 0.0 )
         t = 0.0;

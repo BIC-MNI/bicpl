@@ -2,7 +2,7 @@
 
 BICAPI  void  initialize_quadratic(
     int              n_parameters,
-    Real             *constant_term,
+    VIO_Real             *constant_term,
     float            *linear_terms[],
     float            *square_terms[],
     int              *n_cross_terms[],
@@ -29,7 +29,7 @@ BICAPI  void  initialize_quadratic(
 
 BICAPI  void  zero_quadratic(
     int              n_parameters,
-    Real             *constant_term,
+    VIO_Real             *constant_term,
     float            linear_terms[],
     float            square_terms[],
     int              n_cross_terms[],
@@ -55,7 +55,7 @@ BICAPI  void  add_to_quadratic_cross_term(
     float            **cross_terms[],
     int              parm1,
     int              parm2,
-    Real             value,
+    VIO_Real             value,
     int              alloc_increment )
 {
     int   p1, p2, t;
@@ -126,10 +126,10 @@ BICAPI  void  delete_quadratic(
     FREE( cross_parms );
 }
 
-BICAPI  Real   evaluate_quadratic(
+BICAPI  VIO_Real   evaluate_quadratic(
     int           n_parameters,
     float         parameters[],
-    Real          constant,
+    VIO_Real          constant,
     float         linear[],
     float         square[],
     int           n_cross_terms[],
@@ -137,19 +137,19 @@ BICAPI  Real   evaluate_quadratic(
     float         *cross_terms[] )
 {
     int    parm, c;
-    Real   fit, x, inc;
+    VIO_Real   fit, x, inc;
 
     fit = constant;
 
     for_less( parm, 0, n_parameters )
     {
-        x = (Real) parameters[parm];
+        x = (VIO_Real) parameters[parm];
 
-        inc = (Real) linear[parm] + x * (Real) square[parm];
+        inc = (VIO_Real) linear[parm] + x * (VIO_Real) square[parm];
 
         for_less( c, 0, n_cross_terms[parm] )
-            inc += (Real) parameters[cross_parms[parm][c]] *
-                   (Real) cross_terms[parm][c];
+            inc += (VIO_Real) parameters[cross_parms[parm][c]] *
+                   (VIO_Real) cross_terms[parm][c];
 
         fit += x * inc;
     }

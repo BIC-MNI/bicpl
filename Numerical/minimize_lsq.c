@@ -1,21 +1,21 @@
 #include "bicpl_internal.h"
 
-#define  LSQ_TYPE      Real
+#define  LSQ_TYPE      VIO_Real
 #define  MINIMIZE_LSQ  minimize_lsq
 
 #include  "minimize_lsq_include.c"
 
-BICAPI  Real   minimize_lsq(
+BICAPI  VIO_Real   minimize_lsq(
     int              n_parameters,
-    Real             constant_term,
-    Real             linear_terms[],
-    Real             square_terms[],
+    VIO_Real             constant_term,
+    VIO_Real             linear_terms[],
+    VIO_Real             square_terms[],
     int              n_cross_terms[],
     int              *cross_parms[],
-    Real             *cross_terms[],
-    Real             max_step_size,
+    VIO_Real             *cross_terms[],
+    VIO_Real             max_step_size,
     int              n_iters,
-    Real             node_values[] )
+    VIO_Real             node_values[] )
 {
     return( private_minimize_lsq( n_parameters, constant_term,
                                   linear_terms, square_terms,
@@ -25,12 +25,12 @@ BICAPI  Real   minimize_lsq(
 
 BICAPI  void  initialize_lsq_terms(
     int              n_parameters,
-    Real             *constant_term,
-    Real             *linear_terms[],
-    Real             *square_terms[],
+    VIO_Real             *constant_term,
+    VIO_Real             *linear_terms[],
+    VIO_Real             *square_terms[],
     int              *n_cross_terms[],
     int              **cross_parms[],
-    Real             **cross_terms[] )
+    VIO_Real             **cross_terms[] )
 {
     int   parm;
 
@@ -52,12 +52,12 @@ BICAPI  void  initialize_lsq_terms(
 
 BICAPI  void  reset_lsq_terms(
     int              n_parameters,
-    Real             *constant_term,
-    Real             linear_terms[],
-    Real             square_terms[],
+    VIO_Real             *constant_term,
+    VIO_Real             linear_terms[],
+    VIO_Real             square_terms[],
     int              n_cross_terms[],
     int              *cross_parms[],
-    Real             *cross_terms[] )
+    VIO_Real             *cross_terms[] )
 {
     int   parm, n;
 
@@ -74,16 +74,16 @@ BICAPI  void  reset_lsq_terms(
 
 BICAPI  void  add_to_lsq_terms(
     int              n_parameters,
-    Real             *constant_term,
-    Real             linear_terms[],
-    Real             square_terms[],
+    VIO_Real             *constant_term,
+    VIO_Real             linear_terms[],
+    VIO_Real             square_terms[],
     int              n_cross_terms[],
     int              *cross_parms[],
-    Real             *cross_terms[],
+    VIO_Real             *cross_terms[],
     int              n_in_list,
     int              list[],
-    Real             weights[],
-    Real             constant,
+    VIO_Real             weights[],
+    VIO_Real             constant,
     int              alloc_increment )
 {
     int   p, q, p1, p2, t;
@@ -123,7 +123,7 @@ BICAPI  void  realloc_lsq_terms(
     int              n_parameters,
     int              n_cross_terms[],
     int              *cross_parms[],
-    Real             *cross_terms[] )
+    VIO_Real             *cross_terms[] )
 {
     int   p;
 
@@ -139,11 +139,11 @@ BICAPI  void  realloc_lsq_terms(
 
 BICAPI  void  delete_lsq_terms(
     int              n_parameters,
-    Real             linear_terms[],
-    Real             square_terms[],
+    VIO_Real             linear_terms[],
+    VIO_Real             square_terms[],
     int              n_cross_terms[],
     int              *cross_parms[],
-    Real             *cross_terms[] )
+    VIO_Real             *cross_terms[] )
 {
     int  p;
 

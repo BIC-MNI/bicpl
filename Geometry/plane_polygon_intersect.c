@@ -148,7 +148,7 @@ BICAPI  void   intersect_planes_with_polygons(
     int                 point_index1, point_index2;
     Vector              v1, v2;
     Point               point;
-    Real                t1, t2, ratios[2];
+    VIO_Real                t1, t2, ratios[2];
     int                 p1s[2], p2s[2];
     hash2_table_struct  hash;
 
@@ -262,7 +262,7 @@ BICAPI  void   intersect_planes_with_quadmesh(
     int                 point_index1, point_index2, indices[4];
     Vector              v1, v2;
     Point               point, *points;
-    Real                t1, t2, ratios[2];
+    VIO_Real                t1, t2, ratios[2];
     int                 p1s[2], p2s[2];
     hash2_table_struct  hash;
 

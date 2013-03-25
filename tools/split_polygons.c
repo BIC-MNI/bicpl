@@ -100,7 +100,7 @@ int  main(
     return( 0 );
 }
 
-private  BOOLEAN   can_include(
+private  VIO_BOOL   can_include(
     polygons_struct  *polygons,
     int              target_poly,
     Smallest_int     included[],
@@ -178,7 +178,7 @@ private  int  count_neighbours_included(
     int                *n_borders )
 {
     int      size, neigh_poly, vertex, n_polys, p, n_included, polys[10000];
-    BOOLEAN  closed_flag;
+    VIO_BOOL  closed_flag;
 
     n_included = 0;
 
@@ -211,9 +211,9 @@ private  int   assign_included(
     int                         init_poly, poly, neigh_poly, size;
     int                         n_included, edge, n_neighbours_included;
     int                         n_borders;
-    Real                        priority, next_priority;
+    VIO_Real                        priority, next_priority;
     Smallest_int                *connected;
-    BOOLEAN                     found;
+    VIO_BOOL                     found;
     PRIORITY_QUEUE_STRUCT(int)  queue;
     progress_struct             progress;
 
@@ -275,9 +275,9 @@ private  int   assign_included(
                 n_neighbours_included = count_neighbours_included(
                                              polygons, neigh_poly, included,
                                              &n_borders );
-                next_priority = (Real) ((int) priority + 1) + 1.0 -
-                                (Real) n_borders / 100.0 -
-                                (Real) n_neighbours_included / 10000.0;
+                next_priority = (VIO_Real) ((int) priority + 1) + 1.0 -
+                                (VIO_Real) n_borders / 100.0 -
+                                (VIO_Real) n_neighbours_included / 10000.0;
                 INSERT_IN_PRIORITY_QUEUE( queue, neigh_poly,
                                           -next_priority );
                 included[neigh_poly] = (Smallest_int) TRUE;

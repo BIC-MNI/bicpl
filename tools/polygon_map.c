@@ -12,7 +12,7 @@ int  main(
     int                  i, n_points;
     int                  n_src_objects, n_dest_objects, n_objects;
     Point                *points, point;
-    Real                 x, y, z;
+    VIO_Real                 x, y, z;
     object_struct        **objects, **src_objects, **dest_objects;
 
     initialize_argument_processing( argc, argv );
@@ -44,7 +44,7 @@ int  main(
     }
 
     create_polygons_bintree( get_polygons_ptr(src_objects[0]),
-                             ROUND( (Real) get_polygons_ptr(
+                             ROUND( (VIO_Real) get_polygons_ptr(
                                             src_objects[0])->n_items *
                                     BINTREE_FACTOR ) );
 

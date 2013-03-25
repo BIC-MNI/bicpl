@@ -458,10 +458,10 @@ BICAPI  Status  io_pixels(
     return( status );
 }
 
-static  BOOLEAN  use_compressed = FALSE;
-static  BOOLEAN  compressed_initialized = FALSE;
+static  VIO_BOOL  use_compressed = FALSE;
+static  VIO_BOOL  compressed_initialized = FALSE;
 
-static  BOOLEAN   use_compressed_polygons( void )
+static  VIO_BOOL   use_compressed_polygons( void )
 {
     if( !compressed_initialized )
     {
@@ -473,13 +473,13 @@ static  BOOLEAN   use_compressed_polygons( void )
 }
 
 BICAPI  void  set_use_compressed_polygons_flag(
-    BOOLEAN  value )
+    VIO_BOOL  value )
 {
     use_compressed = value;
     compressed_initialized = TRUE;
 }
 
-BICAPI  BOOLEAN  get_use_compressed_polygons_flag( void )
+BICAPI  VIO_BOOL  get_use_compressed_polygons_flag( void )
 {
     return( use_compressed_polygons() );
 }
@@ -510,7 +510,7 @@ BICAPI  Status  io_polygons(
     Status   status;
     Surfprop save_surfprop;
     Point    centre;
-    BOOLEAN  compressed_format;
+    VIO_BOOL  compressed_format;
 
     status = OK;
 
@@ -902,8 +902,8 @@ BICAPI  Status  io_colour(
             status = io_float( file, io_flag, ASCII_FORMAT, &a );
 
         if( io_flag == READ_FILE )
-            *colour = make_rgba_Colour_0_1( (Real) r, (Real) g,
-                                            (Real) b, (Real) a );
+            *colour = make_rgba_Colour_0_1( (VIO_Real) r, (VIO_Real) g,
+                                            (VIO_Real) b, (VIO_Real) a );
     }
     else
     {
@@ -1243,7 +1243,7 @@ BICAPI  Status  input_object_type(
     FILE           *file,
     Object_types   *type,
     File_formats   *format,
-    BOOLEAN        *eof )
+    VIO_BOOL        *eof )
 {
     char     ch;
     Status   status;
@@ -1507,7 +1507,7 @@ BICAPI  Status  input_object(
     FILE           *file,
     File_formats   *format,
     object_struct  **object,
-    BOOLEAN        *eof )
+    VIO_BOOL        *eof )
 {
     Status         status;
     File_formats   sub_format;

@@ -5,20 +5,20 @@ int  main(
     char  *argv[] )
 {
     int            n_alloced, x_size, y_size, i, sizes[MAX_DIMENSIONS];
-    Real           intensity, separations[MAX_DIMENSIONS];
-    Real           min_value, max_value;
-    Real           x_axis[N_DIMENSIONS];
-    Real           y_axis[N_DIMENSIONS];
-    Real           origin[N_DIMENSIONS];
+    VIO_Real           intensity, separations[MAX_DIMENSIONS];
+    VIO_Real           min_value, max_value;
+    VIO_Real           x_axis[N_DIMENSIONS];
+    VIO_Real           y_axis[N_DIMENSIONS];
+    VIO_Real           origin[N_DIMENSIONS];
     int            used_x_viewport_size, used_y_viewport_size, n_iters;
     int            n_alloced2, x, y, j;
-    Real           start_time, end_time;
-    Real           alpha1, alpha2;
+    VIO_Real           start_time, end_time;
+    VIO_Real           alpha1, alpha2;
     pixels_struct  pixels, pixels2;
     Volume         volume;
-    Real           x_scale, y_scale, x_translation, y_translation;
-    Real           slice_fit_oversize = 0.1;
-    Real           r1, g1, b1, a1, r2, g2, b2, a2;
+    VIO_Real           x_scale, y_scale, x_translation, y_translation;
+    VIO_Real           slice_fit_oversize = 0.1;
+    VIO_Real           r1, g1, b1, a1, r2, g2, b2, a2;
     Colour         **rgb_map, c1, c2, *src, *dest;
     char           *filename;
     static char    *dim_names[] = { MIxspace, MIyspace, MIzspace };
@@ -50,13 +50,13 @@ int  main(
     for_less( i, 0, 1 )
     for_less( j, 0, (int) max_value+1 )
     {
-        intensity = (Real) i / max_value;
+        intensity = (VIO_Real) i / max_value;
         rgb_map[i][j] = make_Colour_0_1( intensity, intensity, intensity );
     }
 
     origin[X] = 0.0;
     origin[Y] = 0.0;
-    origin[Z] = (Real) (sizes[Z] - 1) / 2.0;
+    origin[Z] = (VIO_Real) (sizes[Z] - 1) / 2.0;
     x_axis[X] = 1.0;
     x_axis[Y] = 0.0;
     x_axis[Z] = 0.0;
@@ -88,7 +88,7 @@ int  main(
 
     end_time = current_cpu_seconds();
 
-    print( "Time: %g per render.\n", (end_time - start_time) / (Real) n_iters );
+    print( "Time: %g per render.\n", (end_time - start_time) / (VIO_Real) n_iters );
 
 return( 0 );
 
@@ -112,7 +112,7 @@ return( 0 );
                              x_translation, y_translation,
                              x_scale, y_scale,
                              (Volume) NULL, BOX_FILTER, 0.0,
-                             (Real *) NULL, (Real *) NULL, (Real *) NULL,
+                             (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                              0.0, 0.0, 0.0, 0.0,
                              x_size, y_size, 0, -1, 0, -1, RGB_PIXEL, -1,
                              (unsigned short **) NULL,
@@ -133,15 +133,15 @@ return( 0 );
 
                 if( alpha1 != 1.0 )
                 {
-                    r1 = (Real) get_Colour_r( c1 );
-                    g1 = (Real) get_Colour_g( c1 );
-                    b1 = (Real) get_Colour_b( c1 );
-                    a1 = (Real) get_Colour_a( c1 );
+                    r1 = (VIO_Real) get_Colour_r( c1 );
+                    g1 = (VIO_Real) get_Colour_g( c1 );
+                    b1 = (VIO_Real) get_Colour_b( c1 );
+                    a1 = (VIO_Real) get_Colour_a( c1 );
 
-                    r2 = (Real) get_Colour_r( c2 );
-                    g2 = (Real) get_Colour_g( c2 );
-                    b2 = (Real) get_Colour_b( c2 );
-                    a2 = (Real) get_Colour_a( c2 );
+                    r2 = (VIO_Real) get_Colour_r( c2 );
+                    g2 = (VIO_Real) get_Colour_g( c2 );
+                    b2 = (VIO_Real) get_Colour_b( c2 );
+                    a2 = (VIO_Real) get_Colour_a( c2 );
 
                     *dest = make_rgba_Colour(
                             (int) (alpha1 * r1 + alpha2 * r2),
@@ -158,7 +158,7 @@ return( 0 );
 
     end_time = current_cpu_seconds();
 
-    print( "Time: %g per render.\n", (end_time - start_time) / (Real) n_iters );
+    print( "Time: %g per render.\n", (end_time - start_time) / (VIO_Real) n_iters );
 
     return( 0 );
 }

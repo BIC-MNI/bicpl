@@ -37,7 +37,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeb
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  get_function_value(
+static  VIO_Real  get_function_value(
     amoeba_struct  *amoeba,
     float          parameters[] )
 {
@@ -65,11 +65,11 @@ static  Real  get_function_value(
 BICAPI  void  initialize_amoeba(
     amoeba_struct     *amoeba,
     int               n_parameters,
-    Real              initial_parameters[],
-    Real              parameter_deltas[],
+    VIO_Real              initial_parameters[],
+    VIO_Real              parameter_deltas[],
     amoeba_function   function,
     void              *function_data,
-    Real              tolerance )
+    VIO_Real              tolerance )
 {
     int    i, j;
 
@@ -93,7 +93,7 @@ BICAPI  void  initialize_amoeba(
             amoeba->parameters[i][j] = (float) initial_parameters[j];
             if( i > 0 && j == i - 1 )
                 amoeba->parameters[i][j] = (float) parameter_deltas[j];
-            amoeba->sum[j] += (Real) amoeba->parameters[i][j];
+            amoeba->sum[j] += (VIO_Real) amoeba->parameters[i][j];
         }
 
         amoeba->values[i] = get_function_value( amoeba, amoeba->parameters[i] );
@@ -114,9 +114,9 @@ BICAPI  void  initialize_amoeba(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_amoeba_parameters(
+BICAPI  VIO_Real  get_amoeba_parameters(
     amoeba_struct  *amoeba,
-    Real           parameters[] )
+    VIO_Real           parameters[] )
 {
     int   i, j, low;
 
@@ -128,7 +128,7 @@ BICAPI  Real  get_amoeba_parameters(
     }
 
     for_less( j, 0, amoeba->n_parameters )
-        parameters[j] = (Real) amoeba->parameters[low][j];
+        parameters[j] = (VIO_Real) amoeba->parameters[low][j];
 
     return( amoeba->values[low] );
 }
@@ -173,24 +173,24 @@ BICAPI  void  terminate_amoeba(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  try_amoeba(
+static  VIO_Real  try_amoeba(
     amoeba_struct  *amoeba,
-    Real           sum[],
+    VIO_Real           sum[],
     int            high,
-    Real           fac )
+    VIO_Real           fac )
 {
     int    j;
-    Real   y_try, fac1, fac2;
+    VIO_Real   y_try, fac1, fac2;
     float  *parameters;
 
     ALLOC( parameters, amoeba->n_parameters );
 
-    fac1 = (1.0 - fac) / (Real) amoeba->n_parameters;
+    fac1 = (1.0 - fac) / (VIO_Real) amoeba->n_parameters;
     fac2 = fac - fac1;
 
     for_less( j, 0, amoeba->n_parameters )
         parameters[j] = (float) (sum[j] * fac1 +
-                                 (Real) amoeba->parameters[high][j] * fac2);
+                                 (VIO_Real) amoeba->parameters[high][j] * fac2);
 
     y_try = get_function_value( amoeba, parameters );
 
@@ -199,7 +199,7 @@ static  Real  try_amoeba(
         amoeba->values[high] = y_try;
         for_less( j, 0, amoeba->n_parameters )
         {
-            sum[j] += (Real) parameters[j] - (Real) amoeba->parameters[high][j];
+            sum[j] += (VIO_Real) parameters[j] - (VIO_Real) amoeba->parameters[high][j];
             amoeba->parameters[high][j] = parameters[j];
         }
     }
@@ -228,12 +228,12 @@ static  Real  try_amoeba(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  perform_amoeba(
+BICAPI  VIO_BOOL  perform_amoeba(
     amoeba_struct  *amoeba )
 {
     int      i, j, low, high, next_high;
-    Real     y_try, y_save;
-    BOOLEAN  improvement_found;
+    VIO_Real     y_try, y_save;
+    VIO_BOOL  improvement_found;
 
     improvement_found = TRUE;
 
@@ -303,7 +303,7 @@ BICAPI  BOOLEAN  perform_amoeba(
             {
                 amoeba->sum[j] = 0.0;
                 for_less( i, 0, amoeba->n_parameters+1 )
-                    amoeba->sum[j] += (Real) amoeba->parameters[i][j];
+                    amoeba->sum[j] += (VIO_Real) amoeba->parameters[i][j];
             }
         }
     }

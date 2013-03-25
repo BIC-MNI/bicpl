@@ -99,7 +99,7 @@ static void  check_alloc_label_data(
     }
 }
 
-BICAPI BOOLEAN  is_label_volume_initialized(
+BICAPI VIO_BOOL  is_label_volume_initialized(
     Volume  volume )
 {
     return( volume != NULL && 
@@ -126,7 +126,7 @@ BICAPI void  set_all_volume_label_data(
 {
     Data_types      type;
     void            *ptr;
-    Real            real_value;
+    VIO_Real            real_value;
     int             v0, v1, v2, v3, v4;
     unsigned int    n_voxels;
 
@@ -142,7 +142,7 @@ BICAPI void  set_all_volume_label_data(
     }
     else
     {
-        real_value = (Real) value;
+        real_value = (VIO_Real) value;
         BEGIN_ALL_VOXELS( volume, v0, v1, v2, v3, v4 )
 
             set_volume_real_value( volume, v0, v1, v2, v3, v4, real_value );
@@ -176,7 +176,7 @@ BICAPI void  set_volume_label_data_5d(
 {
     check_alloc_label_data( volume );
 
-    set_volume_real_value( volume, v0, v1, v2, v3, v4, (Real) value );
+    set_volume_real_value( volume, v0, v1, v2, v3, v4, (VIO_Real) value );
 }
 
 BICAPI void  set_volume_label_data(
@@ -277,7 +277,7 @@ BICAPI int  get_3D_volume_label_data(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  get_voxel_label_bit(
+BICAPI VIO_BOOL  get_voxel_label_bit(
     Volume          volume,
     int             voxel[],
     int             bit )
@@ -305,7 +305,7 @@ BICAPI void  set_voxel_label_bit(
     Volume          volume,
     int             voxel[],
     int             bit,
-    BOOLEAN         value )
+    VIO_BOOL         value )
 {
     int     i, n_dims, v[MAX_DIMENSIONS], label, anded, new_label;
 
@@ -326,14 +326,14 @@ BICAPI void  set_voxel_label_bit(
         {
             new_label = label | bit;
             set_volume_real_value( volume, v[0], v[1], v[2], v[3], v[4],
-                                    (Real) new_label );
+                                    (VIO_Real) new_label );
         }
     }
     else if( anded != 0 )
     {
         new_label = label & (~bit);
         set_volume_real_value( volume, v[0], v[1], v[2], v[3], v[4],
-                                (Real) new_label );
+                                (VIO_Real) new_label );
     }
 }
 
@@ -353,7 +353,7 @@ BICAPI void  set_voxel_label_bit(
 BICAPI void  set_all_volume_label_data_bit(
     Volume         volume,
     int            bit,
-    BOOLEAN        value )
+    VIO_BOOL        value )
 {
     int             v[MAX_DIMENSIONS];
 
@@ -382,12 +382,12 @@ BICAPI void  set_all_volume_label_data_bit(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  get_volume_voxel_activity(
+BICAPI VIO_BOOL  get_volume_voxel_activity(
     Volume     volume,
-    Real       voxel[],
-    BOOLEAN    activity_if_mixed )
+    VIO_Real       voxel[],
+    VIO_BOOL    activity_if_mixed )
 {
-    BOOLEAN  active_found, inactive_found;
+    VIO_BOOL  active_found, inactive_found;
     int      c, int_index[MAX_DIMENSIONS], ind[MAX_DIMENSIONS];
     int      n[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
 
@@ -397,7 +397,7 @@ BICAPI BOOLEAN  get_volume_voxel_activity(
     get_volume_sizes( volume, sizes );
 
     for_less( c, 0, get_volume_n_dimensions(volume) )
-        if( voxel[c] < 0.0 || voxel[c] > (Real) sizes[c]-1.0 )
+        if( voxel[c] < 0.0 || voxel[c] > (VIO_Real) sizes[c]-1.0 )
             return( FALSE );
 
     for_less( c, 0, get_volume_n_dimensions(volume) )
@@ -468,10 +468,10 @@ static void  get_input_volume_label_limits(
 {
     int       sizes1[N_DIMENSIONS], sizes2[N_DIMENSIONS];
     int       d, t[N_DIMENSIONS];
-    Real      voxel1[N_DIMENSIONS], voxel2[N_DIMENSIONS];
+    VIO_Real      voxel1[N_DIMENSIONS], voxel2[N_DIMENSIONS];
     int       pos;
-    Real      xw, yw, zw;
-    BOOLEAN   first;
+    VIO_Real      xw, yw, zw;
+    VIO_BOOL   first;
 
     get_volume_sizes( volume1, sizes1 );
     get_volume_sizes( volume2, sizes2 );
@@ -482,9 +482,9 @@ static void  get_input_volume_label_limits(
     for_less( t[1], 0, 2 )
     for_less( t[2], 0, 2 )
     {
-        voxel2[0] = (Real) slice - 0.5 + (Real) t[0];
-        voxel2[1] = -0.5 + (Real) t[1] * (Real) sizes2[1];
-        voxel2[2] = -0.5 + (Real) t[2] * (Real) sizes2[2];
+        voxel2[0] = (VIO_Real) slice - 0.5 + (VIO_Real) t[0];
+        voxel2[1] = -0.5 + (VIO_Real) t[1] * (VIO_Real) sizes2[1];
+        voxel2[2] = -0.5 + (VIO_Real) t[2] * (VIO_Real) sizes2[2];
 
         convert_voxel_to_world( volume2, voxel2, &xw, &yw, &zw );
         convert_world_to_voxel( volume1, xw, yw, zw, voxel1 );
@@ -547,18 +547,18 @@ BICAPI Status  load_label_volume(
     int                   int_voxel[N_DIMENSIONS], int_file_value;
     int                   limits[2][N_DIMENSIONS];
     int                   file_sizes[N_DIMENSIONS];
-    Real                  file_value, xw, yw, zw, amount_done;
+    VIO_Real                  file_value, xw, yw, zw, amount_done;
     int                   int_y_voxel[N_DIMENSIONS];
-    Real                  y_voxel[N_DIMENSIONS];
-    Real                  voxel[N_DIMENSIONS], z_dx, z_dy, z_dz;
-    Real                  y_dx, y_dy, y_dz;
+    VIO_Real                  y_voxel[N_DIMENSIONS];
+    VIO_Real                  voxel[N_DIMENSIONS], z_dx, z_dy, z_dz;
+    VIO_Real                  y_dx, y_dy, y_dz;
     int                   int_z_dx, int_z_dy, int_z_dz;
     int                   int_y_dx, int_y_dy, int_y_dz;
-    Real                  start_voxel[N_DIMENSIONS];
-    Real                  end_voxel[N_DIMENSIONS];
+    VIO_Real                  start_voxel[N_DIMENSIONS];
+    VIO_Real                  end_voxel[N_DIMENSIONS];
     Volume                file_volume, file_volume_3d;
     Minc_file             file;
-    BOOLEAN               is_linear, is_integer_step;
+    VIO_BOOL               is_linear, is_integer_step;
     progress_struct       progress;
     static STRING         file_order_dim_names[] = {"", "", "", "", ""};
 
@@ -655,9 +655,9 @@ BICAPI Status  load_label_volume(
                     if( label_voxel[Y] == limits[0][Y] )
                     {
                         convert_3D_voxel_to_world( label_volume,
-                                                   (Real) label_voxel[X],
-                                                   (Real) label_voxel[Y],
-                                                   (Real) limits[0][Z],
+                                                   (VIO_Real) label_voxel[X],
+                                                   (VIO_Real) label_voxel[Y],
+                                                   (VIO_Real) limits[0][Z],
                                                    &xw, &yw, &zw );
                         convert_world_to_voxel( file_volume_3d, xw, yw, zw,
                                                 y_voxel );
@@ -707,9 +707,9 @@ BICAPI Status  load_label_volume(
                     if( !is_linear )
                     {
                         convert_3D_voxel_to_world( label_volume,
-                                                   (Real) label_voxel[X],
-                                                   (Real) label_voxel[Y],
-                                                   (Real) label_voxel[Z],
+                                                   (VIO_Real) label_voxel[X],
+                                                   (VIO_Real) label_voxel[Y],
+                                                   (VIO_Real) label_voxel[Z],
                                                    &xw, &yw, &zw );
                         convert_world_to_voxel( file_volume_3d, xw, yw, zw,
                                                 voxel );
@@ -792,10 +792,10 @@ BICAPI Status  save_label_volume(
     STRING   filename,
     STRING   original_filename,
     Volume   label_volume,
-    Real     crop_threshold )
+    VIO_Real     crop_threshold )
 {
     Status   status;
-    BOOLEAN  cropping;
+    VIO_BOOL  cropping;
     Volume   cropped_volume;
     int      n_voxels, n_voxels_cropped;
     int      c, limits[2][MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
@@ -815,7 +815,7 @@ BICAPI Status  save_label_volume(
                 n_voxels_cropped *= limits[1][c] - limits[0][c] + 1;
             }
 
-            cropping = ((Real) n_voxels_cropped / (Real) n_voxels <
+            cropping = ((VIO_Real) n_voxels_cropped / (VIO_Real) n_voxels <
                         crop_threshold);
         }
         else
@@ -876,11 +876,11 @@ BICAPI Status  input_tags_as_labels(
 {
     Status          status;
     int             c, label, ind[MAX_DIMENSIONS];
-    Real            voxel[MAX_DIMENSIONS];
+    VIO_Real            voxel[MAX_DIMENSIONS];
     int             n_volumes;
-    Real            tag1[N_DIMENSIONS];
+    VIO_Real            tag1[N_DIMENSIONS];
     int             structure_id;
-    Real            min_label, max_label;
+    VIO_Real            min_label, max_label;
 
     check_alloc_label_data( label_volume );
 
@@ -901,7 +901,7 @@ BICAPI Status  input_tags_as_labels(
         }
 
         label = structure_id;
-        if( (Real) label >= min_label && (Real) label <= max_label &&
+        if( (VIO_Real) label >= min_label && (VIO_Real) label <= max_label &&
             int_voxel_is_within_volume( volume, ind ) )
         {
             set_volume_label_data( label_volume, ind, label);
@@ -935,7 +935,7 @@ BICAPI Status  create_label_volume_from_file(
     STRING  *dim_names;
     Volume  file_volume;
     FILE    *file;
-    BOOLEAN same_grid;
+    VIO_BOOL same_grid;
 
     status = OK;
 
@@ -1009,13 +1009,13 @@ BICAPI Status  output_labels_as_tags(
     Volume  volume,
     Volume  label_volume,
     int     desired_label,
-    Real    size,
+    VIO_Real    size,
     int     patient_id )
 {
     int             ind[N_DIMENSIONS];
     int             label, sizes[MAX_DIMENSIONS];
-    Real            real_ind[N_DIMENSIONS];
-    Real            tags[N_DIMENSIONS];
+    VIO_Real            real_ind[N_DIMENSIONS];
+    VIO_Real            tags[N_DIMENSIONS];
     int             n_tags;
 
     if( get_volume_n_dimensions(volume) != 3 )
@@ -1031,13 +1031,13 @@ BICAPI Status  output_labels_as_tags(
 
     for_less( ind[X], 0, sizes[X] )
     {
-        real_ind[X] = (Real) ind[X];
+        real_ind[X] = (VIO_Real) ind[X];
         for_less( ind[Y], 0, sizes[Y] )
         {
-            real_ind[Y] = (Real) ind[Y];
+            real_ind[Y] = (VIO_Real) ind[Y];
             for_less( ind[Z], 0, sizes[Z] )
             {
-                real_ind[Z] = (Real) ind[Z];
+                real_ind[Z] = (VIO_Real) ind[Z];
                 label = get_volume_label_data( label_volume, ind );
 
                 if( label == desired_label || (desired_label < 0 && label > 0) )
@@ -1086,9 +1086,9 @@ BICAPI Status  input_landmarks_as_labels(
     Volume  label_volume )
 {
     int             c, label, ind[MAX_DIMENSIONS];
-    Real            voxel[MAX_DIMENSIONS];
+    VIO_Real            voxel[MAX_DIMENSIONS];
     marker_struct   marker;
-    Real            min_label, max_label;
+    VIO_Real            min_label, max_label;
 
     check_alloc_label_data( label_volume );
 
@@ -1097,15 +1097,15 @@ BICAPI Status  input_landmarks_as_labels(
     while( io_tag_point( file, READ_FILE, volume, 1.0, &marker ) == OK )
     {
         convert_world_to_voxel( volume,
-                                (Real) Point_x(marker.position),
-                                (Real) Point_y(marker.position),
-                                (Real) Point_z(marker.position), voxel );
+                                (VIO_Real) Point_x(marker.position),
+                                (VIO_Real) Point_y(marker.position),
+                                (VIO_Real) Point_z(marker.position), voxel );
 
         for_less( c, 0, get_volume_n_dimensions(volume) )
             ind[c] = ROUND( voxel[c] );
 
         label = marker.structure_id;
-        if( (Real) label >= min_label && (Real) label <= max_label &&
+        if( (VIO_Real) label >= min_label && (VIO_Real) label <= max_label &&
             int_voxel_is_within_volume( volume, ind ) )
         {
             set_volume_label_data( label_volume, ind, label );

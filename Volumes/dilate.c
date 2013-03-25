@@ -48,15 +48,15 @@ typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
 BICAPI int  dilate_voxels_3d(
     Volume          volume,
     Volume          label_volume,
-    Real            min_inside_label,
-    Real            max_inside_label,
-    Real            min_inside_value,
-    Real            max_inside_value,
-    Real            min_outside_label,
-    Real            max_outside_label,
-    Real            min_outside_value,
-    Real            max_outside_value,
-    Real            new_label,
+    VIO_Real            min_inside_label,
+    VIO_Real            max_inside_label,
+    VIO_Real            min_inside_value,
+    VIO_Real            max_inside_value,
+    VIO_Real            min_outside_label,
+    VIO_Real            max_outside_label,
+    VIO_Real            min_outside_value,
+    VIO_Real            max_outside_value,
+    VIO_Real            new_label,
     Neighbour_types connectivity,
     int             range_changed[2][N_DIMENSIONS] )
 {
@@ -64,13 +64,13 @@ BICAPI int  dilate_voxels_3d(
     int                     x, y, z, delta_x, tx, ty, tz;
     int                     sizes[N_DIMENSIONS];
     int                     dir, n_dirs, *dx, *dy, *dz;
-    Real                    value, label, *value_row, *label_row;
+    VIO_Real                    value, label, *value_row, *label_row;
     Smallest_int            **voxel_classes[3], **swap;
     progress_struct         progress;
     Voxel_classes           voxel_class;
-    BOOLEAN                 use_label_volume, use_volume, at_end, at_edge_y;
-    BOOLEAN                 inside_specified, outside_specified;
-    BOOLEAN                 inside, outside;
+    VIO_BOOL                 use_label_volume, use_volume, at_end, at_edge_y;
+    VIO_BOOL                 inside_specified, outside_specified;
+    VIO_BOOL                 inside, outside;
 
     use_label_volume = (min_inside_label <= max_inside_label ||
                         min_outside_label <= max_outside_label);

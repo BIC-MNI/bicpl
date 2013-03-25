@@ -106,7 +106,7 @@ BICAPI  void  fill_bitlist(
 BICAPI  void     set_bitlist_bit(
     bitlist_struct  *bitlist,
     int             bit_index,
-    BOOLEAN         value )
+    VIO_BOOL         value )
 {
     int           word_index, bit_sub_index;
     bitlist_type  bit;
@@ -136,13 +136,13 @@ BICAPI  void     set_bitlist_bit(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN     get_bitlist_bit(
+BICAPI  VIO_BOOL     get_bitlist_bit(
     bitlist_struct  *bitlist,
     int             bit_index )
 {
     int           word_index, bit_sub_index;
     bitlist_type  word_bits;
-    BOOLEAN       value;
+    VIO_BOOL       value;
 
     word_index = bit_index >> LOG_BITS_PER_BITLIST_WORD;
     bit_sub_index = bit_index & BITS_PER_BITLIST_WORD_MINUS_1;
@@ -304,7 +304,7 @@ BICAPI  void     set_bitlist_bit_3d(
     int                x,
     int                y,
     int                z,
-    BOOLEAN            value )
+    VIO_BOOL            value )
 {
     int           word_index, bit_sub_index;
     bitlist_type  bit;
@@ -343,7 +343,7 @@ BICAPI  void     set_bitlist_bit_3d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN     get_bitlist_bit_3d(
+BICAPI  VIO_BOOL     get_bitlist_bit_3d(
     bitlist_3d_struct  *bitlist,
     int                x,
     int                y,

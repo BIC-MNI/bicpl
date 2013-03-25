@@ -4,7 +4,7 @@ private  void   manifold_polygons(
     polygons_struct    *polygons,
     int                start_poly,
     int                max_polygons,
-    BOOLEAN            manifold_required,
+    VIO_BOOL            manifold_required,
     polygons_struct    *out );
 
 private  void  usage(
@@ -25,9 +25,9 @@ int  main(
     STRING           input_filename, output_filename, dummy;
     int              n_objects, max_polygons;
     int              start_poly, poly;
-    Real             x, y, z, dist, closest_dist;
+    VIO_Real             x, y, z, dist, closest_dist;
     Point            start, point;
-    BOOLEAN          start_specified, manifold_required;
+    VIO_BOOL          start_specified, manifold_required;
     File_formats     format;
     object_struct    **object_list;
     polygons_struct  *polygons, out;
@@ -107,7 +107,7 @@ private  void   assign_distances(
     int                start_poly )
 {
     int                         poly, size, neigh, edge, current, current_dist;
-    Real                        dist;
+    VIO_Real                        dist;
     PRIORITY_QUEUE_STRUCT(int)  queue;
 
     for_less( poly, 0, polygons->n_items )
@@ -135,7 +135,7 @@ private  void   assign_distances(
             {
                 poly_dist[neigh] = current_dist + 1;
                 INSERT_IN_PRIORITY_QUEUE( queue, neigh,
-                                          (Real) -poly_dist[neigh] );
+                                          (VIO_Real) -poly_dist[neigh] );
             }
         }
     }
@@ -147,7 +147,7 @@ private  void   manifold_polygons(
     polygons_struct    *polygons,
     int                start_poly,
     int                max_polygons,
-    BOOLEAN            manifold_required,
+    VIO_BOOL            manifold_required,
     polygons_struct    *out )
 {
     int                point, poly, size, neigh, v, p;
@@ -155,8 +155,8 @@ private  void   manifold_polygons(
     int                ind, *new_point_ids, n;
     int                n_done;
     int                *poly_dist;
-    Real               dist;
-    BOOLEAN            add;
+    VIO_Real               dist;
+    VIO_BOOL            add;
     Smallest_int       *point_included, *poly_included, *in_queue;
     PRIORITY_QUEUE_STRUCT(int)  queue;
 
@@ -200,7 +200,7 @@ private  void   manifold_polygons(
 
         if( neigh >= 0 )
         {
-            INSERT_IN_PRIORITY_QUEUE( queue, neigh, (Real) -poly_dist[neigh] );
+            INSERT_IN_PRIORITY_QUEUE( queue, neigh, (VIO_Real) -poly_dist[neigh] );
             in_queue[neigh] = TRUE;
         }
     }
@@ -278,7 +278,7 @@ private  void   manifold_polygons(
                 if( neigh >= 0 && !in_queue[neigh] && !poly_included[neigh] )
                 {
                     INSERT_IN_PRIORITY_QUEUE( queue, neigh,
-                                              (Real) -poly_dist[neigh] );
+                                              (VIO_Real) -poly_dist[neigh] );
                     in_queue[neigh] = TRUE;
                 }
             }

@@ -7,19 +7,19 @@ public  void  initialize_argument_processing(
     int     argc,
     char    *argv[] );
 
-public  BOOLEAN  get_int_argument(
+public  VIO_BOOL  get_int_argument(
     int   default_value,
     int   *value );
 
-public  BOOLEAN  get_real_argument(
-    Real   default_value,
-    Real   *value );
+public  VIO_BOOL  get_real_argument(
+    VIO_Real   default_value,
+    VIO_Real   *value );
 
-public  BOOLEAN  get_string_argument(
+public  VIO_BOOL  get_string_argument(
     char   default_value[],
     char   *value[] );
 
-public  BOOLEAN  get_prefix_argument(
+public  VIO_BOOL  get_prefix_argument(
     char  prefix[] );
 
 public  Status  input_globals_file(
@@ -50,7 +50,7 @@ public  void  set_random_seed( int seed );
 
 public  int  get_random_int( int n );
 
-public  Real  get_random_0_to_1( void );
+public  VIO_Real  get_random_0_to_1( void );
 
 public  void  start_timing();
 

@@ -30,14 +30,14 @@ typedef struct
 
 typedef  struct
 {
-    BOOLEAN  surface_point_exists;
+    VIO_BOOL  surface_point_exists;
     int      point_index;
 
 } axis_struct;
 
 typedef  struct
 {
-    Real          value;
+    VIO_Real          value;
     Vector        gradient;
     axis_struct   edge_info[N_DIMENSIONS];
 

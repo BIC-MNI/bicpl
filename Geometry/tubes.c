@@ -22,7 +22,7 @@ static  void  generate_tube(
     int    n_points,
     Point  points[],
     int    n_around,
-    Real   radius,
+    VIO_Real   radius,
     Point  tube_points[],
     Vector tube_normals[] );
 
@@ -47,7 +47,7 @@ static  void  create_tube(
     int               n_points,
     Point             points[],
     int               n_around,
-    Real              radius,
+    VIO_Real              radius,
     Colour            colour,
     quadmesh_struct   *quadmesh )
 {
@@ -83,7 +83,7 @@ static  void  create_tube(
 BICAPI  int  convert_lines_to_tubes(
     lines_struct     *lines,
     int              n_around,
-    Real             radius,
+    VIO_Real             radius,
     quadmesh_struct  *quadmeshes[] )
 {
     int              i, l, line_size;
@@ -139,7 +139,7 @@ static  void  get_direction(
     int      n_points,
     Point    points[],
     int      i,
-    BOOLEAN  wrap_around,
+    VIO_BOOL  wrap_around,
     Vector   *dir )
 {
     int      end;
@@ -192,8 +192,8 @@ static  void   fill_in_ellipse_points(
     Vector  tube_normals[],
     Point   *centre,
     int     n_around,
-    Real    x[],
-    Real    y[],
+    VIO_Real    x[],
+    VIO_Real    y[],
     Vector  *hor,
     Vector  *vert )
 {
@@ -237,7 +237,7 @@ static  void  project_vector_to_plane(
     Vector   *projected )
 {
     Vector   offset;
-    Real     t, n_dot_d, n_dot_v;
+    VIO_Real     t, n_dot_d, n_dot_v;
 
     n_dot_d = DOT_VECTORS( *normal, *direction );
 
@@ -277,21 +277,21 @@ static  void  generate_tube(
     int    n_points,
     Point  points[],
     int    n_around,
-    Real   radius,
+    VIO_Real   radius,
     Point  tube_points[],
     Vector tube_normals[] )
 {
     int      i;
-    Real     *x, *y, angle;
+    VIO_Real     *x, *y, angle;
     Vector   hor, vert, dir, prev_dir, normal;
-    BOOLEAN  wrap_around;
+    VIO_BOOL  wrap_around;
 
     ALLOC( x, n_around );
     ALLOC( y, n_around );
 
     for_less( i, 0, n_around )
     {
-        angle = (Real) (n_around - 1 - i) / (Real) n_around * 2.0 * PI;
+        angle = (VIO_Real) (n_around - 1 - i) / (VIO_Real) n_around * 2.0 * PI;
         x[i] = radius * cos( angle );
         y[i] = radius * sin( angle );
     }

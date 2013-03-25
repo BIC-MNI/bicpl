@@ -15,8 +15,8 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    Real                 min_limit, max_limit, width, tick_width, value, y;
-    Real                 scale;
+    VIO_Real                 min_limit, max_limit, width, tick_width, value, y;
+    VIO_Real                 scale;
     STRING               output_filename;
     STRING               under_colour_name, over_colour_name;
     STRING               outline_colour_name;
@@ -31,7 +31,7 @@ int  main(
     Colour_coding_types  coding_type;
     colour_coding_struct colour_coding;
     STRING               coding_type_string;
-    Real                 low, high;
+    VIO_Real                 low, high;
 
     initialize_argument_processing( argc, argv );
 
@@ -110,7 +110,7 @@ int  main(
 
     for_less( p, 0, n_steps )
     {
-        y = (Real) p / (Real) (n_steps-1);
+        y = (VIO_Real) p / (VIO_Real) (n_steps-1);
         value = INTERPOLATE( y, min_limit, max_limit );
         point_index0 = IJ(0,p,n_steps);
         point_index1 = IJ(1,p,n_steps);

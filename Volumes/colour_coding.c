@@ -21,16 +21,16 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_
 static void  interpolate_colours(
     colour_point   *p1,
     colour_point   *p2,
-    Real           pos,
-    Real           *r,
-    Real           *g,
-    Real           *b,
-    Real           *a );
+    VIO_Real           pos,
+    VIO_Real           *r,
+    VIO_Real           *g,
+    VIO_Real           *b,
+    VIO_Real           *a );
 
 static void  recreate_piecewise_function(
     colour_coding_struct  *colour_coding,
     Colour_coding_types   type,
-    BOOLEAN               set_user_defined );
+    VIO_BOOL               set_user_defined );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_colour_coding
@@ -54,8 +54,8 @@ BICAPI void  initialize_colour_coding(
     Colour_coding_types    type,
     Colour                 under_colour,
     Colour                 over_colour,
-    Real                   min_value,
-    Real                   max_value )
+    VIO_Real                   min_value,
+    VIO_Real                   max_value )
 {
     colour_coding->n_colour_points = 0;
     colour_coding->user_defined_n_colour_points = 0;
@@ -149,8 +149,8 @@ BICAPI Colour_coding_types  get_colour_coding_type(
 
 BICAPI void  set_colour_coding_min_max(
     colour_coding_struct   *colour_coding,
-    Real                   min_value,
-    Real                   max_value )
+    VIO_Real                   min_value,
+    VIO_Real                   max_value )
 {
     colour_coding->min_value = min_value;
     colour_coding->max_value = max_value;
@@ -172,8 +172,8 @@ BICAPI void  set_colour_coding_min_max(
 
 BICAPI void  get_colour_coding_min_max(
     colour_coding_struct   *colour_coding,
-    Real                   *min_value,
-    Real                   *max_value )
+    VIO_Real                   *min_value,
+    VIO_Real                   *max_value )
 {
     *min_value = colour_coding->min_value;
     *max_value = colour_coding->max_value;
@@ -288,7 +288,7 @@ BICAPI void  set_colour_coding_over_colour(
 static void  recreate_piecewise_function(
     colour_coding_struct  *colour_coding,
     Colour_coding_types   type,
-    BOOLEAN               set_user_defined )
+    VIO_BOOL               set_user_defined )
 {
     static  colour_point  gray_scale_points[] =
                              { {0.0, 0.0, 0.0, 0.0, 1.0, RGB_SPACE },
@@ -412,7 +412,7 @@ static void  recreate_piecewise_function(
                         {1.0,   1.0, 1.0, 1.0, 1.0, RGB_SPACE } };
     colour_point          *points, **points_ptr;
     int                   p, n_points, *n_points_ptr;
-    Real                  r, g, b, a;
+    VIO_Real                  r, g, b, a;
 
     switch( type )
     {
@@ -571,14 +571,14 @@ static void  recreate_piecewise_function(
 @MODIFIED   : Apr. 16, 1997    D. MacDonald - now rescales to [0..1]
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  define_colour_coding_user_defined(
+BICAPI VIO_BOOL  define_colour_coding_user_defined(
     colour_coding_struct  *colour_code,
     int                   n_colours,
     Colour                colours[],
-    Real                  positions[],
+    VIO_Real                  positions[],
     Colour_spaces         interpolation_space )
 {
-    Real      pos;
+    VIO_Real      pos;
     int       p;
 
     if( n_colours < 2 )
@@ -659,9 +659,9 @@ BICAPI BOOLEAN  define_colour_coding_user_defined(
 
 BICAPI Colour  get_colour_code(
     colour_coding_struct  *colour_coding,
-    Real                  value )
+    VIO_Real                  value )
 {
-    Real           pos, r, g, b, a;
+    VIO_Real           pos, r, g, b, a;
     int            i, n_points;
     colour_point   *points;
 
@@ -723,13 +723,13 @@ BICAPI Colour  get_colour_code(
 static void  interpolate_colours(
     colour_point   *p1,
     colour_point   *p2,
-    Real           pos,
-    Real           *r,
-    Real           *g,
-    Real           *b,
-    Real           *a )
+    VIO_Real           pos,
+    VIO_Real           *r,
+    VIO_Real           *g,
+    VIO_Real           *b,
+    VIO_Real           *a )
 {
-    Real  ratio, r0, g0, b0, a0, r1, g1, b1, a1;
+    VIO_Real  ratio, r0, g0, b0, a0, r1, g1, b1, a1;
 
     ratio = (pos - p1->position) / (p2->position - p1->position);
 

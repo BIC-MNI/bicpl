@@ -41,7 +41,7 @@ BICAPI  Status   input_graphics_file(
 {
     Status         status;
     FILE           *file;
-    BOOLEAN        eof;
+    VIO_BOOL        eof;
     object_struct  *object;
     STRING         current_directory;
 
@@ -140,7 +140,7 @@ BICAPI  Status   input_objects_any_format(
     Volume         volume,
     STRING         filename,
     Colour         marker_colour,
-    Real           marker_size,
+    VIO_Real           marker_size,
     Marker_types   marker_type,
     int            *n_objects,
     object_struct  **object_list[] )

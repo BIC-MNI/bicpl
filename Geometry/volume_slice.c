@@ -43,20 +43,20 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/volume
 BICAPI  void   create_slice_quadmesh(
     Volume           volume,
     int              axis_index,
-    Real             voxel_position,
+    VIO_Real             voxel_position,
     int              x_tess,
     int              y_tess,
-    Real             x_min,
-    Real             x_max,
-    Real             y_min,
-    Real             y_max,
+    VIO_Real             x_min,
+    VIO_Real             x_max,
+    VIO_Real             y_min,
+    VIO_Real             y_max,
     quadmesh_struct  *quadmesh )
 {
     Point            point;
     Vector           normal;
-    Real             x_w, y_w, z_w;
+    VIO_Real             x_w, y_w, z_w;
     int              sizes[N_DIMENSIONS];
-    Real             voxel[N_DIMENSIONS];
+    VIO_Real             voxel[N_DIMENSIONS];
     int              x, y, x_axis, y_axis;
     Surfprop         spr;
 
@@ -80,21 +80,21 @@ BICAPI  void   create_slice_quadmesh(
     if( x_min >= x_max )
     {
         x_min = 0.0;
-        x_max = (Real) (sizes[x_axis] - 1);
+        x_max = (VIO_Real) (sizes[x_axis] - 1);
     }
 
     if( y_min >= y_max )
     {
         y_min = 0.0;
-        y_max = (Real) (sizes[y_axis] - 1);
+        y_max = (VIO_Real) (sizes[y_axis] - 1);
     }
 
     for_less( x, 0, x_tess )
     {
-        voxel[x_axis] = x_min + (x_max - x_min) * (Real) x / (Real) (x_tess-1);
+        voxel[x_axis] = x_min + (x_max - x_min) * (VIO_Real) x / (VIO_Real) (x_tess-1);
         for_less( y, 0, y_tess )
         {
-            voxel[y_axis] = y_min + (y_max - y_min) * (Real)y/(Real)(y_tess-1);
+            voxel[y_axis] = y_min + (y_max - y_min) * (VIO_Real)y/(VIO_Real)(y_tess-1);
 
             convert_voxel_to_world( volume, voxel, &x_w, &y_w, &z_w );
             fill_Point( point, x_w, y_w, z_w );
@@ -127,30 +127,30 @@ BICAPI  void   create_slice_3d(
 {
     int              i, n_points;
     Point            point;
-    Real             xw, yw, zw;
-    Real             voxel[MAX_DIMENSIONS];
-    Real             origin_voxel[MAX_DIMENSIONS];
-    Real             y_axis[MAX_DIMENSIONS];
-    Real             x_axis[MAX_DIMENSIONS];
-    Real             outline[6][MAX_DIMENSIONS];
+    VIO_Real             xw, yw, zw;
+    VIO_Real             voxel[MAX_DIMENSIONS];
+    VIO_Real             origin_voxel[MAX_DIMENSIONS];
+    VIO_Real             y_axis[MAX_DIMENSIONS];
+    VIO_Real             x_axis[MAX_DIMENSIONS];
+    VIO_Real             outline[6][MAX_DIMENSIONS];
     Vector           v1, v2;
 
     create_two_orthogonal_vectors( normal, &v1, &v2 );
 
     convert_world_vector_to_voxel( volume,
-                                   (Real) Vector_x(v1),
-                                   (Real) Vector_y(v1),
-                                   (Real) Vector_z(v1),
+                                   (VIO_Real) Vector_x(v1),
+                                   (VIO_Real) Vector_y(v1),
+                                   (VIO_Real) Vector_z(v1),
                                    x_axis );
     convert_world_vector_to_voxel( volume,
-                                   (Real) Vector_x(v2),
-                                   (Real) Vector_y(v2),
-                                   (Real) Vector_z(v2),
+                                   (VIO_Real) Vector_x(v2),
+                                   (VIO_Real) Vector_y(v2),
+                                   (VIO_Real) Vector_z(v2),
                                    y_axis );
 
     convert_world_to_voxel( volume,
-                            (Real) Point_x(*origin), (Real) Point_y(*origin),
-                            (Real) Point_z(*origin), origin_voxel );
+                            (VIO_Real) Point_x(*origin), (VIO_Real) Point_y(*origin),
+                            (VIO_Real) Point_z(*origin), origin_voxel );
 
     n_points = get_volume_cross_section( volume, origin_voxel, x_axis, y_axis,
                                          outline );

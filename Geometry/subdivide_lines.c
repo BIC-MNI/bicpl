@@ -184,11 +184,11 @@ static  void  subdivide_closed_curve(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN is_single_closed_curve(
+BICAPI  VIO_BOOL is_single_closed_curve(
     lines_struct   *lines )
 {
     int      i;
-    BOOLEAN  single_closed_curve;
+    VIO_BOOL  single_closed_curve;
 
     single_closed_curve = FALSE;
 

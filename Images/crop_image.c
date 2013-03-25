@@ -1,6 +1,6 @@
 #include "bicpl_internal.h"
 
-static  BOOLEAN  is_clear_slab(
+static  VIO_BOOL  is_clear_slab(
     pixels_struct  *pixels,
     Colour         bg_colour,
     int            x_min,

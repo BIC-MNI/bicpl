@@ -18,7 +18,7 @@
 #ifndef  ONE_SLICE
     void            **start_slices1,
     int             n_slices1,
-    Real            weights1[],
+    VIO_Real            weights1[],
 #endif
 #ifdef  TWO_VOLUMES
     void            *volume_data2,
@@ -27,7 +27,7 @@
 #ifndef  ONE_SLICE
     void            **start_slices2,
     int             n_slices2,
-    Real            weights2[],
+    VIO_Real            weights2[],
 #endif
 #endif
 #ifdef COLOUR_MAP
@@ -53,10 +53,10 @@
 #else
     int            s;
     TYPE1          **start_data1;
-    Real           real_voxel_data1;
+    VIO_Real           real_voxel_data1;
 #ifdef TWO_VOLUMES
     TYPE2          **start_data2;
-    Real           real_voxel_data2;
+    VIO_Real           real_voxel_data2;
 #endif
 #endif
 #ifndef  TWO_VOLUMES
@@ -115,7 +115,7 @@
         for_less( s, 0, n_slices1 )
         {
             real_voxel_data1 += weights1[s] *
-                                (Real) start_data1[s][row_offsets1[s][x]];
+                                (VIO_Real) start_data1[s][row_offsets1[s][x]];
         }
 
 #ifdef  TWO_VOLUMES
@@ -123,7 +123,7 @@
         for_less( s, 0, n_slices2 )
         {
             real_voxel_data2 += weights2[s] *
-                                (Real) start_data2[s][row_offsets2[s][x]];
+                                (VIO_Real) start_data2[s][row_offsets2[s][x]];
         }
 
 #ifdef COLOUR_MAP

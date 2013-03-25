@@ -34,9 +34,9 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/tran
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  make_scale_transform( 
-    Real        sx,
-    Real        sy,
-    Real        sz,
+    VIO_Real        sx,
+    VIO_Real        sy,
+    VIO_Real        sz,
     Transform   *transform )
 {
     make_identity_transform( transform );
@@ -101,9 +101,9 @@ BICAPI  void  set_transform_x_and_z_axes(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  make_translation_transform(
-    Real        x_trans,
-    Real        y_trans,
-    Real        z_trans,
+    VIO_Real        x_trans,
+    VIO_Real        y_trans,
+    VIO_Real        z_trans,
     Transform   *transform )
 {
     make_identity_transform( transform );
@@ -153,12 +153,12 @@ BICAPI  void  make_origin_transform(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  make_rotation_transform(
-    Real       radians,
+    VIO_Real       radians,
     int        axis,
     Transform  *transform )
 {
     int   a1, a2;
-    Real  c, s;
+    VIO_Real  c, s;
 
     a1 = (axis + 1) % N_DIMENSIONS;
     a2 = (axis + 2) % N_DIMENSIONS;
@@ -200,12 +200,12 @@ BICAPI  void  make_transform_relative_to_point(
 {
     Transform  to_origin, to_point;
 
-    make_translation_transform( (Real) Point_x(*point), (Real) Point_y(*point),
-                                (Real) Point_z(*point), &to_point );
+    make_translation_transform( (VIO_Real) Point_x(*point), (VIO_Real) Point_y(*point),
+                                (VIO_Real) Point_z(*point), &to_point );
 
-    make_translation_transform( -(Real) Point_x(*point),
-                                -(Real) Point_y(*point),
-                                -(Real) Point_z(*point), &to_origin );
+    make_translation_transform( -(VIO_Real) Point_x(*point),
+                                -(VIO_Real) Point_y(*point),
+                                -(VIO_Real) Point_z(*point), &to_origin );
 
     concat_transforms( rel_transform, &to_origin, transform );
     concat_transforms( rel_transform, rel_transform, &to_point );
@@ -267,12 +267,12 @@ BICAPI  void  make_transform_in_coordinate_system(
 
 BICAPI  void  make_rotation_about_axis(
     Vector     *axis,
-    Real       angle,
+    VIO_Real       angle,
     Transform  *transform )
 {
-    Real    c, s, t;
-    Real    txy, txz, tyz, sx, sy, sz;
-    Real    x, y, z;
+    VIO_Real    c, s, t;
+    VIO_Real    txy, txz, tyz, sx, sy, sz;
+    VIO_Real    x, y, z;
     Vector  unit_axis;
 
     NORMALIZE_VECTOR( unit_axis, *axis );
@@ -281,9 +281,9 @@ BICAPI  void  make_rotation_about_axis(
     s = sin( (double) -angle );
     t = 1.0 - c;
 
-    x = (Real) Vector_x( unit_axis );
-    y = (Real) Vector_y( unit_axis );
-    z = (Real) Vector_z( unit_axis );
+    x = (VIO_Real) Vector_x( unit_axis );
+    y = (VIO_Real) Vector_y( unit_axis );
+    z = (VIO_Real) Vector_z( unit_axis );
 
     txy = t * x * y;
     txz = t * x * z;
@@ -332,11 +332,11 @@ BICAPI  void  make_rotation_about_axis(
 
 BICAPI  void  convert_2d_transform_to_rotation_translation(
     Transform  *transform,
-    Real       *degrees_clockwise,
-    Real       *x_trans,
-    Real       *y_trans )
+    VIO_Real       *degrees_clockwise,
+    VIO_Real       *x_trans,
+    VIO_Real       *y_trans )
 {
-    Real   x, y;
+    VIO_Real   x, y;
 
     x = Transform_elem(*transform, X, X );
     y = Transform_elem(*transform, Y, X );
@@ -362,9 +362,9 @@ BICAPI  void  convert_2d_transform_to_rotation_translation(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  compute_clockwise_rotation( Real x, Real y )
+BICAPI  VIO_Real  compute_clockwise_rotation( VIO_Real x, VIO_Real y )
 {
-    Real   radians;
+    VIO_Real   radians;
 
     if( x == 0.0 )
     {
@@ -384,7 +384,7 @@ BICAPI  Real  compute_clockwise_rotation( Real x, Real y )
     }
     else
     {
-        radians = - (Real) atan2( (double) y, (double) x );
+        radians = - (VIO_Real) atan2( (double) y, (double) x );
 
         if( radians < 0.0 )
             radians += 2.0 * PI;
@@ -393,10 +393,10 @@ BICAPI  Real  compute_clockwise_rotation( Real x, Real y )
     }
 }
 
-BICAPI  BOOLEAN  is_transform_right_handed(
+BICAPI  VIO_BOOL  is_transform_right_handed(
     Transform   *transform )
 {
-    Real     volume;
+    VIO_Real     volume;
     Vector   x_axis, y_axis, z_axis, offset;
 
     get_transform_x_axis( transform, &x_axis );
@@ -450,7 +450,7 @@ BICAPI  void  get_inverse_transform_2d(
     Transform_2d   *transform,
     Transform_2d   *inverse )
 {
-    Real  determinant;
+    VIO_Real  determinant;
 
     determinant = Transform_2d_elem(*transform,0,0) *
                   Transform_2d_elem(*transform,1,1) -
@@ -496,10 +496,10 @@ BICAPI  void  get_inverse_transform_2d(
 
 BICAPI  void  transform_point_2d(
     Transform_2d   *transform,
-    Real           x,
-    Real           y,
-    Real           *x_trans,
-    Real           *y_trans )
+    VIO_Real           x,
+    VIO_Real           y,
+    VIO_Real           *x_trans,
+    VIO_Real           *y_trans )
 {
     *x_trans = Transform_2d_elem(*transform,0,0) * x +
                Transform_2d_elem(*transform,0,1) * y +
@@ -530,15 +530,15 @@ BICAPI  void  transform_point_2d(
 
 BICAPI  void  get_least_squares_transform_2d(
     int           n_points,
-    Real          x[],
-    Real          y[],
-    Real          x_trans[],
-    Real          y_trans[],
+    VIO_Real          x[],
+    VIO_Real          y[],
+    VIO_Real          x_trans[],
+    VIO_Real          y_trans[],
     Transform_2d  *transform_2d )
 {
     int   p;
-    Real  coefs[2+1];
-    Real  **coords;
+    VIO_Real  coefs[2+1];
+    VIO_Real  **coords;
 
     ALLOC2D( coords, n_points, 2 );
 

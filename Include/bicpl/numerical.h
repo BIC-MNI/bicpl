@@ -26,16 +26,16 @@
 typedef  struct
 {
     int   n_parameters;
-    Real  **second_derivs;
-    Real  *constants;
+    VIO_Real  **second_derivs;
+    VIO_Real  *constants;
 } linear_least_squares;
 
 typedef struct
 {
     int   degrees_freedom;
     int   n_points;
-    Real  max_dist;
-    Real  *cumulative_probs;
+    VIO_Real  max_dist;
+    VIO_Real  *cumulative_probs;
 
 } t_stat_struct;
 

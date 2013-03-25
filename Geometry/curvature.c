@@ -41,17 +41,17 @@ BICAPI  void  get_polygon_vertex_curvatures(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
-    Real              smoothing_distance,
-    Real              low_threshold,
-    Real              curvatures[] )
+    VIO_Real              smoothing_distance,
+    VIO_Real              low_threshold,
+    VIO_Real              curvatures[] )
 {
     int              size, point_index, vertex_index, poly;
-    Real             curvature, base_length;
+    VIO_Real             curvature, base_length;
     Smallest_int     *point_done;
     Point            centroid;
     Vector           normal;
     float            *distances;
-    BOOLEAN          initialized;
+    VIO_BOOL          initialized;
     progress_struct  progress;
 
     compute_polygon_normals( polygons );

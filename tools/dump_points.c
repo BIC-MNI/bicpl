@@ -10,7 +10,7 @@ int  main(
     object_struct  **object_list;
     int            n_objects, n_points, i, obj;
     Point          *points;
-    BOOLEAN        ascii_binary_present;
+    VIO_BOOL        ascii_binary_present;
 
     initialize_argument_processing( argc, argv );
 

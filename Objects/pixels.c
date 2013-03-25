@@ -43,8 +43,8 @@ BICAPI  void  initialize_pixels(
     int            y_position,
     int            x_size,
     int            y_size,
-    Real           x_zoom,
-    Real           y_zoom,
+    VIO_Real           x_zoom,
+    VIO_Real           y_zoom,
     Pixel_types    pixel_type )
 {
     int            n_alloced;
@@ -400,9 +400,9 @@ BICAPI  void  convert_pixels24_to_dithered(
             for_less( c, 0, 3 )
             {
                 error = comp[c] - used[c];
-                seven = ROUND( (Real) error * 7.0/ 16.0 );
-                five = ROUND( (Real) error * 5.0 / 16.0 );
-                three = ROUND( (Real) error * 3.0 / 16.0 );
+                seven = ROUND( (VIO_Real) error * 7.0/ 16.0 );
+                five = ROUND( (VIO_Real) error * 5.0 / 16.0 );
+                three = ROUND( (VIO_Real) error * 3.0 / 16.0 );
                 one = error - seven - five - three;
 
                 if( x + dir >= 0 && x + dir < pixels_rgb->x_size )
@@ -458,8 +458,8 @@ BICAPI  void  resample_pixels(
     Colour          background_colour )
 {
     int           x, y, i, j;
-    Real          xs, ys, r_sum, g_sum, b_sum;
-    Real          x_trans, y_trans, weight;
+    VIO_Real          xs, ys, r_sum, g_sum, b_sum;
+    VIO_Real          x_trans, y_trans, weight;
     Colour        colour;
     Transform_2d  inverse;
 
@@ -470,7 +470,7 @@ BICAPI  void  resample_pixels(
         return;
     }
 
-    weight = 1.0 / (Real) n_samples / (Real) n_samples;
+    weight = 1.0 / (VIO_Real) n_samples / (VIO_Real) n_samples;
     get_inverse_transform_2d( transform, &inverse );
 
     for_less( x, 0, new_pixels->x_size )
@@ -479,10 +479,10 @@ BICAPI  void  resample_pixels(
         {
             if( n_samples == 1 )
             {
-                transform_point_2d( &inverse, (Real) x, (Real) y,
+                transform_point_2d( &inverse, (VIO_Real) x, (VIO_Real) y,
                                     &x_trans, &y_trans );
-                if( x_trans >= -0.5 && x_trans < (Real) pixels->x_size - 0.5 &&
-                    y_trans >= -0.5 && y_trans < (Real) pixels->y_size - 0.5 )
+                if( x_trans >= -0.5 && x_trans < (VIO_Real) pixels->x_size - 0.5 &&
+                    y_trans >= -0.5 && y_trans < (VIO_Real) pixels->y_size - 0.5 )
                 {
                     colour = PIXEL_RGB_COLOUR(*pixels,ROUND(x_trans),
                                                       ROUND(y_trans));
@@ -499,17 +499,17 @@ BICAPI  void  resample_pixels(
                 b_sum = 0.0;
                 for_less( i, 0, n_samples )
                 {
-                    xs = (Real) x - 0.5 + ((Real) i + 0.5) / (Real) n_samples;
+                    xs = (VIO_Real) x - 0.5 + ((VIO_Real) i + 0.5) / (VIO_Real) n_samples;
 
                     for_less( j, 0, n_samples )
                     {
-                        ys = (Real) y - 0.5 + ((Real) j + 0.5) /(Real)n_samples;
+                        ys = (VIO_Real) y - 0.5 + ((VIO_Real) j + 0.5) /(VIO_Real)n_samples;
                         transform_point_2d( &inverse, xs, ys,
                                             &x_trans, &y_trans );
                         if( x_trans >= -0.5 &&
-                            x_trans < (Real) pixels->x_size - 0.5 &&
+                            x_trans < (VIO_Real) pixels->x_size - 0.5 &&
                             y_trans >= -0.5 &&
-                            y_trans < (Real) pixels->y_size - 0.5 )
+                            y_trans < (VIO_Real) pixels->y_size - 0.5 )
                         {
                             colour = PIXEL_RGB_COLOUR(*pixels,ROUND(x_trans),
                                                               ROUND(y_trans));
@@ -518,9 +518,9 @@ BICAPI  void  resample_pixels(
                         {
                             colour = background_colour;
                         }
-                        r_sum += (Real) get_Colour_r(colour);
-                        g_sum += (Real) get_Colour_g(colour);
-                        b_sum += (Real) get_Colour_b(colour);
+                        r_sum += (VIO_Real) get_Colour_r(colour);
+                        g_sum += (VIO_Real) get_Colour_g(colour);
+                        b_sum += (VIO_Real) get_Colour_b(colour);
                     }
                 }
 

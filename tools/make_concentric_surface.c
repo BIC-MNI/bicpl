@@ -11,7 +11,7 @@ int  main(
     polygons_struct  *polygons;
     Point            *original_points, centroid;
     Vector           offset;
-    Real             scaling;
+    VIO_Real             scaling;
 
     initialize_argument_processing( argc, argv );
 

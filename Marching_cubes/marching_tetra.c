@@ -16,7 +16,7 @@ typedef  enum  { PLUS_FLAG, MINUS_FLAG, MAX_CASES }
 
 static  case_struct   cases[2][2][2][2][2][2][2][2][2][2][2];
 
-static   BOOLEAN  initialized = FALSE;
+static   VIO_BOOL  initialized = FALSE;
 
 /*  ---------------- static prototypes ------------------------- */
 
@@ -291,7 +291,7 @@ static  void  create_case(
     int          edge_indices[MAX_INDICES_PER_VOXEL][2][3];
     Case_types   transformed_case[2][2][2];
     int          sizes[MAX_POLYGONS_PER_VOXEL];
-    BOOLEAN      left_handed;
+    VIO_BOOL      left_handed;
 
     for_less( i, 0, 2 )
     for_less( j, 0, 2 )
@@ -368,8 +368,8 @@ BICAPI  int  get_tetra_isosurface_polygons(
     int               x,
     int               y,
     int               z,
-    Real              corners[2][2][2],
-    Real              isovalue,
+    VIO_Real              corners[2][2][2],
+    VIO_Real              isovalue,
     int               *sizes[],
     voxel_point_type  *points[] )
 {

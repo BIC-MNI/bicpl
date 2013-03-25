@@ -3,19 +3,19 @@
 static  void  multiply_matrices(
     int    x1,
     int    y1,
-    Real   m1[],
+    VIO_Real   m1[],
     int    sa1,
     int    sb1,
     int    y2,
-    Real   m2[],
+    VIO_Real   m2[],
     int    sa2,
     int    sb2,
-    Real   prod[],
+    VIO_Real   prod[],
     int    sap,
     int    sbp )
 {
     int   i, j, k;
-    Real  sum, *m1_ptr, *m2_ptr, *prod_ptr;
+    VIO_Real  sum, *m1_ptr, *m2_ptr, *prod_ptr;
 
     for_less( i, 0, x1 )
     {
@@ -42,19 +42,19 @@ static  void  multiply_matrices(
 
 BICAPI  void  spline_tensor_product(
     int     n_dims,
-    Real    positions[],
+    VIO_Real    positions[],
     int     degrees[],     /* [n_dims] */
-    Real    *bases[],      /* [n_dims][degress[dim]*degrees[dim]] */
+    VIO_Real    *bases[],      /* [n_dims][degress[dim]*degrees[dim]] */
     int     n_values,
-    Real    coefs[],       /* [n_values*degrees[0]*degrees[1]*...] */
+    VIO_Real    coefs[],       /* [n_values*degrees[0]*degrees[1]*...] */
     int     n_derivs[],    /* [n_dims] */
-    Real    results[] )    /* [n_values*n_derivs[0]*n_derivs[1]*...] */
+    VIO_Real    results[] )    /* [n_values*n_derivs[0]*n_derivs[1]*...] */
 {
     int     i, deriv, d, k, total_values, src;
     int     ind, prev_ind;
-    Real    us[MAX_DEGREE*MAX_DEGREE], weights[MAX_DEGREE*MAX_DEGREE];
-    Real    *tmp_results[2], *r;
-    Real    static_tmp_results[2*MAX_TOTAL_VALUES];
+    VIO_Real    us[MAX_DEGREE*MAX_DEGREE], weights[MAX_DEGREE*MAX_DEGREE];
+    VIO_Real    *tmp_results[2], *r;
+    VIO_Real    static_tmp_results[2*MAX_TOTAL_VALUES];
 
     /*--- check arguments */
 
@@ -105,7 +105,7 @@ BICAPI  void  spline_tensor_product(
             prev_ind = IJ( deriv-1, deriv-1, degrees[d] );
             for_less( k, deriv, degrees[d] )
             {
-                us[ind] = us[prev_ind] * (Real) k;
+                us[ind] = us[prev_ind] * (VIO_Real) k;
                 ++ind;
                 ++prev_ind;
             }

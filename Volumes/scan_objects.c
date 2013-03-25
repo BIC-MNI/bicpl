@@ -41,7 +41,7 @@ BICAPI void  scan_object_to_volume(
     Volume           volume,
     Volume           label_volume,
     int              label,
-    Real             max_distance )
+    VIO_Real             max_distance )
 {
     object_struct           *current_object;
     object_traverse_struct  object_traverse;

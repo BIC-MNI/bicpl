@@ -316,7 +316,7 @@ static  colours_struct  colour_lookup[] =
     { "YELLOW_GREEN", &YELLOW_GREEN_COL }
 };
 
-static   BOOLEAN  strings_equivalent( STRING, STRING );
+static   VIO_BOOL  strings_equivalent( STRING, STRING );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : check_initialize_colours
@@ -334,7 +334,7 @@ static   BOOLEAN  strings_equivalent( STRING, STRING );
 
 static  void  check_initialize_colours( void )
 {
-    static  BOOLEAN  first = TRUE;
+    static  VIO_BOOL  first = TRUE;
 
     if( first )
     {
@@ -522,11 +522,11 @@ BICAPI  void  get_default_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  lookup_colour(
+BICAPI  VIO_BOOL  lookup_colour(
     STRING    colour_name,
     Colour    *col )
 {
-    BOOLEAN  found;
+    VIO_BOOL  found;
     int      i;
 
     check_initialize_colours();
@@ -560,11 +560,11 @@ BICAPI  BOOLEAN  lookup_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  lookup_colour_name(
+BICAPI  VIO_BOOL  lookup_colour_name(
     Colour  col,
     STRING  *colour_name )
 {
-    BOOLEAN  found;
+    VIO_BOOL  found;
     int      i;
 
     check_initialize_colours();
@@ -599,11 +599,11 @@ BICAPI  BOOLEAN  lookup_colour_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  BOOLEAN  strings_equivalent(
+static  VIO_BOOL  strings_equivalent(
     STRING   str1,
     STRING   str2 )
 {
-    BOOLEAN  equivalent;
+    VIO_BOOL  equivalent;
     int      i1, i2;
 
     equivalent = TRUE;
@@ -650,14 +650,14 @@ static  BOOLEAN  strings_equivalent(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  rgb_to_hsl(
-    Real    r,
-    Real    g,
-    Real    b,
-    Real    *h,
-    Real    *s,
-    Real    *l )
+    VIO_Real    r,
+    VIO_Real    g,
+    VIO_Real    b,
+    VIO_Real    *h,
+    VIO_Real    *s,
+    VIO_Real    *l )
 {
-    Real  v, m, vm, r2, g2, b2;
+    VIO_Real  v, m, vm, r2, g2, b2;
 
     check_initialize_colours();
 
@@ -729,17 +729,17 @@ BICAPI  void  rgb_to_hsl(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  hsl_to_rgb(
-    Real   h,
-    Real   sl,
-    Real   l,
-    Real   *r,
-    Real   *g,
-    Real   *b )
+    VIO_Real   h,
+    VIO_Real   sl,
+    VIO_Real   l,
+    VIO_Real   *r,
+    VIO_Real   *g,
+    VIO_Real   *b )
 {
-    Real  v;
-    Real  m, sv;
+    VIO_Real  v;
+    VIO_Real  m, sv;
     int   sextant;
-    Real  fract, vsf, mid1, mid2;
+    VIO_Real  fract, vsf, mid1, mid2;
 
     if( l <= 0.5 )
     {
@@ -762,7 +762,7 @@ BICAPI  void  hsl_to_rgb(
         sv = (v - m) / v;
         h *= 6.0;
         sextant = (int) h;
-        fract = h - (Real) sextant;
+        fract = h - (VIO_Real) sextant;
         vsf = v * sv * fract;
         mid1 = m + vsf;
         mid2 = v - vsf;
@@ -797,7 +797,7 @@ BICAPI  void  convert_colour_to_hsl(
     Colour   rgb,
     Colour   *hsl )
 {
-    Real   h, s, l;
+    VIO_Real   h, s, l;
 
     rgb_to_hsl( get_Colour_r_0_1(rgb),
                 get_Colour_g_0_1(rgb),
@@ -824,7 +824,7 @@ BICAPI  void  convert_colour_to_rgb(
     Colour   hsl,
     Colour   *rgb )
 {
-    Real   r, g, b;
+    VIO_Real   r, g, b;
 
     hsl_to_rgb( get_Colour_r_0_1(hsl),
                 get_Colour_g_0_1(hsl),
@@ -848,7 +848,7 @@ BICAPI  void  convert_colour_to_rgb(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  equal_colours(
+BICAPI  VIO_BOOL  equal_colours(
     Colour  col1,
     Colour  col2 )
 {
@@ -1019,9 +1019,9 @@ BICAPI  int   find_closest_colour(
 BICAPI  int  get_Colour_luminance(
     Colour   colour )
 {
-    return( ROUND( 0.299 * (Real) get_Colour_r(colour) +
-                   0.587 * (Real) get_Colour_g(colour) +
-                   0.114 * (Real) get_Colour_b(colour) ) );
+    return( ROUND( 0.299 * (VIO_Real) get_Colour_r(colour) +
+                   0.587 * (VIO_Real) get_Colour_g(colour) +
+                   0.114 * (VIO_Real) get_Colour_b(colour) ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -1041,10 +1041,10 @@ BICAPI  int  get_Colour_luminance(
 
 BICAPI  Colour  scale_colour(
     Colour   colour,
-    Real     factor )
+    VIO_Real     factor )
 {
-    return( make_rgba_Colour( ROUND( (Real) get_Colour_r(colour) * factor ),
-                              ROUND( (Real) get_Colour_g(colour) * factor ),
-                              ROUND( (Real) get_Colour_b(colour) * factor ),
+    return( make_rgba_Colour( ROUND( (VIO_Real) get_Colour_r(colour) * factor ),
+                              ROUND( (VIO_Real) get_Colour_g(colour) * factor ),
+                              ROUND( (VIO_Real) get_Colour_b(colour) * factor ),
                               get_Colour_a(colour) ) );
 }

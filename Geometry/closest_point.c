@@ -36,7 +36,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/closes
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real   get_point_polygon_distance_sq(
+static  VIO_Real   get_point_polygon_distance_sq(
     Point            *point,
     polygons_struct  *polygons,
     int              poly_index,
@@ -73,7 +73,7 @@ static  Real   get_point_polygon_distance_sq(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real   get_point_quadmesh_distance_sq(
+static  VIO_Real   get_point_quadmesh_distance_sq(
     Point            *point,
     quadmesh_struct  *quadmesh,
     int              obj_index,
@@ -115,10 +115,10 @@ static  void  get_line_segment_alpha(
     Point  *p1,
     Point  *p2,
     Point  *closest_point,
-    Real   *alpha )
+    VIO_Real   *alpha )
 {
     Vector   p2_minus_p1, p_minus_p1;
-    Real     mag;
+    VIO_Real     mag;
 
     SUB_VECTORS( p2_minus_p1, *p2, *p1 );
     SUB_VECTORS( p_minus_p1, *point, *p1 );
@@ -167,7 +167,7 @@ BICAPI  void  get_closest_point_on_line_segment(
     Point  *p2,
     Point  *closest_point )
 {
-    Real     t;
+    VIO_Real     t;
 
     get_line_segment_alpha( point, p1, p2, closest_point, &t );
 }
@@ -188,11 +188,11 @@ BICAPI  void  get_closest_point_on_line_segment(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_distance_to_line_segment(
+BICAPI  VIO_Real  get_distance_to_line_segment(
     Point  *point,
     Point  *p1,
     Point  *p2,
-    Real   *alpha )
+    VIO_Real   *alpha )
 {
     Point    closest;
 
@@ -216,7 +216,7 @@ BICAPI  Real  get_distance_to_line_segment(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real   get_point_line_segment_distance_sq(
+static  VIO_Real   get_point_line_segment_distance_sq(
     Point            *point,
     lines_struct     *lines,
     int              obj_index,
@@ -249,7 +249,7 @@ static  Real   get_point_line_segment_distance_sq(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  get_point_marker_distance(
+static  VIO_Real  get_point_marker_distance(
     Point            *point,
     marker_struct    *marker,
     Point            *object_point )
@@ -259,13 +259,13 @@ static  Real  get_point_marker_distance(
     return( distance_between_points( point, object_point ) );
 }
 
-BICAPI  Real  get_point_object_distance_sq(
+BICAPI  VIO_Real  get_point_object_distance_sq(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
     Point                 *object_point )
 {
-    Real                  dist;
+    VIO_Real                  dist;
 
     if( get_object_type( object ) == POLYGONS )
     {
@@ -309,7 +309,7 @@ BICAPI  Real  get_point_object_distance_sq(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_point_object_distance(
+BICAPI  VIO_Real  get_point_object_distance(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
@@ -319,14 +319,14 @@ BICAPI  Real  get_point_object_distance(
                                                 obj_index, object_point ) ) );
 }
 
-static  Real   get_point_polygon_vertex_distance(
+static  VIO_Real   get_point_polygon_vertex_distance(
     Point            *point,
     polygons_struct  *polygons,
     int              poly_index,
     int              *object_vertex )
 {
     Point    points[MAX_POINTS];
-    Real     dist, best_dist;
+    VIO_Real     dist, best_dist;
     int      i, size, point_index;
 
     if( polygons->visibilities == (Smallest_int *) 0 ||
@@ -356,13 +356,13 @@ static  Real   get_point_polygon_vertex_distance(
     return( best_dist );
 }
 
-BICAPI  Real  get_point_object_vertex_distance(
+BICAPI  VIO_Real  get_point_object_vertex_distance(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
     int                   *object_vertex )
 {
-    Real                  dist;
+    VIO_Real                  dist;
 
     if( get_object_type( object ) == POLYGONS )
     {
@@ -395,13 +395,13 @@ BICAPI  Real  get_point_object_vertex_distance(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  find_closest_point_on_object(
+BICAPI  VIO_Real  find_closest_point_on_object(
     Point           *point,
     object_struct   *object,
     int             *obj_index,
     Point           *point_on_object )
 {
-    Real             closest_dist, dist;
+    VIO_Real             closest_dist, dist;
     Point            obj_point;
     lines_struct     *lines;
     polygons_struct  *polygons;
@@ -476,12 +476,12 @@ BICAPI  Real  find_closest_point_on_object(
     return( closest_dist );
 }
 
-BICAPI  Real  find_closest_vertex_on_object(
+BICAPI  VIO_Real  find_closest_vertex_on_object(
     Point           *point,
     object_struct   *object,
     int             *vertex_on_object )
 {
-    Real             closest_dist, dist;
+    VIO_Real             closest_dist, dist;
     Point            *points;
     int              i, n_points;
 

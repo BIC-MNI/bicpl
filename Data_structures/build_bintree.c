@@ -42,33 +42,33 @@ static  void  split_node(
     range_struct          *limits,
     int                   *n_nodes,
     range_struct          *left_limits,
-    Real                  *left_cost,
+    VIO_Real                  *left_cost,
     range_struct          *right_limits,
-    Real                  *right_cost );
+    VIO_Real                  *right_cost );
 static  void  create_leaf_queue(
     leaf_queue_struct   *leaf_queue );
 static  void  delete_leaf_queue(
     leaf_queue_struct   *leaf_queue );
-static  BOOLEAN  leaf_queue_empty(
+static  VIO_BOOL  leaf_queue_empty(
     leaf_queue_struct   *leaf_queue );
 static  void  insert_in_leaf_queue(
     leaf_queue_struct     *leaf_queue,
     bintree_node_struct   **ptr_to_node,
-    Real                  node_cost,
+    VIO_Real                  node_cost,
     range_struct          *limits );
 static  void  remove_from_leaf_queue(
     leaf_queue_struct     *leaf_queue,
     bintree_node_struct   ***ptr_to_node,
     range_struct          *limits );
-static  BOOLEAN  node_tightly_bounds_object(
+static  VIO_BOOL  node_tightly_bounds_object(
     range_struct  *bound_vol,
     range_struct  *limits );
 static  void  recursive_efficiency_count(
     bintree_node_struct   *node,
     range_struct          *limits,
-    Real                  *avg_nodes_visited,
-    Real                  *avg_objects_visited );
-static  Real  node_visit_estimation(
+    VIO_Real                  *avg_nodes_visited,
+    VIO_Real                  *avg_objects_visited );
+static  VIO_Real  node_visit_estimation(
     range_struct  *limits );
 
 /* ---------------------------------------------------------- */
@@ -97,38 +97,38 @@ BICAPI  void  create_object_bintree(
     int                  max_nodes )
 {
     int       i, c;
-    Real      avg_nodes, avg_objects, limits[N_DIMENSIONS][2], size;
+    VIO_Real      avg_nodes, avg_objects, limits[N_DIMENSIONS][2], size;
 #ifdef  DEBUG
-    Real      best_objects;
+    VIO_Real      best_objects;
 #endif
 
     for_less( i, 0, n_objects )
     {
         for_less( c, 0, N_DIMENSIONS )
         {
-            size = (Real) bound_vols[i].limits[c][1] -
-                   (Real) bound_vols[i].limits[c][0];
+            size = (VIO_Real) bound_vols[i].limits[c][1] -
+                   (VIO_Real) bound_vols[i].limits[c][0];
             bound_vols[i].limits[c][0] -= (float) (size * FACTOR);
             bound_vols[i].limits[c][1] += (float) (size * FACTOR);
         }
 
         if( i == 0 )
         {
-            limits[X][0] = (Real) bound_vols[i].limits[X][0];
-            limits[Y][0] = (Real) bound_vols[i].limits[Y][0];
-            limits[Z][0] = (Real) bound_vols[i].limits[Z][0];
-            limits[X][1] = (Real) bound_vols[i].limits[X][1];
-            limits[Y][1] = (Real) bound_vols[i].limits[Y][1];
-            limits[Z][1] = (Real) bound_vols[i].limits[Z][1];
+            limits[X][0] = (VIO_Real) bound_vols[i].limits[X][0];
+            limits[Y][0] = (VIO_Real) bound_vols[i].limits[Y][0];
+            limits[Z][0] = (VIO_Real) bound_vols[i].limits[Z][0];
+            limits[X][1] = (VIO_Real) bound_vols[i].limits[X][1];
+            limits[Y][1] = (VIO_Real) bound_vols[i].limits[Y][1];
+            limits[Z][1] = (VIO_Real) bound_vols[i].limits[Z][1];
         }
         else
         {
             for_less( c, 0, N_DIMENSIONS )
             {
-                if( (Real) bound_vols[i].limits[c][0] < limits[c][0] )
-                    limits[c][0] = (Real) bound_vols[i].limits[c][0];
-                if( (Real) bound_vols[i].limits[c][1] > limits[c][1] )
-                    limits[c][1] = (Real) bound_vols[i].limits[c][1];
+                if( (VIO_Real) bound_vols[i].limits[c][0] < limits[c][0] )
+                    limits[c][0] = (VIO_Real) bound_vols[i].limits[c][0];
+                if( (VIO_Real) bound_vols[i].limits[c][1] > limits[c][1] )
+                    limits[c][1] = (VIO_Real) bound_vols[i].limits[c][1];
             }
         }
     }
@@ -150,7 +150,7 @@ BICAPI  void  create_object_bintree(
     print( "Est Nodes Visit: %g    Est Objects Visit %g  (Best possible: %g\n",
            avg_nodes, avg_objects, best_objects );
 
-    if( n_objects > 100 && avg_objects > (Real) n_objects * 0.1 )
+    if( n_objects > 100 && avg_objects > (VIO_Real) n_objects * 0.1 )
     {
         print( "Warning, bintree not efficient: n_objects = %d, ",
                n_objects );
@@ -184,7 +184,7 @@ static  void  subdivide_bintree(
 {
     bintree_node_struct     **ptr_to_node;
     bintree_node_struct     **ptr_to_left_child, **ptr_to_right_child;
-    Real                    left_cost, right_cost;
+    VIO_Real                    left_cost, right_cost;
     range_struct            left_limits, right_limits;
     leaf_queue_struct       leaf_queue;
     int                     n_nodes;
@@ -263,23 +263,23 @@ static  void   get_planes(
     int             n_objects,
     int             list[],
     range_struct    bound_vols[],
-    Real            right_plane,
-    Real            *left_plane,
+    VIO_Real            right_plane,
+    VIO_Real            *left_plane,
     int             *n_left,
     int             *n_overlap,
     int             *n_right )
 {
     int        i;
-    Real       left_side, right_side;
-    BOOLEAN    found;
+    VIO_Real       left_side, right_side;
+    VIO_BOOL    found;
 
     found = FALSE;
-    *left_plane = (Real) bound_vols[list[0]].limits[axis_index][0];
+    *left_plane = (VIO_Real) bound_vols[list[0]].limits[axis_index][0];
 
     for_less( i, 0, n_objects )
     {
-        left_side = (Real) bound_vols[list[i]].limits[axis_index][0];
-        right_side = (Real) bound_vols[list[i]].limits[axis_index][1];
+        left_side = (VIO_Real) bound_vols[list[i]].limits[axis_index][0];
+        right_side = (VIO_Real) bound_vols[list[i]].limits[axis_index][1];
         if( left_side < right_plane &&
             (!found || right_side > *left_plane ) )
         {
@@ -294,8 +294,8 @@ static  void   get_planes(
 
     for_less( i, 0, n_objects )
     {
-        left_side = (Real) bound_vols[list[i]].limits[axis_index][0];
-        right_side = (Real) bound_vols[list[i]].limits[axis_index][1];
+        left_side = (VIO_Real) bound_vols[list[i]].limits[axis_index][0];
+        right_side = (VIO_Real) bound_vols[list[i]].limits[axis_index][1];
         if( left_side < right_plane )
             ++(*n_left);
         else if( !found || right_side > *left_plane )
@@ -325,19 +325,19 @@ static  void   get_planes(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  find_best_split_node_for_axis(
+static  VIO_Real  find_best_split_node_for_axis(
     int                   axis_index,
     int                   n_objects,
     int                   object_list[],
     range_struct          bound_vols[],
     range_struct          *limits,
-    Real                  *best_left_plane,
-    Real                  *best_right_plane )
+    VIO_Real                  *best_left_plane,
+    VIO_Real                  *best_right_plane )
 {
     int                  i, n_left, n_right, n_overlap, step;
-    Real                 left_plane, right_plane;
+    VIO_Real                 left_plane, right_plane;
     float                save_plane;
-    Real                 cost, best_cost, size_left, size_right;
+    VIO_Real                 cost, best_cost, size_left, size_right;
 
     best_cost = 0.0;
 
@@ -349,15 +349,15 @@ static  Real  find_best_split_node_for_axis(
     for( i = 0;   i <= n_objects;  i += step )
     {
         if( n_objects > THRESHOLD )
-            right_plane = ((Real) limits->limits[axis_index][0] +
-                           (Real) limits->limits[axis_index][1]) / 2.0;
+            right_plane = ((VIO_Real) limits->limits[axis_index][0] +
+                           (VIO_Real) limits->limits[axis_index][1]) / 2.0;
         else if( i < n_objects )
         {
-            right_plane = (Real) bound_vols[object_list[i]].
+            right_plane = (VIO_Real) bound_vols[object_list[i]].
                                           limits[axis_index][0];
         }
         else
-            right_plane = (Real) limits->limits[axis_index][1];
+            right_plane = (VIO_Real) limits->limits[axis_index][1];
 
         get_planes( axis_index, n_objects, object_list, bound_vols,
                     right_plane, &left_plane,
@@ -378,7 +378,7 @@ static  Real  find_best_split_node_for_axis(
         else
             n_right += n_overlap;
 
-        cost = size_left * (Real) n_left + size_right * (Real) n_right;
+        cost = size_left * (VIO_Real) n_left + size_right * (VIO_Real) n_right;
 
         if( i == 0 || cost < best_cost )
         {
@@ -434,18 +434,18 @@ static  void  split_node(
     range_struct          *limits,
     int                   *n_nodes,
     range_struct          *left_limits,
-    Real                  *left_cost,
+    VIO_Real                  *left_cost,
     range_struct          *right_limits,
-    Real                  *right_cost )
+    VIO_Real                  *right_cost )
 {
     int                  i, c, n_objects;
     int                  *object_list;
     int                  axis_index, top, bottom, start_dim, end_dim;
-    BOOLEAN              overlap_in_left, tightly_bounds;
-    Real                 left_plane, right_plane, split_position;
-    Real                 min_plane, max_plane, best, cost;
-    Real                 test_left, test_right;
-    Real                 node_cost, previous_cost, net_change;
+    VIO_BOOL              overlap_in_left, tightly_bounds;
+    VIO_Real                 left_plane, right_plane, split_position;
+    VIO_Real                 min_plane, max_plane, best, cost;
+    VIO_Real                 test_left, test_right;
+    VIO_Real                 node_cost, previous_cost, net_change;
     bintree_node_struct  *left_child, *right_child;
 
     n_objects = get_bintree_leaf_objects( *ptr_to_node, &object_list );
@@ -503,7 +503,7 @@ static  void  split_node(
         }
     }
 
-    previous_cost = (Real) n_objects * node_visit_estimation( limits );
+    previous_cost = (VIO_Real) n_objects * node_visit_estimation( limits );
     node_cost = NODE_VISIT_COST * node_visit_estimation( limits );
 
     net_change = node_cost + cost - previous_cost;
@@ -511,8 +511,8 @@ static  void  split_node(
     if( net_change >= NET_CHANGE_THRESHOLD )
         return;
 
-    min_plane = (Real) limits->limits[axis_index][0];
-    max_plane = (Real) limits->limits[axis_index][1];
+    min_plane = (VIO_Real) limits->limits[axis_index][0];
+    max_plane = (VIO_Real) limits->limits[axis_index][1];
 
     if( left_plane - min_plane < max_plane - right_plane )
         overlap_in_left = TRUE;
@@ -525,17 +525,17 @@ static  void  split_node(
     while( bottom <= top )
     {
         while( bottom < n_objects &&
-               (Real) bound_vols[object_list[bottom]].limits[axis_index][1] <=
+               (VIO_Real) bound_vols[object_list[bottom]].limits[axis_index][1] <=
                                                        left_plane &&
                (overlap_in_left ||
-                (Real) bound_vols[object_list[bottom]].limits[axis_index][0] <
+                (VIO_Real) bound_vols[object_list[bottom]].limits[axis_index][0] <
                                                        right_plane) )
             ++bottom;
         while( top >= 0 &&
-               (Real) bound_vols[object_list[top]].limits[axis_index][0] >=
+               (VIO_Real) bound_vols[object_list[top]].limits[axis_index][0] >=
                                                      right_plane &&
                (!overlap_in_left ||
-               (Real) bound_vols[object_list[top]].limits[axis_index][1] >
+               (VIO_Real) bound_vols[object_list[top]].limits[axis_index][1] >
                                                      left_plane) )
             --top;
         if( bottom < top )
@@ -544,9 +544,9 @@ static  void  split_node(
         }
     }
 
-    if( (bottom == 0 && right_plane == (Real) limits->limits[axis_index][0]) ||
+    if( (bottom == 0 && right_plane == (VIO_Real) limits->limits[axis_index][0]) ||
         (bottom == n_objects &&
-            left_plane == (Real) limits->limits[axis_index][1]) )
+            left_plane == (VIO_Real) limits->limits[axis_index][1]) )
     {
         return;
     }
@@ -556,7 +556,7 @@ static  void  split_node(
         *left_limits = *limits;
         left_limits->limits[axis_index][1] = (float) left_plane;
 
-        *left_cost = (Real) bottom * node_visit_estimation( left_limits );
+        *left_cost = (VIO_Real) bottom * node_visit_estimation( left_limits );
 
         left_child = create_bintree_leaf( left_plane, bottom, object_list );
 
@@ -574,7 +574,7 @@ static  void  split_node(
         *right_limits = *limits;
         right_limits->limits[axis_index][0] = (float) right_plane;
 
-        *right_cost = (Real) (n_objects - bottom) *
+        *right_cost = (VIO_Real) (n_objects - bottom) *
                            node_visit_estimation( right_limits );
 
         right_child = create_bintree_leaf( right_plane, n_objects - bottom,
@@ -614,7 +614,7 @@ static  void  delete_leaf_queue(
     DELETE_PRIORITY_QUEUE( *leaf_queue );
 }
 
-static  BOOLEAN  leaf_queue_empty(
+static  VIO_BOOL  leaf_queue_empty(
     leaf_queue_struct   *leaf_queue )
 {
     return( IS_PRIORITY_QUEUE_EMPTY( *leaf_queue ) );
@@ -623,7 +623,7 @@ static  BOOLEAN  leaf_queue_empty(
 static  void  insert_in_leaf_queue(
     leaf_queue_struct     *leaf_queue,
     bintree_node_struct   **ptr_to_node,
-    Real                  node_cost,
+    VIO_Real                  node_cost,
     range_struct          *limits )
 {
     leaf_queue_type   entry;
@@ -640,7 +640,7 @@ static  void  remove_from_leaf_queue(
     range_struct          *limits )
 {
     leaf_queue_type   entry;
-    Real              node_cost;
+    VIO_Real              node_cost;
 
     REMOVE_FROM_PRIORITY_QUEUE( *leaf_queue, entry, node_cost );
 
@@ -651,7 +651,7 @@ static  void  remove_from_leaf_queue(
     *limits = entry.limits;
 }
 
-static  BOOLEAN  node_tightly_bounds_object(
+static  VIO_BOOL  node_tightly_bounds_object(
     range_struct  *bound_vol,
     range_struct  *limits )
 {
@@ -673,10 +673,10 @@ static  BOOLEAN  node_tightly_bounds_object(
 
 BICAPI  void  evaluate_bintree_efficiency(
     bintree_struct_ptr   bintree,
-    Real                 *avg_nodes_visited,
-    Real                 *avg_objects_visited )
+    VIO_Real                 *avg_nodes_visited,
+    VIO_Real                 *avg_objects_visited )
 {
-    Real           n_visits_top_level;
+    VIO_Real           n_visits_top_level;
     range_struct   limits;
 
     *avg_nodes_visited = 0.0;
@@ -696,13 +696,13 @@ BICAPI  void  evaluate_bintree_efficiency(
 static  void  recursive_efficiency_count(
     bintree_node_struct   *node,
     range_struct          *limits,
-    Real                  *avg_nodes_visited,
-    Real                  *avg_objects_visited )
+    VIO_Real                  *avg_nodes_visited,
+    VIO_Real                  *avg_objects_visited )
 {
     float                 save_limit;
-    Real                  node_visit_estimate;
+    VIO_Real                  node_visit_estimate;
     bintree_node_struct   *left_child, *right_child;
-    Real                  left_limit, right_limit;
+    VIO_Real                  left_limit, right_limit;
     int                   *object_list, axis_index;
 
     node_visit_estimate = node_visit_estimation( limits );
@@ -712,7 +712,7 @@ static  void  recursive_efficiency_count(
     if( bintree_node_is_leaf( node ) )
     {
         *avg_objects_visited += node_visit_estimate *
-                     (Real) get_bintree_leaf_objects( node, &object_list );
+                     (VIO_Real) get_bintree_leaf_objects( node, &object_list );
     }
     else
     {
@@ -746,7 +746,7 @@ static  void  recursive_efficiency_count(
     }
 }
 
-static  Real  node_visit_estimation(
+static  VIO_Real  node_visit_estimation(
     range_struct  *limits )
 {
 #ifdef  VOLUME_EST

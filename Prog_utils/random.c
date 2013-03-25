@@ -28,7 +28,7 @@
 static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.15 2005-08-17 22:27:56 bert Exp $";
 #endif
 
-static  BOOLEAN  initialized = FALSE;
+static  VIO_BOOL  initialized = FALSE;
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : set_random_seed
@@ -144,7 +144,7 @@ BICAPI  int  get_random_int( int n )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_random_0_to_1( void )
+BICAPI  VIO_Real  get_random_0_to_1( void )
 {
-    return( (Real) get_random() / (Real) RAND_MAX );
+    return( (VIO_Real) get_random() / (VIO_Real) RAND_MAX );
 }

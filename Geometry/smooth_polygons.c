@@ -25,30 +25,30 @@ static  void  smooth_points(
     Point            current_points[],
     Point            new_points[],
     Smallest_int     point_done[],
-    Real             max_dist_from_original,
-    Real             fraction_to_move,
-    Real             normal_ratio,
-    BOOLEAN          range_flag,
+    VIO_Real             max_dist_from_original,
+    VIO_Real             fraction_to_move,
+    VIO_Real             normal_ratio,
+    VIO_BOOL          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value,
-    Real             *avg_moved,
-    Real             *max_moved );
-static  Real  update_point_position(
+    VIO_Real             *avg_moved,
+    VIO_Real             *max_moved );
+static  VIO_Real  update_point_position(
     polygons_struct  *polygons,
     int              poly,
     int              vertex_index,
     int              point_index,
     Point            current_points[],
     Point            *new_point,
-    Real             max_dist_from_original,
-    Real             fraction_to_move,
-    Real             normal_ratio,
-    BOOLEAN          range_flag,
+    VIO_Real             max_dist_from_original,
+    VIO_Real             fraction_to_move,
+    VIO_Real             normal_ratio,
+    VIO_BOOL          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value );
-static  BOOLEAN   point_inside_range(
+static  VIO_BOOL   point_inside_range(
     volume_struct  *volume,
     Point          *point,
     int            min_value,
@@ -78,20 +78,20 @@ static  BOOLEAN   point_inside_range(
 
 BICAPI  void  smooth_polygon(
     polygons_struct  *polygons,
-    Real             max_dist_from_original,
-    Real             fraction_to_move,
-    Real             stop_threshold,
-    Real             normal_ratio,
-    BOOLEAN          range_flag,
+    VIO_Real             max_dist_from_original,
+    VIO_Real             fraction_to_move,
+    VIO_Real             stop_threshold,
+    VIO_Real             normal_ratio,
+    VIO_BOOL          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value )
 {
-    Real               avg_moved, max_moved;
+    VIO_Real               avg_moved, max_moved;
     int                i, iteration;
     Point              *new_points, *tmp, *current_points;
     Smallest_int       *point_done;
-    Real               next_check_time;
+    VIO_Real               next_check_time;
 
     if( polygons->n_points <= 0 )
         return;
@@ -176,19 +176,19 @@ static  void  smooth_points(
     Point            current_points[],
     Point            new_points[],
     Smallest_int     point_done[],
-    Real             max_dist_from_original,
-    Real             fraction_to_move,
-    Real             normal_ratio,
-    BOOLEAN          range_flag,
+    VIO_Real             max_dist_from_original,
+    VIO_Real             fraction_to_move,
+    VIO_Real             normal_ratio,
+    VIO_BOOL          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value,
-    Real             *avg_moved,
-    Real             *max_moved )
+    VIO_Real             *avg_moved,
+    VIO_Real             *max_moved )
 {
     int              p, vertex_index, point_index, poly, size;
     progress_struct  progress;
-    Real             moved;
+    VIO_Real             moved;
 
     for_less( p, 0, polygons->n_points )
     {
@@ -231,7 +231,7 @@ static  void  smooth_points(
 
     terminate_progress_report( &progress );
 
-    *avg_moved /= (Real) polygons->n_points;
+    *avg_moved /= (VIO_Real) polygons->n_points;
 }
 
 #define  MAX_NEIGHBOURS   100
@@ -249,17 +249,17 @@ static  void  smooth_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  update_point_position(
+static  VIO_Real  update_point_position(
     polygons_struct  *polygons,
     int              poly,
     int              vertex_index,
     int              point_index,
     Point            current_points[],
     Point            *new_point,
-    Real             max_dist_from_original,
-    Real             fraction_to_move,
-    Real             normal_ratio,
-    BOOLEAN          range_flag,
+    VIO_Real             max_dist_from_original,
+    VIO_Real             fraction_to_move,
+    VIO_Real             normal_ratio,
+    VIO_BOOL          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value )
@@ -268,9 +268,9 @@ static  Real  update_point_position(
     int              neighbours[MAX_NEIGHBOURS];
     Point            neigh_points[MAX_NEIGHBOURS];
     Point            new_pos, current_scaled, centroid, destination;
-    Real             len, ratio, movement, sin_of_angle;
+    VIO_Real             len, ratio, movement, sin_of_angle;
     Vector           diff, delta, normal, unit_delta, unit_normal, cross;
-    BOOLEAN          interior_point;
+    VIO_BOOL          interior_point;
 
     n_neighbours = get_neighbours_of_point( polygons, poly, vertex_index,
                                             neighbours, MAX_NEIGHBOURS,
@@ -369,18 +369,18 @@ static  Real  update_point_position(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  BOOLEAN   point_inside_range(
+static  VIO_BOOL   point_inside_range(
     volume_struct  *volume,
     Point          *point,
     int            min_value,
     int            max_value )
 {
     int     vx, vy, vz, val;
-    Real    x, y, z;
+    VIO_Real    x, y, z;
 
     convert_3D_world_to_voxel( volume,
-                               (Real) Point_x(*point), (Real) Point_y(*point),
-                               (Real) Point_z(*point),
+                               (VIO_Real) Point_x(*point), (VIO_Real) Point_y(*point),
+                               (VIO_Real) Point_z(*point),
                                &x, &y, &z );
 
     vx = ROUND( x );

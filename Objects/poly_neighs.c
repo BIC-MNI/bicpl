@@ -81,7 +81,7 @@ static  void  insert_neighbours(
     int    *neighbours[] )
 {
     int       p1, p2, first_index, start, i, n_to_insert, n_to_do, last_index;
-    BOOLEAN   wrapped;
+    VIO_BOOL   wrapped;
 
     p1 = indices[0];
     for_less( first_index, 0, *n_neighbours )
@@ -155,7 +155,7 @@ static  void  insert_neighbours(
 
 BICAPI   void   create_polygon_point_neighbours(
     polygons_struct  *polygons,
-    BOOLEAN          across_polygons_flag,
+    VIO_BOOL          across_polygons_flag,
     int              *n_point_neighbours_ptr[],
     int              **point_neighbours_ptr[],
     Smallest_int     *interior_flags_ptr[],

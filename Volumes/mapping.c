@@ -44,17 +44,17 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping
 static int  clip_points(
     int      n_dims,
     int      sizes[],
-    Real     origin[],
-    Real     x_axis[],
-    Real     y_axis[],
+    VIO_Real     origin[],
+    VIO_Real     x_axis[],
+    VIO_Real     y_axis[],
     int      n_points,
-    Real     points[][2],
-    Real     clipped_points[][2] )
+    VIO_Real     points[][2],
+    VIO_Real     clipped_points[][2] )
 {
     int       i, c, n_input_points, n_output_points, this, lim;
-    Real      prev_dist, dist, ratio, first_dist;
-    Real      input_points[2*MAX_DIMENSIONS][2];
-    Real      output_points[2*MAX_DIMENSIONS][2];
+    VIO_Real      prev_dist, dist, ratio, first_dist;
+    VIO_Real      input_points[2*MAX_DIMENSIONS][2];
+    VIO_Real      output_points[2*MAX_DIMENSIONS][2];
 
     for_less( i, 0, n_points )
     {
@@ -88,7 +88,7 @@ static int  clip_points(
                         }
                         else
                         {
-                            dist = (Real) sizes[c] - 0.5 -
+                            dist = (VIO_Real) sizes[c] - 0.5 -
                                (origin[c] + input_points[i][0] * x_axis[c] +
                                             input_points[i][1] * y_axis[c]);
                         }
@@ -167,16 +167,16 @@ static int  clip_points(
 
 static int    get_cross_section(
     Volume   volume,
-    Real     origin[],
-    Real     x_axis[],
-    Real     y_axis[],
-    Real     clipped_points[][2] )
+    VIO_Real     origin[],
+    VIO_Real     x_axis[],
+    VIO_Real     y_axis[],
+    VIO_Real     clipped_points[][2] )
 {
-    Real    points[4][2], voxel[MAX_DIMENSIONS];
+    VIO_Real    points[4][2], voxel[MAX_DIMENSIONS];
     int     d, sizes[MAX_DIMENSIONS], n_dims, n_points;
     int     n_limits[MAX_DIMENSIONS], lim[MAX_DIMENSIONS];
-    Real    x_pixel, y_pixel, x_min, x_max, y_min, y_max, dx, dy;
-    BOOLEAN first;
+    VIO_Real    x_pixel, y_pixel, x_min, x_max, y_min, y_max, dx, dy;
+    VIO_BOOL first;
 
     get_volume_sizes( volume, sizes );
     n_dims = get_volume_n_dimensions( volume );
@@ -201,7 +201,7 @@ static int    get_cross_section(
     for_less( lim[4], 0, n_limits[4] )
     {
         for_less( d, 0, n_dims )
-            voxel[d] = -0.5 + (Real) (sizes[d] * lim[d]);
+            voxel[d] = -0.5 + (VIO_Real) (sizes[d] * lim[d]);
 
         map_voxel_to_pixel( get_volume_n_dimensions(volume),
                             voxel, origin, x_axis, y_axis, &x_pixel, &y_pixel );
@@ -278,15 +278,15 @@ static int    get_cross_section(
 
 BICAPI int    get_volume_cross_section(
     Volume   volume,
-    Real     origin[],
-    Real     x_axis[],
-    Real     y_axis[],
-    Real     clipped_voxels[][MAX_DIMENSIONS] )
+    VIO_Real     origin[],
+    VIO_Real     x_axis[],
+    VIO_Real     y_axis[],
+    VIO_Real     clipped_voxels[][MAX_DIMENSIONS] )
 {
-    Real    clipped_points[2*MAX_DIMENSIONS][2];
+    VIO_Real    clipped_points[2*MAX_DIMENSIONS][2];
     int     i, c, n_dims, n_points;
-    Real    real_origin[MAX_DIMENSIONS];
-    Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
+    VIO_Real    real_origin[MAX_DIMENSIONS];
+    VIO_Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
 
     get_mapping( volume, origin, x_axis, y_axis,
                  0.0, 0.0, 1.0, 1.0,
@@ -332,15 +332,15 @@ BICAPI int    get_volume_cross_section(
 
 static void    get_volume_slice_range(
     Volume   volume,
-    Real     origin[],
-    Real     x_axis[],
-    Real     y_axis[],
-    Real     *x_pixel_start,
-    Real     *x_pixel_end,
-    Real     *y_pixel_start,
-    Real     *y_pixel_end )
+    VIO_Real     origin[],
+    VIO_Real     x_axis[],
+    VIO_Real     y_axis[],
+    VIO_Real     *x_pixel_start,
+    VIO_Real     *x_pixel_end,
+    VIO_Real     *y_pixel_start,
+    VIO_Real     *y_pixel_end )
 {
-    Real    clipped_points[2*MAX_DIMENSIONS][2];
+    VIO_Real    clipped_points[2*MAX_DIMENSIONS][2];
     int     i, n_points;
 
     n_points = get_cross_section( volume, origin, x_axis, y_axis,
@@ -399,20 +399,20 @@ static void    get_volume_slice_range(
 
 BICAPI void    get_volume_mapping_range(
     Volume   volume,
-    Real     origin[],
-    Real     x_axis[],
-    Real     y_axis[],
-    Real     x_trans,
-    Real     y_trans,
-    Real     x_scale,
-    Real     y_scale,
-    Real     *x_pixel_start,
-    Real     *x_pixel_end,
-    Real     *y_pixel_start,
-    Real     *y_pixel_end )
+    VIO_Real     origin[],
+    VIO_Real     x_axis[],
+    VIO_Real     y_axis[],
+    VIO_Real     x_trans,
+    VIO_Real     y_trans,
+    VIO_Real     x_scale,
+    VIO_Real     y_scale,
+    VIO_Real     *x_pixel_start,
+    VIO_Real     *x_pixel_end,
+    VIO_Real     *y_pixel_start,
+    VIO_Real     *y_pixel_end )
 {
-    Real    real_origin[MAX_DIMENSIONS];
-    Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
+    VIO_Real    real_origin[MAX_DIMENSIONS];
+    VIO_Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
 
     get_mapping( volume, origin, x_axis, y_axis,
                  x_trans, y_trans, x_scale, y_scale,
@@ -444,16 +444,16 @@ BICAPI void    get_volume_mapping_range(
 
 BICAPI void    clip_viewport_to_volume(
     Volume   volume,
-    Real     origin[],
-    Real     x_axis[],
-    Real     y_axis[],
+    VIO_Real     origin[],
+    VIO_Real     x_axis[],
+    VIO_Real     y_axis[],
     int      *x_pixel_start,
     int      *x_pixel_end,
     int      *y_pixel_start,
     int      *y_pixel_end )
 {
     int     int_x_min, int_x_max, int_y_min, int_y_max;
-    Real    x_min, x_max, y_min, y_max;
+    VIO_Real    x_min, x_max, y_min, y_max;
 
     get_volume_slice_range( volume, origin, x_axis, y_axis,
                             &x_min, &x_max, &y_min, &y_max );
@@ -499,19 +499,19 @@ BICAPI void    clip_viewport_to_volume(
 
 BICAPI void  get_mapping(
     Volume          volume,
-    Real            origin[],
-    Real            x_axis[],
-    Real            y_axis[],
-    Real            x_translation,
-    Real            y_translation,
-    Real            x_scale,
-    Real            y_scale,
-    Real            pix_origin[],
-    Real            pix_x_axis[],
-    Real            pix_y_axis[] )
+    VIO_Real            origin[],
+    VIO_Real            x_axis[],
+    VIO_Real            y_axis[],
+    VIO_Real            x_translation,
+    VIO_Real            y_translation,
+    VIO_Real            x_scale,
+    VIO_Real            y_scale,
+    VIO_Real            pix_origin[],
+    VIO_Real            pix_x_axis[],
+    VIO_Real            pix_y_axis[] )
 {
     int   c, n_dims;
-    Real  separations[MAX_DIMENSIONS], x_len, y_len, comp;
+    VIO_Real  separations[MAX_DIMENSIONS], x_len, y_len, comp;
 
     n_dims = get_volume_n_dimensions( volume );
     get_volume_separations( volume, separations );
@@ -564,20 +564,20 @@ BICAPI void  get_mapping(
 ---------------------------------------------------------------------------- */
 
 static void  map_pixel_to_voxel(
-    Real   x_pixel,
-    Real   y_pixel,
+    VIO_Real   x_pixel,
+    VIO_Real   y_pixel,
     int    n_dims,
-    Real   voxel_origin[],
-    Real   voxel_x_axis[],
-    Real   voxel_y_axis[],
-    Real   voxel[] )
+    VIO_Real   voxel_origin[],
+    VIO_Real   voxel_x_axis[],
+    VIO_Real   voxel_y_axis[],
+    VIO_Real   voxel[] )
 {
     int   c;
 
     for_less( c, 0, n_dims )
     {
-        voxel[c] = voxel_origin[c] + (Real) x_pixel * voxel_x_axis[c] +
-                                     (Real) y_pixel * voxel_y_axis[c];
+        voxel[c] = voxel_origin[c] + (VIO_Real) x_pixel * voxel_x_axis[c] +
+                                     (VIO_Real) y_pixel * voxel_y_axis[c];
     }
 }
 
@@ -596,13 +596,13 @@ static void  map_pixel_to_voxel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static Real   dot(
+static VIO_Real   dot(
     int    n,
-    Real   v1[],
-    Real   v2[] )
+    VIO_Real   v1[],
+    VIO_Real   v2[] )
 {
     int   i;
-    Real  d;
+    VIO_Real  d;
 
     d = 0.0;
     for_less( i, 0, n )
@@ -632,13 +632,13 @@ static Real   dot(
 
 static void  get_two_axes_coordinates(
     int   n,
-    Real  vector[],
-    Real  x_axis[],
-    Real  y_axis[],
-    Real  *x_pos,
-    Real  *y_pos )
+    VIO_Real  vector[],
+    VIO_Real  x_axis[],
+    VIO_Real  y_axis[],
+    VIO_Real  *x_pos,
+    VIO_Real  *y_pos )
 {
-    Real  x_dot_x, x_dot_v, x_dot_y, y_dot_v, y_dot_y, bottom;
+    VIO_Real  x_dot_x, x_dot_v, x_dot_y, y_dot_v, y_dot_y, bottom;
 
     x_dot_x = dot( n, x_axis, x_axis );
     x_dot_v = dot( n, x_axis, vector );
@@ -672,15 +672,15 @@ static void  get_two_axes_coordinates(
 
 BICAPI void  map_voxel_to_pixel(
     int    n,
-    Real   voxel[],
-    Real   origin[],
-    Real   x_axis[],
-    Real   y_axis[],
-    Real   *x_pixel,
-    Real   *y_pixel )
+    VIO_Real   voxel[],
+    VIO_Real   origin[],
+    VIO_Real   x_axis[],
+    VIO_Real   y_axis[],
+    VIO_Real   *x_pixel,
+    VIO_Real   *y_pixel )
 {
     int   c;
-    Real  vector[MAX_DIMENSIONS];
+    VIO_Real  vector[MAX_DIMENSIONS];
 
     for_less( c, 0, n )
         vector[c] = voxel[c] - origin[c];
@@ -712,22 +712,22 @@ BICAPI void  map_voxel_to_pixel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  convert_slice_pixel_to_voxel(
+BICAPI VIO_BOOL  convert_slice_pixel_to_voxel(
     Volume          volume,
-    Real            x_pixel,
-    Real            y_pixel,
-    Real            origin[],
-    Real            x_axis[],
-    Real            y_axis[],
-    Real            x_translation,
-    Real            y_translation,
-    Real            x_scale,
-    Real            y_scale,
-    Real            voxel[] )
+    VIO_Real            x_pixel,
+    VIO_Real            y_pixel,
+    VIO_Real            origin[],
+    VIO_Real            x_axis[],
+    VIO_Real            y_axis[],
+    VIO_Real            x_translation,
+    VIO_Real            y_translation,
+    VIO_Real            x_scale,
+    VIO_Real            y_scale,
+    VIO_Real            voxel[] )
 {
     int          n_dims;
-    Real         real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
-    Real         real_origin[MAX_DIMENSIONS];
+    VIO_Real         real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
+    VIO_Real         real_origin[MAX_DIMENSIONS];
 
     get_mapping( volume, origin, x_axis, y_axis,
                  x_translation, y_translation, x_scale, y_scale,
@@ -766,20 +766,20 @@ BICAPI BOOLEAN  convert_slice_pixel_to_voxel(
 
 BICAPI void  convert_voxel_to_slice_pixel(
     Volume          volume,
-    Real            voxel[],
-    Real            origin[],
-    Real            x_axis[],
-    Real            y_axis[],
-    Real            x_translation,
-    Real            y_translation,
-    Real            x_scale,
-    Real            y_scale,
-    Real            *x_pixel,
-    Real            *y_pixel )
+    VIO_Real            voxel[],
+    VIO_Real            origin[],
+    VIO_Real            x_axis[],
+    VIO_Real            y_axis[],
+    VIO_Real            x_translation,
+    VIO_Real            y_translation,
+    VIO_Real            x_scale,
+    VIO_Real            y_scale,
+    VIO_Real            *x_pixel,
+    VIO_Real            *y_pixel )
 {
     int          n_dims;
-    Real         real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
-    Real         real_origin[MAX_DIMENSIONS];
+    VIO_Real         real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
+    VIO_Real         real_origin[MAX_DIMENSIONS];
 
     n_dims = get_volume_n_dimensions( volume );
 
@@ -822,35 +822,35 @@ BICAPI void  resize_volume_slice(
     int          old_used_y_viewport_size,
     int          new_x_viewport_size,
     int          new_y_viewport_size,
-    Real         *x_translation,
-    Real         *y_translation,
-    Real         *x_scale,
-    Real         *y_scale,
+    VIO_Real         *x_translation,
+    VIO_Real         *y_translation,
+    VIO_Real         *x_scale,
+    VIO_Real         *y_scale,
     int          *used_x_viewport_size,
     int          *used_y_viewport_size )
 {
-    Real      x_scale_factor, y_scale_factor, scale_factor;
+    VIO_Real      x_scale_factor, y_scale_factor, scale_factor;
 
     if( old_used_x_viewport_size <= 0 )
         old_used_x_viewport_size = 1;
     if( old_used_y_viewport_size <= 0 )
         old_used_y_viewport_size = 1;
 
-    x_scale_factor = (Real) new_x_viewport_size /
-                     (Real) old_used_x_viewport_size;
-    y_scale_factor = (Real) new_y_viewport_size /
-                     (Real) old_used_y_viewport_size;
+    x_scale_factor = (VIO_Real) new_x_viewport_size /
+                     (VIO_Real) old_used_x_viewport_size;
+    y_scale_factor = (VIO_Real) new_y_viewport_size /
+                     (VIO_Real) old_used_y_viewport_size;
     scale_factor = MIN( x_scale_factor, y_scale_factor );
 
     if( used_x_viewport_size != NULL )
     {
         *used_x_viewport_size = ROUND( scale_factor *
-                                       (Real) old_used_x_viewport_size);
+                                       (VIO_Real) old_used_x_viewport_size);
     }
     if( used_y_viewport_size != NULL )
     {
         *used_y_viewport_size = ROUND( scale_factor *
-                                       (Real) old_used_y_viewport_size );
+                                       (VIO_Real) old_used_y_viewport_size );
     }
 
     scale_slice_about_viewport_centre( scale_factor,
@@ -858,8 +858,8 @@ BICAPI void  resize_volume_slice(
                                        x_translation, y_translation,
                                        x_scale, y_scale );
 
-    *x_translation += (Real) (new_x_viewport_size - old_x_viewport_size) / 2.0;
-    *y_translation += (Real) (new_y_viewport_size - old_y_viewport_size) / 2.0;
+    *x_translation += (VIO_Real) (new_x_viewport_size - old_x_viewport_size) / 2.0;
+    *y_translation += (VIO_Real) (new_y_viewport_size - old_y_viewport_size) / 2.0;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -889,20 +889,20 @@ BICAPI void  resize_volume_slice(
 
 BICAPI void  fit_volume_slice_to_viewport(
     Volume       volume,
-    Real         origin[],
-    Real         x_axis[],
-    Real         y_axis[],
+    VIO_Real         origin[],
+    VIO_Real         x_axis[],
+    VIO_Real         y_axis[],
     int          x_viewport_size,
     int          y_viewport_size,
-    Real         fraction_oversize,
-    Real         *x_translation,
-    Real         *y_translation,
-    Real         *x_scale,
-    Real         *y_scale,
+    VIO_Real         fraction_oversize,
+    VIO_Real         *x_translation,
+    VIO_Real         *y_translation,
+    VIO_Real         *x_scale,
+    VIO_Real         *y_scale,
     int          *used_x_viewport_size,
     int          *used_y_viewport_size )
 {
-    Real         x_min, x_max, y_min, y_max;
+    VIO_Real         x_min, x_max, y_min, y_max;
 
     get_volume_mapping_range( volume, origin, x_axis, y_axis,
                               0.0, 0.0, 1.0, 1.0,
@@ -917,9 +917,9 @@ BICAPI void  fit_volume_slice_to_viewport(
         return;
     }
 
-    *x_scale = (Real) x_viewport_size / (x_max - x_min) /
+    *x_scale = (VIO_Real) x_viewport_size / (x_max - x_min) /
                (1.0 + fraction_oversize);
-    *y_scale = (Real) y_viewport_size / (y_max - y_min) /
+    *y_scale = (VIO_Real) y_viewport_size / (y_max - y_min) /
                (1.0 + fraction_oversize);
 
     if( *x_scale < *y_scale )
@@ -929,19 +929,19 @@ BICAPI void  fit_volume_slice_to_viewport(
 
     if( used_x_viewport_size != NULL )
     {
-        *used_x_viewport_size = (int) (*x_scale * (Real) (x_max - x_min) *
+        *used_x_viewport_size = (int) (*x_scale * (VIO_Real) (x_max - x_min) *
                                        (1.0 + fraction_oversize));
     }
 
     if( used_y_viewport_size != NULL )
     {
-        *used_y_viewport_size = (int) (*y_scale * (Real) (y_max - y_min) *
+        *used_y_viewport_size = (int) (*y_scale * (VIO_Real) (y_max - y_min) *
                                        (1.0 + fraction_oversize));
     }
 
-    *x_translation = ((Real) x_viewport_size - *x_scale * (x_max - x_min))/2.0 -
+    *x_translation = ((VIO_Real) x_viewport_size - *x_scale * (x_max - x_min))/2.0 -
                      *x_scale * x_min;
-    *y_translation = ((Real) y_viewport_size - *y_scale * (y_max - y_min))/2.0 -
+    *y_translation = ((VIO_Real) y_viewport_size - *y_scale * (y_max - y_min))/2.0 -
                      *y_scale * y_min;
 }
 
@@ -965,18 +965,18 @@ BICAPI void  fit_volume_slice_to_viewport(
 ---------------------------------------------------------------------------- */
 
 BICAPI void   scale_slice_about_viewport_centre(
-    Real        scale_factor,
+    VIO_Real        scale_factor,
     int         x_viewport_size,
     int         y_viewport_size,
-    Real        *x_translation,
-    Real        *y_translation,
-    Real        *x_scale,
-    Real        *y_scale )
+    VIO_Real        *x_translation,
+    VIO_Real        *y_translation,
+    VIO_Real        *x_scale,
+    VIO_Real        *y_scale )
 {
-    Real  x_centre, y_centre;
+    VIO_Real  x_centre, y_centre;
 
-    x_centre = (Real) x_viewport_size / 2.0;
-    y_centre = (Real) y_viewport_size / 2.0;
+    x_centre = (VIO_Real) x_viewport_size / 2.0;
+    y_centre = (VIO_Real) y_viewport_size / 2.0;
 
     *x_translation = x_centre - scale_factor * (x_centre - *x_translation);
     *y_translation = y_centre - scale_factor * (y_centre - *y_translation);
@@ -995,12 +995,12 @@ BICAPI void   scale_slice_about_viewport_centre(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  voxel_is_within_volume(
+BICAPI VIO_BOOL  voxel_is_within_volume(
     Volume   volume,
-    Real     voxel_position[] )
+    VIO_Real     voxel_position[] )
 {
     int      i, sizes[MAX_DIMENSIONS];
-    BOOLEAN  inside;
+    VIO_BOOL  inside;
 
     inside = TRUE;
 
@@ -1009,7 +1009,7 @@ BICAPI BOOLEAN  voxel_is_within_volume(
     for_less( i, 0, get_volume_n_dimensions(volume) )
     {
         if( voxel_position[i] < -0.5 ||
-            voxel_position[i] >= (Real) sizes[i] - 0.5 )
+            voxel_position[i] >= (VIO_Real) sizes[i] - 0.5 )
         {
             inside = FALSE;
             break;
@@ -1031,12 +1031,12 @@ BICAPI BOOLEAN  voxel_is_within_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  int_voxel_is_within_volume(
+BICAPI VIO_BOOL  int_voxel_is_within_volume(
     Volume   volume,
     int      indices[] )
 {
     int      i, sizes[MAX_DIMENSIONS];
-    BOOLEAN  inside;
+    VIO_BOOL  inside;
 
     inside = TRUE;
 
@@ -1071,7 +1071,7 @@ BICAPI BOOLEAN  int_voxel_is_within_volume(
 
 BICAPI void  convert_real_to_int_voxel(
     int      n_dimensions,
-    Real     voxel[],
+    VIO_Real     voxel[],
     int      int_voxel[] )
 {
     int   i;
@@ -1097,12 +1097,12 @@ BICAPI void  convert_real_to_int_voxel(
 BICAPI void  convert_int_to_real_voxel(
     int      n_dimensions,
     int      int_voxel[],
-    Real     voxel[] )
+    VIO_Real     voxel[] )
 {
     int   i;
 
     for_less( i, 0, n_dimensions )
-        voxel[i] = (Real) int_voxel[i];
+        voxel[i] = (VIO_Real) int_voxel[i];
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -1119,15 +1119,15 @@ BICAPI void  convert_int_to_real_voxel(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  voxel_contains_range(
+BICAPI VIO_BOOL  voxel_contains_range(
     Volume   volume,
     int      int_voxel[],
-    Real     min_value,
-    Real     max_value )
+    VIO_Real     min_value,
+    VIO_Real     max_value )
 {               
-    BOOLEAN  less, greater;
+    VIO_BOOL  less, greater;
     int      i, n_values;
-    Real     value, values[1 << MAX_DIMENSIONS];
+    VIO_Real     value, values[1 << MAX_DIMENSIONS];
 
     less = FALSE;
     greater = FALSE;
@@ -1180,13 +1180,13 @@ BICAPI BOOLEAN  voxel_contains_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  volumes_are_same_grid(
+BICAPI VIO_BOOL  volumes_are_same_grid(
     Volume    volume1,
     Volume    volume2 )
 {
     int                 c, n_dims, i, j;
     int                 sizes1[MAX_DIMENSIONS], sizes2[MAX_DIMENSIONS];
-    General_transform   *transform1, *transform2;
+    VIO_General_transform   *transform1, *transform2;
     Transform           *lin_transform1, *lin_transform2;
 
     n_dims = get_volume_n_dimensions( volume1 );

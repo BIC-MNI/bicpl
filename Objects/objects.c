@@ -79,7 +79,7 @@ BICAPI  Object_types  get_object_type(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_object_visibility(
+BICAPI  VIO_BOOL  get_object_visibility(
     object_struct  *object )
 {
     return( object->visibility );
@@ -101,7 +101,7 @@ BICAPI  BOOLEAN  get_object_visibility(
 
 BICAPI  void  set_object_visibility(
     object_struct  *object,
-    BOOLEAN        visibility )
+    VIO_BOOL        visibility )
 {
     object->visibility = visibility;
 }
@@ -1362,7 +1362,7 @@ static  void  push_object_stack(
 
 BICAPI  void  initialize_object_traverse(
     object_traverse_struct  *object_traverse,
-    BOOLEAN                 visible_ones_only,
+    VIO_BOOL                 visible_ones_only,
     int                     n_objects,
     object_struct           *object_list[] )
 {
@@ -1402,11 +1402,11 @@ BICAPI  void  initialize_object_traverse(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_next_object_traverse(
+BICAPI  VIO_BOOL  get_next_object_traverse(
     object_traverse_struct  *object_traverse,
     object_struct           **object )
 {
-    BOOLEAN               object_found;
+    VIO_BOOL               object_found;
     object_stack_struct   *top_entry;
 
     if( object_traverse->top_of_stack > 0 )
@@ -1516,13 +1516,13 @@ BICAPI  void  terminate_object_traverse(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_range_of_object(
+BICAPI  VIO_BOOL  get_range_of_object(
     object_struct   *object,
-    BOOLEAN         visible_ones_only,
+    VIO_BOOL         visible_ones_only,
     Point           *min_corner,
     Point           *max_corner )
 {
-    BOOLEAN                 found_flag;
+    VIO_BOOL                 found_flag;
     Point                   min_obj, max_obj, *points;
     int                     n_points;
     object_struct           *current_object;
@@ -1600,11 +1600,11 @@ BICAPI  void  reverse_object_normals(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_object_colour(
+BICAPI  VIO_BOOL  get_object_colour(
     object_struct  *object,
     Colour         *colour )
 {
-    BOOLEAN       has_single_colour;
+    VIO_BOOL       has_single_colour;
     Colour_flags  *colour_flag;
     Colour        *colours;
 
@@ -1710,7 +1710,7 @@ BICAPI  void  free_colours(
     int            n_points,
     int            n_items )
 {
-    BOOLEAN  should_free;
+    VIO_BOOL  should_free;
 
     should_free = FALSE;
 
@@ -1753,7 +1753,7 @@ BICAPI  void  free_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  objects_are_same_topology(
+BICAPI  VIO_BOOL  objects_are_same_topology(
     int    n_points1,
     int    n_items1,
     int    *end_indices1,

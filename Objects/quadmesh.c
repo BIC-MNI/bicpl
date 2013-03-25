@@ -215,7 +215,7 @@ BICAPI  void  set_quadmesh_point(
  * \note The coordinates are written into \c point
  * only if (i,j) is a valid location.
  */
-BICAPI  BOOLEAN  get_quadmesh_point(
+BICAPI  VIO_BOOL  get_quadmesh_point(
     const quadmesh_struct  *quadmesh,
     int              i,
     int              j,

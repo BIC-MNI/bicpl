@@ -19,7 +19,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/glob
 #endif
 
 static    Status  input_global_variable( int, global_struct [],
-                                         FILE *, BOOLEAN * );
+                                         FILE *, VIO_BOOL * );
 static    STRING    extract_string( STRING );
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -44,7 +44,7 @@ BICAPI  Status  input_globals_file(
     STRING          filename )
 {
     Status  status;
-    BOOLEAN eof;
+    VIO_BOOL eof;
     FILE    *file;
 
     status = open_file( filename, READ_FILE, ASCII_FORMAT, &file );
@@ -83,7 +83,7 @@ static  Status  input_global_variable(
     int             n_globals_lookup,
     global_struct   globals_lookup[],
     FILE            *file,
-    BOOLEAN         *eof )
+    VIO_BOOL         *eof )
 {
     Status   set_status, status;
     STRING   variable_name;
@@ -219,8 +219,8 @@ BICAPI  Status  get_global_variable(
     {
         switch( type )
         {
-        case BOOLEAN_type:
-            if( * ((BOOLEAN *) ptr) )
+        case VIO_BOOL_type:
+            if( * ((VIO_BOOL *) ptr) )
                 (void) strcpy( buffer, "True" );
             else
                 (void) strcpy( buffer, "False" );
@@ -230,8 +230,8 @@ BICAPI  Status  get_global_variable(
             (void) sprintf( buffer, "%d", * (int *) ptr );
             break;
 
-        case Real_type:
-            (void) sprintf( buffer, "%g", * (Real *) ptr );
+        case VIO_Real_type:
+            (void) sprintf( buffer, "%g", * (VIO_Real *) ptr );
             break;
 
         case STRING_type:
@@ -309,7 +309,7 @@ BICAPI  Status  set_global_variable(
     void               *ptr;
     Variable_types     type;
     int                tmp_int;
-    Real               tmp_real;
+    VIO_Real               tmp_real;
     Point              tmp_point;
     Vector             tmp_vector;
     Colour             tmp_colour;
@@ -325,14 +325,14 @@ BICAPI  Status  set_global_variable(
     {
         switch( type )
         {
-        case BOOLEAN_type:
+        case VIO_BOOL_type:
             if( (value[0] == 't' || value[0] == 'T') )
             {
-                * (BOOLEAN *) ptr = TRUE;
+                * (VIO_BOOL *) ptr = TRUE;
             }
             else if( (value[0] == 'f' || value[0] == 'F') )
             {
-                * (BOOLEAN *) ptr = FALSE;
+                * (VIO_BOOL *) ptr = FALSE;
             }
             else
             {
@@ -347,19 +347,19 @@ BICAPI  Status  set_global_variable(
                 status = ERROR;
             break;
 
-        case Real_type:
+        case VIO_Real_type:
             if( real_is_double() )
             {
                 tmp_real = 0.0;
                 if( sscanf( value, "%lf", (double *) &tmp_real ) == 1 )
-                    * (Real *) ptr = tmp_real;
+                    * (VIO_Real *) ptr = tmp_real;
                 else
                     status = ERROR;
             }
             else
             {
                 if( sscanf( value, "%f", (float *) &tmp_real ) == 1 )
-                    * (Real *) ptr = tmp_real;
+                    * (VIO_Real *) ptr = tmp_real;
                 else
                     status = ERROR;
             }

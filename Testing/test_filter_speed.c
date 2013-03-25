@@ -3,13 +3,13 @@
 
 private  void     evaluate_sync_interpolation(
     Volume    volume,
-    Real      x,
-    Real      y,
-    Real      z,
-    Real      *value );
+    VIO_Real      x,
+    VIO_Real      y,
+    VIO_Real      z,
+    VIO_Real      *value );
 
 private  void    initialize_sinc_approx(
-    Real   max_d2,
+    VIO_Real   max_d2,
     int    n_lookup );
 
 int  main(
@@ -19,8 +19,8 @@ int  main(
     Volume               volume;
     int                  iter, n_iters, continuity, n_lookup, dim;
     int                  sizes[N_DIMENSIONS];
-    Real                 separations[N_DIMENSIONS];
-    Real                 x, y, z, value, max_d2, delta;
+    VIO_Real                 separations[N_DIMENSIONS];
+    VIO_Real                 x, y, z, value, max_d2, delta;
     STRING               input_filename;
 
     initialize_argument_processing( argc, argv );
@@ -48,7 +48,7 @@ int  main(
     max_d2 = 0.0;
     for_less( dim, 0, N_DIMENSIONS )
     {
-        delta = (Real) sizes[dim] * FABS(separations[dim]);
+        delta = (VIO_Real) sizes[dim] * FABS(separations[dim]);
         max_d2 += delta * delta;
     }
 
@@ -82,10 +82,10 @@ int  main(
     return( 0 );
 }
 
-private  Real  sinc(
-    Real   d_squared )
+private  VIO_Real  sinc(
+    VIO_Real   d_squared )
 {
-    Real   d;
+    VIO_Real   d;
 
     if( d_squared == 0.0 )
         return( 1.0 );
@@ -102,15 +102,15 @@ typedef  struct
 } lookup_struct;
 
 static   int             lookup_size;
-static   Real            max_sinc_arg, sinc_factor;
+static   VIO_Real            max_sinc_arg, sinc_factor;
 static   lookup_struct   *precomp_sinc;
 
 private  void    initialize_sinc_approx(
-    Real   max_d2,
+    VIO_Real   max_d2,
     int    n_lookup )
 {
     int    i;
-    Real   next_sinc, this_sinc;
+    VIO_Real   next_sinc, this_sinc;
 
     lookup_size = n_lookup;
     max_sinc_arg = max_d2;
@@ -120,18 +120,18 @@ private  void    initialize_sinc_approx(
     for_less( i, 0, lookup_size )
     {
         this_sinc = next_sinc;
-        next_sinc = sinc( (Real) (i+1) / (Real) lookup_size * max_sinc_arg );
+        next_sinc = sinc( (VIO_Real) (i+1) / (VIO_Real) lookup_size * max_sinc_arg );
 
         precomp_sinc[i].scale = next_sinc - this_sinc;
         precomp_sinc[i].trans = this_sinc -
-                                precomp_sinc[i].scale * (Real) i;
+                                precomp_sinc[i].scale * (VIO_Real) i;
     }
 
-    sinc_factor = (Real) lookup_size / max_sinc_arg;
+    sinc_factor = (VIO_Real) lookup_size / max_sinc_arg;
 }
 
-private  Real  evaluate_sinc(
-    Real   d_squared )
+private  VIO_Real  evaluate_sinc(
+    VIO_Real   d_squared )
 {
     lookup_struct  *lookup;
 
@@ -152,16 +152,16 @@ private  Real  evaluate_sinc(
 
 private  void     evaluate_sync_interpolation(
     Volume    volume,
-    Real      x,
-    Real      y,
-    Real      z,
-    Real      *value )
+    VIO_Real      x,
+    VIO_Real      y,
+    VIO_Real      z,
+    VIO_Real      *value )
 {
     int    v0, v1, v2, sizes[N_DIMENSIONS], ind, dim;
-    Real   delta, d, dd, ddd;
-    Real   *d0, *d1, *d2;
-    Real   voxel[N_DIMENSIONS], *slice, sum_value, sum_weight, weight;
-    Real   separations[N_DIMENSIONS];
+    VIO_Real   delta, d, dd, ddd;
+    VIO_Real   *d0, *d1, *d2;
+    VIO_Real   voxel[N_DIMENSIONS], *slice, sum_value, sum_weight, weight;
+    VIO_Real   separations[N_DIMENSIONS];
     lookup_struct  *lookup;
 
     convert_world_to_voxel( volume, x, y, z, voxel );
@@ -178,17 +178,17 @@ private  void     evaluate_sync_interpolation(
     ALLOC( d2, sizes[2] );
     for_less( v0, 0, sizes[0] )
     {
-        delta = ((Real) v0 - voxel[0]) * separations[0];
+        delta = ((VIO_Real) v0 - voxel[0]) * separations[0];
         d0[v0] = sinc_factor * delta * delta;
     }
     for_less( v1, 0, sizes[1] )
     {
-        delta = ((Real) v1 - voxel[1]) * separations[1];
+        delta = ((VIO_Real) v1 - voxel[1]) * separations[1];
         d1[v1] = sinc_factor * delta * delta;
     }
     for_less( v2, 0, sizes[2] )
     {
-        delta = ((Real) v2 - voxel[2]) * separations[2];
+        delta = ((VIO_Real) v2 - voxel[2]) * separations[2];
         d2[v2] = sinc_factor * delta * delta;
     }
 

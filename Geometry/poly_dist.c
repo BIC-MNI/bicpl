@@ -32,11 +32,11 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/poly_d
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  sq_distance_between_points(
+BICAPI  VIO_Real  sq_distance_between_points(
     Point  *p1,
     Point  *p2 )
 {
-    Real   dx, dy, dz;
+    VIO_Real   dx, dy, dz;
 
     dx = RPoint_x(*p1) - RPoint_x(*p2);
     dy = RPoint_y(*p1) - RPoint_y(*p2);
@@ -60,7 +60,7 @@ BICAPI  Real  sq_distance_between_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  point_segment_sq_distance(
+static  VIO_Real  point_segment_sq_distance(
     Point   *p,
     Point   *q1,
     Point   *q2,
@@ -71,14 +71,14 @@ static  Real  point_segment_sq_distance(
     return( sq_distance_between_points( p, closest_point ) );
 }
 
-BICAPI  Real  find_point_polygon_distance_sq(
+BICAPI  VIO_Real  find_point_polygon_distance_sq(
     Point     *point,
     int       n_points,
     Point     poly_points[],
     Point     *closest_point )
 {
     int      i, closest;
-    Real     n_dot_n, t, closest_dist, dist, d1, d2;
+    VIO_Real     n_dot_n, t, closest_dist, dist, d1, d2;
     Vector   offset, o_a, normal;
     Point    seg1_point, seg2_point;
 
@@ -161,7 +161,7 @@ BICAPI  Real  find_point_polygon_distance_sq(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  find_point_polygon_distance(
+BICAPI  VIO_Real  find_point_polygon_distance(
     Point     *point,
     int       n_points,
     Point     poly_points[],
@@ -192,7 +192,7 @@ BICAPI  int  find_closest_polygon_point(
     Point              *closest_point )
 {
     int            poly, size, closest_poly;
-    Real           dist, closest_dist;
+    VIO_Real           dist, closest_dist;
     Point          poly_points[MAX_POINTS_PER_POLYGON], closest, best;
     object_struct  object;
 

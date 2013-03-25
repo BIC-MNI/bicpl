@@ -21,11 +21,11 @@ int  main(
     FILE             *file;
     int              n_objects, *n_neighbours, **neighbours, p, n;
     int              n_non, n_read;
-    Real             avg;
+    VIO_Real             avg;
     File_formats     format;
     object_struct    **object_list;
     polygons_struct  *polygons;
-    Real             *values;
+    VIO_Real             *values;
 
     initialize_argument_processing( argc, argv );
 

@@ -24,7 +24,7 @@ static void  scan_line_segment_to_voxels(
     int       label,
     Point     *p1,
     Point     *p2,
-    Real      radius );
+    VIO_Real      radius );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : scan_lines_to_voxels
@@ -65,7 +65,7 @@ BICAPI void  scan_lines_to_voxels(
 
             scan_line_segment_to_voxels( volume, label_volume, label,
                                          &p1, &p2,
-                                         (Real) lines->line_thickness );
+                                         (VIO_Real) lines->line_thickness );
         }
     }
 }
@@ -83,7 +83,7 @@ BICAPI void  scan_lines_to_voxels(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static Real  point_segment_distance_squared(
+static VIO_Real  point_segment_distance_squared(
     Point    *point,
     Point    *p1,
     Point    *p2 )
@@ -122,14 +122,14 @@ static void  scan_line_segment_to_voxels(
     int       label,
     Point     *p1,
     Point     *p2,
-    Real      radius )
+    VIO_Real      radius )
 {
     int        c, sizes[MAX_DIMENSIONS];
     Point      min_point, max_point;
-    Real       min_voxel[MAX_DIMENSIONS], min_v, max_v;
-    Real       max_voxel[MAX_DIMENSIONS];
-    Real       voxel[MAX_DIMENSIONS];
-    Real       x_world, y_world, z_world;
+    VIO_Real       min_voxel[MAX_DIMENSIONS], min_v, max_v;
+    VIO_Real       max_voxel[MAX_DIMENSIONS];
+    VIO_Real       voxel[MAX_DIMENSIONS];
+    VIO_Real       x_world, y_world, z_world;
     int        int_voxel[MAX_DIMENSIONS];
     int        int_min_voxel[MAX_DIMENSIONS];
     int        int_max_voxel[MAX_DIMENSIONS];
@@ -139,9 +139,9 @@ static void  scan_line_segment_to_voxels(
     for_less( c, 0, N_DIMENSIONS )
     {
         Point_coord(min_point,c) = (Point_coord_type)
-                 ((Real) MIN(Point_coord(*p1,c),Point_coord(*p2,c)) - radius);
+                 ((VIO_Real) MIN(Point_coord(*p1,c),Point_coord(*p2,c)) - radius);
         Point_coord(max_point,c) = (Point_coord_type)
-                 ((Real) MAX(Point_coord(*p1,c),Point_coord(*p2,c)) + radius);
+                 ((VIO_Real) MAX(Point_coord(*p1,c),Point_coord(*p2,c)) + radius);
     }
 
     get_volume_sizes( volume, sizes );
@@ -191,8 +191,8 @@ static void  scan_line_segment_to_voxels(
     for_inclusive( int_voxel[Y], int_min_voxel[Y], int_max_voxel[Y] )
     for_inclusive( int_voxel[Z], int_min_voxel[Z], int_max_voxel[Z] )
     {
-        convert_3D_voxel_to_world( volume, (Real) int_voxel[X],
-                                   (Real) int_voxel[Y], (Real) int_voxel[Z],
+        convert_3D_voxel_to_world( volume, (VIO_Real) int_voxel[X],
+                                   (VIO_Real) int_voxel[Y], (VIO_Real) int_voxel[Z],
                                    &x_world, &y_world, &z_world );
 
         fill_Point( world_voxel, x_world, y_world, z_world );

@@ -34,13 +34,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth
 
 BICAPI  void  smooth_lines(
     lines_struct  *lines,
-    Real          smooth_length )
+    VIO_Real          smooth_length )
 {
     int       *new_ids, n_points, n_items, n_indices, *indices, *end_indices;
     int       l, p, point_index, size;
-    BOOLEAN   keep_point;
+    VIO_BOOL   keep_point;
     Point     prev;
-    Real      dist_to_prev;
+    VIO_Real      dist_to_prev;
     Point     *points;
     Colour    colour;
 
@@ -134,9 +134,9 @@ BICAPI  void  create_line_spline(
     lines_struct  *new_lines )
 {
     int       c, l, p, point_index1, point_index2, pt_index, line_size, segment;
-    BOOLEAN   wrap_around;
+    VIO_BOOL   wrap_around;
     Point     points[4], point;
-    Real      u;
+    VIO_Real      u;
 
     initialize_lines( new_lines, lines->colours[0] );
 
@@ -196,16 +196,16 @@ BICAPI  void  create_line_spline(
 
             for_inclusive( segment, 1, n_curve_segments )
             {
-                u = (Real) segment / (Real) n_curve_segments;
+                u = (VIO_Real) segment / (VIO_Real) n_curve_segments;
 
                 for_less( c, 0, N_DIMENSIONS )
                 {
                     Point_coord(point,c) = (Point_coord_type)
                                            cubic_interpolate( u,
-                                            (Real) Point_coord(points[0],c),
-                                            (Real) Point_coord(points[1],c),
-                                            (Real) Point_coord(points[2],c),
-                                            (Real) Point_coord(points[3],c) );
+                                            (VIO_Real) Point_coord(points[0],c),
+                                            (VIO_Real) Point_coord(points[1],c),
+                                            (VIO_Real) Point_coord(points[2],c),
+                                            (VIO_Real) Point_coord(points[3],c) );
                 }
 
                 add_point_to_line( new_lines, &point );

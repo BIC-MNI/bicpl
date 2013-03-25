@@ -4,29 +4,29 @@
 public  void  get_default_surfprop(
     Surfprop  *surfprop );
 
-public  BOOLEAN  lookup_colour(
+public  VIO_BOOL  lookup_colour(
     char    colour_name[],
     Colour  *col );
 
-public  BOOLEAN  lookup_colour_name(
+public  VIO_BOOL  lookup_colour_name(
     Colour  col,
     char    colour_name[] );
 
 public  void  rgb_to_hsl(
-    Real    r,
-    Real    g,
-    Real    b,
-    Real    *h,
-    Real    *s,
-    Real    *l );
+    VIO_Real    r,
+    VIO_Real    g,
+    VIO_Real    b,
+    VIO_Real    *h,
+    VIO_Real    *s,
+    VIO_Real    *l );
 
 public  void  hsl_to_rgb(
-    Real   h,
-    Real   sl,
-    Real   l,
-    Real   *r,
-    Real   *g,
-    Real   *b );
+    VIO_Real   h,
+    VIO_Real   sl,
+    VIO_Real   l,
+    VIO_Real   *r,
+    VIO_Real   *g,
+    VIO_Real   *b );
 
 public  void  convert_colour_to_hsl(
     Colour   rgb,
@@ -36,7 +36,7 @@ public  void  convert_colour_to_rgb(
     Colour   hsl,
     Colour   *rgb );
 
-public  BOOLEAN  equal_colours(
+public  VIO_BOOL  equal_colours(
     Colour  col1,
     Colour  col2 );
 
@@ -65,7 +65,7 @@ public  int  get_Colour_luminance(
 
 public  Colour  SCALE_COLOUR(
     Colour   colour,
-    Real     factor );
+    VIO_Real     factor );
 
 public  Status   input_graphics_file(
     char           filename[],
@@ -83,7 +83,7 @@ public  Status   input_objects_any_format(
     Volume         volume,
     char           filename[],
     Colour         marker_colour,
-    Real           marker_size,
+    VIO_Real           marker_size,
     Marker_types   marker_type,
     int            *n_objects,
     object_struct  **object_list[] );
@@ -94,7 +94,7 @@ public  Status   input_landmark_file(
     Volume         volume,
     char           filename[],
     Colour         colour,
-    Real           size,
+    VIO_Real           size,
     Marker_types   type,
     int            *n_objects,
     object_struct  **object_list[] );
@@ -103,7 +103,7 @@ public  Status  io_tag_point(
     FILE            *file,
     IO_types        io_direction,
     Volume          volume,
-    Real            size,
+    VIO_Real            size,
     marker_struct   *marker );
 
 public  void  initialize_lines(
@@ -130,7 +130,7 @@ public  void  set_bintree_delete_function(
 public  void  delete_bintree_if_any(
     bintree_struct_ptr   *bintree );
 
-public  Real  get_lines_length(
+public  VIO_Real  get_lines_length(
     lines_struct  *lines );
 
 public  void  initialize_model(
@@ -266,7 +266,7 @@ public  Status  input_object_type(
     FILE           *file,
     Object_types   *type,
     File_formats   *format,
-    BOOLEAN        *eof );
+    VIO_BOOL        *eof );
 
 public  Status  io_pixel_colours(
     FILE            *file,
@@ -286,7 +286,7 @@ public  Status  input_object(
     FILE           *file,
     File_formats   *format,
     object_struct  **object,
-    BOOLEAN        *eof );
+    VIO_BOOL        *eof );
 
 public  Status  output_object(
     FILE           *file,
@@ -299,12 +299,12 @@ public  object_struct  *create_object(
 public  Object_types  get_object_type(
     object_struct   *object );
 
-public  BOOLEAN  get_object_visibility(
+public  VIO_BOOL  get_object_visibility(
     object_struct  *object );
 
 public  void  set_object_visibility(
     object_struct  *object,
-    BOOLEAN        visibility );
+    VIO_BOOL        visibility );
 
 public  lines_struct  *get_lines_ptr(
     object_struct  *object );
@@ -358,23 +358,23 @@ public  void  initialize_object_traverse(
     int                     n_objects,
     object_struct           *object_list[] );
 
-public  BOOLEAN  get_next_object_traverse(
+public  VIO_BOOL  get_next_object_traverse(
     object_traverse_struct  *object_traverse,
     object_struct           **object );
 
 public  void  terminate_object_traverse(
     object_traverse_struct   *object_traverse );
 
-public  BOOLEAN  get_range_of_object(
+public  VIO_BOOL  get_range_of_object(
     object_struct   *object,
-    BOOLEAN         visible_ones_only,
+    VIO_BOOL         visible_ones_only,
     Point           *min_corner,
     Point           *max_corner );
 
 public  void  reverse_object_normals(
     object_struct   *object );
 
-public  BOOLEAN  get_object_colour(
+public  VIO_BOOL  get_object_colour(
     object_struct  *object,
     Colour         *colour );
 
@@ -392,7 +392,7 @@ public  void  free_colours(
     int            n_points,
     int            n_items );
 
-public  BOOLEAN  objects_are_same_topology(
+public  VIO_BOOL  objects_are_same_topology(
     int    n_points1,
     int    n_items1,
     int    *end_indices1,
@@ -413,8 +413,8 @@ public  void  initialize_pixels(
     int            y_position,
     int            x_size,
     int            y_size,
-    Real           x_zoom,
-    Real           y_zoom,
+    VIO_Real           x_zoom,
+    VIO_Real           y_zoom,
     Pixel_types    pixel_type );
 
 public  void  delete_pixels( pixels_struct *pixels );
@@ -491,7 +491,7 @@ public  void  create_polygons_visibilities(
 
 public  void  set_polygons_visibilities(
     polygons_struct   *polygons,
-    BOOLEAN           state );
+    VIO_BOOL           state );
 
 public  void  start_new_polygon( polygons_struct *polygons );
 
@@ -521,25 +521,25 @@ public  int  find_edge_index(
     int              point_index1,
     int              point_index2 );
 
-public  BOOLEAN  find_polygon_with_edge(
+public  VIO_BOOL  find_polygon_with_edge(
     polygons_struct  *polygons,
     int              point_index1,
     int              point_index2,
     int              *poly_containing_edge,
     int              *edge_index );
 
-public  BOOLEAN  lookup_polygon_vertex(
+public  VIO_BOOL  lookup_polygon_vertex(
     polygons_struct   *polygons,
     Point             *point,
     int               *point_index );
 
-public  BOOLEAN  find_polygon_with_vertex(
+public  VIO_BOOL  find_polygon_with_vertex(
     polygons_struct   *polygons,
     int               point_index,
     int               *poly_index,
     int               *vertex_index );
 
-public  BOOLEAN  find_next_edge_around_point(
+public  VIO_BOOL  find_next_edge_around_point(
     polygons_struct   *polygons,
     int               poly,
     int               index_1,
@@ -554,7 +554,7 @@ public  int  get_neighbours_of_point(
     int               vertex_index,
     int               neighbours[],
     int               max_neighbours,
-    BOOLEAN           *interior_point );
+    VIO_BOOL           *interior_point );
 
 public  int  get_polygons_around_vertex(
     polygons_struct   *polygons,
@@ -562,7 +562,7 @@ public  int  get_polygons_around_vertex(
     int               vertex_index,
     int               poly_indices[],
     int               n_polys_alloced,
-    BOOLEAN           *closed_flag );
+    VIO_BOOL           *closed_flag );
 
 public  void  compute_polygon_normal(
     polygons_struct  *polygons,
@@ -575,18 +575,18 @@ public  void  compute_polygon_normals(
 public  void  average_polygon_normals(
     polygons_struct  *polygons,
     int              n_iters,
-    Real             neighbour_weight );
+    VIO_Real             neighbour_weight );
 
-public  BOOLEAN  get_plane_polygon_intersection(
+public  VIO_BOOL  get_plane_polygon_intersection(
     Vector           *normal,
-    Real             d,
+    VIO_Real             d,
     polygons_struct  *polygons,
     int              poly,
     Point            intersection_points[] );
 
-public  BOOLEAN  get_plane_segment_intersection(
+public  VIO_BOOL  get_plane_segment_intersection(
     Vector           *normal,
-    Real             d,
+    VIO_Real             d,
     Point            *p1,
     Point            *p2,
     Point            *intersection_point );
@@ -597,7 +597,7 @@ public  void   reverse_polygons_vertices(
 public  void   make_polygons_front_facing(
     polygons_struct  *polygons );
 
-public  BOOLEAN  polygon_is_back_facing(
+public  VIO_BOOL  polygon_is_back_facing(
     polygons_struct   *polygons,
     int               poly );
 
@@ -608,8 +608,8 @@ public  void  compute_points_centroid_and_normal(
     int              neighbours[],
     Point            *centroid,
     Vector           *normal,
-    Real             *base_length,
-    Real             *curvature );
+    VIO_Real             *base_length,
+    VIO_Real             *curvature );
 
 public  void  compute_polygon_point_centroid(
     polygons_struct  *polygons,
@@ -618,19 +618,19 @@ public  void  compute_polygon_point_centroid(
     int              point_index,
     Point            *centroid,
     Vector           *normal,
-    Real             *base_length,
-    Real             *curvature );
+    VIO_Real             *base_length,
+    VIO_Real             *curvature );
 
-public  Real  compute_polygon_vertex_curvature(
+public  VIO_Real  compute_polygon_vertex_curvature(
     polygons_struct  *polygons,
     int              point_index );
 
-public  Real  get_polygon_edge_angle(
+public  VIO_Real  get_polygon_edge_angle(
     polygons_struct  *polygons,
     int              poly,
     int              edge );
 
-public  BOOLEAN  polygons_are_same_topology(
+public  VIO_BOOL  polygons_are_same_topology(
     polygons_struct  *p1,
     polygons_struct  *p2 );
 
@@ -679,7 +679,7 @@ public  int  convert_rgb_pixel_to_8bit_lookup(
 public  Status   input_tag_objects_file(
     char           filename[],
     Colour         marker_colour,
-    Real           default_size,
+    VIO_Real           default_size,
     Marker_types   default_type,
     int            *n_objects,
     object_struct  **object_list[] );
@@ -689,5 +689,5 @@ public  void   initialize_text(
     Point           *position,
     Colour          colour,
     Font_types      text_font,
-    Real            size );
+    VIO_Real            size );
 #endif

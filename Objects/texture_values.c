@@ -21,7 +21,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture
 static  Status  output_texture_values_ascii(
     STRING   filename,
     int      n_values,
-    Real     values[] )
+    VIO_Real     values[] )
 {
     int      v;
     Status   status;
@@ -51,11 +51,11 @@ static  Status  output_texture_values_ascii(
 static  Status  input_texture_values_ascii(
     STRING   filename,
     int      *n_values,
-    Real     *values[] )
+    VIO_Real     *values[] )
 {
     Status   status;
     FILE     *file;
-    Real     value;
+    VIO_Real     value;
 
     status = open_file( filename, READ_FILE, ASCII_FORMAT, &file );
 
@@ -78,7 +78,7 @@ static  Status  input_texture_values_ascii(
 static  Status  output_texture_values_binary(
     STRING   filename,
     int      n_values,
-    Real     values[] )
+    VIO_Real     values[] )
 {
     int      v, sizes[2];
     Status   status;
@@ -105,7 +105,7 @@ static  Status  output_texture_values_binary(
 static  Status  input_texture_values_binary(
     STRING   filename,
     int      *n_values,
-    Real     *values[] )
+    VIO_Real     *values[] )
 {
     int      v, sizes[2];
     Status   status;
@@ -143,7 +143,7 @@ BICAPI  Status  output_texture_values(
     STRING         filename,
     File_formats   format,
     int            n_values,
-    Real           values[] )
+    VIO_Real           values[] )
 {
     Status   status;
 
@@ -164,7 +164,7 @@ BICAPI  Status  output_texture_values(
 BICAPI  Status  input_texture_values(
     STRING         filename,
     int            *n_values,
-    Real           *values[] )
+    VIO_Real           *values[] )
 {
     Status         status;
 

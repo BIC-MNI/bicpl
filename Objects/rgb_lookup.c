@@ -35,7 +35,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_loo
 
 BICAPI  Colour     *get_8bit_rgb_pixel_lookup( void )
 {
-    static  BOOLEAN       initialized = FALSE;
+    static  VIO_BOOL       initialized = FALSE;
     static  Colour        lookup_table[NUM_PIXELS8];
     int                   r, g, b, ind, r255, g255, b255;
 
@@ -51,9 +51,9 @@ BICAPI  Colour     *get_8bit_rgb_pixel_lookup( void )
                 {
                     ind = ( r | (g << 3) | (b << 6) );
 
-                    r255 = (int) (((Real) r + 0.5) * 256.0 / 8.0);
-                    g255 = (int) (((Real) g + 0.5) * 256.0 / 8.0);
-                    b255 = (int) (((Real) b + 0.5) * 256.0 / 4.0);
+                    r255 = (int) (((VIO_Real) r + 0.5) * 256.0 / 8.0);
+                    g255 = (int) (((VIO_Real) g + 0.5) * 256.0 / 8.0);
+                    b255 = (int) (((VIO_Real) b + 0.5) * 256.0 / 4.0);
 
                     lookup_table[ind] = make_Colour( r255, g255, b255 );
                 }

@@ -36,14 +36,14 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.
 ---------------------------------------------------------------------------- */
 
 static void  clip(
-    Real  left_edge,
-    Real  right_edge,
-    Real  origin,
-    Real  delta,
-    Real  *t_min,
-    Real  *t_max )
+    VIO_Real  left_edge,
+    VIO_Real  right_edge,
+    VIO_Real  origin,
+    VIO_Real  delta,
+    VIO_Real  *t_min,
+    VIO_Real  *t_max )
 {
-    Real  t;
+    VIO_Real  t;
 
     if( delta == 0.0 )
     {
@@ -218,21 +218,21 @@ BICAPI void  render_volume_to_slice(
     void            *volume_data1,
     Data_types      volume1_type,
     int             n_slices1,
-    Real            weights1[],
+    VIO_Real            weights1[],
     int             strides1[],
-    Real            **origins1,
-    Real            x_axis1[],
-    Real            y_axis1[],
+    VIO_Real            **origins1,
+    VIO_Real            x_axis1[],
+    VIO_Real            y_axis1[],
     int             n_dims2,
     int             sizes2[],
     void            *volume_data2,
     Data_types      volume2_type,
     int             n_slices2,
-    Real            weights2[],
+    VIO_Real            weights2[],
     int             strides2[],
-    Real            **origins2,
-    Real            x_axis2[],
-    Real            y_axis2[],
+    VIO_Real            **origins2,
+    VIO_Real            x_axis2[],
+    VIO_Real            y_axis2[],
     int             x_pixel_start,
     int             x_pixel_end,
     int             y_pixel_start,
@@ -255,8 +255,8 @@ BICAPI void  render_volume_to_slice(
     int     remainder_case, x_size, y_size;
     int     x_left, x_right, n_non_zero;
     void    **start_slices1, **start_slices2;
-    Real    start_c, x_start, x_end, remainder, tmp_origin[MAX_DIMENSIONS];
-    Real    remainder_offset, left_edge, right_edge, delta;
+    VIO_Real    start_c, x_start, x_end, remainder, tmp_origin[MAX_DIMENSIONS];
+    VIO_Real    remainder_offset, left_edge, right_edge, delta;
     render_storage_struct  *store;
     static  int   max_cases[MAX_DIMENSIONS] = { 10, 10, 4, 3, 3 };
     int     new_total_cases1, new_x_size1, new_y_size1, new_n_slices1;
@@ -283,7 +283,7 @@ BICAPI void  render_volume_to_slice(
         delta = FABS( y_axis1[c] );
         if( delta == 0.0 || n_non_zero == 1 )
             n_cases1[c] = 1;
-        else if( delta <= 1.0 / (Real) max_cases[n_dims1-1] )
+        else if( delta <= 1.0 / (VIO_Real) max_cases[n_dims1-1] )
             n_cases1[c] = max_cases[n_dims1-1];
         else
         {
@@ -368,7 +368,7 @@ BICAPI void  render_volume_to_slice(
             delta = FABS( y_axis2[c] );
             if( delta == 0.0 || n_non_zero == 1 )
                 n_cases2[c] = 1;
-            else if( delta <= 1.0 / (Real) max_cases[n_dims2-1] )
+            else if( delta <= 1.0 / (VIO_Real) max_cases[n_dims2-1] )
                 n_cases2[c] = max_cases[n_dims2-1];
             else
             {
@@ -436,7 +436,7 @@ BICAPI void  render_volume_to_slice(
             if( y_axis1[c] == 0.0 && n_slices1 == n_cases1[c] )
                 tmp_origin[c] = FRACTION( origins1[case_index][c] + 0.5 );
             else
-                tmp_origin[c] = ((Real) case_index + 0.5) / (Real) n_cases1[c];
+                tmp_origin[c] = ((VIO_Real) case_index + 0.5) / (VIO_Real) n_cases1[c];
             p /= n_cases1[c];
         }
 
@@ -445,7 +445,7 @@ BICAPI void  render_volume_to_slice(
             offset = 0;
             for_less( c, 0, n_dims1 )
             {
-                start_c = tmp_origin[c] + MIN( (Real) x * x_axis1[c], (Real)sizes1[c]-1 );
+                start_c = tmp_origin[c] + MIN( (VIO_Real) x * x_axis1[c], (VIO_Real)sizes1[c]-1 );
                 offset += (size_t)strides1[c] * (size_t)FLOOR( start_c );
             }
             x_offsets1[i][x] = offset;
@@ -463,8 +463,8 @@ BICAPI void  render_volume_to_slice(
                 if( y_axis2[c] == 0.0 && n_slices2 == n_cases2[c] )
                     tmp_origin[c] = FRACTION( origins2[case_index][c] + 0.5 );
                 else
-                    tmp_origin[c] = ((Real) case_index + 0.5) /
-                                    (Real) n_cases2[c];
+                    tmp_origin[c] = ((VIO_Real) case_index + 0.5) /
+                                    (VIO_Real) n_cases2[c];
                 p /= n_cases2[c];
             }
 
@@ -473,7 +473,7 @@ BICAPI void  render_volume_to_slice(
                 offset = 0;
                 for_less( c, 0, n_dims2 )
                 {
-                    start_c = tmp_origin[c] + MIN( (Real) x * x_axis2[c], (Real)sizes2[c]-1 );
+                    start_c = tmp_origin[c] + MIN( (VIO_Real) x * x_axis2[c], (VIO_Real)sizes2[c]-1 );
                     offset += (size_t)strides2[c] * (size_t)FLOOR( start_c );
                 }
                 x_offsets2[i][x] = offset;
@@ -484,7 +484,7 @@ BICAPI void  render_volume_to_slice(
     for_inclusive( y, y_pixel_start, y_pixel_end )
     {
         x_start = 0.0;
-        x_end = (Real) (x_size - 1);
+        x_end = (VIO_Real) (x_size - 1);
         for_less( s, 0, n_slices1 )
         {
             offset = 0;
@@ -492,7 +492,7 @@ BICAPI void  render_volume_to_slice(
             case_multiplier = 1;
             for_less( c, 0, n_dims1 )
             {
-                start_c = origins1[s][c] + (Real) y * y_axis1[c] + 0.5;
+                start_c = origins1[s][c] + (VIO_Real) y * y_axis1[c] + 0.5;
                 int_start = FLOOR( start_c );
 
                 if( y_axis1[c] == 0.0 && n_slices1 == n_cases1[c] )
@@ -502,10 +502,10 @@ BICAPI void  render_volume_to_slice(
                 }
                 else
                 {
-                    remainder = start_c - (Real) int_start;
-                    remainder_case = (int) (remainder * (Real) n_cases1[c]);
+                    remainder = start_c - (VIO_Real) int_start;
+                    remainder_case = (int) (remainder * (VIO_Real) n_cases1[c]);
                     remainder_offset = remainder -
-                           ((Real) remainder_case + 0.5)/ (Real) n_cases1[c];
+                           ((VIO_Real) remainder_case + 0.5)/ (VIO_Real) n_cases1[c];
                 }
 
                 case_index += case_multiplier * remainder_case;
@@ -513,7 +513,7 @@ BICAPI void  render_volume_to_slice(
                 offset += (size_t)strides1[c] * (size_t)int_start;
 
                 left_edge = 0.0;
-                right_edge = (Real) sizes1[c];
+                right_edge = (VIO_Real) sizes1[c];
 
                 if( remainder_offset < 0.0 )
                     right_edge += remainder_offset;
@@ -537,7 +537,7 @@ BICAPI void  render_volume_to_slice(
                 case_multiplier = 1;
                 for_less( c, 0, n_dims2 )
                 {
-                    start_c = origins2[s][c] + (Real) y * y_axis2[c] + 0.5;
+                    start_c = origins2[s][c] + (VIO_Real) y * y_axis2[c] + 0.5;
                     int_start = FLOOR( start_c );
 
                     if( y_axis2[c] == 0.0 && n_slices2 == n_cases2[c] )
@@ -547,10 +547,10 @@ BICAPI void  render_volume_to_slice(
                     }
                     else
                     {
-                        remainder = start_c - (Real) int_start;
-                        remainder_case = (int) (remainder * (Real) n_cases2[c]);
+                        remainder = start_c - (VIO_Real) int_start;
+                        remainder_case = (int) (remainder * (VIO_Real) n_cases2[c]);
                         remainder_offset = remainder -
-                             ((Real) remainder_case + 0.5)/ (Real) n_cases2[c];
+                             ((VIO_Real) remainder_case + 0.5)/ (VIO_Real) n_cases2[c];
                     }
 
                     case_index += case_multiplier * remainder_case;
@@ -558,7 +558,7 @@ BICAPI void  render_volume_to_slice(
                     offset += (size_t)strides2[c] * (size_t)int_start;
 
                     left_edge = 0.0;
-                    right_edge = (Real) sizes2[c];
+                    right_edge = (VIO_Real) sizes2[c];
 
                     if( remainder_offset < 0.0 )
                         right_edge += remainder_offset;

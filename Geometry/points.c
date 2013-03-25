@@ -31,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  null_Point(
+BICAPI  VIO_BOOL  null_Point(
     Point   *p )
 {
     return( Point_x(*p) == 0.0f &&
@@ -52,7 +52,7 @@ BICAPI  BOOLEAN  null_Point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  null_Vector(
+BICAPI  VIO_BOOL  null_Vector(
     Vector   *v )
 {
     return( Vector_x(*v) == 0.0f &&
@@ -74,15 +74,15 @@ BICAPI  BOOLEAN  null_Vector(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  distance_between_points(
+BICAPI  VIO_Real  distance_between_points(
     Point  *p1,
     Point  *p2 )
 {
-    Real   dx, dy, dz;
+    VIO_Real   dx, dy, dz;
 
-    dx = (Real) Point_x(*p2) - (Real) Point_x(*p1);
-    dy = (Real) Point_y(*p2) - (Real) Point_y(*p1);
-    dz = (Real) Point_z(*p2) - (Real) Point_z(*p1);
+    dx = (VIO_Real) Point_x(*p2) - (VIO_Real) Point_x(*p1);
+    dy = (VIO_Real) Point_y(*p2) - (VIO_Real) Point_y(*p1);
+    dz = (VIO_Real) Point_z(*p2) - (VIO_Real) Point_z(*p1);
 
     return( sqrt( dx * dx + dy * dy + dz * dz ) );
 }
@@ -103,16 +103,16 @@ BICAPI  Real  distance_between_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  points_within_distance(
+BICAPI  VIO_BOOL  points_within_distance(
     Point  *p1,
     Point  *p2,
-    Real   distance )
+    VIO_Real   distance )
 {
-    Real  dx, dy, dz;
+    VIO_Real  dx, dy, dz;
 
-    dx = (Real) Point_x(*p1) - (Real) Point_x(*p2);
-    dy = (Real) Point_y(*p1) - (Real) Point_y(*p2);
-    dz = (Real) Point_z(*p1) - (Real) Point_z(*p2);
+    dx = (VIO_Real) Point_x(*p1) - (VIO_Real) Point_x(*p2);
+    dy = (VIO_Real) Point_y(*p1) - (VIO_Real) Point_y(*p2);
+    dz = (VIO_Real) Point_z(*p1) - (VIO_Real) Point_z(*p2);
 
     return( dx * dx + dy * dy + dz * dz <= distance * distance );
 }
@@ -242,7 +242,7 @@ BICAPI  void  get_points_centroid(
     Point   *centroid )
 {
     int   i;
-    Real  x, y, z;
+    VIO_Real  x, y, z;
 
     x = 0.0;
     y = 0.0;
@@ -250,14 +250,14 @@ BICAPI  void  get_points_centroid(
 
     for_less( i, 0, n_points )
     {
-        x += (Real) Point_x(points[i]);
-        y += (Real) Point_y(points[i]);
-        z += (Real) Point_z(points[i]);
+        x += (VIO_Real) Point_x(points[i]);
+        y += (VIO_Real) Point_y(points[i]);
+        z += (VIO_Real) Point_z(points[i]);
     }
 
-    fill_Point( *centroid, x / (Real) n_points,
-                           y / (Real) n_points,
-                           z / (Real) n_points );
+    fill_Point( *centroid, x / (VIO_Real) n_points,
+                           y / (VIO_Real) n_points,
+                           z / (VIO_Real) n_points );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -300,12 +300,12 @@ BICAPI   void     reverse_vectors(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_angle_between_points(
+BICAPI  VIO_Real  get_angle_between_points(
     Point  *prev_point,
     Point  *this_point,
     Point  *next_point )
 {
-    Real    angle, c;
+    VIO_Real    angle, c;
     Vector  v1, v2;
 
     SUB_POINTS( v1, *prev_point, *this_point );

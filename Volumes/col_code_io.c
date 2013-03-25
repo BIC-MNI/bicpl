@@ -31,7 +31,7 @@ BICAPI Status  input_user_defined_colour_coding(
 {
     Status   status;
     FILE     *file;
-    Real     pos, *positions;
+    VIO_Real     pos, *positions;
     Colour   col, *colours;
     STRING   line;
     int      n_colours;

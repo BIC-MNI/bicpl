@@ -65,7 +65,7 @@ typedef  struct  bintree_node_struct
 
 typedef  struct
 {
-    float    limits[N_DIMENSIONS][2];
+    float    limits[VIO_N_DIMENSIONS][2];
 } range_struct;
 
 typedef  struct

@@ -6,8 +6,8 @@ static  int  get_polygons(
     int                     x,
     int                     y,
     int                     z,
-    Real                    corners[2][2][2],
-    Real                    isovalue,
+    VIO_Real                    corners[2][2][2],
+    VIO_Real                    isovalue,
     int                     *sizes[],
     voxel_point_type        *points[] )
 {
@@ -35,10 +35,10 @@ static  int  get_polygons(
     return( n_polygons );
 }
 
-static  BOOLEAN  is_binary_inside(
-    Real   value,
-    Real   min_value,
-    Real   max_value )
+static  VIO_BOOL  is_binary_inside(
+    VIO_Real   value,
+    VIO_Real   min_value,
+    VIO_Real   max_value )
 {
     return( min_value <= value && value <= max_value );
 }
@@ -48,15 +48,15 @@ BICAPI  int  compute_isosurface_in_voxel(
     int                     x,
     int                     y,
     int                     z,
-    Real                    corners[2][2][2],
-    BOOLEAN                 binary_flag,
-    Real                    min_value,
-    Real                    max_value,
+    VIO_Real                    corners[2][2][2],
+    VIO_BOOL                 binary_flag,
+    VIO_Real                    min_value,
+    VIO_Real                    max_value,
     int                     *sizes[],
     voxel_point_type        *points[] )
 {
     int   i, j, k;
-    Real  binary_corners[2][2][2];
+    VIO_Real  binary_corners[2][2][2];
 
     if( binary_flag )
     {
@@ -82,18 +82,18 @@ BICAPI  int  compute_isosurface_in_voxel(
 }
 
 BICAPI  Point_classes  get_isosurface_point(
-    Real              corners[2][2][2],
+    VIO_Real              corners[2][2][2],
     int               voxel[],
     int               edge_intersected,
-    BOOLEAN           binary_flag,
-    Real              min_value,
-    Real              max_value,
-    Real              point[] )
+    VIO_BOOL           binary_flag,
+    VIO_Real              min_value,
+    VIO_Real              max_value,
+    VIO_Real              point[] )
 {
     int             dim;
     int             v1[N_DIMENSIONS], v2[N_DIMENSIONS];
     int             offset[N_DIMENSIONS];
-    Real            alpha, val1, val2;
+    VIO_Real            alpha, val1, val2;
     Point_classes   point_class;
 
     v1[0] = voxel[0];
@@ -115,7 +115,7 @@ BICAPI  Point_classes  get_isosurface_point(
         {
             point_class = ON_EDGE;
             for_less( dim, 0, N_DIMENSIONS )
-                point[dim] = (Real) (v1[dim] + v2[dim]) / 2.0;
+                point[dim] = (VIO_Real) (v1[dim] + v2[dim]) / 2.0;
         }
         else
             point_class = (Point_classes) -1;
@@ -146,7 +146,7 @@ BICAPI  Point_classes  get_isosurface_point(
             for_less( dim, 0, N_DIMENSIONS )
             {
                 point[dim] = INTERPOLATE( alpha,
-                                          (Real) v1[dim], (Real) v2[dim] );
+                                          (VIO_Real) v1[dim], (VIO_Real) v2[dim] );
             }
         }
     }

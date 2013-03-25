@@ -8,8 +8,8 @@ int  main(
     char  *argv[] )
 {
     int                i, ind, n_iters, method;
-    Real               density, chance_of_delete;
-    BOOLEAN            hashing, removing;
+    VIO_Real               density, chance_of_delete;
+    VIO_BOOL            hashing, removing;
     hash_table_struct  hash_table;
     skiplist_struct    skiplist;
     void               *ptr;

@@ -4,17 +4,17 @@
 static  void  perturb_line_points(
     int                          axis,
     lines_struct                 *lines,
-    Real                         curvature_factors[],
+    VIO_Real                         curvature_factors[],
     Point                        new_points[],
-    Real                         fractional_step,
-    Real                         max_step,
-    Real                         max_search_distance,
+    VIO_Real                         fractional_step,
+    VIO_Real                         max_step,
+    VIO_Real                         max_search_distance,
     int                          degrees_continuity,
     deform_data_struct           *deform_data,
     boundary_definition_struct   *boundary_def,
     deformation_model_struct     *deformation_model,
     deform_stats                 *stats );
-static  Real  one_iteration_lines(
+static  VIO_Real  one_iteration_lines(
     lines_struct      *lines,
     deform_struct     *deform_parms,
     int               iteration );
@@ -24,7 +24,7 @@ BICAPI  void  deform_lines(
     deform_struct     *deform_parms )
 {
     int                iteration;
-    Real               max_error;
+    VIO_Real               max_error;
 
     iteration = 0;
     do
@@ -45,14 +45,14 @@ BICAPI  void  deform_lines_one_iteration(
     (void) one_iteration_lines( lines, deform_parms, iteration );
 }
 
-static  Real  one_iteration_lines(
+static  VIO_Real  one_iteration_lines(
     lines_struct      *lines,
     deform_struct     *deform_parms,
     int               iteration )
 {
     int                axis;
     Point              *new_points, *tmp;
-    Real               *curvature_factors;
+    VIO_Real               *curvature_factors;
     deform_stats       stats;
 
     if( lines->n_items > 1 || 
@@ -110,8 +110,8 @@ BICAPI  void  get_line_equilibrium_point(
     int                          axis,
     int                          point_index,
     int                          neighbours[],
-    Real                         curvature_factors[],
-    Real                         max_search_distance,
+    VIO_Real                         curvature_factors[],
+    VIO_Real                         max_search_distance,
     int                          degrees_continuity,
     Volume                       volume,
     Volume                       label_volume,
@@ -120,8 +120,8 @@ BICAPI  void  get_line_equilibrium_point(
     Point                        *equilibrium_point,
     Point                        *boundary_point )
 {
-    BOOLEAN          found_flag;
-    Real             base_length, model_distance, boundary_distance;
+    VIO_BOOL          found_flag;
+    VIO_Real             base_length, model_distance, boundary_distance;
     Point            centroid, model_point, search_origin;
     Vector           normal, pos_model_dir, neg_model_dir;
 
@@ -157,11 +157,11 @@ BICAPI  void  get_line_equilibrium_point(
 static  void  perturb_line_points(
     int                          axis,
     lines_struct                 *lines,
-    Real                         curvature_factors[],
+    VIO_Real                         curvature_factors[],
     Point                        new_points[],
-    Real                         fractional_step,
-    Real                         max_step,
-    Real                         max_search_distance,
+    VIO_Real                         fractional_step,
+    VIO_Real                         max_step,
+    VIO_Real                         max_search_distance,
     int                          degrees_continuity,
     deform_data_struct           *deform_data,
     boundary_definition_struct   *boundary_def,
@@ -172,9 +172,9 @@ static  void  perturb_line_points(
     int              size, start_index, end_index;
     int              neighbours[2], i;
     Point            equilibrium_point;
-    BOOLEAN          closed;
+    VIO_BOOL          closed;
     progress_struct  progress;
-    Real             dist_from_equil;
+    VIO_Real             dist_from_equil;
 
     for_less( point_index, 0, lines->n_points )
         new_points[point_index] = lines->points[point_index];
@@ -243,7 +243,7 @@ BICAPI  int  find_axial_plane(
     lines_struct   *lines )
 {
     int      axis, p;
-    BOOLEAN  found_axis;
+    VIO_BOOL  found_axis;
 
     found_axis = FALSE;
 

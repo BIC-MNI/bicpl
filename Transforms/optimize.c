@@ -27,9 +27,9 @@ typedef struct
 {
     int   ndim;
     int   npoints;
-    Real  *center;
-    Real  **pts1;
-    Real  **pts2;
+    VIO_Real  *center;
+    VIO_Real  **pts1;
+    VIO_Real  **pts2;
 } function_data;
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -49,15 +49,15 @@ typedef struct
 
 ---------------------------------------------------------------------------- */
 
-static  Real  lsq_objective(
+static  VIO_Real  lsq_objective(
     Transform  *lt,
-    Real       **pts1,
-    Real       **pts2, 
+    VIO_Real       **pts1,
+    VIO_Real       **pts2, 
     int        npoints )
 {
     int   i, j;
-    Real  sum, error2, delta;
-    Real  newpt[N_DIMENSIONS];
+    VIO_Real  sum, error2, delta;
+    VIO_Real  newpt[N_DIMENSIONS];
   
     sum = 0.0;
 
@@ -85,7 +85,7 @@ static  Real  lsq_objective(
 @INPUT      : func_data - info for evaluation the fit function
               params - a variable length array of real
 @OUTPUT     :               
-@RETURNS    : a Real value of the user requested objective function,
+@RETURNS    : a VIO_Real value of the user requested objective function,
               measuring the similarity between two data sets.
 @DESCRIPTION: This function
               is passed to the general purpose amoeba routine to be called
@@ -97,33 +97,33 @@ static  Real  lsq_objective(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  fit_function(
+static  VIO_Real  fit_function(
     void   *func_data,
     float  params[] ) 
 {
     Transform      transform;
     int            i;
-    Real           r;
-    Real           trans[3];
-    Real           cent[3];
-    Real           rots[3];
-    Real           scale[3];
-    Real           shear[3];
+    VIO_Real           r;
+    VIO_Real           trans[3];
+    VIO_Real           cent[3];
+    VIO_Real           rots[3];
+    VIO_Real           scale[3];
+    VIO_Real           shear[3];
     function_data  *data;
 
     data = (function_data *) func_data;
 
     for_less( i, 0, 3 ) {
-        trans[i] = (Real) params[i+0];        /* set translations */
-        rots[i]  = (Real) params[i+3];        /* set rotations */
-        scale[i] = (Real) params[i+6];        /* set scales */
+        trans[i] = (VIO_Real) params[i+0];        /* set translations */
+        rots[i]  = (VIO_Real) params[i+3];        /* set rotations */
+        scale[i] = (VIO_Real) params[i+6];        /* set scales */
     }
 
     for_less( i, 0, 3 )                /* set shears */
         shear[i] = 0.0;
 
     if( data->ndim == 10 ) 
-        shear[0] = (Real) params[9]; 
+        shear[0] = (VIO_Real) params[9]; 
     
     for_less( i, 0, 3 )
         cent[i] = data->center[i];        /* global CENTER used here */
@@ -159,18 +159,18 @@ static  Real  fit_function(
 @MODIFIED   : July 4, 1995      D. MacDonald   - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  optimize_simplex(
-    Real           **pts1,
-    Real           **pts2, 
+BICAPI  VIO_BOOL  optimize_simplex(
+    VIO_Real           **pts1,
+    VIO_Real           **pts2, 
     int            npoints, 
     Trans_type     trans_type,
-    Real           center[],
-    Real           translations[],
-    Real           scales[],
-    Real           shears[],
-    Real           rotations[] )
+    VIO_Real           center[],
+    VIO_Real           translations[],
+    VIO_Real           scales[],
+    VIO_Real           shears[],
+    VIO_Real           rotations[] )
 {
-    Real           initial_guess[10], solution[10], initial_step[10];
+    VIO_Real           initial_guess[10], solution[10], initial_step[10];
     int            i, ndim, iters;
     function_data  func_data;
     amoeba_struct  amoeba;

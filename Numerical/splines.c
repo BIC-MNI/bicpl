@@ -1,17 +1,17 @@
 #include  <volume_io/internal_volume_io.h>
 #include  <bicpl.h>
 
-static  Real   linear_coefs[2][2] = {
+static  VIO_Real   linear_coefs[2][2] = {
                                            {  1.0,  0.0 },
                                            { -1.0,  1.0 }
                                       };
-static  Real   quadratic_coefs[3][3] = {
+static  VIO_Real   quadratic_coefs[3][3] = {
                                            {  0.5,  0.5,  0.0 },
                                            { -1.0,  1.0,  0.0 },
                                            {  0.5, -1.0,  0.5 }
                                         };
 
-static  Real   cubic_coefs[4][4] = {
+static  VIO_Real   cubic_coefs[4][4] = {
                                         {  0.0,  1.0,  0.0,  0.0 },
                                         { -0.5,  0.0,  0.5,  0.0 },
                                         {  1.0, -2.5,  2.0, -0.5 },
@@ -19,7 +19,7 @@ static  Real   cubic_coefs[4][4] = {
                                     };
 
 BICAPI  void  get_linear_spline_coefs(
-    Real  **coefs )
+    VIO_Real  **coefs )
 {
     int    i, j;
 
@@ -29,7 +29,7 @@ BICAPI  void  get_linear_spline_coefs(
 }
 
 BICAPI  void  get_quadratic_spline_coefs(
-    Real  **coefs )
+    VIO_Real  **coefs )
 {
     int    i, j;
 
@@ -39,7 +39,7 @@ BICAPI  void  get_quadratic_spline_coefs(
 }
 
 BICAPI  void  get_cubic_spline_coefs(
-    Real  **coefs )
+    VIO_Real  **coefs )
 {
     int    i, j;
 
@@ -49,13 +49,13 @@ BICAPI  void  get_cubic_spline_coefs(
 }
 
 BICAPI  void  evaluate_univariate_catmull_spline(
-    Real    u,
+    VIO_Real    u,
     int     degree,
-    Real    coefs[],
+    VIO_Real    coefs[],
     int     n_derivs,
-    Real    derivs[] )
+    VIO_Real    derivs[] )
 {
-    Real   *bases;
+    VIO_Real   *bases;
 
     if( degree < 2 || degree > 4 )
     {
@@ -74,14 +74,14 @@ BICAPI  void  evaluate_univariate_catmull_spline(
                            1, coefs, &n_derivs, derivs );
 }
 
-BICAPI  Real  cubic_interpolate(
-    Real   u,
-    Real   v0,
-    Real   v1,
-    Real   v2,
-    Real   v3 )
+BICAPI  VIO_Real  cubic_interpolate(
+    VIO_Real   u,
+    VIO_Real   v0,
+    VIO_Real   v1,
+    VIO_Real   v2,
+    VIO_Real   v3 )
 {
-    Real   coefs[4], value;
+    VIO_Real   coefs[4], value;
 
     coefs[0] = v0;
     coefs[1] = v1;
@@ -94,15 +94,15 @@ BICAPI  Real  cubic_interpolate(
 }
 
 BICAPI  void  evaluate_bivariate_catmull_spline(
-    Real    u,
-    Real    v,
+    VIO_Real    u,
+    VIO_Real    v,
     int     degree,
-    Real    coefs[],
+    VIO_Real    coefs[],
     int     n_derivs,
-    Real    derivs[] )
+    VIO_Real    derivs[] )
 {
     int    d, degrees[2], n_derivs_list[2];
-    Real   *bases[2], positions[2];
+    VIO_Real   *bases[2], positions[2];
 
     if( degree < 2 || degree > 4 )
     {
@@ -134,16 +134,16 @@ BICAPI  void  evaluate_bivariate_catmull_spline(
 }
 
 BICAPI  void  evaluate_trivariate_catmull_spline(
-    Real    u,
-    Real    v,
-    Real    w,
+    VIO_Real    u,
+    VIO_Real    v,
+    VIO_Real    w,
     int     degree,
-    Real    coefs[],
+    VIO_Real    coefs[],
     int     n_derivs,
-    Real    derivs[] )
+    VIO_Real    derivs[] )
 {
     int    d, degrees[3], n_derivs_list[3];
-    Real   *bases[3], positions[3];
+    VIO_Real   *bases[3], positions[3];
 
     if( degree < 2 || degree > 4 )
     {

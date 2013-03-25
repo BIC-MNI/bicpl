@@ -40,7 +40,7 @@ BICAPI  Status  write_transform_file(
 {
     Status              status;
     FILE                *file;
-    General_transform   gen_transform;
+    VIO_General_transform   gen_transform;
 
     create_linear_transform( &gen_transform, transform );
 
@@ -80,7 +80,7 @@ BICAPI  Status  read_transform_file(
     Status             status;
     FILE               *file;
     Transform          *lin_trans;
-    General_transform  gen_transform;
+    VIO_General_transform  gen_transform;
 
     status = open_file_with_default_suffix( filename, "xfm",
                          READ_FILE, ASCII_FORMAT, &file );

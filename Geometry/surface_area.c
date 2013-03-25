@@ -32,20 +32,20 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surfac
 @MODIFIED   :
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_polygon_2d_area(
+BICAPI  VIO_Real  get_polygon_2d_area(
     int      n_points,
     Point    points[] )
 {
     int    i, next_i;
-    Real   area;
+    VIO_Real   area;
 
     area = 0.0;
 
     for_less( i, 0, n_points )
     {
         next_i = (i + 1) % n_points;
-        area += (Real) Point_x(points[i])      * (Real) Point_y(points[next_i])-
-                (Real) Point_x(points[next_i]) * (Real) Point_y(points[i]);
+        area += (VIO_Real) Point_x(points[i])      * (VIO_Real) Point_y(points[next_i])-
+                (VIO_Real) Point_x(points[next_i]) * (VIO_Real) Point_y(points[i]);
     }
 
     return( FABS( area / 2.0 ) );
@@ -67,13 +67,13 @@ BICAPI  Real  get_polygon_2d_area(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_polygon_surface_area(
+BICAPI  VIO_Real  get_polygon_surface_area(
     int      n_points,
     Point    points[] )
 {
     int    i;
     Vector prev, this, cross_prod, sum;
-    Real   surface_area;
+    VIO_Real   surface_area;
 
     fill_Vector( sum, 0.0, 0.0, 0.0 );
     SUB_VECTORS( this, points[1], points[0] );
@@ -104,12 +104,12 @@ BICAPI  Real  get_polygon_surface_area(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_polygons_surface_area(
+BICAPI  VIO_Real  get_polygons_surface_area(
     polygons_struct  *polygons )
 {
     int      poly, size;
     Point    points[MAX_POINTS_PER_POLYGON];
-    Real     surface_area;
+    VIO_Real     surface_area;
 
     surface_area = 0.0;
 

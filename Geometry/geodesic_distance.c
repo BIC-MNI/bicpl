@@ -36,14 +36,14 @@ BICAPI  int  compute_distances_from_point(
     int               *neighbours[],
     Point             *point,
     int               poly,
-    Real              max_distance,
-    BOOLEAN           distances_initialized,
+    VIO_Real              max_distance,
+    VIO_BOOL           distances_initialized,
     float             distances[],
     int               *list[] ) 
 {
     int                    i, p, size, point_index, next_point_index, neigh;
     int                    n_found;
-    Real                   dist;
+    VIO_Real                   dist;
     float                  next_dist;
     PRIORITY_QUEUE_STRUCT( int )   queue;
 
@@ -96,7 +96,7 @@ BICAPI  int  compute_distances_from_point(
     {
         REMOVE_FROM_PRIORITY_QUEUE( queue, point_index, dist );
 
-        if( max_distance > 0.0 && (Real) distances[point_index] > max_distance )
+        if( max_distance > 0.0 && (VIO_Real) distances[point_index] > max_distance )
             break;
 
         for_less( neigh, 0, n_neighbours[point_index] )
@@ -116,7 +116,7 @@ BICAPI  int  compute_distances_from_point(
             if( distances[next_point_index] < 0.0f ||
                 distances[next_point_index] > distances[point_index] )
             {
-                dist = (Real) distances[point_index] +
+                dist = (VIO_Real) distances[point_index] +
                        distance_between_points(
                                       &polygons->points[point_index],
                                       &polygons->points[next_point_index] );

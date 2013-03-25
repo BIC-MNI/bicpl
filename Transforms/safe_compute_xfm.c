@@ -15,7 +15,7 @@
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : safe_compute_xfm.c
-@DESCRIPTION: Routine to calculate a General_transform from a pair of tag
+@DESCRIPTION: Routine to calculate a VIO_General_transform from a pair of tag
               point lists. This routine is safe in that it returns
               an identity matrix if any error occurs.
 @METHOD     : 
@@ -108,10 +108,10 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe
 
 BICAPI void safe_compute_transform_from_tags(
     int                 npoints, 
-    Real                **tag_list1, 
-    Real                **tag_list2, 
+    VIO_Real                **tag_list1, 
+    VIO_Real                **tag_list2, 
     Trans_type          trans_type,
-    General_transform   *transform )
+    VIO_General_transform   *transform )
 {
 #if !HAVE_FORK
         compute_transform_from_tags( npoints, tag_list1, tag_list2, trans_type,
@@ -121,7 +121,7 @@ BICAPI void safe_compute_transform_from_tags(
     FILE                *fpin, *fpout;
     Status              status;
     int                 statptr;
-    General_transform   computed_transform;
+    VIO_General_transform   computed_transform;
 
     /* Create a pipe */
 

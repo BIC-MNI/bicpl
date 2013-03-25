@@ -31,22 +31,22 @@
 static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/procrustes.c,v 1.15 2005-08-17 22:26:47 bert Exp $";
 #endif
 
-static  Real  trace_of_matrix(
+static  VIO_Real  trace_of_matrix(
     int    size,
-    Real   **the_matrix );
+    VIO_Real   **the_matrix );
 
 static  void  translate_points(
     int    npoints,
     int    ndim,
-    Real   **points, 
-    Real   translation[],
-    Real   **newpoints);
+    VIO_Real   **points, 
+    VIO_Real   translation[],
+    VIO_Real   **newpoints);
 
 static  void  calc_centroid(
     int     npoints,
     int     ndim,
-    Real    **points, 
-    Real    centroid[] );
+    VIO_Real    **points, 
+    VIO_Real    centroid[] );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : procrustes
@@ -103,20 +103,20 @@ static  void  calc_centroid(
 BICAPI  void  procrustes(
     int         npoints,
     int         ndim, 
-    Real        **Apoints,
-    Real        **Bpoints,
-    Real        translation[],
-    Real        centre_of_rotation[],
+    VIO_Real        **Apoints,
+    VIO_Real        **Bpoints,
+    VIO_Real        translation[],
+    VIO_Real        centre_of_rotation[],
     Transform   *rotation_transform,
-    Real        *scale_ptr )
+    VIO_Real        *scale_ptr )
 {
     int   i, j;
-    Real  *Atranslation, *Btranslation, *svd_W;
-    Real  **Ashift, **Bshift, **Atranspose, **Btranspose, **rotation;
-    Real  **svd_V, **svd_VT;
-    Real  **Brotated, **product;
-    Real  trace1, trace2;
-    Real  **svd_U;
+    VIO_Real  *Atranslation, *Btranslation, *svd_W;
+    VIO_Real  **Ashift, **Bshift, **Atranspose, **Btranspose, **rotation;
+    VIO_Real  **svd_V, **svd_VT;
+    VIO_Real  **Brotated, **product;
+    VIO_Real  trace1, trace2;
+    VIO_Real  **svd_U;
                                    
     /* Get the vectors for centroids */
 
@@ -226,8 +226,8 @@ BICAPI  void  procrustes(
 static  void  calc_centroid(
     int     npoints,
     int     ndim,
-    Real    **points, 
-    Real    centroid[] )
+    VIO_Real    **points, 
+    VIO_Real    centroid[] )
 {
     int d, p;
 
@@ -242,7 +242,7 @@ static  void  calc_centroid(
              centroid[d] += points[p][d];
 
          if( npoints > 0 )
-             centroid[d] /= (Real) npoints;
+             centroid[d] /= (VIO_Real) npoints;
     }
 }
 
@@ -270,9 +270,9 @@ static  void  calc_centroid(
 static  void  translate_points(
     int    npoints,
     int    ndim,
-    Real   **points, 
-    Real   translation[],
-    Real   **newpoints)
+    VIO_Real   **points, 
+    VIO_Real   translation[],
+    VIO_Real   **newpoints)
 {
     int p, d;
 
@@ -301,12 +301,12 @@ static  void  translate_points(
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code
 ---------------------------------------------------------------------------- */
 
-static  Real  trace_of_matrix(
+static  VIO_Real  trace_of_matrix(
     int    size,
-    Real   **the_matrix )
+    VIO_Real   **the_matrix )
 {
     int  i;
-    Real sum;
+    VIO_Real sum;
 
     sum = 0.0;
 

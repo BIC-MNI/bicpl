@@ -7,13 +7,13 @@ public  void  get_closest_point_on_line_segment(
     Point  *p2,
     Point  *closest_point );
 
-public  Real  get_point_object_distance(
+public  VIO_Real  get_point_object_distance(
     Point                 *point,
     object_struct         *object,
     int                   obj_index,
     Point                 *object_point );
 
-public  Real  find_closest_point_on_object(
+public  VIO_Real  find_closest_point_on_object(
     Point           *point,
     object_struct   *object,
     int             *obj_index,
@@ -21,15 +21,15 @@ public  Real  find_closest_point_on_object(
 
 public  void  get_polygon_vertex_curvatures(
     polygons_struct   *polygons,
-    Real              smoothing_distance,
-    Real              low_threshold,
-    Real              curvatures[] );
+    VIO_Real              smoothing_distance,
+    VIO_Real              low_threshold,
+    VIO_Real              curvatures[] );
 
 public  void  generate_tube(
     int    n_points,
     Point  points[],
     int    n_around,
-    Real   radius,
+    VIO_Real   radius,
     Point  tube_points[],
     Vector tube_normals[] );
 
@@ -39,7 +39,7 @@ public  void  project_vector_to_plane(
     Vector   *normal,
     Vector   *projected );
 
-public  BOOLEAN  intersect_lines_3d(
+public  VIO_BOOL  intersect_lines_3d(
     Point   *origin1,
     Vector  *delta1,
     Point   *origin2,
@@ -51,7 +51,7 @@ public  void  find_polygon_normal(
     Point    points[],
     Vector   *normal );
 
-public  Real  get_polygon_2d_area(
+public  VIO_Real  get_polygon_2d_area(
     int      n_points,
     Point    points[] );
 
@@ -59,31 +59,31 @@ public  void   get_plane_through_points(
     int      n_points,
     Point    points[],
     Vector   *normal,
-    Real     *plane_constant );
+    VIO_Real     *plane_constant );
 
-public  Real  distance_from_plane(
+public  VIO_Real  distance_from_plane(
     Point    *point,
     Vector   *plane_normal,
-    Real     plane_constant );
+    VIO_Real     plane_constant );
 
-public  Real  distance_from_line(
+public  VIO_Real  distance_from_line(
     Point    *point,
     Point    *end_point1,
     Point    *end_point2 );
 
-public  BOOLEAN  clip_line_to_box(
+public  VIO_BOOL  clip_line_to_box(
     Point    *origin,
     Vector   *direction,
-    Real     x_min,
-    Real     x_max,
-    Real     y_min,
-    Real     y_max,
-    Real     z_min,
-    Real     z_max,
-    Real     *t_min,
-    Real     *t_max );
+    VIO_Real     x_min,
+    VIO_Real     x_max,
+    VIO_Real     y_min,
+    VIO_Real     y_max,
+    VIO_Real     z_min,
+    VIO_Real     z_max,
+    VIO_Real     *t_min,
+    VIO_Real     *t_max );
 
-public  BOOLEAN   line_segment_intersects_plane(
+public  VIO_BOOL   line_segment_intersects_plane(
     Point   *p1,
     Point   *p2,
     Point   *plane_origin,
@@ -93,19 +93,19 @@ public  BOOLEAN   line_segment_intersects_plane(
 public  void  create_line_circle(
     Point            *centre,
     int              plane_axis,
-    Real             x_size,
-    Real             y_size,
+    VIO_Real             x_size,
+    VIO_Real             y_size,
     int              n_points,
     lines_struct     *lines );
 
-public  BOOLEAN  is_circle_topology(
+public  VIO_BOOL  is_circle_topology(
     lines_struct   *lines );
 
 public  void  get_polygon_interpolation_weights(
     Point       *point,
     int         n_points,
     Point       points[],
-    Real        weights[] );
+    VIO_Real        weights[] );
 
 public  void  map_point_between_polygons(
     polygons_struct  *p1,
@@ -134,24 +134,24 @@ public   void   find_path_between_polygons(
     int            end_indices[],
     Smallest_int   visibilities[],
     int            neighbours[],
-    BOOLEAN        *path_exists,
+    VIO_BOOL        *path_exists,
     int            *path_length,
     int            *path[] );
 
-public  BOOLEAN  null_Point(
+public  VIO_BOOL  null_Point(
     Point   *p );
 
-public  BOOLEAN  null_Vector(
+public  VIO_BOOL  null_Vector(
     Vector   *v );
 
-public  Real  distance_between_points(
+public  VIO_Real  distance_between_points(
     Point  *p1,
     Point  *p2 );
 
-public  BOOLEAN  points_within_distance(
+public  VIO_BOOL  points_within_distance(
     Point  *p1,
     Point  *p2,
-    Real   distance );
+    VIO_Real   distance );
 
 public  void  apply_point_to_min_and_max(
     Point   *point,
@@ -179,12 +179,12 @@ public   void     reverse_vectors(
     int       n_vectors,
     Vector    vectors[] );
 
-public  Real  get_angle_between_points(
+public  VIO_Real  get_angle_between_points(
     Point  *prev,
     Point  *this,
     Point  *next );
 
-public  Real  find_point_polygon_distance(
+public  VIO_Real  find_point_polygon_distance(
     Point     *point,
     int       n_points,
     Point     poly_points[],
@@ -197,12 +197,12 @@ public  int  find_closest_polygon_point(
 
 public  void  create_polygons_sphere(
     Point            *centre,
-    Real             x_size,
-    Real             y_size,
-    Real             z_size,
+    VIO_Real             x_size,
+    VIO_Real             y_size,
+    VIO_Real             z_size,
     int              n_up,
     int              n_around,
-    BOOLEAN          subdividing_flag,
+    VIO_BOOL          subdividing_flag,
     polygons_struct  *polygons );
 
 public  int  get_sphere_point_index(
@@ -211,10 +211,10 @@ public  int  get_sphere_point_index(
     int   n_up,
     int   n_around );
 
-public  BOOLEAN  is_this_sphere_topology(
+public  VIO_BOOL  is_this_sphere_topology(
     polygons_struct  *polygons );
 
-public  BOOLEAN  get_tessellation_of_polygons_sphere(
+public  VIO_BOOL  get_tessellation_of_polygons_sphere(
     polygons_struct  *polygons,
     int              *tess );
 
@@ -225,59 +225,59 @@ public  void  half_sample_sphere_tessellation(
     polygons_struct   *polygons,
     polygons_struct   *half );
 
-public  BOOLEAN  point_within_polygon(
+public  VIO_BOOL  point_within_polygon(
     Point   *pt,
     int     n_points,
     Point   points[],
     Vector  *polygon_normal );
 
-public  BOOLEAN  line_intersects_ellipsoid(
+public  VIO_BOOL  line_intersects_ellipsoid(
     Point    *line_origin,
     Vector   *line_direction,
     Point    *sphere_centre,
-    Real     x_size,
-    Real     y_size,
-    Real     z_size,
+    VIO_Real     x_size,
+    VIO_Real     y_size,
+    VIO_Real     z_size,
     Point    *intersection );
 
-public  BOOLEAN  ray_intersects_sphere(
+public  VIO_BOOL  ray_intersects_sphere(
     Point       *origin,
     Vector      *direction,
     Point       *centre,
-    Real        radius,
-    Real        *dist );
+    VIO_Real        radius,
+    VIO_Real        *dist );
 
 public  void  intersect_ray_object(
     Point                 *origin,
     Vector                *direction,
-    Real                  t_min,
+    VIO_Real                  t_min,
     object_struct         *object,
     int                   obj_index,
     int                   *closest_obj_index,
-    Real                  *closest_dist,
+    VIO_Real                  *closest_dist,
     int                   *n_intersections,
-    Real                  *distances[] );
+    VIO_Real                  *distances[] );
 
 public  int  intersect_ray_with_object(
     Point           *origin,
     Vector          *direction,
     object_struct   *object,
     int             *obj_index,
-    Real            *dist,
-    Real            *distances[] );
+    VIO_Real            *dist,
+    VIO_Real            *distances[] );
 
 public  void   remove_invisible_polygons(
     polygons_struct  *polygons );
 
-public  Real  get_smooth_surface_curvature(
+public  VIO_Real  get_smooth_surface_curvature(
     polygons_struct   *polygons,
     int               poly,
     int               vertex,
-    Real              smoothing_distance );
+    VIO_Real              smoothing_distance );
 
 public  void  smooth_lines(
     lines_struct  *lines,
-    Real          smooth_length );
+    VIO_Real          smooth_length );
 
 public  void  create_line_spline(
     lines_struct  *lines,
@@ -286,16 +286,16 @@ public  void  create_line_spline(
 
 public  void  smooth_polygon(
     polygons_struct  *polygons,
-    Real             max_dist_from_original,
-    Real             fraction_to_move,
-    Real             stop_threshold,
-    Real             normal_ratio,
-    BOOLEAN          range_flag,
+    VIO_Real             max_dist_from_original,
+    VIO_Real             fraction_to_move,
+    VIO_Real             stop_threshold,
+    VIO_Real             normal_ratio,
+    VIO_BOOL          range_flag,
     volume_struct    *volume,
     int              min_value,
     int              max_value );
 
-public  BOOLEAN is_single_closed_curve(
+public  VIO_BOOL is_single_closed_curve(
     lines_struct   *lines );
 
 public  void  subdivide_lines(
@@ -304,14 +304,14 @@ public  void  subdivide_lines(
 public  void  subdivide_polygons(
     polygons_struct  *polygons );
 
-public  Real  get_polygon_surface_area(
+public  VIO_Real  get_polygon_surface_area(
     int      n_points,
     Point    points[] );
 
-public  Real  get_polygons_surface_area(
+public  VIO_Real  get_polygons_surface_area(
     polygons_struct  *polygons );
 
-public  BOOLEAN  is_this_tetrahedral_topology(
+public  VIO_BOOL  is_this_tetrahedral_topology(
     polygons_struct   *polygons );
 
 public  int  get_tetra_tessellation_with_n_points(
@@ -319,9 +319,9 @@ public  int  get_tetra_tessellation_with_n_points(
 
 public  void  create_tetrahedral_sphere(
     Point            *centre,
-    Real             rx,
-    Real             ry,
-    Real             rz,
+    VIO_Real             rx,
+    VIO_Real             ry,
+    VIO_Real             rz,
     int              n_triangles,
     polygons_struct  *polygons );
 
@@ -333,26 +333,26 @@ public  void  create_tube(
     int               n_points,
     Point             points[],
     int               n_around,
-    Real              radius,
+    VIO_Real              radius,
     Colour            colour,
     quadmesh_struct   *quadmesh );
 
 public  int  convert_lines_to_tubes(
     lines_struct     *lines,
     int              n_around,
-    Real             radius,
+    VIO_Real             radius,
     quadmesh_struct  *quadmeshes[] );
 
 public  void   create_slice_quadmesh(
     Volume           volume,
     int              axis_index,
-    Real             voxel_position,
+    VIO_Real             voxel_position,
     int              x_tess,
     int              y_tess,
-    Real             x_min,
-    Real             x_max,
-    Real             y_min,
-    Real             y_max,
+    VIO_Real             x_min,
+    VIO_Real             x_max,
+    VIO_Real             y_min,
+    VIO_Real             y_max,
     quadmesh_struct  *quadmesh );
 
 public  void   create_slice_3d(

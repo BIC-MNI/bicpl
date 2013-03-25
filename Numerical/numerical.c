@@ -41,10 +41,10 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numer
 
 #define  SMALLEST  1.0e-20
 
-BICAPI  BOOLEAN  numerically_close(
-    Real  n1,
-    Real  n2,
-    Real  threshold_ratio )
+BICAPI  VIO_BOOL  numerically_close(
+    VIO_Real  n1,
+    VIO_Real  n2,
+    VIO_Real  threshold_ratio )
 {
     double  avg, diff, abs_n1, abs_n2;
 
@@ -81,10 +81,10 @@ BICAPI  BOOLEAN  numerically_close(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_good_round_value(
-    Real    value )
+BICAPI  VIO_Real  get_good_round_value(
+    VIO_Real    value )
 {
-    Real     rounded, sign, power_of_ten, power_of_ten_times_5;
+    VIO_Real     rounded, sign, power_of_ten, power_of_ten_times_5;
 
     if( value < 0.0 )
     {
@@ -123,22 +123,22 @@ BICAPI  Real  get_good_round_value(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  round_to_nearest_multiple(
-    Real    value,
-    Real    multiple_value )
+BICAPI  VIO_Real  round_to_nearest_multiple(
+    VIO_Real    value,
+    VIO_Real    multiple_value )
 {
     int      i;
-    Real     factor, nearest;
+    VIO_Real     factor, nearest;
 
     multiple_value = FABS( multiple_value );
 
     factor = value / multiple_value;
-    if( factor > (Real) INT_MAX || factor < (Real) INT_MIN )
+    if( factor > (VIO_Real) INT_MAX || factor < (VIO_Real) INT_MIN )
         nearest = value;
     else
     {
         i = ROUND( value / multiple_value );
-        nearest = (Real) i * multiple_value;
+        nearest = (VIO_Real) i * multiple_value;
     }
 
     return( nearest );
@@ -161,11 +161,11 @@ BICAPI  Real  round_to_nearest_multiple(
 ---------------------------------------------------------------------------- */
 
 BICAPI  int  solve_quadratic(
-    Real   a,
-    Real   b,
-    Real   c,
-    Real   *solution1,
-    Real   *solution2 )
+    VIO_Real   a,
+    VIO_Real   b,
+    VIO_Real   c,
+    VIO_Real   *solution1,
+    VIO_Real   *solution2 )
 {
     double  inside_sqrt;
     int     n_solutions;
@@ -246,11 +246,11 @@ BICAPI  int  solve_quadratic(
 
 
 BICAPI  int solve_cubic(
-    Real   a,
-    Real   b,
-    Real   c,
-    Real   d,
-    Real   s[ 3 ] )
+    VIO_Real   a,
+    VIO_Real   b,
+    VIO_Real   c,
+    VIO_Real   d,
+    VIO_Real   s[ 3 ] )
 {
     int     num;
     double  A, B, C, a3, cs, sn;
@@ -343,13 +343,13 @@ BICAPI  int solve_cubic(
 
 static  int  get_roots_of_cubic(
     int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    u_max,
-    Real    roots[] )
+    VIO_Real    poly[],
+    VIO_Real    u_min,
+    VIO_Real    u_max,
+    VIO_Real    roots[] )
 {
     int      n_roots, i, j, k, n_inside;
-    Real     cubic[4], tmp;
+    VIO_Real     cubic[4], tmp;
 
     for_less( i, 0, 4 )
     {
@@ -412,13 +412,13 @@ static  int  get_roots_of_cubic(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  evaluate_polynomial(
+BICAPI  VIO_Real  evaluate_polynomial(
     int     n,
-    Real    poly[],
-    Real    u )
+    VIO_Real    poly[],
+    VIO_Real    u )
 {
     int     i;
-    Real    val;
+    VIO_Real    val;
 
     val = 0.0;
 
@@ -451,14 +451,14 @@ BICAPI  Real  evaluate_polynomial(
 
 static  void  interval_value_range(
     int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    u_max,
-    Real    *min_val_ptr,
-    Real    *max_val_ptr )
+    VIO_Real    poly[],
+    VIO_Real    u_min,
+    VIO_Real    u_max,
+    VIO_Real    *min_val_ptr,
+    VIO_Real    *max_val_ptr )
 {
     int    i;
-    Real   min_val, max_val, t1, t2, t3, t4;
+    VIO_Real   min_val, max_val, t1, t2, t3, t4;
 
     min_val = 0.0;
     max_val = 0.0;
@@ -541,13 +541,13 @@ static  void  interval_value_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  BOOLEAN  interval_may_contain_zero(
+static  VIO_BOOL  interval_may_contain_zero(
     int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    u_max )
+    VIO_Real    poly[],
+    VIO_Real    u_min,
+    VIO_Real    u_max )
 {
-    Real   min_val, max_val;
+    VIO_Real   min_val, max_val;
 
     interval_value_range( n, poly, u_min, u_max, &min_val, &max_val );
 
@@ -574,15 +574,15 @@ static  BOOLEAN  interval_may_contain_zero(
 
 static  void  check_interval(
     int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    u_max,
-    Real    accuracy,
+    VIO_Real    poly[],
+    VIO_Real    u_min,
+    VIO_Real    u_max,
+    VIO_Real    accuracy,
     int     *n_roots,
-    Real    roots[] )
+    VIO_Real    roots[] )
 {
     int    i, which;
-    Real   u_mid, min_diff, diff;
+    VIO_Real   u_mid, min_diff, diff;
 
     if( interval_may_contain_zero( n, poly, u_min, u_max ) )
     {
@@ -638,11 +638,11 @@ static  void  check_interval(
 
 BICAPI  int  get_roots_of_polynomial(
     int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    u_max,
-    Real    accuracy,
-    Real    roots[] )
+    VIO_Real    poly[],
+    VIO_Real    u_min,
+    VIO_Real    u_max,
+    VIO_Real    accuracy,
+    VIO_Real    roots[] )
 {
     int        n_roots;
 
@@ -675,34 +675,34 @@ BICAPI  int  get_roots_of_polynomial(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  BOOLEAN  polynomial_may_include_range(
+static  VIO_BOOL  polynomial_may_include_range(
     int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    u_max,
-    Real    min_val,
-    Real    max_val )
+    VIO_Real    poly[],
+    VIO_Real    u_min,
+    VIO_Real    u_max,
+    VIO_Real    min_val,
+    VIO_Real    max_val )
 {
-    Real  min_range, max_range;
+    VIO_Real  min_range, max_range;
 
     interval_value_range( n, poly, u_min, u_max, &min_range, &max_range );
 
     return( max_val >= min_range && min_val <= max_range );
 }
 
-static  BOOLEAN  check_range(
+static  VIO_BOOL  check_range(
     int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    u_max,
-    Real    min_val,
-    Real    max_val,
-    Real    accuracy,
-    Real    *u_min_range,
-    Real    *u_max_range )
+    VIO_Real    poly[],
+    VIO_Real    u_min,
+    VIO_Real    u_max,
+    VIO_Real    min_val,
+    VIO_Real    max_val,
+    VIO_Real    accuracy,
+    VIO_Real    *u_min_range,
+    VIO_Real    *u_max_range )
 {
-    Real     u_mid;
-    BOOLEAN  left_has_value, right_has_value;
+    VIO_Real     u_mid;
+    VIO_BOOL  left_has_value, right_has_value;
 
     if( u_max - u_min <= accuracy )
     {
@@ -738,18 +738,18 @@ static  BOOLEAN  check_range(
         return( FALSE );
 }
 
-BICAPI  BOOLEAN  get_range_of_polynomial(
+BICAPI  VIO_BOOL  get_range_of_polynomial(
     int     n,
-    Real    poly[],
-    Real    u_min,
-    Real    u_max,
-    Real    min_val,
-    Real    max_val,
-    Real    accuracy,
-    Real    *u_min_range,
-    Real    *u_max_range )
+    VIO_Real    poly[],
+    VIO_Real    u_min,
+    VIO_Real    u_max,
+    VIO_Real    min_val,
+    VIO_Real    max_val,
+    VIO_Real    accuracy,
+    VIO_Real    *u_min_range,
+    VIO_Real    *u_max_range )
 {
-    BOOLEAN  found;
+    VIO_BOOL  found;
 
     if( polynomial_may_include_range( n, poly, u_min, u_max, min_val, max_val ))
     {

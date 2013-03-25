@@ -39,13 +39,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/line_c
 BICAPI  void  create_line_circle(
     Point            *centre,
     int              plane_axis,
-    Real             x_radius,
-    Real             y_radius,
+    VIO_Real             x_radius,
+    VIO_Real             y_radius,
     int              n_points,
     lines_struct     *lines )
 {
     int      i, a1, a2;
-    Real     angle;
+    VIO_Real     angle;
 
     initialize_lines( lines, WHITE );
 
@@ -61,11 +61,11 @@ BICAPI  void  create_line_circle(
 
     for_less( i, 0, n_points )
     {
-        angle = 2.0 * PI * (Real) i / (Real) n_points;
+        angle = 2.0 * PI * (VIO_Real) i / (VIO_Real) n_points;
         Point_coord(lines->points[i],a1) = (Point_coord_type)
-                   ( (Real) Point_coord(*centre,a1) + x_radius * cos( angle ) );
+                   ( (VIO_Real) Point_coord(*centre,a1) + x_radius * cos( angle ) );
         Point_coord(lines->points[i],a2) = (Point_coord_type)
-                   ( (Real) Point_coord(*centre,a2) + y_radius * sin( angle ) );
+                   ( (VIO_Real) Point_coord(*centre,a2) + y_radius * sin( angle ) );
         Point_coord(lines->points[i],plane_axis) =
                                            Point_coord(*centre,plane_axis);
     }

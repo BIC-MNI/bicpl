@@ -35,8 +35,8 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/histo
 
 BICAPI  void  initialize_histogram(
     histogram_struct  *histogram,
-    Real              delta,
-    Real              offset )
+    VIO_Real              delta,
+    VIO_Real              offset )
 {
     histogram->delta = delta;
     histogram->offset = offset;
@@ -84,7 +84,7 @@ BICAPI  void  delete_histogram(
 
 static  int  get_histogram_index(
     histogram_struct  *histogram,
-    Real              value )
+    VIO_Real              value )
 {
     int    ind;
 
@@ -107,9 +107,9 @@ static  int  get_histogram_index(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  convert_real_index_to_value(
+static  VIO_Real  convert_real_index_to_value(
     histogram_struct  *histogram,
-    Real              ind )
+    VIO_Real              ind )
 {
     return( ind * histogram->delta + histogram->offset );
 }
@@ -129,11 +129,11 @@ static  Real  convert_real_index_to_value(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  convert_index_to_value(
+static  VIO_Real  convert_index_to_value(
     histogram_struct  *histogram,
     int               ind )
 {
-    return( convert_real_index_to_value( histogram, (Real) ind ) );
+    return( convert_real_index_to_value( histogram, (VIO_Real) ind ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -154,7 +154,7 @@ static  Real  convert_index_to_value(
 
 BICAPI  void  add_to_histogram(
     histogram_struct  *histogram,
-    Real              value )
+    VIO_Real              value )
 {
     int   ind, i, prev_size, new_size;
 
@@ -216,8 +216,8 @@ BICAPI  void  add_to_histogram(
 
 static  void  get_histogram_range(
     histogram_struct  *histogram,
-    Real              *min_value,
-    Real              *max_value )
+    VIO_Real              *min_value,
+    VIO_Real              *max_value )
 {
     *min_value = convert_index_to_value( histogram, histogram->min_index );
     *max_value = convert_index_to_value( histogram, histogram->max_index + 1 );
@@ -271,12 +271,12 @@ static  int  get_histogram_max_count(
 
 static  void  box_filter_histogram(
     int          n,
-    Real         counts[],
-    Real         new_counts[],
+    VIO_Real         counts[],
+    VIO_Real         new_counts[],
     int          half_width )
 {
     int    i, window_width, start_index, end_index;
-    Real   current_value;
+    VIO_Real   current_value;
 
     start_index = - half_width;
     end_index   = half_width;
@@ -288,7 +288,7 @@ static  void  box_filter_histogram(
     for_less( i, 0, n )
     {
         window_width = MIN( end_index, n-1 ) - MAX( start_index, 0 ) + 1;
-        new_counts[i] = (Real) current_value / (Real) window_width;
+        new_counts[i] = (VIO_Real) current_value / (VIO_Real) window_width;
         if( start_index >= 0 )
             current_value -= counts[start_index];
         ++start_index;
@@ -318,13 +318,13 @@ static  void  box_filter_histogram(
 
 BICAPI  int  get_histogram_counts(
     histogram_struct  *histogram,
-    Real              *counts[],
-    Real              filter_width,
-    Real              *scale_factor,
-    Real              *trans_factor )
+    VIO_Real              *counts[],
+    VIO_Real              filter_width,
+    VIO_Real              *scale_factor,
+    VIO_Real              *trans_factor )
 {
     int    i, n, width;
-    Real   *tmp_counts;
+    VIO_Real   *tmp_counts;
 
     n = histogram->max_index - histogram->min_index + 1;
 
@@ -335,7 +335,7 @@ BICAPI  int  get_histogram_counts(
     ALLOC( *counts, n );
 
     for_less( i, 0, n )
-        tmp_counts[i] = (Real) histogram->counts[i];
+        tmp_counts[i] = (VIO_Real) histogram->counts[i];
 
     width = ROUND( filter_width / histogram->delta / 2.0 );
 
@@ -345,7 +345,7 @@ BICAPI  int  get_histogram_counts(
 
     *scale_factor = histogram->delta;
     *trans_factor = convert_real_index_to_value( histogram,
-                                          (Real) histogram->min_index + 0.5 );
+                                          (VIO_Real) histogram->min_index + 0.5 );
 
     return( n );
 }
@@ -372,13 +372,13 @@ static  void  resample_histogram(
     histogram_struct  *histogram,
     int               x_size,
     int               y_size,
-    Real              *x_scale,
-    Real              *x_trans,
-    Real              height[] )
+    VIO_Real              *x_scale,
+    VIO_Real              *x_trans,
+    VIO_Real              height[] )
 {
     int   ind, x, max_count, left_ind, right_ind;
-    Real  weight, sum_count, min_value, max_value;
-    Real  left_side, right_side, left, right;
+    VIO_Real  weight, sum_count, min_value, max_value;
+    VIO_Real  left_side, right_side, left, right;
 
     get_histogram_range( histogram, &min_value, &max_value );
 
@@ -393,13 +393,13 @@ static  void  resample_histogram(
 
     max_count = get_histogram_max_count( histogram );
 
-    *x_scale = 1.0 / (Real) x_size * (max_value - min_value);
+    *x_scale = 1.0 / (VIO_Real) x_size * (max_value - min_value);
     *x_trans = min_value + 0.5 * (*x_scale);
 
     for_less( x, 0, x_size )
     {
-        left = min_value + (Real) x / (Real) x_size * (max_value - min_value);
-        right = min_value + (Real) (x+1) / (Real) x_size *
+        left = min_value + (VIO_Real) x / (VIO_Real) x_size * (max_value - min_value);
+        right = min_value + (VIO_Real) (x+1) / (VIO_Real) x_size *
                 (max_value - min_value);
 
         left_ind = get_histogram_index( histogram, left );
@@ -415,11 +415,11 @@ static  void  resample_histogram(
             weight = MIN( right_side, right ) - MAX( left_side, left );
 
             sum_count += weight *
-                         (Real) histogram->counts[ind-histogram->min_index];
+                         (VIO_Real) histogram->counts[ind-histogram->min_index];
         }
 
-        height[x] = sum_count / (right - left) * (Real) y_size /
-                    (Real) max_count;
+        height[x] = sum_count / (right - left) * (VIO_Real) y_size /
+                    (VIO_Real) max_count;
     }
 }
 
@@ -444,7 +444,7 @@ BICAPI  void  display_histogram(
     int               y_size )
 {
     int   x, y, max_count;
-    Real  min_value, max_value, *n_chars, x_scale, x_trans;
+    VIO_Real  min_value, max_value, *n_chars, x_scale, x_trans;
 
     ALLOC( n_chars, x_size );
 
@@ -492,11 +492,11 @@ BICAPI  void  create_histogram_line(
     histogram_struct  *histogram,
     int               x_size,
     int               y_size,
-    Real              filter_width,
+    VIO_Real              filter_width,
     lines_struct      *lines )
 {
     int     x, width;
-    Real    *height, *smooth_height, x_scale, x_trans;
+    VIO_Real    *height, *smooth_height, x_scale, x_trans;
     Point   p;
 
     ALLOC( height, x_size );
@@ -513,7 +513,7 @@ BICAPI  void  create_histogram_line(
 
     for_less( x, 0, x_size )
     {
-        fill_Point( p, (Real) x * x_scale + x_trans, smooth_height[x], 0.0 );
+        fill_Point( p, (VIO_Real) x * x_scale + x_trans, smooth_height[x], 0.0 );
         add_point_to_line( lines, &p );
     }
 

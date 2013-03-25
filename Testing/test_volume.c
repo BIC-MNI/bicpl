@@ -3,20 +3,20 @@
 
 private  void  check(
     Volume   volume,
-    BOOLEAN  world_space,
+    VIO_BOOL  world_space,
     int      continuity,
-    Real     x,
-    Real     y,
-    Real     z );
+    VIO_Real     x,
+    VIO_Real     y,
+    VIO_Real     z );
 
 int  main(
     int   argc,
     char  *argv[] )
 {
     Volume               volume;
-    BOOLEAN              world_space;
+    VIO_BOOL              world_space;
     int                  continuity;
-    Real                 x, y, z;
+    VIO_Real                 x, y, z;
     char                 *input_filename;
     static char          *dim_names[] = { MIxspace, MIyspace, MIzspace };
 
@@ -51,14 +51,14 @@ int  main(
 #define  TOLERANCE  0.01
 #define  STEP       1.0e-4
 
-private  Real  approx_deriv(
+private  VIO_Real  approx_deriv(
     Volume   volume,
-    BOOLEAN  world_space,
+    VIO_BOOL  world_space,
     int      continuity,
-    Real     pos[N_DIMENSIONS],
+    VIO_Real     pos[N_DIMENSIONS],
     int      axis )
 {
-    Real  val1, val2, orig;
+    VIO_Real  val1, val2, orig;
 
     orig = pos[axis];
 
@@ -67,45 +67,45 @@ private  Real  approx_deriv(
     if( world_space )
         evaluate_3D_volume_in_world( volume,
                           pos[X], pos[Y], pos[Z], continuity, &val1,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL );
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL );
     else
         evaluate_3D_volume( volume,
                           pos[X], pos[Y], pos[Z], continuity, &val1,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL );
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL );
 
     pos[axis] = orig + STEP;
 
     if( world_space )
         evaluate_3D_volume_in_world( volume,
                           pos[X], pos[Y], pos[Z], continuity, &val2,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL );
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL );
     else
         evaluate_3D_volume( volume,
                           pos[X], pos[Y], pos[Z], continuity, &val2,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL,
-                          (Real *) NULL, (Real *) NULL, (Real *) NULL );
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
+                          (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL );
 
     pos[axis] = orig;
 
     return( (val2 - val1) / STEP / 2.0 );
 }
 
-private  Real  approx_deriv2(
+private  VIO_Real  approx_deriv2(
     Volume   volume,
-    BOOLEAN  world_space,
+    VIO_BOOL  world_space,
     int      continuity,
-    Real     pos[N_DIMENSIONS],
+    VIO_Real     pos[N_DIMENSIONS],
     int      a1,
     int      a2 )
 {
-    Real  val1, val2, orig;
+    VIO_Real  val1, val2, orig;
 
     orig = pos[a2];
 
@@ -120,15 +120,15 @@ private  Real  approx_deriv2(
 
 private  void  check(
     Volume   volume,
-    BOOLEAN  world_space,
+    VIO_BOOL  world_space,
     int      continuity,
-    Real     x,
-    Real     y,
-    Real     z )
+    VIO_Real     x,
+    VIO_Real     y,
+    VIO_Real     z )
 {
-    Real   value, pos[N_DIMENSIONS];
-    Real   deriv[N_DIMENSIONS], deriv2[N_DIMENSIONS][N_DIMENSIONS];
-    Real   true_deriv[N_DIMENSIONS], true_deriv2[N_DIMENSIONS][N_DIMENSIONS];
+    VIO_Real   value, pos[N_DIMENSIONS];
+    VIO_Real   deriv[N_DIMENSIONS], deriv2[N_DIMENSIONS][N_DIMENSIONS];
+    VIO_Real   true_deriv[N_DIMENSIONS], true_deriv2[N_DIMENSIONS][N_DIMENSIONS];
     int    c, c2;
 
     if( world_space )

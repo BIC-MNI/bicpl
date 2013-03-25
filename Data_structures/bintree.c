@@ -54,12 +54,12 @@ static  Status  input_bintree_node(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  initialize_bintree(
-    Real                 x_min,
-    Real                 x_max,
-    Real                 y_min,
-    Real                 y_max,
-    Real                 z_min,
-    Real                 z_max,
+    VIO_Real                 x_min,
+    VIO_Real                 x_max,
+    VIO_Real                 y_min,
+    VIO_Real                 y_max,
+    VIO_Real                 z_min,
+    VIO_Real                 z_max,
     bintree_struct_ptr   bintree )
 {
     bintree->range.limits[X][0] = (float) x_min;
@@ -208,7 +208,7 @@ static  void  set_bintree_child(
 
 BICAPI  bintree_node_struct  *create_bintree_internal_node(
     int                   split_coord,
-    Real                  split_position,
+    VIO_Real                  split_position,
     bintree_node_struct   *left,
     bintree_node_struct   *right )
 {
@@ -268,7 +268,7 @@ BICAPI  bintree_node_struct  *create_bintree_internal_node(
 ---------------------------------------------------------------------------- */
 
 BICAPI  bintree_node_struct  *create_bintree_leaf(
-    Real                  split_position,
+    VIO_Real                  split_position,
     int                   n_objects,
     int                   object_list[] )
 {
@@ -320,7 +320,7 @@ BICAPI  bintree_node_struct  *create_bintree_leaf(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  bintree_node_is_leaf(
+BICAPI  VIO_BOOL  bintree_node_is_leaf(
     bintree_node_struct  *node )
 {
     return( (node->node_info & SUBDIVISION_AXIS_BITS) == LEAF_SIGNAL );
@@ -376,11 +376,11 @@ BICAPI  int  get_bintree_leaf_objects(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI BOOLEAN  get_bintree_left_child_ptr(
+BICAPI VIO_BOOL  get_bintree_left_child_ptr(
     bintree_node_struct  *node,
     bintree_node_struct  ***ptr_to_left_child )
 {
-    BOOLEAN               child_exists;
+    VIO_BOOL               child_exists;
 
     child_exists = !bintree_node_is_leaf(node) &&
                    (node->node_info & LEFT_CHILD_EXISTS) != 0;
@@ -405,11 +405,11 @@ BICAPI BOOLEAN  get_bintree_left_child_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_bintree_left_child(
+BICAPI  VIO_BOOL  get_bintree_left_child(
     bintree_node_struct  *node,
     bintree_node_struct  **left_child )
 {
-    BOOLEAN              child_exists;
+    VIO_BOOL              child_exists;
     bintree_node_struct  **ptr;
 
     child_exists = get_bintree_left_child_ptr( node, &ptr );
@@ -434,11 +434,11 @@ BICAPI  BOOLEAN  get_bintree_left_child(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_bintree_right_child_ptr(
+BICAPI  VIO_BOOL  get_bintree_right_child_ptr(
     bintree_node_struct  *node,
     bintree_node_struct  ***ptr_to_right_child )
 {
-    BOOLEAN               child_exists;
+    VIO_BOOL               child_exists;
     int                   ind;
 
     child_exists = !bintree_node_is_leaf(node) &&
@@ -471,11 +471,11 @@ BICAPI  BOOLEAN  get_bintree_right_child_ptr(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_bintree_right_child(
+BICAPI  VIO_BOOL  get_bintree_right_child(
     bintree_node_struct  *node,
     bintree_node_struct  **right_child )
 {
-    BOOLEAN              child_exists;
+    VIO_BOOL              child_exists;
     bintree_node_struct  **ptr;
 
     child_exists = get_bintree_right_child_ptr( node, &ptr );
@@ -519,10 +519,10 @@ BICAPI  int  get_node_split_axis(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  get_node_split_position(
+BICAPI  VIO_Real  get_node_split_position(
     bintree_node_struct  *node )
 {
-    return( (Real) node->split_position );
+    return( (VIO_Real) node->split_position );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -539,11 +539,11 @@ BICAPI  Real  get_node_split_position(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  point_within_range(
+BICAPI  VIO_BOOL  point_within_range(
     Point         *point,
     range_struct  *range )
 {
-    BOOLEAN   within;
+    VIO_BOOL   within;
 
     within = (Point_x(*point) >= range->limits[X][0] &&
               Point_x(*point) <= range->limits[X][1] &&
@@ -568,12 +568,12 @@ BICAPI  BOOLEAN  point_within_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  range_volume(
+BICAPI  VIO_Real  range_volume(
     range_struct  *range )
 {
-    return( ((Real) range->limits[X][1] - (Real) range->limits[X][0]) *
-            ((Real) range->limits[Y][1] - (Real) range->limits[Y][0]) *
-            ((Real) range->limits[Z][1] - (Real) range->limits[Z][0]) );
+    return( ((VIO_Real) range->limits[X][1] - (VIO_Real) range->limits[X][0]) *
+            ((VIO_Real) range->limits[Y][1] - (VIO_Real) range->limits[Y][0]) *
+            ((VIO_Real) range->limits[Z][1] - (VIO_Real) range->limits[Z][0]) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -589,14 +589,14 @@ BICAPI  Real  range_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  range_surface_area(
+BICAPI  VIO_Real  range_surface_area(
     range_struct  *range )
 {
-    Real   dx, dy, dz;
+    VIO_Real   dx, dy, dz;
 
-    dx = (Real) range->limits[X][1] - (Real) range->limits[X][0];
-    dy = (Real) range->limits[Y][1] - (Real) range->limits[Y][0];
-    dz = (Real) range->limits[Z][1] - (Real) range->limits[Z][0];
+    dx = (VIO_Real) range->limits[X][1] - (VIO_Real) range->limits[X][0];
+    dy = (VIO_Real) range->limits[Y][1] - (VIO_Real) range->limits[Y][0];
+    dz = (VIO_Real) range->limits[Z][1] - (VIO_Real) range->limits[Z][0];
 
     return( 2.0 * (dx * dy + dy * dz + dz * dx) );
 }
@@ -805,7 +805,7 @@ static  Status  input_bintree_node(
 
         if( status == OK )
         {
-            *node = create_bintree_leaf( (Real) split_position,
+            *node = create_bintree_leaf( (VIO_Real) split_position,
                                          n_objects, object_list );
             if( n_objects > 0 )
                 FREE( object_list );
@@ -820,7 +820,7 @@ static  Status  input_bintree_node(
         if( status == OK )
             *node = create_bintree_internal_node(
                                    node_info & SUBDIVISION_AXIS_BITS,
-                                   (Real) split_position, left, right );
+                                   (VIO_Real) split_position, left, right );
     }
 
     return( status );

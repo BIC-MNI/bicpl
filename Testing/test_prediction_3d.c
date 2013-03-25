@@ -6,8 +6,8 @@ int  main(
     char    *argv[] )
 {
     int      i, n_points, dim, dim1;
-    Real     x, y, z, value;
-    Real     xs[10], ys[10], zs[10], *weights[3][3];
+    VIO_Real     x, y, z, value;
+    VIO_Real     xs[10], ys[10], zs[10], *weights[3][3];
 
     for_less( dim, 0, 3 )
     for_less( dim1, 0, 3 )

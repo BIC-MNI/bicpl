@@ -36,25 +36,25 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geomet
 BICAPI  void  find_polygon_normal_no_normalize(
     int      n_points,
     Point    points[],
-    Real     *nx,
-    Real     *ny,
-    Real     *nz )
+    VIO_Real     *nx,
+    VIO_Real     *ny,
+    VIO_Real     *nz )
 {
     int     i, next_i;
     Vector  v1, v2, normal;
-    Real    vx, vy, vz, x, y, z, tx, ty, tz, x0, x1, x2, y0, y1, y2, z0, z1, z2;
+    VIO_Real    vx, vy, vz, x, y, z, tx, ty, tz, x0, x1, x2, y0, y1, y2, z0, z1, z2;
 
     if( n_points == 3 )
     {
-        x0 = (Real) Point_x(points[0]);
-        y0 = (Real) Point_y(points[0]);
-        z0 = (Real) Point_z(points[0]);
-        x1 = (Real) Point_x(points[1]) - x0;
-        y1 = (Real) Point_y(points[1]) - y0;
-        z1 = (Real) Point_z(points[1]) - z0;
-        x2 = (Real) Point_x(points[2]) - x0;
-        y2 = (Real) Point_y(points[2]) - y0;
-        z2 = (Real) Point_z(points[2]) - z0;
+        x0 = (VIO_Real) Point_x(points[0]);
+        y0 = (VIO_Real) Point_y(points[0]);
+        z0 = (VIO_Real) Point_z(points[0]);
+        x1 = (VIO_Real) Point_x(points[1]) - x0;
+        y1 = (VIO_Real) Point_y(points[1]) - y0;
+        z1 = (VIO_Real) Point_z(points[1]) - z0;
+        x2 = (VIO_Real) Point_x(points[2]) - x0;
+        y2 = (VIO_Real) Point_y(points[2]) - y0;
+        z2 = (VIO_Real) Point_z(points[2]) - z0;
         *nx = y1 * z2 - z1 * y2;
         *ny = z1 * x2 - x1 * z2;
         *nz = x1 * y2 - y1 * x2;
@@ -65,9 +65,9 @@ BICAPI  void  find_polygon_normal_no_normalize(
     vy = 0.0;
     vz = 0.0;
 
-    tx = (Real) Point_x(points[0]);
-    ty = (Real) Point_y(points[0]);
-    tz = (Real) Point_z(points[0]);
+    tx = (VIO_Real) Point_x(points[0]);
+    ty = (VIO_Real) Point_y(points[0]);
+    tz = (VIO_Real) Point_z(points[0]);
 
     for_less( i, 0, n_points )
     {
@@ -76,9 +76,9 @@ BICAPI  void  find_polygon_normal_no_normalize(
         x = tx;
         y = ty;
         z = tz;
-        tx = (Real) Point_x(points[next_i]);
-        ty = (Real) Point_y(points[next_i]);
-        tz = (Real) Point_z(points[next_i]);
+        tx = (VIO_Real) Point_x(points[next_i]);
+        ty = (VIO_Real) Point_y(points[next_i]);
+        tz = (VIO_Real) Point_z(points[next_i]);
 
         vx -= (y + ty) * (z - tz);
         vy -= (z + tz) * (x - tx);
@@ -97,9 +97,9 @@ BICAPI  void  find_polygon_normal_no_normalize(
             CROSS_VECTORS( normal, v1, v2 );
             if( !null_Vector( &normal ) )
             {
-                vx = (Real) Vector_x( normal );
-                vy = (Real) Vector_y( normal );
-                vz = (Real) Vector_z( normal );
+                vx = (VIO_Real) Vector_x( normal );
+                vy = (VIO_Real) Vector_y( normal );
+                vz = (VIO_Real) Vector_z( normal );
                 break;
             }
         }
@@ -130,7 +130,7 @@ BICAPI  void  find_polygon_normal(
     Point    points[],
     Vector   *normal )
 {
-    Real   nx, ny, nz;
+    VIO_Real   nx, ny, nz;
 
     find_polygon_normal_no_normalize( n_points, points, &nx, &ny, &nz );
 
@@ -160,7 +160,7 @@ BICAPI  void   get_plane_through_points(
     int      n_points,
     Point    points[],
     Vector   *normal,
-    Real     *plane_constant )
+    VIO_Real     *plane_constant )
 {
     Point   centroid;
 
@@ -186,10 +186,10 @@ BICAPI  void   get_plane_through_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  distance_from_plane(
+BICAPI  VIO_Real  distance_from_plane(
     Point    *point,
     Vector   *plane_normal,
-    Real     plane_constant )
+    VIO_Real     plane_constant )
 {
     return( DOT_POINT_VECTOR( *point, *plane_normal ) + plane_constant );
 }
@@ -209,13 +209,13 @@ BICAPI  Real  distance_from_plane(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  distance_from_line(
+BICAPI  VIO_Real  distance_from_line(
     Point    *point,
     Point    *end_point1,
     Point    *end_point2 )
 {
     Vector   d, v;
-    Real     dist, len, v_dot_d, v_dot_v;
+    VIO_Real     dist, len, v_dot_d, v_dot_v;
 
     SUB_POINTS( d, *end_point2, *end_point1 );
 

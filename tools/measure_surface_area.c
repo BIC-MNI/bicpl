@@ -1,30 +1,30 @@
 #include  <bicpl.h>
 
-private  Real  get_area_of_values(
+private  VIO_Real  get_area_of_values(
     polygons_struct   *polygons,
-    Real              values[],
-    Real              low,
-    Real              high,
-    BOOLEAN           clip_flag,
+    VIO_Real              values[],
+    VIO_Real              low,
+    VIO_Real              high,
+    VIO_BOOL           clip_flag,
     int               clip_axis,
-    Real              clip_sign,
-    Real              plane_pos );
+    VIO_Real              clip_sign,
+    VIO_Real              plane_pos );
 
 int  main(
     int    argc,
     char   *argv[] )
 {
     FILE                 *file;
-    Real                 *values, low, high, area;
+    VIO_Real                 *values, low, high, area;
     STRING               src_filename, values_filename;
     int                  p, n_objects, n_points;
     File_formats         format;
     object_struct        **object_list;
     polygons_struct      *polygons;
     STRING               axis_name, sign_name;
-    Real                 plane_pos, clip_sign;
+    VIO_Real                 plane_pos, clip_sign;
     int                  clip_axis;
-    BOOLEAN              clip_flag;
+    VIO_BOOL              clip_flag;
 
     initialize_argument_processing( argc, argv );
 
@@ -97,20 +97,20 @@ int  main(
     return( 0 );
 }
 
-private  Real  get_area_of_values(
+private  VIO_Real  get_area_of_values(
     polygons_struct   *polygons,
-    Real              values[],
-    Real              low,
-    Real              high,
-    BOOLEAN           clip_flag,
+    VIO_Real              values[],
+    VIO_Real              low,
+    VIO_Real              high,
+    VIO_BOOL           clip_flag,
     int               clip_axis,
-    Real              clip_sign,
-    Real              plane_pos )
+    VIO_Real              clip_sign,
+    VIO_Real              plane_pos )
 {
     int    n_points, i1, i2, size;
     int    poly, v, indices[MAX_POINTS_PER_POLYGON], ind;
     Point  points[2][1000];
-    Real   area, alpha, clip, prev_clip;
+    VIO_Real   area, alpha, clip, prev_clip;
 
     area = 0.0;
 

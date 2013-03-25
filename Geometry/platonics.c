@@ -40,7 +40,7 @@ static  void  fill_in_indices(
 BICAPI  void  create_unit_tetrahedron(
     polygons_struct  *polygons )
 {
-    Real         x, z, c;
+    VIO_Real         x, z, c;
     static  int  indices[] = {
                                  0, 1, 2,
                                  0, 2, 3,
@@ -65,7 +65,7 @@ BICAPI  void  create_unit_tetrahedron(
 BICAPI  void  create_unit_cube(
     polygons_struct  *polygons )
 {
-    Real         d;
+    VIO_Real         d;
     static  int  indices[] = {
                                  0, 1, 3, 2,
                                  4, 6, 7, 5,
@@ -120,7 +120,7 @@ BICAPI  void  create_unit_octohedron(
 BICAPI  void  create_unit_icosahedron(
     polygons_struct  *polygons )
 {
-    Real         a, b;
+    VIO_Real         a, b;
     static  int  indices[] = {
                                 2, 11, 3,
                                 2, 5, 11,

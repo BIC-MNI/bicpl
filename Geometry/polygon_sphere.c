@@ -22,12 +22,12 @@ static  int  get_n_sphere_points(
     int   n_up,
     int   n_around );
 static  void  get_sphere_point(
-    Real     up,
-    Real     around,
+    VIO_Real     up,
+    VIO_Real     around,
     Point    *centre,
-    Real     x_size,
-    Real     y_size,
-    Real     z_size,
+    VIO_Real     x_size,
+    VIO_Real     y_size,
+    VIO_Real     z_size,
     Point    *point );
 static  void  get_subdivided_point(
     int      up,
@@ -60,12 +60,12 @@ static  void  get_subdivided_point(
 
 BICAPI  void  create_polygons_sphere(
     Point            *centre,
-    Real             x_size,
-    Real             y_size,
-    Real             z_size,
+    VIO_Real             x_size,
+    VIO_Real             y_size,
+    VIO_Real             z_size,
     int              n_up,
     int              n_around,
-    BOOLEAN          subdividing_flag,
+    VIO_BOOL          subdividing_flag,
     polygons_struct  *polygons )
 {
     int      point_index, top_point_index, bottom_point_index;
@@ -75,7 +75,7 @@ BICAPI  void  create_polygons_sphere(
     Point    *input_points;
     Colour   save_colour;
     int      input_n_up;
-    Real     up_pos, around_pos;
+    VIO_Real     up_pos, around_pos;
 
     if( subdividing_flag )
     {
@@ -113,7 +113,7 @@ BICAPI  void  create_polygons_sphere(
 
     for_less( up, 0, n_up+1 )
     {
-        up_pos = (Real) up / (Real) n_up;
+        up_pos = (VIO_Real) up / (VIO_Real) n_up;
 
         if( up == 0 || up == n_up )
             n_circum = 1;
@@ -122,7 +122,7 @@ BICAPI  void  create_polygons_sphere(
 
         for_less( around, 0, n_circum )
         {
-            around_pos = (Real) around / (Real) n_around;
+            around_pos = (VIO_Real) around / (VIO_Real) n_around;
 
             point_index = get_sphere_point_index( up, around, n_up, n_around );
 
@@ -318,23 +318,23 @@ static  int  get_n_sphere_points(
 ---------------------------------------------------------------------------- */
 
 static  void  get_sphere_point(
-    Real     up,
-    Real     around,
+    VIO_Real     up,
+    VIO_Real     around,
     Point    *centre,
-    Real     x_size,
-    Real     y_size,
-    Real     z_size,
+    VIO_Real     x_size,
+    VIO_Real     y_size,
+    VIO_Real     z_size,
     Point    *point )
 {
-    Real      dx, dy, dz;
+    VIO_Real      dx, dy, dz;
 
     dx = x_size * cos( (double) up * PI );
     dy = y_size * sin( (double) up * PI ) * cos( (double) around * 2.0 *PI);
     dz = z_size * sin( (double) up * PI ) * sin( (double) around * 2.0 *PI);
 
-    fill_Point( *point, (Real) Point_x(*centre) + dx,
-                        (Real) Point_y(*centre) + dy,
-                        (Real) Point_z(*centre) + dz );
+    fill_Point( *point, (VIO_Real) Point_x(*centre) + dx,
+                        (VIO_Real) Point_y(*centre) + dy,
+                        (VIO_Real) Point_z(*centre) + dz );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -361,7 +361,7 @@ static  void  get_subdivided_point(
     Point    *point )
 {
     int       input_up, input_around;
-    BOOLEAN   up_midpoint_flag, around_midpoint_flag;
+    VIO_BOOL   up_midpoint_flag, around_midpoint_flag;
     Point     corner_below, corner_across, corner_below_across;
 
     input_up = up / 2;
@@ -410,7 +410,7 @@ static  void  get_subdivided_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  is_this_sphere_topology(
+BICAPI  VIO_BOOL  is_this_sphere_topology(
     polygons_struct  *polygons )
 {
     int     tess;
@@ -432,13 +432,13 @@ BICAPI  BOOLEAN  is_this_sphere_topology(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_tessellation_of_polygons_sphere(
+BICAPI  VIO_BOOL  get_tessellation_of_polygons_sphere(
     polygons_struct  *polygons,
     int              *tess )
 {
-    Real    size; 
+    VIO_Real    size; 
     int     int_size, n_around_top, n_triangles, i;
-    BOOLEAN is_sphere;
+    VIO_BOOL is_sphere;
 
     is_sphere = FALSE;
 
@@ -500,17 +500,17 @@ BICAPI  BOOLEAN  get_tessellation_of_polygons_sphere(
 BICAPI  int  get_tessellation_with_n_points(
     int   n_points )
 {
-    Real  a, b, c, s1, s2;
+    VIO_Real  a, b, c, s1, s2;
     int   n_sol;
 
 #ifdef  N_AROUND_TOP
     a = 2.0;
     b = -6.0;
-    c = 2.0 * (Real) N_AROUND_TOP + 2.0 - (Real) n_points;
+    c = 2.0 * (VIO_Real) N_AROUND_TOP + 2.0 - (VIO_Real) n_points;
 #else
     a = 2.0;
     b = -2.0;
-    c = 2.0 - (Real) n_points;
+    c = 2.0 - (VIO_Real) n_points;
 #endif
 
     n_sol = solve_quadratic( a, b, c, &s1, &s2 );

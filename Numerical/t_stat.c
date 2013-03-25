@@ -50,31 +50,31 @@ double gamma(double x)
 }
 #endif
 
-static  Real  evaluate_probability_t(
+static  VIO_Real  evaluate_probability_t(
     int    v,
-    Real   t )
+    VIO_Real   t )
 {
-    Real   gamma_top, gamma_bottom, top, bottom, p;
+    VIO_Real   gamma_top, gamma_bottom, top, bottom, p;
 
-    gamma_top = exp( gamma( ((Real) v + 1.0) / 2.0 ) );
-    gamma_bottom = exp( gamma( (Real) v / 2.0 ) );
+    gamma_top = exp( gamma( ((VIO_Real) v + 1.0) / 2.0 ) );
+    gamma_bottom = exp( gamma( (VIO_Real) v / 2.0 ) );
 
-    top = gamma_top * pow( 1.0 + t * t / (Real) v, - (Real) (v+1)/ 2.0 );
-    bottom = sqrt( (Real) v * PI ) * gamma_bottom;
+    top = gamma_top * pow( 1.0 + t * t / (VIO_Real) v, - (VIO_Real) (v+1)/ 2.0 );
+    bottom = sqrt( (VIO_Real) v * PI ) * gamma_bottom;
 
     p = top / bottom;
 
     return( p );
 }
 
-static   Real  initialize_t_integral(
+static   VIO_Real  initialize_t_integral(
     int    v,
     int    n_points,
-    Real   cumulative_probs[],
-    Real   max_dist,
+    VIO_Real   cumulative_probs[],
+    VIO_Real   max_dist,
     int    n_steps_between )
 {
-    Real   error, cum_prob, this_p, prev_p, t, step_size;
+    VIO_Real   error, cum_prob, this_p, prev_p, t, step_size;
     int    i, step;
 
     cumulative_probs[0] = 0.0;
@@ -83,7 +83,7 @@ static   Real  initialize_t_integral(
     cum_prob = 0.0;
     error = 0.0;
 
-    step_size = max_dist / (Real) (n_points-1) / (Real) n_steps_between;
+    step_size = max_dist / (VIO_Real) (n_points-1) / (VIO_Real) n_steps_between;
 
     for_less( i, 0, n_points-1 )
     {
@@ -91,8 +91,8 @@ static   Real  initialize_t_integral(
         {
             prev_p = this_p;
 
-            t = (Real) (i * n_steps_between + step + 1)  /
-                (Real) ((n_points-1) * n_steps_between) * max_dist;
+            t = (VIO_Real) (i * n_steps_between + step + 1)  /
+                (VIO_Real) ((n_points-1) * n_steps_between) * max_dist;
             this_p = evaluate_probability_t( v, t );
             cum_prob += (this_p + prev_p) / 2.0 * step_size;
             error += prev_p - this_p;
@@ -107,14 +107,14 @@ static   Real  initialize_t_integral(
     return( error );
 }
 
-static  Real  convert_t_stat_to_probability(
+static  VIO_Real  convert_t_stat_to_probability(
     int   n_points,
-    Real  cumulative_probs[],
-    Real  max_dist,
-    Real  t )
+    VIO_Real  cumulative_probs[],
+    VIO_Real  max_dist,
+    VIO_Real  t )
 {
     int   ind;
-    Real  abs_t, alpha1, alpha2, value, interval_width;
+    VIO_Real  abs_t, alpha1, alpha2, value, interval_width;
 
     abs_t = FABS( t );
 
@@ -122,10 +122,10 @@ static  Real  convert_t_stat_to_probability(
         value = 0.5;
     else
     {
-        interval_width = max_dist / (Real) (n_points-1);
+        interval_width = max_dist / (VIO_Real) (n_points-1);
         ind = (int) (abs_t / interval_width);
-        alpha1 = abs_t / interval_width - (Real) ind;
-        alpha2 = (Real) (ind+1) - abs_t / interval_width;
+        alpha1 = abs_t / interval_width - (VIO_Real) ind;
+        alpha2 = (VIO_Real) (ind+1) - abs_t / interval_width;
         value = alpha1 * cumulative_probs[ind] +
                 alpha2 * cumulative_probs[ind+1];
     }
@@ -161,11 +161,11 @@ BICAPI  void  delete_cumulative_t_stat(
     FREE( stat->cumulative_probs );
 }
 
-BICAPI  Real  get_cumulative_t_stat(
+BICAPI  VIO_Real  get_cumulative_t_stat(
     t_stat_struct  *stat,
-    Real           t )
+    VIO_Real           t )
 {
-    Real   prob;
+    VIO_Real   prob;
 
     prob = convert_t_stat_to_probability( stat->n_points,
                                           stat->cumulative_probs,

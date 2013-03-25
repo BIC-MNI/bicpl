@@ -52,10 +52,10 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/matr
 BICAPI  void  transpose(
     int     rows,
     int     cols,
-    Real    **mat,
-    Real    **mat_transpose )
+    VIO_Real    **mat,
+    VIO_Real    **mat_transpose )
 {
-    Real   swap;
+    VIO_Real   swap;
     int    i, j, square;
 
     if( mat == mat_transpose )
@@ -117,11 +117,11 @@ static  void  raw_matrix_multiply(
     int     ldim,
     int     mdim,
     int     ndim, 
-    Real    **Amat,
-    Real    **Bmat,
-    Real    **Cmat )
+    VIO_Real    **Amat,
+    VIO_Real    **Bmat,
+    VIO_Real    **Cmat )
 {
-    Real   sum;
+    VIO_Real   sum;
     int    i, j, k;
 
     /* Calculate the product */
@@ -166,12 +166,12 @@ BICAPI  void  matrix_multiply(
     int    ldim,
     int    mdim,
     int    ndim, 
-    Real   **Amat,
-    Real   **Bmat,
-    Real   **Cmat )
+    VIO_Real   **Amat,
+    VIO_Real   **Bmat,
+    VIO_Real   **Cmat )
 {
     int     i, j;
-    Real    **Ctemp;
+    VIO_Real    **Ctemp;
 
     /* Allocate a temporary matrix */
 

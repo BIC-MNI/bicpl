@@ -20,8 +20,8 @@
 
 typedef struct
 {
-    Real   delta;
-    Real   offset;
+    VIO_Real   delta;
+    VIO_Real   offset;
     int    min_index;
     int    max_index;
     int    *counts;

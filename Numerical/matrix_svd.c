@@ -16,9 +16,9 @@
 
 
 int bicpl_dgesvd_(char *jobu, char *jobvt, long int *m, long int *n,
-            Real *a, long int *lda, Real *s, Real *u,
-            long int * ldu, Real *vt, long int *ldvt, 
-	    Real *work, long int *lwork, long int *info);
+            VIO_Real *a, long int *lda, VIO_Real *s, VIO_Real *u,
+            long int * ldu, VIO_Real *vt, long int *ldvt, 
+	    VIO_Real *work, long int *lwork, long int *info);
 
 
 #ifndef lint
@@ -42,16 +42,16 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matri
 	      compatible code, specifically a routine extracted from the clapack library
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  singular_value_decomposition(
+BICAPI  VIO_BOOL  singular_value_decomposition(
     int    m,
     int    n,
-    Real   **a,
-    Real   w[],
-    Real   **v )
+    VIO_Real   **a,
+    VIO_Real   w[],
+    VIO_Real   **v )
 {
   
   int i,j;
-  BOOLEAN val;
+  VIO_BOOL val;
   char jobu = 'O';
   char jobvt = 'A';
   long int _m = (long int) m;
@@ -61,12 +61,12 @@ BICAPI  BOOLEAN  singular_value_decomposition(
   long int ldu = _m;
   long int ldvt = _n;
   long int lwork = MAX(3*MIN(_m,_n)+MAX(_m,_n),5*MIN(_m,_n));
-  Real** _a;
-  Real* work;
-  Real** _u;
-  Real** _v;
+  VIO_Real** _a;
+  VIO_Real* work;
+  VIO_Real** _u;
+  VIO_Real** _v;
   long int info;
-  Real temp;
+  VIO_Real temp;
 
   ALLOC(work,(int) lwork);
   ALLOC2D(_a,n,m);
@@ -80,9 +80,9 @@ BICAPI  BOOLEAN  singular_value_decomposition(
   }
   
 
-  val = bicpl_dgesvd_(&jobu, &jobvt, &_m, &_n, (Real*) *_a, &lda, (Real*) w, 
-		(Real*) *_u, &ldu, (Real*) *_v, &ldvt, 
-		(Real*) work, &lwork, &info);
+  val = bicpl_dgesvd_(&jobu, &jobvt, &_m, &_n, (VIO_Real*) *_a, &lda, (VIO_Real*) w, 
+		(VIO_Real*) *_u, &ldu, (VIO_Real*) *_v, &ldvt, 
+		(VIO_Real*) work, &lwork, &info);
       
   for (j = 0; j < n; j++) {    
     for (i = 0; i < m; i++) {

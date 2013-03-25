@@ -21,14 +21,14 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 static  void  recursive_intersect_ray(
     Point                 *origin,
     Vector                *direction,
-    Real                  t_min,
-    Real                  t_max,
+    VIO_Real                  t_min,
+    VIO_Real                  t_max,
     bintree_node_struct   *node,
     object_struct         *object,
     int                   *obj_index,
-    Real                  *closest_dist,
+    VIO_Real                  *closest_dist,
     int                   *n_intersections,
-    Real                  *distances[] );
+    VIO_Real                  *distances[] );
 
 static  int  n_nodes_searched = 0;
 static  int  n_objects_searched = 0;
@@ -49,8 +49,8 @@ static  int  n_objects_searched = 0;
 BICAPI  void  print_bintree_stats(
     int   n_objects )
 {
-    print( "Nodes %g  ", (Real) n_nodes_searched / (Real) n_objects );
-    print( "Objects %g\n", (Real) n_objects_searched / (Real) n_objects );
+    print( "Nodes %g  ", (VIO_Real) n_nodes_searched / (VIO_Real) n_objects );
+    print( "Objects %g\n", (VIO_Real) n_objects_searched / (VIO_Real) n_objects );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -77,11 +77,11 @@ BICAPI  int  intersect_ray_with_bintree(
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *obj_index,
-    Real                *dist,
-    Real                *distances[] )
+    VIO_Real                *dist,
+    VIO_Real                *distances[] )
 {
     int       n_intersections;
-    Real      t_min, t_max;
+    VIO_Real      t_min, t_max;
 
     n_intersections = 0;
     if( obj_index != (int *) NULL )
@@ -122,20 +122,20 @@ BICAPI  int  intersect_ray_with_bintree(
 static  void  recursive_intersect_ray(
     Point                 *origin,
     Vector                *direction,
-    Real                  t_min,
-    Real                  t_max,
+    VIO_Real                  t_min,
+    VIO_Real                  t_max,
     bintree_node_struct   *node,
     object_struct         *object,
     int                   *obj_index,
-    Real                  *closest_dist,
+    VIO_Real                  *closest_dist,
     int                   *n_intersections,
-    Real                  *distances[] )
+    VIO_Real                  *distances[] )
 {
-    BOOLEAN               test_child, searching_left;
+    VIO_BOOL               test_child, searching_left;
     int                   i, n_objects, *object_list, axis_index;
     bintree_node_struct   *left_child, *right_child;
-    Real                  delta, left_limit, right_limit;
-    Real                  t, t_min_child, t_max_child;
+    VIO_Real                  delta, left_limit, right_limit;
+    VIO_Real                  t, t_min_child, t_max_child;
 
     if( distances == NULL && obj_index != NULL &&
         *obj_index >= 0 && *closest_dist < t_min )
@@ -160,7 +160,7 @@ static  void  recursive_intersect_ray(
     else
     {
         axis_index = get_node_split_axis( node );
-        delta = (Real) Vector_coord( *direction, axis_index );
+        delta = (VIO_Real) Vector_coord( *direction, axis_index );
 
         if( delta > 0.0 )
             searching_left = TRUE;
@@ -178,14 +178,14 @@ static  void  recursive_intersect_ray(
 
                 if( delta == 0.0 )
                 {
-                    test_child = ((Real) Point_coord(*origin,axis_index) <=
+                    test_child = ((VIO_Real) Point_coord(*origin,axis_index) <=
                                   left_limit);
                 }
                 else
                 {
                     test_child = FALSE;
 
-                    t = (left_limit - (Real) Point_coord(*origin,axis_index)) /
+                    t = (left_limit - (VIO_Real) Point_coord(*origin,axis_index)) /
                         delta;
 
                     if( delta < 0.0 && t <= t_max_child )
@@ -224,14 +224,14 @@ static  void  recursive_intersect_ray(
 
                 if( delta == 0.0 )
                 {
-                    test_child = ((Real) Point_coord(*origin,axis_index) >=
+                    test_child = ((VIO_Real) Point_coord(*origin,axis_index) >=
                                   right_limit);
                 }
                 else
                 {
                     test_child = FALSE;
 
-                    t = (right_limit - (Real) Point_coord(*origin,axis_index)) /
+                    t = (right_limit - (VIO_Real) Point_coord(*origin,axis_index)) /
                         delta;
 
                     if( delta < 0.0 && t >= t_min_child )
@@ -286,22 +286,22 @@ static  void  recursive_intersect_ray(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  ray_intersects_range(
+BICAPI  VIO_BOOL  ray_intersects_range(
     range_struct  *range,
     Point         *origin,
     Vector        *direction,
-    Real          *t_min,
-    Real          *t_max )
+    VIO_Real          *t_min,
+    VIO_Real          *t_max )
 {
-    BOOLEAN  intersects;
+    VIO_BOOL  intersects;
 
     intersects = clip_line_to_box( origin, direction,
-                                   (Real) range->limits[X][0],
-                                   (Real) range->limits[X][1],
-                                   (Real) range->limits[Y][0],
-                                   (Real) range->limits[Y][1],
-                                   (Real) range->limits[Z][0],
-                                   (Real) range->limits[Z][1], t_min, t_max );
+                                   (VIO_Real) range->limits[X][0],
+                                   (VIO_Real) range->limits[X][1],
+                                   (VIO_Real) range->limits[Y][0],
+                                   (VIO_Real) range->limits[Y][1],
+                                   (VIO_Real) range->limits[Z][0],
+                                   (VIO_Real) range->limits[Z][1], t_min, t_max );
 
 
     if( intersects )

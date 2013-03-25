@@ -41,21 +41,21 @@ BICAPI void  scan_marker_to_voxels(
     Volume           label_volume,
     int              label )
 {
-    Real           low[N_DIMENSIONS], high[N_DIMENSIONS];
+    VIO_Real           low[N_DIMENSIONS], high[N_DIMENSIONS];
     int            min_voxel[N_DIMENSIONS], max_voxel[N_DIMENSIONS];
-    Real           voxel[N_DIMENSIONS], min_v, max_v;
+    VIO_Real           voxel[N_DIMENSIONS], min_v, max_v;
     int            c, int_voxel[N_DIMENSIONS];
 
     convert_world_to_voxel( volume,
-                       (Real) Point_x(marker->position) - (Real) marker->size,
-                       (Real) Point_y(marker->position) - (Real) marker->size,
-                       (Real) Point_z(marker->position) - (Real) marker->size,
+                       (VIO_Real) Point_x(marker->position) - (VIO_Real) marker->size,
+                       (VIO_Real) Point_y(marker->position) - (VIO_Real) marker->size,
+                       (VIO_Real) Point_z(marker->position) - (VIO_Real) marker->size,
                        low );
 
     convert_world_to_voxel( volume,
-                       (Real) Point_x(marker->position) + (Real) marker->size,
-                       (Real) Point_y(marker->position) + (Real) marker->size,
-                       (Real) Point_z(marker->position) + (Real) marker->size,
+                       (VIO_Real) Point_x(marker->position) + (VIO_Real) marker->size,
+                       (VIO_Real) Point_y(marker->position) + (VIO_Real) marker->size,
+                       (VIO_Real) Point_z(marker->position) + (VIO_Real) marker->size,
                        high );
 
     for_less( c, 0, N_DIMENSIONS )

@@ -19,9 +19,9 @@ int  main(
     object_struct    **object_list;
     polygons_struct  *polygons1, *polygons2;
     Point            point;
-    Real             dist, min_dist, max_dist, rms, avg_dist, std_dev;
-    Real             sum_x, sum_xx, bintree_factor;
-    BOOLEAN          outputting;
+    VIO_Real             dist, min_dist, max_dist, rms, avg_dist, std_dev;
+    VIO_Real             sum_x, sum_xx, bintree_factor;
+    VIO_BOOL          outputting;
 
     initialize_argument_processing( argc, argv );
 
@@ -83,7 +83,7 @@ int  main(
     else
     {
         create_polygons_bintree( polygons2,
-                                 ROUND( (Real) polygons2->n_items *
+                                 ROUND( (VIO_Real) polygons2->n_items *
                                         bintree_factor ) );
     }
 
@@ -142,12 +142,12 @@ int  main(
         }
     }
 
-    rms = sqrt( sum_xx / (Real) polygons1->n_points );
+    rms = sqrt( sum_xx / (VIO_Real) polygons1->n_points );
 
-    avg_dist = sum_x / (Real) polygons1->n_points;
+    avg_dist = sum_x / (VIO_Real) polygons1->n_points;
 
-    std_dev = (sum_xx - sum_x * sum_x / (Real) polygons1->n_points) /
-              (Real) (polygons1->n_points-1);
+    std_dev = (sum_xx - sum_x * sum_x / (VIO_Real) polygons1->n_points) /
+              (VIO_Real) (polygons1->n_points-1);
 
     if( std_dev > 0.0 )
         std_dev = sqrt( std_dev );

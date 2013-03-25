@@ -45,7 +45,7 @@ static void  recursive_scan_polygon_to_voxels(
     int                 max_voxel[] )
 {
     int        n_left, n_right, dim, max_dim, save, pos;
-    Real       slice_pos;
+    VIO_Real       slice_pos;
     Point      right_vertices[MAX_TEMP_STORAGE];
     Point      left_vertices[MAX_TEMP_STORAGE];
     Vector     normal;
@@ -65,7 +65,7 @@ static void  recursive_scan_polygon_to_voxels(
     }
 
     pos = (min_voxel[max_dim] + max_voxel[max_dim]) / 2;
-    slice_pos = (Real) pos + 0.5;
+    slice_pos = (VIO_Real) pos + 0.5;
 
     fill_Vector( normal, 0.0, 0.0, 0.0 );
     Vector_coord( normal, max_dim ) = -1.0f;
@@ -142,8 +142,8 @@ BICAPI void  scan_a_polygon(
     int                 label )
 {
     int        vertex, dim, n_clip;
-    Real       voxel[N_DIMENSIONS];
-    Real       min_voxel[N_DIMENSIONS], max_voxel[N_DIMENSIONS];
+    VIO_Real       voxel[N_DIMENSIONS];
+    VIO_Real       min_voxel[N_DIMENSIONS], max_voxel[N_DIMENSIONS];
     int        min_iv[N_DIMENSIONS], max_iv[N_DIMENSIONS];
 
     min_voxel[X] = 0.0;     /*--- to avoid warnings */
@@ -191,12 +191,12 @@ BICAPI void  scan_a_polygon(
     }
 
     n_clip = clip_polygon_against_box( size, voxels,
-                                       (Real) min_iv[X] - 0.5,
-                                       (Real) max_iv[X] + 0.5,
-                                       (Real) min_iv[Y] - 0.5,
-                                       (Real) max_iv[Y] + 0.5,
-                                       (Real) min_iv[Z] - 0.5,
-                                       (Real) max_iv[Z] + 0.5,
+                                       (VIO_Real) min_iv[X] - 0.5,
+                                       (VIO_Real) max_iv[X] + 0.5,
+                                       (VIO_Real) min_iv[Y] - 0.5,
+                                       (VIO_Real) max_iv[Y] + 0.5,
+                                       (VIO_Real) min_iv[Z] - 0.5,
+                                       (VIO_Real) max_iv[Z] + 0.5,
 				       n_output_vertices,
                                        output_vertices );
 
@@ -241,7 +241,7 @@ BICAPI void  scan_polygons_to_voxels(
     Volume              volume,
     Volume              label_volume,
     int                 label,
-    Real                max_distance )
+    VIO_Real                max_distance )
 {
     int        vertex, poly, size, point_index, max_size;
     Point      *vertices, *voxels, *output_vertices;
@@ -315,7 +315,7 @@ BICAPI void  scan_quadmesh_to_voxels(
     Volume              volume,
     Volume              label_volume,
     int                 label,
-    Real                max_distance )
+    VIO_Real                max_distance )
 {
     int        i, j, m, n;
     Point      vertices[4], voxels[4], output_vertices[4];

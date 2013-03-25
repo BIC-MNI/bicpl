@@ -24,9 +24,9 @@ static  void  recursive_find_closest_point(
     range_struct          *range,
     object_struct         *object,
     int                   *obj_index,
-    Real                  *closest_dist,
+    VIO_Real                  *closest_dist,
     Point                 *closest_point );
-static  Real  get_point_range_dist(
+static  VIO_Real  get_point_range_dist(
     Point         *point,
     range_struct  *range );
 
@@ -47,14 +47,14 @@ static  Real  get_point_range_dist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  find_closest_point_in_bintree(
+BICAPI  VIO_Real  find_closest_point_in_bintree(
     Point               *point,
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *obj_index,
     Point               *point_on_object )
 {
-    Real      dist;
+    VIO_Real      dist;
 
     dist = 1.0e60;
 
@@ -91,17 +91,17 @@ static  void  recursive_find_closest_point(
     range_struct          *range,
     object_struct         *object,
     int                   *obj_index,
-    Real                  *closest_dist,
+    VIO_Real                  *closest_dist,
     Point                 *closest_point )
 {
     int                   i, n_objects, *object_list, axis_index;
     int                   n_to_search;
     bintree_node_struct   *children[2], *tmp_node;
     range_struct          children_ranges[2], tmp_range;
-    Real                  children_distances[2];
-    Real                  dist;
+    VIO_Real                  children_distances[2];
+    VIO_Real                  dist;
     Point                 object_point;
-    Real                  left_limit, right_limit;
+    VIO_Real                  left_limit, right_limit;
 
     if( bintree_node_is_leaf( node ) )
     {
@@ -186,20 +186,20 @@ static  void  recursive_find_closest_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Real  get_point_range_dist(
+static  VIO_Real  get_point_range_dist(
     Point         *point,
     range_struct  *range )
 {
     int      c;
-    Real     min_plane, max_plane, point_pos, dist, sum;
+    VIO_Real     min_plane, max_plane, point_pos, dist, sum;
 
     sum = 0.0;
 
     for_less( c, 0, N_DIMENSIONS )
     {
-        min_plane = (Real) range->limits[c][0];
-        max_plane = (Real) range->limits[c][1];
-        point_pos = (Real) Point_coord(*point,c);
+        min_plane = (VIO_Real) range->limits[c][0];
+        max_plane = (VIO_Real) range->limits[c][1];
+        point_pos = (VIO_Real) Point_coord(*point,c);
 
         if( point_pos < min_plane )
             dist = min_plane - point_pos;
@@ -219,7 +219,7 @@ static  void  recursive_find_closest_vertex(
     bintree_node_struct   *node,
     range_struct          *range,
     object_struct         *object,
-    Real                  *closest_dist,
+    VIO_Real                  *closest_dist,
     int                   *closest_vertex );
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -238,13 +238,13 @@ static  void  recursive_find_closest_vertex(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Real  find_closest_vertex_in_bintree(
+BICAPI  VIO_Real  find_closest_vertex_in_bintree(
     Point               *point,
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *vertex_on_object )
 {
-    Real      dist;
+    VIO_Real      dist;
 
     dist = 1.0e30;
 
@@ -276,17 +276,17 @@ static  void  recursive_find_closest_vertex(
     bintree_node_struct   *node,
     range_struct          *range,
     object_struct         *object,
-    Real                  *closest_dist,
+    VIO_Real                  *closest_dist,
     int                   *closest_vertex )
 {
     int                   i, n_objects, *object_list, axis_index;
     int                   n_to_search;
     bintree_node_struct   *children[2], *tmp_node;
     range_struct          children_ranges[2], tmp_range;
-    Real                  children_distances[2];
-    Real                  dist;
+    VIO_Real                  children_distances[2];
+    VIO_Real                  dist;
     int                   object_vertex;
-    Real                  left_limit, right_limit;
+    VIO_Real                  left_limit, right_limit;
 
     if( bintree_node_is_leaf( node ) )
     {

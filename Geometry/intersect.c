@@ -35,14 +35,14 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/inters
 @MODIFIED   : Jul 12, 1995    David MacDonald - rewrote to be clearer.
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN   line_segment_intersects_plane(
+BICAPI  VIO_BOOL   line_segment_intersects_plane(
     Point   *p1,
     Point   *p2,
     Point   *plane_origin,
     Vector  *plane_normal,
     Point   *intersection_point )
 {
-    Real     t, t1, t2;
+    VIO_Real     t, t1, t2;
     Vector   v1, v2;
 
     SUB_POINTS( v1, *p1, *plane_origin );
@@ -89,17 +89,17 @@ BICAPI  BOOLEAN   line_segment_intersects_plane(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_nearest_point_on_lines(
+BICAPI  VIO_BOOL  get_nearest_point_on_lines(
     Point   *origin1,
     Vector  *delta1,
     Point   *origin2,
     Vector  *delta2,
     Point   *nearest_point )
 {
-    BOOLEAN   intersects;
-    Real      t, bottom;
-    Real      d11, d12, d22;
-    Real      o11, o12, o21, o22;
+    VIO_BOOL   intersects;
+    VIO_Real      t, bottom;
+    VIO_Real      d11, d12, d22;
+    VIO_Real      o11, o12, o21, o22;
 
     d11 = DOT_VECTORS( *delta1, *delta1 );
     d12 = DOT_VECTORS( *delta1, *delta2 );
@@ -147,34 +147,34 @@ BICAPI  BOOLEAN  get_nearest_point_on_lines(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  clip_line_to_box(
+BICAPI  VIO_BOOL  clip_line_to_box(
     Point    *origin,
     Vector   *direction,
-    Real     x_min,
-    Real     x_max,
-    Real     y_min,
-    Real     y_max,
-    Real     z_min,
-    Real     z_max,
-    Real     *t_min,
-    Real     *t_max )
+    VIO_Real     x_min,
+    VIO_Real     x_max,
+    VIO_Real     y_min,
+    VIO_Real     y_max,
+    VIO_Real     z_min,
+    VIO_Real     z_max,
+    VIO_Real     *t_min,
+    VIO_Real     *t_max )
 {
-    BOOLEAN  first;
-    Real     dir, org, t1, t2, min_t, max_t;
+    VIO_BOOL  first;
+    VIO_Real     dir, org, t1, t2, min_t, max_t;
 
     *t_min = 0.0;
     *t_max = -1.0;
 
-    dir = (Real) Vector_x( *direction );
-    org = (Real) Point_x( *origin );
+    dir = (VIO_Real) Vector_x( *direction );
+    org = (VIO_Real) Point_x( *origin );
 
     if( dir == 0.0 )
     {
         if( org < x_min || org > x_max )
             return( FALSE );
 
-        dir = (Real) Vector_y( *direction );
-        org = (Real) Point_y( *origin );
+        dir = (VIO_Real) Vector_y( *direction );
+        org = (VIO_Real) Point_y( *origin );
 
         if( dir < 0.0 )
         {
@@ -196,8 +196,8 @@ BICAPI  BOOLEAN  clip_line_to_box(
             first = TRUE;
         }
 
-        dir = (Real) Vector_z( *direction );
-        org = (Real) Point_z( *origin );
+        dir = (VIO_Real) Vector_z( *direction );
+        org = (VIO_Real) Point_z( *origin );
 
         if( dir < 0.0 )
         {
@@ -249,8 +249,8 @@ BICAPI  BOOLEAN  clip_line_to_box(
         max_t = (x_min - org) / dir;
     }
 
-    dir = (Real) Vector_y( *direction );
-    org = (Real) Point_y( *origin );
+    dir = (VIO_Real) Vector_y( *direction );
+    org = (VIO_Real) Point_y( *origin );
 
     if( dir == 0.0 )
     {
@@ -284,8 +284,8 @@ BICAPI  BOOLEAN  clip_line_to_box(
         }
     }
 
-    dir = (Real) Vector_z( *direction );
-    org = (Real) Point_z( *origin );
+    dir = (VIO_Real) Vector_z( *direction );
+    org = (VIO_Real) Point_z( *origin );
 
     if( dir == 0.0 )
     {

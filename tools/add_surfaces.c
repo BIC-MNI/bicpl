@@ -2,10 +2,10 @@
 
 private  Status  add_polygons(
     polygons_struct   *summed_polygons,
-    Real              weight,
+    VIO_Real              weight,
     polygons_struct   *polygons,
-    Real              **colours,
-    BOOLEAN           first_flag )
+    VIO_Real              **colours,
+    VIO_BOOL           first_flag )
 {
     int     i, c, n_colours;
     Point   scaled;
@@ -63,10 +63,10 @@ int  main(
 {
     Status           status;
     STRING           filename, output_filename;
-    Real             weight, new_weight;
+    VIO_Real             weight, new_weight;
     int              i, n_objects, n_polygons, n_colours;
-    Real             scale_colours;
-    Real             **colours;
+    VIO_Real             scale_colours;
+    VIO_Real             **colours;
     File_formats     format;
     object_struct    *out_object;
     object_struct    **object_list;

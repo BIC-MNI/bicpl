@@ -19,9 +19,9 @@
 #include  <volume_io.h>
 
 typedef  enum {
-                 BOOLEAN_type,
+                 VIO_BOOL_type,
                  int_type,
-                 Real_type,
+                 VIO_Real_type,
                  STRING_type,
                  Point_type,
                  Vector_type,

@@ -18,7 +18,7 @@ int  main(
 {
     STRING               src_filename, dest_filename;
     File_formats         format;
-    Real                 line_thickness;
+    VIO_Real                 line_thickness;
     int                  i;
     int                  n_objects;
     object_struct        **objects;

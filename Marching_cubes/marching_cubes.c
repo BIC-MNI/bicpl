@@ -3484,15 +3484,15 @@ static  marching_cube_data_struct  marching_cube_cases[256] =
     };
 
 static  int  get_voxel_case_struct(
-    BOOLEAN             above_flags[2][2][2],
+    VIO_BOOL             above_flags[2][2][2],
     voxel_point_type    *points_list_ptr[] );
 
 BICAPI  int  compute_isotriangles_in_voxel(
-    Real                corner_values[2][2][2],
-    Real                target_value,
+    VIO_Real                corner_values[2][2][2],
+    VIO_Real                target_value,
     voxel_point_type    *points_list_ptr[] )
 {
-    BOOLEAN   above_flags[2][2][2];
+    VIO_BOOL   above_flags[2][2][2];
 
     above_flags[0][0][0] = (corner_values[0][0][0] >= target_value);
     above_flags[0][0][1] = (corner_values[0][0][1] >= target_value);
@@ -3507,7 +3507,7 @@ BICAPI  int  compute_isotriangles_in_voxel(
 }
 
 static  int  get_voxel_case_struct(
-    BOOLEAN             above_flags[2][2][2],
+    VIO_BOOL             above_flags[2][2][2],
     voxel_point_type    *points_list_ptr[] )
 {
     int                         case_index;

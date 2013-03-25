@@ -86,14 +86,14 @@ BICAPI   void  initialize_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  BOOLEAN  find_data_position(
+static  VIO_BOOL  find_data_position(
     skiplist_struct    *skiplist,
     float              key,
     update_struct      *update )
 {
     int           i;
     skip_struct   *x;
-    BOOLEAN       found;
+    VIO_BOOL       found;
 
     x = skiplist->header;
 
@@ -279,12 +279,12 @@ BICAPI   void  delete_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  search_skiplist(
+BICAPI  VIO_BOOL  search_skiplist(
     skiplist_struct          *skiplist,
     float                    key,
     void                     **data_ptr )
 {
-    BOOLEAN        found;
+    VIO_BOOL        found;
     update_struct  update_ptrs;
 
     found = find_data_position( skiplist, key, &update_ptrs );
@@ -295,13 +295,13 @@ BICAPI  BOOLEAN  search_skiplist(
     return( found );
 }
 
-BICAPI  BOOLEAN  search_skiplist_and_return_pointer(
+BICAPI  VIO_BOOL  search_skiplist_and_return_pointer(
     skiplist_struct          *skiplist,
     float                    key,
     skip_struct              **entry_ptr,
     void                     **data_ptr )
 {
-    BOOLEAN        found;
+    VIO_BOOL        found;
     update_struct  update_ptrs;
 
     found = find_data_position( skiplist, key, &update_ptrs );
@@ -330,12 +330,12 @@ BICAPI  BOOLEAN  search_skiplist_and_return_pointer(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  insert_in_skiplist(
+BICAPI  VIO_BOOL  insert_in_skiplist(
     skiplist_struct          *skiplist,
     float                    key,
     void                     *data_ptr )
 {
-    BOOLEAN        already_there;
+    VIO_BOOL        already_there;
     update_struct  update_ptrs;
 
     already_there = find_data_position( skiplist, key, &update_ptrs );
@@ -361,12 +361,12 @@ BICAPI  BOOLEAN  insert_in_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  delete_from_skiplist(
+BICAPI  VIO_BOOL  delete_from_skiplist(
     skiplist_struct  *skiplist,
     float            key,
     void             **data_ptr )
 {
-    BOOLEAN        in_skiplist;
+    VIO_BOOL        in_skiplist;
     update_struct  update_ptrs;
 
     in_skiplist = find_data_position( skiplist, key, &update_ptrs );
@@ -398,7 +398,7 @@ BICAPI  BOOLEAN  delete_from_skiplist(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_first_skiplist_entry(
+BICAPI  VIO_BOOL  get_first_skiplist_entry(
     skiplist_struct   *skiplist,
     skip_struct       **entry_ptr,
     float             *key,
@@ -430,7 +430,7 @@ BICAPI  BOOLEAN  get_first_skiplist_entry(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  BOOLEAN  get_next_skiplist_entry(
+BICAPI  VIO_BOOL  get_next_skiplist_entry(
     skip_struct       **entry_ptr,
     float             *key,
     void              **data_ptr )
@@ -448,12 +448,12 @@ BICAPI  BOOLEAN  get_next_skiplist_entry(
 
 #ifdef DEBUG
 
-static  BOOLEAN  test_skiplist_integrity(
+static  VIO_BOOL  test_skiplist_integrity(
     skiplist_struct  *skiplist )
 {
     int            i;
     update_struct  update;
-    BOOLEAN        okay;
+    VIO_BOOL        okay;
 
     for_less( i, 0, skiplist->level )
         update.update[i] = skiplist->header->forward[i];

@@ -21,18 +21,18 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/t.c,v 
 #include  <bicpl/geom.h>
 #include  <bicpl/trans.h>
 
-public  BOOLEAN  get_interpolation_weights_2d(
-    Real   x,
-    Real   y,
+public  VIO_BOOL  get_interpolation_weights_2d(
+    VIO_Real   x,
+    VIO_Real   y,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   weights[] )
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   weights[] )
 {
     int   i;
-    Real  x_fact, y_fact, constant, n;
-    Real  aa, ab, ac, bb, bc, dx, dy;
-    Real  acbb, abac, aabb, denom, aabc, abab;
+    VIO_Real  x_fact, y_fact, constant, n;
+    VIO_Real  aa, ab, ac, bb, bc, dx, dy;
+    VIO_Real  acbb, abac, aabb, denom, aabc, abab;
 
     aa = 0.0;
     ab = 0.0;
@@ -51,7 +51,7 @@ public  BOOLEAN  get_interpolation_weights_2d(
         bc += dy;
     }
 
-    n = (Real) n_points;
+    n = (VIO_Real) n_points;
     aabb = aa * bb;
     acbb = ac * bb;
     aabc = aa * bc;
@@ -73,21 +73,21 @@ public  BOOLEAN  get_interpolation_weights_2d(
     return( TRUE );
 }
 
-private  BOOLEAN  get_prediction_weights_2d_for_1_coord(
+private  VIO_BOOL  get_prediction_weights_2d_for_1_coord(
     int    dim,
-    Real   x,
-    Real   y,
+    VIO_Real   x,
+    VIO_Real   y,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   x_weights[],
-    Real   y_weights[] )
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   x_weights[],
+    VIO_Real   y_weights[] )
 {
     int        p, eq, n_trans;
-    Real       **coefs, *values, *solution, offset[2], angle;
-    Real       xt, yt, zt;
+    VIO_Real       **coefs, *values, *solution, offset[2], angle;
+    VIO_Real       xt, yt, zt;
     Transform  transform;
-    BOOLEAN    solved;
+    VIO_BOOL    solved;
 
     ALLOC2D( coefs, 2 * n_points+1, 2 * n_points+1 );
     ALLOC( values, 2 * n_points+1 );
@@ -105,8 +105,8 @@ private  BOOLEAN  get_prediction_weights_2d_for_1_coord(
         }
         else
         {
-            angle = 2.0 * PI * (Real) (eq - n_trans) /
-                         (Real) (2*n_points+1-n_trans);
+            angle = 2.0 * PI * (VIO_Real) (eq - n_trans) /
+                         (VIO_Real) (2*n_points+1-n_trans);
             make_rotation_transform( angle, Z, &transform );
         }
 
@@ -140,14 +140,14 @@ private  BOOLEAN  get_prediction_weights_2d_for_1_coord(
     return( solved );
 }
 
-public  BOOLEAN  get_prediction_weights_2d(
-    Real   x,
-    Real   y,
+public  VIO_BOOL  get_prediction_weights_2d(
+    VIO_Real   x,
+    VIO_Real   y,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   *x_weights[2],
-    Real   *y_weights[2] )
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   *x_weights[2],
+    VIO_Real   *y_weights[2] )
 {
     return( get_prediction_weights_2d_for_1_coord( 0, x, y, n_points, xs, ys,
                                                x_weights[0], x_weights[1] ) &&

@@ -38,16 +38,16 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/comp
 /* prototype definitions: */
 
 static  void  calculate_weights(
-    Real    **values,
-    Real    **INVML,
-    Real    **INVMLY,
+    VIO_Real    **values,
+    VIO_Real    **INVML,
+    VIO_Real    **INVMLY,
     int     n_points,
     int     n_dims,
     int     n_values );
 
 static  void  makeL(
-    Real   **positions,
-    Real   **ML,
+    VIO_Real   **positions,
+    VIO_Real   **ML,
     int    n_points,
     int    n_dims );
 
@@ -72,14 +72,14 @@ static  void  makeL(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  get_nonlinear_warp(
-   Real     **positions,   /* n_points x n_dims */
-   Real     **values,   /* n_points x n_values */
-   Real     **INVMLY,   /* n_points+1+n_dims x n_values */
+   VIO_Real     **positions,   /* n_points x n_dims */
+   VIO_Real     **values,   /* n_points x n_values */
+   VIO_Real     **INVMLY,   /* n_points+1+n_dims x n_values */
    int      n_points,
    int      n_dims,
    int      n_values )
 {
-   Real    **ML,**INVML;
+   VIO_Real    **ML,**INVML;
 
    ALLOC2D( ML, n_points+n_dims+1, n_points+n_dims+1 );
    ALLOC2D( INVML, n_points+n_dims+1, n_points+n_dims+1 );
@@ -116,13 +116,13 @@ BICAPI  void  get_nonlinear_warp(
 ---------------------------------------------------------------------------- */
 
 static  void  makeL(
-    Real   **positions,
-    Real   **ML,
+    VIO_Real   **positions,
+    VIO_Real   **ML,
     int    n_points,
     int    n_dims )
 {
     int    i,j;
-    Real   fu;
+    VIO_Real   fu;
  
     /* initialize matrix to zero */
 
@@ -177,9 +177,9 @@ static  void  makeL(
 ---------------------------------------------------------------------------- */
 
 static  void  calculate_weights(
-    Real    **YM,
-    Real    **INVML,
-    Real    **INVMLY,
+    VIO_Real    **YM,
+    VIO_Real    **INVML,
+    VIO_Real    **INVMLY,
     int     n_points,
     int     n_dims,
     int     n_values )

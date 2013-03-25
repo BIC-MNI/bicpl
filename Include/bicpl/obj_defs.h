@@ -45,7 +45,7 @@
              ( START_INDEX(end_indices,n) + (edge) )
 
 
-/*! \brief Colour style of compound geometrical object.
+/*! \brief VIO_Colour style of compound geometrical object.
  * Objects such as lines, polygons, and quadmeshes that are comprised 
  * of many smaller objects may have one colour for the whole compound,
  * or the colours may be set for individual elements of the compound.
@@ -59,11 +59,11 @@ typedef enum { ONE_COLOUR, PER_ITEM_COLOURS, PER_VERTEX_COLOURS } Colour_flags;
 typedef  struct
 {
     Colour_flags   colour_flag;
-    Colour         *colours;
+    VIO_Colour     *colours;
     float          line_thickness;
 
     int            n_points;
-    Point          *points;
+    VIO_Point      *points;
 
     int            n_items;
     int            *end_indices;
@@ -83,10 +83,10 @@ typedef  enum  { BOX_MARKER, SPHERE_MARKER,
 typedef  struct
 {
     Marker_types   type;
-    Colour         colour;
-    Point          position;
-    Real           size;
-    STRING         label;
+    VIO_Colour     colour;
+    VIO_Point      position;
+    VIO_Real       size;
+    VIO_STR        label;
     int            structure_id;
     int            patient_id;
 } marker_struct;
@@ -103,15 +103,15 @@ typedef  struct
     /*! Colours may be specified for entire set (colour_flag == ONE_COLOUR)
        or per item.  The colour array is dynamically resized to match */
     Colour_flags    colour_flag;
-    Colour          *colours;
-    Surfprop        surfprop;
+    VIO_Colour      *colours;
+    VIO_Surfprop    surfprop;
     float           line_thickness;
 
     /*! points is a dynamic array.  normals may be either NULL
        (no normal information kept) or a dynamic array. */
     int             n_points;
-    Point           *points;
-    Vector          *normals;
+    VIO_Point           *points;
+    VIO_Vector          *normals;
 
     /*! "items" are the polygons themselves; they appear to be stored in
        the following manner.  
@@ -124,7 +124,7 @@ typedef  struct
     int             *end_indices;
     int             *indices;
 
-    Smallest_int    *visibilities;
+    VIO_Smallest_int    *visibilities;
     int             *neighbours;
     bintree_struct_ptr  bintree;
 } polygons_struct;
@@ -137,19 +137,19 @@ typedef  struct
 typedef  struct
 {
     Colour_flags    colour_flag;
-    Colour          *colours;
-    Surfprop        surfprop;
+    VIO_Colour          *colours;
+    VIO_Surfprop        surfprop;
 
     /*! These fields set whether the rows (m_closed) or the columns
      * (n_closed) have their extreme points joined by an edge.
      */
-    BOOLEAN         m_closed, n_closed;
+    VIO_BOOL         m_closed, n_closed;
 
     /*! The number of rows (m) and columns (n).
      */
     int             m, n;
-    Point           *points;
-    Vector          *normals;
+    VIO_Point       *points;
+    VIO_Vector          *normals;
 
     bintree_struct_ptr  bintree;
 } quadmesh_struct;
@@ -162,11 +162,11 @@ typedef enum { FIXED_FONT, SIZED_FONT } Font_types;
  */
 typedef  struct
 {
-    Point       origin;
-    Colour      colour;
+    VIO_Point       origin;
+    VIO_Colour      colour;
     Font_types  font;
-    Real        size;
-    STRING      string;
+    VIO_Real        size;
+    VIO_STR      string;
 } text_struct;
 
 
@@ -184,14 +184,14 @@ typedef  struct
     int             y_position;
     int             x_size;
     int             y_size;
-    Real            x_zoom;      
-    Real            y_zoom;      
+    VIO_Real        x_zoom;      
+    VIO_Real        y_zoom;      
     Pixel_types     pixel_type;
     union
     {
         unsigned char   *pixels_8bit_colour_index;
         unsigned short  *pixels_16bit_colour_index;
-        Colour          *pixels_rgb;
+        VIO_Colour      *pixels_rgb;
     } data;
 
 } pixels_struct;
@@ -218,7 +218,7 @@ typedef enum  { LINES, MARKER, MODEL, PIXELS, POLYGONS, QUADMESH, TEXT,
  */
 typedef  struct
 {
-    STRING                 filename;
+    VIO_STR                 filename;
     int                    n_objects;
     struct  object_struct  **objects;
     void                   *extra_ptr;
@@ -231,7 +231,7 @@ typedef  struct
 typedef struct  object_struct
 {
     Object_types    object_type;
-    BOOLEAN         visibility;
+    VIO_BOOL        visibility;
 
     union
     {
@@ -265,7 +265,7 @@ typedef  struct
  */
 typedef  struct
 {
-    BOOLEAN                    visible_ones_only;
+    VIO_BOOL                   visible_ones_only;
     int                        n_stack_alloced;
     int                        top_of_stack;
     object_stack_struct        *stack;

@@ -22,19 +22,19 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_fil
 #undef  DEBUG
 
 #ifdef DEBUG
-static Real  get_correct_amount(
+static VIO_Real  get_correct_amount(
     Volume   volume,
     int      x,
     int      y,
     int      z,
-    Real     x_width,
-    Real     y_width,
-    Real     z_width );
+    VIO_Real     x_width,
+    VIO_Real     y_width,
+    VIO_Real     z_width );
 #endif
 
 #define  INITIALIZE_SAMPLE( half_width, receding, advancing, left_weight, right_weight ) \
     { \
-        Real  min_pos, max_pos; \
+        VIO_Real  min_pos, max_pos; \
  \
         min_pos = -(half_width); \
         max_pos = (half_width); \
@@ -42,7 +42,7 @@ static Real  get_correct_amount(
         (receding) = ROUND( min_pos ); \
         (advancing) = ROUND( max_pos ); \
  \
-        (left_weight) = (Real) (receding) + 0.5 - min_pos; \
+        (left_weight) = (VIO_Real) (receding) + 0.5 - min_pos; \
         if( (left_weight) >= 1.0 ) \
             --(advancing); \
         (right_weight) = 1.0 - (left_weight); \
@@ -111,21 +111,21 @@ static Real  get_correct_amount(
 BICAPI Volume  create_box_filtered_volume(
     Volume   volume,
     nc_type  nc_data_type,
-    BOOLEAN  sign_flag,
-    Real     real_min_value,
-    Real     real_max_value,
-    Real     x_width,
-    Real     y_width,
-    Real     z_width )
+    VIO_BOOL  sign_flag,
+    VIO_Real     real_min_value,
+    VIO_Real     real_max_value,
+    VIO_Real     x_width,
+    VIO_Real     y_width,
+    VIO_Real     z_width )
 {
     Volume             resampled_volume;
     int                x, y, z;
     int                sizes[MAX_DIMENSIONS], nx_required;
 #ifdef DEBUG
-    Real               correct_voxel;
+    VIO_Real               correct_voxel;
 #endif
-    Real               total_volume, value, sum, sample;
-    Real               *volume_row, ***volume_cache;
+    VIO_Real               total_volume, value, sum, sample;
+    VIO_Real               *volume_row, ***volume_cache;
     int                n_alloced, max_alloced;
     int                x_init_recede_index, y_init_recede_index;
     int                z_init_recede_index;
@@ -133,9 +133,9 @@ BICAPI Volume  create_box_filtered_volume(
     int                z_init_advance_index;
     int                x_recede_index, y_recede_index, z_recede_index;
     int                x_advance_index, y_advance_index, z_advance_index;
-    Real               x_left_weight, x_right_weight;
-    Real               y_left_weight, y_right_weight;
-    Real               z_left_weight, z_right_weight;
+    VIO_Real               x_left_weight, x_right_weight;
+    VIO_Real               y_left_weight, y_right_weight;
+    VIO_Real               z_left_weight, z_right_weight;
     float              **slice, *row;
     progress_struct    progress;
 
@@ -247,7 +247,7 @@ BICAPI Volume  create_box_filtered_volume(
         for_less( z, 0, sizes[Z] )
         {
             GET_FIRST_SAMPLE( y_init_advance_index, y_left_weight, sizes[Y],
-                              (Real) slice[_I][z], sample )
+                              (VIO_Real) slice[_I][z], sample )
             row[z] = (float) sample;
         }
 
@@ -257,7 +257,7 @@ BICAPI Volume  create_box_filtered_volume(
         for_less( y, 0, sizes[Y] )
         {
             GET_FIRST_SAMPLE( z_init_advance_index, z_left_weight,
-                              sizes[Z], (Real) row[_I], sum )
+                              sizes[Z], (VIO_Real) row[_I], sum )
             z_recede_index = z_init_recede_index;
             z_advance_index = z_init_advance_index;
 
@@ -279,7 +279,7 @@ BICAPI Volume  create_box_filtered_volume(
 
                 GET_NEXT_SAMPLE( z_recede_index, z_advance_index,
                                  z_left_weight, z_right_weight,
-                                 sizes[Z], (Real) row[_I], sum )
+                                 sizes[Z], (VIO_Real) row[_I], sum )
 
                 ++z_recede_index;
                 ++z_advance_index;
@@ -290,10 +290,10 @@ BICAPI Volume  create_box_filtered_volume(
 
             for_less( z, 0, sizes[Z] )
             {
-                sample = (Real) row[z];
+                sample = (VIO_Real) row[z];
                 GET_NEXT_SAMPLE( y_recede_index, y_advance_index,
                                  y_left_weight, y_right_weight,
-                                 sizes[Y], (Real) slice[_I][z], sample )
+                                 sizes[Y], (VIO_Real) slice[_I][z], sample )
                 row[z] = (float) sample;
             }
 
@@ -310,7 +310,7 @@ BICAPI Volume  create_box_filtered_volume(
         {
             for_less( z, 0, sizes[Z] )
             {
-                sample = (Real) slice[y][z];
+                sample = (VIO_Real) slice[y][z];
                 GET_NEXT_SAMPLE( x_recede_index, x_advance_index,
                                  x_left_weight, x_right_weight,
                                  sizes[X], volume_cache[_I][y][z],
@@ -385,34 +385,34 @@ BICAPI Volume  create_box_filtered_volume(
 #ifdef DEBUG
 static void  get_voxel_range(
     int      size,
-    Real     min_pos,
-    Real     max_pos,
+    VIO_Real     min_pos,
+    VIO_Real     max_pos,
     int      *min_voxel,
     int      *max_voxel,
-    Real     *start_weight,
-    Real     *end_weight )
+    VIO_Real     *start_weight,
+    VIO_Real     *end_weight )
 {
     if( min_pos < -0.5 )
         min_pos = -0.5;
-    if( max_pos > (Real) size - 0.5 )
-        max_pos = (Real) size - 0.5;
+    if( max_pos > (VIO_Real) size - 0.5 )
+        max_pos = (VIO_Real) size - 0.5;
 
     *min_voxel = ROUND( min_pos );
     *max_voxel = ROUND( max_pos );
 
-    if( (Real) (*max_voxel) - 0.5 == max_pos )
+    if( (VIO_Real) (*max_voxel) - 0.5 == max_pos )
         --(*max_voxel);
 
     if( *min_voxel == *max_voxel )
         *start_weight = max_pos - min_pos;
     else
     {
-        *start_weight = ((Real) (*min_voxel) + 0.5) - min_pos;
-        *end_weight = max_pos - ((Real) (*max_voxel) - 0.5);
+        *start_weight = ((VIO_Real) (*min_voxel) + 0.5) - min_pos;
+        *end_weight = max_pos - ((VIO_Real) (*max_voxel) - 0.5);
     }
 }
     
-static Real  get_amount_in_box(
+static VIO_Real  get_amount_in_box(
     Volume    volume,
     int       x_min_voxel,
     int       x_max_voxel,
@@ -420,15 +420,15 @@ static Real  get_amount_in_box(
     int       y_max_voxel,
     int       z_min_voxel,
     int       z_max_voxel,
-    Real      x_weight_start,
-    Real      x_weight_end,
-    Real      y_weight_start,
-    Real      y_weight_end,
-    Real      z_weight_start,
-    Real      z_weight_end )
+    VIO_Real      x_weight_start,
+    VIO_Real      x_weight_end,
+    VIO_Real      y_weight_start,
+    VIO_Real      y_weight_end,
+    VIO_Real      z_weight_start,
+    VIO_Real      z_weight_end )
 {
     int     x, y, z;
-    Real    sum, z_sum, x_sum, value;
+    VIO_Real    sum, z_sum, x_sum, value;
 
     sum = 0.0;
 
@@ -471,31 +471,31 @@ static Real  get_amount_in_box(
     return( sum );
 }
 
-static Real  get_correct_amount(
+static VIO_Real  get_correct_amount(
     Volume   volume,
     int      x,
     int      y,
     int      z,
-    Real     x_width,
-    Real     y_width,
-    Real     z_width )
+    VIO_Real     x_width,
+    VIO_Real     y_width,
+    VIO_Real     z_width )
 {
     int     sizes[MAX_DIMENSIONS];
-    Real    x_start_weight, x_end_weight;
-    Real    y_start_weight, y_end_weight;
-    Real    z_start_weight, z_end_weight;
-    Real    sum;
+    VIO_Real    x_start_weight, x_end_weight;
+    VIO_Real    y_start_weight, y_end_weight;
+    VIO_Real    z_start_weight, z_end_weight;
+    VIO_Real    sum;
     int     x_min_voxel, x_max_voxel;
     int     y_min_voxel, y_max_voxel;
     int     z_min_voxel, z_max_voxel;
 
     get_volume_sizes( volume, sizes );
 
-    get_voxel_range( sizes[X], (Real) x - x_width, (Real) x + x_width,
+    get_voxel_range( sizes[X], (VIO_Real) x - x_width, (VIO_Real) x + x_width,
                     &x_min_voxel, &x_max_voxel, &x_start_weight, &x_end_weight);
-    get_voxel_range( sizes[Y], (Real) y - y_width, (Real) y + y_width,
+    get_voxel_range( sizes[Y], (VIO_Real) y - y_width, (VIO_Real) y + y_width,
                     &y_min_voxel, &y_max_voxel, &y_start_weight, &y_end_weight);
-    get_voxel_range( sizes[Z], (Real) z - z_width, (Real) z + z_width,
+    get_voxel_range( sizes[Z], (VIO_Real) z - z_width, (VIO_Real) z + z_width,
                     &z_min_voxel, &z_max_voxel, &z_start_weight, &z_end_weight);
 
     sum = get_amount_in_box( volume,

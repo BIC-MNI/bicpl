@@ -5,8 +5,8 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    Real          coefs[] = { 1.0, 2.0, 1.0, 3.0 };
-    Real          u, values[3];
+    VIO_Real          coefs[] = { 1.0, 2.0, 1.0, 3.0 };
+    VIO_Real          u, values[3];
 
     while( input_real( stdin, &u ) == OK )
     {

@@ -19,18 +19,18 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_
 
 #include "bicpl_internal.h"
 
-BICAPI  BOOLEAN  get_interpolation_weights_2d(
-    Real   x,
-    Real   y,
+BICAPI  VIO_BOOL  get_interpolation_weights_2d(
+    VIO_Real   x,
+    VIO_Real   y,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   weights[] )
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   weights[] )
 {
     int   i;
-    Real  x_fact, y_fact, constant, n;
-    Real  aa, ab, ac, bb, bc, dx, dy;
-    Real  acbb, abac, aabb, denom, aabc, abab;
+    VIO_Real  x_fact, y_fact, constant, n;
+    VIO_Real  aa, ab, ac, bb, bc, dx, dy;
+    VIO_Real  acbb, abac, aabb, denom, aabc, abab;
 
     aa = 0.0;
     ab = 0.0;
@@ -49,7 +49,7 @@ BICAPI  BOOLEAN  get_interpolation_weights_2d(
         bc += dy;
     }
 
-    n = (Real) n_points;
+    n = (VIO_Real) n_points;
     aabb = aa * bb;
     acbb = ac * bb;
     aabc = aa * bc;
@@ -76,17 +76,17 @@ BICAPI  BOOLEAN  get_interpolation_weights_2d(
 
 static  void  test_solution(
     int    dim,
-    Real   x,
-    Real   y,
+    VIO_Real   x,
+    VIO_Real   y,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   x_weights[],
-    Real   y_weights[],
-    Real   constant )
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   x_weights[],
+    VIO_Real   y_weights[],
+    VIO_Real   constant )
 {
     int        iter, n_iters, p;
-    Real       angle, x_trans, y_trans, xt, yt, zt, correct, value;
+    VIO_Real       angle, x_trans, y_trans, xt, yt, zt, correct, value;
     Transform  transform, rotation, translation;
 
     n_iters = 100;
@@ -122,23 +122,23 @@ static  void  test_solution(
 }
 #endif
 
-static  BOOLEAN   get_two_point_prediction(
-    Real   x,
-    Real   y,
-    Real   x1,
-    Real   y1,
-    Real   x2,
-    Real   y2,
-    Real   *xwx1,
-    Real   *xwy1,
-    Real   *xwx2,
-    Real   *xwy2,
-    Real   *ywx1,
-    Real   *ywy1,
-    Real   *ywx2,
-    Real   *ywy2 )
+static  VIO_BOOL   get_two_point_prediction(
+    VIO_Real   x,
+    VIO_Real   y,
+    VIO_Real   x1,
+    VIO_Real   y1,
+    VIO_Real   x2,
+    VIO_Real   y2,
+    VIO_Real   *xwx1,
+    VIO_Real   *xwy1,
+    VIO_Real   *xwx2,
+    VIO_Real   *xwy2,
+    VIO_Real   *ywx1,
+    VIO_Real   *ywy1,
+    VIO_Real   *ywx2,
+    VIO_Real   *ywy2 )
 {
-    Real   sx, sy, s, t, cax, cay, s_len;
+    VIO_Real   sx, sy, s, t, cax, cay, s_len;
 
     sx = x2 - x1;
     sy = y2 - y1;
@@ -164,19 +164,19 @@ static  BOOLEAN   get_two_point_prediction(
     return( TRUE );
 }
 
-BICAPI  BOOLEAN  get_prediction_weights_2d(
-    Real   x,
-    Real   y,
+BICAPI  VIO_BOOL  get_prediction_weights_2d(
+    VIO_Real   x,
+    VIO_Real   y,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   *x_weights[2],
-    Real   *x_constant,
-    Real   *y_weights[2],
-    Real   *y_constant )
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   *x_weights[2],
+    VIO_Real   *x_constant,
+    VIO_Real   *y_weights[2],
+    VIO_Real   *y_constant )
 {
     int   dim, p, p1, p2, n_pairs;
-    Real  xwx1, xwy1, xwx2, xwy2, ywx1, ywy1, ywx2, ywy2;
+    VIO_Real  xwx1, xwy1, xwx2, xwy2, ywx1, ywy1, ywx2, ywy2;
 
     *x_constant = 0.0;
     *y_constant = 0.0;
@@ -216,8 +216,8 @@ BICAPI  BOOLEAN  get_prediction_weights_2d(
     {
         for_less( p, 0, n_points )
         {
-            x_weights[dim][p] /= (Real) n_pairs;
-            y_weights[dim][p] /= (Real) n_pairs;
+            x_weights[dim][p] /= (VIO_Real) n_pairs;
+            y_weights[dim][p] /= (VIO_Real) n_pairs;
         }
     }
 
@@ -234,18 +234,18 @@ BICAPI  BOOLEAN  get_prediction_weights_2d(
 #ifdef DEBUG
 static  void  test_solution_3d(
     int    dim,
-    Real   x,
-    Real   y,
-    Real   z,
+    VIO_Real   x,
+    VIO_Real   y,
+    VIO_Real   z,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   zs[],
-    Real   *weights[3] )
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   zs[],
+    VIO_Real   *weights[3] )
 {
     int        iter, n_iters, p;
-    Real       y_angle, z_angle, x_trans, y_trans, z_trans;
-    Real       correct, value, ps[3];
+    VIO_Real       y_angle, z_angle, x_trans, y_trans, z_trans;
+    VIO_Real       correct, value, ps[3];
     Transform  transform, y_rotation, z_rotation, translation;
 
     n_iters = 100;
@@ -290,25 +290,25 @@ static  void  test_solution_3d(
 
 #define  FACTOR 1.0e-6
 
-BICAPI  BOOLEAN  get_prediction_weights_3d(
-    Real   x,
-    Real   y,
-    Real   z,
+BICAPI  VIO_BOOL  get_prediction_weights_3d(
+    VIO_Real   x,
+    VIO_Real   y,
+    VIO_Real   z,
     int    n_points,
-    Real   xs[],
-    Real   ys[],
-    Real   zs[],
-    Real   *x_weights[3],
-    Real   *y_weights[3],
-    Real   *z_weights[3] )
+    VIO_Real   xs[],
+    VIO_Real   ys[],
+    VIO_Real   zs[],
+    VIO_Real   *x_weights[3],
+    VIO_Real   *y_weights[3],
+    VIO_Real   *z_weights[3] )
 {
     int                    p, p1, dim, n_iters, iter;
-    Real                   *parms, *coords[N_DIMENSIONS];
-    Real                   coord[N_DIMENSIONS];
-    Real                   len, max_len, sum;
+    VIO_Real                   *parms, *coords[N_DIMENSIONS];
+    VIO_Real                   coord[N_DIMENSIONS];
+    VIO_Real                   len, max_len, sum;
     linear_least_squares   lsq;
-    BOOLEAN                solved;
-    Real                   y_angle, z_angle, x_trans, y_trans, z_trans;
+    VIO_BOOL                solved;
+    VIO_Real                   y_angle, z_angle, x_trans, y_trans, z_trans;
     Transform              transform, y_rotation, z_rotation, translation;
 
     ALLOC( parms, n_points-1 );

@@ -44,14 +44,14 @@ BICAPI void  modify_labels_in_range(
     int      src_min,
     int      src_max,
     int      dest_label,
-    Real     min_threshold,
-    Real     max_threshold,
+    VIO_Real     min_threshold,
+    VIO_Real     max_threshold,
     int      range_changed[2][N_DIMENSIONS] )
 {
     int              voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS], dim;
     int              label;
-    BOOLEAN          must_change, first;
-    Real             value;
+    VIO_BOOL          must_change, first;
+    VIO_Real             value;
     progress_struct  progress;
 
     get_volume_sizes( label_volume, sizes );

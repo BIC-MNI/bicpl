@@ -34,18 +34,18 @@
 typedef  struct
 {
     int    n_samples;
-    Real   *samples;
-    Real   min_value;
-    Real   max_value;
-    Real   min_median_range;
-    Real   max_median_range;
+    VIO_Real   *samples;
+    VIO_Real   min_value;
+    VIO_Real   max_value;
+    VIO_Real   min_median_range;
+    VIO_Real   max_median_range;
     int    n_below_median_range;
     int    n_above_median_range;
     int    n_median_boxes;
     int    *median_box_counts;
-    Real   *median_box_values;
-    Real   sum_x;
-    Real   sum_xx;
+    VIO_Real   *median_box_values;
+    VIO_Real   sum_x;
+    VIO_Real   sum_xx;
 } statistics_struct;
 
 #endif
