@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -42,13 +42,13 @@ int  main(
     fill_Surfprop( spr, amb_coef, diff_coef, spec_coef, spec_exp, opacity );
 
     if( input_graphics_file( src_filename,
-                             &format, &n_objects, &objects ) != OK )
+                             &format, &n_objects, &objects ) != VIO_OK )
         return( 1 );
 
     for_less( i, 0, n_objects )
         set_object_surfprop( objects[i], &spr );
 
-    if( output_graphics_file( dest_filename, format, n_objects, objects ) != OK)
+    if( output_graphics_file( dest_filename, format, n_objects, objects ) != VIO_OK)
         return( 1 );
 
     delete_object_list( n_objects, objects );

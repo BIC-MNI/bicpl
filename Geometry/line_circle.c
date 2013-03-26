@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/line_circle.c,v 1.12 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/line_circle.c,v 1.12 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -61,10 +61,10 @@ BICAPI  void  create_line_circle(
 
     for_less( i, 0, n_points )
     {
-        angle = 2.0 * PI * (VIO_Real) i / (VIO_Real) n_points;
-        Point_coord(lines->points[i],a1) = (Point_coord_type)
+        angle = 2.0 * M_PI * (VIO_Real) i / (VIO_Real) n_points;
+        Point_coord(lines->points[i],a1) = (VIO_Point_coord_type)
                    ( (VIO_Real) Point_coord(*centre,a1) + x_radius * cos( angle ) );
-        Point_coord(lines->points[i],a2) = (Point_coord_type)
+        Point_coord(lines->points[i],a2) = (VIO_Point_coord_type)
                    ( (VIO_Real) Point_coord(*centre,a2) + y_radius * sin( angle ) );
         Point_coord(lines->points[i],plane_axis) =
                                            Point_coord(*centre,plane_axis);

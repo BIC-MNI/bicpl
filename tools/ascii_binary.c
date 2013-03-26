@@ -47,7 +47,7 @@ int  main(
     {
         if( input_objects_any_format( NULL, input_filename,
                                       GREEN, 1.0, SPHERE_MARKER,
-                                      &n_objects, &object_list ) != OK )
+                                      &n_objects, &object_list ) != VIO_OK )
             return( 1 );
 
         file_format = BINARY_FORMAT;
@@ -55,7 +55,7 @@ int  main(
     else
     {
         if( input_graphics_file( input_filename, &file_format,
-                                 &n_objects, &object_list ) != OK )
+                                 &n_objects, &object_list ) != VIO_OK )
             return( 1 );
     }
 

@@ -173,7 +173,7 @@ static  void  perturb_line_points(
     int              neighbours[2], i;
     VIO_Point            equilibrium_point;
     VIO_BOOL          closed;
-    progress_struct  progress;
+    VIO_progress_struct  progress;
     VIO_Real             dist_from_equil;
 
     for_less( point_index, 0, lines->n_points )
@@ -265,7 +265,7 @@ BICAPI  int  find_axial_plane(
     if( !found_axis )
     {
         print_error( "No axis found.\n" );
-        axis = X;
+        axis = VIO_X;
     }
 
     return( axis );

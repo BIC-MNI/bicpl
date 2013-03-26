@@ -33,13 +33,13 @@ int  main(
 
     if( input_volume( input_filename, 3, dim_names, NC_UNSPECIFIED, FALSE,
                       0.0, 0.0, TRUE, &volume,
-                      (minc_input_options *) NULL ) != OK )
+                      (minc_input_options *) NULL ) != VIO_OK )
         return( 1 );
 
     print( "Enter x, y, z: " );
-    while( input_real( stdin, &x ) == OK &&
-           input_real( stdin, &y ) == OK &&
-           input_real( stdin, &z ) == OK )
+    while( input_real( stdin, &x ) == VIO_OK &&
+           input_real( stdin, &y ) == VIO_OK &&
+           input_real( stdin, &z ) == VIO_OK )
     {
         check( volume, world_space, continuity, x, y, z );
         print( "\nEnter x, y, z: " );
@@ -66,13 +66,13 @@ private  VIO_Real  approx_deriv(
 
     if( world_space )
         evaluate_3D_volume_in_world( volume,
-                          pos[X], pos[Y], pos[Z], continuity, &val1,
+                          pos[VIO_X], pos[VIO_Y], pos[VIO_Z], continuity, &val1,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL );
     else
         evaluate_3D_volume( volume,
-                          pos[X], pos[Y], pos[Z], continuity, &val1,
+                          pos[VIO_X], pos[VIO_Y], pos[VIO_Z], continuity, &val1,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL );
@@ -81,13 +81,13 @@ private  VIO_Real  approx_deriv(
 
     if( world_space )
         evaluate_3D_volume_in_world( volume,
-                          pos[X], pos[Y], pos[Z], continuity, &val2,
+                          pos[VIO_X], pos[VIO_Y], pos[VIO_Z], continuity, &val2,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL );
     else
         evaluate_3D_volume( volume,
-                          pos[X], pos[Y], pos[Z], continuity, &val2,
+                          pos[VIO_X], pos[VIO_Y], pos[VIO_Z], continuity, &val2,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL,
                           (VIO_Real *) NULL, (VIO_Real *) NULL, (VIO_Real *) NULL );
@@ -134,21 +134,21 @@ private  void  check(
     if( world_space )
         evaluate_3D_volume_in_world( volume,
                           x, y, z, continuity, &value,
-                          &true_deriv[X], &true_deriv[Y], &true_deriv[Z],
-                          &true_deriv2[X][X], &true_deriv2[X][Y],
-                          &true_deriv2[X][Z], &true_deriv2[Y][Y],
-                          &true_deriv2[Y][Z], &true_deriv2[Z][Z] );
+                          &true_deriv[VIO_X], &true_deriv[VIO_Y], &true_deriv[VIO_Z],
+                          &true_deriv2[VIO_X][VIO_X], &true_deriv2[VIO_X][VIO_Y],
+                          &true_deriv2[VIO_X][VIO_Z], &true_deriv2[VIO_Y][VIO_Y],
+                          &true_deriv2[VIO_Y][VIO_Z], &true_deriv2[VIO_Z][VIO_Z] );
     else
         evaluate_3D_volume( volume,
                           x, y, z, continuity, &value,
-                          &true_deriv[X], &true_deriv[Y], &true_deriv[Z],
-                          &true_deriv2[X][X], &true_deriv2[X][Y],
-                          &true_deriv2[X][Z], &true_deriv2[Y][Y],
-                          &true_deriv2[Y][Z], &true_deriv2[Z][Z] );
+                          &true_deriv[VIO_X], &true_deriv[VIO_Y], &true_deriv[VIO_Z],
+                          &true_deriv2[VIO_X][VIO_X], &true_deriv2[VIO_X][VIO_Y],
+                          &true_deriv2[VIO_X][VIO_Z], &true_deriv2[VIO_Y][VIO_Y],
+                          &true_deriv2[VIO_Y][VIO_Z], &true_deriv2[VIO_Z][VIO_Z] );
 
-    pos[X] = x;
-    pos[Y] = y;
-    pos[Z] = z;
+    pos[VIO_X] = x;
+    pos[VIO_Y] = y;
+    pos[VIO_Z] = z;
 
     for_less( c, 0, N_DIMENSIONS )
     {

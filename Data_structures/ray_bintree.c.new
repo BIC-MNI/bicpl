@@ -293,12 +293,12 @@ public  BOOLEAN  ray_intersects_range(
     BOOLEAN  intersects;
 
     intersects = clip_line_to_box( origin, direction,
-                                   (Real) range->limits[X][0],
-                                   (Real) range->limits[X][1],
-                                   (Real) range->limits[Y][0],
-                                   (Real) range->limits[Y][1],
-                                   (Real) range->limits[Z][0],
-                                   (Real) range->limits[Z][1], t_min, t_max );
+                                   (Real) range->limits[VIO_X][0],
+                                   (Real) range->limits[VIO_X][1],
+                                   (Real) range->limits[VIO_Y][0],
+                                   (Real) range->limits[VIO_Y][1],
+                                   (Real) range->limits[VIO_Z][0],
+                                   (Real) range->limits[VIO_Z][1], t_min, t_max );
 
 
     if( intersects )

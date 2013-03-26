@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.30 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.30 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 
@@ -37,7 +37,7 @@ object type.
 - L = LINES
 - M = MARKER   
 - F = MODEL    
-- X = PIXELS   
+- VIO_X = PIXELS   
 - P = POLYGONS 
 - Q = QUADMESH 
 - T = TEXT     
@@ -196,7 +196,7 @@ static  VIO_Status  io_points(
               format
               lines
 @OUTPUT     : (lines)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a lines structure in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -213,7 +213,7 @@ BICAPI  VIO_Status  io_lines(
 {
     VIO_Status   status;
 
-    status = OK;
+    status = VIO_OK;
 
     if( io_flag == READ_FILE )
     {
@@ -226,51 +226,51 @@ BICAPI  VIO_Status  io_lines(
     {
         status = io_object_type( file, io_flag, format, LINES );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_line_thickness( file, io_flag, format,
                                         &lines->line_thickness );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_int( file, io_flag, format, &lines->n_points );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             status = io_points( file, io_flag, format,
                                 lines->n_points, &lines->points );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_int( file, io_flag, format, &lines->n_items );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             status = io_colours( file, io_flag, format, &lines->colour_flag,
                                  lines->n_items, lines->n_points,
                                  &lines->colours );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             status = io_end_indices( file, io_flag, format,
                                      lines->n_items, &lines->end_indices, 1 );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             status = io_ints( file, io_flag, format,
                               NUMBER_INDICES(*lines),
@@ -288,7 +288,7 @@ BICAPI  VIO_Status  io_lines(
               format
               marker
 @OUTPUT     : (marker)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a marker structure in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -307,28 +307,28 @@ BICAPI  VIO_Status  io_marker(
 
     status = io_object_type( file, io_flag, format, MARKER );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_int( file, io_flag, format, (int *) &marker->type );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_real( file, io_flag, format, &marker->size );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_colour( file, io_flag, format, &marker->colour );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_point( file, io_flag, format, &marker->position );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_int( file, io_flag, format, &marker->structure_id );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_int( file, io_flag, format, &marker->patient_id );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_quoted_string( file, io_flag, format, &marker->label );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_newline( file, io_flag, format );
 
     return( status );
@@ -341,7 +341,7 @@ BICAPI  VIO_Status  io_marker(
               format
               model
 @OUTPUT     : (model)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a model structure in ascii or binary format.
               Rather than writing all the objects in the model, it simply
               writes the name of the file containing the objects.  A
@@ -364,10 +364,10 @@ BICAPI  VIO_Status  io_model(
 
     status = io_object_type( file, io_flag, format, MODEL );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_quoted_string( file, io_flag, format, &model->filename );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_newline( file, io_flag, format );
 
     return( status );
@@ -380,7 +380,7 @@ BICAPI  VIO_Status  io_model(
               format
               pixels
 @OUTPUT     : (pixels)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a pixels structure in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -398,22 +398,22 @@ BICAPI  VIO_Status  io_pixels(
     VIO_Status       status;
     int          n_pixels;
 
-    status = OK;
+    status = VIO_OK;
 
     if( io_flag == READ_FILE || (pixels->x_size > 0 && pixels->y_size > 0) )
     {
         status = io_object_type( file, io_flag, format, PIXELS );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_int( file, io_flag, format, (int *)&pixels->pixel_type);
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_int( file, io_flag, format, &pixels->x_size );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_int( file, io_flag, format, &pixels->y_size );
 
-        if( status == OK && io_flag == READ_FILE )
+        if( status == VIO_OK && io_flag == READ_FILE )
         {
             pixels->x_position = 0;
             pixels->y_position = 0;
@@ -421,7 +421,7 @@ BICAPI  VIO_Status  io_pixels(
             pixels->y_zoom = 1.0;
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             n_pixels = pixels->x_size * pixels->y_size;
 
@@ -450,7 +450,7 @@ BICAPI  VIO_Status  io_pixels(
             default:
                 print_error( "Error, unrecognized pixel type %d.\n",
                              pixels->pixel_type );
-                status = ERROR;
+                status = VIO_ERROR;
             }
         }
     }
@@ -491,7 +491,7 @@ BICAPI  VIO_BOOL  get_use_compressed_polygons_flag( void )
               format
               polygons
 @OUTPUT     : (polygons)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a polygons structure in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -512,7 +512,7 @@ BICAPI  VIO_Status  io_polygons(
     VIO_Point    centre;
     VIO_BOOL  compressed_format;
 
-    status = OK;
+    status = VIO_OK;
 
     if( io_flag == READ_FILE )
     {
@@ -525,12 +525,12 @@ BICAPI  VIO_Status  io_polygons(
     {
         status = io_object_type( file, io_flag, format, POLYGONS );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_surfprop( file, io_flag, format, &polygons->surfprop );
 
         compressed_format = FALSE;
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             if( io_flag == WRITE_FILE && use_compressed_polygons() &&
                 is_this_tetrahedral_topology(polygons) )
@@ -543,7 +543,7 @@ BICAPI  VIO_Status  io_polygons(
                 status = io_int( file, io_flag, format, &polygons->n_points );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
         if( io_flag == READ_FILE && polygons->n_points < 0 )
@@ -558,63 +558,63 @@ BICAPI  VIO_Status  io_polygons(
             FREE( polygons->points );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             status = io_points( file, io_flag, format,
                                 polygons->n_points, &polygons->points );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
         if( !compressed_format )
         {
-            if( status == OK )
+            if( status == VIO_OK )
             {
                 status = io_vectors( file, io_flag, format,
                                      polygons->n_points, &polygons->normals );
             }
 
-            if( status == OK )
+            if( status == VIO_OK )
                 status = io_newline( file, io_flag, format );
 
-            if( status == OK )
+            if( status == VIO_OK )
                 status = io_int( file, io_flag, format, &polygons->n_items );
 
-            if( status == OK )
+            if( status == VIO_OK )
                 status = io_newline( file, io_flag, format );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             status = io_colours( file, io_flag, format, &polygons->colour_flag,
                                  polygons->n_items, polygons->n_points,
                                  &polygons->colours );
 
-            if( status == OK )
+            if( status == VIO_OK )
                 status = io_newline( file, io_flag, format );
         }
 
         if( !compressed_format )
         {
-            if( status == OK )
+            if( status == VIO_OK )
             {
                 status = io_end_indices( file, io_flag, format,
                                      polygons->n_items, &polygons->end_indices,
                                      3 );
             }
 
-            if( status == OK )
+            if( status == VIO_OK )
                 status = io_newline( file, io_flag, format );
 
-            if( status == OK )
+            if( status == VIO_OK )
             {
                 status = io_ints( file, io_flag, format,
                                   NUMBER_INDICES(*polygons),
                                   &polygons->indices );
             }
 
-            if( status == OK )
+            if( status == VIO_OK )
                 status = io_newline( file, io_flag, format );
         }
 
@@ -635,7 +635,7 @@ BICAPI  VIO_Status  io_polygons(
               format
               quadmesh
 @OUTPUT     : (quadmesh)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a quadmesh structure in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -657,7 +657,7 @@ BICAPI  VIO_Status  io_quadmesh(
 {
     VIO_Status   status;
 
-    status = OK;
+    status = VIO_OK;
 
     if( io_flag == READ_FILE )
     {
@@ -670,49 +670,49 @@ BICAPI  VIO_Status  io_quadmesh(
     {
         status = io_object_type( file, io_flag, format, QUADMESH );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_surfprop( file, io_flag, format, &quadmesh->surfprop );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_int( file, io_flag, format, &quadmesh->m );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_int( file, io_flag, format, &quadmesh->n );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_boolean( file, io_flag, format, &quadmesh->m_closed );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_boolean( file, io_flag, format, &quadmesh->n_closed );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_colours( file, io_flag, format, &quadmesh->colour_flag,
                                  (quadmesh->m-1) * (quadmesh->n-1),
                                  quadmesh->m * quadmesh->n,
                                  &quadmesh->colours );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             status = io_points( file, io_flag, format,
                                 quadmesh->m * quadmesh->n, &quadmesh->points );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             status = io_vectors( file, io_flag, format,
                                 quadmesh->m * quadmesh->n, &quadmesh->normals );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_newline( file, io_flag, format );
     }
 
@@ -726,7 +726,7 @@ BICAPI  VIO_Status  io_quadmesh(
               format
               text
 @OUTPUT     : (text)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a text structure in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -745,22 +745,22 @@ BICAPI  VIO_Status  io_text(
 
     status = io_object_type( file, io_flag, format, TEXT );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_int( file, io_flag, format, (int *) &text->font );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_real( file, io_flag, format, &text->size );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_colour( file, io_flag, format, &text->colour );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_point( file, io_flag, format, &text->origin );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_quoted_string( file, io_flag, format, &text->string );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_newline( file, io_flag, format );
 
     return( status );
@@ -773,7 +773,7 @@ BICAPI  VIO_Status  io_text(
               format
               point
 @OUTPUT     : (point)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a point structure in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -790,16 +790,16 @@ BICAPI  VIO_Status  io_point(
 {
     VIO_Status   status;
 
-    status = OK;
+    status = VIO_OK;
 
     if( format == ASCII_FORMAT )
     {
         status = io_float( file, io_flag, format, &Point_x(*point) );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, format, &Point_y(*point) );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, format, &Point_z(*point) );
     }
     else
@@ -818,7 +818,7 @@ BICAPI  VIO_Status  io_point(
               format
               vector
 @OUTPUT     : (vector)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a vector structure in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -835,16 +835,16 @@ BICAPI  VIO_Status  io_vector(
 {
     VIO_Status   status;
 
-    status = OK;
+    status = VIO_OK;
 
     if( format == ASCII_FORMAT )
     {
         status = io_float( file, io_flag, format, &Vector_x(*v) );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, format, &Vector_y(*v));
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, format, &Vector_z(*v));
     }
     else
@@ -862,7 +862,7 @@ BICAPI  VIO_Status  io_vector(
               format
               colour
 @OUTPUT     : (colour)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a colour in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -881,7 +881,7 @@ BICAPI  VIO_Status  io_colour(
     unsigned char  comps[4];
     VIO_Status         status;
 
-    status = OK;
+    status = VIO_OK;
 
     if( format == ASCII_FORMAT )
     {
@@ -894,11 +894,11 @@ BICAPI  VIO_Status  io_colour(
         }
 
         status = io_float( file, io_flag, ASCII_FORMAT, &r );
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, ASCII_FORMAT, &g );
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, ASCII_FORMAT, &b );
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, ASCII_FORMAT, &a );
 
         if( io_flag == READ_FILE )
@@ -938,7 +938,7 @@ BICAPI  VIO_Status  io_colour(
               n_points
               colours
 @OUTPUT     : (colours)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a colour_flag and list of colours, where the
               number of colours depends on the colour flag.
 @METHOD     : 
@@ -962,7 +962,7 @@ BICAPI  VIO_Status  io_colours(
 
     status = io_int( file, io_flag, format, (int *) colour_flag );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         switch( *colour_flag )
         {
@@ -971,21 +971,21 @@ BICAPI  VIO_Status  io_colours(
         case PER_VERTEX_COLOURS:  n_colours = n_points;   break;
         default:
             print_error( "Error inputting colour flag.\n" );
-            status = ERROR;
+            status = VIO_ERROR;
             break;
         }
     }
 
-    if( status == OK && io_flag == READ_FILE && n_colours > 0 )
+    if( status == VIO_OK && io_flag == READ_FILE && n_colours > 0 )
         ALLOC( *colours, n_colours );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         for_less( i, 0, n_colours )
         {
             status = io_colour( file, io_flag, format, &(*colours)[i] );
 
-            if( status == OK )
+            if( status == VIO_OK )
                 status = io_newline( file, io_flag, format );
         }
     }
@@ -1000,7 +1000,7 @@ BICAPI  VIO_Status  io_colours(
               format
               surfprop
 @OUTPUT     : (surfprop)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a surfprop structure in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -1017,23 +1017,23 @@ BICAPI  VIO_Status  io_surfprop(
 {
     VIO_Status   status;
 
-    status = OK;
+    status = VIO_OK;
 
     if( format == ASCII_FORMAT )
     {
         status = io_float( file, io_flag, format,
                           &Surfprop_a(*surfprop) );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, format, &Surfprop_d(*surfprop) );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, format, &Surfprop_s(*surfprop) );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, format, &Surfprop_se(*surfprop) );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_float( file, io_flag, format, &Surfprop_t(*surfprop) );
 
     }
@@ -1057,7 +1057,7 @@ BICAPI  VIO_Status  io_surfprop(
               n
               points
 @OUTPUT     : (points)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a list of points in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -1076,14 +1076,14 @@ static  VIO_Status  io_points(
     VIO_Status   status;
     int      i;
 
-    status = OK;
+    status = VIO_OK;
 
     if( io_flag == READ_FILE )
     {
         ALLOC( *points, n );
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         if( format == ASCII_FORMAT )
         {
@@ -1091,10 +1091,10 @@ static  VIO_Status  io_points(
             {
                 status = io_point( file, io_flag, format, &(*points)[i]);
 
-                if( status == OK )
+                if( status == VIO_OK )
                     status = io_newline( file, io_flag, format );
 
-                if( status == ERROR )
+                if( status == VIO_ERROR )
                     break;
             }
         }
@@ -1116,7 +1116,7 @@ static  VIO_Status  io_points(
               n
               vectors
 @OUTPUT     : (vectors)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a list of vectors in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -1135,7 +1135,7 @@ static  VIO_Status  io_vectors(
     VIO_Status   status;
     int      i;
 
-    status = OK;
+    status = VIO_OK;
 
     if( io_flag == READ_FILE )
     {
@@ -1148,10 +1148,10 @@ static  VIO_Status  io_vectors(
         {
             status = io_vector( file, io_flag, format, &(*vectors)[i] );
 
-            if( status == OK )
+            if( status == VIO_OK )
                 status = io_newline( file, io_flag, format );
 
-            if( status == ERROR )
+            if( status == VIO_ERROR )
                 break;
         }
     }
@@ -1171,7 +1171,7 @@ static  VIO_Status  io_vectors(
               format
               type
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Either writes an object type or if reading, does not read
               anything.
 @METHOD     : 
@@ -1190,7 +1190,7 @@ BICAPI  VIO_Status  io_object_type(
     int      ch;
     VIO_Status   status;
 
-    status = OK;
+    status = VIO_OK;
 
     if( io_flag == WRITE_FILE )
     {
@@ -1205,7 +1205,7 @@ BICAPI  VIO_Status  io_object_type(
         case  TEXT:        ch = 't';    break;
 	default: 
             print_error( "io_object_type: object type %d not handled.\n", type );
-            return ERROR;
+            return VIO_ERROR;
         }
 
         if( format == ASCII_FORMAT )
@@ -1216,7 +1216,7 @@ BICAPI  VIO_Status  io_object_type(
         if( fputc( ch, file ) == EOF )
         {
             print_error( "Error outputting char.\n" );
-            status = ERROR;
+            status = VIO_ERROR;
         }
     }
 
@@ -1229,7 +1229,7 @@ BICAPI  VIO_Status  io_object_type(
 @OUTPUT     : type
               format
               eof
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads the object type, passing it back, as well as whether
               it is in ascii or binary format, and an eof flag.
 @METHOD     : 
@@ -1248,12 +1248,12 @@ BICAPI  VIO_Status  input_object_type(
     char     ch;
     VIO_Status   status;
 
-    status = OK;
+    status = VIO_OK;
     *eof = FALSE;
 
     status = input_nonwhite_character( file, &ch );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         if( ch >= 'A' && ch <= 'Z' )
         {
@@ -1280,13 +1280,13 @@ BICAPI  VIO_Status  input_object_type(
 
         default:
             print_error( "Unrecognized object type in file.\n" );
-            status = ERROR;
+            status = VIO_ERROR;
         }
     }
     else
     {
         *eof = TRUE;
-        status = OK;
+        status = VIO_OK;
     }
 
     return( status );
@@ -1303,7 +1303,7 @@ BICAPI  VIO_Status  input_object_type(
               n
               pixel_colours
 @OUTPUT     : (pixel_colours)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a list of pixel colours in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -1324,12 +1324,12 @@ BICAPI  VIO_Status  io_pixel_colours(
     VIO_Colour         pixel_colour;
     int            i, block, n_blocks, n_to_do, start_pixel_index;
 
-    status = OK;
+    status = VIO_OK;
 
     if( io_flag == READ_FILE )
         ALLOC( *pixel_colours, n );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         if( format == ASCII_FORMAT )
         {
@@ -1338,7 +1338,7 @@ BICAPI  VIO_Status  io_pixel_colours(
                 status = io_pixel_colour( file, io_flag, format,
                                           &(*pixel_colours)[i] );
 
-                if( status == OK )
+                if( status == VIO_OK )
                 {
                     if( i == n - 1 || (i+1) % PIXELS_PER_LINE == 0 )
                     {
@@ -1346,7 +1346,7 @@ BICAPI  VIO_Status  io_pixel_colours(
                     }
                 }
 
-                if( status != OK )
+                if( status != VIO_OK )
                     break;
             }
         }
@@ -1404,7 +1404,7 @@ BICAPI  VIO_Status  io_pixel_colours(
               format
               pixel_colour
 @OUTPUT     : (pixel_colour)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a pixel colour in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -1422,7 +1422,7 @@ BICAPI  VIO_Status  io_pixel_colour(
     int      r, g, b;
     VIO_Status   status;
 
-    status = OK;
+    status = VIO_OK;
 
     if( format == ASCII_FORMAT )
     {
@@ -1435,13 +1435,13 @@ BICAPI  VIO_Status  io_pixel_colour(
 
         status = io_int( file, io_flag, format, &r );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_int( file, io_flag, format, &g );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = io_int( file, io_flag, format, &b );
 
-        if( io_flag == READ_FILE && status == OK )
+        if( io_flag == READ_FILE && status == VIO_OK )
             *pixel_colour = make_Colour( r, g, b );
     }
     else
@@ -1460,7 +1460,7 @@ BICAPI  VIO_Status  io_pixel_colour(
               format
               line_thickness
 @OUTPUT     : (line_thickness)
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads or writes a line thickness in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -1479,7 +1479,7 @@ static  VIO_Status  io_line_thickness(
 
     status = io_float( file, io_flag, format, line_thickness );
 
-    if( status == OK && io_flag == READ_FILE && format == BINARY_FORMAT &&
+    if( status == VIO_OK && io_flag == READ_FILE && format == BINARY_FORMAT &&
         (*line_thickness <= 0.001f || *line_thickness > 20.0f) )
         *line_thickness = 1.0f;
 
@@ -1493,7 +1493,7 @@ static  VIO_Status  io_line_thickness(
 @OUTPUT     : format
               object
               eof
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Inputs an object from a file.
 @METHOD     : 
 @GLOBALS    : 
@@ -1516,7 +1516,7 @@ BICAPI  VIO_Status  input_object(
 
     status = input_object_type( file, &type, format, eof );
 
-    if( status == OK && !(*eof) )
+    if( status == VIO_OK && !(*eof) )
     {
         *object = create_object( type );
 
@@ -1540,7 +1540,7 @@ BICAPI  VIO_Status  input_object(
                               get_model_ptr(*object)->filename,
                               directory );
 
-            if( status == OK )
+            if( status == VIO_OK )
             {
                 status = input_graphics_file( abs_filename, &sub_format,
                                           &get_model_ptr(*object)->n_objects,
@@ -1574,7 +1574,7 @@ BICAPI  VIO_Status  input_object(
 
         default:
             print_error( "Unrecognized object type %d\n", type );
-            status = ERROR;
+            status = VIO_ERROR;
         }
     }
 
@@ -1587,7 +1587,7 @@ BICAPI  VIO_Status  input_object(
               format
               object
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Writes an object to a file in ascii or binary format.
 @METHOD     : 
 @GLOBALS    : 
@@ -1636,7 +1636,7 @@ BICAPI  VIO_Status  output_object(
         break;
 
     default:
-        status = ERROR;
+        status = VIO_ERROR;
     }
 
     return( status );
@@ -1651,7 +1651,7 @@ BICAPI  VIO_Status  output_object(
               end_indices
               min_size
 @OUTPUT     : 
-@RETURNS    : ERROR or OK
+@RETURNS    : VIO_ERROR or VIO_OK
 @DESCRIPTION: Converts between old file format of cumulative sizes of 
               individual polygons to new format of outputting each size.
               It tries to detect on input whether it is new format or old
@@ -1696,7 +1696,7 @@ static  VIO_Status  io_end_indices(
     {
         status = io_ints( file, io_flag, format, n_items, end_indices );
 
-        if( status != OK )
+        if( status != VIO_OK )
             return( status );
 
         for_less( item, 1, n_items )

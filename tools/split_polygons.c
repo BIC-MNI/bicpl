@@ -1,13 +1,13 @@
 #include <bicpl.h>
 
-private  int   split_polygons(
+static  int   split_polygons(
     polygons_struct    *polygons,
     polygons_struct    *out1,
     polygons_struct    *out2,
     int                translation1[],
     int                translation2[] );
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -44,7 +44,7 @@ int  main(
     (void) get_string_argument( NULL, &translation_filename );
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects < 1 ||
+                             &object_list ) != VIO_OK || n_objects < 1 ||
         get_object_type( object_list[0] ) != POLYGONS )
     {
         print_error( "File must have a polygons structure.\n" );
@@ -77,20 +77,20 @@ int  main(
     if( translation_filename != NULL )
     {
         if( open_file( translation_filename, WRITE_FILE, BINARY_FORMAT,
-                       &file ) != OK )
+                       &file ) != VIO_OK )
             return( 1 );
 
         for_less( p, 0, get_polygons_ptr(object1)->n_points )
         {
             if( io_int( file, WRITE_FILE, BINARY_FORMAT, &translation1[p] ) !=
-                        OK )
+                        VIO_OK )
                 return( 1 );
         }
 
         for_less( p, 0, get_polygons_ptr(object2)->n_points )
         {
             if( io_int( file, WRITE_FILE, BINARY_FORMAT, &translation2[p] ) !=
-                        OK )
+                        VIO_OK )
                 return( 1 );
         }
 
@@ -100,7 +100,7 @@ int  main(
     return( 0 );
 }
 
-private  VIO_BOOL   can_include(
+static  VIO_BOOL   can_include(
     polygons_struct  *polygons,
     int              target_poly,
     VIO_SCHAR     included[],
@@ -171,7 +171,7 @@ private  VIO_BOOL   can_include(
     return( n_connected == n_neighbours );
 }
 
-private  int  count_neighbours_included(
+static  int  count_neighbours_included(
     polygons_struct    *polygons,
     int                poly,
     VIO_SCHAR       included[],
@@ -204,7 +204,7 @@ private  int  count_neighbours_included(
     return( n_included - *n_borders );
 }
 
-private  int   assign_included(
+static  int   assign_included(
     polygons_struct    *polygons,
     VIO_SCHAR       included[] )
 {
@@ -215,7 +215,7 @@ private  int   assign_included(
     VIO_SCHAR                *connected;
     VIO_BOOL                     found;
     PRIORITY_QUEUE_STRUCT(int)  queue;
-    progress_struct             progress;
+    VIO_progress_struct             progress;
 
     found = FALSE;
     init_poly = -1;
@@ -296,7 +296,7 @@ private  int   assign_included(
     return( n_included );
 }
 
-private  int   split_polygons(
+static  int   split_polygons(
     polygons_struct    *polygons,
     polygons_struct    *out1,
     polygons_struct    *out2,

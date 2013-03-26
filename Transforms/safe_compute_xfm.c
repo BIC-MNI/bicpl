@@ -23,7 +23,7 @@
 @CREATED    : April 21, 1994 (Peter Neelin)
 @MODIFIED   : $Log: safe_compute_xfm.c,v $
 @MODIFIED   : Revision 1.13  2005-08-17 22:26:48  bert
-@MODIFIED   : Replace public/private with BICAPI/static
+@MODIFIED   : Replace /static with BICAPI/static
 @MODIFIED   :
 @MODIFIED   : Revision 1.12  2005/06/03 18:08:37  bert
 @MODIFIED   : Include config.h and use HAVE_FORK rather than NO_FORK, also omit unistd.h
@@ -84,7 +84,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.13 2005-08-17 22:26:48 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.13 2005-08-17 22:26:48 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -139,8 +139,8 @@ BICAPI void safe_compute_transform_from_tags(
         do {
             (void) wait(&statptr);
         } while (WIFSTOPPED(statptr));
-        if (WEXITSTATUS(statptr) || status != OK) {
-           if( status == OK )
+        if (WEXITSTATUS(statptr) || status != VIO_OK) {
+           if( status == VIO_OK )
                delete_general_transform( transform );
            create_linear_transform(transform, NULL);
            return;
@@ -155,7 +155,7 @@ BICAPI void safe_compute_transform_from_tags(
         status = output_transform(fpout, NULL, NULL, NULL, &computed_transform);
         delete_general_transform( &computed_transform );
         (void) fclose(fpout);
-        if (status != OK) {
+        if (status != VIO_OK) {
             exit(EXIT_FAILURE);
         }
         else {

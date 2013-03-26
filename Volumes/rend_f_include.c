@@ -35,9 +35,9 @@
     unsigned short  *pixel_ptr
 #else
 #ifndef  NO_COLOUR_TABLE
-    Colour          **rgb_colour_map,
+    VIO_Colour          **rgb_colour_map,
 #endif
-    Colour          *pixel_ptr
+    VIO_Colour          *pixel_ptr
 #endif
 )
 
@@ -64,7 +64,7 @@
     unsigned short   *single_cmode_map = cmode_colour_map[0];
 #else
 #ifndef  NO_COLOUR_TABLE
-    Colour           *single_rgb_map = rgb_colour_map[0];
+    VIO_Colour           *single_rgb_map = rgb_colour_map[0];
 #endif
 #endif
 #endif

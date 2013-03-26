@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/build_bintree.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/build_bintree.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 #define  NODE_VISIT_COST        0.02
@@ -29,7 +29,7 @@ typedef  struct
 
 typedef     PRIORITY_QUEUE_STRUCT( leaf_queue_type )   leaf_queue_struct;
 
-/*---------------- private functions ------------------------- */
+/*---------------- static functions ------------------------- */
 
 static  void  subdivide_bintree(
     bintree_struct_ptr   bintree,
@@ -114,12 +114,12 @@ BICAPI  void  create_object_bintree(
 
         if( i == 0 )
         {
-            limits[X][0] = (VIO_Real) bound_vols[i].limits[X][0];
-            limits[Y][0] = (VIO_Real) bound_vols[i].limits[Y][0];
-            limits[Z][0] = (VIO_Real) bound_vols[i].limits[Z][0];
-            limits[X][1] = (VIO_Real) bound_vols[i].limits[X][1];
-            limits[Y][1] = (VIO_Real) bound_vols[i].limits[Y][1];
-            limits[Z][1] = (VIO_Real) bound_vols[i].limits[Z][1];
+            limits[VIO_X][0] = (VIO_Real) bound_vols[i].limits[VIO_X][0];
+            limits[VIO_Y][0] = (VIO_Real) bound_vols[i].limits[VIO_Y][0];
+            limits[VIO_Z][0] = (VIO_Real) bound_vols[i].limits[VIO_Z][0];
+            limits[VIO_X][1] = (VIO_Real) bound_vols[i].limits[VIO_X][1];
+            limits[VIO_Y][1] = (VIO_Real) bound_vols[i].limits[VIO_Y][1];
+            limits[VIO_Z][1] = (VIO_Real) bound_vols[i].limits[VIO_Z][1];
         }
         else
         {
@@ -133,9 +133,9 @@ BICAPI  void  create_object_bintree(
         }
     }
 
-    initialize_bintree( limits[X][0], limits[X][1],
-                        limits[Y][0], limits[Y][1],
-                        limits[Z][0], limits[Z][1], bintree );
+    initialize_bintree( limits[VIO_X][0], limits[VIO_X][1],
+                        limits[VIO_Y][0], limits[VIO_Y][1],
+                        limits[VIO_Z][0], limits[VIO_Z][1], bintree );
 
     subdivide_bintree( bintree, max_nodes, n_objects, bound_vols );
 
@@ -190,7 +190,7 @@ static  void  subdivide_bintree(
     int                     n_nodes;
     int                     i, *object_list;
     range_struct            limits;
-    progress_struct         progress;
+    VIO_progress_struct         progress;
 
     ALLOC( object_list, n_objects );
     for_less( i, 0, n_objects )

@@ -92,20 +92,20 @@ public  Volume  create_box_filtered_volume(
            "create_box_filtered_volume: volume must be 3D.\n" );
     }
 
-    width[X] = FABS( x_width );
-    width[Y] = FABS( y_width );
-    width[Z] = FABS( z_width );
+    width[VIO_X] = VIO_FABS( x_width );
+    width[VIO_Y] = VIO_FABS( y_width );
+    width[VIO_Z] = VIO_FABS( z_width );
 
     get_volume_sizes( volume, sizes );
 
     resampled_volume = copy_volume_definition( volume, nc_data_type, sign_flag,
                                                real_min_value, real_max_value );
 
-    total_volume = width[X] * width[Y] * width[Z];
+    total_volume = width[VIO_X] * width[VIO_Y] * width[VIO_Z];
 
-    width[X] /= 2.0;
-    width[Y] /= 2.0;
-    width[Z] /= 2.0;
+    width[VIO_X] /= 2.0;
+    width[VIO_Y] /= 2.0;
+    width[VIO_Z] /= 2.0;
 
     for_less( dim, 0, N_DIMENSIONS )
     {
@@ -123,37 +123,37 @@ public  Volume  create_box_filtered_volume(
                        z_init_recede_index, z_init_advance_index,
                        z_left_weight, z_right_weight )
 
-    ALLOC( volume_cache, sizes[X] );
+    ALLOC( volume_cache, sizes[VIO_X] );
     n_x_cached = x_init_advance_index - x_init_recede_index + 2;
     for_less( x, 0, n_x_cached )
-        ALLOC2D( volume_cache[x], sizes[Y], sizes[Z] );
+        ALLOC2D( volume_cache[x], sizes[VIO_Y], sizes[VIO_Z] );
 
-    ALLOC( buffer, sizes[Z] );
+    ALLOC( buffer, sizes[VIO_Z] );
 
     for_less( x, 0, n_x_cached )
     {
-        for_less( y, 0, sizes[Y] )
+        for_less( y, 0, sizes[VIO_Y] )
         {
-            get_volume_value_hyperslab_3d( volume, x, y, 0, 1, 1, sizes[Z],
+            get_volume_value_hyperslab_3d( volume, x, y, 0, 1, 1, sizes[VIO_Z],
                                            buffer );
 
-            for_less( z, 0, sizes[Z] )
+            for_less( z, 0, sizes[VIO_Z] )
                 volume_cache[x][y][z] = (float) buffer[z];
         }
     }
 
     x_cache_end = n_x_cached-1;
 
-    initialize_progress_report( &progress, FALSE, sizes[X] * sizes[Y],
+    initialize_progress_report( &progress, FALSE, sizes[VIO_X] * sizes[VIO_Y],
                                 "Box Filtering" );
 
-    ALLOC2D( slice, sizes[Y], sizes[Z] );
+    ALLOC2D( slice, sizes[VIO_Y], sizes[VIO_Z] );
 
-    ALLOC( row, sizes[Z] );
+    ALLOC( row, sizes[VIO_Z] );
 
-    for_less( y, 0, sizes[Y] )
+    for_less( y, 0, sizes[VIO_Y] )
     {
-        for_less( z, 0, sizes[Z] )
+        for_less( z, 0, sizes[VIO_Z] )
         {
             GET_FIRST_SAMPLE( x_bound_flag, x_init_advance_index,
                               x_left_weight,
@@ -165,7 +165,7 @@ public  Volume  create_box_filtered_volume(
     x_recede_index = x_init_recede_index;
     x_advance_index = x_init_advance_index;
 
-    for_less( x, 0, sizes[X] )
+    for_less( x, 0, sizes[VIO_X] )
     {
         if( x_advance_index+1 > x_cache_end )
         {
@@ -174,19 +174,19 @@ public  Volume  create_box_filtered_volume(
                 start = n_x_cached;
 
             end = x_advance_index+1;
-            if( end >= sizes[X] )
-                end = sizes[X] - 1;
+            if( end >= sizes[VIO_X] )
+                end = sizes[VIO_X] - 1;
 
             for_inclusive( i, start, end )
                 volume_cache[i] = volume_cache[i-n_x_cached];
 
             for_inclusive( i, x_cache_end+1, end )
             {
-                for_less( y, 0, sizes[Y] )
+                for_less( y, 0, sizes[VIO_Y] )
                 {
                     get_volume_value_hyperslab_3d( volume, i, y, 0,
-                                                   1, 1, sizes[Z], buffer );
-                    for_less( z, 0, sizes[Z] )
+                                                   1, 1, sizes[VIO_Z], buffer );
+                    for_less( z, 0, sizes[VIO_Z] )
                         volume_cache[i][y][z] = (float) buffer[z];
                 }
             }
@@ -194,7 +194,7 @@ public  Volume  create_box_filtered_volume(
             x_cache_end = x_advance_index+1;
         }
 
-        for_less( z, 0, sizes[Z] )
+        for_less( z, 0, sizes[VIO_Z] )
         {
             GET_FIRST_SAMPLE( y_bound_flag, y_init_advance_index,
                               y_left_weight, (Real) slice[_I][z], sample )
@@ -203,14 +203,14 @@ public  Volume  create_box_filtered_volume(
         y_recede_index = y_init_recede_index;
         y_advance_index = y_init_advance_index;
 
-        for_less( y, 0, sizes[Y] )
+        for_less( y, 0, sizes[VIO_Y] )
         {
             GET_FIRST_SAMPLE( z_bound_flag, z_init_advance_index,
                               z_left_weight, (Real) row[_I], sum )
             z_recede_index = z_init_recede_index;
             z_advance_index = z_init_advance_index;
 
-            for_less( z, 0, sizes[Z] )
+            for_less( z, 0, sizes[VIO_Z] )
             {
 #ifdef DEBUG
                 correct_voxel = get_correct_amount( volume, x, y, z,
@@ -223,46 +223,46 @@ public  Volume  create_box_filtered_volume(
                 value = sum / total_volume;
                 set_volume_real_value( resampled_volume, x, y, z, 0, 0, value );
 
-                if( z == sizes[Z]-1 )
+                if( z == sizes[VIO_Z]-1 )
                     continue;
 
                 GET_NEXT_SAMPLE( z_inc_flag, z_bound_flag, z_recede_index,
                                  z_advance_index, z_left_weight, z_right_weight,
-                                 sizes[Z], (Real) row[_I], sum )
+                                 sizes[VIO_Z], (Real) row[_I], sum )
 
                 ++z_recede_index;
                 ++z_advance_index;
             }
 
-            if( y == sizes[Y]-1 )
+            if( y == sizes[VIO_Y]-1 )
                 continue;
 
-            for_less( z, 0, sizes[Z] )
+            for_less( z, 0, sizes[VIO_Z] )
             {
                 sample = (Real) row[z];
                 GET_NEXT_SAMPLE( y_inc_flag, y_bound_flag, y_recede_index,
                                  y_advance_index, y_left_weight, y_right_weight,
-                                 sizes[Y], (Real) slice[_I][z], sample )
+                                 sizes[VIO_Y], (Real) slice[_I][z], sample )
                 row[z] = (float) sample;
             }
 
             ++y_recede_index;
             ++y_advance_index;
 
-            update_progress_report( &progress, x * sizes[Y] + y + 1 );
+            update_progress_report( &progress, x * sizes[VIO_Y] + y + 1 );
         }
 
-        if( x == sizes[X] - 1 )
+        if( x == sizes[VIO_X] - 1 )
             continue;
 
-        for_less( y, 0, sizes[Y] )
+        for_less( y, 0, sizes[VIO_Y] )
         {
-            for_less( z, 0, sizes[Z] )
+            for_less( z, 0, sizes[VIO_Z] )
             {
                 sample = (Real) slice[y][z];
                 GET_NEXT_SAMPLE( x_inc_flag, x_bound_flag, x_recede_index,
                                  x_advance_index, x_left_weight, x_right_weight,
-                                 sizes[X], (Real) volume_cache[_I][y][z],
+                                 sizes[VIO_X], (Real) volume_cache[_I][y][z],
                                  sample )
                 slice[y][z] = (float) sample;
             }
@@ -300,8 +300,8 @@ private  void  get_voxel_range(
     if( max_pos > (Real) size - 0.5 )
         max_pos = (Real) size - 0.5;
 
-    *min_voxel = ROUND( min_pos );
-    *max_voxel = ROUND( max_pos );
+    *min_voxel = VIO_ROUND( min_pos );
+    *max_voxel = VIO_ROUND( max_pos );
 
     if( (Real) (*max_voxel) - 0.5 == max_pos )
         --(*max_voxel);
@@ -394,11 +394,11 @@ private  Real  get_correct_amount(
 
     get_volume_sizes( volume, sizes );
 
-    get_voxel_range( sizes[X], x - x_width, x + x_width,
+    get_voxel_range( sizes[VIO_X], x - x_width, x + x_width,
                     &x_min_voxel, &x_max_voxel, &x_start_weight, &x_end_weight);
-    get_voxel_range( sizes[Y], y - y_width, y + y_width,
+    get_voxel_range( sizes[VIO_Y], y - y_width, y + y_width,
                     &y_min_voxel, &y_max_voxel, &y_start_weight, &y_end_weight);
-    get_voxel_range( sizes[Z], z - z_width, z + z_width,
+    get_voxel_range( sizes[VIO_Z], z - z_width, z + z_width,
                     &z_min_voxel, &z_max_voxel, &z_start_weight, &z_end_weight);
 
     sum = get_amount_in_box( volume,

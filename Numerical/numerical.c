@@ -21,7 +21,7 @@
 #include  <limits.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.26 2005-08-17 22:28:59 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.26 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -51,8 +51,8 @@ BICAPI  VIO_BOOL  numerically_close(
     diff = n1 - n2;
     if( diff < 0.0 )  diff = -diff;
 
-    abs_n1 = FABS( n1 );
-    abs_n2 = FABS( n2 );
+    abs_n1 = VIO_FABS( n1 );
+    abs_n2 = VIO_FABS( n2 );
 
     if( abs_n1 < SMALLEST || abs_n2 < SMALLEST )
         return( abs_n1 < threshold_ratio && abs_n2 < threshold_ratio );
@@ -130,14 +130,14 @@ BICAPI  VIO_Real  round_to_nearest_multiple(
     int      i;
     VIO_Real     factor, nearest;
 
-    multiple_value = FABS( multiple_value );
+    multiple_value = VIO_FABS( multiple_value );
 
     factor = value / multiple_value;
     if( factor > (VIO_Real) INT_MAX || factor < (VIO_Real) INT_MIN )
         nearest = value;
     else
     {
-        i = ROUND( value / multiple_value );
+        i = VIO_ROUND( value / multiple_value );
         nearest = (VIO_Real) i * multiple_value;
     }
 

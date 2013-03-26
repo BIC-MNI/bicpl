@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points.c,v 1.9 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/points.c,v 1.9 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -292,7 +292,7 @@ BICAPI   void     reverse_vectors(
 @OUTPUT     : 
 @RETURNS    : angle in radians.
 @DESCRIPTION: Returns the angle between the three points, in the range 0 to
-              PI.
+              M_PI.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -319,7 +319,7 @@ BICAPI  VIO_Real  get_angle_between_points(
     if( c >= 1.0 )
         angle = 0.0;
     else if( c <= -1.0 )
-        angle = PI;
+        angle = M_PI;
     else
         angle = acos( c );
 

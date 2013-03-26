@@ -26,7 +26,7 @@ BICAPI char  *get_default_landmark_file_suffix()
               size
               type
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads a landmark.lmk file and creates an object list consisting
               of markers, with the given colour, size, and type.
 @METHOD     : 
@@ -55,9 +55,9 @@ BICAPI Status   input_landmark_file(
 
     *n_objects = 0;
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
-        while( io_tag_point( file, READ_FILE, volume, size, &marker ) == OK )
+        while( io_tag_point( file, READ_FILE, volume, size, &marker ) == VIO_OK )
         {
             marker.colour = colour;
             marker.type = type;
@@ -80,7 +80,7 @@ BICAPI Status   input_landmark_file(
               volume
               size
 @OUTPUT     : marker
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Inputs one marker in landmark format from the file.
 @METHOD     : 
 @GLOBALS    : 
@@ -105,7 +105,7 @@ BICAPI Status  io_tag_point(
     VIO_Real     x, y, z;
     VIO_Real     x_w, y_w, z_w;
 
-    status = OK;
+    status = VIO_OK;
 
     if( volume != (Volume) NULL && get_volume_n_dimensions(volume) != 3 )
     {
@@ -129,15 +129,15 @@ BICAPI Status  io_tag_point(
 
             get_volume_sizes( volume, sizes );
 
-            convert_voxel_to_talairach( voxel[X], voxel[Y], voxel[Z],
-                                        sizes[X], sizes[Y], sizes[Z],
+            convert_voxel_to_talairach( voxel[VIO_X], voxel[VIO_Y], voxel[VIO_Z],
+                                        sizes[VIO_X], sizes[VIO_Y], sizes[VIO_Z],
                                         &x, &y, &z );
 
             fill_Point( position, x, y, z );
         }
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_point( file, io_direction, ASCII_FORMAT, &position );
 
     if( io_direction == READ_FILE )
@@ -156,8 +156,8 @@ BICAPI Status  io_tag_point(
             convert_talairach_to_voxel( Point_x(position),
                                         Point_y(position),
                                         Point_z(position),
-                                        sizes[X], sizes[Y], sizes[Z],
-                                        &voxel[X], &voxel[Y], &voxel[Z] );
+                                        sizes[VIO_X], sizes[VIO_Y], sizes[VIO_Z],
+                                        &voxel[VIO_X], &voxel[VIO_Y], &voxel[VIO_Z] );
 
             convert_voxel_to_world( volume, voxel, &x_w, &y_w, &z_w );
             fill_Point( marker->position, x_w, y_w, z_w );
@@ -166,7 +166,7 @@ BICAPI Status  io_tag_point(
 
 #define USE_X_POSITION_FOR_WEIGHT
 #ifdef  USE_X_POSITION_FOR_WEIGHT
-    if( status == OK )
+    if( status == VIO_OK )
     {
         if( io_direction == WRITE_FILE )
             status = io_float( file, io_direction, ASCII_FORMAT,
@@ -178,30 +178,30 @@ BICAPI Status  io_tag_point(
         }
     }
 #else
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_real( file, io_direction, ASCII_FORMAT, &marker->size );
 #endif
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_int( file, io_direction, ASCII_FORMAT,
                          &marker->structure_id );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_int( file, io_direction, ASCII_FORMAT,
                          &marker->patient_id );
 
     if( io_direction == WRITE_FILE )
     {
-        if( status == OK && strlen(marker->label) > 0 )
+        if( status == VIO_OK && strlen(marker->label) > 0 )
             status = io_quoted_string( file, io_direction, ASCII_FORMAT,
                                        marker->label, MAX_STRING_LENGTH );
     }
     else
     {
-        if( status == OK )
+        if( status == VIO_OK )
             status = input_line( file, line, MAX_STRING_LENGTH );
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             strip_blanks( line, line );
 
@@ -219,7 +219,7 @@ BICAPI Status  io_tag_point(
         }
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_newline( file, io_direction, ASCII_FORMAT );
 
     return( status );

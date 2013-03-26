@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -35,7 +35,7 @@ int  main(
     (void) get_real_argument( 1.0, &line_thickness );
 
     if( input_graphics_file( src_filename,
-                             &format, &n_objects, &objects ) != OK )
+                             &format, &n_objects, &objects ) != VIO_OK )
         return( 1 );
 
     for_less( i, 0, n_objects )
@@ -44,7 +44,7 @@ int  main(
             get_lines_ptr(objects[i])->line_thickness = (float) line_thickness;
     }
 
-    if( output_graphics_file( dest_filename, format, n_objects, objects ) != OK)
+    if( output_graphics_file( dest_filename, format, n_objects, objects ) != VIO_OK)
         return( 1 );
 
     delete_object_list( n_objects, objects );

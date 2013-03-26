@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/markers.c,v 1.5 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/markers.c,v 1.5 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

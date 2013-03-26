@@ -44,7 +44,7 @@ BICAPI  void  compute_equilibrium_point(
     if( !boundary_exists )
         boundary_dist = model_dist;
 
-    equil_dist = INTERPOLATE( model->model_weight, boundary_dist, model_dist );
+    equil_dist = VIO_INTERPOLATE( model->model_weight, boundary_dist, model_dist );
 
     if( model->min_curvature_offset <= model->max_curvature_offset )
     {

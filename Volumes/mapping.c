@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.34 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.34 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define  DISTANCE_THRESHOLD  1.0e-10
@@ -458,10 +458,10 @@ BICAPI void    clip_viewport_to_volume(
     get_volume_slice_range( volume, origin, x_axis, y_axis,
                             &x_min, &x_max, &y_min, &y_max );
 
-    int_x_min = CEILING( x_min );
-    int_x_max = FLOOR( x_max );
-    int_y_min = CEILING( y_min );
-    int_y_max = FLOOR( y_max );
+    int_x_min = VIO_CEILING( x_min );
+    int_x_max = VIO_FLOOR( x_max );
+    int_y_min = VIO_CEILING( y_min );
+    int_y_max = VIO_FLOOR( y_max );
 
     if( int_x_min > *x_pixel_start )
         *x_pixel_start = int_x_min;
@@ -756,7 +756,7 @@ BICAPI VIO_BOOL  convert_slice_pixel_to_voxel(
 @RETURNS    : 
 @DESCRIPTION: Converts the voxel position (centres of voxels are at .0,
               not .5) to a pixel position in the viewport.  To get the
-              integer pixel position, take ROUND( x_pixel ).
+              integer pixel position, take VIO_ROUND( x_pixel ).
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -844,12 +844,12 @@ BICAPI void  resize_volume_slice(
 
     if( used_x_viewport_size != NULL )
     {
-        *used_x_viewport_size = ROUND( scale_factor *
+        *used_x_viewport_size = VIO_ROUND( scale_factor *
                                        (VIO_Real) old_used_x_viewport_size);
     }
     if( used_y_viewport_size != NULL )
     {
-        *used_y_viewport_size = ROUND( scale_factor *
+        *used_y_viewport_size = VIO_ROUND( scale_factor *
                                        (VIO_Real) old_used_y_viewport_size );
     }
 
@@ -1077,7 +1077,7 @@ BICAPI void  convert_real_to_int_voxel(
     int   i;
 
     for_less( i, 0, n_dimensions )
-        int_voxel[i] = ROUND( voxel[i] );
+        int_voxel[i] = VIO_ROUND( voxel[i] );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -31,22 +31,22 @@
               the resulting angles rx=ang[1],ry=ang[2],rz=ang[3], follow
               the following assumptions:
 
-              -rotations are between -PI to PI
+              -rotations are between -M_PI to M_PI
               -rotations are applied 1 - rx, 2 - ry and 3 - rz
               -applying these rotations to an identity matrix will
                result in a matrix equal to `rot' (the input matrix)
               -positive rotations are counter-clockwise when looking
                down the axis, from the positive end towards the origin.
               -I assume a coordinate system:
-                          ^ Y
+                          ^ VIO_Y
                           |
                           |
                           |
                           |
-                          +---------> X
+                          +---------> VIO_X
                          /
                         /
-                       / Z  (towards the viewer).
+                       / VIO_Z  (towards the viewer).
 
               -The problem is posed as:  
                  given a rotation matrix ROT, determine the rotations
@@ -59,9 +59,9 @@
              
                  (note local is lower case, world is UPPER)
 
-                 1- find RZ that brings local x into the XZ plane, on + size X
-                 2- find RY that brings local x*RZ onto X axis
-                 3- find RX that brings local z*RZ*RY onto Z axis
+                 1- find RZ that brings local x into the XZ plane, on + size VIO_X
+                 2- find RY that brings local x*RZ onto VIO_X axis
+                 3- find RX that brings local z*RZ*RY onto VIO_Z axis
 
                  the required rotations are -RX,-RY and -RZ!
 
@@ -73,7 +73,7 @@ Tue Jun  8 08:44:59 EST 1993 LC
    changes all vec*matrix to matrix*vec.  Std is premultiplication by matrix!
 @MODIFIED   : July    4, 1995 D. MacDonald - removed recipes-style code,
                                rewrote completely to handle angles from
-                               -PI to PI, instead of just -PI/2 to -PI/2
+                               -M_PI to M_PI, instead of just -M_PI/2 to -M_PI/2
 @MODIFIED   : July   19, 1996 D. MacDonald - now handles left-handed coordinate
                                              systems properly
 ---------------------------------------------------------------------------- */
@@ -81,7 +81,7 @@ Tue Jun  8 08:44:59 EST 1993 LC
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.21 2005-08-17 22:26:48 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.21 2005-08-17 22:26:48 bert Exp $";
 #endif
 
 #ifdef DEBUG
@@ -128,30 +128,30 @@ BICAPI  VIO_BOOL  rotmat_to_ang(
     }
    
     /*--- step one,  find the RZ rotation reqd to bring 
-                     the local x into the world XZ plane with a positive X */
+                     the local x into the world XZ plane with a positive VIO_X */
 
     rz = compute_clockwise_rotation( (VIO_Real) Vector_x(x_axis),
                                      (VIO_Real) Vector_y(x_axis) );
 
-    if( rz >= PI )
-        rz -= 2.0 * PI;
+    if( rz >= M_PI )
+        rz -= 2.0 * M_PI;
 
     /*--- step two:  find the RY rotation reqd to align 
-                     the local x on the world X axis  */
+                     the local x on the world VIO_X axis  */
 
-    make_rotation_transform( -rz, Z, &z_rot );
+    make_rotation_transform( -rz, VIO_Z, &z_rot );
 
     transform_vector( &z_rot, (VIO_Real) Vector_x(x_axis), (VIO_Real) Vector_y(x_axis),
                       (VIO_Real) Vector_z(x_axis), &vx, &vy, &vz );
 
     ry = - compute_clockwise_rotation( vx, vz );
 
-    if( ry <= -PI )
-        ry += 2.0 * PI;
+    if( ry <= -M_PI )
+        ry += 2.0 * M_PI;
 
-    /*--- step three, rotate around RX to align the local z with Z */
+    /*--- step three, rotate around RX to align the local z with VIO_Z */
 
-    make_rotation_transform( -ry, Y, &y_rot );
+    make_rotation_transform( -ry, VIO_Y, &y_rot );
 
     transform_vector( &z_rot, (VIO_Real) Vector_x(z_axis), (VIO_Real) Vector_y(z_axis),
                       (VIO_Real) Vector_z(z_axis), &vx, &vy, &vz );
@@ -159,8 +159,8 @@ BICAPI  VIO_BOOL  rotmat_to_ang(
 
     rx = - compute_clockwise_rotation( vz, vy );
 
-    if( rx <= -PI )
-        rx += 2.0 * PI;
+    if( rx <= -M_PI )
+        rx += 2.0 * M_PI;
 
     /*--- the actual rotations to make up the transform are the negatives
           of these */
@@ -218,9 +218,9 @@ static  void  are_rotations_equivalent(
 
     /*--- use negatives, since make_rotation_transform assumes clockwise */
 
-    make_rotation_transform( -rx, X, &Rx ) ;
-    make_rotation_transform( -ry, Y, &Ry ) ;
-    make_rotation_transform( -rz, Z, &Rz ) ;
+    make_rotation_transform( -rx, VIO_X, &Rx ) ;
+    make_rotation_transform( -ry, VIO_Y, &Ry ) ;
+    make_rotation_transform( -rz, VIO_Z, &Rz ) ;
 
     concat_transforms( &test, &Rx, &Ry );
     concat_transforms( &test, &test, &Rz );

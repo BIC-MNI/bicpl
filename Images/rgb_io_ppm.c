@@ -23,14 +23,14 @@ BICAPI  Status  input_rgb_file(
     if ( (f = fopen(filename,"r")) == NULL ) {
         print_error( "Error: output file could not be opened for reading: %s\n",
                      filename );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     ppm_readppminit( f, &n_cols, &n_rows, &max_pixval, &format );
 
     if ( (rowbuf = ppm_allocrow( n_cols ) ) == NULL ) {
         print_error( "Error: could not allocate memory for image\n" );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     initialize_pixels( pixels, 0, 0, n_cols, n_rows, 1.0, 1.0, RGB_PIXEL );
@@ -53,7 +53,7 @@ BICAPI  Status  input_rgb_file(
     ppm_freerow( rowbuf );
     fclose( f );
 
-    return( OK );
+    return( VIO_OK );
 }
 
 
@@ -67,20 +67,20 @@ BICAPI  Status  output_rgb_file(
 
     if ( pixels->pixel_type != RGB_PIXEL ) {
         print_error( "Error: only RGB_PIXEL images are handled\n" );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     if( !file_directory_exists( filename ) )
     {
         print_error( "Error: output file directory does not exist: %s\n",
                      filename );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     if ( (f = fopen(filename,"w")) == NULL ) {
         print_error( "Error: output file could not be opened for writing: %s\n",
                      filename );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     /* I think some errors detected by the ppm_ routines
@@ -96,7 +96,7 @@ BICAPI  Status  output_rgb_file(
 
     if ( (rowbuf = ppm_allocrow( pixels->x_size ) ) == NULL ) {
         print_error( "Error: could not allocate memory for image\n" );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     /* The image appears to be scanned from left to right,
@@ -118,6 +118,6 @@ BICAPI  Status  output_rgb_file(
     ppm_freerow( rowbuf );
     fclose( f );
 
-    return( OK );
+    return( VIO_OK );
 }
 

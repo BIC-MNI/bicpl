@@ -1,9 +1,9 @@
 #include  <bicpl.h>
 
-public  VIO_Status  process_object(
+  VIO_Status  process_object(
     object_struct  *object );
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -43,10 +43,10 @@ int  main(
         input_format = ASCII_FORMAT;
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK )
+                             &object_list ) != VIO_OK )
         return( 1 );
 
-    if( open_file( points_filename, READ_FILE, input_format, &file ) != OK )
+    if( open_file( points_filename, READ_FILE, input_format, &file ) != VIO_OK )
         return( 1 );
 
     for_less( i, 0, n_objects )
@@ -55,7 +55,7 @@ int  main(
 
         for_less( pt, 0, n_points )
         {
-            if( io_point( file, READ_FILE, input_format, &points[pt] ) != OK )
+            if( io_point( file, READ_FILE, input_format, &points[pt] ) != VIO_OK )
             {
                 print( "Error reading %d'th point.\n", pt );
                 return( 1 );

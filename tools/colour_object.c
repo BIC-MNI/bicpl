@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -161,7 +161,7 @@ int  main(
     if( coding_type == USER_DEFINED_COLOUR_MAP )
     {
         if( input_user_defined_colour_coding( &colour_coding,
-                                              user_def_filename ) != OK)                {
+                                              user_def_filename ) != VIO_OK)                {
             print_error( "Error in user defined colour map: %s\n",
                           user_def_filename );
             return( 1 );
@@ -169,10 +169,10 @@ int  main(
     }
 
     if( input_graphics_file( src_filename, &format, &n_objects,
-                             &object_list ) != OK )
+                             &object_list ) != VIO_OK )
         return( 1 );
 
-    if( input_texture_values( values_filename, &n_values, &values ) != OK )
+    if( input_texture_values( values_filename, &n_values, &values ) != VIO_OK )
         return( 1 );
 
     value_index = 0;
@@ -262,5 +262,5 @@ int  main(
     status = output_graphics_file( dest_filename, format,
                                    n_objects, object_list );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }

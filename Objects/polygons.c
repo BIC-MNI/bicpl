@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.44 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.44 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 
@@ -1009,7 +1009,7 @@ BICAPI  void  compute_polygon_normals(
     int                e, poly, size, point_index, prev_index, next_index;
     VIO_Real               scale;
     VIO_Vector             normal, normal_scaled;
-    progress_struct    progress;
+    VIO_progress_struct    progress;
 
     for_less( point_index, 0, polygons->n_points )
         fill_Vector( polygons->normals[point_index], 0.0, 0.0, 0.0 );
@@ -1045,9 +1045,9 @@ BICAPI  void  compute_polygon_normals(
                                               &polygons->points[point_index],
                                               &polygons->points[next_index] );
 
-            scale = FABS( scale );
-            if( scale > PI )
-                scale = scale - PI;
+            scale = VIO_FABS( scale );
+            if( scale > M_PI )
+                scale = scale - M_PI;
 
             SCALE_VECTOR( normal_scaled, normal, scale );
 
@@ -1094,7 +1094,7 @@ BICAPI  void  average_polygon_normals(
     VIO_Real               avg_dot_prod;
     int                e, poly, size, point_index, neigh_index, i;
     VIO_Vector             *neigh_normal_sum, *new_normals, new_normal;
-    progress_struct    progress;
+    VIO_progress_struct    progress;
 
     if( polygons->n_points <= 0 || polygons->n_items <= 0 )
         return;
@@ -1651,7 +1651,7 @@ BICAPI  VIO_Real  get_polygon_edge_angle(
                                                        poly, edge )];
 
     if( neighbour_poly < 0 )
-        return( PI );
+        return( M_PI );
 
     size = GET_OBJECT_SIZE( *polygons, poly );
 
@@ -1693,7 +1693,7 @@ BICAPI  VIO_Real  get_polygon_edge_angle(
     angle = compute_clockwise_rotation( x, y );
 
     if( angle < 0.0 )
-        angle += 2.0 * PI;
+        angle += 2.0 * M_PI;
 
     return( angle );
 }

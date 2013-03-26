@@ -258,7 +258,7 @@
     for (i__ = 1; i__2 < 0 ? i__ >= i__1 : i__ <= i__1; i__ += i__2) {
 
 /*        Reduce rows and columns i:i+nb-1 to bidiagonal form and return   
-          the matrices X and Y which are needed to update the unreduced   
+          the matrices X and VIO_Y which are needed to update the unreduced   
           part of the matrix */
 
 	i__3 = *m - i__ + 1;
@@ -268,7 +268,7 @@
 		+ 1], &ldwrky);
 
 /*        Update the trailing submatrix A(i+nb:m,i+nb:n), using an update   
-          of the form  A := A - V*Y' - X*U' */
+          of the form  A := A - V*VIO_Y' - X*U' */
 
 	i__3 = *m - i__ - nb + 1;
 	i__4 = *n - i__ - nb + 1;

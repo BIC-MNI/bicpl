@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmark_file.c,v 1.10 2005-08-17 22:28:26 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/landmark_file.c,v 1.10 2005-08-17 22:28:26 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -44,7 +44,7 @@ BICAPI  VIO_STR  get_default_landmark_file_suffix( void )
               size
               type
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads a landmark.lmk file and creates an object list consisting
               of markers, with the given colour, size, and type.
 @METHOD     : 
@@ -100,7 +100,7 @@ BICAPI  VIO_Status   input_landmark_file(
               volume
               size
 @OUTPUT     : marker
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Inputs one marker in landmark format from the file.
 @METHOD     : 
 @GLOBALS    : 

@@ -2,7 +2,7 @@
 
 #define  BINTREE_FACTOR  0.3
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -31,7 +31,7 @@ int  main(
     }
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK )
+                             &object_list ) != VIO_OK )
         return( 1 );
 
     if( n_objects != 1 || get_object_type(object_list[0]) != POLYGONS )

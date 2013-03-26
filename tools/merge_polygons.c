@@ -1,13 +1,13 @@
 #include <bicpl.h>
 
-private  void   merge_polygons(
+static  void   merge_polygons(
     polygons_struct    *in1,
     polygons_struct    *in2,
     int                translation1[],
     int                translation2[],
     polygons_struct    *out2 );
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -43,7 +43,7 @@ int  main(
     }
 
     if( input_graphics_file( input1_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects < 1 ||
+                             &object_list ) != VIO_OK || n_objects < 1 ||
         get_object_type( object_list[0] ) != POLYGONS )
     {
         print_error( "File must have a polygons structure.\n" );
@@ -53,7 +53,7 @@ int  main(
     polygons1 = get_polygons_ptr( object_list[0] );
 
     if( input_graphics_file( input2_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects < 1 ||
+                             &object_list ) != VIO_OK || n_objects < 1 ||
         get_object_type( object_list[0] ) != POLYGONS )
     {
         print_error( "File must have a polygons structure.\n" );
@@ -69,20 +69,20 @@ int  main(
     ALLOC( translation2, polygons2->n_points );
 
     if( open_file( translation_filename, READ_FILE, BINARY_FORMAT,
-                   &file ) != OK )
+                   &file ) != VIO_OK )
         return( 1 );
 
     for_less( p, 0, polygons1->n_points )
     {
         if( io_int( file, READ_FILE, BINARY_FORMAT, &translation1[p] ) !=
-                    OK )
+                    VIO_OK )
             return( 1 );
     }
 
     for_less( p, 0, polygons2->n_points )
     {
         if( io_int( file, READ_FILE, BINARY_FORMAT, &translation2[p] ) !=
-                    OK )
+                    VIO_OK )
             return( 1 );
     }
 
@@ -96,7 +96,7 @@ int  main(
     return( 0 );
 }
 
-private  void   merge_polygons(
+static  void   merge_polygons(
     polygons_struct    *in1,
     polygons_struct    *in2,
     int                translation1[],

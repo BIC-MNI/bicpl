@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.10 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.10 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 static void  scan_line_segment_to_voxels(
@@ -138,9 +138,9 @@ static void  scan_line_segment_to_voxels(
 
     for_less( c, 0, VIO_N_DIMENSIONS )
     {
-        Point_coord(min_point,c) = (Point_coord_type)
+        Point_coord(min_point,c) = (VIO_Point_coord_type)
                  ((VIO_Real) MIN(Point_coord(*p1,c),Point_coord(*p2,c)) - radius);
-        Point_coord(max_point,c) = (Point_coord_type)
+        Point_coord(max_point,c) = (VIO_Point_coord_type)
                  ((VIO_Real) MAX(Point_coord(*p1,c),Point_coord(*p2,c)) + radius);
     }
 
@@ -178,8 +178,8 @@ static void  scan_line_segment_to_voxels(
         min_v = MIN( min_voxel[c], max_voxel[c] );
         max_v = MAX( min_voxel[c], max_voxel[c] );
 
-        int_min_voxel[c] = ROUND( min_v );
-        int_max_voxel[c] = ROUND( max_v );
+        int_min_voxel[c] = VIO_ROUND( min_v );
+        int_max_voxel[c] = VIO_ROUND( max_v );
 
         if( int_min_voxel[c] < 0 )
             int_min_voxel[c] = 0;
@@ -187,12 +187,12 @@ static void  scan_line_segment_to_voxels(
             int_max_voxel[c] = sizes[c]-1;
     }
 
-    for_inclusive( int_voxel[X], int_min_voxel[X], int_max_voxel[X] )
-    for_inclusive( int_voxel[Y], int_min_voxel[Y], int_max_voxel[Y] )
-    for_inclusive( int_voxel[Z], int_min_voxel[Z], int_max_voxel[Z] )
+    for_inclusive( int_voxel[VIO_X], int_min_voxel[VIO_X], int_max_voxel[VIO_X] )
+    for_inclusive( int_voxel[VIO_Y], int_min_voxel[VIO_Y], int_max_voxel[VIO_Y] )
+    for_inclusive( int_voxel[VIO_Z], int_min_voxel[VIO_Z], int_max_voxel[VIO_Z] )
     {
-        convert_3D_voxel_to_world( volume, (VIO_Real) int_voxel[X],
-                                   (VIO_Real) int_voxel[Y], (VIO_Real) int_voxel[Z],
+        convert_3D_voxel_to_world( volume, (VIO_Real) int_voxel[VIO_X],
+                                   (VIO_Real) int_voxel[VIO_Y], (VIO_Real) int_voxel[VIO_Z],
                                    &x_world, &y_world, &z_world );
 
         fill_Point( world_voxel, x_world, y_world, z_world );

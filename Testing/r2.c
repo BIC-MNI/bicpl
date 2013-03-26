@@ -374,26 +374,26 @@ private  VIO_BOOL  point_within_polygon_2d(
     int      i1, i2;
     int      i;
 
-    nx = FABS( (VIO_Real) Vector_x(*polygon_normal) );
-    ny = FABS( (VIO_Real) Vector_y(*polygon_normal) );
-    nz = FABS( (VIO_Real) Vector_z(*polygon_normal) );
+    nx = VIO_FABS( (VIO_Real) Vector_x(*polygon_normal) );
+    ny = VIO_FABS( (VIO_Real) Vector_y(*polygon_normal) );
+    nz = VIO_FABS( (VIO_Real) Vector_z(*polygon_normal) );
 
     max_val = MAX3( nx, ny, nz );
 
     if( nx == max_val )
     {
-        i1 = Y;
-        i2 = Z;
+        i1 = VIO_Y;
+        i2 = VIO_Z;
     }
     else if( ny == max_val )
     {
-        i1 = Z;
+        i1 = VIO_Z;
         i2 = X;
     }
     else
     {
         i1 = X;
-        i2 = Y;
+        i2 = VIO_Y;
     }
 
     x = (VIO_Real) Point_coord( *pt, i1 );

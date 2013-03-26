@@ -6,13 +6,13 @@
 #define USE_IDENTITY_TRANSFORMS
 
 
-private  void  compute_transforms(
+static  void  compute_transforms(
     int        n_surfaces,
     int        n_points,
     VIO_Point      **points,
     VIO_Transform  transforms[] );
 
-private  void  create_average_polygons(
+static  void  create_average_polygons(
     int                   n_surfaces,
     int                   n_groups,
     int                   n_points,
@@ -23,7 +23,7 @@ private  void  create_average_polygons(
     polygons_struct       *polygons );
 
 #ifdef PRINT_TRANSFORMS
-private  void  print_transform(
+static  void  print_transform(
     VIO_Transform   *trans );
 #endif
 
@@ -33,8 +33,8 @@ int  main(
 {
     VIO_Status           status;
     FILE             *rms_file, *variance_file;
-    STRING           filename, output_filename;
-    STRING           rms_filename, variance_filename;
+    VIO_STR           filename, output_filename;
+    VIO_STR           rms_filename, variance_filename;
     int              i, n_objects, n_surfaces, n_groups;
     VIO_File_formats     format;
     object_struct    *out_object;
@@ -43,7 +43,7 @@ int  main(
     VIO_Point            **points_list;
     VIO_Transform        *transforms;
 
-    status = OK;
+    status = VIO_OK;
 
     initialize_argument_processing( argc, argv );
 
@@ -73,7 +73,7 @@ int  main(
     while( get_string_argument( NULL, &filename ) )
     {
         if( input_graphics_file( filename, &format, &n_objects,
-                                 &object_list ) != OK )
+                                 &object_list ) != VIO_OK )
         {
             print( "Couldn't read %s.\n", filename );
             return( 1 );
@@ -122,7 +122,7 @@ int  main(
 
     if( rms_filename != NULL )
     {
-        if( open_file( rms_filename, WRITE_FILE, ASCII_FORMAT, &rms_file )!= OK)
+        if( open_file( rms_filename, WRITE_FILE, ASCII_FORMAT, &rms_file )!= VIO_OK)
             return( 1 );
     }
     else
@@ -131,7 +131,7 @@ int  main(
     if( variance_filename != NULL )
     {
         if( open_file( variance_filename, WRITE_FILE, ASCII_FORMAT,
-                       &variance_file )!= OK)
+                       &variance_file )!= VIO_OK)
             return( 1 );
     }
     else
@@ -150,20 +150,20 @@ int  main(
 
     compute_polygon_normals( average_polygons );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = output_graphics_file( output_filename, format,
                                        1, &out_object );
 
-    if( status == OK )
+    if( status == VIO_OK )
         print( "Objects output.\n" );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }
 
 #ifdef SIMPLE_TRANSFORMATION
 
 #ifndef  USE_IDENTITY_TRANSFORMS
-private  void  compute_point_to_point_transform(
+static  void  compute_point_to_point_transform(
     int        n_points,
     VIO_Point      src_points[],
     VIO_Point      dest_points[],
@@ -177,9 +177,9 @@ private  void  compute_point_to_point_transform(
 
     for_less( p, 0, n_points )
     {
-        coords[p][X] = (VIO_Real) Point_x(src_points[p]);
-        coords[p][Y] = (VIO_Real) Point_y(src_points[p]);
-        coords[p][Z] = (VIO_Real) Point_z(src_points[p]);
+        coords[p][VIO_X] = (VIO_Real) Point_x(src_points[p]);
+        coords[p][VIO_Y] = (VIO_Real) Point_y(src_points[p]);
+        coords[p][VIO_Z] = (VIO_Real) Point_z(src_points[p]);
     }
 
     make_identity_transform( transform );
@@ -202,7 +202,7 @@ private  void  compute_point_to_point_transform(
 }
 #endif
 
-private  void  compute_transforms(
+static  void  compute_transforms(
     int        n_surfaces,
     int        n_points,
     VIO_Point      **points,
@@ -225,7 +225,7 @@ private  void  compute_transforms(
 }
 #else
 
-private  void  compute_transforms(
+static  void  compute_transforms(
     int        n_surfaces,
     int        n_points,
     VIO_Point      **points,
@@ -260,10 +260,10 @@ private  void  compute_transforms(
                 }
                 else
                 {
-                    coefs[IJ(s-1,0,4)] = Point_x(points[s][i]);
-                    coefs[IJ(s-1,1,4)] = Point_y(points[s][i]);
-                    coefs[IJ(s-1,2,4)] = Point_z(points[s][i]);
-                    coefs[IJ(s-1,3,4)] = 1.0;
+                    coefs[VIO_IJ(s-1,0,4)] = Point_x(points[s][i]);
+                    coefs[VIO_IJ(s-1,1,4)] = Point_y(points[s][i]);
+                    coefs[VIO_IJ(s-1,2,4)] = Point_z(points[s][i]);
+                    coefs[VIO_IJ(s-1,3,4)] = 1.0;
                 }
 
                 for_less( j, 0, n_surfaces )
@@ -274,10 +274,10 @@ private  void  compute_transforms(
                     }
                     else
                     {
-                        coefs[IJ(j-1,0,4)] -= Point_x(points[j][i]) / n;
-                        coefs[IJ(j-1,1,4)] -= Point_y(points[j][i]) / n;
-                        coefs[IJ(j-1,2,4)] -= Point_z(points[j][i]) / n;
-                        coefs[IJ(j-1,3,4)] -= 1.0 / n;
+                        coefs[VIO_IJ(j-1,0,4)] -= Point_x(points[j][i]) / n;
+                        coefs[VIO_IJ(j-1,1,4)] -= Point_y(points[j][i]) / n;
+                        coefs[VIO_IJ(j-1,2,4)] -= Point_z(points[j][i]) / n;
+                        coefs[VIO_IJ(j-1,3,4)] -= 1.0 / n;
                     }
                 }
 
@@ -290,7 +290,7 @@ private  void  compute_transforms(
         for_less( s, 1, n_surfaces )
         {
             for_less( j, 0, VIO_N_DIMENSIONS+1 )
-                Transform_elem(transforms[s],dim,j) = coefs[IJ(s-1,j,4)];
+                Transform_elem(transforms[s],dim,j) = coefs[VIO_IJ(s-1,j,4)];
         }
 
         delete_linear_least_squares( &lsq );
@@ -301,7 +301,7 @@ private  void  compute_transforms(
 
 #endif
 
-private  VIO_Real  get_rms_points(
+static  VIO_Real  get_rms_points(
     int                   n_surfaces,
     int                   n_groups,
     VIO_Point                 samples[],
@@ -357,7 +357,7 @@ private  VIO_Real  get_rms_points(
     return( rms );
 }
 
-private  void  create_average_polygons(
+static  void  create_average_polygons(
     int                   n_surfaces,
     int                   n_groups,
     int                   n_points,
@@ -409,7 +409,7 @@ private  void  create_average_polygons(
 }
 
 #ifdef PRINT_TRANSFORMS
-private  void  print_transform(
+static  void  print_transform(
     VIO_Transform   *trans )
 {
     int   i, j;

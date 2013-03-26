@@ -30,7 +30,7 @@ int  main(
     }
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK )
+                             &object_list ) != VIO_OK )
     {
         print( "Couldn't read %s.\n", input_filename );
         return( 1 );
@@ -41,7 +41,7 @@ int  main(
     else if( ascii_binary_present && ascii_binary[0] == 'b' )
         format = BINARY_FORMAT;
 
-    if( open_file( output_filename, WRITE_FILE, format, &file ) != OK )
+    if( open_file( output_filename, WRITE_FILE, format, &file ) != VIO_OK )
         return( 1 );
 
     for_less( obj, 0, n_objects )
@@ -50,10 +50,10 @@ int  main(
 
         for_less( i, 0, n_points )
         {
-            if( io_point( file, WRITE_FILE, format, &points[i] ) != OK )
+            if( io_point( file, WRITE_FILE, format, &points[i] ) != VIO_OK )
                 return( 1 );
 
-            if( format == ASCII_FORMAT && output_newline( file ) != OK )
+            if( format == ASCII_FORMAT && output_newline( file ) != VIO_OK )
                 return( 1 );
         }
     }

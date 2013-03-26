@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/smooth.c,v 1.22 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/smooth.c,v 1.22 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 static VIO_Real  calculate_weight(
@@ -59,7 +59,7 @@ BICAPI VIO_Volume  smooth_resample_volume(
     VIO_Real               val;
     VIO_Transform          scale_transform, translation_transform, transform;
     VIO_General_transform  general_transform, tmp;
-    progress_struct    progress;
+    VIO_progress_struct    progress;
 
     if( get_volume_n_dimensions(volume) != 3 )
     {
@@ -68,9 +68,9 @@ BICAPI VIO_Volume  smooth_resample_volume(
 
     get_volume_sizes( volume, sizes );
 
-    new_sizes[X] = new_nx;
-    new_sizes[Y] = new_ny;
-    new_sizes[Z] = new_nz;
+    new_sizes[VIO_X] = new_nx;
+    new_sizes[VIO_Y] = new_ny;
+    new_sizes[VIO_Z] = new_nz;
 
     for_less( c, 0, VIO_N_DIMENSIONS )
         if( new_sizes[c] <= 0 )
@@ -87,15 +87,15 @@ BICAPI VIO_Volume  smooth_resample_volume(
     set_volume_real_range( resampled_volume, get_volume_real_min(volume),
                            get_volume_real_max(volume) );
 
-    dx = (VIO_Real) sizes[X] / (VIO_Real) new_sizes[X];
-    dy = (VIO_Real) sizes[Y] / (VIO_Real) new_sizes[Y];
-    dz = (VIO_Real) sizes[Z] / (VIO_Real) new_sizes[Z];
+    dx = (VIO_Real) sizes[VIO_X] / (VIO_Real) new_sizes[VIO_X];
+    dy = (VIO_Real) sizes[VIO_Y] / (VIO_Real) new_sizes[VIO_Y];
+    dz = (VIO_Real) sizes[VIO_Z] / (VIO_Real) new_sizes[VIO_Z];
 
     get_volume_separations( volume, separations );
 
-    separations[X] *= dx;
-    separations[Y] *= dy;
-    separations[Z] *= dz;
+    separations[VIO_X] *= dx;
+    separations[VIO_Y] *= dy;
+    separations[VIO_Z] *= dz;
 
     set_volume_separations( resampled_volume, separations );
 
@@ -121,55 +121,55 @@ BICAPI VIO_Volume  smooth_resample_volume(
     initialize_progress_report( &progress, FALSE, new_nx * new_ny,
                                 "Resampling" );
 
-    for_less( dest_voxel[X], 0, new_nx )
+    for_less( dest_voxel[VIO_X], 0, new_nx )
     {
-        x_min = (VIO_Real)   dest_voxel[X]    * dx;
-        x_max = (VIO_Real)  (dest_voxel[X]+1) * dx;
+        x_min = (VIO_Real)   dest_voxel[VIO_X]    * dx;
+        x_max = (VIO_Real)  (dest_voxel[VIO_X]+1) * dx;
 
-        for_less( dest_voxel[Y], 0, new_ny )
+        for_less( dest_voxel[VIO_Y], 0, new_ny )
         {
-            y_min = (VIO_Real)  dest_voxel[Y]    * dy;
-            y_max = (VIO_Real) (dest_voxel[Y]+1) * dy;
+            y_min = (VIO_Real)  dest_voxel[VIO_Y]    * dy;
+            y_max = (VIO_Real) (dest_voxel[VIO_Y]+1) * dy;
 
-            for_less( dest_voxel[Z], 0, new_nz )
+            for_less( dest_voxel[VIO_Z], 0, new_nz )
             {
-                z_min = (VIO_Real)  dest_voxel[Z]    * dz;
-                z_max = (VIO_Real) (dest_voxel[Z]+1) * dz;
+                z_min = (VIO_Real)  dest_voxel[VIO_Z]    * dz;
+                z_max = (VIO_Real) (dest_voxel[VIO_Z]+1) * dz;
 
-                for_inclusive( src_voxel[Y], (int) y_min, (int) y_max )
+                for_inclusive( src_voxel[VIO_Y], (int) y_min, (int) y_max )
                 {
-                    y_weights[src_voxel[Y]-(int)y_min] =
-                        calculate_weight( src_voxel[Y], dy, y_min, y_max );
+                    y_weights[src_voxel[VIO_Y]-(int)y_min] =
+                        calculate_weight( src_voxel[VIO_Y], dy, y_min, y_max );
                 }
 
-                for_inclusive( src_voxel[Z], (int) z_min, (int) z_max )
+                for_inclusive( src_voxel[VIO_Z], (int) z_min, (int) z_max )
                 {
-                    z_weights[src_voxel[Z]-(int)z_min] =
-                        calculate_weight( src_voxel[Z], dz, z_min, z_max );
+                    z_weights[src_voxel[VIO_Z]-(int)z_min] =
+                        calculate_weight( src_voxel[VIO_Z], dz, z_min, z_max );
                 }
 
                 val = 0.0;
 
-                for_inclusive( src_voxel[X], (int) x_min, (int) x_max )
+                for_inclusive( src_voxel[VIO_X], (int) x_min, (int) x_max )
                 {
-                    x_weight = calculate_weight( src_voxel[X], dx,
+                    x_weight = calculate_weight( src_voxel[VIO_X], dx,
                                                  x_min, x_max );
 
-                    for_inclusive( src_voxel[Y], (int) y_min, (int) y_max )
+                    for_inclusive( src_voxel[VIO_Y], (int) y_min, (int) y_max )
                     {
                         xy_weight = x_weight *
-                                    y_weights[src_voxel[Y]-(int)y_min];
+                                    y_weights[src_voxel[VIO_Y]-(int)y_min];
 
-                        for_inclusive( src_voxel[Z], (int) z_min, (int) z_max )
+                        for_inclusive( src_voxel[VIO_Z], (int) z_min, (int) z_max )
                         {
                             weight = xy_weight *
-                                     z_weights[src_voxel[Z]-(int)z_min];
+                                     z_weights[src_voxel[VIO_Z]-(int)z_min];
 
                             if( weight > 0.0 )
                             {
                                 voxel = get_volume_voxel_value( volume,
-                                              src_voxel[X], src_voxel[Y],
-                                              src_voxel[Z], 0, 0 );
+                                              src_voxel[VIO_X], src_voxel[VIO_Y],
+                                              src_voxel[VIO_Z], 0, 0 );
                                 val += weight * voxel;
                             }
                         }
@@ -177,12 +177,12 @@ BICAPI VIO_Volume  smooth_resample_volume(
                 }
 
                 set_volume_voxel_value( resampled_volume,
-                              dest_voxel[X], dest_voxel[Y], dest_voxel[Z], 0, 0,
+                              dest_voxel[VIO_X], dest_voxel[VIO_Y], dest_voxel[VIO_Z], 0, 0,
                               val + 0.5 );
             }
 
             update_progress_report( &progress,
-                                   dest_voxel[X] * new_ny + dest_voxel[Y] + 1 );
+                                   dest_voxel[VIO_X] * new_ny + dest_voxel[VIO_Y] + 1 );
         }
     }
 

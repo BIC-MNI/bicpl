@@ -102,7 +102,7 @@ int main( int argc, char * argv[] ) {
     int err = input_graphics_file( expanded, &format, &n_objects[i],
                                    &object_list[i] );
 
-    if( err != OK ) {
+    if( err != VIO_OK ) {
       print_error( "Error reading file %s\n", expanded );
       return( 1 );
     }
@@ -204,7 +204,7 @@ int main( int argc, char * argv[] ) {
   if( strcmp( out_obj, "none" ) != 0 ) {
     expanded = expand_filename( out_obj );
 
-    if( output_graphics_file( expanded, format, n_objects[0], object_list[0] ) != OK) {
+    if( output_graphics_file( expanded, format, n_objects[0], object_list[0] ) != VIO_OK) {
       return( 1 );
     }
 

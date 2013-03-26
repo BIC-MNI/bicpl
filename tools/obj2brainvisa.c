@@ -71,7 +71,7 @@ int main( int argc, char * argv[] ) {
   expanded = expand_filename( in_obj );
   int err = input_graphics_file( expanded, &format, &n_objects, &object );
 
-  if( err != OK ) {
+  if( err != VIO_OK ) {
     print_error( "Error reading file %s\n", expanded );
     return( 1 );
   }

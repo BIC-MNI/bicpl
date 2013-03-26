@@ -2,7 +2,7 @@
 
 #define  BINTREE_FACTOR  0.3
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -39,7 +39,7 @@ int  main(
     (void) get_string_argument( values_filename, &output_filename );
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK )
+                             &object_list ) != VIO_OK )
         return( 1 );
 
     if( n_objects != 1 || get_object_type(object_list[0]) != POLYGONS )
@@ -50,13 +50,13 @@ int  main(
 
     polygons = get_polygons_ptr( object_list[0] );
 
-    if( open_file( values_filename, READ_FILE, ASCII_FORMAT, &file ) != OK )
+    if( open_file( values_filename, READ_FILE, ASCII_FORMAT, &file ) != VIO_OK )
         return( 1 );
 
     ALLOC( values, polygons->n_points );
 
     n_read = 0;
-    while( input_real( file, &values[n_read] ) == OK )
+    while( input_real( file, &values[n_read] ) == VIO_OK )
         ++n_read;
 
     (void) close_file( file );
@@ -88,13 +88,13 @@ int  main(
     delete_polygon_point_neighbours( polygons, n_neighbours, neighbours,
                                      NULL, NULL );
 
-    if( open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != OK )
+    if( open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != VIO_OK )
         return( 1 );
 
     for_less( p, 0, polygons->n_points )
     {
-        if( output_real( file, values[p] ) != OK ||
-            output_newline( file ) != OK )
+        if( output_real( file, values[p] ) != VIO_OK ||
+            output_newline( file ) != VIO_OK )
             return( 1 );
     }
 

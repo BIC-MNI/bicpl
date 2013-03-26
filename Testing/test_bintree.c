@@ -27,7 +27,7 @@ int  main(
     (void) get_int_argument( 0, &n_rays );
 
     if( input_graphics_file( src_polygons_filename,
-                             &format, &n_src_objects, &src_objects ) != OK ||
+                             &format, &n_src_objects, &src_objects ) != VIO_OK ||
         n_src_objects < 1 || get_object_type( src_objects[0] ) != POLYGONS  )
         return( 1 );
 
@@ -36,7 +36,7 @@ int  main(
     print( "File input: %d items\n", polygons->n_items );
 
     create_polygons_bintree( polygons,
-                             ROUND( (VIO_Real) polygons->n_items * ratio ) );
+                             VIO_ROUND( (VIO_Real) polygons->n_items * ratio ) );
 
     get_range_points( polygons->n_points, polygons->points, &min_range,
                       &max_range );

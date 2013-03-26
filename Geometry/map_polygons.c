@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.14 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/map_polygons.c,v 1.14 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -560,11 +560,11 @@ BICAPI  void  map_sphere_to_uv(
 
     angle_up = acos( z );
 
-    *v = 1.0 - angle_up / PI;
+    *v = 1.0 - angle_up / M_PI;
 
     angle_around = compute_clockwise_rotation( x, -y );
 
-    *u = angle_around / (2.0*PI);
+    *u = angle_around / (2.0*M_PI);
 }
 
 BICAPI  void  map_uv_to_sphere(
@@ -576,9 +576,9 @@ BICAPI  void  map_uv_to_sphere(
 {
     VIO_Real   r;
 
-    *z = cos( (1.0 - v) * PI );
-    r = sin( (1.0 - v) * PI );
+    *z = cos( (1.0 - v) * M_PI );
+    r = sin( (1.0 - v) * M_PI );
 
-    *x = r * cos( u * 2.0 * PI );
-    *y = r * sin( u * 2.0 * PI );
+    *x = r * cos( u * 2.0 * M_PI );
+    *y = r * sin( u * 2.0 * M_PI );
 }

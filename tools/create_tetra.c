@@ -1,7 +1,7 @@
 #include  <bicpl.h>
 
 #ifdef ADJUST
-private  void  adjust_tetrahedral_sphere(
+static  void  adjust_tetrahedral_sphere(
     VIO_Point            *centre,
     VIO_Real             rx,
     VIO_Real             ry,
@@ -25,7 +25,7 @@ int  main(
     polygons_struct *polygons;
     VIO_Real            cx, cy, cz, rx, ry, rz;
 
-    status = OK;
+    status = VIO_OK;
 
     initialize_argument_processing( argc, argv );
 
@@ -65,17 +65,17 @@ int  main(
 
     status = output_graphics_file( output_filename, ASCII_FORMAT, 1, &object );
 
-    if( status == OK )
+    if( status == VIO_OK )
         delete_object( object );
 
-    if( status == OK )
+    if( status == VIO_OK )
         print( "Tetrahedron output.\n" );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }
 
 #ifdef ADJUST
-private  void  convert_uv_to_point(
+static  void  convert_uv_to_point(
     VIO_Point            *centre,
     VIO_Real             rx,
     VIO_Real             ry,
@@ -101,7 +101,7 @@ private  void  convert_uv_to_point(
     fill_Point( *point, x, y, z );
 }
 
-private  void  convert_point_to_uv(
+static  void  convert_point_to_uv(
     VIO_Point            *centre,
     VIO_Real             rx,
     VIO_Real             ry,
@@ -123,7 +123,7 @@ private  void  convert_point_to_uv(
     *v = phi / PI;
 }
 
-private  VIO_Real  evaluate_rms(
+static  VIO_Real  evaluate_rms(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               **neighbours,
@@ -170,7 +170,7 @@ typedef  struct
     int              **neighbours;
 } func_data;
 
-private  VIO_Real  evaluate_rms_func(
+static  VIO_Real  evaluate_rms_func(
     VIO_Real   coefs[],
     void   *void_data )
 {
@@ -182,7 +182,7 @@ private  VIO_Real  evaluate_rms_func(
                           data->n_neighbours, data->neighbours, coefs ) );
 }
 
-private  void  adjust_tetrahedral_sphere(
+static  void  adjust_tetrahedral_sphere(
     VIO_Point            *centre,
     VIO_Real             rx,
     VIO_Real             ry,

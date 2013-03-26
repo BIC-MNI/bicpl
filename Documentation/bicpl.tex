@@ -183,8 +183,8 @@ Assignments are of the form \name{variable = value ;}.  The lookup
 table and its size are passed to this function.  An example
 follows: }
 {\bf\begin{verbatim}
-    if( input_globals_file( SIZEOF_STATIC_ARRAY(my_globals),
-           my_globals, filename ) != OK )
+    if( input_globals_file( VIO_SIZEOF_STATIC_ARRAY(my_globals),
+           my_globals, filename ) != VIO_OK )
     {
         print( "Error reading globals file.\n" );
     }
@@ -202,8 +202,8 @@ public  Status  get_global_variable(
 matching the specified name, \name{variable\_name}.  For example, if
 the global variable \name{my\_variable} is of type integer,}
 {\bf\begin{verbatim}
-    if( get_global_variable( SIZEOF_STATIC_ARRAY(my_globals),
-            my_globals, "my_variable", value_string ) == OK )
+    if( get_global_variable( VIO_SIZEOF_STATIC_ARRAY(my_globals),
+            my_globals, "my_variable", value_string ) == VIO_OK )
     {
         print( "Value is: %s\n", value_string );
     }
@@ -226,8 +226,8 @@ public  Status  set_global_variable(
 \name{value\_to\_set}.  For ex\-ample, if the global variable
 \name{my\_variable} is of type integer,}
 {\bf\begin{verbatim}
-    if( set_global_variable( SIZEOF_STATIC_ARRAY(my_globals),
-            my_globals, "my_variable", "45" ) != OK )
+    if( set_global_variable( VIO_SIZEOF_STATIC_ARRAY(my_globals),
+            my_globals, "my_variable", "45" ) != VIO_OK )
     {
         print( "Error setting variable.\n" );
     }
@@ -587,7 +587,7 @@ public  BOOLEAN  lookup_colour(
 \desc{Given a colour name, such as ``\name{red}'' or ``\name{dark\_blue}''
 looks up the name in a list of colours and passes back the
 corresponding colour, returning \name{TRUE} if successful.  The
-supported colours are from the list of about 300 named X colours.}
+supported colours are from the list of about 300 named VIO_X colours.}
 
 {\bf\begin{verbatim}
 public  BOOLEAN  lookup_colour_name(
@@ -635,7 +635,7 @@ public  void  make_rotation_transform(
 \end{verbatim}}
 
 \desc{Creates a transform which achieves a rotation about one of the
-three axes, (\name{X}, \name{Y}, or \name{Z}).}
+three axes, (\name{VIO_X}, \name{VIO_Y}, or \name{VIO_Z}).}
 
 {\bf\begin{verbatim}
 public void  get_nonlinear_warp(

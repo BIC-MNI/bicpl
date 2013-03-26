@@ -102,7 +102,7 @@ private  void  test_solution(
         x_trans = 10.0 * get_random_0_to_1() - 5.0;
         y_trans = 10.0 * get_random_0_to_1() - 5.0;
 
-        make_rotation_transform( angle, Z, &rotation );
+        make_rotation_transform( angle, VIO_Z, &rotation );
         make_translation_transform( x_trans, y_trans, 0.0, &translation );
         concat_transforms( &transform, &translation, &rotation );
 
@@ -263,8 +263,8 @@ private  void  test_solution_3d(
         y_trans = 10.0 * get_random_0_to_1() - 5.0;
         z_trans = 10.0 * get_random_0_to_1() - 5.0;
 
-        make_rotation_transform( y_angle, Y, &y_rotation );
-        make_rotation_transform( z_angle, Z, &z_rotation );
+        make_rotation_transform( y_angle, VIO_Y, &y_rotation );
+        make_rotation_transform( z_angle, VIO_Z, &z_rotation );
         make_translation_transform( x_trans, y_trans, z_trans, &translation );
         concat_transforms( &transform, &translation, &y_rotation );
         concat_transforms( &transform, &transform, &z_rotation );
@@ -324,8 +324,8 @@ private  void  test_solution_three_point_3d(
         y_trans = 10.0 * get_random_0_to_1() - 5.0;
         z_trans = 10.0 * get_random_0_to_1() - 5.0;
 
-        make_rotation_transform( y_angle, Y, &y_rotation );
-        make_rotation_transform( z_angle, Z, &z_rotation );
+        make_rotation_transform( y_angle, VIO_Y, &y_rotation );
+        make_rotation_transform( z_angle, VIO_Z, &z_rotation );
         make_translation_transform( x_trans, y_trans, z_trans, &translation );
         concat_transforms( &transform, &translation, &y_rotation );
         concat_transforms( &transform, &transform, &z_rotation );
@@ -401,7 +401,7 @@ private  BOOLEAN   get_four_point_prediction(
     denom = x12 * z3 + z12 * y3 + y12 * x3;
 
     if( v1_len == 0.0 || v2_len == 0.0 ||
-        FABS( denom / v1_len / v2_len / max_len ) < 1.0e-2 )
+        VIO_FABS( denom / v1_len / v2_len / max_len ) < 1.0e-2 )
         return( FALSE );
 
     x23 = x2 * y3 - x3 * y2;

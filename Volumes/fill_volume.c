@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/fill_volume.c,v 1.11 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/fill_volume.c,v 1.11 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 typedef struct
@@ -75,17 +75,17 @@ BICAPI VIO_BOOL  fill_connected_voxels(
 
     get_volume_sizes( volume, sizes );
 
-    create_bitlist_3d( sizes[X], sizes[Y], sizes[Z], &checked_flags );
-    create_bitlist_3d( sizes[X], sizes[Y], sizes[Z], &change_flags );
+    create_bitlist_3d( sizes[VIO_X], sizes[VIO_Y], sizes[VIO_Z], &checked_flags );
+    create_bitlist_3d( sizes[VIO_X], sizes[VIO_Y], sizes[VIO_Z], &change_flags );
 
     INITIALIZE_QUEUE( queue );
 
-    set_bitlist_bit_3d( &checked_flags, voxel[X], voxel[Y], voxel[Z], TRUE );
-    set_bitlist_bit_3d( &change_flags, voxel[X], voxel[Y], voxel[Z], TRUE );
+    set_bitlist_bit_3d( &checked_flags, voxel[VIO_X], voxel[VIO_Y], voxel[VIO_Z], TRUE );
+    set_bitlist_bit_3d( &change_flags, voxel[VIO_X], voxel[VIO_Y], voxel[VIO_Z], TRUE );
 
-    entry.x = voxel[X];
-    entry.y = voxel[Y];
-    entry.z = voxel[Z];
+    entry.x = voxel[VIO_X];
+    entry.y = voxel[VIO_Y];
+    entry.z = voxel[VIO_Z];
     INSERT_IN_QUEUE( queue, entry );
 
     while( !IS_QUEUE_EMPTY( queue ) )
@@ -102,16 +102,16 @@ BICAPI VIO_BOOL  fill_connected_voxels(
             ty = y + dy[dir];
             tz = z + dz[dir];
 
-            if( tx >= 0 && tx < sizes[X] &&
-                ty >= 0 && ty < sizes[Y] &&
-                tz >= 0 && tz < sizes[Z] &&
+            if( tx >= 0 && tx < sizes[VIO_X] &&
+                ty >= 0 && ty < sizes[VIO_Y] &&
+                tz >= 0 && tz < sizes[VIO_Z] &&
                 !get_bitlist_bit_3d( &checked_flags, tx, ty, tz ) )
             {
                 set_bitlist_bit_3d( &checked_flags, tx, ty, tz, TRUE );
 
-                voxel_index[X] = tx;
-                voxel_index[Y] = ty;
-                voxel_index[Z] = tz;
+                voxel_index[VIO_X] = tx;
+                voxel_index[VIO_Y] = ty;
+                voxel_index[VIO_Z] = tz;
                 if( should_change_this_one( volume, label_volume, voxel_index,
                                  min_threshold, max_threshold,
                                  min_label_threshold, max_label_threshold,
@@ -129,12 +129,12 @@ BICAPI VIO_BOOL  fill_connected_voxels(
 
     first = TRUE;
 
-    for_less( voxel_index[X], 0, sizes[X] )
-    for_less( voxel_index[Y], 0, sizes[Y] )
-    for_less( voxel_index[Z], 0, sizes[Z] )
+    for_less( voxel_index[VIO_X], 0, sizes[VIO_X] )
+    for_less( voxel_index[VIO_Y], 0, sizes[VIO_Y] )
+    for_less( voxel_index[VIO_Z], 0, sizes[VIO_Z] )
     {
-        if( get_bitlist_bit_3d( &change_flags, voxel_index[X], voxel_index[Y],
-                                voxel_index[Z] ) )
+        if( get_bitlist_bit_3d( &change_flags, voxel_index[VIO_X], voxel_index[VIO_Y],
+                                voxel_index[VIO_Z] ) )
         {
             set_volume_label_data( label_volume, voxel_index, desired_label );
 
@@ -343,7 +343,7 @@ BICAPI VIO_BOOL  should_change_this_one(
     if( min_threshold > max_threshold )
         return( TRUE );
 
-    value = get_volume_real_value( volume, voxel[X], voxel[Y], voxel[Z], 0, 0 );
+    value = get_volume_real_value( volume, voxel[VIO_X], voxel[VIO_Y], voxel[VIO_Z], 0, 0 );
 
     return( min_threshold <= value && value <= max_threshold );
 }

@@ -60,7 +60,7 @@ static  VIO_Real  evaluate_probability_t(
     gamma_bottom = exp( gamma( (VIO_Real) v / 2.0 ) );
 
     top = gamma_top * pow( 1.0 + t * t / (VIO_Real) v, - (VIO_Real) (v+1)/ 2.0 );
-    bottom = sqrt( (VIO_Real) v * PI ) * gamma_bottom;
+    bottom = sqrt( (VIO_Real) v * M_PI ) * gamma_bottom;
 
     p = top / bottom;
 
@@ -116,7 +116,7 @@ static  VIO_Real  convert_t_stat_to_probability(
     int   ind;
     VIO_Real  abs_t, alpha1, alpha2, value, interval_width;
 
-    abs_t = FABS( t );
+    abs_t = VIO_FABS( t );
 
     if( abs_t >= max_dist )
         value = 0.5;

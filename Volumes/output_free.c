@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.23 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/output_free.c,v 1.23 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -24,7 +24,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_
               volume
               axis_ordering
 @OUTPUT     : 
-@RETURNS    : OR or ERROR
+@RETURNS    : OR or VIO_ERROR
 @DESCRIPTION: Outputs a volume in the simple free format.  Will probably
               become obsolete soon.
 @METHOD     : 
@@ -49,7 +49,7 @@ BICAPI VIO_Status  output_volume_free_format(
     VIO_STR             header_filename, voxel_filename, abs_voxel_filename;
     VIO_STR             filename_no_dirs;
     int                axis;
-    progress_struct    progress;
+    VIO_progress_struct    progress;
     VIO_General_transform  *voxel_to_world;
     VIO_Transform          *transform;
 
@@ -67,10 +67,10 @@ BICAPI VIO_Status  output_volume_free_format(
     else
         n_bytes_per_voxel = 2;
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = output_int( file, n_bytes_per_voxel );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = output_newline( file );
 
     get_volume_sizes( volume, sizes );
@@ -85,7 +85,7 @@ BICAPI VIO_Status  output_volume_free_format(
 
     for_less( axis, 0, VIO_N_DIMENSIONS )
     {
-        if( status == OK )
+        if( status == VIO_OK )
         {
             if( transform != (VIO_Transform *) NULL )
             {
@@ -100,41 +100,41 @@ BICAPI VIO_Status  output_volume_free_format(
         }
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = output_newline( file );
 
     for_less( axis, 0, VIO_N_DIMENSIONS )
     {
-        if( status == OK )
+        if( status == VIO_OK )
             status = output_int( file, sizes[axis_ordering[axis]] );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = output_real( file, separations[axis_ordering[axis]]);
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = output_character( file, (char) ' ' );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = output_character( file, (char) ('x'+axis_ordering[axis]) );
 
-        if( status == OK )
+        if( status == VIO_OK )
             status = output_newline( file );
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = output_string( file, voxel_filename  );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = output_newline( file );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = close_file( file );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = open_file( abs_voxel_filename, WRITE_FILE, BINARY_FORMAT,
                             &file );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         a1 = axis_ordering[0];
         a2 = axis_ordering[1];
@@ -150,7 +150,7 @@ BICAPI VIO_Status  output_volume_free_format(
                 for_less( indices[a3], 0, sizes[a3] )
                 {
                     GET_VOXEL_PTR_3D( ptr, volume,
-                                      indices[X],indices[Y],indices[Z] );
+                                      indices[VIO_X],indices[VIO_Y],indices[VIO_Z] );
                     status = io_binary_data( file, WRITE_FILE,
                                              ptr, (size_t) n_bytes_per_voxel,1);
                 }

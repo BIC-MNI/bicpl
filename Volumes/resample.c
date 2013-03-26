@@ -59,9 +59,9 @@ BICAPI VIO_BOOL  do_more_resampling(
                               &z_axis );
     }
 
-    while( resample->x < dest_sizes[X] )
+    while( resample->x < dest_sizes[VIO_X] )
     {
-        for_less( z, 0, dest_sizes[Z] )
+        for_less( z, 0, dest_sizes[VIO_Z] )
         {
             if( !linear || z == 0 )
                 general_transform_point( &resample->transform,
@@ -70,9 +70,9 @@ BICAPI VIO_BOOL  do_more_resampling(
                                          (VIO_Real) z,
                                          &xv, &yv, &zv );
 
-            voxel[X] = xv;
-            voxel[Y] = yv;
-            voxel[Z] = zv;
+            voxel[VIO_X] = xv;
+            voxel[VIO_Y] = yv;
+            voxel[VIO_Z] = zv;
             evaluate_volume( resample->src_volume, voxel, NULL, 0, FALSE,
                              get_volume_real_min(resample->src_volume),
                              &value, NULL, NULL );
@@ -89,7 +89,7 @@ BICAPI VIO_BOOL  do_more_resampling(
         }
 
         ++resample->y;
-        if( resample->y >= dest_sizes[Y] )
+        if( resample->y >= dest_sizes[VIO_Y] )
         {
             resample->y = 0;
             ++resample->x;
@@ -99,10 +99,10 @@ BICAPI VIO_BOOL  do_more_resampling(
             break;
     }
 
-    *fraction_done = (VIO_Real) (resample->x * dest_sizes[Y] + resample->y) /
-                     (VIO_Real) dest_sizes[Y] / (VIO_Real) dest_sizes[X];
+    *fraction_done = (VIO_Real) (resample->x * dest_sizes[VIO_Y] + resample->y) /
+                     (VIO_Real) dest_sizes[VIO_Y] / (VIO_Real) dest_sizes[VIO_X];
 
-    return( resample->x < dest_sizes[X] );
+    return( resample->x < dest_sizes[VIO_X] );
 }
 
 BICAPI void  resample_volume(
@@ -113,7 +113,7 @@ BICAPI void  resample_volume(
     static const     int  FACTOR = 1000;
     resample_struct  resample;
     VIO_Real             amount_done;
-    progress_struct  progress;
+    VIO_progress_struct  progress;
 
     initialize_resample_volume( &resample, src_volume, dest_to_src_transform,
                                 dest_volume );
@@ -122,7 +122,7 @@ BICAPI void  resample_volume(
 
     while( do_more_resampling( &resample, 5.0, &amount_done ) )
     {
-        update_progress_report( &progress, ROUND(amount_done*(VIO_Real)FACTOR) );
+        update_progress_report( &progress, VIO_ROUND(amount_done*(VIO_Real)FACTOR) );
     }
 
     terminate_progress_report( &progress );

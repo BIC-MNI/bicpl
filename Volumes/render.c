@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/render.c,v 1.46 2009-06-29 18:10:48 claude Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/render.c,v 1.46 2009-06-29 18:10:48 claude Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -280,7 +280,7 @@ BICAPI void  render_volume_to_slice(
     total_cases1 = 1;
     for_less( c, 0, n_dims1 )
     {
-        delta = FABS( y_axis1[c] );
+        delta = VIO_FABS( y_axis1[c] );
         if( delta == 0.0 || n_non_zero == 1 )
             n_cases1[c] = 1;
         else if( delta <= 1.0 / (VIO_Real) max_cases[n_dims1-1] )
@@ -365,7 +365,7 @@ BICAPI void  render_volume_to_slice(
         total_cases2 = 1;
         for_less( c, 0, n_dims2 )
         {
-            delta = FABS( y_axis2[c] );
+            delta = VIO_FABS( y_axis2[c] );
             if( delta == 0.0 || n_non_zero == 1 )
                 n_cases2[c] = 1;
             else if( delta <= 1.0 / (VIO_Real) max_cases[n_dims2-1] )
@@ -434,7 +434,7 @@ BICAPI void  render_volume_to_slice(
         {
             case_index = p % n_cases1[c];
             if( y_axis1[c] == 0.0 && n_slices1 == n_cases1[c] )
-                tmp_origin[c] = FRACTION( origins1[case_index][c] + 0.5 );
+                tmp_origin[c] = VIO_FRACTION( origins1[case_index][c] + 0.5 );
             else
                 tmp_origin[c] = ((VIO_Real) case_index + 0.5) / (VIO_Real) n_cases1[c];
             p /= n_cases1[c];
@@ -446,7 +446,7 @@ BICAPI void  render_volume_to_slice(
             for_less( c, 0, n_dims1 )
             {
                 start_c = tmp_origin[c] + MIN( (VIO_Real) x * x_axis1[c], (VIO_Real)sizes1[c]-1 );
-                offset += (size_t)strides1[c] * (size_t)FLOOR( start_c );
+                offset += (size_t)strides1[c] * (size_t)VIO_FLOOR( start_c );
             }
             x_offsets1[i][x] = offset;
         }
@@ -461,7 +461,7 @@ BICAPI void  render_volume_to_slice(
             {
                 case_index = p % n_cases2[c];
                 if( y_axis2[c] == 0.0 && n_slices2 == n_cases2[c] )
-                    tmp_origin[c] = FRACTION( origins2[case_index][c] + 0.5 );
+                    tmp_origin[c] = VIO_FRACTION( origins2[case_index][c] + 0.5 );
                 else
                     tmp_origin[c] = ((VIO_Real) case_index + 0.5) /
                                     (VIO_Real) n_cases2[c];
@@ -474,7 +474,7 @@ BICAPI void  render_volume_to_slice(
                 for_less( c, 0, n_dims2 )
                 {
                     start_c = tmp_origin[c] + MIN( (VIO_Real) x * x_axis2[c], (VIO_Real)sizes2[c]-1 );
-                    offset += (size_t)strides2[c] * (size_t)FLOOR( start_c );
+                    offset += (size_t)strides2[c] * (size_t)VIO_FLOOR( start_c );
                 }
                 x_offsets2[i][x] = offset;
             }
@@ -493,7 +493,7 @@ BICAPI void  render_volume_to_slice(
             for_less( c, 0, n_dims1 )
             {
                 start_c = origins1[s][c] + (VIO_Real) y * y_axis1[c] + 0.5;
-                int_start = FLOOR( start_c );
+                int_start = VIO_FLOOR( start_c );
 
                 if( y_axis1[c] == 0.0 && n_slices1 == n_cases1[c] )
                 {
@@ -538,7 +538,7 @@ BICAPI void  render_volume_to_slice(
                 for_less( c, 0, n_dims2 )
                 {
                     start_c = origins2[s][c] + (VIO_Real) y * y_axis2[c] + 0.5;
-                    int_start = FLOOR( start_c );
+                    int_start = VIO_FLOOR( start_c );
 
                     if( y_axis2[c] == 0.0 && n_slices2 == n_cases2[c] )
                     {
@@ -574,8 +574,8 @@ BICAPI void  render_volume_to_slice(
             }
         }
 
-        start_x[y] = CEILING( x_start );
-        end_x[y] = FLOOR( x_end );
+        start_x[y] = VIO_CEILING( x_start );
+        end_x[y] = VIO_FLOOR( x_end );
 
         if( start_x[y] > x_size )
             start_x[y] = x_size;
@@ -654,7 +654,7 @@ BICAPI void  render_volume_to_slice(
         {
             VIO_Colour          *pixel_ptr;
 
-            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,x_pixel_start,x_size)];
+            pixel_ptr = &pixels->data.pixels_rgb[VIO_IJ(y,x_pixel_start,x_size)];
 
             for_less( x, x_pixel_start, start_x[y] )
             {
@@ -662,7 +662,7 @@ BICAPI void  render_volume_to_slice(
                 ++pixel_ptr;
             }
 
-            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,end_x[y]+1,x_size)];
+            pixel_ptr = &pixels->data.pixels_rgb[VIO_IJ(y,end_x[y]+1,x_size)];
             for_less( x, end_x[y]+1, x_pixel_end+1 )
             {
                 *pixel_ptr = empty_colour;
@@ -674,7 +674,7 @@ BICAPI void  render_volume_to_slice(
             unsigned short          *pixel_ptr;
 
             pixel_ptr = &pixels->data.pixels_16bit_colour_index
-                                              [IJ(y,x_pixel_start,x_size)];
+                                              [VIO_IJ(y,x_pixel_start,x_size)];
             for_less( x, x_pixel_start, start_x[y] )
             {
                 *pixel_ptr = (unsigned short) empty_colour;
@@ -682,7 +682,7 @@ BICAPI void  render_volume_to_slice(
             }
 
             pixel_ptr = &pixels->data.pixels_16bit_colour_index
-                                              [IJ(y,end_x[y]+1,x_size)];
+                                              [VIO_IJ(y,end_x[y]+1,x_size)];
             for_less( x, end_x[y]+1, x_pixel_end+1 )
             {
                 *pixel_ptr = (unsigned short) empty_colour;

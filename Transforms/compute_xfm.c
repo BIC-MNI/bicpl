@@ -23,7 +23,7 @@
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
 @MODIFIED   : Revision 1.18  2005-08-17 22:26:47  bert
-@MODIFIED   : Replace public/private with BICAPI/static
+@MODIFIED   : Replace /static with BICAPI/static
 @MODIFIED   :
 @MODIFIED   : Revision 1.17  2000/02/06 15:30:50  stever
 @MODIFIED   : rearranged header file structure; add gcc -Wall fixes
@@ -96,7 +96,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.18 2005-08-17 22:26:47 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.18 2005-08-17 22:26:47 bert Exp $";
 #endif
 
 /* Function declarations */
@@ -368,9 +368,9 @@ static  void   make_rots(
 {
     VIO_Transform  tx, ty, tz;
 
-    make_rotation_transform( -rot_x, X, &tx ) ;
-    make_rotation_transform( -rot_y, Y, &ty ) ;
-    make_rotation_transform( -rot_z, Z, &tz ) ;
+    make_rotation_transform( -rot_x, VIO_X, &tx ) ;
+    make_rotation_transform( -rot_y, VIO_Y, &ty ) ;
+    make_rotation_transform( -rot_z, VIO_Z, &tz ) ;
 
     concat_transforms( xmat, &tx, &ty );
     concat_transforms( xmat, xmat, &tz );
@@ -405,9 +405,9 @@ static  void  concat_transformation_matrix(
 
     /* make (T)(-C) */
 
-    make_translation_transform( translations[X] - center[X],
-                                translations[Y] - center[Y],
-                                translations[Z] - center[Z], &T );
+    make_translation_transform( translations[VIO_X] - center[VIO_X],
+                                translations[VIO_Y] - center[VIO_Y],
+                                translations[VIO_Z] - center[VIO_Z], &T );
 
     /* make shear rotation matrix */
 
@@ -415,11 +415,11 @@ static  void  concat_transformation_matrix(
 
     /* make scaling matrix */
 
-    make_scale_transform( scales[X], scales[Y], scales[Z], &S );
+    make_scale_transform( scales[VIO_X], scales[VIO_Y], scales[VIO_Z], &S );
 
     /* make translation back to centre */
 
-    make_translation_transform( center[X], center[Y], center[Z], &C );
+    make_translation_transform( center[VIO_X], center[VIO_Y], center[VIO_Z], &C );
 
     concat_transforms( lt, &T, rotation );
     concat_transforms( lt, lt, &S );

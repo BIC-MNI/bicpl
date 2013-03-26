@@ -1,9 +1,9 @@
 #include  <bicpl.h>
 
-public  VIO_Status  process_object(
+  VIO_Status  process_object(
     object_struct  *object );
 
-private  void  copy_colours(
+static  void  copy_colours(
     object_struct  *src_object,
     object_struct  *dest_object )
 {
@@ -50,7 +50,7 @@ int  main(
     VIO_File_formats   format;
     object_struct  **src_object_list, **dest_object_list;
 
-    status = OK;
+    status = VIO_OK;
 
     initialize_argument_processing( argc, argv );
 
@@ -64,43 +64,43 @@ int  main(
     status = input_graphics_file( src_filename, &format, &n_src_objects,
                                   &src_object_list );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = input_graphics_file( dest_filename, &format, &n_dest_objects,
                                       &dest_object_list );
 
     print( "%d Objects input.\n", n_src_objects );
 
-    if( status == OK && n_src_objects != n_dest_objects )
+    if( status == VIO_OK && n_src_objects != n_dest_objects )
     {
         print( "Different number of objects in the two files.\n" );
-        status = ERROR;
+        status = VIO_ERROR;
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         for_less( i, 0, n_src_objects )
         {
-            if( status == OK )
+            if( status == VIO_OK )
                 copy_colours( src_object_list[i], dest_object_list[i] );
         }
 
-        if( status == OK )
+        if( status == VIO_OK )
             print( "Objects processed.\n" );
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = output_graphics_file( dest_filename, format,
                                        n_dest_objects, dest_object_list );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         delete_object_list( n_src_objects, src_object_list );
 
         delete_object_list( n_dest_objects, dest_object_list );
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         print( "Objects output.\n" );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }

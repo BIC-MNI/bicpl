@@ -22,7 +22,7 @@
 #include <float.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.10 2008-12-19 00:07:55 claude Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.10 2008-12-19 00:07:55 claude Exp $";
 #endif
 
 #include  "render_funcs_include.c"
@@ -70,10 +70,10 @@ BICAPI void  render_one_row (
     x_size = pixels->x_size;
 
     if( pixels->pixel_type == RGB_PIXEL )
-        rgb_pixel_ptr = &pixels->data.pixels_rgb[IJ(y,start_x,x_size)];
+        rgb_pixel_ptr = &pixels->data.pixels_rgb[VIO_IJ(y,start_x,x_size)];
     else
         cmap_pixel_ptr = &pixels->data.pixels_16bit_colour_index
-                                      [IJ(y,start_x,x_size)];
+                                      [VIO_IJ(y,start_x,x_size)];
 
 #include "call_rend_f_include.c"
 }

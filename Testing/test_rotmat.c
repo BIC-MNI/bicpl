@@ -22,9 +22,9 @@ int  main(
         y_rot = 0.0 + 2.0 * PI * get_random_0_to_1();
         z_rot = 0.0 + 2.0 * PI * get_random_0_to_1();
 
-        make_rotation_transform( x_rot, X, &tx ) ;
-        make_rotation_transform( y_rot, Y, &ty ) ;
-        make_rotation_transform( z_rot, Z, &tz ) ;
+        make_rotation_transform( x_rot, VIO_X, &tx ) ;
+        make_rotation_transform( y_rot, VIO_Y, &ty ) ;
+        make_rotation_transform( z_rot, VIO_Z, &tz ) ;
 
         concat_transforms( &transform, &tx, &ty );
         concat_transforms( &transform, &transform, &tz );

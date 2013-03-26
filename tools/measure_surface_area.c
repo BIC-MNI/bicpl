@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  VIO_Real  get_area_of_values(
+static  VIO_Real  get_area_of_values(
     polygons_struct   *polygons,
     VIO_Real              values[],
     VIO_Real              low,
@@ -56,7 +56,7 @@ int  main(
         clip_flag = FALSE;
 
     if( input_graphics_file( src_filename, &format, &n_objects,
-                             &object_list ) != OK )
+                             &object_list ) != VIO_OK )
         return( 1 );
 
     if( n_objects != 1 || get_object_type(object_list[0]) != POLYGONS )
@@ -70,14 +70,14 @@ int  main(
 
     if( values_filename != NULL )
     {
-        if( open_file( values_filename, READ_FILE, ASCII_FORMAT, &file ) != OK )
+        if( open_file( values_filename, READ_FILE, ASCII_FORMAT, &file ) != VIO_OK )
             return( 1 );
 
         ALLOC( values, n_points );
 
         for_less( p, 0, n_points )
         {
-            if( input_real( file, &values[p] ) != OK )
+            if( input_real( file, &values[p] ) != VIO_OK )
             {
                 print_error( "Could not read %d'th value from file.\n", p );
                 return( 1 );
@@ -97,7 +97,7 @@ int  main(
     return( 0 );
 }
 
-private  VIO_Real  get_area_of_values(
+static  VIO_Real  get_area_of_values(
     polygons_struct   *polygons,
     VIO_Real              values[],
     VIO_Real              low,

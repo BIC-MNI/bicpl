@@ -1,10 +1,10 @@
 #include  <bicpl.h>
 
-private  void   convert_polygons_to_lines(
+static  void   convert_polygons_to_lines(
     polygons_struct   *polygons,
     lines_struct      *lines );
 
-private  void   convert_quadmesh_to_lines(
+static  void   convert_quadmesh_to_lines(
     quadmesh_struct   *quadmesh,
     lines_struct      *lines );
 
@@ -30,7 +30,7 @@ int  main(
     }
 
     if( input_graphics_file( src_polygons_filename,
-                             &format, &n_objects, &objects ) != OK )
+                             &format, &n_objects, &objects ) != VIO_OK )
         return( 1 );
 
     n_dest_objects = 0;
@@ -56,7 +56,7 @@ int  main(
     }
 
     if( output_graphics_file( dest_lines_filename, format, n_dest_objects,
-                              dest_objects ) != OK )
+                              dest_objects ) != VIO_OK )
         return( 1 );
 
     delete_object_list( n_objects, objects );
@@ -65,7 +65,7 @@ int  main(
     return( 0 );
 }
 
-private  void   convert_polygons_to_lines(
+static  void   convert_polygons_to_lines(
     polygons_struct   *polygons,
     lines_struct      *lines )
 {
@@ -109,7 +109,7 @@ private  void   convert_polygons_to_lines(
     }
 }
 
-private  void   convert_quadmesh_to_lines(
+static  void   convert_quadmesh_to_lines(
     quadmesh_struct   *quadmesh,
     lines_struct      *lines )
 {
@@ -126,7 +126,7 @@ private  void   convert_quadmesh_to_lines(
     for_less( i, 0, m )
     for_less( j, 0, n )
     {
-        (void) get_quadmesh_point( quadmesh, i, j, &lines->points[IJ(i,j,n)] );
+        (void) get_quadmesh_point( quadmesh, i, j, &lines->points[VIO_IJ(i,j,n)] );
     }
 
     if( quadmesh->m_closed )
@@ -149,7 +149,7 @@ private  void   convert_quadmesh_to_lines(
     {
         for_less( j, 0, nc )
         {
-            lines->indices[n_indices] = IJ( i, j % n, n );
+            lines->indices[n_indices] = VIO_IJ( i, j % n, n );
             ++n_indices;
         }
 
@@ -160,7 +160,7 @@ private  void   convert_quadmesh_to_lines(
     {
         for_less( i, 0, mc )
         {
-            lines->indices[n_indices] = IJ( i % m, j, n );
+            lines->indices[n_indices] = VIO_IJ( i % m, j, n );
             ++n_indices;
         }
 

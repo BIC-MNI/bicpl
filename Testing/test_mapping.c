@@ -21,32 +21,32 @@ int  main(
 
     if( input_volume( filename, 3, dim_names, NC_UNSPECIFIED, FALSE,
                            0.0, 0.0, TRUE, &volume,
-                           (minc_input_options *) NULL ) != OK )
+                           (minc_input_options *) NULL ) != VIO_OK )
         return( 1 );
 
-    origin[X] = 22.766879336003331;
-    origin[Y] = 24.504077531014342;
-    origin[Z] = -24.040681453003668;
+    origin[VIO_X] = 22.766879336003331;
+    origin[VIO_Y] = 24.504077531014342;
+    origin[VIO_Z] = -24.040681453003668;
 
-    x_axis[X] = 0.85089358491769951;
-    x_axis[Y] = -0.34908997859790536;
-    x_axis[Z] = 0.3424883455941593;
+    x_axis[VIO_X] = 0.85089358491769951;
+    x_axis[VIO_Y] = -0.34908997859790536;
+    x_axis[VIO_Z] = 0.3424883455941593;
 
-    y_axis[X] = 0.0;
-    y_axis[Y] = 0.65193891922728087;
-    y_axis[Z] = 0.66450536576761754;
+    y_axis[VIO_X] = 0.0;
+    y_axis[VIO_Y] = 0.65193891922728087;
+    y_axis[VIO_Z] = 0.66450536576761754;
 
-    origin[X] = 63.5;
-    origin[Y] = 63.5;
-    origin[Z] = 39.5;
+    origin[VIO_X] = 63.5;
+    origin[VIO_Y] = 63.5;
+    origin[VIO_Z] = 39.5;
 
-    x_axis[X] = 1.0;
-    x_axis[Y] = 0.0;
-    x_axis[Z] = 0.0;
+    x_axis[VIO_X] = 1.0;
+    x_axis[VIO_Y] = 0.0;
+    x_axis[VIO_Z] = 0.0;
 
-    y_axis[X] = 0.0;
-    y_axis[Y] = 1.0;
-    y_axis[Z] = 0.0;
+    y_axis[VIO_X] = 0.0;
+    y_axis[VIO_Y] = 1.0;
+    y_axis[VIO_Z] = 0.0;
 
     x_scale = 1.2924091412463503;
     y_scale = x_scale;

@@ -133,7 +133,7 @@ if( !initialized )
 
     for_less( i, 0, amoeba->n_parameters+1 )
     {
-        if( io_float( file, READ_FILE, BINARY_FORMAT, &f ) != OK )
+        if( io_float( file, READ_FILE, BINARY_FORMAT, &f ) != VIO_OK )
             break;
         if( !numerically_close( amoeba->values[i], (Real) f, 1.0e-2 ) )
         {
@@ -183,9 +183,9 @@ if( !initialized )
         amoeba->n_steps_no_improvement = 0;
 
 #ifdef NOPE
-    if( input_int( file, &low ) != OK ||
-        input_int( file, &next_high ) != OK ||
-        input_int( file, &high ) != OK )
+    if( input_int( file, &low ) != VIO_OK ||
+        input_int( file, &next_high ) != VIO_OK ||
+        input_int( file, &high ) != VIO_OK )
         return( FALSE );
 
     --low;

@@ -27,7 +27,7 @@ int  main(
     (void) get_real_argument( 4.0, &curvature_distance );
 
     if( input_graphics_file( object_filename,
-                             &format, &n_objects, &objects ) != OK )
+                             &format, &n_objects, &objects ) != VIO_OK )
         return( 1 );
 
     if( n_objects != 1 || get_object_type( objects[0] ) != POLYGONS )
@@ -46,13 +46,13 @@ int  main(
     get_polygon_vertex_curvatures( polygons, n_neighbours, neighbours,
                                    curvature_distance, 0.0, curvatures );
 
-    if( open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != OK )
+    if( open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != VIO_OK )
         return( 1 );
 
     for_less( i, 0, polygons->n_points )
     {
-        if( output_real( file, curvatures[i] ) != OK ||
-            output_newline( file ) != OK )
+        if( output_real( file, curvatures[i] ) != VIO_OK ||
+            output_newline( file ) != VIO_OK )
             break;
     }
 

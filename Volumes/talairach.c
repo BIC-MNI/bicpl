@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.15 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.15 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define  TALAIRACH_OFFSET   16.0
@@ -135,21 +135,21 @@ static void  read_talairach_coordinate_system( void )
             {}
         }
 
-        if( input_int( file, &tmp_nx ) != OK ||
-            input_int( file, &tmp_ny ) != OK ||
-            input_int( file, &tmp_nz ) != OK ||
-            input_real( file, &tmp_x_low ) != OK ||
-            input_real( file, &tmp_x_high ) != OK ||
-            input_real( file, &tmp_y_low ) != OK ||
-            input_real( file, &tmp_y_high ) != OK ||
-            input_real( file, &tmp_z_low ) != OK ||
-            input_real( file, &tmp_z_high ) != OK ||
-            input_real( file, &tmp_x_dist_minus_1 ) != OK ||
-            input_real( file, &tmp_x_dist_1 ) != OK ||
-            input_real( file, &tmp_y_dist_minus_1 ) != OK ||
-            input_real( file, &tmp_y_dist_1 ) != OK ||
-            input_real( file, &tmp_z_dist_0 ) != OK ||
-            input_real( file, &tmp_z_dist_1 ) != OK )
+        if( input_int( file, &tmp_nx ) != VIO_OK ||
+            input_int( file, &tmp_ny ) != VIO_OK ||
+            input_int( file, &tmp_nz ) != VIO_OK ||
+            input_real( file, &tmp_x_low ) != VIO_OK ||
+            input_real( file, &tmp_x_high ) != VIO_OK ||
+            input_real( file, &tmp_y_low ) != VIO_OK ||
+            input_real( file, &tmp_y_high ) != VIO_OK ||
+            input_real( file, &tmp_z_low ) != VIO_OK ||
+            input_real( file, &tmp_z_high ) != VIO_OK ||
+            input_real( file, &tmp_x_dist_minus_1 ) != VIO_OK ||
+            input_real( file, &tmp_x_dist_1 ) != VIO_OK ||
+            input_real( file, &tmp_y_dist_minus_1 ) != VIO_OK ||
+            input_real( file, &tmp_y_dist_1 ) != VIO_OK ||
+            input_real( file, &tmp_z_dist_0 ) != VIO_OK ||
+            input_real( file, &tmp_z_dist_1 ) != VIO_OK )
         {
             print_error( "Error reading info from %s\n", filename );
             okay = FALSE;

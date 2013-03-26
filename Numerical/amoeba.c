@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.15 2005-08-17 22:28:58 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/amoeba.c,v 1.15 2005-08-17 22:28:58 bert Exp $";
 #endif
 
 #define  FLIP_RATIO      1.0

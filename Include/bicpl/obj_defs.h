@@ -197,13 +197,13 @@ typedef  struct
 } pixels_struct;
 
 #define  PIXEL_COLOUR_INDEX_8( pixels, x, y )                                 \
-           ((pixels).data.pixels_8bit_colour_index[IJ(y,x,(pixels).x_size)])
+           ((pixels).data.pixels_8bit_colour_index[VIO_IJ(y,x,(pixels).x_size)])
 
 #define  PIXEL_COLOUR_INDEX_16( pixels, x, y )                                \
-           ((pixels).data.pixels_16bit_colour_index[IJ(y,x,(pixels).x_size)])
+           ((pixels).data.pixels_16bit_colour_index[VIO_IJ(y,x,(pixels).x_size)])
 
 #define  PIXEL_RGB_COLOUR( pixels, x, y )                                     \
-           ((pixels).data.pixels_rgb[IJ(y,x,(pixels).x_size)])
+           ((pixels).data.pixels_rgb[VIO_IJ(y,x,(pixels).x_size)])
 
 /* ------------------------------------------------------------------------ */
 

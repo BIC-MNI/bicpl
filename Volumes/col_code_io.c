@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.6 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.6 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define    DEFAULT_USER_DEFINED_COLOUR_CODE_SUFFIX      "ccd"
@@ -38,20 +38,20 @@ BICAPI VIO_Status  input_user_defined_colour_coding(
 
     if( open_file_with_default_suffix( filename,
                                       get_default_user_def_colour_code_suffix(),
-                                      READ_FILE, ASCII_FORMAT, &file ) != OK )
-        return( ERROR );
+                                      READ_FILE, ASCII_FORMAT, &file ) != VIO_OK )
+        return( VIO_ERROR );
 
     n_colours = 0;
     colours = NULL;
     positions = NULL;
 
-    status = OK;
-    while( input_real( file, &pos ) == OK )
+    status = VIO_OK;
+    while( input_real( file, &pos ) == VIO_OK )
     {
-        if( input_line( file, &line ) != OK )
+        if( input_line( file, &line ) != VIO_OK )
         {
             print_error( "Error loading user defined colour coding.\n" );
-            status = ERROR;
+            status = VIO_ERROR;
             break;
         }
 
@@ -70,11 +70,11 @@ BICAPI VIO_Status  input_user_defined_colour_coding(
 
     (void) close_file( file );
 
-    if( status == OK &&
+    if( status == VIO_OK &&
         !define_colour_coding_user_defined( colour_coding,
                                 n_colours, colours, positions, RGB_SPACE ) )
     {
-        status = ERROR;
+        status = VIO_ERROR;
     }
 
     if( n_colours > 0 )

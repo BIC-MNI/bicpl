@@ -1,11 +1,11 @@
 #include  <bicpl.h>
 
-private  void  test_polygon_integrity(
+static  void  test_polygon_integrity(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[] );
 
-private  int  count_edges(
+static  int  count_edges(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[] );
@@ -30,7 +30,7 @@ int  main(
     }
 
     if( input_graphics_file( src_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects != 1 ||
+                             &object_list ) != VIO_OK || n_objects != 1 ||
         get_object_type(object_list[0]) != POLYGONS )
         return( 1 );
 
@@ -58,7 +58,7 @@ int  main(
     return( 0 );
 }
 
-private  void  test_closed_surface(
+static  void  test_closed_surface(
     polygons_struct  *polygons )
 {
     int           p, poly, *n_neighbours, **neighbours, edge;
@@ -185,7 +185,7 @@ private  void  test_closed_surface(
     FREE( n_neighbours );
 }
 
-private  void  test_polygon_integrity(
+static  void  test_polygon_integrity(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[] )
@@ -260,7 +260,7 @@ private  void  test_polygon_integrity(
 #endif
 }
 
-private  int  count_edges(
+static  int  count_edges(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[] )

@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.17 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.17 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 static  int  get_n_sphere_points(
@@ -272,7 +272,7 @@ BICAPI  int  get_sphere_point_index(
     }
     else
     {
-        point_index = 2 + IJ( up-1, around, n_around );
+        point_index = 2 + VIO_IJ( up-1, around, n_around );
     }
 
     return( point_index );
@@ -328,9 +328,9 @@ static  void  get_sphere_point(
 {
     VIO_Real      dx, dy, dz;
 
-    dx = x_size * cos( (double) up * PI );
-    dy = y_size * sin( (double) up * PI ) * cos( (double) around * 2.0 *PI);
-    dz = z_size * sin( (double) up * PI ) * sin( (double) around * 2.0 *PI);
+    dx = x_size * cos( (double) up * M_PI );
+    dy = y_size * sin( (double) up * M_PI ) * cos( (double) around * 2.0 *M_PI);
+    dz = z_size * sin( (double) up * M_PI ) * sin( (double) around * 2.0 *M_PI);
 
     fill_Point( *point, (VIO_Real) Point_x(*centre) + dx,
                         (VIO_Real) Point_y(*centre) + dy,
@@ -450,10 +450,10 @@ BICAPI  VIO_BOOL  get_tessellation_of_polygons_sphere(
         n_around_top = N_AROUND_TOP;
 #else
         size = sqrt( (double) polygons->n_items / 2.0 );
-        n_around_top = 2 * ROUND( size );
+        n_around_top = 2 * VIO_ROUND( size );
 #endif
 
-        if( IS_INT(size) )
+        if( VIO_IS_INT(size) )
         {
             *tess = (int) size;
 
@@ -518,10 +518,10 @@ BICAPI  int  get_tessellation_with_n_points(
     if( n_sol == 1 || (n_sol == 2 && s2 <= 0.0) )
     {
         if( s1 > 0.0 )
-            return( ROUND( s1 ) );
+            return( VIO_ROUND( s1 ) );
     }
     else if( n_sol == 2 )
-        return( ROUND( s2 ) );
+        return( VIO_ROUND( s2 ) );
 
     return( 0 );
 }

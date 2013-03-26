@@ -89,8 +89,8 @@ public  void  generate_tube(
         project_vector_to_plane( &hor, &prev_dir, &normal, &hor );
         project_vector_to_plane( &vert, &prev_dir, &normal, &vert );
 
-        fill_in_ellipse_points( &tube_points[IJ(i,0,n_around)],
-                                &tube_normals[IJ(i,0,n_around)],
+        fill_in_ellipse_points( &tube_points[VIO_IJ(i,0,n_around)],
+                                &tube_normals[VIO_IJ(i,0,n_around)],
                                 &points[i], n_around, x, y, &hor, &vert );
 
         if( i < n_points-1 )

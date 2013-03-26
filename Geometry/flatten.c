@@ -14,7 +14,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/flatten.c,v 1.6 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/flatten.c,v 1.6 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 #include "bicpl_internal.h"
@@ -48,10 +48,10 @@ BICAPI  void  flatten_around_vertex(
         return;
     }
 
-    if( !closed_flag && sum_angles < 2.0 * PI )
+    if( !closed_flag && sum_angles < 2.0 * M_PI )
         factor = 1.0;
     else
-        factor = 2.0 * PI / sum_angles;
+        factor = 2.0 * M_PI / sum_angles;
 
     sum_angles = 0.0;
     for_less( i, 0, n_neighbours )

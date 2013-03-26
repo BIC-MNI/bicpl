@@ -20,12 +20,12 @@ BICAPI  int  clip_polygon_against_box(
     VIO_Point   prev[6], input[7][2], point, first_points[6];
     VIO_Real    box[2][VIO_N_DIMENSIONS], prev_dist[6], first_dist[6], dist, ratio;
 
-    box[0][X] = x_min;
-    box[1][X] = x_max;
-    box[0][Y] = y_min;
-    box[1][Y] = y_max;
-    box[0][Z] = z_min;
-    box[1][Z] = z_max;
+    box[0][VIO_X] = x_min;
+    box[1][VIO_X] = x_max;
+    box[0][VIO_Y] = y_min;
+    box[1][VIO_Y] = y_max;
+    box[0][VIO_Z] = z_min;
+    box[1][VIO_Z] = z_max;
     n_planes = 6;
 
     for_less( p, 0, n_planes )

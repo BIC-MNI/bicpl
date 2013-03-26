@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_polygons.c,v 1.13 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/smooth_polygons.c,v 1.13 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 #define  CHECK_INTERVAL     1.0
@@ -187,7 +187,7 @@ static  void  smooth_points(
     VIO_Real             *max_moved )
 {
     int              p, vertex_index, point_index, poly, size;
-    progress_struct  progress;
+    VIO_progress_struct  progress;
     VIO_Real             moved;
 
     for_less( p, 0, polygons->n_points )
@@ -383,9 +383,9 @@ static  VIO_BOOL   point_inside_range(
                                (VIO_Real) Point_z(*point),
                                &x, &y, &z );
 
-    vx = ROUND( x );
-    vy = ROUND( y );
-    vz = ROUND( z );
+    vx = VIO_ROUND( x );
+    vy = VIO_ROUND( y );
+    vz = VIO_ROUND( z );
 
     val = (int) get_volume_voxel_value( volume, vx, vy, vz, 0, 0 );
 

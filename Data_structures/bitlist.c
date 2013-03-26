@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bitlist.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/bitlist.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -409,7 +409,7 @@ BICAPI  VIO_Status  io_bitlist_3d(
     VIO_Status  status;
     int     x, y;
 
-    status = OK;
+    status = VIO_OK;
 
     for_less( x, 0, bitlist->nx )
     {
@@ -420,10 +420,10 @@ BICAPI  VIO_Status  io_bitlist_3d(
                                      sizeof( bitlist->bits[x][y] ),
                                      bitlist->n_z_words );
        
-            if( status != OK )
+            if( status != VIO_OK )
                 break;
         }
-        if( status != OK )
+        if( status != VIO_OK )
             break;
     }
 

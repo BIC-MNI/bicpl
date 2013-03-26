@@ -13,7 +13,7 @@
 ---------------------------------------------------------------------------- */
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.7 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.7 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 #include "bicpl_internal.h"
@@ -29,23 +29,23 @@ static  VIO_Status  output_texture_values_ascii(
 
     status = open_file( filename, WRITE_FILE, ASCII_FORMAT, &file );
 
-    if( status != OK )
+    if( status != VIO_OK )
         return( status );
 
     for_less( v, 0, n_values )
     {
-        if( output_real( file, values[v] ) != OK ||
-            output_newline( file ) != OK )
+        if( output_real( file, values[v] ) != VIO_OK ||
+            output_newline( file ) != VIO_OK )
         {
             print_error( "Error outputting %d'th value out of %d to file %s\n",
                          v+1, n_values, filename );
-            return( ERROR );
+            return( VIO_ERROR );
         }
     }
 
     (void) close_file( file );
 
-    return( OK );
+    return( VIO_OK );
 }
 
 static  VIO_Status  input_texture_values_ascii(
@@ -59,20 +59,20 @@ static  VIO_Status  input_texture_values_ascii(
 
     status = open_file( filename, READ_FILE, ASCII_FORMAT, &file );
 
-    if( status != OK )
+    if( status != VIO_OK )
         return( status );
 
     *n_values = 0;
     *values = NULL;
 
-    while( input_real( file, &value ) == OK )
+    while( input_real( file, &value ) == VIO_OK )
     {
         ADD_ELEMENT_TO_ARRAY( *values, *n_values, value, DEFAULT_CHUNK_SIZE );
     }
 
     (void) close_file( file );
 
-    return( OK );
+    return( VIO_OK );
 }
 
 static  VIO_Status  output_texture_values_binary(
@@ -116,7 +116,7 @@ static  VIO_Status  input_texture_values_binary(
                            NC_UNSPECIFIED, FALSE, 0.0, 0.0,
                            TRUE, &volume, NULL );
 
-    if( status != OK )
+    if( status != VIO_OK )
         return( status );
 
     get_volume_sizes( volume, sizes );
@@ -130,7 +130,7 @@ static  VIO_Status  input_texture_values_binary(
 
     delete_volume( volume );
 
-    return( OK );
+    return( VIO_OK );
 }
 
 /*!

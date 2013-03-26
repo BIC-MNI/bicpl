@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private   VIO_Real  evaluate_gaussian(
+static   VIO_Real  evaluate_gaussian(
     VIO_Real   d,
     VIO_Real   fwhm );
 
@@ -32,7 +32,7 @@ int  main(
     }
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects != 1 ||
+                             &object_list ) != VIO_OK || n_objects != 1 ||
         get_object_type(object_list[0]) != POLYGONS )
     {
         print_error( "Error reading %s.\n", input_filename );
@@ -45,7 +45,7 @@ int  main(
     for_less( i, 0, polygons->n_points )
     {
         dist = distance_between_points( &polygons->points[i], &centre );
-        Point_x(polygons->points[i]) += (Point_coord_type) (distance *
+        Point_x(polygons->points[i]) += (VIO_Point_coord_type) (distance *
                                  evaluate_gaussian( dist, fwhm ));
     }
 
@@ -56,7 +56,7 @@ int  main(
     return( 0 );
 }
 
-private   VIO_Real  evaluate_gaussian(
+static   VIO_Real  evaluate_gaussian(
     VIO_Real   d,
     VIO_Real   fwhm )
 {

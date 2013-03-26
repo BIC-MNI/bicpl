@@ -99,7 +99,7 @@ void process_file( char* filename )
     object_struct** object_list;
 
     if ( input_graphics_file( filename, &format, 
-			      &num_objects, &object_list ) != OK ) {
+			      &num_objects, &object_list ) != VIO_OK ) {
 	fprintf( stderr, "input_graphics_file( %s ) failed.\n", filename );
 	return;
     }

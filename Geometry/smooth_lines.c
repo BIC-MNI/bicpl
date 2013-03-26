@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_lines.c,v 1.12 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/smooth_lines.c,v 1.12 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -200,7 +200,7 @@ BICAPI  void  create_line_spline(
 
                 for_less( c, 0, VIO_N_DIMENSIONS )
                 {
-                    Point_coord(point,c) = (Point_coord_type)
+                    Point_coord(point,c) = (VIO_Point_coord_type)
                                            cubic_interpolate( u,
                                             (VIO_Real) Point_coord(points[0],c),
                                             (VIO_Real) Point_coord(points[1],c),

@@ -111,9 +111,9 @@ int  main(
     for_less( p, 0, n_steps )
     {
         y = (VIO_Real) p / (VIO_Real) (n_steps-1);
-        value = INTERPOLATE( y, min_limit, max_limit );
-        point_index0 = IJ(0,p,n_steps);
-        point_index1 = IJ(1,p,n_steps);
+        value = VIO_INTERPOLATE( y, min_limit, max_limit );
+        point_index0 = VIO_IJ(0,p,n_steps);
+        point_index1 = VIO_IJ(1,p,n_steps);
 
         quadmesh->colours[point_index0] = get_colour_code(
                                                 &colour_coding, value );

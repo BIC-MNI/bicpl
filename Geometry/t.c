@@ -101,7 +101,7 @@ private  VIO_BOOL  get_prediction_weights_2d_for_1_coord(
         {
             offset[eq] = 1.0;
             offset[1-eq] = 0.0;
-            make_translation_transform( offset[X], offset[Y], 0.0, &transform );
+            make_translation_transform( offset[VIO_X], offset[VIO_Y], 0.0, &transform );
         }
         else
         {

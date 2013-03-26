@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.13 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/rgb_lookup.c,v 1.13 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 #define  NUM_PIXELS8   256

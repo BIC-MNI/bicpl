@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -39,7 +39,7 @@ int  main(
     (void)  get_real_argument( 0.9, &threshold );
 
     if( input_graphics_file( src_filename, &format, &n_objects,
-                             &object_list ) != OK )
+                             &object_list ) != VIO_OK )
         return( 1 );
 
     for_less( i, 0, n_objects )
@@ -56,5 +56,5 @@ int  main(
 
     delete_object_list( n_objects, object_list );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }

@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.42 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.42 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -341,7 +341,7 @@ BICAPI void  set_voxel_label_bit(
 @NAME       : set_all_volume_label_data_bit
 @INPUT      : volume
               bit
-              value - ON or OFF
+              value - TRUE or FALSE
 @OUTPUT     : 
 @RETURNS    : 
 @DESCRIPTION: Sets just the given bit of all the voxels' label data to the
@@ -417,9 +417,9 @@ BICAPI VIO_BOOL  get_volume_voxel_activity(
     active_found = FALSE;
     inactive_found = FALSE;
 
-    for_less( ind[X], int_index[X], int_index[X] + n[X] )
-    for_less( ind[Y], int_index[Y], int_index[Y] + n[Y] )
-    for_less( ind[Z], int_index[Z], int_index[Z] + n[Z] )
+    for_less( ind[VIO_X], int_index[VIO_X], int_index[VIO_X] + n[VIO_X] )
+    for_less( ind[VIO_Y], int_index[VIO_Y], int_index[VIO_Y] + n[VIO_Y] )
+    for_less( ind[VIO_Z], int_index[VIO_Z], int_index[VIO_Z] + n[VIO_Z] )
     for_less( ind[3], int_index[3], int_index[3] + n[3] )
     for_less( ind[4], int_index[4], int_index[4] + n[4] )
     {
@@ -491,7 +491,7 @@ static void  get_input_volume_label_limits(
 
         for_less( d, 0, VIO_N_DIMENSIONS )
         {
-            pos = FLOOR( voxel1[d] + 0.5 );
+            pos = VIO_FLOOR( voxel1[d] + 0.5 );
 
             if( first )
             {
@@ -523,7 +523,7 @@ static void  get_input_volume_label_limits(
 @NAME       : load_label_volume
 @INPUT      : Filename
 @OUTPUT     : label_volume
-@RETURNS    : ERROR or OK
+@RETURNS    : VIO_ERROR or VIO_OK
 @DESCRIPTION: Loads the label volume.
 @METHOD     : 
 @GLOBALS    : 
@@ -559,7 +559,7 @@ BICAPI VIO_Status  load_label_volume(
     VIO_Volume                file_volume, file_volume_3d;
     Minc_file             file;
     VIO_BOOL               is_linear, is_integer_step;
-    progress_struct       progress;
+    VIO_progress_struct       progress;
     static VIO_STR         file_order_dim_names[] = {"", "", "", "", ""};
 
     check_alloc_label_data( label_volume );
@@ -568,8 +568,8 @@ BICAPI VIO_Status  load_label_volume(
 
     if( input_volume_header_only( filename, VIO_N_DIMENSIONS,
                                   file_order_dim_names,
-                                  &file_volume_3d, NULL ) != OK )
-        return( ERROR );
+                                  &file_volume_3d, NULL ) != VIO_OK )
+        return( VIO_ERROR );
 
     get_volume_sizes( file_volume_3d, file_sizes );
 
@@ -579,7 +579,7 @@ BICAPI VIO_Status  load_label_volume(
     file = initialize_minc_input( filename, file_volume, NULL );
 
     if( file == NULL )
-        return( ERROR );
+        return( VIO_ERROR );
 
     n_slices = get_n_input_volumes( file );
 
@@ -620,8 +620,8 @@ BICAPI VIO_Status  load_label_volume(
         y_dz = end_voxel[2] - start_voxel[2];
 
         is_integer_step = FALSE;
-        if( IS_INT(z_dx) && IS_INT(z_dy) && IS_INT(z_dz) &&
-            IS_INT(y_dx) && IS_INT(y_dy) && IS_INT(y_dz) )
+        if( VIO_IS_INT(z_dx) && VIO_IS_INT(z_dy) && VIO_IS_INT(z_dz) &&
+            VIO_IS_INT(y_dx) && VIO_IS_INT(y_dy) && VIO_IS_INT(y_dz) )
         {
             is_integer_step = TRUE;
             int_z_dx = (int) z_dx;
@@ -646,110 +646,110 @@ BICAPI VIO_Status  load_label_volume(
         get_input_volume_label_limits( label_volume, file_volume_3d,
                                        slice, limits );
 
-        for_inclusive( label_voxel[X], limits[0][X], limits[1][X] )
+        for_inclusive( label_voxel[VIO_X], limits[0][VIO_X], limits[1][VIO_X] )
         {
-            for_inclusive( label_voxel[Y], limits[0][Y], limits[1][Y] )
+            for_inclusive( label_voxel[VIO_Y], limits[0][VIO_Y], limits[1][VIO_Y] )
             {
                 if( is_linear )
                 {
-                    if( label_voxel[Y] == limits[0][Y] )
+                    if( label_voxel[VIO_Y] == limits[0][VIO_Y] )
                     {
                         convert_3D_voxel_to_world( label_volume,
-                                                   (VIO_Real) label_voxel[X],
-                                                   (VIO_Real) label_voxel[Y],
-                                                   (VIO_Real) limits[0][Z],
+                                                   (VIO_Real) label_voxel[VIO_X],
+                                                   (VIO_Real) label_voxel[VIO_Y],
+                                                   (VIO_Real) limits[0][VIO_Z],
                                                    &xw, &yw, &zw );
                         convert_world_to_voxel( file_volume_3d, xw, yw, zw,
                                                 y_voxel );
-                        y_voxel[X] += 0.5;
-                        y_voxel[Y] += 0.5;
-                        y_voxel[Z] += 0.5;
+                        y_voxel[VIO_X] += 0.5;
+                        y_voxel[VIO_Y] += 0.5;
+                        y_voxel[VIO_Z] += 0.5;
 
                         if( is_integer_step )
                         {
-                            int_y_voxel[X] = FLOOR( y_voxel[X] );
-                            int_y_voxel[Y] = FLOOR( y_voxel[Y] );
-                            int_y_voxel[Z] = FLOOR( y_voxel[Z] );
+                            int_y_voxel[VIO_X] = VIO_FLOOR( y_voxel[VIO_X] );
+                            int_y_voxel[VIO_Y] = VIO_FLOOR( y_voxel[VIO_Y] );
+                            int_y_voxel[VIO_Z] = VIO_FLOOR( y_voxel[VIO_Z] );
                         }
                     }
                     else
                     {
                         if( is_integer_step )
                         {
-                            int_y_voxel[X] += int_y_dx;
-                            int_y_voxel[Y] += int_y_dy;
-                            int_y_voxel[Z] += int_y_dz;
+                            int_y_voxel[VIO_X] += int_y_dx;
+                            int_y_voxel[VIO_Y] += int_y_dy;
+                            int_y_voxel[VIO_Z] += int_y_dz;
                         }
                         else
                         {
-                            y_voxel[X] += y_dx;
-                            y_voxel[Y] += y_dy;
-                            y_voxel[Z] += y_dz;
+                            y_voxel[VIO_X] += y_dx;
+                            y_voxel[VIO_Y] += y_dy;
+                            y_voxel[VIO_Z] += y_dz;
                         }
                     }
 
                     if( is_integer_step )
                     {
-                        int_voxel[X] = int_y_voxel[X];
-                        int_voxel[Y] = int_y_voxel[Y];
-                        int_voxel[Z] = int_y_voxel[Z];
+                        int_voxel[VIO_X] = int_y_voxel[VIO_X];
+                        int_voxel[VIO_Y] = int_y_voxel[VIO_Y];
+                        int_voxel[VIO_Z] = int_y_voxel[VIO_Z];
                     }
                     else
                     {
-                        voxel[X] = y_voxel[X];
-                        voxel[Y] = y_voxel[Y];
-                        voxel[Z] = y_voxel[Z];
+                        voxel[VIO_X] = y_voxel[VIO_X];
+                        voxel[VIO_Y] = y_voxel[VIO_Y];
+                        voxel[VIO_Z] = y_voxel[VIO_Z];
                     }
                 }
 
-                for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
+                for_inclusive( label_voxel[VIO_Z], limits[0][VIO_Z], limits[1][VIO_Z] )
                 {
                     if( !is_linear )
                     {
                         convert_3D_voxel_to_world( label_volume,
-                                                   (VIO_Real) label_voxel[X],
-                                                   (VIO_Real) label_voxel[Y],
-                                                   (VIO_Real) label_voxel[Z],
+                                                   (VIO_Real) label_voxel[VIO_X],
+                                                   (VIO_Real) label_voxel[VIO_Y],
+                                                   (VIO_Real) label_voxel[VIO_Z],
                                                    &xw, &yw, &zw );
                         convert_world_to_voxel( file_volume_3d, xw, yw, zw,
                                                 voxel );
-                        voxel[X] += 0.5;
-                        voxel[Y] += 0.5;
-                        voxel[Z] += 0.5;
+                        voxel[VIO_X] += 0.5;
+                        voxel[VIO_Y] += 0.5;
+                        voxel[VIO_Z] += 0.5;
                     }
-                    else if( label_voxel[Z] != limits[0][Z] )
+                    else if( label_voxel[VIO_Z] != limits[0][VIO_Z] )
                     {
                         if( is_integer_step )
                         {
-                            int_voxel[X] += int_z_dx;
-                            int_voxel[Y] += int_z_dy;
-                            int_voxel[Z] += int_z_dz;
+                            int_voxel[VIO_X] += int_z_dx;
+                            int_voxel[VIO_Y] += int_z_dy;
+                            int_voxel[VIO_Z] += int_z_dz;
                         }
                         else
                         {
-                            voxel[X] += z_dx;
-                            voxel[Y] += z_dy;
-                            voxel[Z] += z_dz;
+                            voxel[VIO_X] += z_dx;
+                            voxel[VIO_Y] += z_dy;
+                            voxel[VIO_Z] += z_dz;
                         }
                     }
 
                     if( !is_integer_step )
                     {
-                        int_voxel[X] = FLOOR( voxel[X] );
-                        int_voxel[Y] = FLOOR( voxel[Y] );
-                        int_voxel[Z] = FLOOR( voxel[Z] );
+                        int_voxel[VIO_X] = VIO_FLOOR( voxel[VIO_X] );
+                        int_voxel[VIO_Y] = VIO_FLOOR( voxel[VIO_Y] );
+                        int_voxel[VIO_Z] = VIO_FLOOR( voxel[VIO_Z] );
                     }
 
-                    if( int_voxel[X] == slice &&
-                        int_voxel[Y] >= 0 && int_voxel[Y] < file_sizes[Y] &&
-                        int_voxel[Z] >= 0 && int_voxel[Z] < file_sizes[Z] )
+                    if( int_voxel[VIO_X] == slice &&
+                        int_voxel[VIO_Y] >= 0 && int_voxel[VIO_Y] < file_sizes[VIO_Y] &&
+                        int_voxel[VIO_Z] >= 0 && int_voxel[VIO_Z] < file_sizes[VIO_Z] )
                     {
                         file_value = get_volume_real_value( file_volume,
-                                        int_voxel[Y], int_voxel[Z], 0, 0, 0 );
+                                        int_voxel[VIO_Y], int_voxel[VIO_Z], 0, 0, 0 );
 
                         if( file_value > 0.0 )
                         {
-                            int_file_value = ROUND( file_value );
+                            int_file_value = VIO_ROUND( file_value );
                             set_volume_label_data( label_volume, label_voxel,
                                                    int_file_value );
                         }
@@ -770,7 +770,7 @@ BICAPI VIO_Status  load_label_volume(
 
     (void) close_minc_input( file );
 
-    return( OK );
+    return( VIO_OK );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -779,7 +779,7 @@ BICAPI VIO_Status  load_label_volume(
               original_filename
               label_volume
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Saves the label volume.
 @METHOD     : 
 @GLOBALS    : 
@@ -860,7 +860,7 @@ BICAPI VIO_Status  save_label_volume(
 @INPUT      : file
               volume
 @OUTPUT     : label_volume
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Inputs a tag file into a label volume.
 @METHOD     : 
 @GLOBALS    : 
@@ -888,16 +888,16 @@ BICAPI VIO_Status  input_tags_as_labels(
 
     status = initialize_tag_file_input( file, &n_volumes );
 
-    while( status == OK &&
+    while( status == VIO_OK &&
            input_one_tag( file, n_volumes,
                           tag1, NULL, NULL, &structure_id, NULL, NULL,
                           &status ) )
     {
-        convert_world_to_voxel( volume, tag1[X], tag1[Y], tag1[Z], voxel );
+        convert_world_to_voxel( volume, tag1[VIO_X], tag1[VIO_Y], tag1[VIO_Z], voxel );
 
         for_less( c, 0, get_volume_n_dimensions(volume) )
         {
-            ind[c] = ROUND( voxel[c] );
+            ind[c] = VIO_ROUND( voxel[c] );
         }
 
         label = structure_id;
@@ -916,7 +916,7 @@ BICAPI VIO_Status  input_tags_as_labels(
 @INPUT      : filename
               volume
 @OUTPUT     : label_volume
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Creates a label volume for the given volume from a tag file or
               a minc file.
 @METHOD     :
@@ -937,7 +937,7 @@ BICAPI VIO_Status  create_label_volume_from_file(
     FILE    *file;
     VIO_BOOL same_grid;
 
-    status = OK;
+    status = VIO_OK;
 
     if( filename_extension_matches( filename, "mnc" ) )
     {
@@ -946,7 +946,7 @@ BICAPI VIO_Status  create_label_volume_from_file(
                                            get_volume_n_dimensions(volume),
                                            dim_names, &file_volume, NULL );
 
-        if( status != OK )
+        if( status != VIO_OK )
         {
             delete_dimension_names( volume, dim_names );
             return( status );
@@ -973,11 +973,11 @@ BICAPI VIO_Status  create_label_volume_from_file(
     {
         *label_volume = create_label_volume( volume, NC_UNSPECIFIED );
 
-        if( open_file( filename, READ_FILE, ASCII_FORMAT, &file )!=OK)
-            return( ERROR );
+        if( open_file( filename, READ_FILE, ASCII_FORMAT, &file )!=VIO_OK)
+            return( VIO_ERROR );
 
-        if( input_tags_as_labels( file, volume, *label_volume ) != OK )
-            return( ERROR );
+        if( input_tags_as_labels( file, volume, *label_volume ) != VIO_OK )
+            return( VIO_ERROR );
 
         (void) close_file( file );
     }
@@ -994,7 +994,7 @@ BICAPI VIO_Status  create_label_volume_from_file(
               size
               patient_id
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Outputs a set of labels as tags.
 @METHOD     : 
 @GLOBALS    : 
@@ -1021,7 +1021,7 @@ BICAPI VIO_Status  output_labels_as_tags(
     if( get_volume_n_dimensions(volume) != 3 )
     {
         print_error( "output_labels_as_tags:  volume must be 3D\n" );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     check_alloc_label_data( label_volume );
@@ -1029,29 +1029,29 @@ BICAPI VIO_Status  output_labels_as_tags(
 
     n_tags = 0;
 
-    for_less( ind[X], 0, sizes[X] )
+    for_less( ind[VIO_X], 0, sizes[VIO_X] )
     {
-        real_ind[X] = (VIO_Real) ind[X];
-        for_less( ind[Y], 0, sizes[Y] )
+        real_ind[VIO_X] = (VIO_Real) ind[VIO_X];
+        for_less( ind[VIO_Y], 0, sizes[VIO_Y] )
         {
-            real_ind[Y] = (VIO_Real) ind[Y];
-            for_less( ind[Z], 0, sizes[Z] )
+            real_ind[VIO_Y] = (VIO_Real) ind[VIO_Y];
+            for_less( ind[VIO_Z], 0, sizes[VIO_Z] )
             {
-                real_ind[Z] = (VIO_Real) ind[Z];
+                real_ind[VIO_Z] = (VIO_Real) ind[VIO_Z];
                 label = get_volume_label_data( label_volume, ind );
 
                 if( label == desired_label || (desired_label < 0 && label > 0) )
                 {
                     convert_voxel_to_world( volume, real_ind,
-                                            &tags[X], &tags[Y], &tags[Z] );
+                                            &tags[VIO_X], &tags[VIO_Y], &tags[VIO_Z] );
 
                     if( n_tags == 0 &&
-                        initialize_tag_file_output( file, NULL, 1 ) != OK )
-                        return( ERROR );
+                        initialize_tag_file_output( file, NULL, 1 ) != VIO_OK )
+                        return( VIO_ERROR );
 
                     if( output_one_tag( file, 1, tags, NULL,
-                               &size, &label, &patient_id, NULL ) != OK )
-                        return( ERROR );
+                               &size, &label, &patient_id, NULL ) != VIO_OK )
+                        return( VIO_ERROR );
 
                     ++n_tags;
                 }
@@ -1062,7 +1062,7 @@ BICAPI VIO_Status  output_labels_as_tags(
     if( n_tags > 0 )
         terminate_tag_file_output( file );
 
-    return( OK );
+    return( VIO_OK );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -1070,7 +1070,7 @@ BICAPI VIO_Status  output_labels_as_tags(
 @INPUT      : file
               volume
 @OUTPUT     : label_volume
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Loads a set of landmarks into the label_volume.
 @METHOD     : 
 @GLOBALS    : 
@@ -1094,7 +1094,7 @@ BICAPI VIO_Status  input_landmarks_as_labels(
 
     get_volume_real_range( label_volume, &min_label, &max_label );
 
-    while( io_tag_point( file, READ_FILE, volume, 1.0, &marker ) == OK )
+    while( io_tag_point( file, READ_FILE, volume, 1.0, &marker ) == VIO_OK )
     {
         convert_world_to_voxel( volume,
                                 (VIO_Real) Point_x(marker.position),
@@ -1102,7 +1102,7 @@ BICAPI VIO_Status  input_landmarks_as_labels(
                                 (VIO_Real) Point_z(marker.position), voxel );
 
         for_less( c, 0, get_volume_n_dimensions(volume) )
-            ind[c] = ROUND( voxel[c] );
+            ind[c] = VIO_ROUND( voxel[c] );
 
         label = marker.structure_id;
         if( (VIO_Real) label >= min_label && (VIO_Real) label <= max_label &&
@@ -1112,5 +1112,5 @@ BICAPI VIO_Status  input_landmarks_as_labels(
         }
     }
 
-    return( OK );
+    return( VIO_OK );
 }

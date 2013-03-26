@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/change_labels.c,v 1.10 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/change_labels.c,v 1.10 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -52,20 +52,20 @@ BICAPI void  modify_labels_in_range(
     int              label;
     VIO_BOOL          must_change, first;
     VIO_Real             value;
-    progress_struct  progress;
+    VIO_progress_struct  progress;
 
     get_volume_sizes( label_volume, sizes );
 
-    initialize_progress_report( &progress, FALSE, sizes[X] * sizes[Y],
+    initialize_progress_report( &progress, FALSE, sizes[VIO_X] * sizes[VIO_Y],
                                 "Modifying Labels" );
 
     first = TRUE;
 
-    for_less( voxel[X], 0, sizes[X] )
+    for_less( voxel[VIO_X], 0, sizes[VIO_X] )
     {
-        for_less( voxel[Y], 0, sizes[Y] )
+        for_less( voxel[VIO_Y], 0, sizes[VIO_Y] )
         {
-            for_less( voxel[Z], 0, sizes[Z] )
+            for_less( voxel[VIO_Z], 0, sizes[VIO_Z] )
             {
                 if( src_min <= src_max )
                 {
@@ -77,8 +77,8 @@ BICAPI void  modify_labels_in_range(
 
                 if( must_change && min_threshold < max_threshold )
                 {
-                    value = get_volume_real_value( volume, voxel[X], voxel[Y],
-                                                   voxel[Z], 0, 0 );
+                    value = get_volume_real_value( volume, voxel[VIO_X], voxel[VIO_Y],
+                                                   voxel[VIO_Z], 0, 0 );
                     if( value < min_threshold || value > max_threshold )
                         must_change = FALSE;
                 }
@@ -97,8 +97,8 @@ BICAPI void  modify_labels_in_range(
                 }
             }
 
-            update_progress_report( &progress, voxel[X] * sizes[Y] +
-                                    voxel[Y] + 1 );
+            update_progress_report( &progress, voxel[VIO_X] * sizes[VIO_Y] +
+                                    voxel[VIO_Y] + 1 );
         }
     }
 

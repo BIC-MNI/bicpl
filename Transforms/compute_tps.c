@@ -32,7 +32,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.13 2005-08-17 22:26:47 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.13 2005-08-17 22:26:47 bert Exp $";
 #endif
 
 /* prototype definitions: */
@@ -167,7 +167,7 @@ static  void  makeL(
               n_values
 @OUTPUT     : INVMLY
 @RETURNS    : 
-@DESCRIPTION: Computes the weights by multiplying the Y matrix by the
+@DESCRIPTION: Computes the weights by multiplying the VIO_Y matrix by the
               inverse of the L matrix.
 @METHOD     : 
 @GLOBALS    : 
@@ -184,7 +184,7 @@ static  void  calculate_weights(
     int     n_dims,
     int     n_values )
 {
-    /* L_{-1} Y = (W|a_{1}, a_{x}, a_{y})^T. */
+    /* L_{-1} VIO_Y = (W|a_{1}, a_{x}, a_{y})^T. */
 
     matrix_multiply( n_points + n_dims + 1, n_points, n_values,
                      INVML, YM, INVMLY );

@@ -19,7 +19,7 @@ int  main(
     }
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                                  &object_list ) != OK )
+                                  &object_list ) != VIO_OK )
         return( 1 );
     
     for_less( obj, 0, n_objects )

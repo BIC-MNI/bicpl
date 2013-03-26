@@ -52,7 +52,7 @@ int  main(
     (void) get_real_argument( BINTREE_FACTOR, &bintree_factor );
 
     if( input_graphics_file( input1_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects != 1 ||
+                             &object_list ) != VIO_OK || n_objects != 1 ||
         get_object_type(object_list[0]) != POLYGONS )
     {
         print_error( "Error reading %s.\n", input1_filename );
@@ -62,7 +62,7 @@ int  main(
     polygons1 = get_polygons_ptr( object_list[0] );
 
     if( input_graphics_file( input2_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects != 1 ||
+                             &object_list ) != VIO_OK || n_objects != 1 ||
         get_object_type(object_list[0]) != POLYGONS )
     {
         print_error( "Error reading %s.\n", input2_filename );
@@ -83,12 +83,12 @@ int  main(
     else
     {
         create_polygons_bintree( polygons2,
-                                 ROUND( (VIO_Real) polygons2->n_items *
+                                 VIO_ROUND( (VIO_Real) polygons2->n_items *
                                         bintree_factor ) );
     }
 
     if( outputting &&
-        open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != OK )
+        open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != VIO_OK )
         return( 1 );
 
     sum_x = 0.0;
@@ -136,8 +136,8 @@ int  main(
 
         if( outputting )
         {
-            if( output_real( file, dist ) != OK ||
-                output_newline( file ) != OK )
+            if( output_real( file, dist ) != VIO_OK ||
+                output_newline( file ) != VIO_OK )
                 return( 1 );
         }
     }

@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.17 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.17 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 static  int  get_smoothing_points(
@@ -270,7 +270,7 @@ static  VIO_Real  get_average_curvature(
     sum_curvature = 0.0;
     for_less( i, 0, n_smoothing_points )
     {
-        angle = RAD_TO_DEG * get_angle_between_points( &smoothing_points[i],
+        angle = VIO_RAD_TO_DEG * get_angle_between_points( &smoothing_points[i],
                                                        point, &centroid );
 
         curvature = 180.0 - 2.0 * angle;
@@ -287,14 +287,14 @@ if( first )
 {
     first = FALSE;
     VIO_ALLOC2D( tags, n_smoothing_points+1, 3 );
-    tags[0][X] = RPoint_x(*point);
-    tags[0][Y] = RPoint_y(*point);
-    tags[0][Z] = RPoint_z(*point);
+    tags[0][VIO_X] = RPoint_x(*point);
+    tags[0][VIO_Y] = RPoint_y(*point);
+    tags[0][VIO_Z] = RPoint_z(*point);
     for_less( i, 0, n_smoothing_points )
     {
-        tags[i+1][X] = RPoint_x(smoothing_points[i]);
-        tags[i+1][Y] = RPoint_y(smoothing_points[i]);
-        tags[i+1][Z] = RPoint_z(smoothing_points[i]);
+        tags[i+1][VIO_X] = RPoint_x(smoothing_points[i]);
+        tags[i+1][VIO_Y] = RPoint_y(smoothing_points[i]);
+        tags[i+1][VIO_Z] = RPoint_z(smoothing_points[i]);
     }
     (void) output_tag_file( "smooth_curvature.tag", "", 1, n_smoothing_points+1,
                             tags, NULL, NULL, NULL, NULL, NULL );

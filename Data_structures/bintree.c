@@ -16,7 +16,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bintree.c,v 1.10 2005-08-17 22:31:12 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/bintree.c,v 1.10 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 static  VIO_Status  io_range(
@@ -62,12 +62,12 @@ BICAPI  void  initialize_bintree(
     VIO_Real                 z_max,
     bintree_struct_ptr   bintree )
 {
-    bintree->range.limits[X][0] = (float) x_min;
-    bintree->range.limits[X][1] = (float) x_max;
-    bintree->range.limits[Y][0] = (float) y_min;
-    bintree->range.limits[Y][1] = (float) y_max;
-    bintree->range.limits[Z][0] = (float) z_min;
-    bintree->range.limits[Z][1] = (float) z_max;
+    bintree->range.limits[VIO_X][0] = (float) x_min;
+    bintree->range.limits[VIO_X][1] = (float) x_max;
+    bintree->range.limits[VIO_Y][0] = (float) y_min;
+    bintree->range.limits[VIO_Y][1] = (float) y_max;
+    bintree->range.limits[VIO_Z][0] = (float) z_min;
+    bintree->range.limits[VIO_Z][1] = (float) z_max;
 
     bintree->n_nodes = 0;
     bintree->root = (bintree_node_struct *) 0;
@@ -491,7 +491,7 @@ BICAPI  VIO_BOOL  get_bintree_right_child(
 @NAME       : get_node_split_axis
 @INPUT      : node
 @OUTPUT     : 
-@RETURNS    : axis X, Y, or Z
+@RETURNS    : axis VIO_X, VIO_Y, or VIO_Z
 @DESCRIPTION: Returns the split axis of the node.
 @METHOD     : 
 @GLOBALS    : 
@@ -545,12 +545,12 @@ BICAPI  VIO_BOOL  point_within_range(
 {
     VIO_BOOL   within;
 
-    within = (Point_x(*point) >= range->limits[X][0] &&
-              Point_x(*point) <= range->limits[X][1] &&
-              Point_y(*point) >= range->limits[Y][0] &&
-              Point_y(*point) <= range->limits[Y][1] &&
-              Point_z(*point) >= range->limits[Z][0] &&
-              Point_z(*point) <= range->limits[Z][1]);
+    within = (Point_x(*point) >= range->limits[VIO_X][0] &&
+              Point_x(*point) <= range->limits[VIO_X][1] &&
+              Point_y(*point) >= range->limits[VIO_Y][0] &&
+              Point_y(*point) <= range->limits[VIO_Y][1] &&
+              Point_z(*point) >= range->limits[VIO_Z][0] &&
+              Point_z(*point) <= range->limits[VIO_Z][1]);
 
     return( within );
 }
@@ -571,9 +571,9 @@ BICAPI  VIO_BOOL  point_within_range(
 BICAPI  VIO_Real  range_volume(
     range_struct  *range )
 {
-    return( ((VIO_Real) range->limits[X][1] - (VIO_Real) range->limits[X][0]) *
-            ((VIO_Real) range->limits[Y][1] - (VIO_Real) range->limits[Y][0]) *
-            ((VIO_Real) range->limits[Z][1] - (VIO_Real) range->limits[Z][0]) );
+    return( ((VIO_Real) range->limits[VIO_X][1] - (VIO_Real) range->limits[VIO_X][0]) *
+            ((VIO_Real) range->limits[VIO_Y][1] - (VIO_Real) range->limits[VIO_Y][0]) *
+            ((VIO_Real) range->limits[VIO_Z][1] - (VIO_Real) range->limits[VIO_Z][0]) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -594,9 +594,9 @@ BICAPI  VIO_Real  range_surface_area(
 {
     VIO_Real   dx, dy, dz;
 
-    dx = (VIO_Real) range->limits[X][1] - (VIO_Real) range->limits[X][0];
-    dy = (VIO_Real) range->limits[Y][1] - (VIO_Real) range->limits[Y][0];
-    dz = (VIO_Real) range->limits[Z][1] - (VIO_Real) range->limits[Z][0];
+    dx = (VIO_Real) range->limits[VIO_X][1] - (VIO_Real) range->limits[VIO_X][0];
+    dy = (VIO_Real) range->limits[VIO_Y][1] - (VIO_Real) range->limits[VIO_Y][0];
+    dz = (VIO_Real) range->limits[VIO_Z][1] - (VIO_Real) range->limits[VIO_Z][0];
 
     return( 2.0 * (dx * dy + dy * dz + dz * dx) );
 }
@@ -609,7 +609,7 @@ BICAPI  VIO_Real  range_surface_area(
               n_objects
               bintree
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Writes or reads the bintree.
 @METHOD     : 
 @GLOBALS    : 
@@ -628,9 +628,9 @@ BICAPI  VIO_Status  io_bintree(
 
     status = io_range( file, direction, format, &bintree->range );
 
-    if( status == OK && direction == WRITE_FILE )
+    if( status == VIO_OK && direction == WRITE_FILE )
         status = output_bintree_node( file, format, bintree->root );
-    else if( status == OK && direction == READ_FILE )
+    else if( status == VIO_OK && direction == READ_FILE )
         status = input_bintree_node( file, format, &bintree->root );
 
     return( status );
@@ -643,7 +643,7 @@ BICAPI  VIO_Status  io_bintree(
               format
               range
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Writes or reads a 3D box range.
 @METHOD     : 
 @GLOBALS    : 
@@ -661,13 +661,13 @@ static  VIO_Status  io_range(
     VIO_Status   status;
     int      c, l;
 
-    status = OK;
+    status = VIO_OK;
 
     for_less( c, 0, VIO_N_DIMENSIONS )
     {
         for_less( l, 0, 2 )
         {
-            if( status == OK )
+            if( status == VIO_OK )
             {
                 status = io_float( file, direction, format,
                                    &range->limits[c][l] );
@@ -684,7 +684,7 @@ static  VIO_Status  io_range(
               format
               node
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Outputs a leaf node.
 @METHOD     : 
 @GLOBALS    : 
@@ -701,14 +701,14 @@ static  VIO_Status  output_leaf_node(
     VIO_Status  status;
     int     *object_list, n_objects;
 
-    status = OK ;
+    status = VIO_OK ;
 
     n_objects = get_bintree_leaf_objects( node, &object_list );
 
     if( n_objects > MAX_NODE_INFO_OBJECTS )
         status = io_int( file, WRITE_FILE, format, &n_objects );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_ints( file, WRITE_FILE, format, n_objects, &object_list );
 
     return( status );
@@ -720,7 +720,7 @@ static  VIO_Status  output_leaf_node(
               format
               node
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Outputs a bintree node.
 @METHOD     : 
 @GLOBALS    : 
@@ -740,10 +740,10 @@ static  VIO_Status  output_bintree_node(
     status = io_binary_data( file, WRITE_FILE, &node->node_info,
                              sizeof(node->node_info), 1 );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_float( file, WRITE_FILE, format, &node->split_position );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         if( bintree_node_is_leaf( node ) )
         {
@@ -753,7 +753,7 @@ static  VIO_Status  output_bintree_node(
         {
             if( get_bintree_left_child( node, &left ) )
                 status = output_bintree_node( file, format, left );
-            if( status == OK && get_bintree_right_child( node, &right ) )
+            if( status == VIO_OK && get_bintree_right_child( node, &right ) )
                 status = output_bintree_node( file, format, right );
         }
     }
@@ -766,7 +766,7 @@ static  VIO_Status  output_bintree_node(
 @INPUT      : file
               format
 @OUTPUT     : node
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Inputs a bintree node
 @METHOD     : 
 @GLOBALS    : 
@@ -790,7 +790,7 @@ static  VIO_Status  input_bintree_node(
 
     status = io_binary_data( file, READ_FILE, &node_info, sizeof(node_info), 1);
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_float( file, READ_FILE, format, &split_position );
 
     if( (node_info & SUBDIVISION_AXIS_BITS) == LEAF_SIGNAL )
@@ -800,10 +800,10 @@ static  VIO_Status  input_bintree_node(
         if( n_objects == 0 )
             status = io_int( file, READ_FILE, format, &n_objects );
 
-        if( status == OK && n_objects > 0 )
+        if( status == VIO_OK && n_objects > 0 )
             status = io_ints( file, READ_FILE, format, n_objects, &object_list);
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             *node = create_bintree_leaf( (VIO_Real) split_position,
                                          n_objects, object_list );
@@ -814,10 +814,10 @@ static  VIO_Status  input_bintree_node(
     else
     {
         status = input_bintree_node( file, format, &left );
-        if( status == OK )
+        if( status == VIO_OK )
             status = input_bintree_node( file, format, &right );
 
-        if( status == OK )
+        if( status == VIO_OK )
             *node = create_bintree_internal_node(
                                    node_info & SUBDIVISION_AXIS_BITS,
                                    (VIO_Real) split_position, left, right );

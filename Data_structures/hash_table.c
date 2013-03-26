@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.14 2005-08-17 22:31:12 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.14 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 #define  HASH_FUNCTION_CONSTANT          0.6180339887498948482
@@ -136,7 +136,7 @@ static   int  hash_function(
 
     v = (VIO_Real) key * HASH_FUNCTION_CONSTANT;
 
-    index = (int) (FRACTION(v) * (VIO_Real) hash_table->size);
+    index = (int) (VIO_FRACTION(v) * (VIO_Real) hash_table->size);
 
     return( index );
 }
@@ -218,7 +218,7 @@ BICAPI  void  insert_in_hash_table(
         {
             int   new_size;
 
-            new_size = ROUND( (VIO_Real) hash_table->n_entries /
+            new_size = VIO_ROUND( (VIO_Real) hash_table->n_entries /
                               hash_table->new_density );
             increase_hash_table_size( hash_table, new_size );
         }

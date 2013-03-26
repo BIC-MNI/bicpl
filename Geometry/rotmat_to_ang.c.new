@@ -25,15 +25,15 @@
               -positive rotations are counter-clockwise when looking
                down the axis, from the positive end towards the origin.
               -I assume a coordinate system:
-                          ^ Y
+                          ^ VIO_Y
                           |
                           |
                           |
                           |
-                          +---------> X
+                          +---------> VIO_X
                          /
                         /
-                       / Z  (towards the viewer).
+                       / VIO_Z  (towards the viewer).
 
               -The problem is posed as:  
                  given a rotation matrix ROT, determine the rotations
@@ -47,8 +47,8 @@
                  (note local is lower case, world is UPPER)
 
                  1- find RZ that brings local x into the XZ plane
-                 2- find RY that brings local x*RZ onto X
-                 3- find RX that brings local y*RZ*RY onto Y
+                 2- find RY that brings local x*RZ onto VIO_X
+                 3- find RX that brings local y*RZ*RY onto VIO_Y
 
                  the required rotations are -RX,-RY and -RZ!
 
@@ -100,7 +100,7 @@ public  BOOLEAN  rotmat_to_ang(
 
 /*---------------------------------------------------------------
    step two:  find the RY rotation reqd to align 
-              the local x on the world X axis 
+              the local x on the world VIO_X axis 
 
    (since i was positive above, RY should already by in range -pi/2..pi/2 
    but we'll check it  anyway)                                             */
@@ -109,7 +109,7 @@ public  BOOLEAN  rotmat_to_ang(
        t[m][0] = R[m][0];
     t[3][0] = 1.0;
 
-    nr_rotz( Rz, rz );             /* create the rotate Z matrix */
+    nr_rotz( Rz, rz );             /* create the rotate VIO_Z matrix */
  
     matrix_multiply( 4, 4, 1, Rz, t, s ); /* apply RZ, to get x in XZ plane */
 
@@ -127,55 +127,55 @@ public  BOOLEAN  rotmat_to_ang(
 
     len = sqrt(i*i + k*k);        /* length of vect x in XZ plane, after RZ */
 
-    if( ABS(len) < EPS )
+    if( VIO_ABS(len) < EPS )
     {
         print_rot_error(
            "step two: length of vect z null.",__FILE__, __LINE__,0,0,0,0,0);
         return(FALSE);
     }
 
-    if( ABS(i) > ABS(k) )
-        ry = ABS( asin(k/len) );
+    if( VIO_ABS(i) > VIO_ABS(k) )
+        ry = VIO_ABS( asin(k/len) );
     else
-        ry = ABS( acos(i/len) );
+        ry = VIO_ABS( acos(i/len) );
 
     /*    what is the counter clockwise angle necessary to bring  */
-    /*    vect x onto X? */
+    /*    vect x onto VIO_X? */
 
     if( k < 0.0 )
         ry = -ry;
 
    /*--------------------------------------------------------------- */
    /*   step three,rotate around RX to */
-   /*              align the local y with Y and z with Z */
+   /*              align the local y with VIO_Y and z with VIO_Z */
 
     for_less( m, 0, 3 )                /* extract local z vector */
         t[m][0] = R[m][2];
     t[3][0] = 1.0;
 
-    nr_roty( Ry, ry );             /* create the rotate Y matrix */
+    nr_roty( Ry, ry );             /* create the rotate VIO_Y matrix */
 
                        /* t =  roty(ry*180/pi) *(rotz(rz*180/pi) *r(3,:)); */
     matrix_multiply( 4, 4, 1, Rz, t, s ); /* apply RZ, to get x in XZ plane */
-    matrix_multiply( 4, 4, 1, Ry, s, t ); /* apply RY, to get x onto X      */
+    matrix_multiply( 4, 4, 1, Ry, s, t ); /* apply RY, to get x onto VIO_X      */
 
     i = t[0][0];                        /* make local vector componants */
     j = t[1][0]; 
     k = t[2][0];
 
-    len = sqrt(j*j + k*k);        /* length of vect x in Y,Z plane */
+    len = sqrt(j*j + k*k);        /* length of vect x in VIO_Y,VIO_Z plane */
 
-    if( ABS(len) < EPS )
+    if( VIO_ABS(len) < EPS )
     {
         print_rot_error(
            "step three: length of vect z null.",__FILE__, __LINE__,0,0,0,0,0);
         return(FALSE);
     }
 
-    if( ABS(k) > ABS(j) )
-        rx = ABS( asin(j/len) );
+    if( VIO_ABS(k) > VIO_ABS(j) )
+        rx = VIO_ABS( asin(j/len) );
     else
-        rx = ABS( acos(k/len) );
+        rx = VIO_ABS( acos(k/len) );
 
     if( j < 0.0 )
         rx = -rx;
@@ -235,7 +235,7 @@ public  void  nr_ident(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : nr_rotx - make rot X matrix
+@NAME       : nr_rotx - make rot VIO_X matrix
 @INPUT      : M - 4x4 matrix
               a - rotation angle in radians
               (matrix in numerical recipes form, allocated by calling routine)
@@ -264,7 +264,7 @@ public  void  nr_rotx(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : nr_roty - make rot Y matrix
+@NAME       : nr_roty - make rot VIO_Y matrix
 @INPUT      : M - 4x4 matrix
               a - rotation angle in radians
               (matrix in numerical recipes form, allocated by calling routine)
@@ -292,7 +292,7 @@ public  void  nr_roty(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : nr_rotz - make rot Z matrix
+@NAME       : nr_rotz - make rot VIO_Z matrix
 @INPUT      : M - 4x4 matrix
               a - rotation angle in radians
               (matrix in numerical recipes form, allocated by calling routine)

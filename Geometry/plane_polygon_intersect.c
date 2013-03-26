@@ -283,11 +283,11 @@ BICAPI  void   intersect_planes_with_quadmesh(
         {
             n_points = 0;
 
-            indices[0] = IJ(x_index,y_index,quadmesh->n);
-            indices[1] = IJ((x_index+1)%quadmesh->m,y_index,quadmesh->n);
-            indices[2] = IJ((x_index+1)%quadmesh->m,(y_index+1)%quadmesh->n,
+            indices[0] = VIO_IJ(x_index,y_index,quadmesh->n);
+            indices[1] = VIO_IJ((x_index+1)%quadmesh->m,y_index,quadmesh->n);
+            indices[2] = VIO_IJ((x_index+1)%quadmesh->m,(y_index+1)%quadmesh->n,
                          quadmesh->n);
-            indices[3] = IJ(x_index,(y_index+1)%quadmesh->n,
+            indices[3] = VIO_IJ(x_index,(y_index+1)%quadmesh->n,
                          quadmesh->n);
 
             for_less( edge, 0, 4 )

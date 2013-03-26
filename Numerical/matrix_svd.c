@@ -22,7 +22,7 @@ int bicpl_dgesvd_(char *jobu, char *jobvt, long int *m, long int *n,
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.9 2005-08-17 22:28:59 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.9 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------

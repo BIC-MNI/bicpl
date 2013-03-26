@@ -19,7 +19,7 @@ void polygons_to_off( const polygons_struct* p )
     int i,e,f;
 
     fprintf( out, "# A polygon\n" );
-    fprintf( out, "OFF\n\n" );
+    fprintf( out, "FALSE\n\n" );
 
     fprintf( out, "# NVertices NFaces NEdges\n" );
     fprintf( out, "#(Geomview does not check these numbers currently,"
@@ -58,7 +58,7 @@ void process_file( char* filename )
     object_struct** object_list;
 
     if ( input_graphics_file( filename, &format, 
-			      &num_objects, &object_list ) != OK ) {
+			      &num_objects, &object_list ) != VIO_OK ) {
 	fprintf( stderr, "input_graphics_file( %s ) failed.\n", filename );
 	return;
     }

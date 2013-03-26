@@ -10,12 +10,12 @@ int main( int ac, char* av[] )
 	return 1;
     }
 
-    if ( input_rgb_file( av[1], &image ) != OK ) {
+    if ( input_rgb_file( av[1], &image ) != VIO_OK ) {
 	fprintf( stderr, "input_rgb_file() failed.\n" );
 	return 2;
     }
 
-    if ( output_rgb_file( av[2], &image ) != OK ) {
+    if ( output_rgb_file( av[2], &image ) != VIO_OK ) {
 	fprintf( stderr, "output_rgb_file() failed.\n" );
 	return 2;
     }

@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.23 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.23 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 #define  SMALL_CHUNK_SIZE          4
@@ -168,7 +168,7 @@ BICAPI   void   create_polygon_point_neighbours(
     int                 **point_polygons, point, index0, index1;
     int                 i, v, indices[MAX_POINTS_PER_POLYGON], ii;
     int                 n_to_add, *points_to_add;
-    progress_struct     progress;
+    VIO_progress_struct     progress;
 
     if( across_polygons_flag && point_polygons_ptr != NULL )
     {
@@ -344,7 +344,7 @@ static   void   create_polygon_neighbours(
     int                 poly1, poly2, point1, point2, edge1, edge2;
     int                 *n_point_neighbours, **point_neighbours;
     int                 **point_polygons;
-    progress_struct     progress;
+    VIO_progress_struct     progress;
 
     for_less( i0, 0, polygons->end_indices[polygons->n_items-1] )
         neighbours[i0] = -1;

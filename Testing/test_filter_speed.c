@@ -37,7 +37,7 @@ int  main(
 
     if( input_volume( input_filename, 3, File_order_dimension_names,
                       NC_UNSPECIFIED, FALSE, 0.0, 0.0, TRUE, &volume,
-                      (minc_input_options *) NULL ) != OK )
+                      (minc_input_options *) NULL ) != VIO_OK )
         return( 1 );
 
     start_timing();
@@ -48,7 +48,7 @@ int  main(
     max_d2 = 0.0;
     for_less( dim, 0, N_DIMENSIONS )
     {
-        delta = (VIO_Real) sizes[dim] * FABS(separations[dim]);
+        delta = (VIO_Real) sizes[dim] * VIO_FABS(separations[dim]);
         max_d2 += delta * delta;
     }
 
@@ -168,7 +168,7 @@ private  void     evaluate_sync_interpolation(
 
     get_volume_separations( volume, separations );
     for_less( dim, 0, N_DIMENSIONS )
-        separations[dim] = FABS( separations[dim] );
+        separations[dim] = VIO_FABS( separations[dim] );
 
     get_volume_sizes( volume, sizes );
     ALLOC( slice, sizes[2] );

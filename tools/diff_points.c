@@ -12,7 +12,7 @@ int  main(
     VIO_File_formats   format;
     object_struct  **object_list1, **object_list2;
 
-    status = OK;
+    status = VIO_OK;
 
     initialize_argument_processing( argc, argv );
 
@@ -26,7 +26,7 @@ int  main(
     status = input_graphics_file( filename1, &format, &n_objects1,
                                   &object_list1 );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = input_graphics_file( filename2, &format, &n_objects2,
                                       &object_list2 );
 
@@ -36,7 +36,7 @@ int  main(
         return( 1 );
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         for_less( i, 0, n_objects1 )
         {
@@ -60,11 +60,11 @@ int  main(
         }
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         delete_object_list( n_objects1, object_list1 );
 
-    if( status == OK )
+    if( status == VIO_OK )
         delete_object_list( n_objects2, object_list2 );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }

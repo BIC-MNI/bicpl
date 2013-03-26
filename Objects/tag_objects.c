@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/tag_objects.c,v 1.8 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/tag_objects.c,v 1.8 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -26,7 +26,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/tag_obj
               default_type
 @OUTPUT     : n_objects
               object_list
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Inputs a tag file into a list of objects (markers).
 @METHOD     : 
 @GLOBALS    : 
@@ -57,13 +57,13 @@ BICAPI  VIO_Status   input_tag_objects_file(
                              &tags1, &tags2, &weights,
                              &structure_ids, &patient_ids, &labels );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         for_less( i, 0, n_tag_points )
         {
             object = create_object( MARKER );
             marker = get_marker_ptr( object );
-            fill_Point( marker->position, tags1[i][X], tags1[i][Y],tags1[i][Z]);
+            fill_Point( marker->position, tags1[i][VIO_X], tags1[i][VIO_Y],tags1[i][VIO_Z]);
             marker->label = create_string( labels[i] );
 
             if( structure_ids[i] >= 0 )

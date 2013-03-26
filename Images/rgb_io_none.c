@@ -34,14 +34,14 @@ BICAPI  VIO_Status  input_rgb_file(
     } else {
       print_error( "Error: 48 bit images are not supported\n" );
       ppm_destroy(&ppm);
-      return ERROR;
+      return VIO_ERROR;
     }
     
     if ((err = ppm_destroy(&ppm)) == PPM_ERR_OK)
-      return OK;
+      return VIO_OK;
   }
   ppm_perror(err, filename);
-  return( ERROR );
+  return( VIO_ERROR );
 }
 
 
@@ -57,14 +57,14 @@ BICAPI  VIO_Status  output_rgb_file(
     
     if ( pixels->pixel_type != RGB_PIXEL ) {
         print_error( "Error: only RGB_PIXEL images are handled\n" );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     if( !file_directory_exists( filename ) )
     {
         print_error( "Error: output file directory does not exist: %s\n",
                      filename );
-        return( ERROR );
+        return( VIO_ERROR );
     }
     
     if ((err = ppm_create(&ppm, pixels->x_size, pixels->y_size, PPM_BPP_24)) == PPM_ERR_OK)
@@ -89,10 +89,10 @@ BICAPI  VIO_Status  output_rgb_file(
       if((err = ppm_save_file(&ppm, filename))==PPM_ERR_OK)
       {
         ppm_destroy(&ppm);
-        return OK;
+        return VIO_OK;
       }
       ppm_destroy(&ppm);
     }
     ppm_perror(err, filename);
-    return( ERROR );
+    return( VIO_ERROR );
 }

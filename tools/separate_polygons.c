@@ -1,11 +1,11 @@
 #include <bicpl.h>
 
-private  int   separate_polygons(
+static  int   separate_polygons(
     polygons_struct    *polygons,
     int                desired_index,
     object_struct      **out[] );
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -21,7 +21,7 @@ int  main(
     char   *argv[] )
 {
     VIO_STR           input_filename, output_prefix;
-    char             out_filename[EXTREMELY_LARGE_STRING_SIZE];
+    char             out_filename[VIO_EXTREMELY_LARGE_STRING_SIZE];
     int              n_objects, n_out;
     int              i, desired_index;
     VIO_File_formats     format;
@@ -40,7 +40,7 @@ int  main(
     (void) get_int_argument( -1, &desired_index );
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects < 1 ||
+                             &object_list ) != VIO_OK || n_objects < 1 ||
         get_object_type( object_list[0] ) != POLYGONS )
     {
         print_error( "File must have a polygons structure.\n" );
@@ -66,7 +66,7 @@ int  main(
     return( 0 );
 }
 
-private  int   make_connected_components(
+static  int   make_connected_components(
     polygons_struct    *polygons,
     VIO_SCHAR       polygon_classes[],
     int                n_in_class[] )
@@ -127,7 +127,7 @@ private  int   make_connected_components(
     return( n_components );
 }
 
-private  int   separate_polygons(
+static  int   separate_polygons(
     polygons_struct    *polygons,
     int                desired_index,
     object_struct      **out[] )

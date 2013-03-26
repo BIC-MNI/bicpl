@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.15 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.15 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -115,7 +115,7 @@ BICAPI  void  create_tetrahedral_sphere(
 
     start_size = 4;
     best_size = 0;
-    for_less( s, 0, SIZEOF_STATIC_ARRAY( possible_sizes ) )
+    for_less( s, 0, VIO_SIZEOF_STATIC_ARRAY( possible_sizes ) )
     {
         size = possible_sizes[s];
         prev_size = size;
@@ -125,13 +125,13 @@ BICAPI  void  create_tetrahedral_sphere(
             size *= 4;
         }
 
-        if( ABS( n_triangles - prev_size ) < ABS( n_triangles - best_size ) )
+        if( VIO_ABS( n_triangles - prev_size ) < VIO_ABS( n_triangles - best_size ) )
         {
             best_size = prev_size;
             start_size = possible_sizes[s];
         }
 
-        if( ABS( n_triangles - size ) < ABS( n_triangles - best_size ) )
+        if( VIO_ABS( n_triangles - size ) < VIO_ABS( n_triangles - best_size ) )
         {
             best_size = size;
             start_size = possible_sizes[s];

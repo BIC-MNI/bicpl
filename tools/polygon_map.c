@@ -29,11 +29,11 @@ int  main(
     }
 
     if( input_graphics_file( src_polygons_filename,
-                             &format, &n_src_objects, &src_objects ) != OK )
+                             &format, &n_src_objects, &src_objects ) != VIO_OK )
         return( 1 );
 
     if( input_graphics_file( dest_polygons_filename,
-                             &format, &n_dest_objects, &dest_objects ) != OK )
+                             &format, &n_dest_objects, &dest_objects ) != VIO_OK )
         return( 1 );
 
     if( n_src_objects != 1 || get_object_type( src_objects[0] ) != POLYGONS ||
@@ -44,7 +44,7 @@ int  main(
     }
 
     create_polygons_bintree( get_polygons_ptr(src_objects[0]),
-                             ROUND( (VIO_Real) get_polygons_ptr(
+                             VIO_ROUND( (VIO_Real) get_polygons_ptr(
                                             src_objects[0])->n_items *
                                     BINTREE_FACTOR ) );
 
@@ -77,7 +77,7 @@ int  main(
             }
 
             if( input_objects_any_format( NULL, input_filename, WHITE, 1.0,
-                              SPHERE_MARKER, &n_objects, &objects ) != OK )
+                              SPHERE_MARKER, &n_objects, &objects ) != VIO_OK )
 
                 return( 1 );
 
@@ -106,7 +106,7 @@ int  main(
             }
 
             if( output_graphics_file( output_filename, ASCII_FORMAT, n_objects,
-                                      objects ) != OK )
+                                      objects ) != VIO_OK )
                 return( 1 );
 
             delete_object_list( n_objects, objects );

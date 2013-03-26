@@ -15,7 +15,7 @@ BICAPI VIO_Status  input_volume_header_only(
                                  TRUE, volume, options,
                                  &input_info );
 
-    if( status == OK )
+    if( status == VIO_OK )
         delete_volume_input( &input_info );
 
     return( status );

@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.10 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/crop_volume.c,v 1.10 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define  MAX_BUFFER_SIZE  100000
@@ -144,7 +144,7 @@ BICAPI VIO_BOOL  find_volume_crop_bounds(
         limits[1][dim] = new_limits[1];
     }
 
-    return( limits[0][X] <= limits[1][X] );
+    return( limits[0][VIO_X] <= limits[1][VIO_X] );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -175,7 +175,7 @@ BICAPI VIO_Volume  create_cropped_volume(
     VIO_Real               xyz[VIO_N_DIMENSIONS], voxel_value;
     VIO_Real               min_voxel, max_voxel;
     VIO_BOOL            signed_flag, is_fully_inside;
-    STRING             *dim_names;
+    VIO_STR             *dim_names;
     VIO_Volume             cropped_volume;
     VIO_General_transform  cropped_transform, offset_transform;
     VIO_Transform          translation;
@@ -219,7 +219,7 @@ BICAPI VIO_Volume  create_cropped_volume(
 
     reorder_voxel_to_xyz( volume, start_voxel, xyz );
 
-    make_translation_transform( xyz[X], xyz[Y], xyz[Z], &translation );
+    make_translation_transform( xyz[VIO_X], xyz[VIO_Y], xyz[VIO_Z], &translation );
     create_linear_transform( &offset_transform, &translation );
     concat_general_transforms( &offset_transform,
                                get_voxel_to_world_transform(volume),

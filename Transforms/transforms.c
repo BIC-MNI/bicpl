@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.14 2005-08-17 22:26:48 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/transforms.c,v 1.14 2005-08-17 22:26:48 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -132,9 +132,9 @@ BICAPI  void  make_origin_transform(
 {
     make_identity_transform( transform );
 
-    Transform_elem( *transform, 0, 3 ) = (Transform_elem_type) Point_x(*origin);
-    Transform_elem( *transform, 1, 3 ) = (Transform_elem_type) Point_y(*origin);
-    Transform_elem( *transform, 2, 3 ) = (Transform_elem_type) Point_z(*origin);
+    Transform_elem( *transform, 0, 3 ) = (VIO_Transform_elem_type) Point_x(*origin);
+    Transform_elem( *transform, 1, 3 ) = (VIO_Transform_elem_type) Point_y(*origin);
+    Transform_elem( *transform, 2, 3 ) = (VIO_Transform_elem_type) Point_z(*origin);
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -144,7 +144,7 @@ BICAPI  void  make_origin_transform(
 @OUTPUT     : transform
 @RETURNS    : 
 @DESCRIPTION: Makes a transform which rotates the specified number of radians
-              around the given axis (X, Y, or Z).
+              around the given axis (VIO_X, VIO_Y, or VIO_Z).
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -338,12 +338,12 @@ BICAPI  void  convert_2d_transform_to_rotation_translation(
 {
     VIO_Real   x, y;
 
-    x = Transform_elem(*transform, X, X );
-    y = Transform_elem(*transform, Y, X );
+    x = Transform_elem(*transform, VIO_X, VIO_X );
+    y = Transform_elem(*transform, VIO_Y, VIO_X );
 
-    *degrees_clockwise = RAD_TO_DEG * compute_clockwise_rotation( x, y );
-    *x_trans = Transform_elem( *transform, X, 3 );
-    *y_trans = Transform_elem( *transform, Y, 3 );
+    *degrees_clockwise = VIO_RAD_TO_DEG * compute_clockwise_rotation( x, y );
+    *x_trans = Transform_elem( *transform, VIO_X, 3 );
+    *y_trans = Transform_elem( *transform, VIO_Y, 3 );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -369,9 +369,9 @@ BICAPI  VIO_Real  compute_clockwise_rotation( VIO_Real x, VIO_Real y )
     if( x == 0.0 )
     {
         if( y < 0.0 )
-            return( PI / 2.0 );
+            return( M_PI / 2.0 );
         else if( y > 0.0 )
-            return( 3.0 * PI / 2.0 );
+            return( 3.0 * M_PI / 2.0 );
         else
             return( 0.0 );
     }
@@ -380,14 +380,14 @@ BICAPI  VIO_Real  compute_clockwise_rotation( VIO_Real x, VIO_Real y )
         if( x > 0.0 )
             return( 0.0 );
         else
-            return( PI );
+            return( M_PI );
     }
     else
     {
         radians = - (VIO_Real) atan2( (double) y, (double) x );
 
         if( radians < 0.0 )
-            radians += 2.0 * PI;
+            radians += 2.0 * M_PI;
 
         return( radians );
     }
@@ -544,8 +544,8 @@ BICAPI  void  get_least_squares_transform_2d(
 
     for_less( p, 0, n_points )
     {
-        coords[p][X] = x[p];
-        coords[p][Y] = y[p];
+        coords[p][VIO_X] = x[p];
+        coords[p][VIO_Y] = y[p];
     }
 
     least_squares( n_points, 2, coords, x_trans, coefs );

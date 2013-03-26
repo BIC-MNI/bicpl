@@ -2,11 +2,11 @@
 
 #define  BINTREE_FACTOR  0.3
 
-private  void  resample_polygons(
+static  void  resample_polygons(
     polygons_struct    *polygons,
     int                new_n_polygons );
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -43,7 +43,7 @@ int  main(
     sampling_specified = get_int_argument( 0, &new_n_polygons );
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK )
+                             &object_list ) != VIO_OK )
         return( 1 );
 
     for_less( i, 0, n_objects )
@@ -76,7 +76,7 @@ int  main(
     return( 0 );
 }
 
-private  void  resample_polygons(
+static  void  resample_polygons(
     polygons_struct    *polygons,
     int                new_n_polygons )
 {
@@ -93,7 +93,7 @@ private  void  resample_polygons(
                                new_n_polygons, &dest_unit_sphere );
 
     create_polygons_bintree( &src_unit_sphere,
-                             ROUND( (VIO_Real) src_unit_sphere.n_items *
+                             VIO_ROUND( (VIO_Real) src_unit_sphere.n_items *
                                     BINTREE_FACTOR ) );
 
     ALLOC( points, dest_unit_sphere.n_points );

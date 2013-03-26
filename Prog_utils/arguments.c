@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.14 2005-08-17 22:27:56 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.14 2005-08-17 22:27:56 bert Exp $";
 #endif
 
 typedef struct
@@ -262,7 +262,7 @@ BICAPI  VIO_BOOL  get_prefix_argument(
         while( *next_str == ' ' || *next_str == '\t' )
             ++next_str;
 
-        if( *next_str == END_OF_STRING )
+        if( *next_str == VIO_END_OF_STRING )
             advance_argument();
 
         found = TRUE;

@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.19 2005-08-17 22:31:12 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.19 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 static  void  recursive_intersect_ray(
@@ -296,12 +296,12 @@ BICAPI  VIO_BOOL  ray_intersects_range(
     VIO_BOOL  intersects;
 
     intersects = clip_line_to_box( origin, direction,
-                                   (VIO_Real) range->limits[X][0],
-                                   (VIO_Real) range->limits[X][1],
-                                   (VIO_Real) range->limits[Y][0],
-                                   (VIO_Real) range->limits[Y][1],
-                                   (VIO_Real) range->limits[Z][0],
-                                   (VIO_Real) range->limits[Z][1], t_min, t_max );
+                                   (VIO_Real) range->limits[VIO_X][0],
+                                   (VIO_Real) range->limits[VIO_X][1],
+                                   (VIO_Real) range->limits[VIO_Y][0],
+                                   (VIO_Real) range->limits[VIO_Y][1],
+                                   (VIO_Real) range->limits[VIO_Z][0],
+                                   (VIO_Real) range->limits[VIO_Z][1], t_min, t_max );
 
 
     if( intersects )

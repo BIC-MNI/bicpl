@@ -201,8 +201,8 @@ BICAPI  void  create_lsq_hypersurface_float(
     for_less( x, 0, x_size )
     for_less( y, 0, x_size )
     {
-        p1 = INTERPOLATE( (VIO_Real) x / (VIO_Real) (x_size-1), x_min, x_max );
-        p2 = INTERPOLATE( (VIO_Real) y / (VIO_Real) (y_size-1), y_min, y_max );
+        p1 = VIO_INTERPOLATE( (VIO_Real) x / (VIO_Real) (x_size-1), x_min, x_max );
+        p2 = VIO_INTERPOLATE( (VIO_Real) y / (VIO_Real) (y_size-1), y_min, y_max );
         parameters[parm1] = p1;
         parameters[parm2] = p2;
         val = evaluate_fit( n_parameters, constant, linear_terms, square_terms,

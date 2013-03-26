@@ -24,11 +24,11 @@ int  main(
     }
 
     if( input_graphics_file( filename1, &format, &n_objects1, &object_list1 )
-                              != OK )
+                              != VIO_OK )
         return( 1 );
 
     if( input_graphics_file( filename2, &format, &n_objects2, &object_list2 )
-                              != OK )
+                              != VIO_OK )
         return( 1 );
 
     if( n_objects1 != n_objects2 )
@@ -37,7 +37,7 @@ int  main(
         return( 1 );
     }
 
-    if( open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != OK )
+    if( open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != VIO_OK )
         return( 1 );
 
     for_less( i, 0, n_objects1 )

@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.15 2005-08-17 22:28:59 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/statistics.c,v 1.15 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 #define  DEFAULT_N_MEDIAN_BOXES    100000

@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  void  triangulate_polygons(
+static  void  triangulate_polygons(
     polygons_struct  *polygons,
     polygons_struct  *triangles );
 
@@ -23,7 +23,7 @@ int  main(
     }
 
     if( input_graphics_file( src_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects != 1 ||
+                             &object_list ) != VIO_OK || n_objects != 1 ||
         get_object_type(object_list[0]) != POLYGONS )
         return( 1 );
 
@@ -37,7 +37,7 @@ int  main(
     return( 0 );
 }
 
-private  VIO_BOOL  recursive_triangulate_one_polygon(
+static  VIO_BOOL  recursive_triangulate_one_polygon(
     int     size,
     int     poly[],
     int     n_neighbours[],
@@ -121,7 +121,7 @@ private  VIO_BOOL  recursive_triangulate_one_polygon(
     return( found );
 }
 
-private  VIO_BOOL  triangulate_one_polygon(
+static  VIO_BOOL  triangulate_one_polygon(
     int     size,
     int     poly[],
     int     n_neighbours[],
@@ -132,13 +132,13 @@ private  VIO_BOOL  triangulate_one_polygon(
                                 n_neighbours, neighbours, indices ) );
 }
 
-private  void  triangulate_polygons(
+static  void  triangulate_polygons(
     polygons_struct  *polygons,
     polygons_struct  *triangles )
 {
     int                poly, size, index, ind, n_matches, n;
     int                *n_neighbours, **neighbours, *indices, max_size;
-    progress_struct    progress;
+    VIO_progress_struct    progress;
     VIO_BOOL            done;
 
     create_polygon_point_neighbours( polygons, TRUE,

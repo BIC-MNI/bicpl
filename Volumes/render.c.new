@@ -279,7 +279,7 @@ public  void  render_volume_to_slice(
     total_cases1 = 1;
     for_less( c, 0, n_dims1 )
     {
-        delta = FABS( y_axis1[c] );
+        delta = VIO_FABS( y_axis1[c] );
         if( delta == 0.0 || n_non_zero == 1 )
             n_cases1[c] = 1;
         else if( delta <= 1.0 / (Real) max_cases[n_dims1-1] )
@@ -364,7 +364,7 @@ public  void  render_volume_to_slice(
         total_cases2 = 1;
         for_less( c, 0, n_dims2 )
         {
-            delta = FABS( y_axis2[c] );
+            delta = VIO_FABS( y_axis2[c] );
             if( delta == 0.0 || n_non_zero == 1 )
                 n_cases2[c] = 1;
             else if( delta <= 1.0 / (Real) max_cases[n_dims2-1] )
@@ -433,7 +433,7 @@ public  void  render_volume_to_slice(
         {
             case_index = p % n_cases1[c];
             if( y_axis1[c] == 0.0 && n_slices1 == n_cases1[c] )
-                tmp_origin[c] = FRACTION( origins1[case_index][c] + 0.5 );
+                tmp_origin[c] = VIO_FRACTION( origins1[case_index][c] + 0.5 );
             else
                 tmp_origin[c] = ((Real) case_index + 0.5) / (Real) n_cases1[c];
             p /= n_cases1[c];
@@ -445,7 +445,7 @@ public  void  render_volume_to_slice(
             for_less( c, 0, n_dims1 )
             {
                 start_c = tmp_origin[c] + (Real) x * x_axis1[c];
-                offset += strides1[c] * FLOOR( start_c );
+                offset += strides1[c] * VIO_FLOOR( start_c );
             }
             x_offsets1[i][x] = offset;
         }
@@ -460,7 +460,7 @@ public  void  render_volume_to_slice(
             {
                 case_index = p % n_cases2[c];
                 if( y_axis2[c] == 0.0 && n_slices2 == n_cases2[c] )
-                    tmp_origin[c] = FRACTION( origins2[case_index][c] + 0.5 );
+                    tmp_origin[c] = VIO_FRACTION( origins2[case_index][c] + 0.5 );
                 else
                     tmp_origin[c] = ((Real) case_index + 0.5) /
                                     (Real) n_cases2[c];
@@ -473,7 +473,7 @@ public  void  render_volume_to_slice(
                 for_less( c, 0, n_dims2 )
                 {
                     start_c = tmp_origin[c] + (Real) x * x_axis2[c];
-                    offset += strides2[c] * FLOOR( start_c );
+                    offset += strides2[c] * VIO_FLOOR( start_c );
                 }
                 x_offsets2[i][x] = offset;
             }
@@ -492,7 +492,7 @@ public  void  render_volume_to_slice(
             for_less( c, 0, n_dims1 )
             {
                 start_c = origins1[s][c] + (Real) y * y_axis1[c] + 0.5;
-                int_start = FLOOR( start_c );
+                int_start = VIO_FLOOR( start_c );
 
                 if( y_axis1[c] == 0.0 && n_slices1 == n_cases1[c] )
                 {
@@ -537,7 +537,7 @@ public  void  render_volume_to_slice(
                 for_less( c, 0, n_dims2 )
                 {
                     start_c = origins2[s][c] + (Real) y * y_axis2[c] + 0.5;
-                    int_start = FLOOR( start_c );
+                    int_start = VIO_FLOOR( start_c );
 
                     if( y_axis2[c] == 0.0 && n_slices2 == n_cases2[c] )
                     {
@@ -573,8 +573,8 @@ public  void  render_volume_to_slice(
             }
         }
 
-        start_x[y] = CEILING( x_start );
-        end_x[y] = FLOOR( x_end );
+        start_x[y] = VIO_CEILING( x_start );
+        end_x[y] = VIO_FLOOR( x_end );
 
         if( start_x[y] > x_size )
             start_x[y] = x_size;
@@ -616,7 +616,7 @@ public  void  render_volume_to_slice(
         {
             Colour          *pixel_ptr;
 
-            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,x_pixel_start,x_size)];
+            pixel_ptr = &pixels->data.pixels_rgb[VIO_IJ(y,x_pixel_start,x_size)];
 
             for_less( x, x_pixel_start, start_x[y] )
             {
@@ -624,7 +624,7 @@ public  void  render_volume_to_slice(
                 ++pixel_ptr;
             }
 
-            pixel_ptr = &pixels->data.pixels_rgb[IJ(y,end_x[y]+1,x_size)];
+            pixel_ptr = &pixels->data.pixels_rgb[VIO_IJ(y,end_x[y]+1,x_size)];
             for_less( x, end_x[y]+1, x_pixel_end+1 )
             {
                 *pixel_ptr = empty_colour;
@@ -636,7 +636,7 @@ public  void  render_volume_to_slice(
             unsigned short          *pixel_ptr;
 
             pixel_ptr = &pixels->data.pixels_16bit_colour_index
-                                              [IJ(y,x_pixel_start,x_size)];
+                                              [VIO_IJ(y,x_pixel_start,x_size)];
             for_less( x, x_pixel_start, start_x[y] )
             {
                 *pixel_ptr = (unsigned short) empty_colour;
@@ -644,7 +644,7 @@ public  void  render_volume_to_slice(
             }
 
             pixel_ptr = &pixels->data.pixels_16bit_colour_index
-                                              [IJ(y,end_x[y]+1,x_size)];
+                                              [VIO_IJ(y,end_x[y]+1,x_size)];
             for_less( x, end_x[y]+1, x_pixel_end+1 )
             {
                 *pixel_ptr = (unsigned short) empty_colour;

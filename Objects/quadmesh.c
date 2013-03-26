@@ -16,7 +16,7 @@
 #include  <assert.h>
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.21 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.21 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 
@@ -183,7 +183,7 @@ BICAPI  void  set_quadmesh_point(
     assert( 0 <= i && i < quadmesh->m );
     assert( 0 <= j && j < quadmesh->n );
 
-    ind = IJ( i, j, quadmesh->n );
+    ind = VIO_IJ( i, j, quadmesh->n );
 
     quadmesh->points[ind] = *point;
     if( normal != NULL && quadmesh->normals != NULL )
@@ -225,7 +225,7 @@ BICAPI  VIO_BOOL  get_quadmesh_point(
         j < 0 || j >= quadmesh->n )
         return( FALSE );
 
-    *point = quadmesh->points[IJ(i,j,quadmesh->n)];
+    *point = quadmesh->points[VIO_IJ(i,j,quadmesh->n)];
 
     return( TRUE );
 }
@@ -299,7 +299,7 @@ BICAPI  void  compute_quadmesh_normals(
 {
     int                i, j, m, n, n_neighs;
     VIO_Point              neighbours[4];
-    progress_struct    progress;
+    VIO_progress_struct    progress;
 
     m = quadmesh->m;
     n = quadmesh->n;
@@ -332,14 +332,14 @@ BICAPI  void  compute_quadmesh_normals(
             }
             else if( n_neighs == 2 )
             {
-                neighbours[n_neighs] = quadmesh->points[IJ(i,j,n)];
+                neighbours[n_neighs] = quadmesh->points[VIO_IJ(i,j,n)];
                 ++n_neighs;
             }
 
             find_polygon_normal( n_neighs, neighbours,
-                                 &quadmesh->normals[IJ(i,j,n)] );
-            NORMALIZE_VECTOR( quadmesh->normals[IJ(i,j,n)],
-                              quadmesh->normals[IJ(i,j,n)] );
+                                 &quadmesh->normals[VIO_IJ(i,j,n)] );
+            NORMALIZE_VECTOR( quadmesh->normals[VIO_IJ(i,j,n)],
+                              quadmesh->normals[VIO_IJ(i,j,n)] );
         }
 
         update_progress_report( &progress, i + 1 );
@@ -385,10 +385,10 @@ BICAPI  void  get_quadmesh_patch_indices(
     int              j,
     int              indices[] )
 {
-    indices[0] = IJ(                   i,                   j, quadmesh->n );
-    indices[1] = IJ( (i+1) % quadmesh->m,                   j, quadmesh->n );
-    indices[2] = IJ( (i+1) % quadmesh->m, (j+1) % quadmesh->n, quadmesh->n );
-    indices[3] = IJ(                   i, (j+1) % quadmesh->n, quadmesh->n );
+    indices[0] = VIO_IJ(                   i,                   j, quadmesh->n );
+    indices[1] = VIO_IJ( (i+1) % quadmesh->m,                   j, quadmesh->n );
+    indices[2] = VIO_IJ( (i+1) % quadmesh->m, (j+1) % quadmesh->n, quadmesh->n );
+    indices[3] = VIO_IJ(                   i, (j+1) % quadmesh->n, quadmesh->n );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -448,8 +448,8 @@ BICAPI  void  reverse_quadmesh_vertices(
     {
         for_less( j, 0, quadmesh->n / 2 )
         {
-            i1 = IJ( i, j, quadmesh->n );
-            i2 = IJ( i, quadmesh->n - 1 - j, quadmesh->n );
+            i1 = VIO_IJ( i, j, quadmesh->n );
+            i2 = VIO_IJ( i, quadmesh->n - 1 - j, quadmesh->n );
 
             tmp_point = quadmesh->points[i1];
             quadmesh->points[i1] = quadmesh->points[i2];

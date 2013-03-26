@@ -145,7 +145,7 @@ BICAPI  Point_classes  get_isosurface_point(
         {
             for_less( dim, 0, VIO_N_DIMENSIONS )
             {
-                point[dim] = INTERPOLATE( alpha,
+                point[dim] = VIO_INTERPOLATE( alpha,
                                           (VIO_Real) v1[dim], (VIO_Real) v2[dim] );
             }
         }

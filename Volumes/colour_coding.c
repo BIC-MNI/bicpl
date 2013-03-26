@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.28 2007-07-03 22:25:06 claude Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.28 2007-07-03 22:25:06 claude Exp $";
 #endif
 
 static void  interpolate_colours(
@@ -418,92 +418,92 @@ static void  recreate_piecewise_function(
     {
     case  GRAY_SCALE:
     case  SINGLE_COLOUR_SCALE:
-        n_points = SIZEOF_STATIC_ARRAY( gray_scale_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( gray_scale_points );
         points = gray_scale_points;
         break;
 
     case  HOT_METAL:
-        n_points = SIZEOF_STATIC_ARRAY( hot_metal_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( hot_metal_points );
         points = hot_metal_points;
         break;
 
     case  HOT_METAL_NEG:
-        n_points = SIZEOF_STATIC_ARRAY( hot_metal_neg_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( hot_metal_neg_points );
         points = hot_metal_neg_points;
         break;
 
     case  COLD_METAL:
-        n_points = SIZEOF_STATIC_ARRAY( cold_metal_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( cold_metal_points );
         points = cold_metal_points;
         break;
 
     case  COLD_METAL_NEG:
-        n_points = SIZEOF_STATIC_ARRAY( cold_metal_neg_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( cold_metal_neg_points );
         points = cold_metal_neg_points;
         break;
 
     case  GREEN_METAL:
-        n_points = SIZEOF_STATIC_ARRAY( green_metal_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( green_metal_points );
         points = green_metal_points;
         break;
 
     case  GREEN_METAL_NEG:
-        n_points = SIZEOF_STATIC_ARRAY( green_metal_neg_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( green_metal_neg_points );
         points = green_metal_neg_points;
         break;
 
     case  LIME_METAL:
-        n_points = SIZEOF_STATIC_ARRAY( lime_metal_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( lime_metal_points );
         points = lime_metal_points;
         break;
 
     case  LIME_METAL_NEG:
-        n_points = SIZEOF_STATIC_ARRAY( lime_metal_neg_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( lime_metal_neg_points );
         points = lime_metal_neg_points;
         break;
 
     case  RED_METAL:
-        n_points = SIZEOF_STATIC_ARRAY( red_metal_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( red_metal_points );
         points = red_metal_points;
         break;
 
     case  RED_METAL_NEG:
-        n_points = SIZEOF_STATIC_ARRAY( red_metal_neg_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( red_metal_neg_points );
         points = red_metal_neg_points;
         break;
 
     case  PURPLE_METAL:
-        n_points = SIZEOF_STATIC_ARRAY( purple_metal_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( purple_metal_points );
         points = purple_metal_points;
         break;
 
     case  PURPLE_METAL_NEG:
-        n_points = SIZEOF_STATIC_ARRAY( purple_metal_neg_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( purple_metal_neg_points );
         points = purple_metal_neg_points;
         break;
 
     case  SPECTRAL:
-        n_points = SIZEOF_STATIC_ARRAY( spectral_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( spectral_points );
         points = spectral_points;
         break;
 
     case  RED_COLOUR_MAP:
-        n_points = SIZEOF_STATIC_ARRAY( red_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( red_points );
         points = red_points;
         break;
 
     case  GREEN_COLOUR_MAP:
-        n_points = SIZEOF_STATIC_ARRAY( green_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( green_points );
         points = green_points;
         break;
 
     case  BLUE_COLOUR_MAP:
-        n_points = SIZEOF_STATIC_ARRAY( blue_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( blue_points );
         points = blue_points;
         break;
 
     case  CONTOUR_COLOUR_MAP:
-        n_points = SIZEOF_STATIC_ARRAY( contour_points );
+        n_points = VIO_SIZEOF_STATIC_ARRAY( contour_points );
         points = contour_points;
         break;
 

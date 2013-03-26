@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/objects.c,v 1.24 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/objects.c,v 1.24 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 static  void  advance_object_traverse(
@@ -790,7 +790,7 @@ static  VIO_Surfprop  *get_quadmesh_surfprop(
 static  VIO_STR  get_lines_name(
     object_struct   *object )
 {
-    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+    char   buffer[VIO_EXTREMELY_LARGE_STRING_SIZE];
 
     (void) sprintf( buffer, "Lines (%d:%d)",
                     get_lines_ptr(object)->n_items,
@@ -816,7 +816,7 @@ static  VIO_STR  get_marker_name(
     object_struct   *object )
 {
     VIO_STR   label;
-    char     buffer[EXTREMELY_LARGE_STRING_SIZE];
+    char     buffer[VIO_EXTREMELY_LARGE_STRING_SIZE];
 
     if( string_length(get_marker_ptr(object)->label) == 0 )
         label = "Marker";
@@ -850,7 +850,7 @@ static  VIO_STR  get_marker_name(
 static  VIO_STR  get_model_name(
     object_struct   *object )
 {
-    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+    char   buffer[VIO_EXTREMELY_LARGE_STRING_SIZE];
 
     (void) sprintf( buffer, "Model (%s) ->", get_model_ptr(object)->filename );
 
@@ -873,7 +873,7 @@ static  VIO_STR  get_model_name(
 static  VIO_STR  get_pixels_name(
     object_struct   *object )
 {
-    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+    char   buffer[VIO_EXTREMELY_LARGE_STRING_SIZE];
 
     (void) sprintf( buffer, "Pixels (%d by %d)",
                     get_pixels_ptr(object)->x_size,
@@ -898,7 +898,7 @@ static  VIO_STR  get_pixels_name(
 static  VIO_STR  get_polygons_name(
     object_struct   *object )
 {
-    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+    char   buffer[VIO_EXTREMELY_LARGE_STRING_SIZE];
 
     (void) sprintf( buffer, "Polygons (%d:%d)",
                     get_polygons_ptr(object)->n_items,
@@ -923,7 +923,7 @@ static  VIO_STR  get_polygons_name(
 static  VIO_STR  get_quadmesh_name(
     object_struct   *object )
 {
-    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+    char   buffer[VIO_EXTREMELY_LARGE_STRING_SIZE];
 
     (void) sprintf( buffer, "Quadmesh [%d][%d]",
                     get_quadmesh_ptr(object)->m, get_quadmesh_ptr(object)->n );
@@ -947,7 +947,7 @@ static  VIO_STR  get_quadmesh_name(
 static  VIO_STR  get_text_name(
     object_struct   *object )
 {
-    char   buffer[EXTREMELY_LARGE_STRING_SIZE];
+    char   buffer[VIO_EXTREMELY_LARGE_STRING_SIZE];
 
     (void) sprintf( buffer, "Text (%s)", get_text_ptr(object)->string );
 

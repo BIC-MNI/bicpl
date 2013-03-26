@@ -47,7 +47,7 @@ BICAPI  Status  input_rgb_file(
 
     if( (iimage = iopen(filename,"r",0,0,0,0,0)) == NULL )
     {
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     x_size = (int) iimage->xsize;
@@ -59,7 +59,7 @@ BICAPI  Status  input_rgb_file(
     if( z_size != 3 && z_size != 4 )
     {
         print_error( "Error: z_size (%d) != 3 or 4\n", z_size );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     for_less( y, 0, y_size )
@@ -85,7 +85,7 @@ BICAPI  Status  input_rgb_file(
     }
 
     iclose(iimage);
-    return( OK );
+    return( VIO_OK );
 }
 
 BICAPI  Status  output_rgb_file(
@@ -106,7 +106,7 @@ BICAPI  Status  output_rgb_file(
     {
         print_error( "Error: output file directory does not exist: %s\n",
                      filename );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     n_components = 3;
@@ -132,7 +132,7 @@ BICAPI  Status  output_rgb_file(
 
     if( oimage == NULL )
     {
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     for_less( y, 0, pixels->y_size )
@@ -155,6 +155,6 @@ BICAPI  Status  output_rgb_file(
     }
 
     iclose(oimage);
-    return( OK );
+    return( VIO_OK );
 }
 

@@ -251,15 +251,15 @@ BICAPI  void  translate_to_edge_index(
         z2 = tmp;
     }
 
-    for_less( edge, 0, SIZEOF_STATIC_ARRAY(offsets) )
+    for_less( edge, 0, VIO_SIZEOF_STATIC_ARRAY(offsets) )
     {
-        if( x1 + offsets[edge][X] == x2 &&
-            y1 + offsets[edge][Y] == y2 &&
-            z1 + offsets[edge][Z] == z2 )
+        if( x1 + offsets[edge][VIO_X] == x2 &&
+            y1 + offsets[edge][VIO_Y] == y2 &&
+            z1 + offsets[edge][VIO_Z] == z2 )
             break;
     }
 
-    if( edge >= SIZEOF_STATIC_ARRAY(offsets) )
+    if( edge >= VIO_SIZEOF_STATIC_ARRAY(offsets) )
         handle_internal_error( "edge_intersected" );
 
     edge_point->edge_intersected = edge;
@@ -324,19 +324,19 @@ static  void  create_case(
 
     for_less( ind, 0, n_indices )
     {
-        tx = edge_indices[ind][0][X];
-        ty = edge_indices[ind][0][Y];
-        tz = edge_indices[ind][0][Z];
-        x1 = translation_indices[tx][ty][tz][X];
-        y1 = translation_indices[tx][ty][tz][Y];
-        z1 = translation_indices[tx][ty][tz][Z];
+        tx = edge_indices[ind][0][VIO_X];
+        ty = edge_indices[ind][0][VIO_Y];
+        tz = edge_indices[ind][0][VIO_Z];
+        x1 = translation_indices[tx][ty][tz][VIO_X];
+        y1 = translation_indices[tx][ty][tz][VIO_Y];
+        z1 = translation_indices[tx][ty][tz][VIO_Z];
 
-        tx = edge_indices[ind][1][X];
-        ty = edge_indices[ind][1][Y];
-        tz = edge_indices[ind][1][Z];
-        x2 = translation_indices[tx][ty][tz][X];
-        y2 = translation_indices[tx][ty][tz][Y];
-        z2 = translation_indices[tx][ty][tz][Z];
+        tx = edge_indices[ind][1][VIO_X];
+        ty = edge_indices[ind][1][VIO_Y];
+        tz = edge_indices[ind][1][VIO_Z];
+        x2 = translation_indices[tx][ty][tz][VIO_X];
+        y2 = translation_indices[tx][ty][tz][VIO_Y];
+        z2 = translation_indices[tx][ty][tz][VIO_Z];
 
         translate_to_edge_index( x1, y1, z1, x2, y2, z2,
                                  &case_info->indices[ind] );

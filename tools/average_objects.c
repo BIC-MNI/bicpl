@@ -12,7 +12,7 @@ int  main(
     object_struct    **object_list;
     VIO_Point            *points, *set_points;
 
-    status = OK;
+    status = VIO_OK;
 
     initialize_argument_processing( argc, argv );
 
@@ -30,7 +30,7 @@ int  main(
     {
         if( input_objects_any_format( NULL, filename,
                                       GREEN, 1.0, SPHERE_MARKER,
-                                      &n_objects, &object_list ) != OK )
+                                      &n_objects, &object_list ) != VIO_OK )
 	{
 	    print_error( "Could not read input %s\n", filename );
 	    return 2;
@@ -79,9 +79,9 @@ int  main(
     if( get_object_type( out_object ) == POLYGONS )
         compute_polygon_normals( get_polygons_ptr(out_object) );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = output_graphics_file( output_filename, ASCII_FORMAT,
                                        1, &out_object );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }

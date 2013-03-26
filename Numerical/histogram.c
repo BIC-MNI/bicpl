@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Numerical/histogram.c,v 1.12 2005-08-17 22:28:59 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/histogram.c,v 1.12 2005-08-17 22:28:59 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -88,7 +88,7 @@ static  int  get_histogram_index(
 {
     int    ind;
 
-    ind = FLOOR( (value - histogram->offset) / histogram->delta );
+    ind = VIO_FLOOR( (value - histogram->offset) / histogram->delta );
 
     return( ind );
 }
@@ -337,7 +337,7 @@ BICAPI  int  get_histogram_counts(
     for_less( i, 0, n )
         tmp_counts[i] = (VIO_Real) histogram->counts[i];
 
-    width = ROUND( filter_width / histogram->delta / 2.0 );
+    width = VIO_ROUND( filter_width / histogram->delta / 2.0 );
 
     box_filter_histogram( n, tmp_counts, *counts, width );
 
@@ -455,7 +455,7 @@ BICAPI  void  display_histogram(
     {
         for_less( x, 0, x_size )
         {
-            if( y < ROUND(n_chars[x]) )
+            if( y < VIO_ROUND(n_chars[x]) )
                  print( "#" );
             else
                  print( " " );
@@ -503,7 +503,7 @@ BICAPI  void  create_histogram_line(
 
     resample_histogram( histogram, x_size, y_size, &x_scale, &x_trans, height );
 
-    width = ROUND( filter_width / x_scale / 2.0 );
+    width = VIO_ROUND( filter_width / x_scale / 2.0 );
 
     ALLOC( smooth_height, x_size );
 

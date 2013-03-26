@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.16 2005-08-17 22:27:56 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.16 2005-08-17 22:27:56 bert Exp $";
 #endif
 
 static    VIO_Status  input_global_variable( int, global_struct [],
@@ -28,7 +28,7 @@ static    VIO_STR    extract_string( VIO_STR );
               globals_lookup
               filename
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Reads the global variable values from filename, using the
               globals lookup to find the relevant globals.
 @METHOD     : 
@@ -49,7 +49,7 @@ BICAPI  VIO_Status  input_globals_file(
 
     status = open_file( filename, READ_FILE, ASCII_FORMAT, &file );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         eof = FALSE;
 
@@ -58,7 +58,7 @@ BICAPI  VIO_Status  input_globals_file(
                                             globals_lookup, file, &eof );
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = close_file( file );
 
     return( status );
@@ -95,11 +95,11 @@ static  VIO_Status  input_global_variable(
 
     status = input_string( file, &variable_name, (char) '=' );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         status = input_string( file, &value, (char) ';' );
 
-        if( status == OK )
+        if( status == VIO_OK )
             set_status = set_global_variable( n_globals_lookup, globals_lookup,
                                               variable_name, value );
         else
@@ -107,12 +107,12 @@ static  VIO_Status  input_global_variable(
     }
     else
     {
-        status = OK;
-        set_status = OK;
+        status = VIO_OK;
+        set_status = VIO_OK;
         *eof = TRUE;
     }
 
-    if( set_status != OK || status != OK )
+    if( set_status != VIO_OK || status != VIO_OK )
     {
         print_error( "Error inputting global.\n" );
         print_error( "Variable name is %s\n", variable_name );
@@ -131,7 +131,7 @@ static  VIO_Status  input_global_variable(
               variable_name
 @OUTPUT     : ptr    - pointer to global variable
               type
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Given a name string, looks up the corresponding global variable.
 @METHOD     : 
 @GLOBALS    : 
@@ -153,7 +153,7 @@ static  VIO_Status  lookup_global(
     char    *global_name;
     int     i, s, len;
 
-    status = ERROR;
+    status = VIO_ERROR;
 
     stripped = strip_outer_blanks( variable_name );
 
@@ -172,7 +172,7 @@ static  VIO_Status  lookup_global(
             *type = global_lookup[i].type;
             if( set_flag != NULL )
                 *set_flag = &global_lookup[i].set_flag;
-            status = OK;
+            status = VIO_OK;
             break;
         }
     }
@@ -208,14 +208,14 @@ BICAPI  VIO_Status  get_global_variable(
     void               *ptr;
     VIO_Surfprop           *surfprop;
     Variable_types     type;
-    char               buffer[EXTREMELY_LARGE_STRING_SIZE];
+    char               buffer[VIO_EXTREMELY_LARGE_STRING_SIZE];
     VIO_STR             *string_ptr;
     VIO_STR             tmp_str;
 
     status = lookup_global( n_globals_lookup, globals_lookup, variable_name,
                             &ptr, &type, NULL );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         switch( type )
         {
@@ -271,7 +271,7 @@ BICAPI  VIO_Status  get_global_variable(
 
         default:
             handle_internal_error( "get_global_variable\n" );
-            buffer[0] = END_OF_STRING;
+            buffer[0] = VIO_END_OF_STRING;
             break;
         }
     }
@@ -321,7 +321,7 @@ BICAPI  VIO_Status  set_global_variable(
     status = lookup_global( n_globals_lookup, globals_lookup, variable_name,
                             &ptr, &type, &set_flag );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         switch( type )
         {
@@ -336,7 +336,7 @@ BICAPI  VIO_Status  set_global_variable(
             }
             else
             {
-                status = ERROR;
+                status = VIO_ERROR;
             }
             break;
 
@@ -344,7 +344,7 @@ BICAPI  VIO_Status  set_global_variable(
             if( sscanf( value, "%d", &tmp_int ) == 1 )
                 * (int *) ptr = tmp_int;
             else
-                status = ERROR;
+                status = VIO_ERROR;
             break;
 
         case VIO_Real_type:
@@ -354,14 +354,14 @@ BICAPI  VIO_Status  set_global_variable(
                 if( sscanf( value, "%lf", (double *) &tmp_real ) == 1 )
                     * (VIO_Real *) ptr = tmp_real;
                 else
-                    status = ERROR;
+                    status = VIO_ERROR;
             }
             else
             {
                 if( sscanf( value, "%f", (float *) &tmp_real ) == 1 )
                     * (VIO_Real *) ptr = tmp_real;
                 else
-                    status = ERROR;
+                    status = VIO_ERROR;
             }
             break;
 
@@ -378,7 +378,7 @@ BICAPI  VIO_Status  set_global_variable(
                         &Point_y(tmp_point), &Point_z(tmp_point) ) == 3 )
                 * (VIO_Point *) ptr = tmp_point;
             else
-                status = ERROR;
+                status = VIO_ERROR;
             break;
 
         case Vector_type:
@@ -386,13 +386,13 @@ BICAPI  VIO_Status  set_global_variable(
                         &Vector_y(tmp_vector), &Vector_z(tmp_vector) ) == 3 )
                 * (VIO_Vector *) ptr = tmp_vector;
             else
-                status = ERROR;
+                status = VIO_ERROR;
             break;
 
         case Colour_type:
             tmp_colour = convert_string_to_colour( value );
 
-            if( status == OK )
+            if( status == VIO_OK )
             {
                 * (VIO_Colour *) ptr = tmp_colour;
             }
@@ -409,7 +409,7 @@ BICAPI  VIO_Status  set_global_variable(
                 * (VIO_Surfprop *) ptr = tmp_surfprop;
             }
             else
-                status = ERROR;
+                status = VIO_ERROR;
             break;
 
         default:
@@ -455,7 +455,7 @@ BICAPI  VIO_Status  set_or_get_global_variable(
     VIO_STR  tmp_var_name, value_to_set;
     int     equal_index;
 
-    status = OK;
+    status = VIO_OK;
 
     tmp_var_name = create_string( input_str );
 
@@ -464,7 +464,7 @@ BICAPI  VIO_Status  set_or_get_global_variable(
     if( equal_index >= 0 )
     {
         value_to_set = create_string( &tmp_var_name[equal_index+1] );
-        tmp_var_name[equal_index] = END_OF_STRING;
+        tmp_var_name[equal_index] = VIO_END_OF_STRING;
         status = set_global_variable( n_globals_lookup, globals_lookup,
                                       tmp_var_name, value_to_set );
         delete_string( value_to_set );
@@ -472,7 +472,7 @@ BICAPI  VIO_Status  set_or_get_global_variable(
 
     *variable_name = strip_outer_blanks( tmp_var_name );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         status = get_global_variable( n_globals_lookup, globals_lookup,
                                       *variable_name, value_string );

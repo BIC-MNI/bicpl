@@ -175,7 +175,7 @@ BICAPI  VIO_Status   add_deformation_model(
     object_struct             *model_object, **object_list;
     VIO_File_formats              format;
 
-    status = OK;
+    status = VIO_OK;
 
     model_object = (object_struct *) NULL;
 
@@ -198,10 +198,10 @@ BICAPI  VIO_Status   add_deformation_model(
         status = input_graphics_file( model_filename, &format,
                                       &n_objects, &object_list );
 
-        if( status == OK && n_objects == 0 )
+        if( status == VIO_OK && n_objects == 0 )
         {
             print_error( "File %s has no model object.\n", model_filename );
-            status = ERROR;
+            status = VIO_ERROR;
         }
         else
         {
@@ -209,7 +209,7 @@ BICAPI  VIO_Status   add_deformation_model(
         }
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         set_deformation_model( deformation_model, up_to_n_points, model_weight,
                                model_type, model_object,
@@ -262,13 +262,13 @@ BICAPI  VIO_Status  input_original_positions(
 
     input_status = status;
 
-    if( status == OK && n_objects >= 1 && object_list[0]->object_type == LINES )
+    if( status == VIO_OK && n_objects >= 1 && object_list[0]->object_type == LINES )
     {
         lines = get_lines_ptr( object_list[0] );
         n_points = lines->n_points;
         points = lines->points;
     }
-    else if( status == OK && n_objects >= 1 &&
+    else if( status == VIO_OK && n_objects >= 1 &&
              object_list[0]->object_type == POLYGONS )
     {
         polygons = get_polygons_ptr( object_list[0] );
@@ -276,15 +276,15 @@ BICAPI  VIO_Status  input_original_positions(
         points = polygons->points;
     }
     else
-        status = ERROR;
+        status = VIO_ERROR;
 
     if( n_points != n_deforming_points )
     {
         print_error( "Incorrect # of points in original positions file.\n" );
-        status = ERROR;
+        status = VIO_ERROR;
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         ALLOC( deform_model->original_positions, n_points );
         for_less( i, 0, n_points )
@@ -295,7 +295,7 @@ BICAPI  VIO_Status  input_original_positions(
     else
         deform_model->position_constrained = FALSE;
 
-    if( input_status == OK )
+    if( input_status == VIO_OK )
         delete_object_list( n_objects, object_list );
 
     return( status );
@@ -747,7 +747,7 @@ static  VIO_BOOL  check_correct_parametric_lines(
 
         fill_Point( centre, 0.0, 0.0, 0.0 );
 
-        create_line_circle( &centre, Z, 1.0, 1.0, lines->n_points, model_lines);
+        create_line_circle( &centre, VIO_Z, 1.0, 1.0, lines->n_points, model_lines);
     }
 
     correct = check_correct_general_lines( lines, model );

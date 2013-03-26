@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/platonics.c,v 1.5 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/platonics.c,v 1.5 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 static  void  fill_in_indices(
@@ -59,7 +59,7 @@ BICAPI  void  create_unit_tetrahedron(
     fill_Point( polygons->points[2], -0.5 * x,   c,   z );
     fill_Point( polygons->points[3], -0.5 * x,  -c,   z );
 
-    fill_in_indices( polygons, SIZEOF_STATIC_ARRAY(indices), indices );
+    fill_in_indices( polygons, VIO_SIZEOF_STATIC_ARRAY(indices), indices );
 }
 
 BICAPI  void  create_unit_cube(
@@ -88,7 +88,7 @@ BICAPI  void  create_unit_cube(
     fill_Point( polygons->points[6],  d,  d, -d );
     fill_Point( polygons->points[7],  d,  d,  d );
 
-    fill_in_indices( polygons, SIZEOF_STATIC_ARRAY(indices), indices );
+    fill_in_indices( polygons, VIO_SIZEOF_STATIC_ARRAY(indices), indices );
 }
 
 BICAPI  void  create_unit_octohedron(
@@ -114,7 +114,7 @@ BICAPI  void  create_unit_octohedron(
     fill_Point( polygons->points[4],  0.0,  0.0, -1.0 );
     fill_Point( polygons->points[5],  0.0,  0.0,  1.0 );
 
-    fill_in_indices( polygons, SIZEOF_STATIC_ARRAY(indices), indices );
+    fill_in_indices( polygons, VIO_SIZEOF_STATIC_ARRAY(indices), indices );
 }
 
 BICAPI  void  create_unit_icosahedron(
@@ -162,5 +162,5 @@ BICAPI  void  create_unit_icosahedron(
     fill_Point( polygons->points[10],  b, 0.0, -a );
     fill_Point( polygons->points[11], -b, 0.0, -a );
 
-    fill_in_indices( polygons, SIZEOF_STATIC_ARRAY(indices), indices );
+    fill_in_indices( polygons, VIO_SIZEOF_STATIC_ARRAY(indices), indices );
 }

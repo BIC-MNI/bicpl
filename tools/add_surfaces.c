@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  VIO_Status  add_polygons(
+static  VIO_Status  add_polygons(
     polygons_struct   *summed_polygons,
     VIO_Real              weight,
     polygons_struct   *polygons,
@@ -27,7 +27,7 @@ private  VIO_Status  add_polygons(
     else if( !polygons_are_same_topology( summed_polygons, polygons ) )
     {
         print( "Polygons different topology\n" );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     for_less( i, 0, summed_polygons->n_points )
@@ -54,7 +54,7 @@ private  VIO_Status  add_polygons(
     else
         print( "Warning:  Polygons colour flags do not match. Colours will not be added properly\n" );
 
-    return( OK );
+    return( VIO_OK );
 }
 
 int  main(
@@ -72,7 +72,7 @@ int  main(
     object_struct    **object_list;
     polygons_struct  *polygons;
 
-    status = OK;
+    status = VIO_OK;
 
     initialize_argument_processing( argc, argv );
 
@@ -104,7 +104,7 @@ int  main(
                  sscanf( filename, "%lf", &new_weight ) )
             weight = new_weight;
         else if( input_graphics_file( filename, &format, &n_objects,
-                                      &object_list ) != OK )
+                                      &object_list ) != VIO_OK )
         {
             print( "Couldn't read %s.\n", filename );
             return( 1 );
@@ -126,7 +126,7 @@ int  main(
                 print( "%s: Weighted %g\n", filename, weight );
                 if( add_polygons( get_polygons_ptr(out_object), weight,
                                   polygons,
-                                  colours, n_polygons == 0) !=OK)
+                                  colours, n_polygons == 0) !=VIO_OK)
                 {
                     print( "File %s.\n", filename );
                     return( 1 );
@@ -163,12 +163,12 @@ int  main(
 
     compute_polygon_normals( get_polygons_ptr(out_object) );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = output_graphics_file( output_filename, format,
                                        1, &out_object );
 
-    if( status == OK )
+    if( status == VIO_OK )
         print( "Objects output.\n" );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }

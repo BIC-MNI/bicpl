@@ -63,18 +63,18 @@
              Unchanged on exit.   
     BETA   - DOUBLE PRECISION.   
              On entry, BETA specifies the scalar beta. When BETA is   
-             supplied as zero then Y need not be set on input.   
+             supplied as zero then VIO_Y need not be set on input.   
              Unchanged on exit.   
-    Y      - DOUBLE PRECISION array of DIMENSION at least   
+    VIO_Y      - DOUBLE PRECISION array of DIMENSION at least   
              ( 1 + ( m - 1 )*abs( INCY ) ) when TRANS = 'N' or 'n'   
              and at least   
              ( 1 + ( n - 1 )*abs( INCY ) ) otherwise.   
-             Before entry with BETA non-zero, the incremented array Y   
-             must contain the vector y. On exit, Y is overwritten by the   
+             Before entry with BETA non-zero, the incremented array VIO_Y   
+             must contain the vector y. On exit, VIO_Y is overwritten by the   
              updated vector y.   
     INCY   - INTEGER.   
              On entry, INCY specifies the increment for the elements of   
-             Y. INCY must not be zero.   
+             VIO_Y. INCY must not be zero.   
              Unchanged on exit.   
     Level 2 Blas routine.   
     -- Written on 22-October-1986.   
@@ -114,7 +114,7 @@
 	return 0;
     }
 /*     Set  LENX  and  LENY, the lengths of the vectors x and y, and set   
-       up the start points in  X  and  Y. */
+       up the start points in  X  and  VIO_Y. */
     if (lsame_(trans, "N")) {
 	lenx = *n;
 	leny = *m;

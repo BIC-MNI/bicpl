@@ -14,7 +14,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.14 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/solve_plane.c,v 1.14 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 #include "bicpl_internal.h"
@@ -93,11 +93,11 @@ static  void  test_solution(
 
     for_less( iter, 0, n_iters )
     {
-        angle = 2.0 * PI * get_random_0_to_1();
+        angle = 2.0 * M_PI * get_random_0_to_1();
         x_trans = 10.0 * get_random_0_to_1() - 5.0;
         y_trans = 10.0 * get_random_0_to_1() - 5.0;
 
-        make_rotation_transform( angle, Z, &rotation );
+        make_rotation_transform( angle, VIO_Z, &rotation );
         make_translation_transform( x_trans, y_trans, 0.0, &translation );
         concat_transforms( &transform, &translation, &rotation );
 
@@ -252,14 +252,14 @@ static  void  test_solution_3d(
 
     for_less( iter, 0, n_iters )
     {
-        z_angle = 2.0 * PI * get_random_0_to_1();
-        y_angle = 2.0 * PI * get_random_0_to_1();
+        z_angle = 2.0 * M_PI * get_random_0_to_1();
+        y_angle = 2.0 * M_PI * get_random_0_to_1();
         x_trans = 10.0 * get_random_0_to_1() - 5.0;
         y_trans = 10.0 * get_random_0_to_1() - 5.0;
         z_trans = 10.0 * get_random_0_to_1() - 5.0;
 
-        make_rotation_transform( y_angle, Y, &y_rotation );
-        make_rotation_transform( z_angle, Z, &z_rotation );
+        make_rotation_transform( y_angle, VIO_Y, &y_rotation );
+        make_rotation_transform( z_angle, VIO_Z, &z_rotation );
         make_translation_transform( x_trans, y_trans, z_trans, &translation );
         concat_transforms( &transform, &translation, &y_rotation );
         concat_transforms( &transform, &transform, &z_rotation );
@@ -333,14 +333,14 @@ BICAPI  VIO_BOOL  get_prediction_weights_3d(
 
     for_less( iter, 0, n_iters )
     {
-        z_angle = 2.0 * PI * get_random_0_to_1();
-        y_angle = 2.0 * PI * get_random_0_to_1();
+        z_angle = 2.0 * M_PI * get_random_0_to_1();
+        y_angle = 2.0 * M_PI * get_random_0_to_1();
         x_trans = 10.0 * get_random_0_to_1() - 5.0;
         y_trans = 10.0 * get_random_0_to_1() - 5.0;
         z_trans = 10.0 * get_random_0_to_1() - 5.0;
 
-        make_rotation_transform( y_angle, Y, &y_rotation );
-        make_rotation_transform( z_angle, Z, &z_rotation );
+        make_rotation_transform( y_angle, VIO_Y, &y_rotation );
+        make_rotation_transform( z_angle, VIO_Z, &z_rotation );
         make_translation_transform( x_trans, y_trans, z_trans, &translation );
         concat_transforms( &transform, &translation, &y_rotation );
         concat_transforms( &transform, &transform, &z_rotation );

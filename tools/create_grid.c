@@ -1,7 +1,7 @@
 #include  <bicpl.h>
 
 
-private  VIO_BOOL  get_axis_from_name(
+static  VIO_BOOL  get_axis_from_name(
     VIO_STR   axis_name,
     int      *slice_axis )
 {
@@ -15,19 +15,19 @@ private  VIO_BOOL  get_axis_from_name(
             equal_strings( axis_name, "X" ) )
         {
             found = TRUE;
-            *slice_axis = X;
+            *slice_axis = VIO_X;
         }
         else if( equal_strings( axis_name, "y" ) ||
                  equal_strings( axis_name, "Y" ) )
         {
             found = TRUE;
-            *slice_axis = Y;
+            *slice_axis = VIO_Y;
         }
         else if( equal_strings( axis_name, "z" ) ||
                  equal_strings( axis_name, "Z" ) )
         {
             found = TRUE;
-            *slice_axis = Z;
+            *slice_axis = VIO_Z;
         }
     }
 
@@ -111,15 +111,15 @@ int  main(
 
     for_less( i, 0, n_grids )
     {
-        Point_coord( point1, slice_axis ) = (Point_coord_type) slice_pos;
-        Point_coord( point1, a1 ) = (Point_coord_type) limits[0][0];
-        Point_coord( point1, a2 ) = (Point_coord_type) limits[1][0];
-        Point_coord( point2, slice_axis ) = (Point_coord_type) slice_pos;
-        Point_coord( point2, a1 ) = (Point_coord_type) limits[0][1];
-        Point_coord( point2, a2 ) = (Point_coord_type) limits[1][1];
+        Point_coord( point1, slice_axis ) = (VIO_Point_coord_type) slice_pos;
+        Point_coord( point1, a1 ) = (VIO_Point_coord_type) limits[0][0];
+        Point_coord( point1, a2 ) = (VIO_Point_coord_type) limits[1][0];
+        Point_coord( point2, slice_axis ) = (VIO_Point_coord_type) slice_pos;
+        Point_coord( point2, a1 ) = (VIO_Point_coord_type) limits[0][1];
+        Point_coord( point2, a2 ) = (VIO_Point_coord_type) limits[1][1];
 
-        Point_coord( point1, axes[i] ) = (Point_coord_type) positions[i];
-        Point_coord( point2, axes[i] ) = (Point_coord_type) positions[i];
+        Point_coord( point1, axes[i] ) = (VIO_Point_coord_type) positions[i];
+        Point_coord( point2, axes[i] ) = (VIO_Point_coord_type) positions[i];
 
         start_new_line( lines );
         add_point_to_line( lines, &point1 );
@@ -127,7 +127,7 @@ int  main(
     }
 
     if( output_graphics_file( dest_lines_filename, ASCII_FORMAT, 1, &object )
-                                                      != OK )
+                                                      != VIO_OK )
         return( 1 );
 
     return( 0 );

@@ -31,7 +31,7 @@ int  main(
 
     if( input_volume( filename, 3, dim_names, NC_UNSPECIFIED, FALSE,
                            0.0, 0.0, TRUE, &volume,
-                           (minc_input_options *) NULL ) != OK )
+                           (minc_input_options *) NULL ) != VIO_OK )
         return( 1 );
 
     get_volume_voxel_range( volume, &min_value, &max_value );
@@ -54,15 +54,15 @@ int  main(
         rgb_map[i][j] = make_Colour_0_1( intensity, intensity, intensity );
     }
 
-    origin[X] = 0.0;
-    origin[Y] = 0.0;
-    origin[Z] = (VIO_Real) (sizes[Z] - 1) / 2.0;
-    x_axis[X] = 1.0;
-    x_axis[Y] = 0.0;
-    x_axis[Z] = 0.0;
-    y_axis[X] = 0.0;
-    y_axis[Y] = 1.0;
-    y_axis[Z] = 0.0;
+    origin[VIO_X] = 0.0;
+    origin[VIO_Y] = 0.0;
+    origin[VIO_Z] = (VIO_Real) (sizes[VIO_Z] - 1) / 2.0;
+    x_axis[VIO_X] = 1.0;
+    x_axis[VIO_Y] = 0.0;
+    x_axis[VIO_Z] = 0.0;
+    y_axis[VIO_X] = 0.0;
+    y_axis[VIO_Y] = 1.0;
+    y_axis[VIO_Z] = 0.0;
     fit_volume_slice_to_viewport( volume, origin, x_axis, y_axis,
                                   x_size, y_size, slice_fit_oversize,
                                   &x_translation, &y_translation,

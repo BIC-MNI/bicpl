@@ -1,12 +1,12 @@
 #include <bicpl.h>
 
-private  int  refine_mesh(
+static  int  refine_mesh(
     VIO_Point              *length_points[],
     polygons_struct    *polygons,
     VIO_Real               max_length,
     polygons_struct    *new_polygons );
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -40,7 +40,7 @@ int  main(
     }
 
     if( input_graphics_file( length_filename, &format, &n_len_objects,
-                             &len_object_list ) != OK ||
+                             &len_object_list ) != VIO_OK ||
         n_len_objects < 1 || get_object_type(len_object_list[0]) != POLYGONS )
     {
         print_error( "Error in input file.\n" );
@@ -48,7 +48,7 @@ int  main(
     }
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK ||
+                             &object_list ) != VIO_OK ||
         n_objects < 1 || get_object_type(object_list[0]) != POLYGONS )
     {
         print_error( "Error in input file.\n" );
@@ -93,7 +93,7 @@ int  main(
     return( 0 );
 }
 
-private  VIO_BOOL  lookup_edge_midpoint(
+static  VIO_BOOL  lookup_edge_midpoint(
     hash2_table_struct    *edge_lookup,
     int                   p0,
     int                   p1,
@@ -107,7 +107,7 @@ private  VIO_BOOL  lookup_edge_midpoint(
     return( lookup_in_hash2_table( edge_lookup, k0, k1, (void *) midpoint ) );
 }
 
-private  void  subdivide_edge(
+static  void  subdivide_edge(
     hash2_table_struct *edge_lookup,
     VIO_Real               normalized_length,
     int                p1,
@@ -133,7 +133,7 @@ private  void  subdivide_edge(
                            (void *) &midpoint );
 }
 
-public  void  add_polygons(
+  void  add_polygons(
     int                p0,
     int                p1,
     int                p2,
@@ -255,7 +255,7 @@ public  void  add_polygons(
     }
 }
 
-private  int  refine_mesh(
+static  int  refine_mesh(
     VIO_Point              *length_points[],
     polygons_struct    *polygons,
     VIO_Real               max_length,

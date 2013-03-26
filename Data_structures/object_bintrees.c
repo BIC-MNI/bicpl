@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -141,17 +141,17 @@ BICAPI  void  create_lines_bintree(
                           POINT_INDEX(lines->end_indices,line,seg+1)]];
 
             get_range_points( 2, points, &min_range, &max_range );
-            bound_vols[object_id].limits[X][0] =
+            bound_vols[object_id].limits[VIO_X][0] =
                                  (float) ((VIO_Real) Point_x(min_range) - radius);
-            bound_vols[object_id].limits[Y][0] =
+            bound_vols[object_id].limits[VIO_Y][0] =
                                  (float) ((VIO_Real) Point_y(min_range) - radius);
-            bound_vols[object_id].limits[Z][0] =
+            bound_vols[object_id].limits[VIO_Z][0] =
                                  (float) ((VIO_Real) Point_z(min_range) - radius);
-            bound_vols[object_id].limits[X][1] =
+            bound_vols[object_id].limits[VIO_X][1] =
                                  (float) ((VIO_Real) Point_x(max_range) + radius);
-            bound_vols[object_id].limits[Y][1] =
+            bound_vols[object_id].limits[VIO_Y][1] =
                                  (float) ((VIO_Real) Point_y(max_range) + radius);
-            bound_vols[object_id].limits[Z][1] =
+            bound_vols[object_id].limits[VIO_Z][1] =
                                  (float) ((VIO_Real) Point_z(max_range) + radius);
             ++object_id;
         }
@@ -198,12 +198,12 @@ BICAPI  void  create_polygons_bintree(
         size = get_polygon_points( polygons, poly, points );
 
         get_range_points( size, points, &min_range, &max_range );
-        bound_vols[poly].limits[X][0] = Point_x(min_range);
-        bound_vols[poly].limits[Y][0] = Point_y(min_range);
-        bound_vols[poly].limits[Z][0] = Point_z(min_range);
-        bound_vols[poly].limits[X][1] = Point_x(max_range);
-        bound_vols[poly].limits[Y][1] = Point_y(max_range);
-        bound_vols[poly].limits[Z][1] = Point_z(max_range);
+        bound_vols[poly].limits[VIO_X][0] = Point_x(min_range);
+        bound_vols[poly].limits[VIO_Y][0] = Point_y(min_range);
+        bound_vols[poly].limits[VIO_Z][0] = Point_z(min_range);
+        bound_vols[poly].limits[VIO_X][1] = Point_x(max_range);
+        bound_vols[poly].limits[VIO_Y][1] = Point_y(max_range);
+        bound_vols[poly].limits[VIO_Z][1] = Point_z(max_range);
     }
 
     create_object_bintree( polygons->n_items, bound_vols,
@@ -248,17 +248,17 @@ BICAPI  void  create_quadmesh_bintree(
     {
         for_less( j, 0, n )
         {
-            obj_index = IJ( i, j, n );
+            obj_index = VIO_IJ( i, j, n );
             get_quadmesh_patch( quadmesh, i, j, points );
 
             get_range_points( 4, points, &min_range, &max_range );
 
-            bound_vols[obj_index].limits[X][0] = Point_x(min_range);
-            bound_vols[obj_index].limits[Y][0] = Point_y(min_range);
-            bound_vols[obj_index].limits[Z][0] = Point_z(min_range);
-            bound_vols[obj_index].limits[X][1] = Point_x(max_range);
-            bound_vols[obj_index].limits[Y][1] = Point_y(max_range);
-            bound_vols[obj_index].limits[Z][1] = Point_z(max_range);
+            bound_vols[obj_index].limits[VIO_X][0] = Point_x(min_range);
+            bound_vols[obj_index].limits[VIO_Y][0] = Point_y(min_range);
+            bound_vols[obj_index].limits[VIO_Z][0] = Point_z(min_range);
+            bound_vols[obj_index].limits[VIO_X][1] = Point_x(max_range);
+            bound_vols[obj_index].limits[VIO_Y][1] = Point_y(max_range);
+            bound_vols[obj_index].limits[VIO_Z][1] = Point_z(max_range);
         }
     }
 

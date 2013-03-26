@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.20 2005-08-17 22:26:18 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/box_filter.c,v 1.20 2005-08-17 22:26:18 bert Exp $";
 #endif
 
 #define  DEBUG
@@ -39,8 +39,8 @@ static VIO_Real  get_correct_amount(
         min_pos = -(half_width); \
         max_pos = (half_width); \
  \
-        (receding) = ROUND( min_pos ); \
-        (advancing) = ROUND( max_pos ); \
+        (receding) = VIO_ROUND( min_pos ); \
+        (advancing) = VIO_ROUND( max_pos ); \
  \
         (left_weight) = (VIO_Real) (receding) + 0.5 - min_pos; \
         if( (left_weight) >= 1.0 ) \
@@ -137,7 +137,7 @@ BICAPI VIO_Volume  create_box_filtered_volume(
     VIO_Real               y_left_weight, y_right_weight;
     VIO_Real               z_left_weight, z_right_weight;
     float              **slice, *row;
-    progress_struct    progress;
+    VIO_progress_struct    progress;
 
     if( get_volume_n_dimensions(volume) != 3 )
     {
@@ -145,9 +145,9 @@ BICAPI VIO_Volume  create_box_filtered_volume(
            "create_box_filtered_volume: volume must be 3D.\n" );
     }
 
-    x_width = FABS( x_width );
-    y_width = FABS( y_width );
-    z_width = FABS( z_width );
+    x_width = VIO_FABS( x_width );
+    y_width = VIO_FABS( y_width );
+    z_width = VIO_FABS( z_width );
 
     if( x_width < 1.0 )
         x_width = 1.0;
@@ -174,23 +174,23 @@ BICAPI VIO_Volume  create_box_filtered_volume(
     INITIALIZE_SAMPLE( z_width, z_init_recede_index, z_init_advance_index,
                        z_left_weight, z_right_weight )
 
-    initialize_progress_report( &progress, FALSE, sizes[X] * sizes[Y],
+    initialize_progress_report( &progress, FALSE, sizes[VIO_X] * sizes[VIO_Y],
                                 "Box Filtering" );
 
-    VIO_ALLOC2D( slice, sizes[Y], sizes[Z] );
-    ALLOC( row, sizes[Z] );
+    VIO_ALLOC2D( slice, sizes[VIO_Y], sizes[VIO_Z] );
+    ALLOC( row, sizes[VIO_Z] );
 
-    nx_required = MAX( sizes[X], x_init_advance_index + 1 );
+    nx_required = MAX( sizes[VIO_X], x_init_advance_index + 1 );
     ALLOC( volume_row, nx_required );
 
-    for_less( y, 0, sizes[Y] )
+    for_less( y, 0, sizes[VIO_Y] )
     {
-        for_less( z, 0, sizes[Z] )
+        for_less( z, 0, sizes[VIO_Z] )
         {
             get_volume_value_hyperslab_3d( volume, 0, y, z, nx_required, 1, 1,
                                            volume_row );
             GET_FIRST_SAMPLE( x_init_advance_index,
-                              x_left_weight, sizes[X],
+                              x_left_weight, sizes[VIO_X],
                               volume_row[_I], sample );
             slice[y][z] = (float) sample;
         }
@@ -198,36 +198,36 @@ BICAPI VIO_Volume  create_box_filtered_volume(
 
     FREE( volume_row );
 
-    ALLOC( volume_cache, sizes[X] );
-    for_less( x, 0, sizes[X] )
+    ALLOC( volume_cache, sizes[VIO_X] );
+    for_less( x, 0, sizes[VIO_X] )
         volume_cache[x] = NULL;
     n_alloced = 0;
-    VIO_ALLOC2D( volume_cache[0], sizes[Y], sizes[Z] );
-    get_volume_value_hyperslab_3d( volume, 0, 0, 0, 1, sizes[Y], sizes[Z],
+    VIO_ALLOC2D( volume_cache[0], sizes[VIO_Y], sizes[VIO_Z] );
+    get_volume_value_hyperslab_3d( volume, 0, 0, 0, 1, sizes[VIO_Y], sizes[VIO_Z],
                                    &volume_cache[0][0][0] );
     ++n_alloced;
     if( x_init_recede_index >= 0 )
     {
-        VIO_ALLOC2D( volume_cache[1], sizes[Y], sizes[Z] );
-        get_volume_value_hyperslab_3d( volume, 1, 0, 0, 1, sizes[Y], sizes[Z],
+        VIO_ALLOC2D( volume_cache[1], sizes[VIO_Y], sizes[VIO_Z] );
+        get_volume_value_hyperslab_3d( volume, 1, 0, 0, 1, sizes[VIO_Y], sizes[VIO_Z],
                                        &volume_cache[1][0][0] );
         ++n_alloced;
     }
 
-    if( x_init_advance_index < sizes[X] )
+    if( x_init_advance_index < sizes[VIO_X] )
     {
-        VIO_ALLOC2D( volume_cache[x_init_advance_index], sizes[Y], sizes[Z] );
+        VIO_ALLOC2D( volume_cache[x_init_advance_index], sizes[VIO_Y], sizes[VIO_Z] );
         get_volume_value_hyperslab_3d( volume, x_init_advance_index, 0, 0,
-                                       1, sizes[Y], sizes[Z],
+                                       1, sizes[VIO_Y], sizes[VIO_Z],
                                     &volume_cache[x_init_advance_index][0][0] );
         ++n_alloced;
     }
 
-    if( x_init_advance_index+1 < sizes[X] )
+    if( x_init_advance_index+1 < sizes[VIO_X] )
     {
-        VIO_ALLOC2D( volume_cache[x_init_advance_index+1], sizes[Y], sizes[Z] );
+        VIO_ALLOC2D( volume_cache[x_init_advance_index+1], sizes[VIO_Y], sizes[VIO_Z] );
         get_volume_value_hyperslab_3d( volume, x_init_advance_index+1, 0, 0,
-                                 1, sizes[Y], sizes[Z],
+                                 1, sizes[VIO_Y], sizes[VIO_Z],
                                  &volume_cache[x_init_advance_index+1][0][0] );
         ++n_alloced;
     }
@@ -242,11 +242,11 @@ BICAPI VIO_Volume  create_box_filtered_volume(
     x_recede_index = x_init_recede_index;
     x_advance_index = x_init_advance_index;
 
-    for_less( x, 0, sizes[X] )
+    for_less( x, 0, sizes[VIO_X] )
     {
-        for_less( z, 0, sizes[Z] )
+        for_less( z, 0, sizes[VIO_Z] )
         {
-            GET_FIRST_SAMPLE( y_init_advance_index, y_left_weight, sizes[Y],
+            GET_FIRST_SAMPLE( y_init_advance_index, y_left_weight, sizes[VIO_Y],
                               (VIO_Real) slice[_I][z], sample )
             row[z] = (float) sample;
         }
@@ -254,14 +254,14 @@ BICAPI VIO_Volume  create_box_filtered_volume(
         y_recede_index = y_init_recede_index;
         y_advance_index = y_init_advance_index;
 
-        for_less( y, 0, sizes[Y] )
+        for_less( y, 0, sizes[VIO_Y] )
         {
             GET_FIRST_SAMPLE( z_init_advance_index, z_left_weight,
-                              sizes[Z], (VIO_Real) row[_I], sum )
+                              sizes[VIO_Z], (VIO_Real) row[_I], sum )
             z_recede_index = z_init_recede_index;
             z_advance_index = z_init_advance_index;
 
-            for_less( z, 0, sizes[Z] )
+            for_less( z, 0, sizes[VIO_Z] )
             {
 #ifdef DEBUG
                 correct_voxel = get_correct_amount( volume, x, y, z,
@@ -274,46 +274,46 @@ BICAPI VIO_Volume  create_box_filtered_volume(
                 value = sum / total_volume;
                 set_volume_real_value( resampled_volume, x, y, z, 0, 0, value );
 
-                if( z == sizes[Z]-1 )
+                if( z == sizes[VIO_Z]-1 )
                     continue;
 
                 GET_NEXT_SAMPLE( z_recede_index, z_advance_index,
                                  z_left_weight, z_right_weight,
-                                 sizes[Z], (VIO_Real) row[_I], sum )
+                                 sizes[VIO_Z], (VIO_Real) row[_I], sum )
 
                 ++z_recede_index;
                 ++z_advance_index;
             }
 
-            if( y == sizes[Y]-1 )
+            if( y == sizes[VIO_Y]-1 )
                 continue;
 
-            for_less( z, 0, sizes[Z] )
+            for_less( z, 0, sizes[VIO_Z] )
             {
                 sample = (VIO_Real) row[z];
                 GET_NEXT_SAMPLE( y_recede_index, y_advance_index,
                                  y_left_weight, y_right_weight,
-                                 sizes[Y], (VIO_Real) slice[_I][z], sample )
+                                 sizes[VIO_Y], (VIO_Real) slice[_I][z], sample )
                 row[z] = (float) sample;
             }
 
             ++y_recede_index;
             ++y_advance_index;
 
-            update_progress_report( &progress, x * sizes[Y] + y + 1 );
+            update_progress_report( &progress, x * sizes[VIO_Y] + y + 1 );
         }
 
-        if( x == sizes[X] - 1 )
+        if( x == sizes[VIO_X] - 1 )
             continue;
 
-        for_less( y, 0, sizes[Y] )
+        for_less( y, 0, sizes[VIO_Y] )
         {
-            for_less( z, 0, sizes[Z] )
+            for_less( z, 0, sizes[VIO_Z] )
             {
                 sample = (VIO_Real) slice[y][z];
                 GET_NEXT_SAMPLE( x_recede_index, x_advance_index,
                                  x_left_weight, x_right_weight,
-                                 sizes[X], volume_cache[_I][y][z],
+                                 sizes[VIO_X], volume_cache[_I][y][z],
                                  sample )
                 slice[y][z] = (float) sample;
             }
@@ -322,12 +322,12 @@ BICAPI VIO_Volume  create_box_filtered_volume(
         ++x_recede_index;
         ++x_advance_index;
 
-        if( x_recede_index+1 >= 0 && x_recede_index+1 < sizes[X] &&
+        if( x_recede_index+1 >= 0 && x_recede_index+1 < sizes[VIO_X] &&
             volume_cache[x_recede_index+1] == NULL )
         {
             if( n_alloced < max_alloced )
             {
-                VIO_ALLOC2D( volume_cache[x_recede_index+1], sizes[Y], sizes[Z] );
+                VIO_ALLOC2D( volume_cache[x_recede_index+1], sizes[VIO_Y], sizes[VIO_Z] );
                 ++n_alloced;
             }
             else
@@ -337,17 +337,17 @@ BICAPI VIO_Volume  create_box_filtered_volume(
             }
 
             get_volume_value_hyperslab_3d( volume, x_recede_index+1, 0, 0,
-                                        1, sizes[Y], sizes[Z],
+                                        1, sizes[VIO_Y], sizes[VIO_Z],
                                         &volume_cache[x_recede_index+1][0][0] );
         }
 
-        if( x_advance_index+1 >= 0 && x_advance_index+1 < sizes[X] &&
+        if( x_advance_index+1 >= 0 && x_advance_index+1 < sizes[VIO_X] &&
             volume_cache[x_advance_index+1] == NULL )
         {
             if( x_advance_index - 1 == x_recede_index ||
                 x_advance_index - 1 == x_recede_index+1 )
             {
-                VIO_ALLOC2D( volume_cache[x_advance_index+1], sizes[Y], sizes[Z] );
+                VIO_ALLOC2D( volume_cache[x_advance_index+1], sizes[VIO_Y], sizes[VIO_Z] );
                 ++n_alloced;
             }
             else
@@ -358,14 +358,14 @@ BICAPI VIO_Volume  create_box_filtered_volume(
             }
 
             get_volume_value_hyperslab_3d( volume, x_advance_index+1, 0, 0,
-                                        1, sizes[Y], sizes[Z],
+                                        1, sizes[VIO_Y], sizes[VIO_Z],
                                       &volume_cache[x_advance_index+1][0][0] );
         }
     }
 
     terminate_progress_report( &progress );
 
-    for_less( x, 0, sizes[X] )
+    for_less( x, 0, sizes[VIO_X] )
     {
         if( volume_cache[x] != NULL )
         {
@@ -397,8 +397,8 @@ static void  get_voxel_range(
     if( max_pos > (VIO_Real) size - 0.5 )
         max_pos = (VIO_Real) size - 0.5;
 
-    *min_voxel = ROUND( min_pos );
-    *max_voxel = ROUND( max_pos );
+    *min_voxel = VIO_ROUND( min_pos );
+    *max_voxel = VIO_ROUND( max_pos );
 
     if( (VIO_Real) (*max_voxel) - 0.5 == max_pos )
         --(*max_voxel);
@@ -491,11 +491,11 @@ static VIO_Real  get_correct_amount(
 
     get_volume_sizes( volume, sizes );
 
-    get_voxel_range( sizes[X], (VIO_Real) x - x_width, (VIO_Real) x + x_width,
+    get_voxel_range( sizes[VIO_X], (VIO_Real) x - x_width, (VIO_Real) x + x_width,
                     &x_min_voxel, &x_max_voxel, &x_start_weight, &x_end_weight);
-    get_voxel_range( sizes[Y], (VIO_Real) y - y_width, (VIO_Real) y + y_width,
+    get_voxel_range( sizes[VIO_Y], (VIO_Real) y - y_width, (VIO_Real) y + y_width,
                     &y_min_voxel, &y_max_voxel, &y_start_weight, &y_end_weight);
-    get_voxel_range( sizes[Z], (VIO_Real) z - z_width, (VIO_Real) z + z_width,
+    get_voxel_range( sizes[VIO_Z], (VIO_Real) z - z_width, (VIO_Real) z + z_width,
                     &z_min_voxel, &z_max_voxel, &z_start_weight, &z_end_weight);
 
     sum = get_amount_in_box( volume,

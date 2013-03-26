@@ -150,7 +150,7 @@ L100:
     ret_val = 1;
     s_copy(subnam, name__, (ftnlen)6, name_len);
     ic = *(unsigned char *)subnam;
-    iz = 'Z';
+    iz = 'VIO_Z';
     if (iz == 90 || iz == 122) {
 
 /*        ASCII character set */
@@ -201,7 +201,7 @@ L100:
 
     *(unsigned char *)c1 = *(unsigned char *)subnam;
     sname = *(unsigned char *)c1 == 'S' || *(unsigned char *)c1 == 'D';
-    cname = *(unsigned char *)c1 == 'C' || *(unsigned char *)c1 == 'Z';
+    cname = *(unsigned char *)c1 == 'C' || *(unsigned char *)c1 == 'VIO_Z';
     if (! (cname || sname)) {
 	return ret_val;
     }

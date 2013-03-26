@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.22 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/curvature.c,v 1.22 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -52,7 +52,7 @@ BICAPI  void  get_polygon_vertex_curvatures(
     VIO_Vector           normal;
     float            *distances;
     VIO_BOOL          initialized;
-    progress_struct  progress;
+    VIO_progress_struct  progress;
 
     compute_polygon_normals( polygons );
 
@@ -106,7 +106,7 @@ BICAPI  void  get_polygon_vertex_curvatures(
                     initialized = TRUE;
                 }
 
-                if( FABS( curvature ) < low_threshold )
+                if( VIO_FABS( curvature ) < low_threshold )
                     curvature = 0.0;
 
                 curvatures[point_index] = curvature;

@@ -301,7 +301,7 @@ static doublereal c_b72 = -1.;
 
 /*     Compute singular values to relative accuracy TOL   
        (By setting TOL to be negative, algorithm will compute   
-       singular values to absolute accuracy ABS(TOL)*norm(input matrix))   
+       singular values to absolute accuracy VIO_ABS(TOL)*norm(input matrix))   
 
    Computing MAX   
    Computing MIN */

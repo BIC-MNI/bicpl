@@ -16,7 +16,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.16 2005-08-17 22:26:47 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.16 2005-08-17 22:26:47 bert Exp $";
 #endif
 
 #define   FUNCTION_TOLERANCE    1e-6
@@ -63,8 +63,8 @@ static  VIO_Real  lsq_objective(
 
     for_less( i, 0, npoints )         /* for all of the points */
     {
-        transform_point( lt, pts2[i][X], pts2[i][Y], pts2[i][Z],
-                         &newpt[X], &newpt[Y], &newpt[Z] );
+        transform_point( lt, pts2[i][VIO_X], pts2[i][VIO_Y], pts2[i][VIO_Z],
+                         &newpt[VIO_X], &newpt[VIO_Y], &newpt[VIO_Z] );
 
         error2 = 0.0;        /* compare it to pts2, summing the squared error */
     
@@ -175,7 +175,7 @@ BICAPI  VIO_BOOL  optimize_simplex(
     function_data  func_data;
     amoeba_struct  amoeba;
 
-    switch (trans_type)                /* check to see if trans_type is OK */
+    switch (trans_type)                /* check to see if trans_type is VIO_OK */
     {
     case TRANS_LSQ9: 
         ndim = 9;
@@ -222,16 +222,16 @@ BICAPI  VIO_BOOL  optimize_simplex(
     initial_step[1] = INITIAL_SIMPLEX_SIZE;
     initial_step[2] = INITIAL_SIMPLEX_SIZE;
 
-    initial_step[3] = INITIAL_SIMPLEX_SIZE * DEG_TO_RAD;
-    initial_step[4] = INITIAL_SIMPLEX_SIZE * DEG_TO_RAD;
-    initial_step[5] = INITIAL_SIMPLEX_SIZE * DEG_TO_RAD;
+    initial_step[3] = INITIAL_SIMPLEX_SIZE * VIO_DEG_TO_RAD;
+    initial_step[4] = INITIAL_SIMPLEX_SIZE * VIO_DEG_TO_RAD;
+    initial_step[5] = INITIAL_SIMPLEX_SIZE * VIO_DEG_TO_RAD;
 
     initial_step[6] = INITIAL_SIMPLEX_SIZE / 30.0;
     initial_step[7] = INITIAL_SIMPLEX_SIZE / 30.0;
     initial_step[8] = INITIAL_SIMPLEX_SIZE / 30.0;
     
     if( ndim == 10 ) 
-        initial_step[9] = INITIAL_SIMPLEX_SIZE * DEG_TO_RAD;
+        initial_step[9] = INITIAL_SIMPLEX_SIZE * VIO_DEG_TO_RAD;
 
     /*--- perform the amoeba minimization */
 

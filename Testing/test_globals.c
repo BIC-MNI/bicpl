@@ -16,7 +16,7 @@ main()
     print( "Initial global values:\n\n" );
     print_all_globals();
 
-    status = input_globals_file( SIZEOF_STATIC_ARRAY(globals_list),
+    status = input_globals_file( VIO_SIZEOF_STATIC_ARRAY(globals_list),
                                  globals_list, filename );
 
     print( "\n\nAfter reading %s:\n\n", filename );
@@ -30,13 +30,13 @@ main()
 
         status = input_line( stdin, &line );
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             status = set_or_get_global_variable(
-                         SIZEOF_STATIC_ARRAY(globals_list),
+                         VIO_SIZEOF_STATIC_ARRAY(globals_list),
                          globals_list, line, &variable_name, &value );
 
-            if( status == OK )
+            if( status == VIO_OK )
                 print( "%s has the value: %s\n", variable_name, value );
 
             delete_string( variable_name );
@@ -45,9 +45,9 @@ main()
 
         delete_string( line );
     }
-    while( status == OK );
+    while( status == VIO_OK );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }
 
 private  void  print_all_globals( void )

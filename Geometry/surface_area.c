@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surface_area.c,v 1.8 2005-08-17 22:30:25 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/surface_area.c,v 1.8 2005-08-17 22:30:25 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -48,7 +48,7 @@ BICAPI  VIO_Real  get_polygon_2d_area(
                 (VIO_Real) Point_x(points[next_i]) * (VIO_Real) Point_y(points[i]);
     }
 
-    return( FABS( area / 2.0 ) );
+    return( VIO_FABS( area / 2.0 ) );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

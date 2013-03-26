@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.14 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.14 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
@@ -66,7 +66,7 @@ BICAPI int  dilate_voxels_3d(
     int                     dir, n_dirs, *dx, *dy, *dz;
     VIO_Real                    value, label, *value_row, *label_row;
     VIO_SCHAR            **voxel_classes[3], **swap;
-    progress_struct         progress;
+    VIO_progress_struct         progress;
     Voxel_classes           voxel_class;
     VIO_BOOL                 use_label_volume, use_volume, at_end, at_edge_y;
     VIO_BOOL                 inside_specified, outside_specified;
@@ -95,36 +95,36 @@ BICAPI int  dilate_voxels_3d(
     get_volume_sizes( label_volume, sizes );
 
     for_less( x, 0, 3 )
-        VIO_ALLOC2D( voxel_classes[x], sizes[Y]+2, sizes[Z]+2 );
+        VIO_ALLOC2D( voxel_classes[x], sizes[VIO_Y]+2, sizes[VIO_Z]+2 );
 
     for_less( x, 0, 1 )
     {
-        for_less( y, 0, sizes[Y] + 2 )
+        for_less( y, 0, sizes[VIO_Y] + 2 )
         {
-            for_less( z, 0, sizes[Z] + 2 )
+            for_less( z, 0, sizes[VIO_Z] + 2 )
                 voxel_classes[x][y][z] = (VIO_SCHAR) NOT_INVOLVED;
         }
     }
 
-    ALLOC( value_row, sizes[Z] );
-    ALLOC( label_row, sizes[Z] );
+    ALLOC( value_row, sizes[VIO_Z] );
+    ALLOC( label_row, sizes[VIO_Z] );
 
-    initialize_progress_report( &progress, FALSE, sizes[X],
+    initialize_progress_report( &progress, FALSE, sizes[VIO_X],
                                 "Expanding labeled voxels" );
 
     n_changed = 0;
 
-    for_less( x, 0, sizes[X] )
+    for_less( x, 0, sizes[VIO_X] )
     {
         for_less( delta_x, (x == 0) ? 0 : 1, 2 )
         {
-            at_end = (x + delta_x == sizes[X]);
+            at_end = (x + delta_x == sizes[VIO_X]);
 
-            for_less( y, -1, sizes[Y] + 1 )
+            for_less( y, -1, sizes[VIO_Y] + 1 )
             {
-                at_edge_y = (y == -1 || y == sizes[Y]);
+                at_edge_y = (y == -1 || y == sizes[VIO_Y]);
                 voxel_classes[delta_x+1][y+1][0] = (VIO_SCHAR) NOT_INVOLVED;
-                voxel_classes[delta_x+1][y+1][sizes[Z]+1] = NOT_INVOLVED;
+                voxel_classes[delta_x+1][y+1][sizes[VIO_Z]+1] = NOT_INVOLVED;
 
                 if( !at_edge_y && !at_end )
                 {
@@ -132,7 +132,7 @@ BICAPI int  dilate_voxels_3d(
                     {
                         get_volume_value_hyperslab_3d( label_volume,
                                                        x + delta_x, y, 0,
-                                                       1, 1, sizes[Z],
+                                                       1, 1, sizes[VIO_Z],
                                                        label_row );
                     }
 
@@ -140,12 +140,12 @@ BICAPI int  dilate_voxels_3d(
                     {
                         get_volume_value_hyperslab_3d( volume,
                                                        x + delta_x, y, 0,
-                                                       1, 1, sizes[Z],
+                                                       1, 1, sizes[VIO_Z],
                                                        value_row );
                     }
                 }
 
-                for_less( z, 0, sizes[Z] )
+                for_less( z, 0, sizes[VIO_Z] )
                 {
                     if( at_edge_y || at_end )
                     {
@@ -197,9 +197,9 @@ BICAPI int  dilate_voxels_3d(
             }
         }
 
-        for_less( y, 0, sizes[Y] )
+        for_less( y, 0, sizes[VIO_Y] )
         {
-            for_less( z, 0, sizes[Z] )
+            for_less( z, 0, sizes[VIO_Z] )
             {
                 if( voxel_classes[1][y+1][z+1] == CANDIDATE )
                 {
@@ -214,20 +214,20 @@ BICAPI int  dilate_voxels_3d(
                             set_volume_real_value( label_volume, x, y, z, 0, 0,
                                                    new_label );
 
-                            if( n_changed == 0 || x < range_changed[0][X] )
-                                range_changed[0][X] = x;
-                            if( n_changed == 0 || x > range_changed[1][X] )
-                                range_changed[1][X] = x;
+                            if( n_changed == 0 || x < range_changed[0][VIO_X] )
+                                range_changed[0][VIO_X] = x;
+                            if( n_changed == 0 || x > range_changed[1][VIO_X] )
+                                range_changed[1][VIO_X] = x;
 
-                            if( n_changed == 0 || y < range_changed[0][Y] )
-                                range_changed[0][Y] = y;
-                            if( n_changed == 0 || y > range_changed[1][Y] )
-                                range_changed[1][Y] = y;
+                            if( n_changed == 0 || y < range_changed[0][VIO_Y] )
+                                range_changed[0][VIO_Y] = y;
+                            if( n_changed == 0 || y > range_changed[1][VIO_Y] )
+                                range_changed[1][VIO_Y] = y;
 
-                            if( n_changed == 0 || z < range_changed[0][Z] )
-                                range_changed[0][Z] = z;
-                            if( n_changed == 0 || z > range_changed[1][Z] )
-                                range_changed[1][Z] = z;
+                            if( n_changed == 0 || z < range_changed[0][VIO_Z] )
+                                range_changed[0][VIO_Z] = z;
+                            if( n_changed == 0 || z > range_changed[1][VIO_Z] )
+                                range_changed[1][VIO_Z] = z;
 
                             ++n_changed;
                             break;

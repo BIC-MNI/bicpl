@@ -15,7 +15,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.27 2005-08-17 22:28:27 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.27 2005-08-17 22:28:27 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -400,9 +400,9 @@ BICAPI  void  convert_pixels24_to_dithered(
             for_less( c, 0, 3 )
             {
                 error = comp[c] - used[c];
-                seven = ROUND( (VIO_Real) error * 7.0/ 16.0 );
-                five = ROUND( (VIO_Real) error * 5.0 / 16.0 );
-                three = ROUND( (VIO_Real) error * 3.0 / 16.0 );
+                seven = VIO_ROUND( (VIO_Real) error * 7.0/ 16.0 );
+                five = VIO_ROUND( (VIO_Real) error * 5.0 / 16.0 );
+                three = VIO_ROUND( (VIO_Real) error * 3.0 / 16.0 );
                 one = error - seven - five - three;
 
                 if( x + dir >= 0 && x + dir < pixels_rgb->x_size )
@@ -484,8 +484,8 @@ BICAPI  void  resample_pixels(
                 if( x_trans >= -0.5 && x_trans < (VIO_Real) pixels->x_size - 0.5 &&
                     y_trans >= -0.5 && y_trans < (VIO_Real) pixels->y_size - 0.5 )
                 {
-                    colour = PIXEL_RGB_COLOUR(*pixels,ROUND(x_trans),
-                                                      ROUND(y_trans));
+                    colour = PIXEL_RGB_COLOUR(*pixels,VIO_ROUND(x_trans),
+                                                      VIO_ROUND(y_trans));
                 }
                 else
                 {
@@ -511,8 +511,8 @@ BICAPI  void  resample_pixels(
                             y_trans >= -0.5 &&
                             y_trans < (VIO_Real) pixels->y_size - 0.5 )
                         {
-                            colour = PIXEL_RGB_COLOUR(*pixels,ROUND(x_trans),
-                                                              ROUND(y_trans));
+                            colour = PIXEL_RGB_COLOUR(*pixels,VIO_ROUND(x_trans),
+                                                              VIO_ROUND(y_trans));
                         }
                         else
                         {

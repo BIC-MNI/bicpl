@@ -73,7 +73,7 @@ BICAPI  void   get_centre_of_cube(
     for_less( c, 0, 3 )
     {
         if( sizes[c] > 1 )
-            Point_coord(*centre,c) = (Point_coord_type) (
+            Point_coord(*centre,c) = (VIO_Point_coord_type) (
                  ((VIO_Real) Point_coord(cube[0],c) +
                   (VIO_Real) Point_coord(cube[1],c)) / 2.0);
         else
@@ -88,11 +88,11 @@ BICAPI  VIO_BOOL  contains_value(
     VIO_BOOL  under_found, over_found;
     int      x, y, z;
 
-    for_less( x, 0, sizes[X] )
+    for_less( x, 0, sizes[VIO_X] )
     {
-        for_less( y, 0, sizes[Y] )
+        for_less( y, 0, sizes[VIO_Y] )
         {
-            for_less( z, 0, sizes[Z] )
+            for_less( z, 0, sizes[VIO_Z] )
             {
                 if( values[x][y][z] == 0.0 )
                 {
@@ -294,7 +294,7 @@ BICAPI  void  set_boundary_definition(
     if( angle == 90.0 )
         cosine = 0.0;
     else
-        cosine = cos( angle * DEG_TO_RAD );
+        cosine = cos( angle * VIO_DEG_TO_RAD );
 
     if( direction == '-' )
     {
@@ -338,9 +338,9 @@ BICAPI  void  lookup_volume_coeficients(
     n = degrees_continuity + 2;
     get_volume_sizes( volume, sizes );
 
-    if( x + offset < 0 || x + offset + n >= sizes[X] ||
-        y + offset < 0 || y + offset + n >= sizes[Y] ||
-        z + offset < 0 || z + offset + n >= sizes[Z] )
+    if( x + offset < 0 || x + offset + n >= sizes[VIO_X] ||
+        y + offset < 0 || y + offset + n >= sizes[VIO_Y] ||
+        z + offset < 0 || z + offset + n >= sizes[VIO_Z] )
     {
         for_less( i, 0, n * n * n )
             c[i] = 0.0;
@@ -363,7 +363,7 @@ BICAPI  void  lookup_volume_coeficients(
         lookup->tail = NULL;
     }
 
-    key = IJK( x, y, z, sizes[Y], sizes[Z] );
+    key = VIO_IJK( x, y, z, sizes[VIO_Y], sizes[VIO_Z] );
 
     data = NULL;
 

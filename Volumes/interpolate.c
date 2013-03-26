@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.12 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.12 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -80,7 +80,7 @@ BICAPI void  interpolate_volume_to_slice(
     VIO_BOOL          inside1, inside2;
     Pixel_types      pixel_type;
 #ifdef  REPORT_PROGRESS
-    progress_struct  progress;
+    VIO_progress_struct  progress;
 #endif
 
     if( is_an_rgb_volume( volume1 ) ||
@@ -182,8 +182,8 @@ BICAPI void  interpolate_volume_to_slice(
                 {
                     if( inside1 && inside2 )
                     {
-                        int_voxel_value1 = ROUND( voxel_value1 );
-                        int_voxel_value2 = ROUND( voxel_value2 );
+                        int_voxel_value1 = VIO_ROUND( voxel_value1 );
+                        int_voxel_value2 = VIO_ROUND( voxel_value2 );
                         *rgb_ptr = rgb_colour_map[int_voxel_value1]
                                                  [int_voxel_value2];
                     }
@@ -196,8 +196,8 @@ BICAPI void  interpolate_volume_to_slice(
                 {
                     if( inside1 && inside2 )
                     {
-                        int_voxel_value1 = ROUND( voxel_value1 );
-                        int_voxel_value2 = ROUND( voxel_value2 );
+                        int_voxel_value1 = VIO_ROUND( voxel_value1 );
+                        int_voxel_value2 = VIO_ROUND( voxel_value2 );
                         *cmode_ptr = cmode_colour_map[int_voxel_value1]
                                                      [int_voxel_value2];
                     }
@@ -217,7 +217,7 @@ BICAPI void  interpolate_volume_to_slice(
                             *rgb_ptr = (VIO_Colour) voxel_value1;
                         else
                         {
-                            int_voxel_value1 = ROUND( voxel_value1 );
+                            int_voxel_value1 = VIO_ROUND( voxel_value1 );
                             *rgb_ptr = rgb_colour_map[0][int_voxel_value1];
                         }
                     }
@@ -230,7 +230,7 @@ BICAPI void  interpolate_volume_to_slice(
                 {
                     if( inside1 )
                     {
-                        int_voxel_value1 = ROUND( voxel_value1 );
+                        int_voxel_value1 = VIO_ROUND( voxel_value1 );
                         if( cmode_colour_map == NULL )
                             *cmode_ptr = (unsigned short) int_voxel_value1;
                         else

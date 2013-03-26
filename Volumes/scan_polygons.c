@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.16 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.16 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 #define  MAX_TEMP_STORAGE  1000
@@ -146,8 +146,8 @@ BICAPI void  scan_a_polygon(
     VIO_Real       min_voxel[VIO_N_DIMENSIONS], max_voxel[VIO_N_DIMENSIONS];
     int        min_iv[VIO_N_DIMENSIONS], max_iv[VIO_N_DIMENSIONS];
 
-    min_voxel[X] = 0.0;     /*--- to avoid warnings */
-    max_voxel[X] = 0.0;
+    min_voxel[VIO_X] = 0.0;     /*--- to avoid warnings */
+    max_voxel[VIO_X] = 0.0;
 
     for_less( vertex, 0, size )
     {
@@ -157,7 +157,7 @@ BICAPI void  scan_a_polygon(
                                 RPoint_z(vertices[vertex]),
                                 voxel );
 
-        fill_Point( voxels[vertex], voxel[X], voxel[Y], voxel[Z] );
+        fill_Point( voxels[vertex], voxel[VIO_X], voxel[VIO_Y], voxel[VIO_Z] );
 
         if( vertex == 0 )
         {
@@ -181,22 +181,22 @@ BICAPI void  scan_a_polygon(
 
     for_less( dim, 0, VIO_N_DIMENSIONS )
     {
-        min_iv[dim] = ROUND( min_voxel[dim] );
+        min_iv[dim] = VIO_ROUND( min_voxel[dim] );
         if( min_iv[dim] < 0 )
             min_iv[dim] = 0;
 
-        max_iv[dim] = ROUND( max_voxel[dim] );
+        max_iv[dim] = VIO_ROUND( max_voxel[dim] );
         if( max_iv[dim] >= sizes[dim] )
             max_iv[dim] = sizes[dim]-1;
     }
 
     n_clip = clip_polygon_against_box( size, voxels,
-                                       (VIO_Real) min_iv[X] - 0.5,
-                                       (VIO_Real) max_iv[X] + 0.5,
-                                       (VIO_Real) min_iv[Y] - 0.5,
-                                       (VIO_Real) max_iv[Y] + 0.5,
-                                       (VIO_Real) min_iv[Z] - 0.5,
-                                       (VIO_Real) max_iv[Z] + 0.5,
+                                       (VIO_Real) min_iv[VIO_X] - 0.5,
+                                       (VIO_Real) max_iv[VIO_X] + 0.5,
+                                       (VIO_Real) min_iv[VIO_Y] - 0.5,
+                                       (VIO_Real) max_iv[VIO_Y] + 0.5,
+                                       (VIO_Real) min_iv[VIO_Z] - 0.5,
+                                       (VIO_Real) max_iv[VIO_Z] + 0.5,
 				       n_output_vertices,
                                        output_vertices );
 

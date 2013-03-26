@@ -418,9 +418,9 @@ public  BOOLEAN  get_volume_voxel_activity(
     active_found = FALSE;
     inactive_found = FALSE;
 
-    for_less( ind[X], int_index[X], int_index[X] + n[X] )
-    for_less( ind[Y], int_index[Y], int_index[Y] + n[Y] )
-    for_less( ind[Z], int_index[Z], int_index[Z] + n[Z] )
+    for_less( ind[VIO_X], int_index[VIO_X], int_index[VIO_X] + n[VIO_X] )
+    for_less( ind[VIO_Y], int_index[VIO_Y], int_index[VIO_Y] + n[VIO_Y] )
+    for_less( ind[VIO_Z], int_index[VIO_Z], int_index[VIO_Z] + n[VIO_Z] )
     for_less( ind[3], int_index[3], int_index[3] + n[3] )
     for_less( ind[4], int_index[4], int_index[4] + n[4] )
     {
@@ -501,8 +501,8 @@ private  void  get_input_volume_label_limits(
 
         for_less( d, 0, n_dims )
         {
-            low[d] = FLOOR( voxel1[d] ) - 1;
-            high[d] = CEILING( voxel1[d] ) + 1;
+            low[d] = VIO_FLOOR( voxel1[d] ) - 1;
+            high[d] = VIO_CEILING( voxel1[d] ) + 1;
         }
 
         if( first )
@@ -540,7 +540,7 @@ private  void  get_input_volume_label_limits(
 @INPUT      : filename
               label_volume
 @OUTPUT     :
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Loads a label volume from a file which does not necessarily
               contain the exact topology of the label volume.  Essentially
               it resamples the volume in the file onto the label volume.
@@ -579,8 +579,8 @@ private  Status  load_partial_label_volume(
                            type, signed_flag, 0.0, 0.0,
                            TRUE, &file_volume, NULL );
 
-    if( status != OK )
-        return( ERROR );
+    if( status != VIO_OK )
+        return( VIO_ERROR );
 
     get_input_volume_label_limits( label_volume, file_volume,
                                    limits );
@@ -604,7 +604,7 @@ private  Status  load_partial_label_volume(
         Transform_elem( reorder1, 2, 2 ) = 0.0;
 
         for_less( dim, 0, N_DIMENSIONS )
-            Transform_elem( reorder1, ROUND(xyz[dim]), dim ) = 1.0;
+            Transform_elem( reorder1, VIO_ROUND(xyz[dim]), dim ) = 1.0;
 
         concat_transforms( &all, &reorder1,
                            get_linear_transform_ptr(&label_transform) );
@@ -619,7 +619,7 @@ private  Status  load_partial_label_volume(
         Transform_elem( reorder2, 2, 2 ) = 0.0;
 
         for_less( dim, 0, N_DIMENSIONS )
-            Transform_elem( reorder2, ROUND(voxel[dim]), dim ) = 1.0;
+            Transform_elem( reorder2, VIO_ROUND(voxel[dim]), dim ) = 1.0;
 
         concat_transforms( &all, &all, &reorder2 );
 
@@ -630,30 +630,30 @@ private  Status  load_partial_label_volume(
     }
 
     initialize_progress_report( &progress, FALSE,
-                                (limits[1][X] - limits[0][X] + 1) *
-                                (limits[1][Y] - limits[0][Y] + 1),
+                                (limits[1][VIO_X] - limits[0][VIO_X] + 1) *
+                                (limits[1][VIO_Y] - limits[0][VIO_Y] + 1),
                                 "Installing Labels" );
 
-    for_inclusive( label_voxel[X], limits[0][X], limits[1][X] )
+    for_inclusive( label_voxel[VIO_X], limits[0][VIO_X], limits[1][VIO_X] )
     {
-        for_inclusive( label_voxel[Y], limits[0][Y], limits[1][Y] )
+        for_inclusive( label_voxel[VIO_Y], limits[0][VIO_Y], limits[1][VIO_Y] )
         {
-            for_inclusive( label_voxel[Z], limits[0][Z], limits[1][Z] )
+            for_inclusive( label_voxel[VIO_Z], limits[0][VIO_Z], limits[1][VIO_Z] )
             {
-                if( !is_linear || label_voxel[Z] == limits[0][Z] )
+                if( !is_linear || label_voxel[VIO_Z] == limits[0][VIO_Z] )
                 {
                     convert_3D_voxel_to_world( label_volume,
-                                               (Real) label_voxel[X],
-                                               (Real) label_voxel[Y],
-                                               (Real) label_voxel[Z],
+                                               (Real) label_voxel[VIO_X],
+                                               (Real) label_voxel[VIO_Y],
+                                               (Real) label_voxel[VIO_Z],
                                                &xw, &yw, &zw );
                     convert_world_to_voxel( file_volume, xw, yw, zw, voxel );
                 }
                 else
                 {
-                    voxel[X] += dx;
-                    voxel[Y] += dy;
-                    voxel[Z] += dz;
+                    voxel[VIO_X] += dx;
+                    voxel[VIO_Y] += dy;
+                    voxel[VIO_Z] += dz;
                 }
 
                 if( voxel_is_within_volume( file_volume, voxel ) )
@@ -663,7 +663,7 @@ private  Status  load_partial_label_volume(
                                        int_voxel[0], int_voxel[1],
                                        int_voxel[2], 0, 0 );
 
-                    int_voxel_value = ROUND( voxel_value );
+                    int_voxel_value = VIO_ROUND( voxel_value );
                     if( int_voxel_value > 0 )
                     {
                         set_volume_label_data( label_volume, label_voxel,
@@ -673,9 +673,9 @@ private  Status  load_partial_label_volume(
             }
 
             update_progress_report( &progress,
-                                    (label_voxel[X] - limits[0][X]) *
-                                    (limits[1][Y] - limits[0][Y]) +
-                                    label_voxel[Y] - limits[0][Y] + 1 );
+                                    (label_voxel[VIO_X] - limits[0][VIO_X]) *
+                                    (limits[1][VIO_Y] - limits[0][VIO_Y]) +
+                                    label_voxel[VIO_Y] - limits[0][VIO_Y] + 1 );
         }
     }
 
@@ -692,7 +692,7 @@ private  Status  load_partial_label_volume(
 @NAME       : load_label_volume
 @INPUT      : Filename
 @OUTPUT     : label_volume
-@RETURNS    : ERROR or OK
+@RETURNS    : VIO_ERROR or VIO_OK
 @DESCRIPTION: Loads the label volume.
 @METHOD     : 
 @GLOBALS    : 
@@ -724,7 +724,7 @@ public  Status  load_label_volume(
 
     delete_dimension_names( label_volume, dim_names );
 
-    if( status != OK )
+    if( status != VIO_OK )
         return( status );
 
     same_grid = volumes_are_same_grid( label_volume, file_volume );
@@ -735,7 +735,7 @@ public  Status  load_label_volume(
         print_error( "Label volume n dimensions (%d) does not match\n",
                      n_file_dims );
         print_error( "      volume n dimensions (%d).\n", n_dims );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     if( same_grid )
@@ -762,7 +762,7 @@ public  Status  load_label_volume(
               original_filename
               label_volume
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Saves the label volume.
 @METHOD     : 
 @GLOBALS    : 
@@ -843,7 +843,7 @@ public  Status  save_label_volume(
 @INPUT      : file
               volume
 @OUTPUT     : label_volume
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Inputs a tag file into a label volume.
 @METHOD     : 
 @GLOBALS    : 
@@ -871,16 +871,16 @@ public  Status  input_tags_as_labels(
 
     status = initialize_tag_file_input( file, &n_volumes );
 
-    while( status == OK &&
+    while( status == VIO_OK &&
            input_one_tag( file, n_volumes,
                           tag1, NULL, NULL, &structure_id, NULL, NULL,
                           &status ) )
     {
-        convert_world_to_voxel( volume, tag1[X], tag1[Y], tag1[Z], voxel );
+        convert_world_to_voxel( volume, tag1[VIO_X], tag1[VIO_Y], tag1[VIO_Z], voxel );
 
         for_less( c, 0, get_volume_n_dimensions(volume) )
         {
-            ind[c] = ROUND( voxel[c] );
+            ind[c] = VIO_ROUND( voxel[c] );
         }
 
         label = structure_id;
@@ -899,7 +899,7 @@ public  Status  input_tags_as_labels(
 @INPUT      : filename
               volume
 @OUTPUT     : label_volume
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Creates a label volume for the given volume from a tag file or
               a minc file.
 @METHOD     :
@@ -920,7 +920,7 @@ public  Status  create_label_volume_from_file(
     FILE    *file;
     BOOLEAN same_grid;
 
-    status = OK;
+    status = VIO_OK;
 
     if( filename_extension_matches( filename, "mnc" ) )
     {
@@ -929,7 +929,7 @@ public  Status  create_label_volume_from_file(
                                            get_volume_n_dimensions(volume),
                                            dim_names, &file_volume, NULL );
 
-        if( status != OK )
+        if( status != VIO_OK )
         {
             delete_dimension_names( volume, dim_names );
             return( status );
@@ -956,11 +956,11 @@ public  Status  create_label_volume_from_file(
     {
         *label_volume = create_label_volume( volume, NC_UNSPECIFIED );
 
-        if( open_file( filename, READ_FILE, ASCII_FORMAT, &file )!=OK)
-            return( ERROR );
+        if( open_file( filename, READ_FILE, ASCII_FORMAT, &file )!=VIO_OK)
+            return( VIO_ERROR );
 
-        if( input_tags_as_labels( file, volume, *label_volume ) != OK )
-            return( ERROR );
+        if( input_tags_as_labels( file, volume, *label_volume ) != VIO_OK )
+            return( VIO_ERROR );
 
         (void) close_file( file );
     }
@@ -977,7 +977,7 @@ public  Status  create_label_volume_from_file(
               size
               patient_id
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Outputs a set of labels as tags.
 @METHOD     : 
 @GLOBALS    : 
@@ -1004,7 +1004,7 @@ public  Status  output_labels_as_tags(
     if( get_volume_n_dimensions(volume) != 3 )
     {
         print_error( "output_labels_as_tags:  volume must be 3D\n" );
-        return( ERROR );
+        return( VIO_ERROR );
     }
 
     check_alloc_label_data( label_volume );
@@ -1012,29 +1012,29 @@ public  Status  output_labels_as_tags(
 
     n_tags = 0;
 
-    for_less( ind[X], 0, sizes[X] )
+    for_less( ind[VIO_X], 0, sizes[VIO_X] )
     {
-        real_ind[X] = (Real) ind[X];
-        for_less( ind[Y], 0, sizes[Y] )
+        real_ind[VIO_X] = (Real) ind[VIO_X];
+        for_less( ind[VIO_Y], 0, sizes[VIO_Y] )
         {
-            real_ind[Y] = (Real) ind[Y];
-            for_less( ind[Z], 0, sizes[Z] )
+            real_ind[VIO_Y] = (Real) ind[VIO_Y];
+            for_less( ind[VIO_Z], 0, sizes[VIO_Z] )
             {
-                real_ind[Z] = (Real) ind[Z];
+                real_ind[VIO_Z] = (Real) ind[VIO_Z];
                 label = get_volume_label_data( label_volume, ind );
 
                 if( label == desired_label || (desired_label < 0 && label > 0) )
                 {
                     convert_voxel_to_world( volume, real_ind,
-                                            &tags[X], &tags[Y], &tags[Z] );
+                                            &tags[VIO_X], &tags[VIO_Y], &tags[VIO_Z] );
 
                     if( n_tags == 0 &&
-                        initialize_tag_file_output( file, NULL, 1 ) != OK )
-                        return( ERROR );
+                        initialize_tag_file_output( file, NULL, 1 ) != VIO_OK )
+                        return( VIO_ERROR );
 
                     if( output_one_tag( file, 1, tags, NULL,
-                               &size, &label, &patient_id, NULL ) != OK )
-                        return( ERROR );
+                               &size, &label, &patient_id, NULL ) != VIO_OK )
+                        return( VIO_ERROR );
 
                     ++n_tags;
                 }
@@ -1045,7 +1045,7 @@ public  Status  output_labels_as_tags(
     if( n_tags > 0 )
         terminate_tag_file_output( file );
 
-    return( OK );
+    return( VIO_OK );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -1053,7 +1053,7 @@ public  Status  output_labels_as_tags(
 @INPUT      : file
               volume
 @OUTPUT     : label_volume
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Loads a set of landmarks into the label_volume.
 @METHOD     : 
 @GLOBALS    : 
@@ -1077,7 +1077,7 @@ public  Status  input_landmarks_as_labels(
 
     get_volume_real_range( label_volume, &min_label, &max_label );
 
-    while( io_tag_point( file, READ_FILE, volume, 1.0, &marker ) == OK )
+    while( io_tag_point( file, READ_FILE, volume, 1.0, &marker ) == VIO_OK )
     {
         convert_world_to_voxel( volume,
                                 (Real) Point_x(marker.position),
@@ -1085,7 +1085,7 @@ public  Status  input_landmarks_as_labels(
                                 (Real) Point_z(marker.position), voxel );
 
         for_less( c, 0, get_volume_n_dimensions(volume) )
-            ind[c] = ROUND( voxel[c] );
+            ind[c] = VIO_ROUND( voxel[c] );
 
         label = marker.structure_id;
         if( (Real) label >= min_label && (Real) label <= max_label &&
@@ -1095,5 +1095,5 @@ public  Status  input_landmarks_as_labels(
         }
     }
 
-    return( OK );
+    return( VIO_OK );
 }

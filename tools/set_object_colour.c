@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -37,7 +37,7 @@ int  main(
                    get_string_argument( NULL, &colour_name );
 
     if( input_graphics_file( src_filename,
-                             &format, &n_objects, &objects ) != OK )
+                             &format, &n_objects, &objects ) != VIO_OK )
         return( 1 );
 
 
@@ -48,7 +48,7 @@ int  main(
             set_object_colour( objects[i], colour );
 
         if( output_graphics_file( dest_filename, format,
-                                  n_objects, objects ) != OK)
+                                  n_objects, objects ) != VIO_OK)
             return( 1 );
     }
     else

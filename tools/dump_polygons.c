@@ -21,7 +21,7 @@ int  main(
     }
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK )
+                             &object_list ) != VIO_OK )
     {
         print( "Couldn't read %s.\n", input_filename );
         return( 1 );
@@ -35,7 +35,7 @@ int  main(
 
     polygons = get_polygons_ptr( object_list[0] );
 
-    if( open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != OK )
+    if( open_file( output_filename, WRITE_FILE, ASCII_FORMAT, &file ) != VIO_OK )
         return( 1 );
 
     (void) output_int( file, polygons->n_points );

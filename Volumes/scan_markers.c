@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_markers.c,v 1.8 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/scan_markers.c,v 1.8 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -63,15 +63,15 @@ BICAPI void  scan_marker_to_voxels(
         min_v = MIN( low[c], high[c] );
         max_v = MAX( low[c], high[c] );
 
-        min_voxel[c] = FLOOR( min_v + 0.5 );
-        max_voxel[c] = FLOOR( max_v + 0.5 );
+        min_voxel[c] = VIO_FLOOR( min_v + 0.5 );
+        max_voxel[c] = VIO_FLOOR( max_v + 0.5 );
     }
 
-    for_inclusive( int_voxel[X], min_voxel[X], max_voxel[X] )
+    for_inclusive( int_voxel[VIO_X], min_voxel[VIO_X], max_voxel[VIO_X] )
     {
-        for_inclusive( int_voxel[Y], min_voxel[Y], max_voxel[Y] )
+        for_inclusive( int_voxel[VIO_Y], min_voxel[VIO_Y], max_voxel[VIO_Y] )
         {
-            for_inclusive( int_voxel[Z], min_voxel[Z], max_voxel[Z] )
+            for_inclusive( int_voxel[VIO_Z], min_voxel[VIO_Z], max_voxel[VIO_Z] )
             {
                 convert_int_to_real_voxel( VIO_N_DIMENSIONS, int_voxel, voxel );
                 if( voxel_is_within_volume( volume, voxel ) )

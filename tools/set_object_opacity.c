@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -38,14 +38,14 @@ int  main(
     }
 
     if( input_graphics_file( src_filename,
-                             &format, &n_objects, &objects ) != OK )
+                             &format, &n_objects, &objects ) != VIO_OK )
         return( 1 );
 
     for_less( i, 0, n_objects )
     {
         spr = get_object_surfprop( objects[i] );
         if( spr != NULL )
-            Surfprop_t(*spr) = (Spr_type) opacity;
+            Surfprop_t(*spr) = (VIO_Spr_type) opacity;
 
         colour_flag = *get_object_colours( objects[i], &colours );
 
@@ -63,7 +63,7 @@ int  main(
         }
     }
 
-    if( output_graphics_file( dest_filename, format, n_objects, objects ) != OK)
+    if( output_graphics_file( dest_filename, format, n_objects, objects ) != VIO_OK)
         return( 1 );
 
     delete_object_list( n_objects, objects );

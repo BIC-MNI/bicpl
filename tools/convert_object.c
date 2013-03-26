@@ -14,7 +14,7 @@ int  main( int    argc, char   *argv[] ) {
     VIO_File_formats     format;
     object_struct    **object_list;
 
-    status = OK;
+    status = VIO_OK;
 
     initialize_argument_processing( argc, argv );
 
@@ -25,7 +25,7 @@ int  main( int    argc, char   *argv[] ) {
         return( 1 );
     }
 
-    if( input_graphics_file( input_filename, &format, &n_objects, &object_list ) != OK ) {
+    if( input_graphics_file( input_filename, &format, &n_objects, &object_list ) != VIO_OK ) {
         print( "Couldn't read input object %s.\n", input_filename );
         return( 1 );
     }
@@ -40,6 +40,6 @@ int  main( int    argc, char   *argv[] ) {
 
     status = output_graphics_file( output_filename, format, n_objects, object_list );
 
-    return( status != OK );
+    return( status != VIO_OK );
 }
 

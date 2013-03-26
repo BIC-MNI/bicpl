@@ -15,7 +15,7 @@
 #include  "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.47 2005-08-17 22:26:19 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/create_slice.c,v 1.47 2005-08-17 22:26:19 bert Exp $";
 #endif
 
 static void  create_pixel_mapping(
@@ -355,7 +355,7 @@ static VIO_BOOL  get_filter_slices(
             a1 = (c + 1) % VIO_N_DIMENSIONS;
             a2 = (c + 2) % VIO_N_DIMENSIONS;
             direction[c] = x_axis[a1] * y_axis[a2] - x_axis[a2] * y_axis[a1];
-            direction[c] *= FABS( separations[a1] * separations[a2] /
+            direction[c] *= VIO_FABS( separations[a1] * separations[a2] /
                                   separations[c] );
         }
     }
@@ -389,9 +389,9 @@ static VIO_BOOL  get_filter_slices(
               y_translation2   - pixel translation for viewing
               x_scale2         - pixel zoom for viewing
               y_scale2         - pixel zoom for viewing
-              x_axis_index     - X,Y, or Z
-              y_axis_index     - X,Y, or Z
-              axis_index       - X,Y, or Z
+              x_axis_index     - VIO_X,VIO_Y, or VIO_Z
+              y_axis_index     - VIO_X,VIO_Y, or VIO_Z
+              axis_index       - VIO_X,VIO_Y, or VIO_Z
               x_viewport_size  - will be clipped to this size
               y_viewport_size  - will be clipped to this size
               pixel_type       - RGB_PIXEL or COLOUR_INDEX_PIXEL for rgb/cmap

@@ -102,7 +102,7 @@ BICAPI  void  spline_tensor_product(
                 ++ind;
             }
    
-            prev_ind = IJ( deriv-1, deriv-1, degrees[d] );
+            prev_ind = VIO_IJ( deriv-1, deriv-1, degrees[d] );
             for_less( k, deriv, degrees[d] )
             {
                 us[ind] = us[prev_ind] * (VIO_Real) k;

@@ -16,7 +16,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.11 2005-08-17 22:28:26 bert Exp $";
+static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/colours.c,v 1.11 2005-08-17 22:28:26 bert Exp $";
 #endif
 
 static VIO_Colour ANTIQUE_WHITE_COL;
@@ -1043,8 +1043,8 @@ BICAPI  VIO_Colour  scale_colour(
     VIO_Colour   colour,
     VIO_Real     factor )
 {
-    return( make_rgba_Colour( ROUND( (VIO_Real) get_Colour_r(colour) * factor ),
-                              ROUND( (VIO_Real) get_Colour_g(colour) * factor ),
-                              ROUND( (VIO_Real) get_Colour_b(colour) * factor ),
+    return( make_rgba_Colour( VIO_ROUND( (VIO_Real) get_Colour_r(colour) * factor ),
+                              VIO_ROUND( (VIO_Real) get_Colour_g(colour) * factor ),
+                              VIO_ROUND( (VIO_Real) get_Colour_b(colour) * factor ),
                               get_Colour_a(colour) ) );
 }

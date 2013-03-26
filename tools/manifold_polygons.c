@@ -1,13 +1,13 @@
 #include <bicpl.h>
 
-private  void   manifold_polygons(
+static  void   manifold_polygons(
     polygons_struct    *polygons,
     int                start_poly,
     int                max_polygons,
     VIO_BOOL            manifold_required,
     polygons_struct    *out );
 
-private  void  usage(
+static  void  usage(
     VIO_STR   executable )
 {
     VIO_STR  usage_str = "\n\
@@ -55,7 +55,7 @@ int  main(
     manifold_required = !get_string_argument( NULL, &dummy );
 
     if( input_graphics_file( input_filename, &format, &n_objects,
-                             &object_list ) != OK || n_objects < 1 ||
+                             &object_list ) != VIO_OK || n_objects < 1 ||
         get_object_type( object_list[0] ) != POLYGONS )
     {
         print_error( "File must have a polygons structure.\n" );
@@ -101,7 +101,7 @@ int  main(
     return( 0 );
 }
 
-private  void   assign_distances(
+static  void   assign_distances(
     polygons_struct    *polygons,
     int                poly_dist[],
     int                start_poly )
@@ -143,7 +143,7 @@ private  void   assign_distances(
     DELETE_PRIORITY_QUEUE( queue );
 }
 
-private  void   manifold_polygons(
+static  void   manifold_polygons(
     polygons_struct    *polygons,
     int                start_poly,
     int                max_polygons,
