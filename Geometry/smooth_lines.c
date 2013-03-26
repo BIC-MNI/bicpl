@@ -39,10 +39,10 @@ BICAPI  void  smooth_lines(
     int       *new_ids, n_points, n_items, n_indices, *indices, *end_indices;
     int       l, p, point_index, size;
     VIO_BOOL   keep_point;
-    Point     prev;
+    VIO_Point     prev;
     VIO_Real      dist_to_prev;
-    Point     *points;
-    Colour    colour;
+    VIO_Point     *points;
+    VIO_Colour    colour;
 
     n_points = 0;
     n_items = 0;
@@ -135,7 +135,7 @@ BICAPI  void  create_line_spline(
 {
     int       c, l, p, point_index1, point_index2, pt_index, line_size, segment;
     VIO_BOOL   wrap_around;
-    Point     points[4], point;
+    VIO_Point     points[4], point;
     VIO_Real      u;
 
     initialize_lines( new_lines, lines->colours[0] );
@@ -198,7 +198,7 @@ BICAPI  void  create_line_spline(
             {
                 u = (VIO_Real) segment / (VIO_Real) n_curve_segments;
 
-                for_less( c, 0, N_DIMENSIONS )
+                for_less( c, 0, VIO_N_DIMENSIONS )
                 {
                     Point_coord(point,c) = (Point_coord_type)
                                            cubic_interpolate( u,

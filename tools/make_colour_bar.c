@@ -17,20 +17,20 @@ int  main(
 {
     VIO_Real                 min_limit, max_limit, width, tick_width, value, y;
     VIO_Real                 scale;
-    STRING               output_filename;
-    STRING               under_colour_name, over_colour_name;
-    STRING               outline_colour_name;
-    STRING               range_tick_colour_name, limit_tick_colour_name;
+    VIO_STR               output_filename;
+    VIO_STR               under_colour_name, over_colour_name;
+    VIO_STR               outline_colour_name;
+    VIO_STR               range_tick_colour_name, limit_tick_colour_name;
     int                  p, n_steps, point_index0, point_index1;
     object_struct        **object_list;
     quadmesh_struct      *quadmesh;
-    Point                point;
+    VIO_Point                point;
     lines_struct         *lines, *outline;
-    Colour               under_colour, over_colour, outline_colour;
-    Colour               range_tick_colour, limit_tick_colour;
+    VIO_Colour               under_colour, over_colour, outline_colour;
+    VIO_Colour               range_tick_colour, limit_tick_colour;
     Colour_coding_types  coding_type;
     colour_coding_struct colour_coding;
-    STRING               coding_type_string;
+    VIO_STR               coding_type_string;
     VIO_Real                 low, high;
 
     initialize_argument_processing( argc, argv );

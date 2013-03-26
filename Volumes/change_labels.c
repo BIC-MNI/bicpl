@@ -39,16 +39,16 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/change_
 ---------------------------------------------------------------------------- */
 
 BICAPI void  modify_labels_in_range(
-    Volume   volume,
-    Volume   label_volume,
+    VIO_Volume   volume,
+    VIO_Volume   label_volume,
     int      src_min,
     int      src_max,
     int      dest_label,
     VIO_Real     min_threshold,
     VIO_Real     max_threshold,
-    int      range_changed[2][N_DIMENSIONS] )
+    int      range_changed[2][VIO_N_DIMENSIONS] )
 {
-    int              voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS], dim;
+    int              voxel[VIO_MAX_DIMENSIONS], sizes[VIO_MAX_DIMENSIONS], dim;
     int              label;
     VIO_BOOL          must_change, first;
     VIO_Real             value;
@@ -86,7 +86,7 @@ BICAPI void  modify_labels_in_range(
                 if( must_change )
                 {
                     set_volume_label_data( label_volume, voxel, dest_label );
-                    for_less( dim, 0, N_DIMENSIONS )
+                    for_less( dim, 0, VIO_N_DIMENSIONS )
                     {
                         if( first || voxel[dim] < range_changed[0][dim] )
                             range_changed[0][dim] = voxel[dim];

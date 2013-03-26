@@ -2,9 +2,9 @@
 
 BICAPI void  initialize_resample_volume(
     resample_struct      *resample,
-    Volume               src_volume,
+    VIO_Volume               src_volume,
     VIO_General_transform    *dest_to_src_transform,
-    Volume               dest_volume )
+    VIO_Volume               dest_volume )
 {
     VIO_General_transform  inverse, tmp;
 
@@ -40,11 +40,11 @@ BICAPI VIO_BOOL  do_more_resampling(
 {
     VIO_Real            value;
     VIO_BOOL         linear;
-    Vector          z_axis;
+    VIO_Vector          z_axis;
     int             z;
-    VIO_Real            xv, yv, zv, voxel[MAX_DIMENSIONS];
+    VIO_Real            xv, yv, zv, voxel[VIO_MAX_DIMENSIONS];
     VIO_Real            end_time;
-    int             dest_sizes[MAX_DIMENSIONS], src_sizes[MAX_DIMENSIONS];
+    int             dest_sizes[VIO_MAX_DIMENSIONS], src_sizes[VIO_MAX_DIMENSIONS];
 
     if( max_seconds >= 0.0 )
         end_time = current_realtime_seconds() + max_seconds;
@@ -106,9 +106,9 @@ BICAPI VIO_BOOL  do_more_resampling(
 }
 
 BICAPI void  resample_volume(
-    Volume                   src_volume,
+    VIO_Volume                   src_volume,
     VIO_General_transform        *dest_to_src_transform,
-    Volume                   dest_volume )
+    VIO_Volume                   dest_volume )
 {
     static const     int  FACTOR = 1000;
     resample_struct  resample;

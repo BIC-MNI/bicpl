@@ -19,154 +19,154 @@
 static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/colours.c,v 1.11 2005-08-17 22:28:26 bert Exp $";
 #endif
 
-static Colour ANTIQUE_WHITE_COL;
-static Colour ALICE_BLUE_COL;
-static Colour AQUAMARINE_COL;
-static Colour AZURE_COL;
-static Colour BEIGE_COL;
-static Colour BISQUE_COL;
-static Colour BLACK_COL;
-static Colour BLANCHED_ALMOND_COL;
-static Colour BLUE_COL;
-static Colour BLUE_VIOLET_COL;
-static Colour BRIGHT_MUSTARD_COL;
-static Colour BROWN_COL;
-static Colour BURLYWOOD_COL;
-static Colour CADET_BLUE_COL;
-static Colour CHARTREUSE_COL;
-static Colour CHOCOLATE_COL;
-static Colour CORAL_COL;
-static Colour CORNFLOWER_BLUE_COL;
-static Colour CORNSILK_COL;
-static Colour CYAN_COL;
-static Colour DARK_BROWN_COL;
-static Colour DARK_FIREBRICK_COL;
-static Colour DARK_GOLDENROD_COL;
-static Colour DARK_GREEN_COL;
-static Colour DARK_KHAKI_COL;
-static Colour DARK_OLIVE_GREEN_COL;
-static Colour DARK_ORANGE_COL;
-static Colour DARK_ORCHID_COL;
-static Colour DARK_RED_COL;
-static Colour DARK_SALMON_COL;
-static Colour DARK_SEA_GREEN_COL;
-static Colour DARK_SLATE_BLUE_COL;
-static Colour DARK_SLATE_GRAY_COL;
-static Colour DARK_SLATE_GREY_COL;
-static Colour DARK_TURQUOISE_COL;
-static Colour DARK_VIOLET_COL;
-static Colour DEEP_PINK_COL;
-static Colour DEEP_SKY_BLUE_COL;
-static Colour DIM_GRAY_COL;
-static Colour DIM_GREY_COL;
-static Colour DODGER_BLUE_COL;
-static Colour FIREBRICK_COL;
-static Colour FLORAL_WHITE_COL;
-static Colour FOREST_GREEN_COL;
-static Colour GAINSBORO_COL;
-static Colour GHOST_WHITE_COL;
-static Colour GOLDENROD_COL;
-static Colour GOLD_COL;
-static Colour GRAY_COL;
-static Colour GREEN_COL;
-static Colour GREEN_YELLOW_COL;
-static Colour GREY_COL;
-static Colour HONEYDEW_COL;
-static Colour HOT_PINK_COL;
-static Colour INDIAN_RED_COL;
-static Colour IVORY_COL;
-static Colour KHAKI_COL;
-static Colour LAVENDER_BLUSH_COL;
-static Colour LAVENDER_COL;
-static Colour LAWN_GREEN_COL;
-static Colour LEMON_CHIFFON_COL;
-static Colour LIGHT_BLUE_COL;
-static Colour LIGHT_CORAL_COL;
-static Colour LIGHT_CYAN_COL;
-static Colour LIGHT_GOLDENROD_COL;
-static Colour LIGHT_GOLDENROD_YELLOW_COL;
-static Colour LIGHT_GRAY_COL;
-static Colour LIGHT_GREY_COL;
-static Colour LIGHT_PINK_COL;
-static Colour LIGHT_SALMON_COL;
-static Colour LIGHT_SEA_GREEN_COL;
-static Colour LIGHT_SKY_BLUE_COL;
-static Colour LIGHT_SLATE_BLUE_COL;
-static Colour LIGHT_SLATE_GRAY_COL;
-static Colour LIGHT_SLATE_GREY_COL;
-static Colour LIGHT_STEEL_BLUE_COL;
-static Colour LIGHT_YELLOW_COL;
-static Colour LIME_GREEN_COL;
-static Colour LINEN_COL;
-static Colour MAGENTA_COL;
-static Colour MAROON_COL;
-static Colour MEDIUM_AQUAMARINE_COL;
-static Colour MEDIUM_BLUE_COL;
-static Colour MEDIUM_ORCHID_COL;
-static Colour MEDIUM_PURPLE_COL;
-static Colour MEDIUM_SEA_GREEN_COL;
-static Colour MEDIUM_SLATE_BLUE_COL;
-static Colour MEDIUM_SPRING_GREEN_COL;
-static Colour MEDIUM_TURQUOISE_COL;
-static Colour MEDIUM_VIOLET_RED_COL;
-static Colour MIAMI_PINK_COL;
-static Colour MIAMI_TURQUOISE_COL;
-static Colour MIDNIGHT_BLUE_COL;
-static Colour MINT_CREAM_COL;
-static Colour MISTY_ROSE_COL;
-static Colour MOCCASIN_COL;
-static Colour NAVAJO_WHITE_COL;
-static Colour NAVY_BLUE_COL;
-static Colour NAVY_COL;
-static Colour OLD_LACE_COL;
-static Colour OLIVE_DRAB_COL;
-static Colour ORANGE_COL;
-static Colour ORANGE_RED_COL;
-static Colour ORCHID_COL;
-static Colour PALE_GOLDENROD_COL;
-static Colour PALE_GREEN_COL;
-static Colour PALE_TURQUOISE_COL;
-static Colour PALE_VIOLET_RED_COL;
-static Colour PAPAYA_WHIP_COL;
-static Colour PEACH_PUFF_COL;
-static Colour PERU_COL;
-static Colour PINK_COL;
-static Colour PLUM_COL;
-static Colour POWDER_BLUE_COL;
-static Colour PURPLE_COL;
-static Colour RED_COL;
-static Colour ROSY_BROWN_COL;
-static Colour ROYAL_BLUE_COL;
-static Colour SADDLE_BROWN_COL;
-static Colour SALMON_COL;
-static Colour SANDY_BROWN_COL;
-static Colour SEASHELL_COL;
-static Colour SEA_GREEN_COL;
-static Colour SIENNA_COL;
-static Colour SKY_BLUE_COL;
-static Colour SLATE_BLUE_COL;
-static Colour SLATE_GRAY_COL;
-static Colour SLATE_GREY_COL;
-static Colour SNOW_COL;
-static Colour SPRING_GREEN_COL;
-static Colour STEEL_BLUE_COL;
-static Colour TAN_COL;
-static Colour THISTLE_COL;
-static Colour TOMATO_COL;
-static Colour TURQUOISE_COL;
-static Colour VIOLET_COL;
-static Colour VIOLET_RED_COL;
-static Colour WHEAT_COL;
-static Colour WHITE_COL;
-static Colour WHITE_SMOKE_COL;
-static Colour YELLOW_COL;
-static Colour YELLOW_GREEN_COL;
-static Colour TRANSPARENT_COL;
+static VIO_Colour ANTIQUE_WHITE_COL;
+static VIO_Colour ALICE_BLUE_COL;
+static VIO_Colour AQUAMARINE_COL;
+static VIO_Colour AZURE_COL;
+static VIO_Colour BEIGE_COL;
+static VIO_Colour BISQUE_COL;
+static VIO_Colour BLACK_COL;
+static VIO_Colour BLANCHED_ALMOND_COL;
+static VIO_Colour BLUE_COL;
+static VIO_Colour BLUE_VIOLET_COL;
+static VIO_Colour BRIGHT_MUSTARD_COL;
+static VIO_Colour BROWN_COL;
+static VIO_Colour BURLYWOOD_COL;
+static VIO_Colour CADET_BLUE_COL;
+static VIO_Colour CHARTREUSE_COL;
+static VIO_Colour CHOCOLATE_COL;
+static VIO_Colour CORAL_COL;
+static VIO_Colour CORNFLOWER_BLUE_COL;
+static VIO_Colour CORNSILK_COL;
+static VIO_Colour CYAN_COL;
+static VIO_Colour DARK_BROWN_COL;
+static VIO_Colour DARK_FIREBRICK_COL;
+static VIO_Colour DARK_GOLDENROD_COL;
+static VIO_Colour DARK_GREEN_COL;
+static VIO_Colour DARK_KHAKI_COL;
+static VIO_Colour DARK_OLIVE_GREEN_COL;
+static VIO_Colour DARK_ORANGE_COL;
+static VIO_Colour DARK_ORCHID_COL;
+static VIO_Colour DARK_RED_COL;
+static VIO_Colour DARK_SALMON_COL;
+static VIO_Colour DARK_SEA_GREEN_COL;
+static VIO_Colour DARK_SLATE_BLUE_COL;
+static VIO_Colour DARK_SLATE_GRAY_COL;
+static VIO_Colour DARK_SLATE_GREY_COL;
+static VIO_Colour DARK_TURQUOISE_COL;
+static VIO_Colour DARK_VIOLET_COL;
+static VIO_Colour DEEP_PINK_COL;
+static VIO_Colour DEEP_SKY_BLUE_COL;
+static VIO_Colour DIM_GRAY_COL;
+static VIO_Colour DIM_GREY_COL;
+static VIO_Colour DODGER_BLUE_COL;
+static VIO_Colour FIREBRICK_COL;
+static VIO_Colour FLORAL_WHITE_COL;
+static VIO_Colour FOREST_GREEN_COL;
+static VIO_Colour GAINSBORO_COL;
+static VIO_Colour GHOST_WHITE_COL;
+static VIO_Colour GOLDENROD_COL;
+static VIO_Colour GOLD_COL;
+static VIO_Colour GRAY_COL;
+static VIO_Colour GREEN_COL;
+static VIO_Colour GREEN_YELLOW_COL;
+static VIO_Colour GREY_COL;
+static VIO_Colour HONEYDEW_COL;
+static VIO_Colour HOT_PINK_COL;
+static VIO_Colour INDIAN_RED_COL;
+static VIO_Colour IVORY_COL;
+static VIO_Colour KHAKI_COL;
+static VIO_Colour LAVENDER_BLUSH_COL;
+static VIO_Colour LAVENDER_COL;
+static VIO_Colour LAWN_GREEN_COL;
+static VIO_Colour LEMON_CHIFFON_COL;
+static VIO_Colour LIGHT_BLUE_COL;
+static VIO_Colour LIGHT_CORAL_COL;
+static VIO_Colour LIGHT_CYAN_COL;
+static VIO_Colour LIGHT_GOLDENROD_COL;
+static VIO_Colour LIGHT_GOLDENROD_YELLOW_COL;
+static VIO_Colour LIGHT_GRAY_COL;
+static VIO_Colour LIGHT_GREY_COL;
+static VIO_Colour LIGHT_PINK_COL;
+static VIO_Colour LIGHT_SALMON_COL;
+static VIO_Colour LIGHT_SEA_GREEN_COL;
+static VIO_Colour LIGHT_SKY_BLUE_COL;
+static VIO_Colour LIGHT_SLATE_BLUE_COL;
+static VIO_Colour LIGHT_SLATE_GRAY_COL;
+static VIO_Colour LIGHT_SLATE_GREY_COL;
+static VIO_Colour LIGHT_STEEL_BLUE_COL;
+static VIO_Colour LIGHT_YELLOW_COL;
+static VIO_Colour LIME_GREEN_COL;
+static VIO_Colour LINEN_COL;
+static VIO_Colour MAGENTA_COL;
+static VIO_Colour MAROON_COL;
+static VIO_Colour MEDIUM_AQUAMARINE_COL;
+static VIO_Colour MEDIUM_BLUE_COL;
+static VIO_Colour MEDIUM_ORCHID_COL;
+static VIO_Colour MEDIUM_PURPLE_COL;
+static VIO_Colour MEDIUM_SEA_GREEN_COL;
+static VIO_Colour MEDIUM_SLATE_BLUE_COL;
+static VIO_Colour MEDIUM_SPRING_GREEN_COL;
+static VIO_Colour MEDIUM_TURQUOISE_COL;
+static VIO_Colour MEDIUM_VIOLET_RED_COL;
+static VIO_Colour MIAMI_PINK_COL;
+static VIO_Colour MIAMI_TURQUOISE_COL;
+static VIO_Colour MIDNIGHT_BLUE_COL;
+static VIO_Colour MINT_CREAM_COL;
+static VIO_Colour MISTY_ROSE_COL;
+static VIO_Colour MOCCASIN_COL;
+static VIO_Colour NAVAJO_WHITE_COL;
+static VIO_Colour NAVY_BLUE_COL;
+static VIO_Colour NAVY_COL;
+static VIO_Colour OLD_LACE_COL;
+static VIO_Colour OLIVE_DRAB_COL;
+static VIO_Colour ORANGE_COL;
+static VIO_Colour ORANGE_RED_COL;
+static VIO_Colour ORCHID_COL;
+static VIO_Colour PALE_GOLDENROD_COL;
+static VIO_Colour PALE_GREEN_COL;
+static VIO_Colour PALE_TURQUOISE_COL;
+static VIO_Colour PALE_VIOLET_RED_COL;
+static VIO_Colour PAPAYA_WHIP_COL;
+static VIO_Colour PEACH_PUFF_COL;
+static VIO_Colour PERU_COL;
+static VIO_Colour PINK_COL;
+static VIO_Colour PLUM_COL;
+static VIO_Colour POWDER_BLUE_COL;
+static VIO_Colour PURPLE_COL;
+static VIO_Colour RED_COL;
+static VIO_Colour ROSY_BROWN_COL;
+static VIO_Colour ROYAL_BLUE_COL;
+static VIO_Colour SADDLE_BROWN_COL;
+static VIO_Colour SALMON_COL;
+static VIO_Colour SANDY_BROWN_COL;
+static VIO_Colour SEASHELL_COL;
+static VIO_Colour SEA_GREEN_COL;
+static VIO_Colour SIENNA_COL;
+static VIO_Colour SKY_BLUE_COL;
+static VIO_Colour SLATE_BLUE_COL;
+static VIO_Colour SLATE_GRAY_COL;
+static VIO_Colour SLATE_GREY_COL;
+static VIO_Colour SNOW_COL;
+static VIO_Colour SPRING_GREEN_COL;
+static VIO_Colour STEEL_BLUE_COL;
+static VIO_Colour TAN_COL;
+static VIO_Colour THISTLE_COL;
+static VIO_Colour TOMATO_COL;
+static VIO_Colour TURQUOISE_COL;
+static VIO_Colour VIOLET_COL;
+static VIO_Colour VIOLET_RED_COL;
+static VIO_Colour WHEAT_COL;
+static VIO_Colour WHITE_COL;
+static VIO_Colour WHITE_SMOKE_COL;
+static VIO_Colour YELLOW_COL;
+static VIO_Colour YELLOW_GREEN_COL;
+static VIO_Colour TRANSPARENT_COL;
 
 typedef  struct
 {
-    STRING   name;
-    Colour   *colour;
+    VIO_STR   name;
+    VIO_Colour   *colour;
 } colours_struct;
 
 static  colours_struct  colour_lookup[] =
@@ -316,7 +316,7 @@ static  colours_struct  colour_lookup[] =
     { "YELLOW_GREEN", &YELLOW_GREEN_COL }
 };
 
-static   VIO_BOOL  strings_equivalent( STRING, STRING );
+static   VIO_BOOL  strings_equivalent( VIO_STR, VIO_STR );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : check_initialize_colours
@@ -499,7 +499,7 @@ static  void  check_initialize_colours( void )
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  get_default_surfprop(
-    Surfprop  *surfprop )
+    VIO_Surfprop  *surfprop )
 {
     Surfprop_a(*surfprop) = 0.3f;
     Surfprop_d(*surfprop) = 0.3f;
@@ -514,7 +514,7 @@ BICAPI  void  get_default_surfprop(
 @OUTPUT     : col
 @RETURNS    : TRUE if colour found
 @DESCRIPTION: Given a colour name, such as "red" or "Green", finds the
-              corresponding Colour.
+              corresponding VIO_Colour.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -523,8 +523,8 @@ BICAPI  void  get_default_surfprop(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  lookup_colour(
-    STRING    colour_name,
-    Colour    *col )
+    VIO_STR    colour_name,
+    VIO_Colour    *col )
 {
     VIO_BOOL  found;
     int      i;
@@ -533,7 +533,7 @@ BICAPI  VIO_BOOL  lookup_colour(
 
     found = FALSE;
 
-    for_less( i, 0, SIZEOF_STATIC_ARRAY(colour_lookup) )
+    for_less( i, 0, VIO_SIZEOF_STATIC_ARRAY(colour_lookup) )
     {
         if( strings_equivalent( colour_lookup[i].name, colour_name ) )
         {
@@ -561,8 +561,8 @@ BICAPI  VIO_BOOL  lookup_colour(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  lookup_colour_name(
-    Colour  col,
-    STRING  *colour_name )
+    VIO_Colour  col,
+    VIO_STR  *colour_name )
 {
     VIO_BOOL  found;
     int      i;
@@ -571,7 +571,7 @@ BICAPI  VIO_BOOL  lookup_colour_name(
 
     found = FALSE;
 
-    for_less( i, 0, SIZEOF_STATIC_ARRAY(colour_lookup) )
+    for_less( i, 0, VIO_SIZEOF_STATIC_ARRAY(colour_lookup) )
     {
         if( col == *colour_lookup[i].colour )
         {
@@ -600,8 +600,8 @@ BICAPI  VIO_BOOL  lookup_colour_name(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL  strings_equivalent(
-    STRING   str1,
-    STRING   str2 )
+    VIO_STR   str1,
+    VIO_STR   str2 )
 {
     VIO_BOOL  equivalent;
     int      i1, i2;
@@ -610,7 +610,7 @@ static  VIO_BOOL  strings_equivalent(
     i1 = 0;
     i2 = 0;
 
-    while( str1[i1] != END_OF_STRING || str2[i2] != END_OF_STRING )
+    while( str1[i1] != VIO_END_OF_STRING || str2[i2] != VIO_END_OF_STRING )
     {
         if( str1[i1] == ' ' || str1[i1] == '\t' || str1[i1] == '_' )
             ++i1;
@@ -794,8 +794,8 @@ BICAPI  void  hsl_to_rgb(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  convert_colour_to_hsl(
-    Colour   rgb,
-    Colour   *hsl )
+    VIO_Colour   rgb,
+    VIO_Colour   *hsl )
 {
     VIO_Real   h, s, l;
 
@@ -821,8 +821,8 @@ BICAPI  void  convert_colour_to_hsl(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  convert_colour_to_rgb(
-    Colour   hsl,
-    Colour   *rgb )
+    VIO_Colour   hsl,
+    VIO_Colour   *rgb )
 {
     VIO_Real   r, g, b;
 
@@ -849,8 +849,8 @@ BICAPI  void  convert_colour_to_rgb(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  equal_colours(
-    Colour  col1,
-    Colour  col2 )
+    VIO_Colour  col1,
+    VIO_Colour  col2 )
 {
     return( col1 == col2 );
 }
@@ -871,11 +871,11 @@ BICAPI  VIO_BOOL  equal_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  STRING  convert_colour_to_string(
-    Colour   col )
+BICAPI  VIO_STR  convert_colour_to_string(
+    VIO_Colour   col )
 {
-    char       buffer[EXTREMELY_LARGE_STRING_SIZE];
-    STRING     string;
+    char       buffer[VIO_EXTREMELY_LARGE_STRING_SIZE];
+    VIO_STR     string;
 
     if( !lookup_colour_name( col, &string ) )
     {
@@ -905,10 +905,10 @@ BICAPI  STRING  convert_colour_to_string(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Colour  convert_string_to_colour(
-    STRING     string )
+BICAPI  VIO_Colour  convert_string_to_colour(
+    VIO_STR     string )
 {
-    Colour   colour;
+    VIO_Colour   colour;
     double   r, g, b, a;
 
     if( !lookup_colour( string, &colour ) )
@@ -936,7 +936,7 @@ BICAPI  Colour  convert_string_to_colour(
 @OUTPUT     : 
 @RETURNS    : Squared Distance
 @DESCRIPTION: Returns the squared distance between two colours, one
-              specified by its rgb components, and the other as a Colour
+              specified by its rgb components, and the other as a VIO_Colour
               entity.
 @METHOD     : 
 @GLOBALS    : 
@@ -949,7 +949,7 @@ BICAPI  int  get_colour_distance(
     int      r,
     int      g,
     int      b,
-    Colour   c2 )
+    VIO_Colour   c2 )
 {
     int  dr, dg, db;
 
@@ -983,7 +983,7 @@ BICAPI  int   find_closest_colour(
     int     g,
     int     b,
     int     n_colours,
-    Colour  colours[] )
+    VIO_Colour  colours[] )
 {
     int   i, dist, min_dist, min_index;
 
@@ -1017,9 +1017,9 @@ BICAPI  int   find_closest_colour(
 ---------------------------------------------------------------------------- */
 
 BICAPI  int  get_Colour_luminance(
-    Colour   colour )
+    VIO_Colour   colour )
 {
-    return( ROUND( 0.299 * (VIO_Real) get_Colour_r(colour) +
+    return( VIO_ROUND( 0.299 * (VIO_Real) get_Colour_r(colour) +
                    0.587 * (VIO_Real) get_Colour_g(colour) +
                    0.114 * (VIO_Real) get_Colour_b(colour) ) );
 }
@@ -1029,7 +1029,7 @@ BICAPI  int  get_Colour_luminance(
 @INPUT      : colour
               factor
 @OUTPUT     : 
-@RETURNS    : Colour
+@RETURNS    : VIO_Colour
 @DESCRIPTION: Scales a colour by a factor, but not the alpha component.  Does
               not check for overflow.
 @METHOD     : 
@@ -1039,8 +1039,8 @@ BICAPI  int  get_Colour_luminance(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Colour  scale_colour(
-    Colour   colour,
+BICAPI  VIO_Colour  scale_colour(
+    VIO_Colour   colour,
     VIO_Real     factor )
 {
     return( make_rgba_Colour( ROUND( (VIO_Real) get_Colour_r(colour) * factor ),

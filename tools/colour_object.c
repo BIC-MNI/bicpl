@@ -1,9 +1,9 @@
 #include  <bicpl.h>
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  src.obj values_file dest.obj\n\
            colour_map|user [user.map] low high\n\
            [under] [over] [opacity] [replace|composite|mult]\n\n\
@@ -43,25 +43,25 @@ int  main(
     char   *argv[] )
 {
     VIO_Real                 value, *values, min_range, max_range;
-    Status               status;
-    STRING               src_filename, dest_filename, values_filename;
-    STRING               under_colour_name, over_colour_name;
-    STRING               user_def_filename;
+    VIO_Status               status;
+    VIO_STR               src_filename, dest_filename, values_filename;
+    VIO_STR               under_colour_name, over_colour_name;
+    VIO_STR               user_def_filename;
     int                  i, p, n_objects, n_points, n_values, value_index;
-    Point                *points;   // anything
-    File_formats         format;
+    VIO_Point                *points;   // anything
+    VIO_File_formats         format;
     object_struct        **object_list;
-    Colour               *colours, under_colour, over_colour, prev_colour, col;
-    STRING               default_over;
+    VIO_Colour               *colours, under_colour, over_colour, prev_colour, col;
+    VIO_STR               default_over;
     int                  rgba_type;
     Colour_coding_types  coding_type;
     colour_coding_struct colour_coding;
     Colour_flags         *colour_flag_ptr;
-    STRING               coding_type_string;
+    VIO_STR               coding_type_string;
     VIO_Real                 low, high, r, g, b, a, opacity;
     VIO_BOOL              per_vertex;
     Composite_methods    composite_method;
-    STRING               composite_method_name;
+    VIO_STR               composite_method_name;
 
     initialize_argument_processing( argc, argv );
 
@@ -210,7 +210,7 @@ int  main(
             ++value_index;
 
             if( rgba_type ) {
-              col = (Colour)value;
+              col = (VIO_Colour)value;
             } else {
               col = get_colour_code( &colour_coding, value );
             }

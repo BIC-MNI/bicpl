@@ -1,9 +1,9 @@
 #include  <bicpl.h>
 
 static  void  usage( 
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: ascii_binary  input.obj  [output.obj] [ascii|binary]\n\
 \n\
      Converts ascii BIC .obj files to binary and vice versa, placing output in\n\
@@ -17,9 +17,9 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING         input_filename, output_filename, format_type;
+    VIO_STR         input_filename, output_filename, format_type;
     int            n_objects;
-    File_formats   format, file_format;
+    VIO_File_formats   format, file_format;
     object_struct  **object_list;
     VIO_BOOL        format_specified;
 

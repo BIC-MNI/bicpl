@@ -38,8 +38,8 @@ typedef  struct
 typedef  struct
 {
     VIO_Real          value;
-    Vector        gradient;
-    axis_struct   edge_info[N_DIMENSIONS];
+    VIO_Vector        gradient;
+    axis_struct   edge_info[VIO_N_DIMENSIONS];
 
 } voxel_struct;
 

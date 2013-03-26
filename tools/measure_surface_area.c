@@ -16,12 +16,12 @@ int  main(
 {
     FILE                 *file;
     VIO_Real                 *values, low, high, area;
-    STRING               src_filename, values_filename;
+    VIO_STR               src_filename, values_filename;
     int                  p, n_objects, n_points;
-    File_formats         format;
+    VIO_File_formats         format;
     object_struct        **object_list;
     polygons_struct      *polygons;
-    STRING               axis_name, sign_name;
+    VIO_STR               axis_name, sign_name;
     VIO_Real                 plane_pos, clip_sign;
     int                  clip_axis;
     VIO_BOOL              clip_flag;
@@ -109,7 +109,7 @@ private  VIO_Real  get_area_of_values(
 {
     int    n_points, i1, i2, size;
     int    poly, v, indices[MAX_POINTS_PER_POLYGON], ind;
-    Point  points[2][1000];
+    VIO_Point  points[2][1000];
     VIO_Real   area, alpha, clip, prev_clip;
 
     area = 0.0;

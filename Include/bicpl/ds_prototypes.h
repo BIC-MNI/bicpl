@@ -65,7 +65,7 @@ BICAPI  VIO_Real  get_node_split_position(
     bintree_node_struct  *node );
 
 BICAPI  VIO_BOOL  point_within_range(
-    Point         *point,
+    VIO_Point         *point,
     range_struct  *range );
 
 BICAPI  VIO_Real  range_volume(
@@ -74,10 +74,10 @@ BICAPI  VIO_Real  range_volume(
 BICAPI  VIO_Real  range_surface_area(
     range_struct  *range );
 
-BICAPI  Status  io_bintree(
+BICAPI  VIO_Status  io_bintree(
     FILE                 *file,
-    IO_types             direction,
-    File_formats         format,
+    VIO_IO_types             direction,
+    VIO_File_formats         format,
     bintree_struct_ptr   bintree );
 
 BICAPI  void  create_bitlist(
@@ -136,9 +136,9 @@ BICAPI  VIO_BOOL     get_bitlist_bit_3d(
 BICAPI  void  delete_bitlist_3d(
     bitlist_3d_struct  *bitlist );
 
-BICAPI  Status  io_bitlist_3d(
+BICAPI  VIO_Status  io_bitlist_3d(
     FILE               *file,
-    IO_types           io_type,
+    VIO_IO_types           io_type,
     bitlist_3d_struct  *bitlist );
 
 BICAPI  void  create_object_bintree(
@@ -247,14 +247,14 @@ BICAPI  void  create_quadmesh_bintree(
     int               max_nodes );
 
 BICAPI  VIO_Real  find_closest_point_in_bintree(
-    Point               *point,
+    VIO_Point               *point,
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *obj_index,
-    Point               *point_on_object );
+    VIO_Point               *point_on_object );
 
 BICAPI  VIO_Real  find_closest_vertex_in_bintree(
-    Point               *point,
+    VIO_Point               *point,
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *vertex_on_object );
@@ -263,8 +263,8 @@ BICAPI  void  print_bintree_stats(
     int   n_objects );
 
 BICAPI  int  intersect_ray_with_bintree(
-    Point               *origin,
-    Vector              *direction,
+    VIO_Point               *origin,
+    VIO_Vector              *direction,
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *obj_index,
@@ -273,8 +273,8 @@ BICAPI  int  intersect_ray_with_bintree(
 
 BICAPI  VIO_BOOL  ray_intersects_range(
     range_struct  *range,
-    Point         *origin,
-    Vector        *direction,
+    VIO_Point         *origin,
+    VIO_Vector        *direction,
     VIO_Real          *t_min,
     VIO_Real          *t_max );
 

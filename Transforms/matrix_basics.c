@@ -175,7 +175,7 @@ BICAPI  void  matrix_multiply(
 
     /* Allocate a temporary matrix */
 
-    ALLOC2D( Ctemp, ldim, ndim );
+    VIO_ALLOC2D( Ctemp, ldim, ndim );
 
     /* Do the multiplication */
 
@@ -189,5 +189,5 @@ BICAPI  void  matrix_multiply(
 
     /* Free the temporary matrix */
 
-    FREE2D( Ctemp );
+    VIO_FREE2D( Ctemp );
 }

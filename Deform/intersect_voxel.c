@@ -25,7 +25,7 @@ static  void  find_coefs_of_line(
     VIO_Real        du,
     VIO_Real        dv,
     VIO_Real        dw,
-    VIO_Real        line_coefs[(MAX_DERIVS+1) * N_DIMENSIONS+1] );
+    VIO_Real        line_coefs[(MAX_DERIVS+1) * VIO_N_DIMENSIONS+1] );
 
 static  void  get_voxel_line_tricubic(
     VIO_Real        coefs[],
@@ -197,7 +197,7 @@ BICAPI  int  find_voxel_line_value_intersection(
     VIO_Real        isovalue,
     VIO_Real        distances[3] )
 {
-    VIO_Real  line_coefs[(MAX_DERIVS+1) * N_DIMENSIONS+1];
+    VIO_Real  line_coefs[(MAX_DERIVS+1) * VIO_N_DIMENSIONS+1];
     int   degrees, n_intersections;
 
     degrees = find_voxel_line_polynomial( coefs, degrees_continuity,
@@ -235,7 +235,7 @@ static  void   get_voxel_coefs(
     VIO_Real   coefs_uv[MAX_DERIVS+2][MAX_DERIVS+2][MAX_DERIVS+2];
     VIO_Real   coefs_u[MAX_DERIVS+2][MAX_DERIVS+2][MAX_DERIVS+2];
 
-    ALLOC2D( bases, 4, 4 );
+    VIO_ALLOC2D( bases, 4, 4 );
 
     switch( degrees_continuity )
     {
@@ -258,7 +258,7 @@ static  void   get_voxel_coefs(
             interpolation_coefs[i][j] = bases[i][j];
     }
 
-    FREE2D( bases );
+    VIO_FREE2D( bases );
 
     ind = 0;
     for_less( u, 0, degrees_continuity + 2 )
@@ -338,8 +338,8 @@ static  void   add_components(
     int   dv,
     int   dw,
     VIO_Real  coef,
-    VIO_Real  line[2][N_DIMENSIONS],
-    VIO_Real  line_coefs[(MAX_DERIVS+1) * N_DIMENSIONS+1] )
+    VIO_Real  line[2][VIO_N_DIMENSIONS],
+    VIO_Real  line_coefs[(MAX_DERIVS+1) * VIO_N_DIMENSIONS+1] )
 {
     int   u1, u2, u3, v1, v2, v3, w1, w2, w3;
     VIO_Real  u1f, u2f, u3f, v1f, v2f, v3f, w1f, w2f, w3f;
@@ -456,10 +456,10 @@ static  void  find_coefs_of_line(
     VIO_Real        du,
     VIO_Real        dv,
     VIO_Real        dw,
-    VIO_Real        line_coefs[(MAX_DERIVS+1) * N_DIMENSIONS+1] )
+    VIO_Real        line_coefs[(MAX_DERIVS+1) * VIO_N_DIMENSIONS+1] )
 {
     int   deg, u_deg, v_deg, w_deg;
-    VIO_Real  line[2][N_DIMENSIONS];
+    VIO_Real  line[2][VIO_N_DIMENSIONS];
 
     line[0][0] = ou;
     line[0][1] = ov;
@@ -468,7 +468,7 @@ static  void  find_coefs_of_line(
     line[1][1] = dv;
     line[1][2] = dw;
 
-    for_less( deg, 0, (degrees_continuity+1) * N_DIMENSIONS+1 )
+    for_less( deg, 0, (degrees_continuity+1) * VIO_N_DIMENSIONS+1 )
         line_coefs[deg] = 0.0;
 
     for_less( u_deg, 0, degrees_continuity + 2 )

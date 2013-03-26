@@ -34,24 +34,24 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/output_
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI Status  output_volume_free_format(
-    STRING         prefix,
-    Volume         volume,
+BICAPI VIO_Status  output_volume_free_format(
+    VIO_STR         prefix,
+    VIO_Volume         volume,
     int            axis_ordering[] )
 {
-    Status             status;
-    VIO_Real               trans, separations[MAX_DIMENSIONS];
-    int                sizes[MAX_DIMENSIONS];
+    VIO_Status             status;
+    VIO_Real               trans, separations[VIO_MAX_DIMENSIONS];
+    int                sizes[VIO_MAX_DIMENSIONS];
     int                a1, a2, a3;
-    int                n_bytes_per_voxel, indices[MAX_DIMENSIONS];
+    int                n_bytes_per_voxel, indices[VIO_MAX_DIMENSIONS];
     void               *ptr;
     FILE               *file;
-    STRING             header_filename, voxel_filename, abs_voxel_filename;
-    STRING             filename_no_dirs;
+    VIO_STR             header_filename, voxel_filename, abs_voxel_filename;
+    VIO_STR             filename_no_dirs;
     int                axis;
     progress_struct    progress;
     VIO_General_transform  *voxel_to_world;
-    Transform          *transform;
+    VIO_Transform          *transform;
 
     header_filename = concat_strings( prefix, ".fre" );
     abs_voxel_filename = alloc_string( string_length(prefix) + 10 );
@@ -81,13 +81,13 @@ BICAPI Status  output_volume_free_format(
     if( get_transform_type(voxel_to_world) == LINEAR )
         transform = get_linear_transform_ptr( voxel_to_world );
     else
-        transform = (Transform *) NULL;
+        transform = (VIO_Transform *) NULL;
 
-    for_less( axis, 0, N_DIMENSIONS )
+    for_less( axis, 0, VIO_N_DIMENSIONS )
     {
         if( status == OK )
         {
-            if( transform != (Transform *) NULL )
+            if( transform != (VIO_Transform *) NULL )
             {
                 trans = Transform_elem(*transform,axis,3);
                 if( separations[axis] < 0.0 )
@@ -103,7 +103,7 @@ BICAPI Status  output_volume_free_format(
     if( status == OK )
         status = output_newline( file );
 
-    for_less( axis, 0, N_DIMENSIONS )
+    for_less( axis, 0, VIO_N_DIMENSIONS )
     {
         if( status == OK )
             status = output_int( file, sizes[axis_ordering[axis]] );

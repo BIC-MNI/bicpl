@@ -4,9 +4,9 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    STRING               object_filename, output_filename;
+    VIO_STR               object_filename, output_filename;
     FILE                 *file;
-    File_formats         format;
+    VIO_File_formats         format;
     int                  i, n_objects;
     int                  *n_neighbours, **neighbours;
     object_struct        **objects;

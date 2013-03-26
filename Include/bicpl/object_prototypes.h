@@ -21,7 +21,7 @@ BICAPI  void  separate_object_points(
     VIO_Colour        *colours[] );
 
 BICAPI  void  get_default_surfprop(
-    Surfprop  *surfprop );
+    VIO_Surfprop  *surfprop );
 
 BICAPI  VIO_BOOL  lookup_colour(
     VIO_STR    colour_name,
@@ -275,7 +275,7 @@ BICAPI  VIO_Status  io_vector(
     FILE            *file,
     VIO_IO_types        io_flag,
     VIO_File_formats    format,
-    Vector          *v );
+    VIO_Vector          *v );
 
 BICAPI  VIO_Status  io_colour(
     FILE            *file,
@@ -296,7 +296,7 @@ BICAPI  VIO_Status  io_surfprop(
     FILE            *file,
     VIO_IO_types        io_flag,
     VIO_File_formats    format,
-    Surfprop        *surfprop );
+    VIO_Surfprop        *surfprop );
 
 BICAPI  VIO_Status  io_object_type(
     FILE           *file,
@@ -378,7 +378,7 @@ BICAPI  int  get_object_points(
 
 BICAPI  int  get_object_normals(
     object_struct   *object,
-    Vector          *normals[] );
+    VIO_Vector          *normals[] );
 
 BICAPI  Colour_flags  *get_object_colours(
     object_struct   *object,
@@ -388,7 +388,7 @@ BICAPI  void  set_object_colours(
     object_struct   *object,
     VIO_Colour          colours[] );
 
-BICAPI  Surfprop  *get_object_surfprop(
+BICAPI  VIO_Surfprop  *get_object_surfprop(
     object_struct   *object );
 
 BICAPI  VIO_STR  get_object_name(
@@ -426,7 +426,7 @@ BICAPI  void  set_object_colour(
 
 BICAPI  void  set_object_surfprop(
     object_struct  *object,
-    Surfprop       *spr );
+    VIO_Surfprop       *spr );
 
 BICAPI  void  free_colours(
     Colour_flags   colour_flag,
@@ -495,7 +495,7 @@ BICAPI  void  convert_pixels24_to_dithered(
 
 BICAPI  void  resample_pixels(
     pixels_struct   *pixels,
-    Transform_2d    *transform,
+    VIO_Transform_2d    *transform,
     int             n_samples,
     pixels_struct   *new_pixels,
     VIO_Colour          background_colour );
@@ -515,7 +515,7 @@ BICAPI  void  delete_polygon_point_neighbours(
     polygons_struct  *polygons,
     int              n_point_neighbours[],
     int              *point_neighbours[],
-    Smallest_int     interior_flags[],
+    VIO_SCHAR     interior_flags[],
     int              *point_polygons[] );
 
 BICAPI   void   create_polygon_point_neighbours(
@@ -523,18 +523,18 @@ BICAPI   void   create_polygon_point_neighbours(
     VIO_BOOL          across_polygons_flag,
     int              *n_point_neighbours_ptr[],
     int              **point_neighbours_ptr[],
-    Smallest_int     *interior_flags_ptr[],
+    VIO_SCHAR     *interior_flags_ptr[],
     int              **point_polygons_ptr[] );
 
 BICAPI  void  initialize_polygons(
     polygons_struct   *polygons,
     VIO_Colour            col,
-    Surfprop          *spr );
+    VIO_Surfprop          *spr );
 
 BICAPI  void  initialize_polygons_with_size(
     polygons_struct   *polygons,
     VIO_Colour            col,
-    Surfprop          *spr,
+    VIO_Surfprop          *spr,
     int               n_points,
     int               n_polygons,
     int               size );
@@ -564,7 +564,7 @@ BICAPI  void  start_new_polygon(
 BICAPI  void  add_point_to_polygon(
     polygons_struct   *polygons,
     VIO_Point             *point,
-    Vector            *normal );
+    VIO_Vector            *normal );
 
 BICAPI  int  get_polygon_points(
     polygons_struct   *polygons,
@@ -633,7 +633,7 @@ BICAPI  int  get_polygons_around_vertex(
 BICAPI  void  compute_polygon_normal(
     polygons_struct  *polygons,
     int              poly,
-    Vector           *normal );
+    VIO_Vector           *normal );
 
 BICAPI  void  compute_polygon_normals(
     polygons_struct  *polygons );
@@ -644,14 +644,14 @@ BICAPI  void  average_polygon_normals(
     VIO_Real             neighbour_weight );
 
 BICAPI  VIO_BOOL  get_plane_polygon_intersection(
-    Vector           *normal,
+    VIO_Vector           *normal,
     VIO_Real             d,
     polygons_struct  *polygons,
     int              poly,
     VIO_Point            intersection_points[] );
 
 BICAPI  VIO_BOOL  get_plane_segment_intersection(
-    Vector           *normal,
+    VIO_Vector           *normal,
     VIO_Real             d,
     VIO_Point            *p1,
     VIO_Point            *p2,
@@ -673,7 +673,7 @@ BICAPI  void  compute_points_centroid_and_normal(
     int              n_neighbours,
     int              neighbours[],
     VIO_Point            *centroid,
-    Vector           *normal,
+    VIO_Vector           *normal,
     VIO_Real             *base_length,
     VIO_Real             *curvature );
 
@@ -683,7 +683,7 @@ BICAPI  void  compute_polygon_point_centroid(
     int              vertex_index,
     int              point_index,
     VIO_Point            *centroid,
-    Vector           *normal,
+    VIO_Vector           *normal,
     VIO_Real             *base_length,
     VIO_Real             *curvature );
 
@@ -703,7 +703,7 @@ BICAPI  VIO_BOOL  polygons_are_same_topology(
 BICAPI  void  initialize_quadmesh(
     quadmesh_struct   *quadmesh,
     VIO_Colour            col,
-    Surfprop          *spr,
+    VIO_Surfprop          *spr,
     int               m,
     int               n );
 
@@ -715,7 +715,7 @@ BICAPI  void  set_quadmesh_point(
     int              i,
     int              j,
     VIO_Point            *point,
-    Vector           *normal );
+    VIO_Vector           *normal );
 
 BICAPI  VIO_BOOL  get_quadmesh_point(
     const quadmesh_struct  *quadmesh,

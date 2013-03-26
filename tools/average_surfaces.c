@@ -9,39 +9,39 @@
 private  void  compute_transforms(
     int        n_surfaces,
     int        n_points,
-    Point      **points,
-    Transform  transforms[] );
+    VIO_Point      **points,
+    VIO_Transform  transforms[] );
 
 private  void  create_average_polygons(
     int                   n_surfaces,
     int                   n_groups,
     int                   n_points,
-    Point                 **points,
-    Transform             transforms[],
+    VIO_Point                 **points,
+    VIO_Transform             transforms[],
     FILE                  *rms_file,
     FILE                  *variance_file,
     polygons_struct       *polygons );
 
 #ifdef PRINT_TRANSFORMS
 private  void  print_transform(
-    Transform   *trans );
+    VIO_Transform   *trans );
 #endif
 
 int  main(
     int    argc,
     char   *argv[] )
 {
-    Status           status;
+    VIO_Status           status;
     FILE             *rms_file, *variance_file;
     STRING           filename, output_filename;
     STRING           rms_filename, variance_filename;
     int              i, n_objects, n_surfaces, n_groups;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    *out_object;
     object_struct    **object_list;
     polygons_struct  *polygons, *average_polygons;
-    Point            **points_list;
-    Transform        *transforms;
+    VIO_Point            **points_list;
+    VIO_Transform        *transforms;
 
     status = OK;
 
@@ -165,14 +165,14 @@ int  main(
 #ifndef  USE_IDENTITY_TRANSFORMS
 private  void  compute_point_to_point_transform(
     int        n_points,
-    Point      src_points[],
-    Point      dest_points[],
-    Transform  *transform )
+    VIO_Point      src_points[],
+    VIO_Point      dest_points[],
+    VIO_Transform  *transform )
 {
     int    p, dim;
     VIO_Real   **coords, *target, coefs[4];
 
-    ALLOC2D( coords, n_points, 3 );
+    VIO_ALLOC2D( coords, n_points, 3 );
     ALLOC( target, n_points );
 
     for_less( p, 0, n_points )
@@ -184,12 +184,12 @@ private  void  compute_point_to_point_transform(
 
     make_identity_transform( transform );
 
-    for_less( dim, 0, N_DIMENSIONS )
+    for_less( dim, 0, VIO_N_DIMENSIONS )
     {
         for_less( p, 0, n_points )
             target[p] = (VIO_Real) Point_coord(dest_points[p],dim);
 
-        least_squares( n_points, N_DIMENSIONS, coords, target, coefs );
+        least_squares( n_points, VIO_N_DIMENSIONS, coords, target, coefs );
 
         Transform_elem( *transform, dim, 0 ) = coefs[1];
         Transform_elem( *transform, dim, 1 ) = coefs[2];
@@ -198,15 +198,15 @@ private  void  compute_point_to_point_transform(
     }
 
     FREE( target );
-    FREE2D( coords );
+    VIO_FREE2D( coords );
 }
 #endif
 
 private  void  compute_transforms(
     int        n_surfaces,
     int        n_points,
-    Point      **points,
-    Transform  transforms[] )
+    VIO_Point      **points,
+    VIO_Transform  transforms[] )
 {
     int   s;
 
@@ -228,8 +228,8 @@ private  void  compute_transforms(
 private  void  compute_transforms(
     int        n_surfaces,
     int        n_points,
-    Point      **points,
-    Transform  transforms[] )
+    VIO_Point      **points,
+    VIO_Transform  transforms[] )
 {
     int                    dim, s, i, j;
     linear_least_squares   lsq;
@@ -242,7 +242,7 @@ private  void  compute_transforms(
 
     n = (VIO_Real) n_surfaces;
 
-    for_less( dim, 0, N_DIMENSIONS )
+    for_less( dim, 0, VIO_N_DIMENSIONS )
     {
         initialize_linear_least_squares( &lsq, (n_surfaces-1) * 4 );
 
@@ -289,7 +289,7 @@ private  void  compute_transforms(
 
         for_less( s, 1, n_surfaces )
         {
-            for_less( j, 0, N_DIMENSIONS+1 )
+            for_less( j, 0, VIO_N_DIMENSIONS+1 )
                 Transform_elem(transforms[s],dim,j) = coefs[IJ(s-1,j,4)];
         }
 
@@ -304,8 +304,8 @@ private  void  compute_transforms(
 private  VIO_Real  get_rms_points(
     int                   n_surfaces,
     int                   n_groups,
-    Point                 samples[],
-    Point                 *centroid,
+    VIO_Point                 samples[],
+    VIO_Point                 *centroid,
     VIO_Real                  inv_variance[3][3] )
 {
     int    i, j, s;
@@ -361,8 +361,8 @@ private  void  create_average_polygons(
     int                   n_surfaces,
     int                   n_groups,
     int                   n_points,
-    Point                 **points,
-    Transform             transforms[],
+    VIO_Point                 **points,
+    VIO_Transform             transforms[],
     FILE                  *rms_file,
     FILE                  *variance_file,
     polygons_struct       *polygons )
@@ -370,7 +370,7 @@ private  void  create_average_polygons(
     VIO_Real   x, y, z;
     int    i, j, p, s;
     VIO_Real   rms, inv_variance[3][3];
-    Point  *samples;
+    VIO_Point  *samples;
 
     ALLOC( samples, n_surfaces );
 
@@ -410,13 +410,13 @@ private  void  create_average_polygons(
 
 #ifdef PRINT_TRANSFORMS
 private  void  print_transform(
-    Transform   *trans )
+    VIO_Transform   *trans )
 {
     int   i, j;
 
-    for_less( i, 0, N_DIMENSIONS )
+    for_less( i, 0, VIO_N_DIMENSIONS )
     {
-        for_less( j, 0, N_DIMENSIONS+1 )
+        for_less( j, 0, VIO_N_DIMENSIONS+1 )
             print( " %12g", Transform_elem(*trans,i,j) );
         print( "\n" );
     }

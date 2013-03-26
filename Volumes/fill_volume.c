@@ -45,8 +45,8 @@ typedef struct
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  fill_connected_voxels(
-    Volume              volume,
-    Volume              label_volume,
+    VIO_Volume              volume,
+    VIO_Volume              label_volume,
     Neighbour_types     connectivity,
     int                 voxel[],
     int                 min_label_threshold,
@@ -54,12 +54,12 @@ BICAPI VIO_BOOL  fill_connected_voxels(
     int                 desired_label,
     VIO_Real                min_threshold,
     VIO_Real                max_threshold,
-    int                 range_changed[2][N_DIMENSIONS] )
+    int                 range_changed[2][VIO_N_DIMENSIONS] )
 {
     int                          dir, n_dirs, *dx, *dy, *dz, dim;
     int                          x, y, z, tx, ty, tz;
-    int                          sizes[N_DIMENSIONS];
-    int                          voxel_index[MAX_DIMENSIONS];
+    int                          sizes[VIO_N_DIMENSIONS];
+    int                          voxel_index[VIO_MAX_DIMENSIONS];
     xyz_struct                   entry;
     QUEUE_STRUCT( xyz_struct )   queue;
     bitlist_3d_struct            checked_flags, change_flags;
@@ -138,7 +138,7 @@ BICAPI VIO_BOOL  fill_connected_voxels(
         {
             set_volume_label_data( label_volume, voxel_index, desired_label );
 
-            for_less( dim, 0, N_DIMENSIONS )
+            for_less( dim, 0, VIO_N_DIMENSIONS )
             {
                 if( first || voxel_index[dim] < range_changed[0][dim] )
                     range_changed[0][dim] = voxel_index[dim];
@@ -319,8 +319,8 @@ BICAPI int  get_3D_neighbour_directions(
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  should_change_this_one(
-    Volume          volume,
-    Volume          label_volume,
+    VIO_Volume          volume,
+    VIO_Volume          label_volume,
     int             voxel[],
     VIO_Real            min_threshold,
     VIO_Real            max_threshold,

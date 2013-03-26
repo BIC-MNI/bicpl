@@ -20,20 +20,20 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_cod
 
 #define    DEFAULT_USER_DEFINED_COLOUR_CODE_SUFFIX      "ccd"
 
-BICAPI STRING    get_default_user_def_colour_code_suffix( void )
+BICAPI VIO_STR    get_default_user_def_colour_code_suffix( void )
 {
     return( DEFAULT_USER_DEFINED_COLOUR_CODE_SUFFIX );
 }
 
-BICAPI Status  input_user_defined_colour_coding(
+BICAPI VIO_Status  input_user_defined_colour_coding(
     colour_coding_struct   *colour_coding,
-    STRING                 filename )
+    VIO_STR                 filename )
 {
-    Status   status;
+    VIO_Status   status;
     FILE     *file;
     VIO_Real     pos, *positions;
-    Colour   col, *colours;
-    STRING   line;
+    VIO_Colour   col, *colours;
+    VIO_STR   line;
     int      n_colours;
 
     if( open_file_with_default_suffix( filename,

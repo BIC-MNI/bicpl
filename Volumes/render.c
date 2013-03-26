@@ -161,12 +161,12 @@ BICAPI void   delete_render_storage(
     store = (render_storage_struct *) ptr;
 
     if( store->total_cases1_alloced > 0 && store->x_size1_alloced > 0 )
-        FREE2D( store->x_offsets1 );
+        VIO_FREE2D( store->x_offsets1 );
 
     if( store->n_slices1_alloced > 0 && store->y_size1_alloced > 0 )
     {
-        FREE2D( store->y_offsets1 );
-        FREE2D( store->which_x_offsets1 );
+        VIO_FREE2D( store->y_offsets1 );
+        VIO_FREE2D( store->which_x_offsets1 );
     }
 
     if( store->n_slices1_alloced > 0 )
@@ -176,12 +176,12 @@ BICAPI void   delete_render_storage(
     }
 
     if( store->total_cases2_alloced > 0 && store->x_size2_alloced > 0 )
-        FREE2D( store->x_offsets2 );
+        VIO_FREE2D( store->x_offsets2 );
 
     if( store->n_slices2_alloced > 0 && store->y_size2_alloced > 0 )
     {
-        FREE2D( store->y_offsets2 );
-        FREE2D( store->which_x_offsets2 );
+        VIO_FREE2D( store->y_offsets2 );
+        VIO_FREE2D( store->which_x_offsets2 );
     }
 
     if( store->n_slices2_alloced > 0 )
@@ -216,7 +216,7 @@ BICAPI void  render_volume_to_slice(
     int             n_dims1,
     int             sizes1[],
     void            *volume_data1,
-    Data_types      volume1_type,
+    VIO_Data_types      volume1_type,
     int             n_slices1,
     VIO_Real            weights1[],
     int             strides1[],
@@ -226,7 +226,7 @@ BICAPI void  render_volume_to_slice(
     int             n_dims2,
     int             sizes2[],
     void            *volume_data2,
-    Data_types      volume2_type,
+    VIO_Data_types      volume2_type,
     int             n_slices2,
     VIO_Real            weights2[],
     int             strides2[],
@@ -238,15 +238,15 @@ BICAPI void  render_volume_to_slice(
     int             y_pixel_start,
     int             y_pixel_end,
     unsigned short  **cmode_colour_map,
-    Colour          **rgb_colour_map,
-    Colour          empty_colour,
+    VIO_Colour          **rgb_colour_map,
+    VIO_Colour          empty_colour,
     void            *render_storage,
     pixels_struct   *pixels )
 {
     int     i, c, p, total_cases1, total_cases2, case_index, case_multiplier;
     int     int_start;
     int     *start_x, *end_x;
-    int     s, x, y, n_cases1[MAX_DIMENSIONS], n_cases2[MAX_DIMENSIONS];
+    int     s, x, y, n_cases1[VIO_MAX_DIMENSIONS], n_cases2[VIO_MAX_DIMENSIONS];
     size_t  offset;
     size_t  **x_offsets1, **y_offsets1;
     size_t  **x_offsets2, **y_offsets2;
@@ -255,10 +255,10 @@ BICAPI void  render_volume_to_slice(
     int     remainder_case, x_size, y_size;
     int     x_left, x_right, n_non_zero;
     void    **start_slices1, **start_slices2;
-    VIO_Real    start_c, x_start, x_end, remainder, tmp_origin[MAX_DIMENSIONS];
+    VIO_Real    start_c, x_start, x_end, remainder, tmp_origin[VIO_MAX_DIMENSIONS];
     VIO_Real    remainder_offset, left_edge, right_edge, delta;
     render_storage_struct  *store;
-    static  int   max_cases[MAX_DIMENSIONS] = { 10, 10, 4, 3, 3 };
+    static  int   max_cases[VIO_MAX_DIMENSIONS] = { 10, 10, 4, 3, 3 };
     int     new_total_cases1, new_x_size1, new_y_size1, new_n_slices1;
     int     new_total_cases2, new_x_size2, new_y_size2, new_n_slices2;
 
@@ -306,8 +306,8 @@ BICAPI void  render_volume_to_slice(
         new_x_size1 > store->x_size1_alloced )
     {
         if( store->total_cases1_alloced > 0 && store->x_size1_alloced > 0 )
-            FREE2D( store->x_offsets1 );
-        ALLOC2D( store->x_offsets1, new_total_cases1, new_x_size1 );
+            VIO_FREE2D( store->x_offsets1 );
+        VIO_ALLOC2D( store->x_offsets1, new_total_cases1, new_x_size1 );
     }
 
     if( new_n_slices1 > store->n_slices1_alloced ||
@@ -315,11 +315,11 @@ BICAPI void  render_volume_to_slice(
     {
         if( store->n_slices1_alloced > 0 && store->y_size1_alloced > 0 )
         {
-            FREE2D( store->y_offsets1 );
-            FREE2D( store->which_x_offsets1 );
+            VIO_FREE2D( store->y_offsets1 );
+            VIO_FREE2D( store->which_x_offsets1 );
         }
-        ALLOC2D( store->y_offsets1, new_n_slices1, new_y_size1 );
-        ALLOC2D( store->which_x_offsets1, new_n_slices1, new_y_size1 );
+        VIO_ALLOC2D( store->y_offsets1, new_n_slices1, new_y_size1 );
+        VIO_ALLOC2D( store->which_x_offsets1, new_n_slices1, new_y_size1 );
     }
 
     
@@ -391,8 +391,8 @@ BICAPI void  render_volume_to_slice(
             new_x_size2 > store->x_size2_alloced )
         {
             if( store->total_cases2_alloced > 0 && store->x_size2_alloced > 0 )
-                FREE2D( store->x_offsets2 );
-            ALLOC2D( store->x_offsets2, new_total_cases2, new_x_size2 );
+                VIO_FREE2D( store->x_offsets2 );
+            VIO_ALLOC2D( store->x_offsets2, new_total_cases2, new_x_size2 );
         }
 
         if( new_n_slices2 > store->n_slices2_alloced ||
@@ -400,11 +400,11 @@ BICAPI void  render_volume_to_slice(
         {
             if( store->n_slices2_alloced > 0 && store->y_size2_alloced > 0 )
             {
-                FREE2D( store->y_offsets2 );
-                FREE2D( store->which_x_offsets2 );
+                VIO_FREE2D( store->y_offsets2 );
+                VIO_FREE2D( store->which_x_offsets2 );
             }
-            ALLOC2D( store->y_offsets2, new_n_slices2, new_y_size2 );
-            ALLOC2D( store->which_x_offsets2, new_n_slices2, new_y_size2 );
+            VIO_ALLOC2D( store->y_offsets2, new_n_slices2, new_y_size2 );
+            VIO_ALLOC2D( store->which_x_offsets2, new_n_slices2, new_y_size2 );
         }
     
         if( new_n_slices2 > store->n_slices2_alloced )
@@ -652,7 +652,7 @@ BICAPI void  render_volume_to_slice(
 
         if( pixels->pixel_type == RGB_PIXEL )
         {
-            Colour          *pixel_ptr;
+            VIO_Colour          *pixel_ptr;
 
             pixel_ptr = &pixels->data.pixels_rgb[IJ(y,x_pixel_start,x_size)];
 

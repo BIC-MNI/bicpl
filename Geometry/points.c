@@ -32,7 +32,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/points
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  null_Point(
-    Point   *p )
+    VIO_Point   *p )
 {
     return( Point_x(*p) == 0.0f &&
             Point_y(*p) == 0.0f &&
@@ -53,7 +53,7 @@ BICAPI  VIO_BOOL  null_Point(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  null_Vector(
-    Vector   *v )
+    VIO_Vector   *v )
 {
     return( Vector_x(*v) == 0.0f &&
             Vector_y(*v) == 0.0f &&
@@ -75,8 +75,8 @@ BICAPI  VIO_BOOL  null_Vector(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_Real  distance_between_points(
-    Point  *p1,
-    Point  *p2 )
+    VIO_Point  *p1,
+    VIO_Point  *p2 )
 {
     VIO_Real   dx, dy, dz;
 
@@ -104,8 +104,8 @@ BICAPI  VIO_Real  distance_between_points(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  points_within_distance(
-    Point  *p1,
-    Point  *p2,
+    VIO_Point  *p1,
+    VIO_Point  *p2,
     VIO_Real   distance )
 {
     VIO_Real  dx, dy, dz;
@@ -137,13 +137,13 @@ BICAPI  VIO_BOOL  points_within_distance(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  apply_point_to_min_and_max(
-    Point   *point,
-    Point   *min_point,
-    Point   *max_point )
+    VIO_Point   *point,
+    VIO_Point   *min_point,
+    VIO_Point   *max_point )
 {
     int    c;
 
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
     {
         if( Point_coord(*point,c) < Point_coord(*min_point,c) )
             Point_coord(*min_point,c) = Point_coord(*point,c);
@@ -171,14 +171,14 @@ BICAPI  void  apply_point_to_min_and_max(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  expand_min_and_max_points(
-    Point   *min_point,
-    Point   *max_point,
-    Point   *min_to_check,
-    Point   *max_to_check )
+    VIO_Point   *min_point,
+    VIO_Point   *max_point,
+    VIO_Point   *min_to_check,
+    VIO_Point   *max_to_check )
 {
     int    c;
 
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
     {
         if( Point_coord(*min_to_check,c) < Point_coord(*min_point,c) )
             Point_coord(*min_point,c) = Point_coord(*min_to_check,c);
@@ -204,9 +204,9 @@ BICAPI  void  expand_min_and_max_points(
 
 BICAPI  void  get_range_points(
     int                n_points,
-    Point              points[],
-    Point              *min_corner,
-    Point              *max_corner )
+    VIO_Point              points[],
+    VIO_Point              *min_corner,
+    VIO_Point              *max_corner )
 {
     int     i;
 
@@ -238,8 +238,8 @@ BICAPI  void  get_range_points(
 
 BICAPI  void  get_points_centroid(
     int     n_points,
-    Point   points[],
-    Point   *centroid )
+    VIO_Point   points[],
+    VIO_Point   *centroid )
 {
     int   i;
     VIO_Real  x, y, z;
@@ -276,7 +276,7 @@ BICAPI  void  get_points_centroid(
 
 BICAPI   void     reverse_vectors(
     int       n_vectors,
-    Vector    vectors[] )
+    VIO_Vector    vectors[] )
 {
     int     i;
 
@@ -301,12 +301,12 @@ BICAPI   void     reverse_vectors(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_Real  get_angle_between_points(
-    Point  *prev_point,
-    Point  *this_point,
-    Point  *next_point )
+    VIO_Point  *prev_point,
+    VIO_Point  *this_point,
+    VIO_Point  *next_point )
 {
     VIO_Real    angle, c;
-    Vector  v1, v2;
+    VIO_Vector  v1, v2;
 
     SUB_POINTS( v1, *prev_point, *this_point );
     SUB_POINTS( v2, *next_point, *this_point );

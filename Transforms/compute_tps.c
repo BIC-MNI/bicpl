@@ -81,8 +81,8 @@ BICAPI  void  get_nonlinear_warp(
 {
    VIO_Real    **ML,**INVML;
 
-   ALLOC2D( ML, n_points+n_dims+1, n_points+n_dims+1 );
-   ALLOC2D( INVML, n_points+n_dims+1, n_points+n_dims+1 );
+   VIO_ALLOC2D( ML, n_points+n_dims+1, n_points+n_dims+1 );
+   VIO_ALLOC2D( INVML, n_points+n_dims+1, n_points+n_dims+1 );
 
    /* This function will build the L matrix */
 
@@ -94,8 +94,8 @@ BICAPI  void  get_nonlinear_warp(
 
    calculate_weights( values, INVML, INVMLY, n_points, n_dims, n_values );
 
-   FREE2D( ML );
-   FREE2D( INVML );
+   VIO_FREE2D( ML );
+   VIO_FREE2D( INVML );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

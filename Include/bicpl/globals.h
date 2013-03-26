@@ -38,7 +38,7 @@
     type  variable = { initial1, initial2, initial3, initial4, initial5 };
 
 #define  DEF_GLOBAL_COLOUR( variable ) \
-    Colour   variable;
+    VIO_Colour   variable;
 
 #include  <global_variables.h>
 
@@ -68,7 +68,7 @@
          DEF_GLOBAL( variable, type, i1 )
 
 #define  DEF_GLOBAL_COLOUR( variable ) \
-         DEF_GLOBAL( variable, Colour, 0 )
+         DEF_GLOBAL( variable, VIO_Colour, 0 )
 
 #include  <global_variables.h>
 
@@ -96,7 +96,7 @@
          DEF_GLOBAL( variable, type, i1 )
 
 #define  DEF_GLOBAL_COLOUR( variable ) \
-         extern  Colour  variable;
+         extern  VIO_Colour  variable;
 
 #include  <global_variables.h>
 

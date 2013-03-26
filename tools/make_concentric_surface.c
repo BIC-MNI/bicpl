@@ -4,13 +4,13 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING           input_filename, output_filename;
+    VIO_STR           input_filename, output_filename;
     int              i, n_objects;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list;
     polygons_struct  *polygons;
-    Point            *original_points, centroid;
-    Vector           offset;
+    VIO_Point            *original_points, centroid;
+    VIO_Vector           offset;
     VIO_Real             scaling;
 
     initialize_argument_processing( argc, argv );

@@ -19,8 +19,8 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 #endif
 
 static  void  recursive_intersect_ray(
-    Point                 *origin,
-    Vector                *direction,
+    VIO_Point                 *origin,
+    VIO_Vector                *direction,
     VIO_Real                  t_min,
     VIO_Real                  t_max,
     bintree_node_struct   *node,
@@ -72,8 +72,8 @@ BICAPI  void  print_bintree_stats(
 ---------------------------------------------------------------------------- */
 
 BICAPI  int  intersect_ray_with_bintree(
-    Point               *origin,
-    Vector              *direction,
+    VIO_Point               *origin,
+    VIO_Vector              *direction,
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *obj_index,
@@ -120,8 +120,8 @@ BICAPI  int  intersect_ray_with_bintree(
 ---------------------------------------------------------------------------- */
 
 static  void  recursive_intersect_ray(
-    Point                 *origin,
-    Vector                *direction,
+    VIO_Point                 *origin,
+    VIO_Vector                *direction,
     VIO_Real                  t_min,
     VIO_Real                  t_max,
     bintree_node_struct   *node,
@@ -288,8 +288,8 @@ static  void  recursive_intersect_ray(
 
 BICAPI  VIO_BOOL  ray_intersects_range(
     range_struct  *range,
-    Point         *origin,
-    Vector        *direction,
+    VIO_Point         *origin,
+    VIO_Vector        *direction,
     VIO_Real          *t_min,
     VIO_Real          *t_max )
 {

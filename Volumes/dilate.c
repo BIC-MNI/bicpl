@@ -46,8 +46,8 @@ typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
 ---------------------------------------------------------------------------- */
 
 BICAPI int  dilate_voxels_3d(
-    Volume          volume,
-    Volume          label_volume,
+    VIO_Volume          volume,
+    VIO_Volume          label_volume,
     VIO_Real            min_inside_label,
     VIO_Real            max_inside_label,
     VIO_Real            min_inside_value,
@@ -58,14 +58,14 @@ BICAPI int  dilate_voxels_3d(
     VIO_Real            max_outside_value,
     VIO_Real            new_label,
     Neighbour_types connectivity,
-    int             range_changed[2][N_DIMENSIONS] )
+    int             range_changed[2][VIO_N_DIMENSIONS] )
 {
     int                     n_changed;
     int                     x, y, z, delta_x, tx, ty, tz;
-    int                     sizes[N_DIMENSIONS];
+    int                     sizes[VIO_N_DIMENSIONS];
     int                     dir, n_dirs, *dx, *dy, *dz;
     VIO_Real                    value, label, *value_row, *label_row;
-    Smallest_int            **voxel_classes[3], **swap;
+    VIO_SCHAR            **voxel_classes[3], **swap;
     progress_struct         progress;
     Voxel_classes           voxel_class;
     VIO_BOOL                 use_label_volume, use_volume, at_end, at_edge_y;
@@ -95,14 +95,14 @@ BICAPI int  dilate_voxels_3d(
     get_volume_sizes( label_volume, sizes );
 
     for_less( x, 0, 3 )
-        ALLOC2D( voxel_classes[x], sizes[Y]+2, sizes[Z]+2 );
+        VIO_ALLOC2D( voxel_classes[x], sizes[Y]+2, sizes[Z]+2 );
 
     for_less( x, 0, 1 )
     {
         for_less( y, 0, sizes[Y] + 2 )
         {
             for_less( z, 0, sizes[Z] + 2 )
-                voxel_classes[x][y][z] = (Smallest_int) NOT_INVOLVED;
+                voxel_classes[x][y][z] = (VIO_SCHAR) NOT_INVOLVED;
         }
     }
 
@@ -123,7 +123,7 @@ BICAPI int  dilate_voxels_3d(
             for_less( y, -1, sizes[Y] + 1 )
             {
                 at_edge_y = (y == -1 || y == sizes[Y]);
-                voxel_classes[delta_x+1][y+1][0] = (Smallest_int) NOT_INVOLVED;
+                voxel_classes[delta_x+1][y+1][0] = (VIO_SCHAR) NOT_INVOLVED;
                 voxel_classes[delta_x+1][y+1][sizes[Z]+1] = NOT_INVOLVED;
 
                 if( !at_edge_y && !at_end )
@@ -192,7 +192,7 @@ BICAPI int  dilate_voxels_3d(
                     }
 
                     voxel_classes[delta_x+1][y+1][z+1] =
-                                                  (Smallest_int) voxel_class;
+                                                  (VIO_SCHAR) voxel_class;
                 }
             }
         }
@@ -248,7 +248,7 @@ BICAPI int  dilate_voxels_3d(
     terminate_progress_report( &progress );
 
     for_less( x, 0, 3 )
-        FREE2D( voxel_classes[x] );
+        VIO_FREE2D( voxel_classes[x] );
 
     FREE( value_row );
     FREE( label_row );

@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-public  Status  process_object(
+public  VIO_Status  process_object(
     object_struct  *object );
 
 private  void  copy_colours(
@@ -8,9 +8,9 @@ private  void  copy_colours(
     object_struct  *dest_object )
 {
     int          i, n_points, n_src_points, n_dest_points;
-    Point        *points;
+    VIO_Point        *points;
     Colour_flags *src_colour_flag, *dest_colour_flag;
-    Colour       *src_colours, *dest_colours;
+    VIO_Colour       *src_colours, *dest_colours;
 
     src_colour_flag = get_object_colours( src_object, &src_colours );
     n_src_points = get_object_points( src_object, &points );
@@ -44,10 +44,10 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    Status         status;
-    STRING         src_filename, dest_filename;
+    VIO_Status         status;
+    VIO_STR         src_filename, dest_filename;
     int            i, n_src_objects, n_dest_objects;
-    File_formats   format;
+    VIO_File_formats   format;
     object_struct  **src_object_list, **dest_object_list;
 
     status = OK;

@@ -1,6 +1,6 @@
 #include  <bicpl.h>
 
-private  Status  add_polygons(
+private  VIO_Status  add_polygons(
     polygons_struct   *summed_polygons,
     VIO_Real              weight,
     polygons_struct   *polygons,
@@ -8,7 +8,7 @@ private  Status  add_polygons(
     VIO_BOOL           first_flag )
 {
     int     i, c, n_colours;
-    Point   scaled;
+    VIO_Point   scaled;
 
     if( first_flag )
     {
@@ -61,13 +61,13 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    Status           status;
-    STRING           filename, output_filename;
+    VIO_Status           status;
+    VIO_STR           filename, output_filename;
     VIO_Real             weight, new_weight;
     int              i, n_objects, n_polygons, n_colours;
     VIO_Real             scale_colours;
     VIO_Real             **colours;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    *out_object;
     object_struct    **object_list;
     polygons_struct  *polygons;
@@ -120,7 +120,7 @@ int  main(
                     n_colours = get_n_colours( polygons->colour_flag,
                                                polygons->n_points,
                                                polygons->n_items );
-                    ALLOC2D( colours, n_colours, 4 );
+                    VIO_ALLOC2D( colours, n_colours, 4 );
                 }
 
                 print( "%s: Weighted %g\n", filename, weight );
@@ -159,7 +159,7 @@ int  main(
     }
 
     if( n_colours > 0 )
-        FREE2D( colours );
+        VIO_FREE2D( colours );
 
     compute_polygon_normals( get_polygons_ptr(out_object) );
 

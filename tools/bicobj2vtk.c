@@ -150,7 +150,7 @@ void copy_vectors( FILE* out,
 }
 
 
-void write_points_section( FILE* out, int n_points, Point* points )
+void write_points_section( FILE* out, int n_points, VIO_Point* points )
 {
     int i;
 
@@ -229,7 +229,7 @@ void polygons_to_vtk( FILE* out, const polygons_struct* p )
 
 void process_file( FILE* out, char* filename ) 
 {
-    File_formats format;
+    VIO_File_formats format;
     int i, num_objects;
     object_struct** object_list;
 

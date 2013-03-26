@@ -8,10 +8,10 @@
 
 int  main( int    argc, char   *argv[] ) {
 
-    Status           status;
-    STRING           input_filename, output_filename;
+    VIO_Status           status;
+    VIO_STR           input_filename, output_filename;
     int              n_objects;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list;
 
     status = OK;

@@ -24,8 +24,8 @@ typedef  enum  { FOUR_NEIGHBOURS, EIGHT_NEIGHBOURS } Neighbour_types;
 typedef struct
 {
     int                    x, y;
-    Volume                 src_volume;
-    Volume                 dest_volume;
+    VIO_Volume                 src_volume;
+    VIO_Volume                 dest_volume;
     VIO_General_transform      transform;
 } resample_struct;
 

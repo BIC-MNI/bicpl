@@ -32,9 +32,9 @@ typedef  enum {
 typedef  struct 
 {
     void             *ptr_to_global;
-    STRING           variable_name;
+    VIO_STR           variable_name;
     Variable_types   type;
-    Smallest_int     set_flag;
+    VIO_SCHAR     set_flag;
 } global_struct;
 
 #endif

@@ -36,11 +36,11 @@ static  void  reverse_polygon_order(
     polygons_struct   *polygons,
     int               poly );
 static  VIO_Real  estimate_polygon_curvature(
-    Point   *point,
+    VIO_Point   *point,
     int     n_neighs,
-    Point   neighs[],
-    Point   *centroid,
-    Vector  *normal,
+    VIO_Point   neighs[],
+    VIO_Point   *centroid,
+    VIO_Vector  *normal,
     VIO_Real    *base_length );
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -68,8 +68,8 @@ static  VIO_Real  estimate_polygon_curvature(
  */
 BICAPI  void  initialize_polygons(
     polygons_struct   *polygons,
-    Colour            col,
-    Surfprop          *spr )
+    VIO_Colour            col,
+    VIO_Surfprop          *spr )
 {
     ALLOC( polygons->colours, 1 );
 
@@ -77,14 +77,14 @@ BICAPI  void  initialize_polygons(
 
     polygons->colours[0] = col;
 
-    if( spr != (Surfprop *) 0 )
+    if( spr != (VIO_Surfprop *) 0 )
         polygons->surfprop = *spr;
     else
         get_default_surfprop( &polygons->surfprop );
 
     polygons->n_points = 0;
-    polygons->points = (Point *) 0;
-    polygons->normals = (Vector *) 0;
+    polygons->points = (VIO_Point *) 0;
+    polygons->normals = (VIO_Vector *) 0;
 
     polygons->line_thickness = 1.0f;
 
@@ -92,7 +92,7 @@ BICAPI  void  initialize_polygons(
     polygons->end_indices = (int *) 0;
     polygons->indices = (int *) 0;
 
-    polygons->visibilities = (Smallest_int *) 0;
+    polygons->visibilities = (VIO_SCHAR *) 0;
     polygons->neighbours = (int *) 0;
     polygons->bintree = (bintree_struct_ptr) NULL;
 }
@@ -115,8 +115,8 @@ BICAPI  void  initialize_polygons(
  */
 BICAPI  void  initialize_polygons_with_size(
     polygons_struct   *polygons,
-    Colour            col,
-    Surfprop          *spr,
+    VIO_Colour            col,
+    VIO_Surfprop          *spr,
     int               n_points,
     int               n_polygons,
     int               size )
@@ -183,7 +183,7 @@ BICAPI  void  delete_polygons( polygons_struct *polygons )
     if( polygons->n_points > 0 )
         FREE( polygons->points );
 
-    if( polygons->n_points > 0 && polygons->normals != (Vector *) 0 )
+    if( polygons->n_points > 0 && polygons->normals != (VIO_Vector *) 0 )
         FREE( polygons->normals );
 
     if( polygons->n_items > 0 )
@@ -192,14 +192,14 @@ BICAPI  void  delete_polygons( polygons_struct *polygons )
     if( polygons->n_items > 0 )
         FREE( polygons->end_indices );
 
-    if( polygons->visibilities != (Smallest_int *) 0 )
+    if( polygons->visibilities != (VIO_SCHAR *) 0 )
         FREE( polygons->visibilities );
 
     free_polygon_neighbours( polygons );
 
     delete_bintree_if_any( &polygons->bintree );
 
-    polygons->visibilities = (Smallest_int *) 0;
+    polygons->visibilities = (VIO_SCHAR *) 0;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -230,13 +230,13 @@ BICAPI  void  copy_polygons(
         dest->colours[i] = src->colours[i];
 
     ALLOC( dest->points, src->n_points );
-    if( src->normals != (Vector *) NULL )
+    if( src->normals != (VIO_Vector *) NULL )
         ALLOC( dest->normals, src->n_points );
 
     for_less( i, 0, src->n_points )
     {
         dest->points[i] = src->points[i];
-        if( src->normals != (Vector *) NULL )
+        if( src->normals != (VIO_Vector *) NULL )
             dest->normals[i] = src->normals[i];
         
     }
@@ -251,7 +251,7 @@ BICAPI  void  copy_polygons(
     for_less( i, 0, n_indices )
         dest->indices[i] = src->indices[i];
 
-    dest->visibilities = (Smallest_int *) 0;
+    dest->visibilities = (VIO_SCHAR *) 0;
     dest->neighbours = (int *) 0;
     dest->bintree = (bintree_struct_ptr) NULL;
 }
@@ -272,7 +272,7 @@ BICAPI  void  copy_polygons(
 BICAPI  void  set_polygon_per_item_colours(
     polygons_struct   *polygons )
 {
-    Colour   colour;
+    VIO_Colour   colour;
     int      i;
 
     if( polygons->colour_flag != PER_ITEM_COLOURS )
@@ -305,7 +305,7 @@ BICAPI  void  create_polygons_visibilities(
 {
     int     i;
 
-    if( polygons->visibilities == (Smallest_int *) 0 &&
+    if( polygons->visibilities == (VIO_SCHAR *) 0 &&
         polygons->n_items > 0 )
     {
         ALLOC( polygons->visibilities, polygons->n_items );
@@ -335,10 +335,10 @@ BICAPI  void  set_polygons_visibilities(
 {
     int   i;
 
-    if( polygons->visibilities != (Smallest_int *) 0 )
+    if( polygons->visibilities != (VIO_SCHAR *) 0 )
     {
         for_less( i, 0, polygons->n_items )
-            polygons->visibilities[i] = (Smallest_int) state;
+            polygons->visibilities[i] = (VIO_SCHAR) state;
     }
 }
 
@@ -383,8 +383,8 @@ BICAPI  void  start_new_polygon(
 
 BICAPI  void  add_point_to_polygon(
     polygons_struct   *polygons,
-    Point             *point,
-    Vector            *normal )
+    VIO_Point             *point,
+    VIO_Vector            *normal )
 {
     int      n_points;
 
@@ -393,8 +393,8 @@ BICAPI  void  add_point_to_polygon(
 
     if( polygons->n_points > 1 )
     {
-        if( (normal != (Vector *) 0 && polygons->normals == (Vector *) 0) ||
-            (normal == (Vector *) 0 && polygons->normals != (Vector *) 0) )
+        if( (normal != (VIO_Vector *) 0 && polygons->normals == (VIO_Vector *) 0) ||
+            (normal == (VIO_Vector *) 0 && polygons->normals != (VIO_Vector *) 0) )
         {
             print_error(
               "Error: be consistent with normals in add_point_to_polygon.\n" );
@@ -405,7 +405,7 @@ BICAPI  void  add_point_to_polygon(
                           polygons->end_indices[polygons->n_items-1],
                           polygons->n_points, DEFAULT_CHUNK_SIZE );
 
-    if( normal != (Vector *) 0 )
+    if( normal != (VIO_Vector *) 0 )
     {
         n_points = polygons->n_points;
         ADD_ELEMENT_TO_ARRAY( polygons->normals, n_points,
@@ -433,7 +433,7 @@ BICAPI  void  add_point_to_polygon(
 BICAPI  int  get_polygon_points(
     polygons_struct   *polygons,
     int               poly,
-    Point             points[] )
+    VIO_Point             points[] )
 {
     int      size, p;
 
@@ -465,10 +465,10 @@ BICAPI  int  get_polygon_points(
 BICAPI  void  get_polygon_centroid(
     polygons_struct   *polygons,
     int               poly,
-    Point             *centroid )
+    VIO_Point             *centroid )
 {
     int      size, p;
-    Point    point;
+    VIO_Point    point;
 
     fill_Point( *centroid, 0.0, 0.0, 0.0 );
 
@@ -673,7 +673,7 @@ BICAPI  VIO_BOOL  find_polygon_with_vertex(
 
 BICAPI  VIO_BOOL  lookup_polygon_vertex(
     polygons_struct   *polygons,
-    Point             *point,
+    VIO_Point             *point,
     int               *point_index )
 {
     int      i;
@@ -966,11 +966,11 @@ BICAPI  int  get_polygons_around_vertex(
 BICAPI  void  compute_polygon_normal(
     polygons_struct  *polygons,
     int              poly,
-    Vector           *normal )
+    VIO_Vector           *normal )
 {
 #define  MAX_TEMP_STORAGE  1000
     int                e, size, point_index;
-    Point              polygon[MAX_TEMP_STORAGE];
+    VIO_Point              polygon[MAX_TEMP_STORAGE];
 
     size = GET_OBJECT_SIZE( *polygons, poly );
     if( size > MAX_TEMP_STORAGE )
@@ -1008,7 +1008,7 @@ BICAPI  void  compute_polygon_normals(
 {
     int                e, poly, size, point_index, prev_index, next_index;
     VIO_Real               scale;
-    Vector             normal, normal_scaled;
+    VIO_Vector             normal, normal_scaled;
     progress_struct    progress;
 
     for_less( point_index, 0, polygons->n_points )
@@ -1093,7 +1093,7 @@ BICAPI  void  average_polygon_normals(
 {
     VIO_Real               avg_dot_prod;
     int                e, poly, size, point_index, neigh_index, i;
-    Vector             *neigh_normal_sum, *new_normals, new_normal;
+    VIO_Vector             *neigh_normal_sum, *new_normals, new_normal;
     progress_struct    progress;
 
     if( polygons->n_points <= 0 || polygons->n_items <= 0 )
@@ -1190,11 +1190,11 @@ BICAPI  void  average_polygon_normals(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  get_plane_polygon_intersection(
-    Vector           *normal,
+    VIO_Vector           *normal,
     VIO_Real             d,
     polygons_struct  *polygons,
     int              poly,
-    Point            intersection_points[] )
+    VIO_Point            intersection_points[] )
 {
     int       i1, i2, edge, size, n_intersections;
 
@@ -1239,11 +1239,11 @@ BICAPI  VIO_BOOL  get_plane_polygon_intersection(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  get_plane_segment_intersection(
-    Vector           *normal,
+    VIO_Vector           *normal,
     VIO_Real             d,
-    Point            *p1,
-    Point            *p2,
-    Point            *intersection_point )
+    VIO_Point            *p1,
+    VIO_Point            *p2,
+    VIO_Point            *intersection_point )
 {
     VIO_Real     dist1, dist2, t;
     VIO_BOOL  intersects;
@@ -1346,7 +1346,7 @@ BICAPI  VIO_BOOL  polygon_is_back_facing(
     int               poly )
 {
     int      i, size, point_index;
-    Vector   avg_vertex_normal, polygon_normal;
+    VIO_Vector   avg_vertex_normal, polygon_normal;
 
     compute_polygon_normal( polygons, poly, &polygon_normal );
 
@@ -1424,14 +1424,14 @@ BICAPI  void  compute_points_centroid_and_normal(
     int              point_index,
     int              n_neighbours,
     int              neighbours[],
-    Point            *centroid,
-    Vector           *normal,
+    VIO_Point            *centroid,
+    VIO_Vector           *normal,
     VIO_Real             *base_length,
     VIO_Real             *curvature )
 {
 #define  MAX_NEIGHBOURS   1000
     int              i;
-    Point            neigh_points[MAX_NEIGHBOURS];
+    VIO_Point            neigh_points[MAX_NEIGHBOURS];
 
     if( n_neighbours > 2 )
     {
@@ -1482,8 +1482,8 @@ BICAPI  void  compute_polygon_point_centroid(
     int              poly,
     int              vertex_index,
     int              point_index,
-    Point            *centroid,
-    Vector           *normal,
+    VIO_Point            *centroid,
+    VIO_Vector           *normal,
     VIO_Real             *base_length,
     VIO_Real             *curvature )
 {
@@ -1519,16 +1519,16 @@ BICAPI  void  compute_polygon_point_centroid(
 ---------------------------------------------------------------------------- */
 
 static  VIO_Real  estimate_polygon_curvature(
-    Point   *point,
+    VIO_Point   *point,
     int     n_neighs,
-    Point   neighs[],
-    Point   *centroid,
-    Vector  *normal,
+    VIO_Point   neighs[],
+    VIO_Point   *centroid,
+    VIO_Vector  *normal,
     VIO_Real    *base_length )
 {
     int    i;
     VIO_Real   curvature, len;
-    Vector to_point;
+    VIO_Vector to_point;
 
     len = 0.0;
     for_less( i, 0, n_neighs )
@@ -1572,8 +1572,8 @@ BICAPI  VIO_Real  compute_polygon_vertex_curvature(
 {
     VIO_Real      curvature, base_length;
     int       poly, vertex;
-    Point     centroid;
-    Vector    normal;
+    VIO_Point     centroid;
+    VIO_Vector    normal;
 
     if( !find_polygon_with_vertex( polygons, point_index, &poly, &vertex ) )
     {
@@ -1607,7 +1607,7 @@ static  void  get_opposite_point(
     polygons_struct  *polygons,
     int              poly,
     int              edge,
-    Point            *point )
+    VIO_Point            *point )
 {
     int  v, size;
 
@@ -1644,8 +1644,8 @@ BICAPI  VIO_Real  get_polygon_edge_angle(
 {
     int     size, i, point_index1, point_index2, neighbour_poly;
     VIO_Real    angle, edge_len_squared, scale, x, y;
-    Point   p1, p2, poly1_point, poly2_point;
-    Vector  v1, v2, normal, diff, edge_vec;
+    VIO_Point   p1, p2, poly1_point, poly2_point;
+    VIO_Vector  v1, v2, normal, diff, edge_vec;
 
     neighbour_poly = polygons->neighbours[POINT_INDEX( polygons->end_indices,
                                                        poly, edge )];

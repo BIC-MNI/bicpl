@@ -1,9 +1,9 @@
 #include  <bicpl.h>
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input.obj  output.obj amb_coef diff_coef spec_coef spec_exp opacity\n\
 \n\
      Copies the input objects to the output objects, with the surfprop set\n\
@@ -17,10 +17,10 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    STRING               src_filename, dest_filename;
-    File_formats         format;
+    VIO_STR               src_filename, dest_filename;
+    VIO_File_formats         format;
     VIO_Real                 amb_coef, diff_coef, spec_coef, spec_exp, opacity;
-    Surfprop             spr;
+    VIO_Surfprop             spr;
     int                  i;
     int                  n_objects;
     object_struct        **objects;

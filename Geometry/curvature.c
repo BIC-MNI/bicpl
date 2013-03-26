@@ -47,9 +47,9 @@ BICAPI  void  get_polygon_vertex_curvatures(
 {
     int              size, point_index, vertex_index, poly;
     VIO_Real             curvature, base_length;
-    Smallest_int     *point_done;
-    Point            centroid;
-    Vector           normal;
+    VIO_SCHAR     *point_done;
+    VIO_Point            centroid;
+    VIO_Vector           normal;
     float            *distances;
     VIO_BOOL          initialized;
     progress_struct  progress;

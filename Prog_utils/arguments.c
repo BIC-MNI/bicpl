@@ -66,9 +66,9 @@ BICAPI  int  get_n_arguments_remaining( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  STRING  get_current_argument_string( void )
+static  VIO_STR  get_current_argument_string( void )
 {
-    STRING   arg;
+    VIO_STR   arg;
 
     arg = arguments.argv[arguments.current_arg];
     return( &arg[arguments.current_offset_within_arg] );
@@ -210,8 +210,8 @@ BICAPI  VIO_BOOL  get_real_argument(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  get_string_argument(
-    STRING   default_value,
-    STRING   *value )
+    VIO_STR   default_value,
+    VIO_STR   *value )
 {
     VIO_BOOL   found;
 
@@ -246,7 +246,7 @@ BICAPI  VIO_BOOL  get_string_argument(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  get_prefix_argument(
-    STRING  prefix )
+    VIO_STR  prefix )
 {
     char      *next_str;
     VIO_BOOL   found;

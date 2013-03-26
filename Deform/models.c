@@ -2,13 +2,13 @@
 #include "bicpl/deform.h"
 
 BICAPI  void  get_model_shape_point(
-    Point    *origin,
-    Vector   *pos_model_dir,
-    Vector   *neg_model_dir,
+    VIO_Point    *origin,
+    VIO_Vector   *pos_model_dir,
+    VIO_Vector   *neg_model_dir,
     VIO_Real     dist,
-    Point    *point )
+    VIO_Point    *point )
 {
-    Vector   offset;
+    VIO_Vector   offset;
 
     if( dist < 0.0 )
     {
@@ -28,11 +28,11 @@ BICAPI  void  compute_equilibrium_point(
     VIO_Real                      boundary_dist,
     VIO_Real                      base_length,
     VIO_Real                      model_dist,
-    Vector                    *pos_model_dir,
-    Vector                    *neg_model_dir,
-    Point                     *centroid,
+    VIO_Vector                    *pos_model_dir,
+    VIO_Vector                    *neg_model_dir,
+    VIO_Point                     *centroid,
     deformation_model_struct  *deformation_model,
-    Point                     *equilibrium_point )
+    VIO_Point                     *equilibrium_point )
 {
     VIO_Real                  curvature_offset, equil_dist;
     deform_model_struct   *model;
@@ -67,18 +67,18 @@ BICAPI  void  compute_equilibrium_point(
 }
 
 BICAPI  void  compute_model_dirs(
-    Point      *centroid,
-    Vector     *normal,
+    VIO_Point      *centroid,
+    VIO_Vector     *normal,
     VIO_Real       base_length,
-    Point      *model_point,
+    VIO_Point      *model_point,
     VIO_Real       *model_dist,
-    Point      *search_origin,
-    Vector     *pos_model_dir,
-    Vector     *neg_model_dir )
+    VIO_Point      *search_origin,
+    VIO_Vector     *pos_model_dir,
+    VIO_Vector     *neg_model_dir )
 {
     VIO_Real     to_model_dot_normal, normal_dot_normal, len;
     VIO_Real     ratio, left_length, right_length, offset;
-    Vector   centroid_to_model, offset_vec, tmp, base_vector, perp;
+    VIO_Vector   centroid_to_model, offset_vec, tmp, base_vector, perp;
 
     if( EQUAL_POINTS( *centroid, *model_point ) )
     {
@@ -161,16 +161,16 @@ BICAPI  void  compute_model_dirs(
 }
 
 static  void  get_coords_in_nonortho_system(
-    Vector   *v,
-    Vector   *v1,
-    Vector   *v2,
-    Vector   *normalized_v3,
+    VIO_Vector   *v,
+    VIO_Vector   *v1,
+    VIO_Vector   *v2,
+    VIO_Vector   *normalized_v3,
     VIO_Real     *d1,
     VIO_Real     *d2,
     VIO_Real     *d3 )
 {
     VIO_Real      mag_v1, mag_c, fact;
-    Vector    offset, v2d, c;
+    VIO_Vector    offset, v2d, c;
 
     *d3 = DOT_VECTORS( *v, *normalized_v3 );
 
@@ -213,24 +213,24 @@ static  void  get_coords_in_nonortho_system(
 #define  MAX_MODEL_NEIGHS   2000
 
 static  void  compute_model_point(
-    Point   points[],
+    VIO_Point   points[],
     int     point_index,
     int     n_neighbours,
     int     neighbours[],
-    Point   *centroid,
-    Vector  *normal,
-    Point   model_points[],
-    Point   model_centroids[],
-    Vector  model_normals[],
-    Point   *model_point )
+    VIO_Point   *centroid,
+    VIO_Vector  *normal,
+    VIO_Point   model_points[],
+    VIO_Point   model_centroids[],
+    VIO_Vector  model_normals[],
+    VIO_Point   *model_point )
 {
     int      i;
     VIO_Real     model_len_to_neighbour, len_to_neighbour, scale_factor;
     VIO_Real     d1, d2, d3;
-    Vector   to_model_neighbour;
-    Vector   to_neighbour, model_offset;
-    Vector   to_model_point, third_model_vector, third_vector;
-    Vector   offset;
+    VIO_Vector   to_model_neighbour;
+    VIO_Vector   to_neighbour, model_offset;
+    VIO_Vector   to_model_point, third_model_vector, third_vector;
+    VIO_Vector   offset;
 
     fill_Point( model_offset, 0.0, 0.0, 0.0 );
 
@@ -294,19 +294,19 @@ static  void  compute_model_point(
 
 BICAPI  void  get_model_point(
     deformation_model_struct  *deformation_model,
-    Point                     points[],
+    VIO_Point                     points[],
     int                       point_index,
     int                       n_neighbours,
     int                       neighbours[],
     VIO_Real                      curvatures[],
-    Point                     *centroid,
-    Vector                    *normal,
+    VIO_Point                     *centroid,
+    VIO_Vector                    *normal,
     VIO_Real                      base_length,
-    Point                     *model_point )
+    VIO_Point                     *model_point )
 {
     int                       i;
     VIO_Real                      curvature, dist_from_centroid, normal_mag;
-    Vector                    offset;
+    VIO_Vector                    offset;
     deform_model_struct       *model;
     Deformation_model_types   model_type;
 
@@ -393,8 +393,8 @@ BICAPI  VIO_Real  compute_line_curvature(
     int             next_point_index )
 {
     VIO_Real             base_length, curvature;
-    Point            centroid;
-    Vector           normal, dir_to_point;
+    VIO_Point            centroid;
+    VIO_Vector           normal, dir_to_point;
 
     compute_line_centroid_and_normal( lines, axis, prev_point_index,
                                       next_point_index, &centroid, &normal,
@@ -412,18 +412,18 @@ BICAPI  VIO_Real  compute_line_curvature(
 
 BICAPI  VIO_Real  deform_point(
     int                        point_index,
-    Point                      points[],
-    Point                      *equilibrium_point,
+    VIO_Point                      points[],
+    VIO_Point                      *equilibrium_point,
     VIO_Real                       fractional_step,
     VIO_Real                       max_step,
     VIO_BOOL                    position_constrained,
     VIO_Real                       max_position_offset,
-    Point                      original_positions[],
-    Point                      *new_point )
+    VIO_Point                      original_positions[],
+    VIO_Point                      *new_point )
 {
-    Vector    toward_equil;
+    VIO_Vector    toward_equil;
     VIO_Real      dist_to_equil, dist;
-    Vector    diff;
+    VIO_Vector    diff;
     VIO_Real      factor;
 
     SUB_POINTS( toward_equil, *equilibrium_point, points[point_index] );
@@ -457,12 +457,12 @@ BICAPI  void  compute_line_centroid_and_normal(
     int              axis,
     int              prev_point_index,
     int              next_point_index,
-    Point            *centroid,
-    Vector           *normal,
+    VIO_Point            *centroid,
+    VIO_Vector           *normal,
     VIO_Real             *base_length )
 {
     int       a1, a2;
-    Vector    dir;
+    VIO_Vector    dir;
 
     SUB_POINTS( dir, lines->points[next_point_index],
                      lines->points[prev_point_index] );

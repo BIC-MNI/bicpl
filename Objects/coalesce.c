@@ -10,22 +10,22 @@ typedef  struct
 } box_struct;
 
 static  void  get_box_index(
-    Point   *point,
-    Point   *min_point,
-    Point   *max_point,
+    VIO_Point   *point,
+    VIO_Point   *min_point,
+    VIO_Point   *max_point,
     int     n_boxes[],
     int     *i,
     int     *j,
     int     *k )
 {
     VIO_Real  diff, p, min_p, max_p;
-    int   dim, *coords[N_DIMENSIONS];
+    int   dim, *coords[VIO_N_DIMENSIONS];
 
-    coords[X] = i;
-    coords[Y] = j;
-    coords[Z] = k;
+    coords[VIO_X] = i;
+    coords[VIO_Y] = j;
+    coords[VIO_Z] = k;
 
-    for_less( dim, 0, N_DIMENSIONS )
+    for_less( dim, 0, VIO_N_DIMENSIONS )
     {
         p = (VIO_Real) Point_coord(*point,dim);
         min_p = (VIO_Real) Point_coord(*min_point,dim);
@@ -48,21 +48,21 @@ static  void  get_box_index(
 
 BICAPI  void  coalesce_object_points(
     int      *n_points,
-    Point    *points[],
+    VIO_Point    *points[],
     int      n_indices,
     int      indices[] )
 {
-    int         n_boxes[N_DIMENSIONS];
+    int         n_boxes[VIO_N_DIMENSIONS];
     int         i, j, k, p, point, ind, *points_list, *translation;
     int         cum_index, dim, new_n_points;
     box_struct  ***boxes;
-    Point       min_point, max_point, *new_points;
+    VIO_Point       min_point, max_point, *new_points;
 
     new_points = NULL;
 
     get_range_points( *n_points, *points, &min_point, &max_point );
 
-    for_less( dim, 0, N_DIMENSIONS )
+    for_less( dim, 0, VIO_N_DIMENSIONS )
     {
         n_boxes[dim] = (int) pow( (VIO_Real) *n_points * N_BOX_RATIO, 0.3333 );
         if( n_boxes[dim] < MIN_N_BOXES )
@@ -71,11 +71,11 @@ BICAPI  void  coalesce_object_points(
             n_boxes[dim] = 1;
     }
 
-    ALLOC3D( boxes, n_boxes[X], n_boxes[Y], n_boxes[Z] );
+    VIO_ALLOC3D( boxes, n_boxes[VIO_X], n_boxes[VIO_Y], n_boxes[VIO_Z] );
 
-    for_less( i, 0, n_boxes[X] )
-    for_less( j, 0, n_boxes[Y] )
-    for_less( k, 0, n_boxes[Z] )
+    for_less( i, 0, n_boxes[VIO_X] )
+    for_less( j, 0, n_boxes[VIO_Y] )
+    for_less( k, 0, n_boxes[VIO_Z] )
     {
         boxes[i][j][k].n_points = 0;
     }
@@ -90,9 +90,9 @@ BICAPI  void  coalesce_object_points(
     ALLOC( points_list, *n_points );
 
     cum_index = 0;
-    for_less( i, 0, n_boxes[X] )
-    for_less( j, 0, n_boxes[Y] )
-    for_less( k, 0, n_boxes[Z] )
+    for_less( i, 0, n_boxes[VIO_X] )
+    for_less( j, 0, n_boxes[VIO_Y] )
+    for_less( k, 0, n_boxes[VIO_Z] )
     {
         boxes[i][j][k].point_indices = &points_list[cum_index];
         cum_index += boxes[i][j][k].n_points;
@@ -140,7 +140,7 @@ BICAPI  void  coalesce_object_points(
     for_less( i, 0, n_indices )
         indices[i] = translation[indices[i]];
 
-    FREE3D( boxes );
+    VIO_FREE3D( boxes );
     FREE( points_list );
     FREE( translation );
 
@@ -151,15 +151,15 @@ BICAPI  void  coalesce_object_points(
 
 BICAPI  void  separate_object_points(
     int           *new_n_points,
-    Point         *points[],
+    VIO_Point         *points[],
     int           n_indices,
     int           indices[],
     Colour_flags  colour_flag,
-    Colour        *colours[] )
+    VIO_Colour        *colours[] )
 {
     int    point_index, ind;
-    Point  *new_points;
-    Colour *new_colours;
+    VIO_Point  *new_points;
+    VIO_Colour *new_colours;
 
     new_colours = NULL;
     new_points = NULL;

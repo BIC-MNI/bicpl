@@ -40,14 +40,14 @@ static  void  subdivide_line(
     lines_struct      *lines,
     int               l,
     int               *new_n_points,
-    Point             *new_points[],
+    VIO_Point             *new_points[],
     int               *new_n_lines,
     int               *new_end_indices[],
     int               *new_n_indices,
     int               *new_indices[] )
 {
     int     edge, size, p1, p2, midpoint_index;
-    Point   midpoint;
+    VIO_Point   midpoint;
 
     size = GET_OBJECT_SIZE( *lines, l );
 
@@ -95,7 +95,7 @@ static  void  general_subdivide_lines(
 {
     int                size, i, new_n_points, new_n_indices, new_n_lines;
     int                *new_indices, *new_end_indices;
-    Point              *new_points;
+    VIO_Point              *new_points;
 
     new_n_points = lines->n_points;
     new_n_lines = 0;
@@ -145,7 +145,7 @@ static  void  subdivide_closed_curve(
     lines_struct      *lines )
 {
     int     i;
-    Point   p1, p2, midpoint;
+    VIO_Point   p1, p2, midpoint;
 
     REALLOC( lines->points, 2 * lines->n_points );
 

@@ -26,13 +26,13 @@ static  int  get_smoothing_points(
     int               list[],
     VIO_Real              smoothing_distance,
     float             distances[],
-    Point             *smoothing_points[] );
+    VIO_Point             *smoothing_points[] );
 
 static  VIO_Real  get_average_curvature(
-    Point   *point,
-    Vector  *normal,
+    VIO_Point   *point,
+    VIO_Vector  *normal,
     int     n_smoothing_points,
-    Point   smoothing_points[] );
+    VIO_Point   smoothing_points[] );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_smooth_surface_curvature
@@ -84,7 +84,7 @@ BICAPI  VIO_Real  get_smooth_surface_curvature(
     VIO_Real              smoothing_distance )
 {
     int      n_smoothing_points, point_index, n_found, *list, p;
-    Point    *smoothing_points;
+    VIO_Point    *smoothing_points;
     VIO_Real     curvature;
     VIO_BOOL  alloced_distances;
 
@@ -177,12 +177,12 @@ static  int  get_smoothing_points(
     int               list[],
     VIO_Real              smoothing_distance,
     float             distances[],
-    Point             *smoothing_points[] )
+    VIO_Point             *smoothing_points[] )
 {
     int      p, neigh, point_index, prev_index, inside, outside;
     int      n_smoothing_points;
     VIO_Real     dist, ratio;
-    Point    point;
+    VIO_Point    point;
 
     n_smoothing_points = 0;
 
@@ -249,15 +249,15 @@ static  int  get_smoothing_points(
 ---------------------------------------------------------------------------- */
 
 static  VIO_Real  get_average_curvature(
-    Point   *point,
-    Vector  *normal,
+    VIO_Point   *point,
+    VIO_Vector  *normal,
     int     n_smoothing_points,
-    Point   smoothing_points[] )
+    VIO_Point   smoothing_points[] )
 {
     int      i;
     VIO_Real     sum_curvature, curvature, angle, sign_curvature;
-    Point    centroid;
-    Vector   offset;
+    VIO_Point    centroid;
+    VIO_Vector   offset;
 
     get_points_centroid( n_smoothing_points, smoothing_points, &centroid );
 
@@ -286,7 +286,7 @@ VIO_Real  **tags;
 if( first )
 {
     first = FALSE;
-    ALLOC2D( tags, n_smoothing_points+1, 3 );
+    VIO_ALLOC2D( tags, n_smoothing_points+1, 3 );
     tags[0][X] = RPoint_x(*point);
     tags[0][Y] = RPoint_y(*point);
     tags[0][Z] = RPoint_z(*point);
@@ -298,7 +298,7 @@ if( first )
     }
     (void) output_tag_file( "smooth_curvature.tag", "", 1, n_smoothing_points+1,
                             tags, NULL, NULL, NULL, NULL, NULL );
-    FREE2D( tags );
+    VIO_FREE2D( tags );
 }
 }
 #endif

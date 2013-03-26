@@ -54,7 +54,7 @@ BICAPI   void   find_path_between_polygons(
     int            polygon2,
     int            n_polygons,
     int            end_indices[],
-    Smallest_int   visibilities[],
+    VIO_SCHAR   visibilities[],
     int            neighbours[],
     VIO_BOOL        *path_exists,
     int            *path_length,
@@ -105,7 +105,7 @@ BICAPI   void   find_path_between_polygons(
                 neighbour = neighbours[n];
 
                 if( neighbour >= 0 &&
-                    (visibilities == (Smallest_int *) 0 ||
+                    (visibilities == (VIO_SCHAR *) 0 ||
                      visibilities[neighbour]) &&
                     distances[neighbour] == INVALID_DISTANCE )
                 {

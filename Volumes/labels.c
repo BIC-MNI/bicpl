@@ -32,7 +32,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/labels.
 ---------------------------------------------------------------------------- */
 
 BICAPI void  set_label_volume_real_range(
-    Volume  volume )
+    VIO_Volume  volume )
 {
     if( get_volume_data_type(volume) != FLOAT &&
         get_volume_data_type(volume) != DOUBLE )
@@ -59,11 +59,11 @@ BICAPI void  set_label_volume_real_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI Volume  create_label_volume(
-    Volume  volume,
+BICAPI VIO_Volume  create_label_volume(
+    VIO_Volume  volume,
     nc_type type )
 {
-    Volume   label_volume;
+    VIO_Volume   label_volume;
 
     if( type == NC_UNSPECIFIED )
         type = NC_BYTE;
@@ -90,7 +90,7 @@ BICAPI Volume  create_label_volume(
 ---------------------------------------------------------------------------- */
 
 static void  check_alloc_label_data(
-    Volume  volume )
+    VIO_Volume  volume )
 {
     if( !volume_is_alloced( volume ) && !volume_is_cached(volume) )
     {
@@ -100,7 +100,7 @@ static void  check_alloc_label_data(
 }
 
 BICAPI VIO_BOOL  is_label_volume_initialized(
-    Volume  volume )
+    VIO_Volume  volume )
 {
     return( volume != NULL && 
             ((volume->is_cached_volume &&
@@ -121,10 +121,10 @@ BICAPI VIO_BOOL  is_label_volume_initialized(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  set_all_volume_label_data(
-    Volume    volume,
+    VIO_Volume    volume,
     int       value )
 {
-    Data_types      type;
+    VIO_Data_types      type;
     void            *ptr;
     VIO_Real            real_value;
     int             v0, v1, v2, v3, v4;
@@ -166,7 +166,7 @@ BICAPI void  set_all_volume_label_data(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  set_volume_label_data_5d(
-    Volume          volume,
+    VIO_Volume          volume,
     int             v0,
     int             v1,
     int             v2,
@@ -180,7 +180,7 @@ BICAPI void  set_volume_label_data_5d(
 }
 
 BICAPI void  set_volume_label_data(
-    Volume          volume,
+    VIO_Volume          volume,
     int             voxel[],
     int             value )
 {
@@ -203,7 +203,7 @@ BICAPI void  set_volume_label_data(
 ---------------------------------------------------------------------------- */
 
 BICAPI int  get_volume_label_data(
-    Volume          volume,
+    VIO_Volume          volume,
     int             voxel[] )
 {
     return( get_volume_label_data_5d( volume,
@@ -211,7 +211,7 @@ BICAPI int  get_volume_label_data(
 }
 
 BICAPI int  get_volume_label_data_5d(
-    Volume          volume,
+    VIO_Volume          volume,
     int             v0,
     int             v1,
     int             v2,
@@ -220,7 +220,7 @@ BICAPI int  get_volume_label_data_5d(
 {
     int    label;
 
-    if( volume == (Volume) NULL || !volume_is_alloced( volume ) )
+    if( volume == (VIO_Volume) NULL || !volume_is_alloced( volume ) )
         return( 0 );
     else
     {
@@ -246,14 +246,14 @@ BICAPI int  get_volume_label_data_5d(
 ---------------------------------------------------------------------------- */
 
 BICAPI int  get_3D_volume_label_data(
-    Volume          volume,
+    VIO_Volume          volume,
     int             x,
     int             y,
     int             z )
 {
     int    label;
 
-    if( volume == (Volume) NULL || !volume_is_alloced( volume ) )
+    if( volume == (VIO_Volume) NULL || !volume_is_alloced( volume ) )
         return( 0 );
     else
     {
@@ -278,7 +278,7 @@ BICAPI int  get_3D_volume_label_data(
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  get_voxel_label_bit(
-    Volume          volume,
+    VIO_Volume          volume,
     int             voxel[],
     int             bit )
 {
@@ -302,12 +302,12 @@ BICAPI VIO_BOOL  get_voxel_label_bit(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  set_voxel_label_bit(
-    Volume          volume,
+    VIO_Volume          volume,
     int             voxel[],
     int             bit,
     VIO_BOOL         value )
 {
-    int     i, n_dims, v[MAX_DIMENSIONS], label, anded, new_label;
+    int     i, n_dims, v[VIO_MAX_DIMENSIONS], label, anded, new_label;
 
     check_alloc_label_data( volume );
 
@@ -351,11 +351,11 @@ BICAPI void  set_voxel_label_bit(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  set_all_volume_label_data_bit(
-    Volume         volume,
+    VIO_Volume         volume,
     int            bit,
     VIO_BOOL        value )
 {
-    int             v[MAX_DIMENSIONS];
+    int             v[VIO_MAX_DIMENSIONS];
 
     check_alloc_label_data( volume );
 
@@ -383,15 +383,15 @@ BICAPI void  set_all_volume_label_data_bit(
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  get_volume_voxel_activity(
-    Volume     volume,
+    VIO_Volume     volume,
     VIO_Real       voxel[],
     VIO_BOOL    activity_if_mixed )
 {
     VIO_BOOL  active_found, inactive_found;
-    int      c, int_index[MAX_DIMENSIONS], ind[MAX_DIMENSIONS];
-    int      n[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
+    int      c, int_index[VIO_MAX_DIMENSIONS], ind[VIO_MAX_DIMENSIONS];
+    int      n[VIO_MAX_DIMENSIONS], sizes[VIO_MAX_DIMENSIONS];
 
-    if( volume == (Volume) NULL || !volume_is_alloced( volume ) )
+    if( volume == (VIO_Volume) NULL || !volume_is_alloced( volume ) )
         return( TRUE );
 
     get_volume_sizes( volume, sizes );
@@ -408,7 +408,7 @@ BICAPI VIO_BOOL  get_volume_voxel_activity(
         n[c] = 2;
     }
 
-    for_less( c, get_volume_n_dimensions(volume), MAX_DIMENSIONS )
+    for_less( c, get_volume_n_dimensions(volume), VIO_MAX_DIMENSIONS )
     {
         n[c] = 1;
         int_index[c] = 0;
@@ -461,14 +461,14 @@ BICAPI VIO_BOOL  get_volume_voxel_activity(
 ---------------------------------------------------------------------------- */
 
 static void  get_input_volume_label_limits(
-    Volume   volume1,
-    Volume   volume2,
+    VIO_Volume   volume1,
+    VIO_Volume   volume2,
     int      slice,
-    int      limits[2][N_DIMENSIONS] )
+    int      limits[2][VIO_N_DIMENSIONS] )
 {
-    int       sizes1[N_DIMENSIONS], sizes2[N_DIMENSIONS];
-    int       d, t[N_DIMENSIONS];
-    VIO_Real      voxel1[N_DIMENSIONS], voxel2[N_DIMENSIONS];
+    int       sizes1[VIO_N_DIMENSIONS], sizes2[VIO_N_DIMENSIONS];
+    int       d, t[VIO_N_DIMENSIONS];
+    VIO_Real      voxel1[VIO_N_DIMENSIONS], voxel2[VIO_N_DIMENSIONS];
     int       pos;
     VIO_Real      xw, yw, zw;
     VIO_BOOL   first;
@@ -489,7 +489,7 @@ static void  get_input_volume_label_limits(
         convert_voxel_to_world( volume2, voxel2, &xw, &yw, &zw );
         convert_world_to_voxel( volume1, xw, yw, zw, voxel1 );
 
-        for_less( d, 0, N_DIMENSIONS )
+        for_less( d, 0, VIO_N_DIMENSIONS )
         {
             pos = FLOOR( voxel1[d] + 0.5 );
 
@@ -510,7 +510,7 @@ static void  get_input_volume_label_limits(
         first = FALSE;
     }
 
-    for_less( d, 0, N_DIMENSIONS )
+    for_less( d, 0, VIO_N_DIMENSIONS )
     {
         if( limits[0][d] < 0 )
             limits[0][d] = 0;
@@ -538,35 +538,35 @@ static void  get_input_volume_label_limits(
                                                coordinate systems
 ---------------------------------------------------------------------------- */
 
-BICAPI Status  load_label_volume(
-    STRING   filename,
-    Volume   label_volume )
+BICAPI VIO_Status  load_label_volume(
+    VIO_STR   filename,
+    VIO_Volume   label_volume )
 {
     int                   slice, n_slices;
-    int                   label_voxel[N_DIMENSIONS];
-    int                   int_voxel[N_DIMENSIONS], int_file_value;
-    int                   limits[2][N_DIMENSIONS];
-    int                   file_sizes[N_DIMENSIONS];
+    int                   label_voxel[VIO_N_DIMENSIONS];
+    int                   int_voxel[VIO_N_DIMENSIONS], int_file_value;
+    int                   limits[2][VIO_N_DIMENSIONS];
+    int                   file_sizes[VIO_N_DIMENSIONS];
     VIO_Real                  file_value, xw, yw, zw, amount_done;
-    int                   int_y_voxel[N_DIMENSIONS];
-    VIO_Real                  y_voxel[N_DIMENSIONS];
-    VIO_Real                  voxel[N_DIMENSIONS], z_dx, z_dy, z_dz;
+    int                   int_y_voxel[VIO_N_DIMENSIONS];
+    VIO_Real                  y_voxel[VIO_N_DIMENSIONS];
+    VIO_Real                  voxel[VIO_N_DIMENSIONS], z_dx, z_dy, z_dz;
     VIO_Real                  y_dx, y_dy, y_dz;
     int                   int_z_dx, int_z_dy, int_z_dz;
     int                   int_y_dx, int_y_dy, int_y_dz;
-    VIO_Real                  start_voxel[N_DIMENSIONS];
-    VIO_Real                  end_voxel[N_DIMENSIONS];
-    Volume                file_volume, file_volume_3d;
+    VIO_Real                  start_voxel[VIO_N_DIMENSIONS];
+    VIO_Real                  end_voxel[VIO_N_DIMENSIONS];
+    VIO_Volume                file_volume, file_volume_3d;
     Minc_file             file;
     VIO_BOOL               is_linear, is_integer_step;
     progress_struct       progress;
-    static STRING         file_order_dim_names[] = {"", "", "", "", ""};
+    static VIO_STR         file_order_dim_names[] = {"", "", "", "", ""};
 
     check_alloc_label_data( label_volume );
 
     /*--- get 3d transformation in file */
 
-    if( input_volume_header_only( filename, N_DIMENSIONS,
+    if( input_volume_header_only( filename, VIO_N_DIMENSIONS,
                                   file_order_dim_names,
                                   &file_volume_3d, NULL ) != OK )
         return( ERROR );
@@ -788,17 +788,17 @@ BICAPI Status  load_label_volume(
 @MODIFIED   : Aug. 1, 1995    D. MacDonald    - crops the volume on output
 ---------------------------------------------------------------------------- */
 
-BICAPI Status  save_label_volume(
-    STRING   filename,
-    STRING   original_filename,
-    Volume   label_volume,
+BICAPI VIO_Status  save_label_volume(
+    VIO_STR   filename,
+    VIO_STR   original_filename,
+    VIO_Volume   label_volume,
     VIO_Real     crop_threshold )
 {
-    Status   status;
+    VIO_Status   status;
     VIO_BOOL  cropping;
-    Volume   cropped_volume;
+    VIO_Volume   cropped_volume;
     int      n_voxels, n_voxels_cropped;
-    int      c, limits[2][MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
+    int      c, limits[2][VIO_MAX_DIMENSIONS], sizes[VIO_MAX_DIMENSIONS];
 
     check_alloc_label_data( label_volume );
 
@@ -809,7 +809,7 @@ BICAPI Status  save_label_volume(
             get_volume_sizes( label_volume, sizes );
             n_voxels = 1;
             n_voxels_cropped = 1;
-            for_less( c, 0, N_DIMENSIONS )
+            for_less( c, 0, VIO_N_DIMENSIONS )
             {
                 n_voxels *= sizes[c];
                 n_voxels_cropped *= limits[1][c] - limits[0][c] + 1;
@@ -820,7 +820,7 @@ BICAPI Status  save_label_volume(
         }
         else
         {
-            for_less( c, 0, N_DIMENSIONS )
+            for_less( c, 0, VIO_N_DIMENSIONS )
             {
                 limits[0][c] = 0;
                 limits[1][c] = 0;
@@ -869,16 +869,16 @@ BICAPI Status  save_label_volume(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI Status  input_tags_as_labels(
+BICAPI VIO_Status  input_tags_as_labels(
     FILE    *file,
-    Volume  volume,
-    Volume  label_volume )
+    VIO_Volume  volume,
+    VIO_Volume  label_volume )
 {
-    Status          status;
-    int             c, label, ind[MAX_DIMENSIONS];
-    VIO_Real            voxel[MAX_DIMENSIONS];
+    VIO_Status          status;
+    int             c, label, ind[VIO_MAX_DIMENSIONS];
+    VIO_Real            voxel[VIO_MAX_DIMENSIONS];
     int             n_volumes;
-    VIO_Real            tag1[N_DIMENSIONS];
+    VIO_Real            tag1[VIO_N_DIMENSIONS];
     int             structure_id;
     VIO_Real            min_label, max_label;
 
@@ -926,14 +926,14 @@ BICAPI Status  input_tags_as_labels(
 @MODIFIED   :
 ---------------------------------------------------------------------------- */
 
-BICAPI Status  create_label_volume_from_file(
-    STRING   filename,
-    Volume   volume,
-    Volume   *label_volume )
+BICAPI VIO_Status  create_label_volume_from_file(
+    VIO_STR   filename,
+    VIO_Volume   volume,
+    VIO_Volume   *label_volume )
 {
-    Status  status;
-    STRING  *dim_names;
-    Volume  file_volume;
+    VIO_Status  status;
+    VIO_STR  *dim_names;
+    VIO_Volume  file_volume;
     FILE    *file;
     VIO_BOOL same_grid;
 
@@ -1004,18 +1004,18 @@ BICAPI Status  create_label_volume_from_file(
                                              be more memory efficient.
 ---------------------------------------------------------------------------- */
 
-BICAPI Status  output_labels_as_tags(
+BICAPI VIO_Status  output_labels_as_tags(
     FILE    *file,
-    Volume  volume,
-    Volume  label_volume,
+    VIO_Volume  volume,
+    VIO_Volume  label_volume,
     int     desired_label,
     VIO_Real    size,
     int     patient_id )
 {
-    int             ind[N_DIMENSIONS];
-    int             label, sizes[MAX_DIMENSIONS];
-    VIO_Real            real_ind[N_DIMENSIONS];
-    VIO_Real            tags[N_DIMENSIONS];
+    int             ind[VIO_N_DIMENSIONS];
+    int             label, sizes[VIO_MAX_DIMENSIONS];
+    VIO_Real            real_ind[VIO_N_DIMENSIONS];
+    VIO_Real            tags[VIO_N_DIMENSIONS];
     int             n_tags;
 
     if( get_volume_n_dimensions(volume) != 3 )
@@ -1080,13 +1080,13 @@ BICAPI Status  output_labels_as_tags(
                                              be more memory efficient.
 ---------------------------------------------------------------------------- */
 
-BICAPI Status  input_landmarks_as_labels(
+BICAPI VIO_Status  input_landmarks_as_labels(
     FILE    *file,
-    Volume  volume,
-    Volume  label_volume )
+    VIO_Volume  volume,
+    VIO_Volume  label_volume )
 {
-    int             c, label, ind[MAX_DIMENSIONS];
-    VIO_Real            voxel[MAX_DIMENSIONS];
+    int             c, label, ind[VIO_MAX_DIMENSIONS];
+    VIO_Real            voxel[VIO_MAX_DIMENSIONS];
     marker_struct   marker;
     VIO_Real            min_label, max_label;
 

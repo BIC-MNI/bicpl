@@ -18,9 +18,9 @@
 static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.16 2005-08-17 22:27:56 bert Exp $";
 #endif
 
-static    Status  input_global_variable( int, global_struct [],
+static    VIO_Status  input_global_variable( int, global_struct [],
                                          FILE *, VIO_BOOL * );
-static    STRING    extract_string( STRING );
+static    VIO_STR    extract_string( VIO_STR );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : input_globals_file
@@ -38,12 +38,12 @@ static    STRING    extract_string( STRING );
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  input_globals_file(
+BICAPI  VIO_Status  input_globals_file(
     int             n_globals_lookup,
     global_struct   globals_lookup[],
-    STRING          filename )
+    VIO_STR          filename )
 {
-    Status  status;
+    VIO_Status  status;
     VIO_BOOL eof;
     FILE    *file;
 
@@ -79,15 +79,15 @@ BICAPI  Status  input_globals_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  input_global_variable(
+static  VIO_Status  input_global_variable(
     int             n_globals_lookup,
     global_struct   globals_lookup[],
     FILE            *file,
     VIO_BOOL         *eof )
 {
-    Status   set_status, status;
-    STRING   variable_name;
-    STRING   value;
+    VIO_Status   set_status, status;
+    VIO_STR   variable_name;
+    VIO_STR   value;
 
     *eof = FALSE;
 
@@ -140,16 +140,16 @@ static  Status  input_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  lookup_global(
+static  VIO_Status  lookup_global(
     int              n_globals,
     global_struct    global_lookup[],
-    STRING           variable_name,
+    VIO_STR           variable_name,
     void             **ptr,
     Variable_types   *type,
-    Smallest_int     **set_flag )
+    VIO_SCHAR     **set_flag )
 {
-    Status  status;
-    STRING  stripped;
+    VIO_Status  status;
+    VIO_STR  stripped;
     char    *global_name;
     int     i, s, len;
 
@@ -198,19 +198,19 @@ static  Status  lookup_global(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  get_global_variable(
+BICAPI  VIO_Status  get_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
-    STRING           variable_name,
-    STRING           *value )
+    VIO_STR           variable_name,
+    VIO_STR           *value )
 {
-    Status             status;
+    VIO_Status             status;
     void               *ptr;
-    Surfprop           *surfprop;
+    VIO_Surfprop           *surfprop;
     Variable_types     type;
     char               buffer[EXTREMELY_LARGE_STRING_SIZE];
-    STRING             *string_ptr;
-    STRING             tmp_str;
+    VIO_STR             *string_ptr;
+    VIO_STR             tmp_str;
 
     status = lookup_global( n_globals_lookup, globals_lookup, variable_name,
                             &ptr, &type, NULL );
@@ -235,32 +235,32 @@ BICAPI  Status  get_global_variable(
             break;
 
         case STRING_type:
-            string_ptr = (STRING *) ptr;
+            string_ptr = (VIO_STR *) ptr;
             (void) strcpy( buffer, *string_ptr );
             break;
 
         case Point_type:
             (void) sprintf( buffer, "%g %g %g",
-                            Point_x(* (Point *) ptr),
-                            Point_y(* (Point *) ptr),
-                            Point_z(* (Point *) ptr) );
+                            Point_x(* (VIO_Point *) ptr),
+                            Point_y(* (VIO_Point *) ptr),
+                            Point_z(* (VIO_Point *) ptr) );
             break;
 
         case Vector_type:
             (void) sprintf( buffer, "%g %g %g",
-                            Vector_x(* (Vector *) ptr),
-                            Vector_y(* (Vector *) ptr),
-                            Vector_z(* (Vector *) ptr) );
+                            Vector_x(* (VIO_Vector *) ptr),
+                            Vector_y(* (VIO_Vector *) ptr),
+                            Vector_z(* (VIO_Vector *) ptr) );
             break;
 
         case Colour_type:
-            tmp_str = convert_colour_to_string( * (Colour *) ptr );
+            tmp_str = convert_colour_to_string( * (VIO_Colour *) ptr );
             (void) strcpy( buffer, tmp_str );
             delete_string( tmp_str );
             break;
 
         case Surfprop_type:
-            surfprop = (Surfprop *) ptr;
+            surfprop = (VIO_Surfprop *) ptr;
             (void) sprintf( buffer, "%g %g %g %g %g",
                             Surfprop_a(*surfprop),
                             Surfprop_d(*surfprop),
@@ -298,23 +298,23 @@ BICAPI  Status  get_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  set_global_variable(
+BICAPI  VIO_Status  set_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
-    STRING           variable_name,
-    STRING           value_to_set )
+    VIO_STR           variable_name,
+    VIO_STR           value_to_set )
 {
-    Status             status;
-    STRING             value, *string_ptr;
+    VIO_Status             status;
+    VIO_STR             value, *string_ptr;
     void               *ptr;
     Variable_types     type;
     int                tmp_int;
     VIO_Real               tmp_real;
-    Point              tmp_point;
-    Vector             tmp_vector;
-    Colour             tmp_colour;
-    Surfprop           tmp_surfprop;
-    Smallest_int       *set_flag;
+    VIO_Point              tmp_point;
+    VIO_Vector             tmp_vector;
+    VIO_Colour             tmp_colour;
+    VIO_Surfprop           tmp_surfprop;
+    VIO_SCHAR       *set_flag;
 
     value = strip_outer_blanks( value_to_set );
 
@@ -366,7 +366,7 @@ BICAPI  Status  set_global_variable(
             break;
 
         case STRING_type:
-            string_ptr = (STRING *) ptr;
+            string_ptr = (VIO_STR *) ptr;
             if( *set_flag )
                 delete_string( *string_ptr );
             *string_ptr = extract_string( value );
@@ -376,7 +376,7 @@ BICAPI  Status  set_global_variable(
         case Point_type:
             if( sscanf( value, "%f %f %f", &Point_x(tmp_point),
                         &Point_y(tmp_point), &Point_z(tmp_point) ) == 3 )
-                * (Point *) ptr = tmp_point;
+                * (VIO_Point *) ptr = tmp_point;
             else
                 status = ERROR;
             break;
@@ -384,7 +384,7 @@ BICAPI  Status  set_global_variable(
         case Vector_type:
             if( sscanf( value, "%f %f %f", &Vector_x(tmp_vector),
                         &Vector_y(tmp_vector), &Vector_z(tmp_vector) ) == 3 )
-                * (Vector *) ptr = tmp_vector;
+                * (VIO_Vector *) ptr = tmp_vector;
             else
                 status = ERROR;
             break;
@@ -394,7 +394,7 @@ BICAPI  Status  set_global_variable(
 
             if( status == OK )
             {
-                * (Colour *) ptr = tmp_colour;
+                * (VIO_Colour *) ptr = tmp_colour;
             }
             break;
 
@@ -406,7 +406,7 @@ BICAPI  Status  set_global_variable(
                             &Surfprop_se(tmp_surfprop),
                             &Surfprop_t(tmp_surfprop) ) == 5 )
             {
-                * (Surfprop *) ptr = tmp_surfprop;
+                * (VIO_Surfprop *) ptr = tmp_surfprop;
             }
             else
                 status = ERROR;
@@ -444,15 +444,15 @@ BICAPI  Status  set_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  set_or_get_global_variable(
+BICAPI  VIO_Status  set_or_get_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
-    STRING           input_str,
-    STRING           *variable_name,
-    STRING           *value_string )
+    VIO_STR           input_str,
+    VIO_STR           *variable_name,
+    VIO_STR           *value_string )
 {
-    Status  status;
-    STRING  tmp_var_name, value_to_set;
+    VIO_Status  status;
+    VIO_STR  tmp_var_name, value_to_set;
     int     equal_index;
 
     status = OK;
@@ -497,11 +497,11 @@ BICAPI  Status  set_or_get_global_variable(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  STRING  extract_string(
-    STRING   str )
+static  VIO_STR  extract_string(
+    VIO_STR   str )
 {
     int     len_str, start, end, i;
-    STRING  extracted;
+    VIO_STR  extracted;
 
     start = 0;
 
@@ -555,14 +555,14 @@ BICAPI  void  delete_global_variables(
     global_struct   globals_lookup[] )
 {
     int     i;
-    STRING  *ptr;
+    VIO_STR  *ptr;
 
     for_less( i, 0, n_globals_lookup )
     {
         if( globals_lookup[i].type == STRING_type &&
             globals_lookup[i].set_flag )
         {
-            ptr = (STRING *) globals_lookup[i].ptr_to_global;
+            ptr = (VIO_STR *) globals_lookup[i].ptr_to_global;
             delete_string( *ptr );
         }
     }

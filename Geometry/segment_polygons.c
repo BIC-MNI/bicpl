@@ -35,14 +35,14 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/segmen
 
 BICAPI  void   remove_invisible_polygons(
     polygons_struct  *polygons,
-    Smallest_int     visibilities[] )
+    VIO_SCHAR     visibilities[] )
 {
     int              tmp_n_points, i, n_points, n_items, *indices, *end_indices;
     int              p, poly, n_indices, size, point_index;
     int              *new_ids;
-    Point            *points;
-    Vector           *normals;
-    Colour           col;
+    VIO_Point            *points;
+    VIO_Vector           *normals;
+    VIO_Colour           col;
 
     if( visibilities == NULL )
         return;

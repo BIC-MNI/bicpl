@@ -4,12 +4,12 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    STRING               output_filename;
+    VIO_STR               output_filename;
     VIO_Real                 limits[2][3];
     int                  a1, a2, axis;
     object_struct        *object;
     polygons_struct      *polygons;
-    Point                points[4];
+    VIO_Point                points[4];
 
     initialize_argument_processing( argc, argv );
 
@@ -34,8 +34,8 @@ int  main(
     else if( limits[0][Z] == limits[1][Z] )
         axis = Z;
 
-    a1 = (axis + 1) % N_DIMENSIONS;
-    a2 = (axis + 2) % N_DIMENSIONS;
+    a1 = (axis + 1) % VIO_N_DIMENSIONS;
+    a2 = (axis + 2) % VIO_N_DIMENSIONS;
 
     object = create_object( POLYGONS );
     polygons = get_polygons_ptr(object);

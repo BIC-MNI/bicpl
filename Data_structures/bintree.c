@@ -19,18 +19,18 @@
 static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures/bintree.c,v 1.10 2005-08-17 22:31:12 bert Exp $";
 #endif
 
-static  Status  io_range(
+static  VIO_Status  io_range(
     FILE             *file,
-    IO_types         direction,
-    File_formats     format,
+    VIO_IO_types         direction,
+    VIO_File_formats     format,
     range_struct     *range );
-static  Status  output_bintree_node(
+static  VIO_Status  output_bintree_node(
     FILE                    *file,
-    File_formats            format,
+    VIO_File_formats            format,
     bintree_node_struct     *node );
-static  Status  input_bintree_node(
+static  VIO_Status  input_bintree_node(
     FILE                    *file,
-    File_formats            format,
+    VIO_File_formats            format,
     bintree_node_struct     **node );
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -540,7 +540,7 @@ BICAPI  VIO_Real  get_node_split_position(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  point_within_range(
-    Point         *point,
+    VIO_Point         *point,
     range_struct  *range )
 {
     VIO_BOOL   within;
@@ -618,13 +618,13 @@ BICAPI  VIO_Real  range_surface_area(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_bintree(
+BICAPI  VIO_Status  io_bintree(
     FILE                 *file,
-    IO_types             direction,
-    File_formats         format,
+    VIO_IO_types             direction,
+    VIO_File_formats         format,
     bintree_struct_ptr   bintree )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = io_range( file, direction, format, &bintree->range );
 
@@ -652,18 +652,18 @@ BICAPI  Status  io_bintree(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  io_range(
+static  VIO_Status  io_range(
     FILE             *file,
-    IO_types         direction,
-    File_formats     format,
+    VIO_IO_types         direction,
+    VIO_File_formats     format,
     range_struct     *range )
 {
-    Status   status;
+    VIO_Status   status;
     int      c, l;
 
     status = OK;
 
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
     {
         for_less( l, 0, 2 )
         {
@@ -693,12 +693,12 @@ static  Status  io_range(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  output_leaf_node(
+static  VIO_Status  output_leaf_node(
     FILE                    *file,
-    File_formats            format,
+    VIO_File_formats            format,
     bintree_node_struct     *node )
 {
-    Status  status;
+    VIO_Status  status;
     int     *object_list, n_objects;
 
     status = OK ;
@@ -729,12 +729,12 @@ static  Status  output_leaf_node(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  output_bintree_node(
+static  VIO_Status  output_bintree_node(
     FILE                    *file,
-    File_formats            format,
+    VIO_File_formats            format,
     bintree_node_struct     *node )
 {
-    Status               status;
+    VIO_Status               status;
     bintree_node_struct  *left, *right;
 
     status = io_binary_data( file, WRITE_FILE, &node->node_info,
@@ -775,12 +775,12 @@ static  Status  output_bintree_node(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  input_bintree_node(
+static  VIO_Status  input_bintree_node(
     FILE                    *file,
-    File_formats            format,
+    VIO_File_formats            format,
     bintree_node_struct     **node )
 {
-    Status               status;
+    VIO_Status               status;
     node_info_type       node_info;
     float                split_position;
     int                  n_objects, *object_list;

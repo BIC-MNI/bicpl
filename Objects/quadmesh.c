@@ -31,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmes
  * cylinder.  If both the rows and the columns are closed in this
  * manner, you end up with a toroidal topology.
  *
- * Point locations in a quadmesh are addressed using integer pairs
+ * VIO_Point locations in a quadmesh are addressed using integer pairs
  * (i,j) with 0 <= i < m, and 0 <= j < n.
  *
  * Each quadrilateral of the mesh, or \em patch, is defined by the
@@ -81,8 +81,8 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/quadmes
  */
 BICAPI  void  initialize_quadmesh(
     quadmesh_struct   *quadmesh,
-    Colour            col,
-    Surfprop          *spr,
+    VIO_Colour            col,
+    VIO_Surfprop          *spr,
     int               m,
     int               n )
 {
@@ -92,7 +92,7 @@ BICAPI  void  initialize_quadmesh(
 
     quadmesh->colours[0] = col;
 
-    if( spr != (Surfprop *) 0 )
+    if( spr != (VIO_Surfprop *) 0 )
         quadmesh->surfprop = *spr;
     else
         get_default_surfprop( &quadmesh->surfprop );
@@ -136,7 +136,7 @@ BICAPI  void  delete_quadmesh(
     {
         FREE( quadmesh->points );
 
-        if( quadmesh->normals != (Vector *) NULL )
+        if( quadmesh->normals != (VIO_Vector *) NULL )
             FREE( quadmesh->normals );
     }
 
@@ -175,8 +175,8 @@ BICAPI  void  set_quadmesh_point(
     quadmesh_struct  *quadmesh,
     int              i,
     int              j,
-    Point            *point,
-    Vector           *normal )
+    VIO_Point            *point,
+    VIO_Vector           *normal )
 {
     int  ind;
 
@@ -219,7 +219,7 @@ BICAPI  VIO_BOOL  get_quadmesh_point(
     const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
-    Point            *point )
+    VIO_Point            *point )
 {
     if( i < 0 || i >= quadmesh->m ||
         j < 0 || j >= quadmesh->n )
@@ -298,13 +298,13 @@ BICAPI  void  compute_quadmesh_normals(
     quadmesh_struct  *quadmesh )
 {
     int                i, j, m, n, n_neighs;
-    Point              neighbours[4];
+    VIO_Point              neighbours[4];
     progress_struct    progress;
 
     m = quadmesh->m;
     n = quadmesh->n;
 
-    if( quadmesh->normals == (Vector *) NULL )
+    if( quadmesh->normals == (VIO_Vector *) NULL )
         ALLOC( quadmesh->normals, m * n );
 
     for_less( i, 0, m * n )
@@ -421,7 +421,7 @@ BICAPI  void  get_quadmesh_patch(
     const quadmesh_struct  *quadmesh,
     int              i,
     int              j,
-    Point            points[] )
+    VIO_Point            points[] )
 {
     int   p, indices[4];
 
@@ -441,8 +441,8 @@ BICAPI  void  reverse_quadmesh_vertices(
     quadmesh_struct  *quadmesh )
 {
     int     i, j, i1, i2;
-    Point   tmp_point;
-    Vector  tmp_normal;
+    VIO_Point   tmp_point;
+    VIO_Vector  tmp_normal;
 
     for_less( i, 0, quadmesh->m )
     {

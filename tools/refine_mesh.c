@@ -1,15 +1,15 @@
 #include <bicpl.h>
 
 private  int  refine_mesh(
-    Point              *length_points[],
+    VIO_Point              *length_points[],
     polygons_struct    *polygons,
     VIO_Real               max_length,
     polygons_struct    *new_polygons );
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  lengths.obj  input.obj output.obj  max_length\n\n";
 
     print_error( usage_str, executable );
@@ -19,13 +19,13 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING             input_filename, output_filename;
-    STRING             length_filename;
+    VIO_STR             input_filename, output_filename;
+    VIO_STR             length_filename;
     int                n_objects, n_len_objects, n_done, i;
-    File_formats       format;
+    VIO_File_formats       format;
     object_struct      **object_list, **len_object_list;
     polygons_struct    *polygons, *length, new_polygons;
-    Point              *length_points;
+    VIO_Point              *length_points;
     VIO_Real               max_length;
 
     initialize_argument_processing( argc, argv );
@@ -113,10 +113,10 @@ private  void  subdivide_edge(
     int                p1,
     int                p2,
     polygons_struct    *new_polygons,
-    Point              *length_points[] )
+    VIO_Point              *length_points[] )
 {
     int    midpoint;
-    Point  mid;
+    VIO_Point  mid;
 
     midpoint = new_polygons->n_points;
     INTERPOLATE_POINTS( mid, new_polygons->points[p1],
@@ -137,7 +137,7 @@ public  void  add_polygons(
     int                p0,
     int                p1,
     int                p2,
-    Point              length_points[],
+    VIO_Point              length_points[],
     hash2_table_struct *edge_lookup,
     polygons_struct    *new_polygons,
     int                *n_indices )
@@ -256,7 +256,7 @@ public  void  add_polygons(
 }
 
 private  int  refine_mesh(
-    Point              *length_points[],
+    VIO_Point              *length_points[],
     polygons_struct    *polygons,
     VIO_Real               max_length,
     polygons_struct    *new_polygons )

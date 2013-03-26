@@ -1,12 +1,12 @@
 #include  <bicpl.h>
 
-public  Status  process_object(
+public  VIO_Status  process_object(
     object_struct  *object );
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  full_topology.obj  input.pt  output.obj [ascii|binary]\n\
 \n\
      Creates an output file which has the topology of the first argument.\n\
@@ -19,11 +19,11 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING              input_filename, output_filename, points_filename;
-    STRING              format_name;
+    VIO_STR              input_filename, output_filename, points_filename;
+    VIO_STR              format_name;
     int                 i, pt, n_objects, n_points;
-    Point               *points;
-    File_formats        format, input_format;
+    VIO_Point               *points;
+    VIO_File_formats        format, input_format;
     object_struct       **object_list;
     FILE                *file;
 

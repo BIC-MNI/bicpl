@@ -3,9 +3,9 @@
 #define  BINTREE_FACTOR  0.3
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input.obj\n\
 \n\
      Writes out the number of items in the object.\n\n";
@@ -17,9 +17,9 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING           input_filename;
+    VIO_STR           input_filename;
     int              n_objects;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list;
 
     initialize_argument_processing( argc, argv );

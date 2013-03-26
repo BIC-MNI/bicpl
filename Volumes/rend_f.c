@@ -43,7 +43,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/rend_f.
 
 BICAPI void  render_one_row (
     void            *volume_data1,
-    Data_types      volume1_type,
+    VIO_Data_types      volume1_type,
     int             y,
     int             start_x,
     int             end_x,
@@ -53,18 +53,18 @@ BICAPI void  render_one_row (
     int             n_slices1,
     VIO_Real            weights1[],
     void            *volume_data2,
-    Data_types      volume2_type,
+    VIO_Data_types      volume2_type,
     size_t          **y_offsets2,
     size_t          **row_offsets2,
     void            **start_slices2,
     int             n_slices2,
     VIO_Real            weights2[],
     unsigned short  **cmode_colour_map,
-    Colour          **rgb_colour_map,
+    VIO_Colour          **rgb_colour_map,
     pixels_struct   *pixels )
 {
     int             x_size;
-    Colour          *rgb_pixel_ptr;
+    VIO_Colour          *rgb_pixel_ptr;
     unsigned short  *cmap_pixel_ptr;
 
     x_size = pixels->x_size;

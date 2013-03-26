@@ -52,8 +52,8 @@ static void  recreate_piecewise_function(
 BICAPI void  initialize_colour_coding(
     colour_coding_struct   *colour_coding,
     Colour_coding_types    type,
-    Colour                 under_colour,
-    Colour                 over_colour,
+    VIO_Colour                 under_colour,
+    VIO_Colour                 over_colour,
     VIO_Real                   min_value,
     VIO_Real                   max_value )
 {
@@ -183,7 +183,7 @@ BICAPI void  get_colour_coding_min_max(
 @NAME       : get_colour_coding_under_colour
 @INPUT      : colour_coding
 @OUTPUT     : 
-@RETURNS    : Colour
+@RETURNS    : VIO_Colour
 @DESCRIPTION: Returns the colour used to code values below the min_value.
 @METHOD     : 
 @GLOBALS    : 
@@ -192,7 +192,7 @@ BICAPI void  get_colour_coding_min_max(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI Colour  get_colour_coding_under_colour(
+BICAPI VIO_Colour  get_colour_coding_under_colour(
     colour_coding_struct   *colour_coding )
 {
     return( colour_coding->under_colour );
@@ -214,7 +214,7 @@ BICAPI Colour  get_colour_coding_under_colour(
 
 BICAPI void  set_colour_coding_under_colour(
     colour_coding_struct   *colour_coding,
-    Colour                 under_colour )
+    VIO_Colour                 under_colour )
 {
     colour_coding->under_colour = under_colour;
 }
@@ -223,7 +223,7 @@ BICAPI void  set_colour_coding_under_colour(
 @NAME       : get_colour_coding_over_colour
 @INPUT      : colour_coding
 @OUTPUT     : 
-@RETURNS    : Colour
+@RETURNS    : VIO_Colour
 @DESCRIPTION: Returns the colour used to code values above the max_value.
 @METHOD     : 
 @GLOBALS    : 
@@ -232,7 +232,7 @@ BICAPI void  set_colour_coding_under_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI Colour  get_colour_coding_over_colour(
+BICAPI VIO_Colour  get_colour_coding_over_colour(
     colour_coding_struct   *colour_coding )
 {
     return( colour_coding->over_colour );
@@ -254,7 +254,7 @@ BICAPI Colour  get_colour_coding_over_colour(
 
 BICAPI void  set_colour_coding_over_colour(
     colour_coding_struct   *colour_coding,
-    Colour                 over_colour )
+    VIO_Colour                 over_colour )
 {
     colour_coding->over_colour = over_colour;
 
@@ -574,7 +574,7 @@ static void  recreate_piecewise_function(
 BICAPI VIO_BOOL  define_colour_coding_user_defined(
     colour_coding_struct  *colour_code,
     int                   n_colours,
-    Colour                colours[],
+    VIO_Colour                colours[],
     VIO_Real                  positions[],
     Colour_spaces         interpolation_space )
 {
@@ -648,7 +648,7 @@ BICAPI VIO_BOOL  define_colour_coding_user_defined(
 @INPUT      : colour_coding
               value
 @OUTPUT     : 
-@RETURNS    : Colour
+@RETURNS    : VIO_Colour
 @DESCRIPTION: Returns the colour associated with the value.
 @METHOD     : 
 @GLOBALS    : 
@@ -657,7 +657,7 @@ BICAPI VIO_BOOL  define_colour_coding_user_defined(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI Colour  get_colour_code(
+BICAPI VIO_Colour  get_colour_code(
     colour_coding_struct  *colour_coding,
     VIO_Real                  value )
 {

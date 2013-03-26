@@ -123,12 +123,12 @@ static void compute_tps_transform(int npoints,
                                    VIO_General_transform *transform);
 
 static  void  concat_transformation_matrix(
-    Transform   *lt, 
+    VIO_Transform   *lt, 
     VIO_Real        center[],
     VIO_Real        translations[],
     VIO_Real        scales[],
     VIO_Real        shears[],
-    Transform   *rotation );
+    VIO_Transform   *rotation );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : compute_transform_from_tags
@@ -232,17 +232,17 @@ static  void  compute_procrustes_transform(
     Trans_type          trans_type,
     VIO_General_transform   *transform)
 {
-    Transform   rotation;
+    VIO_Transform   rotation;
     int         i;
-    VIO_Real        translation[N_DIMENSIONS];
-    VIO_Real        centre_of_rotation[N_DIMENSIONS];
-    VIO_Real        scale, scales[N_DIMENSIONS];
-    VIO_Real        shears[N_DIMENSIONS];
-    Transform   linear_transform;
+    VIO_Real        translation[VIO_N_DIMENSIONS];
+    VIO_Real        centre_of_rotation[VIO_N_DIMENSIONS];
+    VIO_Real        scale, scales[VIO_N_DIMENSIONS];
+    VIO_Real        shears[VIO_N_DIMENSIONS];
+    VIO_Transform   linear_transform;
 
     /* Do procrustes fit */
 
-    procrustes( npoints, N_DIMENSIONS, tag_list1, tag_list2, translation, 
+    procrustes( npoints, VIO_N_DIMENSIONS, tag_list1, tag_list2, translation, 
                 centre_of_rotation, &rotation, &scale );
 
     /* Set scale appropriately */
@@ -250,7 +250,7 @@ static  void  compute_procrustes_transform(
     if( trans_type == TRANS_LSQ6 )
         scale = 1.0;
 
-    for_less( i, 0, N_DIMENSIONS )
+    for_less( i, 0, VIO_N_DIMENSIONS )
     {
         scales[i] = scale;
         shears[i] = 0.0;
@@ -289,13 +289,13 @@ static  void  compute_arb_param_transform(
     Trans_type          trans_type,
     VIO_General_transform   *transform )
 {
-    Transform  rotation;
-    VIO_Real       translation[N_DIMENSIONS];
-    VIO_Real       centre_of_rotation[N_DIMENSIONS], scale;
-    VIO_Real       scales[N_DIMENSIONS];
-    VIO_Real       shears[N_DIMENSIONS], angles[N_DIMENSIONS];
+    VIO_Transform  rotation;
+    VIO_Real       translation[VIO_N_DIMENSIONS];
+    VIO_Real       centre_of_rotation[VIO_N_DIMENSIONS], scale;
+    VIO_Real       scales[VIO_N_DIMENSIONS];
+    VIO_Real       shears[VIO_N_DIMENSIONS], angles[VIO_N_DIMENSIONS];
     int        i;
-    Transform  linear_transform;
+    VIO_Transform  linear_transform;
   
     if( trans_type != TRANS_LSQ9 && trans_type != TRANS_LSQ10 )
     {
@@ -307,7 +307,7 @@ static  void  compute_arb_param_transform(
 
     /* Do procrustes fit */
 
-    procrustes( npoints, N_DIMENSIONS, tag_list1, tag_list2, translation, 
+    procrustes( npoints, VIO_N_DIMENSIONS, tag_list1, tag_list2, translation, 
                 centre_of_rotation, &rotation, &scale );
 
     if( !rotmat_to_ang( &rotation, angles ) )
@@ -317,7 +317,7 @@ static  void  compute_arb_param_transform(
         exit(EXIT_FAILURE);
     }
   
-    for_less( i, 0, N_DIMENSIONS )
+    for_less( i, 0, VIO_N_DIMENSIONS )
     {
         shears[i] = 0.0;
         scales[i] = scale;
@@ -361,12 +361,12 @@ static  void  compute_arb_param_transform(
 ---------------------------------------------------------------------------- */
 
 static  void   make_rots(
-    Transform   *xmat,
+    VIO_Transform   *xmat,
     VIO_Real        rot_x,
     VIO_Real        rot_y,
     VIO_Real        rot_z )
 {
-    Transform  tx, ty, tz;
+    VIO_Transform  tx, ty, tz;
 
     make_rotation_transform( -rot_x, X, &tx ) ;
     make_rotation_transform( -rot_y, Y, &ty ) ;
@@ -392,14 +392,14 @@ static  void   make_rots(
 ---------------------------------------------------------------------------- */
 
 static  void  concat_transformation_matrix(
-    Transform   *lt, 
+    VIO_Transform   *lt, 
     VIO_Real        center[],
     VIO_Real        translations[],
     VIO_Real        scales[],
     VIO_Real        shears[],
-    Transform   *rotation )
+    VIO_Transform   *rotation )
 {
-    Transform    T, SH, S, C;
+    VIO_Transform    T, SH, S, C;
 
     /* mat = (C)(SH)(S)(R)(-C)(T) */
 
@@ -443,14 +443,14 @@ static  void  concat_transformation_matrix(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  build_transformation_matrix(
-    Transform   *lt, 
+    VIO_Transform   *lt, 
     VIO_Real        center[],
     VIO_Real        translations[],
     VIO_Real        scales[],
     VIO_Real        shears[],
     VIO_Real        rotations[] )
 {
-    Transform    R;
+    VIO_Transform    R;
 
     /* make rotation matix */
 
@@ -488,10 +488,10 @@ static  void  compute_12param_transform(
     Trans_type          trans_type,
     VIO_General_transform   *transform)
 {
-    VIO_Real       *x, solution[N_DIMENSIONS + 1];
+    VIO_Real       *x, solution[VIO_N_DIMENSIONS + 1];
     int        d, dim;
     int        point;
-    Transform  linear_transform;
+    VIO_Transform  linear_transform;
 
     /*--- Check transformation type */
 
@@ -509,7 +509,7 @@ static  void  compute_12param_transform(
 
     /*--- for each dimension, find the linear least squares solution */
 
-    for_less( dim, 0, N_DIMENSIONS )
+    for_less( dim, 0, VIO_N_DIMENSIONS )
     {
         /*--- Copy the data points into a 1-D array */
 
@@ -518,12 +518,12 @@ static  void  compute_12param_transform(
 
         /*--- find the solution */
 
-        least_squares( npoints, N_DIMENSIONS, tag_list2, x, solution );
+        least_squares( npoints, VIO_N_DIMENSIONS, tag_list2, x, solution );
 
         /*--- record solution in the linear transform */
 
-        Transform_elem( linear_transform, dim, N_DIMENSIONS ) = solution[0];
-        for_less( d, 0, N_DIMENSIONS )
+        Transform_elem( linear_transform, dim, VIO_N_DIMENSIONS ) = solution[0];
+        for_less( d, 0, VIO_N_DIMENSIONS )
             Transform_elem( linear_transform, dim, d ) = solution[1+d];
     }
 
@@ -577,14 +577,14 @@ static  void  compute_tps_transform(
 
     /* Allocate matrices */
 
-    ALLOC2D( displacements, npoints+1+N_DIMENSIONS, N_DIMENSIONS );
+    VIO_ALLOC2D( displacements, npoints+1+VIO_N_DIMENSIONS, VIO_N_DIMENSIONS );
 
     get_nonlinear_warp( tag_list1, tag_list2, displacements, npoints,
-                        N_DIMENSIONS, N_DIMENSIONS );
+                        VIO_N_DIMENSIONS, VIO_N_DIMENSIONS );
 
     /* ---- Create general transform */
 
-    create_thin_plate_transform_real( &inv_transform, N_DIMENSIONS, npoints, 
+    create_thin_plate_transform_real( &inv_transform, VIO_N_DIMENSIONS, npoints, 
                                       tag_list1, displacements );
 
     /* ---- Invert general transform */
@@ -597,5 +597,5 @@ static  void  compute_tps_transform(
 
     /* ---- Free displacements */
 
-    FREE2D( displacements );
+    VIO_FREE2D( displacements );
 }

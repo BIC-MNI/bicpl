@@ -20,35 +20,35 @@ BICAPI  VIO_BOOL  get_real_argument(
     VIO_Real   *value );
 
 BICAPI  VIO_BOOL  get_string_argument(
-    STRING   default_value,
-    STRING   *value );
+    VIO_STR   default_value,
+    VIO_STR   *value );
 
 BICAPI  VIO_BOOL  get_prefix_argument(
-    STRING  prefix );
+    VIO_STR  prefix );
 
-BICAPI  Status  input_globals_file(
+BICAPI  VIO_Status  input_globals_file(
     int             n_globals_lookup,
     global_struct   globals_lookup[],
-    STRING          filename );
+    VIO_STR          filename );
 
-BICAPI  Status  get_global_variable(
+BICAPI  VIO_Status  get_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
-    STRING           variable_name,
-    STRING           *value );
+    VIO_STR           variable_name,
+    VIO_STR           *value );
 
-BICAPI  Status  set_global_variable(
+BICAPI  VIO_Status  set_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
-    STRING           variable_name,
-    STRING           value_to_set );
+    VIO_STR           variable_name,
+    VIO_STR           value_to_set );
 
-BICAPI  Status  set_or_get_global_variable(
+BICAPI  VIO_Status  set_or_get_global_variable(
     int              n_globals_lookup,
     global_struct    globals_lookup[],
-    STRING           input_str,
-    STRING           *variable_name,
-    STRING           *value_string );
+    VIO_STR           input_str,
+    VIO_STR           *variable_name,
+    VIO_STR           *value_string );
 
 BICAPI  void  delete_global_variables(
     int             n_globals_lookup,
@@ -63,7 +63,7 @@ BICAPI  VIO_Real  get_random_0_to_1( void );
 BICAPI  void  start_timing( void );
 
 BICAPI  void  end_timing(
-    STRING   title,
+    VIO_STR   title,
     int      n );
 
 #ifdef __cplusplus

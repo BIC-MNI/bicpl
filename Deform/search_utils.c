@@ -2,16 +2,16 @@
 #include "bicpl/deform.h"
 
 BICAPI  VIO_BOOL  is_point_inside_surface(
-    Volume                      volume,
-    Volume                      label_volume,
+    VIO_Volume                      volume,
+    VIO_Volume                      label_volume,
     int                         continuity,
     VIO_Real                        voxel[],
-    Vector                      *direction,
+    VIO_Vector                      *direction,
     boundary_definition_struct  *boundary_def )
 {
     VIO_BOOL active;
     VIO_Real    value, mag, dx, dy, dz, dot_product;
-    VIO_Real    derivs[MAX_DIMENSIONS], *deriv_ptr[1];
+    VIO_Real    derivs[VIO_MAX_DIMENSIONS], *deriv_ptr[1];
     VIO_Real    min_dot, max_dot;
 
     active = get_volume_voxel_activity( label_volume, voxel, FALSE );
@@ -64,9 +64,9 @@ BICAPI  VIO_BOOL  is_point_inside_surface(
 }
 
 BICAPI  void   get_centre_of_cube(
-    Point       *cube,
+    VIO_Point       *cube,
     int         sizes[3],
-    Point       *centre )
+    VIO_Point       *centre )
 {
     int  c;
 
@@ -123,7 +123,7 @@ BICAPI  VIO_BOOL  contains_value(
 }
 
 BICAPI  VIO_BOOL  cube_is_small_enough(
-    Point     cube[2],
+    VIO_Point     cube[2],
     int       sizes[3],
     VIO_Real      min_cube_size )
 {
@@ -207,9 +207,9 @@ BICAPI  void  print_deform_stats(
 }
 
 BICAPI  VIO_BOOL   get_max_point_cube_distance(
-    Point   cube[2],
+    VIO_Point   cube[2],
     int     sizes[3],
-    Point   *point,
+    VIO_Point   *point,
     VIO_Real    *distance )
 {
     int      c;
@@ -324,14 +324,14 @@ BICAPI  void  initialize_lookup_volume_coeficients(
 
 BICAPI  void  lookup_volume_coeficients(
     voxel_coef_struct  *lookup,
-    Volume             volume,
+    VIO_Volume             volume,
     int                degrees_continuity,
     int                x,
     int                y,
     int                z,
     VIO_Real               c[] )
 {
-    int                    key, i, offset, n, sizes[N_DIMENSIONS];
+    int                    key, i, offset, n, sizes[VIO_N_DIMENSIONS];
     voxel_lin_coef_struct  *data;
 
     offset = -(degrees_continuity + 1) / 2;

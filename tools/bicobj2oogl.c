@@ -53,7 +53,7 @@ void polygons_to_off( const polygons_struct* p )
 
 void process_file( char* filename ) 
 {
-    File_formats format;
+    VIO_File_formats format;
     int i, num_objects;
     object_struct** object_list;
 

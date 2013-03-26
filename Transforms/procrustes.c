@@ -107,7 +107,7 @@ BICAPI  void  procrustes(
     VIO_Real        **Bpoints,
     VIO_Real        translation[],
     VIO_Real        centre_of_rotation[],
-    Transform   *rotation_transform,
+    VIO_Transform   *rotation_transform,
     VIO_Real        *scale_ptr )
 {
     int   i, j;
@@ -126,16 +126,16 @@ BICAPI  void  procrustes(
 
     /* Get various matrices */
 
-    ALLOC2D( rotation, ndim, ndim );
-    ALLOC2D( Ashift, npoints, ndim );
-    ALLOC2D( Bshift, npoints, ndim );
-    ALLOC2D( Atranspose, ndim, npoints );
-    ALLOC2D( Btranspose, ndim, npoints );
-    ALLOC2D( svd_U, ndim, ndim );
-    ALLOC2D( svd_V, ndim, ndim );
-    ALLOC2D( svd_VT, ndim, ndim );
-    ALLOC2D( Brotated, npoints, ndim );
-    ALLOC2D( product, npoints, npoints );
+    VIO_ALLOC2D( rotation, ndim, ndim );
+    VIO_ALLOC2D( Ashift, npoints, ndim );
+    VIO_ALLOC2D( Bshift, npoints, ndim );
+    VIO_ALLOC2D( Atranspose, ndim, npoints );
+    VIO_ALLOC2D( Btranspose, ndim, npoints );
+    VIO_ALLOC2D( svd_U, ndim, ndim );
+    VIO_ALLOC2D( svd_V, ndim, ndim );
+    VIO_ALLOC2D( svd_VT, ndim, ndim );
+    VIO_ALLOC2D( Brotated, npoints, ndim );
+    VIO_ALLOC2D( product, npoints, npoints );
 
     /* Calculate the centroids, remove them from A and B points and
        save the translation */
@@ -180,8 +180,8 @@ BICAPI  void  procrustes(
 
     make_identity_transform( rotation_transform );
 
-    for_less( i, 0, N_DIMENSIONS )
-        for_less( j, 0, N_DIMENSIONS )
+    for_less( i, 0, VIO_N_DIMENSIONS )
+        for_less( j, 0, VIO_N_DIMENSIONS )
             Transform_elem( *rotation_transform, i, j ) = rotation[j][i];
 
     /* Free vectors */
@@ -192,16 +192,16 @@ BICAPI  void  procrustes(
 
     /* Free matrices */
 
-    FREE2D( rotation );
-    FREE2D( Ashift );
-    FREE2D( Bshift );
-    FREE2D( Atranspose );
-    FREE2D( Btranspose );
-    FREE2D( svd_U );
-    FREE2D( svd_V );
-    FREE2D( svd_VT );
-    FREE2D( Brotated );
-    FREE2D( product );
+    VIO_FREE2D( rotation );
+    VIO_FREE2D( Ashift );
+    VIO_FREE2D( Bshift );
+    VIO_FREE2D( Atranspose );
+    VIO_FREE2D( Btranspose );
+    VIO_FREE2D( svd_U );
+    VIO_FREE2D( svd_V );
+    VIO_FREE2D( svd_VT );
+    VIO_FREE2D( Brotated );
+    VIO_FREE2D( product );
 }
 
 /* ----------------------------- MNI Header -----------------------------------

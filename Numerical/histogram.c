@@ -497,7 +497,7 @@ BICAPI  void  create_histogram_line(
 {
     int     x, width;
     VIO_Real    *height, *smooth_height, x_scale, x_trans;
-    Point   p;
+    VIO_Point   p;
 
     ALLOC( height, x_size );
 

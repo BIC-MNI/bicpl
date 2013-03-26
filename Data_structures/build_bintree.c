@@ -97,14 +97,14 @@ BICAPI  void  create_object_bintree(
     int                  max_nodes )
 {
     int       i, c;
-    VIO_Real      avg_nodes, avg_objects, limits[N_DIMENSIONS][2], size;
+    VIO_Real      avg_nodes, avg_objects, limits[VIO_N_DIMENSIONS][2], size;
 #ifdef  DEBUG
     VIO_Real      best_objects;
 #endif
 
     for_less( i, 0, n_objects )
     {
-        for_less( c, 0, N_DIMENSIONS )
+        for_less( c, 0, VIO_N_DIMENSIONS )
         {
             size = (VIO_Real) bound_vols[i].limits[c][1] -
                    (VIO_Real) bound_vols[i].limits[c][0];
@@ -123,7 +123,7 @@ BICAPI  void  create_object_bintree(
         }
         else
         {
-            for_less( c, 0, N_DIMENSIONS )
+            for_less( c, 0, VIO_N_DIMENSIONS )
             {
                 if( (VIO_Real) bound_vols[i].limits[c][0] < limits[c][0] )
                     limits[c][0] = (VIO_Real) bound_vols[i].limits[c][0];
@@ -408,7 +408,7 @@ static  void  check_objects(
 {
     int   i, c;
     for_less( i, 0, n_objects )
-        for_less( c, 0, N_DIMENSIONS )
+        for_less( c, 0, VIO_N_DIMENSIONS )
             if( bound_vols[object_list[i]].limits[c][0] < limits->limits[c][0]||
                 bound_vols[object_list[i]].limits[c][1] > limits->limits[c][1] )
                 handle_internal_error( "check_objects" );
@@ -472,7 +472,7 @@ static  void  split_node(
     if( n_objects > THRESHOLD )
     {
         start_dim = 0;
-        for_less( c, 0, N_DIMENSIONS )
+        for_less( c, 0, VIO_N_DIMENSIONS )
         {
             if( limits->limits[c][1] - limits->limits[c][0] >
                 limits->limits[start_dim][1] - limits->limits[start_dim][0] )
@@ -485,7 +485,7 @@ static  void  split_node(
     else
     {
         start_dim = 0;
-        end_dim = N_DIMENSIONS;
+        end_dim = VIO_N_DIMENSIONS;
     }
 
     for_less( c, start_dim, end_dim )
@@ -657,7 +657,7 @@ static  VIO_BOOL  node_tightly_bounds_object(
 {
     int      l, c;
     
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
     {
         for_less( l, 0, 2 )
         {

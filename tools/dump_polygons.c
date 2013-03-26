@@ -5,8 +5,8 @@ int  main(
     char *argv[] )
 {
     FILE           *file;
-    STRING         input_filename, output_filename;
-    File_formats   format;
+    VIO_STR         input_filename, output_filename;
+    VIO_File_formats   format;
     object_struct  **object_list;
     int            n_objects, point, poly, vertex, size;
     polygons_struct *polygons;

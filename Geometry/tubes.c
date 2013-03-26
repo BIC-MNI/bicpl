@@ -20,11 +20,11 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/tubes.
 
 static  void  generate_tube(
     int    n_points,
-    Point  points[],
+    VIO_Point  points[],
     int    n_around,
     VIO_Real   radius,
-    Point  tube_points[],
-    Vector tube_normals[] );
+    VIO_Point  tube_points[],
+    VIO_Vector tube_normals[] );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_tube
@@ -45,13 +45,13 @@ static  void  generate_tube(
 
 static  void  create_tube(
     int               n_points,
-    Point             points[],
+    VIO_Point             points[],
     int               n_around,
     VIO_Real              radius,
-    Colour            colour,
+    VIO_Colour            colour,
     quadmesh_struct   *quadmesh )
 {
-    Surfprop    spr;
+    VIO_Surfprop    spr;
 
     get_default_surfprop( &spr );
 
@@ -88,7 +88,7 @@ BICAPI  int  convert_lines_to_tubes(
 {
     int              i, l, line_size;
     quadmesh_struct  *quadmesh;
-    Point            *points;
+    VIO_Point            *points;
 
     if( lines->n_items == 0 )
         return( 0 );
@@ -137,10 +137,10 @@ BICAPI  int  convert_lines_to_tubes(
 
 static  void  get_direction(
     int      n_points,
-    Point    points[],
+    VIO_Point    points[],
     int      i,
     VIO_BOOL  wrap_around,
-    Vector   *dir )
+    VIO_Vector   *dir )
 {
     int      end;
 
@@ -188,17 +188,17 @@ static  void  get_direction(
 ---------------------------------------------------------------------------- */
 
 static  void   fill_in_ellipse_points(
-    Point   tube_points[],
-    Vector  tube_normals[],
-    Point   *centre,
+    VIO_Point   tube_points[],
+    VIO_Vector  tube_normals[],
+    VIO_Point   *centre,
     int     n_around,
     VIO_Real    x[],
     VIO_Real    y[],
-    Vector  *hor,
-    Vector  *vert )
+    VIO_Vector  *hor,
+    VIO_Vector  *vert )
 {
     int      i;
-    Vector   h, v, offset;
+    VIO_Vector   h, v, offset;
 
     for_less( i, 0, n_around )
     {
@@ -231,12 +231,12 @@ static  void   fill_in_ellipse_points(
 ---------------------------------------------------------------------------- */
 
 static  void  project_vector_to_plane(
-    Vector   *v,
-    Vector   *direction,
-    Vector   *normal,
-    Vector   *projected )
+    VIO_Vector   *v,
+    VIO_Vector   *direction,
+    VIO_Vector   *normal,
+    VIO_Vector   *projected )
 {
-    Vector   offset;
+    VIO_Vector   offset;
     VIO_Real     t, n_dot_d, n_dot_v;
 
     n_dot_d = DOT_VECTORS( *normal, *direction );
@@ -275,15 +275,15 @@ static  void  project_vector_to_plane(
 
 static  void  generate_tube(
     int    n_points,
-    Point  points[],
+    VIO_Point  points[],
     int    n_around,
     VIO_Real   radius,
-    Point  tube_points[],
-    Vector tube_normals[] )
+    VIO_Point  tube_points[],
+    VIO_Vector tube_normals[] )
 {
     int      i;
     VIO_Real     *x, *y, angle;
-    Vector   hor, vert, dir, prev_dir, normal;
+    VIO_Vector   hor, vert, dir, prev_dir, normal;
     VIO_BOOL  wrap_around;
 
     ALLOC( x, n_around );

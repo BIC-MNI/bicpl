@@ -41,7 +41,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/volume
 ---------------------------------------------------------------------------- */
 
 BICAPI  void   create_slice_quadmesh(
-    Volume           volume,
+    VIO_Volume           volume,
     int              axis_index,
     VIO_Real             voxel_position,
     int              x_tess,
@@ -52,16 +52,16 @@ BICAPI  void   create_slice_quadmesh(
     VIO_Real             y_max,
     quadmesh_struct  *quadmesh )
 {
-    Point            point;
-    Vector           normal;
+    VIO_Point            point;
+    VIO_Vector           normal;
     VIO_Real             x_w, y_w, z_w;
-    int              sizes[N_DIMENSIONS];
-    VIO_Real             voxel[N_DIMENSIONS];
+    int              sizes[VIO_N_DIMENSIONS];
+    VIO_Real             voxel[VIO_N_DIMENSIONS];
     int              x, y, x_axis, y_axis;
-    Surfprop         spr;
+    VIO_Surfprop         spr;
 
-    x_axis = (axis_index + 1) % N_DIMENSIONS;
-    y_axis = (axis_index + 2) % N_DIMENSIONS;
+    x_axis = (axis_index + 1) % VIO_N_DIMENSIONS;
+    y_axis = (axis_index + 2) % VIO_N_DIMENSIONS;
     get_volume_sizes( volume, sizes );
 
     if( x_tess <= 1 )
@@ -120,20 +120,20 @@ BICAPI  void   create_slice_quadmesh(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void   create_slice_3d(
-    Volume           volume,
-    Point            *origin,
-    Vector           *normal,
+    VIO_Volume           volume,
+    VIO_Point            *origin,
+    VIO_Vector           *normal,
     polygons_struct  *polygons )
 {
     int              i, n_points;
-    Point            point;
+    VIO_Point            point;
     VIO_Real             xw, yw, zw;
-    VIO_Real             voxel[MAX_DIMENSIONS];
-    VIO_Real             origin_voxel[MAX_DIMENSIONS];
-    VIO_Real             y_axis[MAX_DIMENSIONS];
-    VIO_Real             x_axis[MAX_DIMENSIONS];
-    VIO_Real             outline[6][MAX_DIMENSIONS];
-    Vector           v1, v2;
+    VIO_Real             voxel[VIO_MAX_DIMENSIONS];
+    VIO_Real             origin_voxel[VIO_MAX_DIMENSIONS];
+    VIO_Real             y_axis[VIO_MAX_DIMENSIONS];
+    VIO_Real             x_axis[VIO_MAX_DIMENSIONS];
+    VIO_Real             outline[6][VIO_MAX_DIMENSIONS];
+    VIO_Vector           v1, v2;
 
     create_two_orthogonal_vectors( normal, &v1, &v2 );
 

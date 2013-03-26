@@ -35,7 +35,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/markers
 BICAPI  void   initialize_marker(
     marker_struct     *marker,
     Marker_types      type,
-    Colour            colour )
+    VIO_Colour            colour )
 {
     marker->type = type;
     marker->colour = colour;

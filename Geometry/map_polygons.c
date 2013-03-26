@@ -36,13 +36,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/map_po
 ---------------------------------------------------------------------------- */
 
 static  VIO_Real  get_baricentric(
-    Point       *point,
-    Point       *p1,
-    Point       *p2,
-    Point       *p3 )
+    VIO_Point       *point,
+    VIO_Point       *p1,
+    VIO_Point       *p2,
+    VIO_Point       *p3 )
 {
     VIO_Real     weight;
-    Vector   hor, up, normal, vert, point_offset;
+    VIO_Vector   hor, up, normal, vert, point_offset;
 
     SUB_POINTS( point_offset, *point, *p1 );
     SUB_POINTS( hor, *p2, *p1 );
@@ -75,8 +75,8 @@ static  VIO_Real  get_baricentric(
 ---------------------------------------------------------------------------- */
 
 static  void  get_triangle_interpolation_weights(
-    Point       *point,
-    Point       points[],
+    VIO_Point       *point,
+    VIO_Point       points[],
     VIO_Real        weights[] )
 {
     weights[0] = get_baricentric( point, &points[1], &points[2], &points[0] );
@@ -153,17 +153,17 @@ static  VIO_BOOL  intersect_lines_2d(
 ---------------------------------------------------------------------------- */
 
 static  VIO_Real  get_two_d_coordinate(
-    Point    *p,
-    Point    *p1,
-    Point    *p2,
-    Point    *q1,
-    Point    *q2 )
+    VIO_Point    *p,
+    VIO_Point    *p1,
+    VIO_Point    *p2,
+    VIO_Point    *q1,
+    VIO_Point    *q2 )
 {
     VIO_Real     coords[4][2], coord[2], intersect[2];
     VIO_Real     intersect_point[2], len2, dx, dy, idx, idy, factor;
-    Vector   cross, offset, hor, vert, v1, v2;
+    VIO_Vector   cross, offset, hor, vert, v1, v2;
     int      i, j;
-    Point    points[4];
+    VIO_Point    points[4];
     VIO_BOOL  found;
 
     points[0] = *p1;
@@ -248,8 +248,8 @@ static  VIO_Real  get_two_d_coordinate(
 ---------------------------------------------------------------------------- */
 
 static  void  get_quadrilateral_interpolation_weights(
-    Point       *point,
-    Point       points[],
+    VIO_Point       *point,
+    VIO_Point       points[],
     VIO_Real        weights[] )
 {
     VIO_Real     u, v;
@@ -280,9 +280,9 @@ static  void  get_quadrilateral_interpolation_weights(
 ---------------------------------------------------------------------------- */
 
 static  void  get_arbitrary_polygon_interpolation_weights(
-    Point       *point,
+    VIO_Point       *point,
     int         n_points,
-    Point       points[],
+    VIO_Point       points[],
     VIO_Real        weights[] )
 {
     int      i, j;
@@ -335,9 +335,9 @@ static  void  get_arbitrary_polygon_interpolation_weights(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  get_polygon_interpolation_weights(
-    Point       *point,
+    VIO_Point       *point,
     int         n_points,
-    Point       points[],
+    VIO_Point       points[],
     VIO_Real        weights[] )
 {
     if( n_points == 3 )
@@ -375,14 +375,14 @@ BICAPI  void  get_polygon_interpolation_weights(
 BICAPI  void  map_point_between_polygons(
     polygons_struct  *p1,
     int              poly_index,
-    Point            *p1_point,
+    VIO_Point            *p1_point,
     polygons_struct  *p2,
-    Point            *p2_point )
+    VIO_Point            *p2_point )
 {
     int     i, size;
-    Point   poly1_points[MAX_POINTS_PER_POLYGON];
-    Point   poly2_points[MAX_POINTS_PER_POLYGON];
-    Point   scaled_point;
+    VIO_Point   poly1_points[MAX_POINTS_PER_POLYGON];
+    VIO_Point   poly2_points[MAX_POINTS_PER_POLYGON];
+    VIO_Point   scaled_point;
     VIO_Real    weights[MAX_POINTS_PER_POLYGON];
 
     size = get_polygon_points( p1, poly_index, poly1_points );
@@ -424,13 +424,13 @@ BICAPI  void  map_point_between_polygons(
 
 BICAPI  VIO_Real  map_point_to_unit_sphere(
     polygons_struct  *p,
-    Point            *point,
+    VIO_Point            *point,
     polygons_struct  *unit_sphere,
-    Point            *unit_sphere_point )
+    VIO_Point            *unit_sphere_point )
 {
     VIO_Real     mag, dist;
-    Point    poly_point;
-    Vector   offset;
+    VIO_Point    poly_point;
+    VIO_Vector   offset;
     int      poly;
 
     poly = find_closest_polygon_point( point, p, &poly_point );
@@ -456,11 +456,11 @@ BICAPI  VIO_Real  map_point_to_unit_sphere(
 
 BICAPI  void  map_unit_sphere_to_point(
     polygons_struct  *unit_sphere,
-    Point            *unit_sphere_point,
+    VIO_Point            *unit_sphere_point,
     polygons_struct  *p,
-    Point            *point )
+    VIO_Point            *point )
 {
-    Point    poly_point;
+    VIO_Point    poly_point;
     int      poly;
 
     poly = find_closest_polygon_point( unit_sphere_point, unit_sphere,
@@ -490,11 +490,11 @@ BICAPI  void  map_unit_sphere_to_point(
 static  void  polygon_transform_point(
     object_struct   *src_object,
     object_struct   *dest_object,
-    Point           *src_point,
-    Point           *dest_point )
+    VIO_Point           *src_point,
+    VIO_Point           *dest_point )
 {
     int     obj_index;
-    Point   point;
+    VIO_Point   point;
 
     (void) find_closest_point_on_object( src_point, src_object, &obj_index,
                                          &point );
@@ -524,8 +524,8 @@ BICAPI  void  polygon_transform_points(
     polygons_struct   *src_polygons,
     polygons_struct   *dest_polygons,
     int               n_points,
-    Point             src_points[],
-    Point             dest_points[] )
+    VIO_Point             src_points[],
+    VIO_Point             dest_points[] )
 {
     int             i;
     object_struct   *src_object, *dest_object;

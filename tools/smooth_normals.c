@@ -1,9 +1,9 @@
 #include  <bicpl.h>
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input.obj  [output.obj] [iters] [ratio]\n\
 \n\
      Smooths the polygon normals, placing output in input.obj, or if\n\
@@ -18,11 +18,11 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    Status               status;
-    STRING               src_filename, dest_filename;
+    VIO_Status               status;
+    VIO_STR               src_filename, dest_filename;
     int                  i, n_iters, n_objects;
     VIO_Real                 threshold;
-    File_formats         format;
+    VIO_File_formats         format;
     object_struct        **object_list;
     polygons_struct      *polygons;
 

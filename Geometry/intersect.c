@@ -36,14 +36,14 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/inters
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL   line_segment_intersects_plane(
-    Point   *p1,
-    Point   *p2,
-    Point   *plane_origin,
-    Vector  *plane_normal,
-    Point   *intersection_point )
+    VIO_Point   *p1,
+    VIO_Point   *p2,
+    VIO_Point   *plane_origin,
+    VIO_Vector  *plane_normal,
+    VIO_Point   *intersection_point )
 {
     VIO_Real     t, t1, t2;
-    Vector   v1, v2;
+    VIO_Vector   v1, v2;
 
     SUB_POINTS( v1, *p1, *plane_origin );
     SUB_POINTS( v2, *p2, *plane_origin );
@@ -90,11 +90,11 @@ BICAPI  VIO_BOOL   line_segment_intersects_plane(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  get_nearest_point_on_lines(
-    Point   *origin1,
-    Vector  *delta1,
-    Point   *origin2,
-    Vector  *delta2,
-    Point   *nearest_point )
+    VIO_Point   *origin1,
+    VIO_Vector  *delta1,
+    VIO_Point   *origin2,
+    VIO_Vector  *delta2,
+    VIO_Point   *nearest_point )
 {
     VIO_BOOL   intersects;
     VIO_Real      t, bottom;
@@ -148,8 +148,8 @@ BICAPI  VIO_BOOL  get_nearest_point_on_lines(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  clip_line_to_box(
-    Point    *origin,
-    Vector   *direction,
+    VIO_Point    *origin,
+    VIO_Vector   *direction,
     VIO_Real     x_min,
     VIO_Real     x_max,
     VIO_Real     y_min,

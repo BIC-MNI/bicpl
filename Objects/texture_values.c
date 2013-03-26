@@ -18,13 +18,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/texture
 
 #include "bicpl_internal.h"
 
-static  Status  output_texture_values_ascii(
-    STRING   filename,
+static  VIO_Status  output_texture_values_ascii(
+    VIO_STR   filename,
     int      n_values,
     VIO_Real     values[] )
 {
     int      v;
-    Status   status;
+    VIO_Status   status;
     FILE     *file;
 
     status = open_file( filename, WRITE_FILE, ASCII_FORMAT, &file );
@@ -48,12 +48,12 @@ static  Status  output_texture_values_ascii(
     return( OK );
 }
 
-static  Status  input_texture_values_ascii(
-    STRING   filename,
+static  VIO_Status  input_texture_values_ascii(
+    VIO_STR   filename,
     int      *n_values,
     VIO_Real     *values[] )
 {
-    Status   status;
+    VIO_Status   status;
     FILE     *file;
     VIO_Real     value;
 
@@ -75,15 +75,15 @@ static  Status  input_texture_values_ascii(
     return( OK );
 }
 
-static  Status  output_texture_values_binary(
-    STRING   filename,
+static  VIO_Status  output_texture_values_binary(
+    VIO_STR   filename,
     int      n_values,
     VIO_Real     values[] )
 {
     int      v, sizes[2];
-    Status   status;
-    Volume   volume;
-    STRING   dim_names[] = { MIxspace, MIyspace };
+    VIO_Status   status;
+    VIO_Volume   volume;
+    VIO_STR   dim_names[] = { MIxspace, MIyspace };
 
     volume = create_volume( 2, dim_names, NC_FLOAT, FALSE, 0.0, 0.0 );
     sizes[0] = 1;
@@ -102,15 +102,15 @@ static  Status  output_texture_values_binary(
     return( status );
 }
 
-static  Status  input_texture_values_binary(
-    STRING   filename,
+static  VIO_Status  input_texture_values_binary(
+    VIO_STR   filename,
     int      *n_values,
     VIO_Real     *values[] )
 {
     int      v, sizes[2];
-    Status   status;
-    Volume   volume;
-    STRING   dim_names[] = { MIxspace, MIyspace };
+    VIO_Status   status;
+    VIO_Volume   volume;
+    VIO_STR   dim_names[] = { MIxspace, MIyspace };
 
     status = input_volume( filename, 2, dim_names,
                            NC_UNSPECIFIED, FALSE, 0.0, 0.0,
@@ -139,13 +139,13 @@ static  Status  input_texture_values_binary(
  * The file will be created, if necessary.
  * BINARY_FORMAT files will not be portable.
  */
-BICAPI  Status  output_texture_values(
-    STRING         filename,
-    File_formats   format,
+BICAPI  VIO_Status  output_texture_values(
+    VIO_STR         filename,
+    VIO_File_formats   format,
     int            n_values,
     VIO_Real           values[] )
 {
-    Status   status;
+    VIO_Status   status;
 
     if( format == ASCII_FORMAT )
         status = output_texture_values_ascii( filename, n_values, values );
@@ -161,12 +161,12 @@ BICAPI  Status  output_texture_values(
  * Reading a BINARY_FORMAT file that was created
  * on another system will produce undefined behaviour.
  */
-BICAPI  Status  input_texture_values(
-    STRING         filename,
+BICAPI  VIO_Status  input_texture_values(
+    VIO_STR         filename,
     int            *n_values,
     VIO_Real           *values[] )
 {
-    Status         status;
+    VIO_Status         status;
 
     if( filename_extension_matches( filename, MNC_ENDING ) )
         status = input_texture_values_binary( filename, n_values, values );

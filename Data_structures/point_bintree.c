@@ -19,15 +19,15 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 #endif
 
 static  void  recursive_find_closest_point(
-    Point                 *point,
+    VIO_Point                 *point,
     bintree_node_struct   *node,
     range_struct          *range,
     object_struct         *object,
     int                   *obj_index,
     VIO_Real                  *closest_dist,
-    Point                 *closest_point );
+    VIO_Point                 *closest_point );
 static  VIO_Real  get_point_range_dist(
-    Point         *point,
+    VIO_Point         *point,
     range_struct  *range );
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -48,11 +48,11 @@ static  VIO_Real  get_point_range_dist(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_Real  find_closest_point_in_bintree(
-    Point               *point,
+    VIO_Point               *point,
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *obj_index,
-    Point               *point_on_object )
+    VIO_Point               *point_on_object )
 {
     VIO_Real      dist;
 
@@ -86,13 +86,13 @@ BICAPI  VIO_Real  find_closest_point_in_bintree(
 ---------------------------------------------------------------------------- */
 
 static  void  recursive_find_closest_point(
-    Point                 *point,
+    VIO_Point                 *point,
     bintree_node_struct   *node,
     range_struct          *range,
     object_struct         *object,
     int                   *obj_index,
     VIO_Real                  *closest_dist,
-    Point                 *closest_point )
+    VIO_Point                 *closest_point )
 {
     int                   i, n_objects, *object_list, axis_index;
     int                   n_to_search;
@@ -100,7 +100,7 @@ static  void  recursive_find_closest_point(
     range_struct          children_ranges[2], tmp_range;
     VIO_Real                  children_distances[2];
     VIO_Real                  dist;
-    Point                 object_point;
+    VIO_Point                 object_point;
     VIO_Real                  left_limit, right_limit;
 
     if( bintree_node_is_leaf( node ) )
@@ -187,7 +187,7 @@ static  void  recursive_find_closest_point(
 ---------------------------------------------------------------------------- */
 
 static  VIO_Real  get_point_range_dist(
-    Point         *point,
+    VIO_Point         *point,
     range_struct  *range )
 {
     int      c;
@@ -195,7 +195,7 @@ static  VIO_Real  get_point_range_dist(
 
     sum = 0.0;
 
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
     {
         min_plane = (VIO_Real) range->limits[c][0];
         max_plane = (VIO_Real) range->limits[c][1];
@@ -215,7 +215,7 @@ static  VIO_Real  get_point_range_dist(
 }
 
 static  void  recursive_find_closest_vertex(
-    Point                 *point,
+    VIO_Point                 *point,
     bintree_node_struct   *node,
     range_struct          *range,
     object_struct         *object,
@@ -239,7 +239,7 @@ static  void  recursive_find_closest_vertex(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_Real  find_closest_vertex_in_bintree(
-    Point               *point,
+    VIO_Point               *point,
     bintree_struct_ptr  bintree,
     object_struct       *object,
     int                 *vertex_on_object )
@@ -272,7 +272,7 @@ BICAPI  VIO_Real  find_closest_vertex_in_bintree(
 ---------------------------------------------------------------------------- */
 
 static  void  recursive_find_closest_vertex(
-    Point                 *point,
+    VIO_Point                 *point,
     bintree_node_struct   *node,
     range_struct          *range,
     object_struct         *object,

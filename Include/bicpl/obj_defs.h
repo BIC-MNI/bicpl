@@ -124,7 +124,7 @@ typedef  struct
     int             *end_indices;
     int             *indices;
 
-    VIO_Smallest_int    *visibilities;
+    VIO_SCHAR       *visibilities;
     int             *neighbours;
     bintree_struct_ptr  bintree;
 } polygons_struct;

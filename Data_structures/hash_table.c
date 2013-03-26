@@ -27,7 +27,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
             : enlarge_threshold
             : new_density
 @OUTPUT     : hash_table
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Initializes a hash table to empty, storing the
             : initial size, and parameters controlling automatic growth.
 @METHOD     : 
@@ -62,7 +62,7 @@ BICAPI   void  initialize_hash_table(
 @NAME       : delete_hash_table_list
 @INPUT      : hash_table
 @OUTPUT     : 
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Deletes the list of pointers in the hash table.
 @METHOD     : 
 @GLOBALS    : 
@@ -82,7 +82,7 @@ static   void  delete_hash_table_list(
 @NAME       : delete_hash_table
 @INPUT      : hash_table
 @OUTPUT     : 
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Deletes the given hash table.
 @METHOD     : 
 @GLOBALS    : 
@@ -179,7 +179,7 @@ static   hash_entry_struct  **lookup(
             : key
             : data_ptr
 @OUTPUT     : 
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Inserts the data_ptr in the hash table.
 @METHOD     : 
 @GLOBALS    : 
@@ -372,7 +372,7 @@ static   void  move_hash_entries_to_new_table(
 @INPUT      : hash_table
             : new_size
 @OUTPUT     : 
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Increases the size of the hash table, by creating a new hash
             : table, moving over the entries, then assigning the new table to
             : the old one.

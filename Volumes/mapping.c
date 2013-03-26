@@ -53,8 +53,8 @@ static int  clip_points(
 {
     int       i, c, n_input_points, n_output_points, this, lim;
     VIO_Real      prev_dist, dist, ratio, first_dist;
-    VIO_Real      input_points[2*MAX_DIMENSIONS][2];
-    VIO_Real      output_points[2*MAX_DIMENSIONS][2];
+    VIO_Real      input_points[2*VIO_MAX_DIMENSIONS][2];
+    VIO_Real      output_points[2*VIO_MAX_DIMENSIONS][2];
 
     for_less( i, 0, n_points )
     {
@@ -166,22 +166,22 @@ static int  clip_points(
 ---------------------------------------------------------------------------- */
 
 static int    get_cross_section(
-    Volume   volume,
+    VIO_Volume   volume,
     VIO_Real     origin[],
     VIO_Real     x_axis[],
     VIO_Real     y_axis[],
     VIO_Real     clipped_points[][2] )
 {
-    VIO_Real    points[4][2], voxel[MAX_DIMENSIONS];
-    int     d, sizes[MAX_DIMENSIONS], n_dims, n_points;
-    int     n_limits[MAX_DIMENSIONS], lim[MAX_DIMENSIONS];
+    VIO_Real    points[4][2], voxel[VIO_MAX_DIMENSIONS];
+    int     d, sizes[VIO_MAX_DIMENSIONS], n_dims, n_points;
+    int     n_limits[VIO_MAX_DIMENSIONS], lim[VIO_MAX_DIMENSIONS];
     VIO_Real    x_pixel, y_pixel, x_min, x_max, y_min, y_max, dx, dy;
     VIO_BOOL first;
 
     get_volume_sizes( volume, sizes );
     n_dims = get_volume_n_dimensions( volume );
 
-    for_less( d, 0, MAX_DIMENSIONS )
+    for_less( d, 0, VIO_MAX_DIMENSIONS )
     {
         if( d < n_dims )
             n_limits[d] = 2;
@@ -277,16 +277,16 @@ static int    get_cross_section(
 ---------------------------------------------------------------------------- */
 
 BICAPI int    get_volume_cross_section(
-    Volume   volume,
+    VIO_Volume   volume,
     VIO_Real     origin[],
     VIO_Real     x_axis[],
     VIO_Real     y_axis[],
-    VIO_Real     clipped_voxels[][MAX_DIMENSIONS] )
+    VIO_Real     clipped_voxels[][VIO_MAX_DIMENSIONS] )
 {
-    VIO_Real    clipped_points[2*MAX_DIMENSIONS][2];
+    VIO_Real    clipped_points[2*VIO_MAX_DIMENSIONS][2];
     int     i, c, n_dims, n_points;
-    VIO_Real    real_origin[MAX_DIMENSIONS];
-    VIO_Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
+    VIO_Real    real_origin[VIO_MAX_DIMENSIONS];
+    VIO_Real    real_x_axis[VIO_MAX_DIMENSIONS], real_y_axis[VIO_MAX_DIMENSIONS];
 
     get_mapping( volume, origin, x_axis, y_axis,
                  0.0, 0.0, 1.0, 1.0,
@@ -331,7 +331,7 @@ BICAPI int    get_volume_cross_section(
 ---------------------------------------------------------------------------- */
 
 static void    get_volume_slice_range(
-    Volume   volume,
+    VIO_Volume   volume,
     VIO_Real     origin[],
     VIO_Real     x_axis[],
     VIO_Real     y_axis[],
@@ -340,7 +340,7 @@ static void    get_volume_slice_range(
     VIO_Real     *y_pixel_start,
     VIO_Real     *y_pixel_end )
 {
-    VIO_Real    clipped_points[2*MAX_DIMENSIONS][2];
+    VIO_Real    clipped_points[2*VIO_MAX_DIMENSIONS][2];
     int     i, n_points;
 
     n_points = get_cross_section( volume, origin, x_axis, y_axis,
@@ -398,7 +398,7 @@ static void    get_volume_slice_range(
 ---------------------------------------------------------------------------- */
 
 BICAPI void    get_volume_mapping_range(
-    Volume   volume,
+    VIO_Volume   volume,
     VIO_Real     origin[],
     VIO_Real     x_axis[],
     VIO_Real     y_axis[],
@@ -411,8 +411,8 @@ BICAPI void    get_volume_mapping_range(
     VIO_Real     *y_pixel_start,
     VIO_Real     *y_pixel_end )
 {
-    VIO_Real    real_origin[MAX_DIMENSIONS];
-    VIO_Real    real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
+    VIO_Real    real_origin[VIO_MAX_DIMENSIONS];
+    VIO_Real    real_x_axis[VIO_MAX_DIMENSIONS], real_y_axis[VIO_MAX_DIMENSIONS];
 
     get_mapping( volume, origin, x_axis, y_axis,
                  x_trans, y_trans, x_scale, y_scale,
@@ -443,7 +443,7 @@ BICAPI void    get_volume_mapping_range(
 ---------------------------------------------------------------------------- */
 
 BICAPI void    clip_viewport_to_volume(
-    Volume   volume,
+    VIO_Volume   volume,
     VIO_Real     origin[],
     VIO_Real     x_axis[],
     VIO_Real     y_axis[],
@@ -498,7 +498,7 @@ BICAPI void    clip_viewport_to_volume(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  get_mapping(
-    Volume          volume,
+    VIO_Volume          volume,
     VIO_Real            origin[],
     VIO_Real            x_axis[],
     VIO_Real            y_axis[],
@@ -511,7 +511,7 @@ BICAPI void  get_mapping(
     VIO_Real            pix_y_axis[] )
 {
     int   c, n_dims;
-    VIO_Real  separations[MAX_DIMENSIONS], x_len, y_len, comp;
+    VIO_Real  separations[VIO_MAX_DIMENSIONS], x_len, y_len, comp;
 
     n_dims = get_volume_n_dimensions( volume );
     get_volume_separations( volume, separations );
@@ -680,7 +680,7 @@ BICAPI void  map_voxel_to_pixel(
     VIO_Real   *y_pixel )
 {
     int   c;
-    VIO_Real  vector[MAX_DIMENSIONS];
+    VIO_Real  vector[VIO_MAX_DIMENSIONS];
 
     for_less( c, 0, n )
         vector[c] = voxel[c] - origin[c];
@@ -713,7 +713,7 @@ BICAPI void  map_voxel_to_pixel(
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  convert_slice_pixel_to_voxel(
-    Volume          volume,
+    VIO_Volume          volume,
     VIO_Real            x_pixel,
     VIO_Real            y_pixel,
     VIO_Real            origin[],
@@ -726,8 +726,8 @@ BICAPI VIO_BOOL  convert_slice_pixel_to_voxel(
     VIO_Real            voxel[] )
 {
     int          n_dims;
-    VIO_Real         real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
-    VIO_Real         real_origin[MAX_DIMENSIONS];
+    VIO_Real         real_x_axis[VIO_MAX_DIMENSIONS], real_y_axis[VIO_MAX_DIMENSIONS];
+    VIO_Real         real_origin[VIO_MAX_DIMENSIONS];
 
     get_mapping( volume, origin, x_axis, y_axis,
                  x_translation, y_translation, x_scale, y_scale,
@@ -765,7 +765,7 @@ BICAPI VIO_BOOL  convert_slice_pixel_to_voxel(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  convert_voxel_to_slice_pixel(
-    Volume          volume,
+    VIO_Volume          volume,
     VIO_Real            voxel[],
     VIO_Real            origin[],
     VIO_Real            x_axis[],
@@ -778,8 +778,8 @@ BICAPI void  convert_voxel_to_slice_pixel(
     VIO_Real            *y_pixel )
 {
     int          n_dims;
-    VIO_Real         real_x_axis[MAX_DIMENSIONS], real_y_axis[MAX_DIMENSIONS];
-    VIO_Real         real_origin[MAX_DIMENSIONS];
+    VIO_Real         real_x_axis[VIO_MAX_DIMENSIONS], real_y_axis[VIO_MAX_DIMENSIONS];
+    VIO_Real         real_origin[VIO_MAX_DIMENSIONS];
 
     n_dims = get_volume_n_dimensions( volume );
 
@@ -888,7 +888,7 @@ BICAPI void  resize_volume_slice(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  fit_volume_slice_to_viewport(
-    Volume       volume,
+    VIO_Volume       volume,
     VIO_Real         origin[],
     VIO_Real         x_axis[],
     VIO_Real         y_axis[],
@@ -996,10 +996,10 @@ BICAPI void   scale_slice_about_viewport_centre(
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  voxel_is_within_volume(
-    Volume   volume,
+    VIO_Volume   volume,
     VIO_Real     voxel_position[] )
 {
-    int      i, sizes[MAX_DIMENSIONS];
+    int      i, sizes[VIO_MAX_DIMENSIONS];
     VIO_BOOL  inside;
 
     inside = TRUE;
@@ -1032,10 +1032,10 @@ BICAPI VIO_BOOL  voxel_is_within_volume(
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  int_voxel_is_within_volume(
-    Volume   volume,
+    VIO_Volume   volume,
     int      indices[] )
 {
-    int      i, sizes[MAX_DIMENSIONS];
+    int      i, sizes[VIO_MAX_DIMENSIONS];
     VIO_BOOL  inside;
 
     inside = TRUE;
@@ -1120,14 +1120,14 @@ BICAPI void  convert_int_to_real_voxel(
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  voxel_contains_range(
-    Volume   volume,
+    VIO_Volume   volume,
     int      int_voxel[],
     VIO_Real     min_value,
     VIO_Real     max_value )
 {               
     VIO_BOOL  less, greater;
     int      i, n_values;
-    VIO_Real     value, values[1 << MAX_DIMENSIONS];
+    VIO_Real     value, values[1 << VIO_MAX_DIMENSIONS];
 
     less = FALSE;
     greater = FALSE;
@@ -1181,13 +1181,13 @@ BICAPI VIO_BOOL  voxel_contains_range(
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  volumes_are_same_grid(
-    Volume    volume1,
-    Volume    volume2 )
+    VIO_Volume    volume1,
+    VIO_Volume    volume2 )
 {
     int                 c, n_dims, i, j;
-    int                 sizes1[MAX_DIMENSIONS], sizes2[MAX_DIMENSIONS];
+    int                 sizes1[VIO_MAX_DIMENSIONS], sizes2[VIO_MAX_DIMENSIONS];
     VIO_General_transform   *transform1, *transform2;
-    Transform           *lin_transform1, *lin_transform2;
+    VIO_Transform           *lin_transform1, *lin_transform2;
 
     n_dims = get_volume_n_dimensions( volume1 );
     if( n_dims != get_volume_n_dimensions( volume2 ) )

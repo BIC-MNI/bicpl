@@ -48,12 +48,12 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/interpo
 /* ARGSUSED */
 
 BICAPI void  interpolate_volume_to_slice(
-    Volume          volume1,
+    VIO_Volume          volume1,
     int             n_dims1,
     VIO_Real            origin1[],
     VIO_Real            x_axis1[],
     VIO_Real            y_axis1[],
-    Volume          volume2,
+    VIO_Volume          volume2,
     int             n_dims2,
     VIO_Real            origin2[],
     VIO_Real            x_axis2[],
@@ -64,19 +64,19 @@ BICAPI void  interpolate_volume_to_slice(
     int             y_pixel_end,
     int             degrees_continuity,
     unsigned short  **cmode_colour_map,
-    Colour          **rgb_colour_map,
-    Colour          empty_colour,
+    VIO_Colour          **rgb_colour_map,
+    VIO_Colour          empty_colour,
     pixels_struct   *pixels )
 {
     int              dim, x, y;
     int              int_voxel_value1, int_voxel_value2;
     VIO_Real             outside_value1, outside_value2;
-    VIO_Real             start_voxel1[MAX_DIMENSIONS], voxel1[MAX_DIMENSIONS];
-    VIO_Real             start_voxel2[MAX_DIMENSIONS], voxel2[MAX_DIMENSIONS];
+    VIO_Real             start_voxel1[VIO_MAX_DIMENSIONS], voxel1[VIO_MAX_DIMENSIONS];
+    VIO_Real             start_voxel2[VIO_MAX_DIMENSIONS], voxel2[VIO_MAX_DIMENSIONS];
     VIO_Real             value1, voxel_value1, value2, voxel_value2;
     VIO_Real             min_voxel1, max_voxel1, min_voxel2, max_voxel2;
     unsigned short   *cmode_ptr;
-    Colour           *rgb_ptr;
+    VIO_Colour           *rgb_ptr;
     VIO_BOOL          inside1, inside2;
     Pixel_types      pixel_type;
 #ifdef  REPORT_PROGRESS
@@ -214,7 +214,7 @@ BICAPI void  interpolate_volume_to_slice(
                     if( inside1 )
                     {
                         if( rgb_colour_map == NULL )
-                            *rgb_ptr = (Colour) voxel_value1;
+                            *rgb_ptr = (VIO_Colour) voxel_value1;
                         else
                         {
                             int_voxel_value1 = ROUND( voxel_value1 );

@@ -99,7 +99,7 @@ BICAPI  void  initialize_linear_least_squares(
 
     if( n_parameters > 0 )
     {
-        ALLOC2D( lsq->second_derivs, n_parameters, n_parameters );
+        VIO_ALLOC2D( lsq->second_derivs, n_parameters, n_parameters );
         ALLOC( lsq->constants, n_parameters );
 
         for_less( i, 0, n_parameters )
@@ -208,6 +208,6 @@ BICAPI  VIO_BOOL  get_linear_least_squares_solution(
 BICAPI  void  delete_linear_least_squares(
     linear_least_squares   *lsq )
 {
-    FREE2D( lsq->second_derivs );
+    VIO_FREE2D( lsq->second_derivs );
     FREE( lsq->constants );
 }

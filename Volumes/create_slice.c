@@ -19,7 +19,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/create_
 #endif
 
 static void  create_pixel_mapping(
-    Volume          volume1,
+    VIO_Volume          volume1,
     int             n_slices1,
     VIO_Real            **origins1,
     VIO_Real            x_axis1[],
@@ -28,7 +28,7 @@ static void  create_pixel_mapping(
     VIO_Real            y_translation1,
     VIO_Real            x_scale1,
     VIO_Real            y_scale1,
-    Volume          volume2,
+    VIO_Volume          volume2,
     int             n_slices2,
     VIO_Real            **origins2,
     VIO_Real            x_axis2[],
@@ -48,7 +48,7 @@ static void  create_pixel_mapping(
 
     n_dimensions1 = get_volume_n_dimensions( volume1 );
 
-    ALLOC2D( *real_origins1, n_slices1, n_dimensions1 );
+    VIO_ALLOC2D( *real_origins1, n_slices1, n_dimensions1 );
 
     for_less( s, 0, n_slices1 )
     {
@@ -61,7 +61,7 @@ static void  create_pixel_mapping(
     {
         n_dimensions2 = get_volume_n_dimensions( volume2 );
 
-        ALLOC2D( *real_origins2, n_slices2, n_dimensions2 );
+        VIO_ALLOC2D( *real_origins2, n_slices2, n_dimensions2 );
 
         for_less( s, 0, n_slices2 )
         {
@@ -73,12 +73,12 @@ static void  create_pixel_mapping(
 }
 
 static void  set_pixel_range(
-    Volume          volume1,
+    VIO_Volume          volume1,
     int             n_slices1,
     VIO_Real            **real_origins1,
     VIO_Real            real_x_axis1[],
     VIO_Real            real_y_axis1[],
-    Volume          volume2,
+    VIO_Volume          volume2,
     int             n_slices2,
     VIO_Real            **real_origins2,
     VIO_Real            real_x_axis2[],
@@ -171,13 +171,13 @@ static void  set_pixel_range(
 ---------------------------------------------------------------------------- */
 
 static void  create_weighted_volume_slices(
-    Volume          volume1,
+    VIO_Volume          volume1,
     int             n_slices1,
     VIO_Real            **origins1,
     VIO_Real            x_axis1[],
     VIO_Real            y_axis1[],
     VIO_Real            weights1[],
-    Volume          volume2,
+    VIO_Volume          volume2,
     int             n_slices2,
     VIO_Real            **origins2,
     VIO_Real            x_axis2[],
@@ -189,17 +189,17 @@ static void  create_weighted_volume_slices(
     int             y_pixel_end,
     int             degrees_continuity,
     unsigned short  **cmode_colour_map,
-    Colour          **rgb_colour_map,
-    Colour          empty_colour,
+    VIO_Colour          **rgb_colour_map,
+    VIO_Colour          empty_colour,
     void            *render_storage,
     pixels_struct   *pixels )
 {
-    Data_types   volume1_data_type, volume2_data_type;
+    VIO_Data_types   volume1_data_type, volume2_data_type;
     void         *volume_data1, *volume_data2;
-    int          strides1[MAX_DIMENSIONS], strides2[MAX_DIMENSIONS];
+    int          strides1[VIO_MAX_DIMENSIONS], strides2[VIO_MAX_DIMENSIONS];
     int          n_dimensions1, n_dimensions2;
     int          axis, s, c;
-    int          sizes1[MAX_DIMENSIONS], sizes2[MAX_DIMENSIONS];
+    int          sizes1[VIO_MAX_DIMENSIONS], sizes2[VIO_MAX_DIMENSIONS];
 
     if( pixels->x_size > 0 && pixels->y_size > 0 )
     {
@@ -327,7 +327,7 @@ static void  create_weighted_volume_slices(
 ---------------------------------------------------------------------------- */
 
 static VIO_BOOL  get_filter_slices(
-    Volume          volume,
+    VIO_Volume          volume,
     VIO_Real            position[],
     VIO_Real            x_axis[],
     VIO_Real            y_axis[],
@@ -338,11 +338,11 @@ static VIO_BOOL  get_filter_slices(
     VIO_Real            **weights )
 {
     int    c, a1, a2;
-    VIO_Real   direction[N_DIMENSIONS], separations[MAX_DIMENSIONS];
+    VIO_Real   direction[VIO_N_DIMENSIONS], separations[VIO_MAX_DIMENSIONS];
 
     if( filter_type != NEAREST_NEIGHBOUR )
     {
-        if( get_volume_n_dimensions( volume ) != N_DIMENSIONS )
+        if( get_volume_n_dimensions( volume ) != VIO_N_DIMENSIONS )
         {
             print_error(
               "If volume not 3D, can only do nearest neighbour filtering.\n" );
@@ -350,10 +350,10 @@ static VIO_BOOL  get_filter_slices(
         }
 
         get_volume_separations( volume, separations );
-        for_less( c, 0, N_DIMENSIONS )
+        for_less( c, 0, VIO_N_DIMENSIONS )
         {
-            a1 = (c + 1) % N_DIMENSIONS;
-            a2 = (c + 2) % N_DIMENSIONS;
+            a1 = (c + 1) % VIO_N_DIMENSIONS;
+            a2 = (c + 2) % VIO_N_DIMENSIONS;
             direction[c] = x_axis[a1] * y_axis[a2] - x_axis[a2] * y_axis[a1];
             direction[c] *= FABS( separations[a1] * separations[a2] /
                                   separations[c] );
@@ -416,7 +416,7 @@ static VIO_BOOL  get_filter_slices(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  create_volume_slice(
-    Volume          volume1,
+    VIO_Volume          volume1,
     Filter_types    filter_type1,
     VIO_Real            filter_width1,
     VIO_Real            slice_position1[],
@@ -426,7 +426,7 @@ BICAPI void  create_volume_slice(
     VIO_Real            y_translation1,
     VIO_Real            x_scale1,
     VIO_Real            y_scale1,
-    Volume          volume2,
+    VIO_Volume          volume2,
     Filter_types    filter_type2,
     VIO_Real            filter_width2,
     VIO_Real            slice_position2[],
@@ -445,8 +445,8 @@ BICAPI void  create_volume_slice(
     Pixel_types     pixel_type,
     int             degrees_continuity,
     unsigned short  **cmode_colour_map,
-    Colour          **rgb_colour_map,
-    Colour          empty_colour,
+    VIO_Colour          **rgb_colour_map,
+    VIO_Colour          empty_colour,
     void            *render_storage,
     VIO_BOOL         clip_pixels_flag,
     int             *n_pixels_alloced,
@@ -455,8 +455,8 @@ BICAPI void  create_volume_slice(
     int          n_slices1, n_slices2;
     VIO_Real         **positions1, **positions2, *weights1, *weights2;
     VIO_Real         **real_origins1, **real_origins2;
-    VIO_Real         real_x_axis1[MAX_DIMENSIONS], real_y_axis1[MAX_DIMENSIONS];
-    VIO_Real         real_x_axis2[MAX_DIMENSIONS], real_y_axis2[MAX_DIMENSIONS];
+    VIO_Real         real_x_axis1[VIO_MAX_DIMENSIONS], real_y_axis1[VIO_MAX_DIMENSIONS];
+    VIO_Real         real_x_axis2[VIO_MAX_DIMENSIONS], real_y_axis2[VIO_MAX_DIMENSIONS];
 
     real_origins1 = NULL;       /* Initialize this!! */
     real_origins2 = NULL;       /* Initialize this!! */
@@ -512,18 +512,18 @@ BICAPI void  create_volume_slice(
 
     if( volume2 != NULL )
     {
-        FREE2D( positions2 );
+        VIO_FREE2D( positions2 );
         FREE( weights2 );
-        FREE2D( real_origins2 );
+        VIO_FREE2D( real_origins2 );
     }
 
-    FREE2D( positions1 );
+    VIO_FREE2D( positions1 );
     FREE( weights1 );
-    FREE2D( real_origins1 );
+    VIO_FREE2D( real_origins1 );
 }
 
 BICAPI void  set_volume_slice_pixel_range(
-    Volume          volume1,
+    VIO_Volume          volume1,
     Filter_types    filter_type1,
     VIO_Real            filter_width1,
     VIO_Real            slice_position1[],
@@ -533,7 +533,7 @@ BICAPI void  set_volume_slice_pixel_range(
     VIO_Real            y_translation1,
     VIO_Real            x_scale1,
     VIO_Real            y_scale1,
-    Volume          volume2,
+    VIO_Volume          volume2,
     Filter_types    filter_type2,
     VIO_Real            filter_width2,
     VIO_Real            slice_position2[],
@@ -552,8 +552,8 @@ BICAPI void  set_volume_slice_pixel_range(
     int          n_slices1, n_slices2;
     VIO_Real         **positions1, **positions2, *weights1, *weights2;
     VIO_Real         **real_origins1, **real_origins2;
-    VIO_Real         real_x_axis1[MAX_DIMENSIONS], real_y_axis1[MAX_DIMENSIONS];
-    VIO_Real         real_x_axis2[MAX_DIMENSIONS], real_y_axis2[MAX_DIMENSIONS];
+    VIO_Real         real_x_axis1[VIO_MAX_DIMENSIONS], real_y_axis1[VIO_MAX_DIMENSIONS];
+    VIO_Real         real_x_axis2[VIO_MAX_DIMENSIONS], real_y_axis2[VIO_MAX_DIMENSIONS];
 
     if( !get_filter_slices( volume1, slice_position1, x_axis1, y_axis1,
                             filter_type1, filter_width1, &n_slices1,
@@ -590,12 +590,12 @@ BICAPI void  set_volume_slice_pixel_range(
 
     if( volume2 != NULL )
     {
-        FREE2D( positions2 );
+        VIO_FREE2D( positions2 );
         FREE( weights2 );
-        FREE2D( real_origins2 );
+        VIO_FREE2D( real_origins2 );
     }
 
-    FREE2D( positions1 );
+    VIO_FREE2D( positions1 );
     FREE( weights1 );
-    FREE2D( real_origins1 );
+    VIO_FREE2D( real_origins1 );
 }

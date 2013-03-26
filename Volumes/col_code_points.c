@@ -28,7 +28,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_cod
 @OUTPUT     : colour_flag
               colours
 @RETURNS    : 
-@DESCRIPTION: Colour codes the points according to the associated value in the
+@DESCRIPTION: VIO_Colour codes the points according to the associated value in the
               volume.  Adjust the colour_flag and reallocs the colours as
               necessary.
 @METHOD     : 
@@ -40,12 +40,12 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/col_cod
 
 static void  colour_code_points(
     colour_coding_struct  *colour_coding,
-    Volume                volume,
+    VIO_Volume                volume,
     int                   continuity,
     Colour_flags          *colour_flag,
-    Colour                *colours[],
+    VIO_Colour                *colours[],
     int                   n_points,
-    Point                 points[] )
+    VIO_Point                 points[] )
 {
     int      i;
     VIO_Real     val;
@@ -87,7 +87,7 @@ static void  colour_code_points(
               colour_coding
 @OUTPUT     : object
 @RETURNS    : 
-@DESCRIPTION: Colour codes an object, modifying its per-vertex colours.
+@DESCRIPTION: VIO_Colour codes an object, modifying its per-vertex colours.
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
@@ -96,7 +96,7 @@ static void  colour_code_points(
 ---------------------------------------------------------------------------- */
 
 BICAPI void  colour_code_object(
-    Volume                 volume,
+    VIO_Volume                 volume,
     int                    continuity,
     colour_coding_struct   *colour_coding,
     object_struct          *object )

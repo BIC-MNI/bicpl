@@ -5,11 +5,11 @@ int  main(
     char   *argv[] )
 {
     FILE           *file;
-    STRING         filename1, filename2, output_filename;
+    VIO_STR         filename1, filename2, output_filename;
     int            i, p, n_objects1, n_objects2, n_points1, n_points2;
-    Point          *points1, *points2;
+    VIO_Point          *points1, *points2;
     VIO_Real           dist;
-    File_formats   format;
+    VIO_File_formats   format;
     object_struct  **object_list1, **object_list2;
 
     initialize_argument_processing( argc, argv );

@@ -224,7 +224,7 @@ BICAPI  void  delete_lsq_terms_float(
     float            *cross_terms[] );
 
 BICAPI  void  create_lsq_hypersurface_float(
-    STRING           filename,
+    VIO_STR           filename,
     int              parm1,
     int              parm2,
     int              x_size,

@@ -119,7 +119,7 @@ BICAPI void safe_compute_transform_from_tags(
 #else
     int                 fildes[2];
     FILE                *fpin, *fpout;
-    Status              status;
+    VIO_Status              status;
     int                 statptr;
     VIO_General_transform   computed_transform;
 

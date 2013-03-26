@@ -33,10 +33,10 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/rgb_loo
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Colour     *get_8bit_rgb_pixel_lookup( void )
+BICAPI  VIO_Colour     *get_8bit_rgb_pixel_lookup( void )
 {
     static  VIO_BOOL       initialized = FALSE;
-    static  Colour        lookup_table[NUM_PIXELS8];
+    static  VIO_Colour        lookup_table[NUM_PIXELS8];
     int                   r, g, b, ind, r255, g255, b255;
 
     if( !initialized )
@@ -78,7 +78,7 @@ BICAPI  Colour     *get_8bit_rgb_pixel_lookup( void )
 ---------------------------------------------------------------------------- */
 
 BICAPI  int  convert_rgb_pixel_to_8bit_lookup(
-    Colour    colour )
+    VIO_Colour    colour )
 {
     int   ind, r, g, b, r_ind, g_ind, b_ind;
 

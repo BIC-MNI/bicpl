@@ -50,11 +50,11 @@ int main( int argc, char * argv[] ) {
   object_struct  *** object_list;
 
   polygons_struct * surface;
-  File_formats      format;
-  STRING            expanded;
+  VIO_File_formats      format;
+  VIO_STR            expanded;
 
-  Point  * total_coords;       // concatenated coords
-  Vector * total_normals;      // concatenated normals
+  VIO_Point  * total_coords;       // concatenated coords
+  VIO_Vector * total_normals;      // concatenated normals
   int    * total_indices;      // concatenated index pointers
   int    * total_connec;       // concatenated connectivity
 
@@ -123,8 +123,8 @@ int main( int argc, char * argv[] ) {
 
   // Merge the surfaces
 
-  total_coords = (Point*)malloc( total_n_points * sizeof( Point ) );
-  total_normals = (Vector*)malloc( total_n_points * sizeof( Vector ) );
+  total_coords = (VIO_Point*)malloc( total_n_points * sizeof( VIO_Point ) );
+  total_normals = (VIO_Vector*)malloc( total_n_points * sizeof( VIO_Vector ) );
   total_indices = (int*)malloc( total_n_elems * sizeof( int ) );  // like this, yes!
   total_connec = (int*)malloc( total_n_indices * sizeof( int ) );
 
@@ -233,7 +233,7 @@ int main( int argc, char * argv[] ) {
 //
 static void usage( char * executable_name ) {
 
-  STRING  usage_format = "\
+  VIO_STR  usage_format = "\
 Usage: %s in1.obj in2.obj [inX.obj] in1.txt in2.txt [inX.txt] out.obj out.txt\n\
 Values: in1.obj = first input object file\n\
         in2.obj = second input object file\n\

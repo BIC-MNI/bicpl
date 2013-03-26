@@ -195,7 +195,7 @@ static  void  create_case(
 
     n_ambiguities = 0;
 
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
     {
         for_less( face, 0, 2 )
         {
@@ -231,7 +231,7 @@ static  void  create_case(
 
     for_less( i, 0, n_cases )
     {
-        for_less( c, 0, N_DIMENSIONS )
+        for_less( c, 0, VIO_N_DIMENSIONS )
         {
             for_less( face, 0, 2 )
             {
@@ -263,13 +263,13 @@ static  void  get_face_axes(
 {
     if( face == 0 )
     {
-        *a1 = (c + 2) % N_DIMENSIONS;
-        *a2 = (c + 1) % N_DIMENSIONS;
+        *a1 = (c + 2) % VIO_N_DIMENSIONS;
+        *a2 = (c + 1) % VIO_N_DIMENSIONS;
     }
     else
     {
-        *a1 = (c + 1) % N_DIMENSIONS;
-        *a2 = (c + 2) % N_DIMENSIONS;
+        *a1 = (c + 1) % VIO_N_DIMENSIONS;
+        *a2 = (c + 2) % VIO_N_DIMENSIONS;
     }
 }
 
@@ -393,7 +393,7 @@ static  void  create_case_polygons(
 
     ind = 0;
 
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
     {
         for_less( face, 0, 2 )
         {
@@ -435,7 +435,7 @@ static  void  create_edges(
     int          c, face;
     Case_types   face_flags[4];
 
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
     {
         for_less( face, 0, 2 )
         {
@@ -630,7 +630,7 @@ static  void  find_neighbour_face(
     {
         initialized = TRUE;
 
-        for_less( c1, 0, N_DIMENSIONS )
+        for_less( c1, 0, VIO_N_DIMENSIONS )
         for_less( face1, 0, 2 )
         {
             create_face_indices( c1, face1, &face1_ind );
@@ -638,7 +638,7 @@ static  void  find_neighbour_face(
             {
                 en1 = (edge1 + 1) % 4;
                 n_matches = 0;
-                for_less( c2, 0, N_DIMENSIONS )
+                for_less( c2, 0, VIO_N_DIMENSIONS )
                 for_less( face2, 0, 2 )
                 {
                     create_face_indices( c2, face2, &face2_ind );

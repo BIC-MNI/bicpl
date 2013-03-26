@@ -22,7 +22,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Data_structures
 @NAME       : create_bitlist
 @INPUT      : n_bits
 @OUTPUT     : bitlist
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Creates a bitlist containing the required number of bits.
 @METHOD     : 
 @GLOBALS    : 
@@ -158,7 +158,7 @@ BICAPI  VIO_BOOL     get_bitlist_bit(
 @NAME       : delete_bitlist
 @INPUT      : bitlist
 @OUTPUT     : 
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Deletes the given bitlist.
 @METHOD     : 
 @GLOBALS    : 
@@ -184,7 +184,7 @@ BICAPI  void  delete_bitlist(
             : ny
             : nz
 @OUTPUT     : bitlist
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Creates a 3D bitlist.
 @METHOD     : 
 @GLOBALS    : 
@@ -206,7 +206,7 @@ BICAPI  void  create_bitlist_3d(
                          BITS_PER_BITLIST_WORD;
 
     if( nx > 0 && ny > 0 && nz > 0 )
-        ALLOC3D( bitlist->bits, nx, ny, bitlist->n_z_words );
+        VIO_ALLOC3D( bitlist->bits, nx, ny, bitlist->n_z_words );
 
     zero_bitlist_3d( bitlist );
 }
@@ -368,7 +368,7 @@ BICAPI  VIO_BOOL     get_bitlist_bit_3d(
 @NAME       : delete_bitlist_3d
 @INPUT      : bitlist
 @OUTPUT     : 
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Deletes the 3D bitlist.
 @METHOD     : 
 @GLOBALS    : 
@@ -382,7 +382,7 @@ BICAPI  void  delete_bitlist_3d(
 {;
     if( bitlist->nx > 0 && bitlist->ny > 0 && bitlist->nz > 0 )
     {
-        FREE3D( bitlist->bits );
+        VIO_FREE3D( bitlist->bits );
     }
 }
 
@@ -401,12 +401,12 @@ BICAPI  void  delete_bitlist_3d(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_bitlist_3d(
+BICAPI  VIO_Status  io_bitlist_3d(
     FILE               *file,
-    IO_types           io_type,
+    VIO_IO_types           io_type,
     bitlist_3d_struct  *bitlist )
 {
-    Status  status;
+    VIO_Status  status;
     int     x, y;
 
     status = OK;

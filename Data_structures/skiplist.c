@@ -239,7 +239,7 @@ static  int  get_random_level( void )
 @NAME       : delete_skiplist
 @INPUT      : skiplist
 @OUTPUT     : 
-@RETURNS    : Status
+@RETURNS    : VIO_Status
 @DESCRIPTION: Deletes the memory associated with the skiplist.
 @METHOD     : 
 @GLOBALS    : 

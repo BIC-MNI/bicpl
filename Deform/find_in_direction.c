@@ -2,7 +2,7 @@
 #include "bicpl/deform.h"
 
 static  VIO_BOOL  voxel_might_contain_boundary(
-    Volume                      volume,
+    VIO_Volume                      volume,
     bitlist_3d_struct           *done_bits,
     bitlist_3d_struct           *surface_bits,
     int                         degrees_continuity,
@@ -11,8 +11,8 @@ static  VIO_BOOL  voxel_might_contain_boundary(
 
 static  VIO_BOOL  check_voxel_for_isovalue(
     voxel_coef_struct   *lookup,
-    Volume              volume,
-    Volume              label_volume,
+    VIO_Volume              volume,
+    VIO_Volume              label_volume,
     int                 degrees_continuity,
     int                 voxel_indices[],
     VIO_Real                line_origin[],
@@ -27,8 +27,8 @@ static  VIO_BOOL  check_voxel_for_isovalue(
 
 static  VIO_BOOL  check_voxel_for_boundary(
     voxel_coef_struct           *lookup,
-    Volume                      volume,
-    Volume                      label_volume,
+    VIO_Volume                      volume,
+    VIO_Volume                      label_volume,
     int                         degrees_continuity,
     int                         voxel_indices[],
     VIO_Real                        line_origin[],
@@ -49,16 +49,16 @@ static  VIO_BOOL  check_voxel_for_boundary(
     }
 
 static  void  clip_line_to_volume(
-    Volume     volume,
+    VIO_Volume     volume,
     int        degrees_continuity,
     VIO_Real       line_origin[],
     VIO_Real       line_direction[],
     VIO_Real       *t_min,
     VIO_Real       *t_max )
 {
-    int    sizes[N_DIMENSIONS];
-    Point  origin;
-    Vector direction;
+    int    sizes[VIO_N_DIMENSIONS];
+    VIO_Point  origin;
+    VIO_Vector direction;
 
     get_volume_sizes( volume, sizes );
 
@@ -77,7 +77,7 @@ static  void  clip_line_to_volume(
 }
 
 static  void  set_up_to_search_ray(
-    Volume                      volume,
+    VIO_Volume                      volume,
     int                         degrees_continuity,
     VIO_Real                        ray_origin[],
     VIO_Real                        unit_pos_dir[],
@@ -89,16 +89,16 @@ static  void  set_up_to_search_ray(
     VIO_Real                        direction[],
     VIO_Real                        *current_distance,
     VIO_Real                        *stop_distance,
-    VIO_Real                        next_distance[N_DIMENSIONS],
-    VIO_Real                        delta_distance[N_DIMENSIONS],
-    int                         voxel_index[N_DIMENSIONS],
-    int                         delta_voxel[N_DIMENSIONS],
+    VIO_Real                        next_distance[VIO_N_DIMENSIONS],
+    VIO_Real                        delta_distance[VIO_N_DIMENSIONS],
+    int                         voxel_index[VIO_N_DIMENSIONS],
+    int                         delta_voxel[VIO_N_DIMENSIONS],
     VIO_Real                        *next_closest_distance )
 {
     VIO_BOOL       found_exit;
     VIO_Real          voxel_exit, t_min, t_max, voxel_offset;
     VIO_Real          direct;
-    VIO_Real          start_voxel[N_DIMENSIONS], model_point[N_DIMENSIONS];
+    VIO_Real          start_voxel[VIO_N_DIMENSIONS], model_point[VIO_N_DIMENSIONS];
     VIO_Real          *dir;
 
     if( model_dist + start_dist < 0.0 || model_dist + end_dist < 0.0 )
@@ -260,15 +260,15 @@ static  int  count = 0;
 #endif
 
 BICAPI  VIO_BOOL  find_boundary_in_direction(
-    Volume                      volume,
-    Volume                      label_volume,
+    VIO_Volume                      volume,
+    VIO_Volume                      label_volume,
     voxel_coef_struct           *lookup,
     bitlist_3d_struct           *done_bits,
     bitlist_3d_struct           *surface_bits,
     VIO_Real                        model_dist,
-    Point                       *ray_origin,
-    Vector                      *unit_pos_dir,
-    Vector                      *unit_neg_dir,
+    VIO_Point                       *ray_origin,
+    VIO_Vector                      *unit_pos_dir,
+    VIO_Vector                      *unit_neg_dir,
     VIO_Real                        max_outwards_search_distance,
     VIO_Real                        max_inwards_search_distance,
     int                         degrees_continuity,
@@ -278,18 +278,18 @@ BICAPI  VIO_BOOL  find_boundary_in_direction(
     static const VIO_Real  TOLERANCE = 0.0001;
     VIO_BOOL       found, done0, done1, second_leg0, second_leg1, isovalue;
     VIO_Real          next_closest0, next_closest1;
-    int           voxel_index0[N_DIMENSIONS], voxel_index1[N_DIMENSIONS];
-    int           delta_voxel0[N_DIMENSIONS], delta_voxel1[N_DIMENSIONS];
+    int           voxel_index0[VIO_N_DIMENSIONS], voxel_index1[VIO_N_DIMENSIONS];
+    int           delta_voxel0[VIO_N_DIMENSIONS], delta_voxel1[VIO_N_DIMENSIONS];
     VIO_Real          current_distance0, current_distance1;
-    VIO_Real          next_distance0[N_DIMENSIONS], next_distance1[N_DIMENSIONS];
+    VIO_Real          next_distance0[VIO_N_DIMENSIONS], next_distance1[VIO_N_DIMENSIONS];
     VIO_Real          stop_distance0, stop_distance1;
-    VIO_Real          delta_distance0[N_DIMENSIONS], delta_distance1[N_DIMENSIONS];
+    VIO_Real          delta_distance0[VIO_N_DIMENSIONS], delta_distance1[VIO_N_DIMENSIONS];
     VIO_Real          max_dist, found_dist;
-    VIO_Real          ray_origin_real[N_DIMENSIONS];
-    VIO_Real          unit_pos[N_DIMENSIONS], unit_neg[N_DIMENSIONS];
+    VIO_Real          ray_origin_real[VIO_N_DIMENSIONS];
+    VIO_Real          unit_pos[VIO_N_DIMENSIONS], unit_neg[VIO_N_DIMENSIONS];
     VIO_BOOL       inside_surface0, inside_surface1, do_first;
-    VIO_Real          origin0[N_DIMENSIONS], origin1[N_DIMENSIONS];
-    VIO_Real          direction0[N_DIMENSIONS], direction1[N_DIMENSIONS];
+    VIO_Real          origin0[VIO_N_DIMENSIONS], origin1[VIO_N_DIMENSIONS];
+    VIO_Real          direction0[VIO_N_DIMENSIONS], direction1[VIO_N_DIMENSIONS];
 
 #ifdef DEBUGGING
     {
@@ -379,8 +379,8 @@ BICAPI  VIO_BOOL  find_boundary_in_direction(
 
     if( boundary_def->min_isovalue != boundary_def->max_isovalue )
     {
-        Vector   world_direction;
-        VIO_Real     point[N_DIMENSIONS];
+        VIO_Vector   world_direction;
+        VIO_Real     point[VIO_N_DIMENSIONS];
         VIO_Real     vx, vy, vz;
 
         isovalue = FALSE;
@@ -648,8 +648,8 @@ static  void   get_trilinear_gradient(
 
 static  VIO_BOOL  check_voxel_for_isovalue(
     voxel_coef_struct   *lookup,
-    Volume              volume,
-    Volume              label_volume,
+    VIO_Volume              volume,
+    VIO_Volume              label_volume,
     int                 degrees_continuity,
     int                 voxel_indices[],
     VIO_Real                line_origin[],
@@ -664,8 +664,8 @@ static  VIO_BOOL  check_voxel_for_isovalue(
 {
     VIO_BOOL         found;
     int             i;
-    VIO_Real            value, dot_prod, voxel[N_DIMENSIONS];
-    VIO_Real            first_deriv[N_DIMENSIONS], *first_deriv_ptr[1];
+    VIO_Real            value, dot_prod, voxel[VIO_N_DIMENSIONS];
+    VIO_Real            first_deriv[VIO_N_DIMENSIONS], *first_deriv_ptr[1];
     VIO_BOOL         active, deriv_dir_correct;
     int             n_boundaries;
     VIO_Real            boundary_positions[3];
@@ -747,13 +747,13 @@ static  VIO_BOOL  check_voxel_for_isovalue(
 }
 
 static  VIO_BOOL  does_voxel_contain_value_range(
-    Volume          volume,
+    VIO_Volume          volume,
     int             degrees_continuity,
     int             voxel[],
     VIO_Real            min_value,
     VIO_Real            max_value )
 {
-    int      dim, i, n_values, start, end, sizes[MAX_DIMENSIONS];
+    int      dim, i, n_values, start, end, sizes[VIO_MAX_DIMENSIONS];
     VIO_BOOL  greater, less;
     VIO_Real     values[4*4*4];
 
@@ -799,7 +799,7 @@ static  VIO_BOOL  does_voxel_contain_value_range(
     start = -(degrees_continuity + 1) / 2;
     end = start + degrees_continuity + 2;
 
-    for_less( dim, 0, N_DIMENSIONS )
+    for_less( dim, 0, VIO_N_DIMENSIONS )
     {
         if( voxel[dim] + start < 0 || voxel[dim] + end > sizes[dim] )
             return( FALSE );
@@ -839,7 +839,7 @@ static  VIO_BOOL  does_voxel_contain_value_range(
 }
 
 static  VIO_BOOL  voxel_might_contain_boundary(
-    Volume                      volume,
+    VIO_Volume                      volume,
     bitlist_3d_struct           *done_bits,
     bitlist_3d_struct           *surface_bits,
     int                         degrees_continuity,
@@ -887,8 +887,8 @@ static  VIO_BOOL  voxel_might_contain_boundary(
 
 static  VIO_BOOL  check_voxel_for_boundary(
     voxel_coef_struct           *lookup,
-    Volume                      volume,
-    Volume                      label_volume,
+    VIO_Volume                      volume,
+    VIO_Volume                      label_volume,
     int                         degrees_continuity,
     int                         voxel_indices[],
     VIO_Real                        line_origin[],
@@ -905,8 +905,8 @@ static  VIO_BOOL  check_voxel_for_boundary(
     int             degrees;
     VIO_Real            line_poly[10], value, vx, vy, vz;
     VIO_Real            t, increment, t_min, t_max;
-    Vector          direction;
-    VIO_Real            surface[N_DIMENSIONS];
+    VIO_Vector          direction;
+    VIO_Real            surface[VIO_N_DIMENSIONS];
     VIO_Real            coefs[(2+MAX_DERIVS)*(2+MAX_DERIVS)*(2+MAX_DERIVS)];
 
     found = FALSE;

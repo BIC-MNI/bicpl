@@ -7,9 +7,9 @@ private  void  resample_polygons(
     int                new_n_polygons );
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input.obj  [output.obj]  [new_n_polygons]\n\
 \n\
      Subdivides any polygons in the file, placing output in the original file\n\
@@ -23,9 +23,9 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING           input_filename, output_filename;
+    VIO_STR           input_filename, output_filename;
     int              i, n_objects;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list;
     polygons_struct  *polygons;
     int              new_n_polygons;
@@ -81,7 +81,7 @@ private  void  resample_polygons(
     int                new_n_polygons )
 {
     int               p, poly;
-    Point             centre, *points, src_point;
+    VIO_Point             centre, *points, src_point;
     polygons_struct   src_unit_sphere, dest_unit_sphere;
 
     fill_Point( centre, 0.0, 0.0, 0.0 );

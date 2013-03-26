@@ -4,8 +4,8 @@
 #include "ppm/ppm.h"
 #include "ppm/ppm.c"
 
-BICAPI  Status  input_rgb_file(
-    STRING          filename,
+BICAPI  VIO_Status  input_rgb_file(
+    VIO_STR          filename,
     pixels_struct   *pixels )
 {
   ppm_t ppm;
@@ -46,8 +46,8 @@ BICAPI  Status  input_rgb_file(
 
 
 
-BICAPI  Status  output_rgb_file(
-    STRING          filename,
+BICAPI  VIO_Status  output_rgb_file(
+    VIO_STR          filename,
     pixels_struct   *pixels )
 {
   int x,y;
@@ -78,7 +78,7 @@ BICAPI  Status  output_rgb_file(
           for( x = 0; x < pixels->x_size; ++x ) {
             if ((err = ppm_pixel(&ppm, &px, x, y)) == PPM_ERR_OK)
             {
-              Colour col = PIXEL_RGB_COLOUR( *pixels, x, y );
+              VIO_Colour col = PIXEL_RGB_COLOUR( *pixels, x, y );
               px->b.rgb[0] = get_Colour_r( col );
               px->b.rgb[1] = get_Colour_g( col );
               px->b.rgb[2] = get_Colour_b( col );

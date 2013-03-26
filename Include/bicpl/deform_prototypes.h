@@ -22,12 +22,12 @@ BICAPI  void  get_line_equilibrium_point(
     VIO_Real                         curvature_factors[],
     VIO_Real                         max_search_distance,
     int                          degrees_continuity,
-    Volume                       volume,
-    Volume                       label_volume,
+    VIO_Volume                       volume,
+    VIO_Volume                       label_volume,
     boundary_definition_struct   *boundary_def,
     deformation_model_struct     *deformation_model,
-    Point                        *equilibrium_point,
-    Point                        *boundary_point );
+    VIO_Point                        *equilibrium_point,
+    VIO_Point                        *boundary_point );
 
 BICAPI  int  find_axial_plane(
     lines_struct   *lines );
@@ -42,15 +42,15 @@ BICAPI  void  deform_polygons_one_iteration(
     int               iteration );
 
 BICAPI  VIO_BOOL  find_boundary_in_direction(
-    Volume                      volume,
-    Volume                      label_volume,
+    VIO_Volume                      volume,
+    VIO_Volume                      label_volume,
     voxel_coef_struct           *lookup,
     bitlist_3d_struct           *done_bits,
     bitlist_3d_struct           *surface_bits,
     VIO_Real                        model_dist,
-    Point                       *ray_origin,
-    Vector                      *unit_pos_dir,
-    Vector                      *unit_neg_dir,
+    VIO_Point                       *ray_origin,
+    VIO_Vector                      *unit_pos_dir,
+    VIO_Vector                      *unit_neg_dir,
     VIO_Real                        max_outwards_search_distance,
     VIO_Real                        max_inwards_search_distance,
     int                         degrees_continuity,
@@ -86,7 +86,7 @@ BICAPI  void  initialize_deformation_model(
 BICAPI  void  print_deformation_model(
     deformation_model_struct   *deformation_model );
 
-BICAPI  Status   add_deformation_model(
+BICAPI  VIO_Status   add_deformation_model(
     deformation_model_struct   *deformation_model,
     int                        up_to_n_points,
     VIO_Real                       model_weight,
@@ -97,7 +97,7 @@ BICAPI  Status   add_deformation_model(
 BICAPI  void  delete_deformation_model(
     deformation_model_struct  *model );
 
-BICAPI  Status  input_original_positions(
+BICAPI  VIO_Status  input_original_positions(
     deformation_model_struct  *deform_model,
     char                      position_filename[],
     VIO_Real                      max_position_offset,
@@ -116,11 +116,11 @@ BICAPI  deform_model_struct  *find_relevent_model(
     int                       point_index );
 
 BICAPI  void  get_model_shape_point(
-    Point    *origin,
-    Vector   *pos_model_dir,
-    Vector   *neg_model_dir,
+    VIO_Point    *origin,
+    VIO_Vector   *pos_model_dir,
+    VIO_Vector   *neg_model_dir,
     VIO_Real     dist,
-    Point    *point );
+    VIO_Point    *point );
 
 BICAPI  void  compute_equilibrium_point(
     int                       point_index,
@@ -128,33 +128,33 @@ BICAPI  void  compute_equilibrium_point(
     VIO_Real                      boundary_dist,
     VIO_Real                      base_length,
     VIO_Real                      model_dist,
-    Vector                    *pos_model_dir,
-    Vector                    *neg_model_dir,
-    Point                     *centroid,
+    VIO_Vector                    *pos_model_dir,
+    VIO_Vector                    *neg_model_dir,
+    VIO_Point                     *centroid,
     deformation_model_struct  *deformation_model,
-    Point                     *equilibrium_point );
+    VIO_Point                     *equilibrium_point );
 
 BICAPI  void  compute_model_dirs(
-    Point      *centroid,
-    Vector     *normal,
+    VIO_Point      *centroid,
+    VIO_Vector     *normal,
     VIO_Real       base_length,
-    Point      *model_point,
+    VIO_Point      *model_point,
     VIO_Real       *model_dist,
-    Point      *search_origin,
-    Vector     *pos_model_dir,
-    Vector     *neg_model_dir );
+    VIO_Point      *search_origin,
+    VIO_Vector     *pos_model_dir,
+    VIO_Vector     *neg_model_dir );
 
 BICAPI  void  get_model_point(
     deformation_model_struct  *deformation_model,
-    Point                     points[],
+    VIO_Point                     points[],
     int                       point_index,
     int                       n_neighbours,
     int                       neighbours[],
     VIO_Real                      curvatures[],
-    Point                     *centroid,
-    Vector                    *normal,
+    VIO_Point                     *centroid,
+    VIO_Vector                    *normal,
     VIO_Real                      base_length,
-    Point                     *model_point );
+    VIO_Point                     *model_point );
 
 BICAPI  void  get_neighbours_of_line_vertex(
     lines_struct    *lines,
@@ -173,22 +173,22 @@ BICAPI  VIO_Real  compute_line_curvature(
 
 BICAPI  VIO_Real  deform_point(
     int                        point_index,
-    Point                      points[],
-    Point                      *equilibrium_point,
+    VIO_Point                      points[],
+    VIO_Point                      *equilibrium_point,
     VIO_Real                       fractional_step,
     VIO_Real                       max_step,
     VIO_BOOL                    position_constrained,
     VIO_Real                       max_position_offset,
-    Point                      original_positions[],
-    Point                      *new_point );
+    VIO_Point                      original_positions[],
+    VIO_Point                      *new_point );
 
 BICAPI  void  compute_line_centroid_and_normal(
     lines_struct     *lines,
     int              axis,
     int              prev_point_index,
     int              next_point_index,
-    Point            *centroid,
-    Vector           *normal,
+    VIO_Point            *centroid,
+    VIO_Vector           *normal,
     VIO_Real             *base_length );
 
 BICAPI  int  get_subsampled_neighbours_of_point(
@@ -201,24 +201,24 @@ BICAPI  int  get_subsampled_neighbours_of_point(
     VIO_BOOL                   *interior_flag );
 
 BICAPI  VIO_BOOL  is_point_inside_surface(
-    Volume                      volume,
-    Volume                      label_volume,
+    VIO_Volume                      volume,
+    VIO_Volume                      label_volume,
     int                         continuity,
     VIO_Real                        voxel[],
-    Vector                      *direction,
+    VIO_Vector                      *direction,
     boundary_definition_struct  *boundary_def );
 
 BICAPI  void   get_centre_of_cube(
-    Point       *cube,
+    VIO_Point       *cube,
     int         sizes[3],
-    Point       *centre );
+    VIO_Point       *centre );
 
 BICAPI  VIO_BOOL  contains_value(
     VIO_Real  values[2][2][2],
     int   sizes[3] );
 
 BICAPI  VIO_BOOL  cube_is_small_enough(
-    Point     cube[2],
+    VIO_Point     cube[2],
     int       sizes[3],
     VIO_Real      min_cube_size );
 
@@ -234,9 +234,9 @@ BICAPI  void  print_deform_stats(
     int            n_points );
 
 BICAPI  VIO_BOOL   get_max_point_cube_distance(
-    Point   cube[2],
+    VIO_Point   cube[2],
     int     sizes[3],
-    Point   *point,
+    VIO_Point   *point,
     VIO_Real    *distance );
 
 BICAPI  void  initialize_deformation_parameters(
@@ -259,7 +259,7 @@ BICAPI  void  initialize_lookup_volume_coeficients(
 
 BICAPI  void  lookup_volume_coeficients(
     voxel_coef_struct  *lookup,
-    Volume             volume,
+    VIO_Volume             volume,
     int                degrees_continuity,
     int                x,
     int                y,

@@ -86,19 +86,19 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/rotm
 
 #ifdef DEBUG
 static  void  are_rotations_equivalent(
-    Transform  *rot_trans,
+    VIO_Transform  *rot_trans,
     VIO_Real       rx,
     VIO_Real       ry,
     VIO_Real       rz );
 #endif
 
 BICAPI  VIO_BOOL  rotmat_to_ang(
-    Transform   *rot_trans,
+    VIO_Transform   *rot_trans,
     VIO_Real        *ang )
 {
     VIO_Real       rx, ry, rz, vx, vy, vz, d;
-    Vector     x_axis, z_axis, y_axis, cross;
-    Transform  z_rot, y_rot;
+    VIO_Vector     x_axis, z_axis, y_axis, cross;
+    VIO_Transform  z_rot, y_rot;
 
     /*--- get the x and z axis of the transform, these are all we need
           to compute the three angles, we simply compute the rz, ry, rx
@@ -171,7 +171,7 @@ BICAPI  VIO_BOOL  rotmat_to_ang(
 
 #ifdef DEBUG
     {
-        Transform  test;
+        VIO_Transform  test;
 
         make_identity_transform( &test );
         set_transform_x_axis( &test, &x_axis );
@@ -208,13 +208,13 @@ BICAPI  VIO_BOOL  rotmat_to_ang(
 
 #ifdef DEBUG
 static  void  are_rotations_equivalent(
-    Transform  *rot_trans,
+    VIO_Transform  *rot_trans,
     VIO_Real       rx,
     VIO_Real       ry,
     VIO_Real       rz )
 {
     VIO_BOOL  error;
-    Transform  test, Rx, Ry, Rz;
+    VIO_Transform  test, Rx, Ry, Rz;
 
     /*--- use negatives, since make_rotation_transform assumes clockwise */
 
@@ -227,8 +227,8 @@ static  void  are_rotations_equivalent(
 
 
     error = FALSE;
-    for_less( m, 0, N_DIMENSIONS )
-        for_less( n, 0, N_DIMENSIONS )
+    for_less( m, 0, VIO_N_DIMENSIONS )
+        for_less( n, 0, VIO_N_DIMENSIONS )
             if( !numerically_close( Transform_elem(test,m,n), 
                                     Transform_elem(*rot_trans,m,n), 1.0e-3 ) )
             {
@@ -237,16 +237,16 @@ static  void  are_rotations_equivalent(
 
     if( error )
     {
-        for_less( m, 0, N_DIMENSIONS )
+        for_less( m, 0, VIO_N_DIMENSIONS )
         {
-            for_less( n, 0, N_DIMENSIONS )
+            for_less( n, 0, VIO_N_DIMENSIONS )
                 print( " %g", Transform_elem(test,m,n) );
             print( "\n" );
         }
         print( "\n" );
-        for_less( m, 0, N_DIMENSIONS )
+        for_less( m, 0, VIO_N_DIMENSIONS )
         {
-            for_less( n, 0, N_DIMENSIONS )
+            for_less( n, 0, VIO_N_DIMENSIONS )
                 print( " %g", Transform_elem(*rot_trans,m,n) );
             print( "\n" );
         }

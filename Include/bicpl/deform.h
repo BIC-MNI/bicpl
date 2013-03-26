@@ -22,8 +22,8 @@ typedef  enum  { VOLUME_DATA }  Deform_data_types;
 typedef  struct
 {
     Deform_data_types   type;
-    Volume              volume;
-    Volume              label_volume;
+    VIO_Volume              volume;
+    VIO_Volume              label_volume;
 } deform_data_struct;
 
 typedef  enum { FLAT_MODEL, AVERAGE_MODEL,
@@ -39,9 +39,9 @@ typedef  struct
     object_struct             *model_object;
 
     int                       n_model_points;
-    Point                     *model_centroids;
-    Vector                    *model_normals;
-    Point                     *model_points;
+    VIO_Point                     *model_centroids;
+    VIO_Vector                    *model_normals;
+    VIO_Point                     *model_points;
 
     VIO_Real                      min_curvature_offset;
     VIO_Real                      max_curvature_offset;
@@ -53,7 +53,7 @@ typedef  struct
     deform_model_struct       *models;
     VIO_BOOL                   position_constrained;
     VIO_Real                      max_position_offset;
-    Point                     *original_positions;
+    VIO_Point                     *original_positions;
 } deformation_model_struct;
 
 typedef  struct
@@ -104,12 +104,12 @@ typedef struct
 typedef struct
 {
     int                  axis;
-    Point                *save_points;
+    VIO_Point                *save_points;
     VIO_Real                 *curvature_factors;
-    Point                *equilibrium_points;
-    Point                *new_equilibrium_points;
-    Point                *boundary_points;
-    Point                *new_boundary_points;
+    VIO_Point                *equilibrium_points;
+    VIO_Point                *new_equilibrium_points;
+    VIO_Point                *boundary_points;
+    VIO_Point                *new_boundary_points;
     VIO_Real                 temperature;
     VIO_Real                 temperature_factor;
     int                  temperature_step;

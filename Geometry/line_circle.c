@@ -37,7 +37,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/line_c
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  create_line_circle(
-    Point            *centre,
+    VIO_Point            *centre,
     int              plane_axis,
     VIO_Real             x_radius,
     VIO_Real             y_radius,

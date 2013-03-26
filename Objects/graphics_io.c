@@ -24,7 +24,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/graphic
 @OUTPUT     : format
               n_objects
               object_list
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Inputs a file of graphics objects.
 @METHOD     : 
 @GLOBALS    : 
@@ -33,24 +33,24 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/graphic
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status   input_graphics_file(
-    STRING         filename,
-    File_formats   *format,
+BICAPI  VIO_Status   input_graphics_file(
+    VIO_STR         filename,
+    VIO_File_formats   *format,
     int            *n_objects,
     object_struct  ***object_list )
 {
-    Status         status;
+    VIO_Status         status;
     FILE           *file;
     VIO_BOOL        eof;
     object_struct  *object;
-    STRING         current_directory;
+    VIO_STR         current_directory;
 
     status = open_file_with_default_suffix( filename, "obj", READ_FILE,
                                             BINARY_FORMAT, &file );
 
     *n_objects = 0;
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         current_directory = extract_directory( filename );
 
@@ -59,15 +59,15 @@ BICAPI  Status   input_graphics_file(
             status = input_object( current_directory, file, format,
                                    &object, &eof );
 
-            if( status == OK && !eof )
+            if( status == VIO_OK && !eof )
                 add_object_to_list( n_objects, object_list, object );
 
-        } while( status == OK && !eof );
+        } while( status == VIO_OK && !eof );
 
         delete_string( current_directory );
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = close_file( file );
 
     return( status );
@@ -80,7 +80,7 @@ BICAPI  Status   input_graphics_file(
               n_objects
               object_list
 @OUTPUT     : 
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Writes a file of graphics objects.
 @METHOD     : 
 @GLOBALS    : 
@@ -89,29 +89,29 @@ BICAPI  Status   input_graphics_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status   output_graphics_file(
-    STRING         filename,
-    File_formats   format,
+BICAPI  VIO_Status   output_graphics_file(
+    VIO_STR         filename,
+    VIO_File_formats   format,
     int            n_objects,
     object_struct  *object_list[] )
 {
-    Status         status;
+    VIO_Status         status;
     int            i;
     FILE           *file;
 
     status = open_file_with_default_suffix( filename, "obj", WRITE_FILE,
                                             BINARY_FORMAT, &file );
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
         for_less( i, 0, n_objects )
         {
-            if( status == OK )
+            if( status == VIO_OK )
                 status = output_object( file, format, object_list[i] );
         }
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = close_file( file );
 
     return( status );
@@ -126,7 +126,7 @@ BICAPI  Status   output_graphics_file(
               marker_type    /
 @OUTPUT     : n_objects
               object_list
-@RETURNS    : OK or ERROR
+@RETURNS    : VIO_OK or VIO_ERROR
 @DESCRIPTION: Inputs a landmark file, a tag point file, or a graphics file,
               creating graphics objects.
 @METHOD     : 
@@ -136,17 +136,17 @@ BICAPI  Status   output_graphics_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status   input_objects_any_format(
-    Volume         volume,
-    STRING         filename,
-    Colour         marker_colour,
+BICAPI  VIO_Status   input_objects_any_format(
+    VIO_Volume         volume,
+    VIO_STR         filename,
+    VIO_Colour         marker_colour,
     VIO_Real           marker_size,
     Marker_types   marker_type,
     int            *n_objects,
     object_struct  **object_list[] )
 {
-    Status            status;
-    File_formats      format;
+    VIO_Status            status;
+    VIO_File_formats      format;
 
     if( filename_extension_matches(filename,get_default_landmark_file_suffix()))
     {

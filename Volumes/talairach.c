@@ -86,8 +86,8 @@ static void  read_talairach_coordinate_system( void )
 {
     int     i, n_lines, ch;
     FILE    *file;
-    STRING  name = "brain_size.dat";
-    STRING  filename;
+    VIO_STR  name = "brain_size.dat";
+    VIO_STR  filename;
     int     okay;
     int     tmp_nx, tmp_ny, tmp_nz;
     VIO_Real    tmp_x_low, tmp_x_high, tmp_y_low, tmp_y_high, tmp_z_low;

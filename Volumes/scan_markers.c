@@ -37,14 +37,14 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_ma
 
 BICAPI void  scan_marker_to_voxels(
     marker_struct    *marker,
-    Volume           volume,
-    Volume           label_volume,
+    VIO_Volume           volume,
+    VIO_Volume           label_volume,
     int              label )
 {
-    VIO_Real           low[N_DIMENSIONS], high[N_DIMENSIONS];
-    int            min_voxel[N_DIMENSIONS], max_voxel[N_DIMENSIONS];
-    VIO_Real           voxel[N_DIMENSIONS], min_v, max_v;
-    int            c, int_voxel[N_DIMENSIONS];
+    VIO_Real           low[VIO_N_DIMENSIONS], high[VIO_N_DIMENSIONS];
+    int            min_voxel[VIO_N_DIMENSIONS], max_voxel[VIO_N_DIMENSIONS];
+    VIO_Real           voxel[VIO_N_DIMENSIONS], min_v, max_v;
+    int            c, int_voxel[VIO_N_DIMENSIONS];
 
     convert_world_to_voxel( volume,
                        (VIO_Real) Point_x(marker->position) - (VIO_Real) marker->size,
@@ -58,7 +58,7 @@ BICAPI void  scan_marker_to_voxels(
                        (VIO_Real) Point_z(marker->position) + (VIO_Real) marker->size,
                        high );
 
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
     {
         min_v = MIN( low[c], high[c] );
         max_v = MAX( low[c], high[c] );
@@ -73,7 +73,7 @@ BICAPI void  scan_marker_to_voxels(
         {
             for_inclusive( int_voxel[Z], min_voxel[Z], max_voxel[Z] )
             {
-                convert_int_to_real_voxel( N_DIMENSIONS, int_voxel, voxel );
+                convert_int_to_real_voxel( VIO_N_DIMENSIONS, int_voxel, voxel );
                 if( voxel_is_within_volume( volume, voxel ) )
                 {
                     set_volume_label_data( label_volume, int_voxel, label );

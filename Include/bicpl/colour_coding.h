@@ -50,8 +50,8 @@ typedef  struct
 {
     Colour_coding_types   type;
 
-    Colour                under_colour;
-    Colour                over_colour;
+    VIO_Colour                under_colour;
+    VIO_Colour                over_colour;
 
     VIO_Real                  min_value;
     VIO_Real                  max_value;

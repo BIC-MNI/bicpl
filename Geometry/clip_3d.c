@@ -4,7 +4,7 @@
 
 BICAPI  int  clip_polygon_against_box(
     int     n_points,
-    Point   points[],
+    VIO_Point   points[],
     VIO_Real    x_min,
     VIO_Real    x_max,
     VIO_Real    y_min,
@@ -12,13 +12,13 @@ BICAPI  int  clip_polygon_against_box(
     VIO_Real    z_min,
     VIO_Real    z_max,
     int     n_output_points,
-    Point   output_points[] )
+    VIO_Point   output_points[] )
 {
     int     p, n_planes, n_out, n, i;
     int     n_input[7], dim, which;
     VIO_BOOL last[7][2], first_flags[6], last_flag;
-    Point   prev[6], input[7][2], point, first_points[6];
-    VIO_Real    box[2][N_DIMENSIONS], prev_dist[6], first_dist[6], dist, ratio;
+    VIO_Point   prev[6], input[7][2], point, first_points[6];
+    VIO_Real    box[2][VIO_N_DIMENSIONS], prev_dist[6], first_dist[6], dist, ratio;
 
     box[0][X] = x_min;
     box[1][X] = x_max;
@@ -125,14 +125,14 @@ BICAPI  int  clip_polygon_against_box(
 
 BICAPI  int  clip_polygon_against_plane(
     int     n_points,
-    Point   points[],
+    VIO_Point   points[],
     VIO_Real    plane_constant,
-    Vector  *normal,
-    Point   output_points[] )
+    VIO_Vector  *normal,
+    VIO_Point   output_points[] )
 {
     int     p, n_output;
     VIO_Real    next_dist, dist, ratio;
-    Point   point, next_point;
+    VIO_Point   point, next_point;
 
     n_output = 0;
     dist = 0.0;
@@ -168,17 +168,17 @@ BICAPI  int  clip_polygon_against_plane(
 
 BICAPI  void  split_polygon_with_plane(
     int     n_points,
-    Point   points[],
+    VIO_Point   points[],
     VIO_Real    plane_constant,
-    Vector  *normal,
+    VIO_Vector  *normal,
     int     *n_in,
-    Point   in_points[],
+    VIO_Point   in_points[],
     int     *n_out,
-    Point   out_points[] )
+    VIO_Point   out_points[] )
 {
     int     p;
     VIO_Real    next_dist, dist, ratio;
-    Point   point, next_point, interp;
+    VIO_Point   point, next_point, interp;
 
     *n_in = 0;
     *n_out = 0;

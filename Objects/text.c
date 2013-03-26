@@ -36,8 +36,8 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/text.c,
 
 BICAPI  void   initialize_text(
     text_struct     *text,
-    Point           *position,
-    Colour          colour,
+    VIO_Point           *position,
+    VIO_Colour          colour,
     Font_types      text_font,
     VIO_Real            size )
 {

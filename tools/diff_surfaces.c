@@ -10,15 +10,15 @@ int  main(
     char   *argv[] )
 {
     FILE             *file;
-    STRING           input1_filename, input2_filename, output_filename;
-    STRING           method_name;
+    VIO_STR           input1_filename, input2_filename, output_filename;
+    VIO_STR           method_name;
     Distance_methods method;
-    Vector           normal;
+    VIO_Vector           normal;
     int              i, n_objects, obj_index, n_intersections_not_found;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list;
     polygons_struct  *polygons1, *polygons2;
-    Point            point;
+    VIO_Point            point;
     VIO_Real             dist, min_dist, max_dist, rms, avg_dist, std_dev;
     VIO_Real             sum_x, sum_xx, bintree_factor;
     VIO_BOOL          outputting;

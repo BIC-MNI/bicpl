@@ -3,9 +3,9 @@
 #define  BINTREE_FACTOR  0.3
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input.obj  values.txt [output.txt]\n\
 \n\
      .\n\n";
@@ -17,12 +17,12 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING           input_filename, output_filename, values_filename;
+    VIO_STR           input_filename, output_filename, values_filename;
     FILE             *file;
     int              n_objects, *n_neighbours, **neighbours, p, n;
     int              n_non, n_read;
     VIO_Real             avg;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list;
     polygons_struct  *polygons;
     VIO_Real             *values;

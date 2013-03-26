@@ -87,7 +87,7 @@ static  void  test_solution(
 {
     int        iter, n_iters, p;
     VIO_Real       angle, x_trans, y_trans, xt, yt, zt, correct, value;
-    Transform  transform, rotation, translation;
+    VIO_Transform  transform, rotation, translation;
 
     n_iters = 100;
 
@@ -246,7 +246,7 @@ static  void  test_solution_3d(
     int        iter, n_iters, p;
     VIO_Real       y_angle, z_angle, x_trans, y_trans, z_trans;
     VIO_Real       correct, value, ps[3];
-    Transform  transform, y_rotation, z_rotation, translation;
+    VIO_Transform  transform, y_rotation, z_rotation, translation;
 
     n_iters = 100;
 
@@ -303,13 +303,13 @@ BICAPI  VIO_BOOL  get_prediction_weights_3d(
     VIO_Real   *z_weights[3] )
 {
     int                    p, p1, dim, n_iters, iter;
-    VIO_Real                   *parms, *coords[N_DIMENSIONS];
-    VIO_Real                   coord[N_DIMENSIONS];
+    VIO_Real                   *parms, *coords[VIO_N_DIMENSIONS];
+    VIO_Real                   coord[VIO_N_DIMENSIONS];
     VIO_Real                   len, max_len, sum;
     linear_least_squares   lsq;
     VIO_BOOL                solved;
     VIO_Real                   y_angle, z_angle, x_trans, y_trans, z_trans;
-    Transform              transform, y_rotation, z_rotation, translation;
+    VIO_Transform              transform, y_rotation, z_rotation, translation;
 
     ALLOC( parms, n_points-1 );
 
@@ -358,7 +358,7 @@ BICAPI  VIO_BOOL  get_prediction_weights_3d(
         transform_point( &transform, x, y, z,
                          &coord[0], &coord[1], &coord[2] );
 
-        for_less( dim, 0, N_DIMENSIONS )
+        for_less( dim, 0, VIO_N_DIMENSIONS )
         {
             for_less( p, 0, n_points-1 )
                 parms[p] = coords[dim][p] - coords[dim][n_points-1];
@@ -387,7 +387,7 @@ BICAPI  VIO_BOOL  get_prediction_weights_3d(
     if( solved )
     {
         for_less( p, 0, n_points )
-        for_less( dim, 0, N_DIMENSIONS )
+        for_less( dim, 0, VIO_N_DIMENSIONS )
         {
             x_weights[dim][p] = 0.0;
             y_weights[dim][p] = 0.0;

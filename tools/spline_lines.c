@@ -1,9 +1,9 @@
 #include  <bicpl.h>
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input_lines.obj  output_lines.obj [n_points_per_segment]\n\
 \n\
      Creates a cubic spline through the input line points.\n\
@@ -17,8 +17,8 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    STRING               src_filename, dest_filename;
-    File_formats         format;
+    VIO_STR               src_filename, dest_filename;
+    VIO_File_formats         format;
     int                  n_points_per_segment;
     int                  i;
     int                  n_objects;

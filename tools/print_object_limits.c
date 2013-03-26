@@ -4,10 +4,10 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    Point          *points, min_range, max_range, min_point, max_point;
-    STRING         input_filename;
+    VIO_Point          *points, min_range, max_range, min_point, max_point;
+    VIO_STR         input_filename;
     int            obj, n_objects, n_points;
-    File_formats   format;
+    VIO_File_formats   format;
     object_struct  **object_list;
 
     initialize_argument_processing( argc, argv );

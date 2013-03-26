@@ -8,9 +8,9 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING               src_filename, dest_filename;
+    VIO_STR               src_filename, dest_filename;
     int                  n_objects;
-    File_formats         format;
+    VIO_File_formats         format;
     object_struct        **object_list, *object;
 
     initialize_argument_processing( argc, argv );

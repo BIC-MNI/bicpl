@@ -2,7 +2,7 @@
 
 
 private  VIO_BOOL  get_axis_from_name(
-    STRING   axis_name,
+    VIO_STR   axis_name,
     int      *slice_axis )
 {
     VIO_BOOL  found;
@@ -39,13 +39,13 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    STRING               dest_lines_filename, axis_name;
+    VIO_STR               dest_lines_filename, axis_name;
     VIO_Real                 limits[2][2], slice_pos, line_pos, *positions;
     int                  i, n_grids, a1, a2, a, slice_axis, line_axis, *axes;
     VIO_BOOL              found[2];
     object_struct        *object;
     lines_struct         *lines;
-    Point                point1, point2;
+    VIO_Point                point1, point2;
 
     initialize_argument_processing( argc, argv );
 
@@ -81,7 +81,7 @@ int  main(
             return( 1 );
         }
 
-        a = (line_axis-slice_axis+N_DIMENSIONS) % N_DIMENSIONS - 1;
+        a = (line_axis-slice_axis+VIO_N_DIMENSIONS) % VIO_N_DIMENSIONS - 1;
 
         if( !found[a] || line_pos < limits[a][0] )
             limits[a][0] = line_pos;
@@ -106,8 +106,8 @@ int  main(
     lines = get_lines_ptr(object);
     initialize_lines( lines, WHITE );
 
-    a1 = (slice_axis + 1) % N_DIMENSIONS;
-    a2 = (slice_axis + 2) % N_DIMENSIONS;
+    a1 = (slice_axis + 1) % VIO_N_DIMENSIONS;
+    a2 = (slice_axis + 2) % VIO_N_DIMENSIONS;
 
     for_less( i, 0, n_grids )
     {

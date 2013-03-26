@@ -24,17 +24,17 @@ static  int  get_n_sphere_points(
 static  void  get_sphere_point(
     VIO_Real     up,
     VIO_Real     around,
-    Point    *centre,
+    VIO_Point    *centre,
     VIO_Real     x_size,
     VIO_Real     y_size,
     VIO_Real     z_size,
-    Point    *point );
+    VIO_Point    *point );
 static  void  get_subdivided_point(
     int      up,
     int      around,
-    Point    input_points[],
+    VIO_Point    input_points[],
     int      input_n_up,
-    Point    *point );
+    VIO_Point    *point );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : create_polygons_sphere
@@ -59,7 +59,7 @@ static  void  get_subdivided_point(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  create_polygons_sphere(
-    Point            *centre,
+    VIO_Point            *centre,
     VIO_Real             x_size,
     VIO_Real             y_size,
     VIO_Real             z_size,
@@ -72,8 +72,8 @@ BICAPI  void  create_polygons_sphere(
     int      point_index1, point_index2, point_index3, point_index4;
     int      up, around, n_circum, next_around, n_indices, end, start, a;
     int      n_around_top;
-    Point    *input_points;
-    Colour   save_colour;
+    VIO_Point    *input_points;
+    VIO_Colour   save_colour;
     int      input_n_up;
     VIO_Real     up_pos, around_pos;
 
@@ -99,7 +99,7 @@ BICAPI  void  create_polygons_sphere(
         delete_polygons( polygons );
     }
 
-    initialize_polygons( polygons, WHITE, (Surfprop *) NULL );
+    initialize_polygons( polygons, WHITE, (VIO_Surfprop *) NULL );
 
     if( subdividing_flag )
         polygons->colours[0] = save_colour;
@@ -320,11 +320,11 @@ static  int  get_n_sphere_points(
 static  void  get_sphere_point(
     VIO_Real     up,
     VIO_Real     around,
-    Point    *centre,
+    VIO_Point    *centre,
     VIO_Real     x_size,
     VIO_Real     y_size,
     VIO_Real     z_size,
-    Point    *point )
+    VIO_Point    *point )
 {
     VIO_Real      dx, dy, dz;
 
@@ -356,13 +356,13 @@ static  void  get_sphere_point(
 static  void  get_subdivided_point(
     int      up,
     int      around,
-    Point    input_points[],
+    VIO_Point    input_points[],
     int      input_n_up,
-    Point    *point )
+    VIO_Point    *point )
 {
     int       input_up, input_around;
     VIO_BOOL   up_midpoint_flag, around_midpoint_flag;
-    Point     corner_below, corner_across, corner_below_across;
+    VIO_Point     corner_below, corner_across, corner_below_across;
 
     input_up = up / 2;
     up_midpoint_flag = (up & 1) == 1;
@@ -544,7 +544,7 @@ BICAPI  void  half_sample_sphere_tessellation(
     polygons_struct   *polygons,
     polygons_struct   *half )
 {
-    static Point   centre = { 0.0f, 0.0f, 0.0f };
+    static VIO_Point   centre = { 0.0f, 0.0f, 0.0f };
     int            n_up, n_around, half_n_up, half_n_around;
     int            up, around, n_circum, point_index, half_point_index;
 

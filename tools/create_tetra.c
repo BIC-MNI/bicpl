@@ -2,7 +2,7 @@
 
 #ifdef ADJUST
 private  void  adjust_tetrahedral_sphere(
-    Point            *centre,
+    VIO_Point            *centre,
     VIO_Real             rx,
     VIO_Real             ry,
     VIO_Real             rz,
@@ -14,13 +14,13 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    Status          status;
-    STRING          output_filename;
+    VIO_Status          status;
+    VIO_STR          output_filename;
     int             n_triangles;
 #ifdef ADJUST
     int             n_adjustment_iters;
 #endif
-    Point           centre;
+    VIO_Point           centre;
     object_struct   *object;
     polygons_struct *polygons;
     VIO_Real            cx, cy, cz, rx, ry, rz;
@@ -76,13 +76,13 @@ int  main(
 
 #ifdef ADJUST
 private  void  convert_uv_to_point(
-    Point            *centre,
+    VIO_Point            *centre,
     VIO_Real             rx,
     VIO_Real             ry,
     VIO_Real             rz,
     VIO_Real             u,
     VIO_Real             v,
-    Point            *point )
+    VIO_Point            *point )
 {
     VIO_Real   x, y, z, theta, phi, cos_u, sin_u, cos_v, sin_v;
 
@@ -102,11 +102,11 @@ private  void  convert_uv_to_point(
 }
 
 private  void  convert_point_to_uv(
-    Point            *centre,
+    VIO_Point            *centre,
     VIO_Real             rx,
     VIO_Real             ry,
     VIO_Real             rz,
-    Point            *point,
+    VIO_Point            *point,
     VIO_Real             *u,
     VIO_Real             *v )
 {
@@ -131,7 +131,7 @@ private  VIO_Real  evaluate_rms(
 {
     int    p, p1;
     VIO_Real   dist, sum_dist;
-    Point  centre = { 0.0f, 0.0f, 0.0f };
+    VIO_Point  centre = { 0.0f, 0.0f, 0.0f };
 
     for_less( p, 0, polygons->n_points )
     {
@@ -183,7 +183,7 @@ private  VIO_Real  evaluate_rms_func(
 }
 
 private  void  adjust_tetrahedral_sphere(
-    Point            *centre,
+    VIO_Point            *centre,
     VIO_Real             rx,
     VIO_Real             ry,
     VIO_Real             rz,

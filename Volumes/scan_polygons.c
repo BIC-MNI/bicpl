@@ -38,20 +38,20 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_po
  */
 static void  recursive_scan_polygon_to_voxels(
     int                 size,
-    Point               points[],
-    Volume              label_volume,
+    VIO_Point               points[],
+    VIO_Volume              label_volume,
     int                 label,
     int                 min_voxel[],
     int                 max_voxel[] )
 {
     int        n_left, n_right, dim, max_dim, save, pos;
     VIO_Real       slice_pos;
-    Point      right_vertices[MAX_TEMP_STORAGE];
-    Point      left_vertices[MAX_TEMP_STORAGE];
-    Vector     normal;
+    VIO_Point      right_vertices[MAX_TEMP_STORAGE];
+    VIO_Point      left_vertices[MAX_TEMP_STORAGE];
+    VIO_Vector     normal;
 
     max_dim = 0;
-    for_less( dim, 1, N_DIMENSIONS )
+    for_less( dim, 1, VIO_N_DIMENSIONS )
     {
         if( max_voxel[dim] - min_voxel[dim] >
             max_voxel[max_dim] - min_voxel[max_dim] )
@@ -132,19 +132,19 @@ static void  recursive_scan_polygon_to_voxels(
 
 BICAPI void  scan_a_polygon(
     int                 size,
-    Point               vertices[],
-    Point               voxels[],
+    VIO_Point               vertices[],
+    VIO_Point               voxels[],
     int                 n_output_vertices,
-    Point               output_vertices[],
-    Volume              volume,
-    Volume              label_volume,
+    VIO_Point               output_vertices[],
+    VIO_Volume              volume,
+    VIO_Volume              label_volume,
     int                 sizes[],
     int                 label )
 {
     int        vertex, dim, n_clip;
-    VIO_Real       voxel[N_DIMENSIONS];
-    VIO_Real       min_voxel[N_DIMENSIONS], max_voxel[N_DIMENSIONS];
-    int        min_iv[N_DIMENSIONS], max_iv[N_DIMENSIONS];
+    VIO_Real       voxel[VIO_N_DIMENSIONS];
+    VIO_Real       min_voxel[VIO_N_DIMENSIONS], max_voxel[VIO_N_DIMENSIONS];
+    int        min_iv[VIO_N_DIMENSIONS], max_iv[VIO_N_DIMENSIONS];
 
     min_voxel[X] = 0.0;     /*--- to avoid warnings */
     max_voxel[X] = 0.0;
@@ -161,7 +161,7 @@ BICAPI void  scan_a_polygon(
 
         if( vertex == 0 )
         {
-            for_less( dim, 0, N_DIMENSIONS )
+            for_less( dim, 0, VIO_N_DIMENSIONS )
             {
                 min_voxel[dim] = voxel[dim];
                 max_voxel[dim] = voxel[dim];
@@ -169,7 +169,7 @@ BICAPI void  scan_a_polygon(
         }
         else
         {
-            for_less( dim, 0, N_DIMENSIONS )
+            for_less( dim, 0, VIO_N_DIMENSIONS )
             {
                 if( voxel[dim] < min_voxel[dim] )
                     min_voxel[dim] = voxel[dim];
@@ -179,7 +179,7 @@ BICAPI void  scan_a_polygon(
         }
     }
 
-    for_less( dim, 0, N_DIMENSIONS )
+    for_less( dim, 0, VIO_N_DIMENSIONS )
     {
         min_iv[dim] = ROUND( min_voxel[dim] );
         if( min_iv[dim] < 0 )
@@ -238,14 +238,14 @@ BICAPI void  scan_a_polygon(
  */
 BICAPI void  scan_polygons_to_voxels(
     polygons_struct     *polygons,
-    Volume              volume,
-    Volume              label_volume,
+    VIO_Volume              volume,
+    VIO_Volume              label_volume,
     int                 label,
     VIO_Real                max_distance )
 {
     int        vertex, poly, size, point_index, max_size;
-    Point      *vertices, *voxels, *output_vertices;
-    int        sizes[N_DIMENSIONS];
+    VIO_Point      *vertices, *voxels, *output_vertices;
+    int        sizes[VIO_N_DIMENSIONS];
 
     get_volume_sizes( label_volume, sizes );
 
@@ -312,14 +312,14 @@ BICAPI void  scan_polygons_to_voxels(
  */
 BICAPI void  scan_quadmesh_to_voxels(
     quadmesh_struct     *quadmesh,
-    Volume              volume,
-    Volume              label_volume,
+    VIO_Volume              volume,
+    VIO_Volume              label_volume,
     int                 label,
     VIO_Real                max_distance )
 {
     int        i, j, m, n;
-    Point      vertices[4], voxels[4], output_vertices[4];
-    int        sizes[N_DIMENSIONS];
+    VIO_Point      vertices[4], voxels[4], output_vertices[4];
+    int        sizes[VIO_N_DIMENSIONS];
 
     get_volume_sizes( label_volume, sizes );
 

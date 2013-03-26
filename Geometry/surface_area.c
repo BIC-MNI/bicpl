@@ -34,7 +34,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/surfac
 
 BICAPI  VIO_Real  get_polygon_2d_area(
     int      n_points,
-    Point    points[] )
+    VIO_Point    points[] )
 {
     int    i, next_i;
     VIO_Real   area;
@@ -69,10 +69,10 @@ BICAPI  VIO_Real  get_polygon_2d_area(
 
 BICAPI  VIO_Real  get_polygon_surface_area(
     int      n_points,
-    Point    points[] )
+    VIO_Point    points[] )
 {
     int    i;
-    Vector prev, this, cross_prod, sum;
+    VIO_Vector prev, this, cross_prod, sum;
     VIO_Real   surface_area;
 
     fill_Vector( sum, 0.0, 0.0, 0.0 );
@@ -108,7 +108,7 @@ BICAPI  VIO_Real  get_polygons_surface_area(
     polygons_struct  *polygons )
 {
     int      poly, size;
-    Point    points[MAX_POINTS_PER_POLYGON];
+    VIO_Point    points[MAX_POINTS_PER_POLYGON];
     VIO_Real     surface_area;
 
     surface_area = 0.0;

@@ -98,7 +98,7 @@ BICAPI  int  get_tetra_tessellation_with_n_points(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  create_tetrahedral_sphere(
-    Point            *centre,
+    VIO_Point            *centre,
     VIO_Real             rx,
     VIO_Real             ry,
     VIO_Real             rz,
@@ -109,7 +109,7 @@ BICAPI  void  create_tetrahedral_sphere(
     int             p, start_size, s, size, best_size, prev_size;
     VIO_Real            cx, cy, cz, dx, dy, dz, scale;
     VIO_Real            x, y, z;
-    Point           origin;
+    VIO_Point           origin;
 
     /*--- determine the base object, either 4, 6, or 8, 20 */
 
@@ -214,7 +214,7 @@ BICAPI  void  half_sample_tetrahedral_tessellation(
     polygons_struct  *half )
 {
     int             i, quarter_n_polygons;
-    static  Point   dummy_centre = { 0.0f, 0.0f, 0.0f };
+    static  VIO_Point   dummy_centre = { 0.0f, 0.0f, 0.0f };
 
     quarter_n_polygons = polygons->n_items / 4;
 

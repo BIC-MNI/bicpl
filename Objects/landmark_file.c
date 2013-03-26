@@ -31,7 +31,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/landmar
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  STRING  get_default_landmark_file_suffix( void )
+BICAPI  VIO_STR  get_default_landmark_file_suffix( void )
 {
     return( "lmk" );
 }
@@ -54,16 +54,16 @@ BICAPI  STRING  get_default_landmark_file_suffix( void )
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status   input_landmark_file(
-    Volume         volume,
-    STRING         filename,
-    Colour         colour,
+BICAPI  VIO_Status   input_landmark_file(
+    VIO_Volume         volume,
+    VIO_STR         filename,
+    VIO_Colour         colour,
     VIO_Real           size,
     Marker_types   type,
     int            *n_objects,
     object_struct  **object_list[] )
 {
-    Status                  status;
+    VIO_Status                  status;
     object_struct           *object;
     marker_struct           marker;
     FILE                    *file;
@@ -75,9 +75,9 @@ BICAPI  Status   input_landmark_file(
 
     *n_objects = 0;
 
-    if( status == OK )
+    if( status == VIO_OK )
     {
-        while( io_tag_point( file, READ_FILE, volume, size, &marker ) == OK )
+        while( io_tag_point( file, READ_FILE, volume, size, &marker ) == VIO_OK )
         {
             marker.colour = colour;
             marker.type = type;
@@ -109,33 +109,33 @@ BICAPI  Status   input_landmark_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_tag_point(
+BICAPI  VIO_Status  io_tag_point(
     FILE            *file,
-    IO_types        io_direction,
-    Volume          volume,
+    VIO_IO_types        io_direction,
+    VIO_Volume          volume,
     VIO_Real            size,
     marker_struct   *marker )
 {
-    Status   status;
-    STRING   line, stripped;
-    Point    position;
-    int      sizes[MAX_DIMENSIONS];
+    VIO_Status   status;
+    VIO_STR   line, stripped;
+    VIO_Point    position;
+    int      sizes[VIO_MAX_DIMENSIONS];
     int      len, offset;
-    VIO_Real     voxel[MAX_DIMENSIONS];
+    VIO_Real     voxel[VIO_MAX_DIMENSIONS];
     VIO_Real     x, y, z;
     VIO_Real     x_w, y_w, z_w;
 
-    status = OK;
+    status = VIO_OK;
 
-    if( volume != (Volume) NULL && get_volume_n_dimensions(volume) != 3 )
+    if( volume != (VIO_Volume) NULL && get_volume_n_dimensions(volume) != 3 )
     {
         print_error( "Error:  volume must be 3d to use for input landmarks.\n");
-        volume = (Volume) NULL;
+        volume = (VIO_Volume) NULL;
     }
 
     if( io_direction == WRITE_FILE )
     {
-        if( volume == (Volume) NULL )
+        if( volume == (VIO_Volume) NULL )
         {
             position = marker->position;
         }
@@ -149,15 +149,15 @@ BICAPI  Status  io_tag_point(
 
             get_volume_sizes( volume, sizes );
 
-            convert_voxel_to_talairach( voxel[X], voxel[Y], voxel[Z],
-                                        sizes[X], sizes[Y], sizes[Z],
+            convert_voxel_to_talairach( voxel[VIO_X], voxel[VIO_Y], voxel[VIO_Z],
+                                        sizes[VIO_X], sizes[VIO_Y], sizes[VIO_Z],
                                         &x, &y, &z );
 
             fill_Point( position, x, y, z );
         }
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_point( file, io_direction, ASCII_FORMAT, &position );
 
     if( io_direction == READ_FILE )
@@ -165,7 +165,7 @@ BICAPI  Status  io_tag_point(
         marker->colour = WHITE;
         marker->type = BOX_MARKER;
 
-        if( volume == (Volume) NULL )
+        if( volume == (VIO_Volume) NULL )
         {
             marker->position = position;
         }
@@ -176,8 +176,8 @@ BICAPI  Status  io_tag_point(
             convert_talairach_to_voxel( (VIO_Real) Point_x(position),
                                         (VIO_Real) Point_y(position),
                                         (VIO_Real) Point_z(position),
-                                        sizes[X], sizes[Y], sizes[Z],
-                                        &voxel[X], &voxel[Y], &voxel[Z] );
+                                        sizes[VIO_X], sizes[VIO_Y], sizes[VIO_Z],
+                                        &voxel[VIO_X], &voxel[VIO_Y], &voxel[VIO_Z] );
 
             convert_voxel_to_world( volume, voxel, &x_w, &y_w, &z_w );
             fill_Point( marker->position, x_w, y_w, z_w );
@@ -186,7 +186,7 @@ BICAPI  Status  io_tag_point(
 
 #define USE_X_POSITION_FOR_WEIGHT
 #ifdef  USE_X_POSITION_FOR_WEIGHT
-    if( status == OK )
+    if( status == VIO_OK )
     {
         if( io_direction == WRITE_FILE )
             status = io_float( file, io_direction, ASCII_FORMAT,
@@ -198,30 +198,30 @@ BICAPI  Status  io_tag_point(
         }
     }
 #else
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_real( file, io_direction, ASCII_FORMAT, &marker->size );
 #endif
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_int( file, io_direction, ASCII_FORMAT,
                          &marker->structure_id );
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_int( file, io_direction, ASCII_FORMAT,
                          &marker->patient_id );
 
     if( io_direction == WRITE_FILE )
     {
-        if( status == OK && string_length(marker->label) > 0 )
+        if( status == VIO_OK && string_length(marker->label) > 0 )
             status = io_quoted_string( file, io_direction, ASCII_FORMAT,
                                        &marker->label );
     }
     else
     {
-        if( status == OK )
+        if( status == VIO_OK )
             status = input_line( file, &line );
 
-        if( status == OK )
+        if( status == VIO_OK )
         {
             stripped = strip_outer_blanks( line );
             delete_string( line );
@@ -236,13 +236,13 @@ BICAPI  Status  io_tag_point(
             len = string_length( marker->label );
 
             if( len > 0 && marker->label[len-1] == '"' )
-                 marker->label[len-1] = END_OF_STRING;
+                 marker->label[len-1] = VIO_END_OF_STRING;
 
             delete_string( stripped );
         }
     }
 
-    if( status == OK )
+    if( status == VIO_OK )
         status = io_newline( file, io_direction, ASCII_FORMAT );
 
     return( status );

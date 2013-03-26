@@ -33,7 +33,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Objects/lines.c
 
 BICAPI  void  initialize_lines(
     lines_struct    *lines,
-    Colour          col )
+    VIO_Colour          col )
 {
     ALLOC( lines->colours, 1 );
 
@@ -49,7 +49,7 @@ BICAPI  void  initialize_lines(
 
 BICAPI  void  initialize_lines_with_size(
     lines_struct    *lines,
-    Colour          col,
+    VIO_Colour          col,
     int             size,
     VIO_BOOL         closed )
 {
@@ -146,7 +146,7 @@ BICAPI  void  start_new_line( lines_struct *lines )
 
 BICAPI  void  add_point_to_line(
     lines_struct   *lines,
-    Point          *point )
+    VIO_Point          *point )
 {
     if( lines->n_items == 0 )
         start_new_line( lines );
@@ -301,7 +301,7 @@ BICAPI  VIO_Real  get_lines_length(
 BICAPI  void  get_lines_arc_point(
     lines_struct  *lines,
     VIO_Real          arc_length,
-    Point         *point )
+    VIO_Point         *point )
 {
     VIO_Real     len, segment_length, ratio;
     int      line, i, p0, p1, size;

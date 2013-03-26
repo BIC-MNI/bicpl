@@ -6,9 +6,9 @@ private  int   separate_polygons(
     object_struct      **out[] );
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input.obj  output_prefix [which] \n\
 \n\
      Separates polygons into its disjoint parts.\n\n";
@@ -20,11 +20,11 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING           input_filename, output_prefix;
+    VIO_STR           input_filename, output_prefix;
     char             out_filename[EXTREMELY_LARGE_STRING_SIZE];
     int              n_objects, n_out;
     int              i, desired_index;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list, **out;
     polygons_struct  *polygons;
 
@@ -68,18 +68,18 @@ int  main(
 
 private  int   make_connected_components(
     polygons_struct    *polygons,
-    Smallest_int       polygon_classes[],
+    VIO_SCHAR       polygon_classes[],
     int                n_in_class[] )
 {
     int                poly, current_poly, edge, size;
     int                neigh;
     int                n_components;
-    Smallest_int       not_done;
+    VIO_SCHAR       not_done;
     QUEUE_STRUCT(int)  queue;
 
     n_components = 0;
 
-    not_done = (Smallest_int) 255;
+    not_done = (VIO_SCHAR) 255;
 
     for_less( poly, 0, polygons->n_items )
         polygon_classes[poly] = not_done;
@@ -97,7 +97,7 @@ private  int   make_connected_components(
 
         INITIALIZE_QUEUE( queue );
         INSERT_IN_QUEUE( queue, poly );
-        polygon_classes[poly] = (Smallest_int) n_components;
+        polygon_classes[poly] = (VIO_SCHAR) n_components;
         n_in_class[n_components] = 1;
 
         while( !IS_QUEUE_EMPTY(queue) )
@@ -112,7 +112,7 @@ private  int   make_connected_components(
                 if( neigh >= 0 &&
                     polygon_classes[neigh] == not_done )
                 {
-                    polygon_classes[neigh] = (Smallest_int) n_components;
+                    polygon_classes[neigh] = (VIO_SCHAR) n_components;
                     ++n_in_class[n_components];
                     INSERT_IN_QUEUE( queue, neigh );
                 }
@@ -135,7 +135,7 @@ private  int   separate_polygons(
     int                point, ind, p_ind, poly, vertex, size, i, j, tmp;
     int                point_index, *new_point_ids, n_objects, comp, c;
     int                biggest;
-    Smallest_int       *poly_classes;
+    VIO_SCHAR       *poly_classes;
     int                n_components, *n_in_class, *ordered;
     polygons_struct    *new_poly;
 
@@ -192,7 +192,7 @@ private  int   separate_polygons(
 
             for_less( poly, 0, polygons->n_items )
             {
-                if( poly_classes[poly] != (Smallest_int) comp )
+                if( poly_classes[poly] != (VIO_SCHAR) comp )
                     continue;
                 size = GET_OBJECT_SIZE( *polygons, poly );
                 ++new_poly->n_items;
@@ -225,7 +225,7 @@ private  int   separate_polygons(
             ind = 0;
             for_less( poly, 0, polygons->n_items )
             {
-                if( poly_classes[poly] != (Smallest_int) comp )
+                if( poly_classes[poly] != (VIO_SCHAR) comp )
                     continue;
 
                 size = GET_OBJECT_SIZE( *polygons, poly );
@@ -247,7 +247,7 @@ private  int   separate_polygons(
             ind = 0;
             for_less( poly, 0, polygons->n_items )
             {
-                if( poly_classes[poly] != (Smallest_int) comp )
+                if( poly_classes[poly] != (VIO_SCHAR) comp )
                     continue;
 
                 size = GET_OBJECT_SIZE( *polygons, poly );

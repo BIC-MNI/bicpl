@@ -8,12 +8,12 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING           input_filename, output_filename;
+    VIO_STR           input_filename, output_filename;
     int              i, n_objects;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list;
     polygons_struct  *polygons;
-    Point            centre;
+    VIO_Point            centre;
     VIO_Real             fwhm, distance, dist, x, y, z;
 
     initialize_argument_processing( argc, argv );

@@ -5,12 +5,12 @@ int  main(
     char   *argv[] )
 {
     FILE           *file;
-    STRING         filename1, filename2, output_filename;
+    VIO_STR         filename1, filename2, output_filename;
     int            i, n, n_objects1, n_objects2, n_normals1, n_normals2;
-    Vector          *normals1, *normals2;
-	 Point          p1, p2;
+    VIO_Vector          *normals1, *normals2;
+	 VIO_Point          p1, p2;
     VIO_Real           dist;
-    File_formats   format;
+    VIO_File_formats   format;
     object_struct  **object_list1, **object_list2;
 
     initialize_argument_processing( argc, argv );
@@ -52,7 +52,7 @@ int  main(
 	 
 	 for_less( n, 0, n_normals1 )
 		 {
-			 dist = distance_between_points( (Point*)&normals1[n], (Point*)&normals2[n] );
+			 dist = distance_between_points( (VIO_Point*)&normals1[n], (VIO_Point*)&normals2[n] );
 			 
 			 (void) output_real( file, dist );
 			 (void) output_newline( file );

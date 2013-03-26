@@ -35,13 +35,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/geomet
 
 BICAPI  void  find_polygon_normal_no_normalize(
     int      n_points,
-    Point    points[],
+    VIO_Point    points[],
     VIO_Real     *nx,
     VIO_Real     *ny,
     VIO_Real     *nz )
 {
     int     i, next_i;
-    Vector  v1, v2, normal;
+    VIO_Vector  v1, v2, normal;
     VIO_Real    vx, vy, vz, x, y, z, tx, ty, tz, x0, x1, x2, y0, y1, y2, z0, z1, z2;
 
     if( n_points == 3 )
@@ -127,8 +127,8 @@ BICAPI  void  find_polygon_normal_no_normalize(
 
 BICAPI  void  find_polygon_normal(
     int      n_points,
-    Point    points[],
-    Vector   *normal )
+    VIO_Point    points[],
+    VIO_Vector   *normal )
 {
     VIO_Real   nx, ny, nz;
 
@@ -158,11 +158,11 @@ BICAPI  void  find_polygon_normal(
 
 BICAPI  void   get_plane_through_points(
     int      n_points,
-    Point    points[],
-    Vector   *normal,
+    VIO_Point    points[],
+    VIO_Vector   *normal,
     VIO_Real     *plane_constant )
 {
-    Point   centroid;
+    VIO_Point   centroid;
 
     find_polygon_normal( n_points, points, normal );
 
@@ -187,8 +187,8 @@ BICAPI  void   get_plane_through_points(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_Real  distance_from_plane(
-    Point    *point,
-    Vector   *plane_normal,
+    VIO_Point    *point,
+    VIO_Vector   *plane_normal,
     VIO_Real     plane_constant )
 {
     return( DOT_POINT_VECTOR( *point, *plane_normal ) + plane_constant );
@@ -210,11 +210,11 @@ BICAPI  VIO_Real  distance_from_plane(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_Real  distance_from_line(
-    Point    *point,
-    Point    *end_point1,
-    Point    *end_point2 )
+    VIO_Point    *point,
+    VIO_Point    *end_point1,
+    VIO_Point    *end_point2 )
 {
-    Vector   d, v;
+    VIO_Vector   d, v;
     VIO_Real     dist, len, v_dot_d, v_dot_v;
 
     SUB_POINTS( d, *end_point2, *end_point1 );

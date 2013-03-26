@@ -37,7 +37,7 @@ BICAPI  void  make_scale_transform(
     VIO_Real        sx,
     VIO_Real        sy,
     VIO_Real        sz,
-    Transform   *transform )
+    VIO_Transform   *transform )
 {
     make_identity_transform( transform );
 
@@ -68,11 +68,11 @@ BICAPI  void  make_scale_transform(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  set_transform_x_and_z_axes(
-    Transform   *transform,
-    Vector      *x_axis,
-    Vector      *z_axis )
+    VIO_Transform   *transform,
+    VIO_Vector      *x_axis,
+    VIO_Vector      *z_axis )
 {
-    Vector  n_z, n_y, n_x;
+    VIO_Vector  n_z, n_y, n_x;
 
     NORMALIZE_VECTOR( n_z, *z_axis );
     CROSS_VECTORS( n_y, n_z, *x_axis );
@@ -104,7 +104,7 @@ BICAPI  void  make_translation_transform(
     VIO_Real        x_trans,
     VIO_Real        y_trans,
     VIO_Real        z_trans,
-    Transform   *transform )
+    VIO_Transform   *transform )
 {
     make_identity_transform( transform );
 
@@ -127,8 +127,8 @@ BICAPI  void  make_translation_transform(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  make_origin_transform(
-    Point       *origin,
-    Transform   *transform )
+    VIO_Point       *origin,
+    VIO_Transform   *transform )
 {
     make_identity_transform( transform );
 
@@ -155,13 +155,13 @@ BICAPI  void  make_origin_transform(
 BICAPI  void  make_rotation_transform(
     VIO_Real       radians,
     int        axis,
-    Transform  *transform )
+    VIO_Transform  *transform )
 {
     int   a1, a2;
     VIO_Real  c, s;
 
-    a1 = (axis + 1) % N_DIMENSIONS;
-    a2 = (axis + 2) % N_DIMENSIONS;
+    a1 = (axis + 1) % VIO_N_DIMENSIONS;
+    a2 = (axis + 2) % VIO_N_DIMENSIONS;
 
     make_identity_transform( transform );
 
@@ -194,11 +194,11 @@ BICAPI  void  make_rotation_transform(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  make_transform_relative_to_point(
-    Point      *point,
-    Transform  *transform,
-    Transform  *rel_transform )
+    VIO_Point      *point,
+    VIO_Transform  *transform,
+    VIO_Transform  *rel_transform )
 {
-    Transform  to_origin, to_point;
+    VIO_Transform  to_origin, to_point;
 
     make_translation_transform( (VIO_Real) Point_x(*point), (VIO_Real) Point_y(*point),
                                 (VIO_Real) Point_z(*point), &to_point );
@@ -233,14 +233,14 @@ BICAPI  void  make_transform_relative_to_point(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  make_transform_in_coordinate_system(
-    Point      *origin,
-    Vector     *x_axis,
-    Vector     *y_axis,
-    Vector     *z_axis,
-    Transform  *transform,
-    Transform  *rel_transform )
+    VIO_Point      *origin,
+    VIO_Vector     *x_axis,
+    VIO_Vector     *y_axis,
+    VIO_Vector     *z_axis,
+    VIO_Transform  *transform,
+    VIO_Transform  *rel_transform )
 {
-    Transform  to_bases, from_bases;
+    VIO_Transform  to_bases, from_bases;
 
     make_change_to_bases_transform( origin, x_axis, y_axis, z_axis, &to_bases );
     make_change_from_bases_transform( origin, x_axis, y_axis, z_axis,
@@ -266,14 +266,14 @@ BICAPI  void  make_transform_in_coordinate_system(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  make_rotation_about_axis(
-    Vector     *axis,
+    VIO_Vector     *axis,
     VIO_Real       angle,
-    Transform  *transform )
+    VIO_Transform  *transform )
 {
     VIO_Real    c, s, t;
     VIO_Real    txy, txz, tyz, sx, sy, sz;
     VIO_Real    x, y, z;
-    Vector  unit_axis;
+    VIO_Vector  unit_axis;
 
     NORMALIZE_VECTOR( unit_axis, *axis );
 
@@ -331,7 +331,7 @@ BICAPI  void  make_rotation_about_axis(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  convert_2d_transform_to_rotation_translation(
-    Transform  *transform,
+    VIO_Transform  *transform,
     VIO_Real       *degrees_clockwise,
     VIO_Real       *x_trans,
     VIO_Real       *y_trans )
@@ -394,10 +394,10 @@ BICAPI  VIO_Real  compute_clockwise_rotation( VIO_Real x, VIO_Real y )
 }
 
 BICAPI  VIO_BOOL  is_transform_right_handed(
-    Transform   *transform )
+    VIO_Transform   *transform )
 {
     VIO_Real     volume;
-    Vector   x_axis, y_axis, z_axis, offset;
+    VIO_Vector   x_axis, y_axis, z_axis, offset;
 
     get_transform_x_axis( transform, &x_axis );
     get_transform_y_axis( transform, &y_axis );
@@ -423,7 +423,7 @@ BICAPI  VIO_BOOL  is_transform_right_handed(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  make_identity_transform_2d(
-    Transform_2d *transform )
+    VIO_Transform_2d *transform )
 {
     Transform_2d_elem( *transform, 0, 0 ) = 1.0;
     Transform_2d_elem( *transform, 0, 1 ) = 0.0;
@@ -447,8 +447,8 @@ BICAPI  void  make_identity_transform_2d(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  get_inverse_transform_2d(
-    Transform_2d   *transform,
-    Transform_2d   *inverse )
+    VIO_Transform_2d   *transform,
+    VIO_Transform_2d   *inverse )
 {
     VIO_Real  determinant;
 
@@ -495,7 +495,7 @@ BICAPI  void  get_inverse_transform_2d(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  transform_point_2d(
-    Transform_2d   *transform,
+    VIO_Transform_2d   *transform,
     VIO_Real           x,
     VIO_Real           y,
     VIO_Real           *x_trans,
@@ -534,13 +534,13 @@ BICAPI  void  get_least_squares_transform_2d(
     VIO_Real          y[],
     VIO_Real          x_trans[],
     VIO_Real          y_trans[],
-    Transform_2d  *transform_2d )
+    VIO_Transform_2d  *transform_2d )
 {
     int   p;
     VIO_Real  coefs[2+1];
     VIO_Real  **coords;
 
-    ALLOC2D( coords, n_points, 2 );
+    VIO_ALLOC2D( coords, n_points, 2 );
 
     for_less( p, 0, n_points )
     {
@@ -560,5 +560,5 @@ BICAPI  void  get_least_squares_transform_2d(
     Transform_2d_elem( *transform_2d, 1, 1 ) = coefs[2];
     Transform_2d_elem( *transform_2d, 1, 2 ) = coefs[0];
 
-    FREE2D( coords );
+    VIO_FREE2D( coords );
 }

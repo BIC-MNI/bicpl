@@ -8,9 +8,9 @@ private  int   split_polygons(
     int                translation2[] );
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input.obj  output1.obj output2.obj [translation.out]\n\
 \n\
      Splits polygons into two separate halves.\n\n";
@@ -23,11 +23,11 @@ int  main(
     char   *argv[] )
 {
     FILE             *file;
-    STRING           input_filename, output1_filename, output2_filename;
-    STRING           translation_filename;
+    VIO_STR           input_filename, output1_filename, output2_filename;
+    VIO_STR           translation_filename;
     int              n_objects, *translation1, *translation2;
     int              n_in_half, p;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list, *object1, *object2;
     polygons_struct  *polygons;
 
@@ -103,8 +103,8 @@ int  main(
 private  VIO_BOOL   can_include(
     polygons_struct  *polygons,
     int              target_poly,
-    Smallest_int     included[],
-    Smallest_int     connected[] )
+    VIO_SCHAR     included[],
+    VIO_SCHAR     connected[] )
 {
     int                n_neighbours, neighbours[10000];
     int                poly, neigh_poly, size, edge, p, n, n_connected;
@@ -128,14 +128,14 @@ private  VIO_BOOL   can_include(
         return( TRUE );
 
     for_less( p, 0, polygons->n_items )
-        connected[p] = (Smallest_int) FALSE;
+        connected[p] = (VIO_SCHAR) FALSE;
 
-    included[target_poly] = (Smallest_int) TRUE;
+    included[target_poly] = (VIO_SCHAR) TRUE;
 
     INITIALIZE_QUEUE( queue );
 
     neigh_poly = neighbours[0];
-    connected[neigh_poly] = (Smallest_int) TRUE;
+    connected[neigh_poly] = (VIO_SCHAR) TRUE;
     INSERT_IN_QUEUE( queue, neigh_poly );
     n_connected = 1;
 
@@ -159,14 +159,14 @@ private  VIO_BOOL   can_include(
                 }
 
                 INSERT_IN_QUEUE( queue, neigh_poly );
-                connected[neigh_poly] = (Smallest_int) TRUE;
+                connected[neigh_poly] = (VIO_SCHAR) TRUE;
             }
         }
     }
 
     DELETE_QUEUE( queue );
 
-    included[target_poly] = (Smallest_int) FALSE;
+    included[target_poly] = (VIO_SCHAR) FALSE;
 
     return( n_connected == n_neighbours );
 }
@@ -174,7 +174,7 @@ private  VIO_BOOL   can_include(
 private  int  count_neighbours_included(
     polygons_struct    *polygons,
     int                poly,
-    Smallest_int       included[],
+    VIO_SCHAR       included[],
     int                *n_borders )
 {
     int      size, neigh_poly, vertex, n_polys, p, n_included, polys[10000];
@@ -206,13 +206,13 @@ private  int  count_neighbours_included(
 
 private  int   assign_included(
     polygons_struct    *polygons,
-    Smallest_int       included[] )
+    VIO_SCHAR       included[] )
 {
     int                         init_poly, poly, neigh_poly, size;
     int                         n_included, edge, n_neighbours_included;
     int                         n_borders;
     VIO_Real                        priority, next_priority;
-    Smallest_int                *connected;
+    VIO_SCHAR                *connected;
     VIO_BOOL                     found;
     PRIORITY_QUEUE_STRUCT(int)  queue;
     progress_struct             progress;
@@ -246,11 +246,11 @@ private  int   assign_included(
     ALLOC( connected, polygons->n_items );
 
     for_less( poly, 0, polygons->n_items )
-        included[poly] = (Smallest_int) FALSE;
+        included[poly] = (VIO_SCHAR) FALSE;
 
     INITIALIZE_PRIORITY_QUEUE( queue );
     INSERT_IN_PRIORITY_QUEUE( queue, init_poly, -0.5 );
-    included[init_poly] = (Smallest_int) TRUE;
+    included[init_poly] = (VIO_SCHAR) TRUE;
     n_included = 1;
 
     initialize_progress_report( &progress, FALSE, polygons->n_items / 2,
@@ -280,7 +280,7 @@ private  int   assign_included(
                                 (VIO_Real) n_neighbours_included / 10000.0;
                 INSERT_IN_PRIORITY_QUEUE( queue, neigh_poly,
                                           -next_priority );
-                included[neigh_poly] = (Smallest_int) TRUE;
+                included[neigh_poly] = (VIO_SCHAR) TRUE;
                 ++n_included;
                 update_progress_report( &progress, n_included - 1 );
             }
@@ -305,7 +305,7 @@ private  int   split_polygons(
 {
     int                p, ind, poly, vertex, size, point;
     int                n_included, n_indices[2];
-    Smallest_int       *included;
+    VIO_SCHAR       *included;
     polygons_struct    *out[2];
     int                *translation[2];
 

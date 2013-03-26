@@ -124,7 +124,7 @@ BICAPI  void  modify_pixels_size(
     Pixel_types    pixel_type )
 {
     int                new_n_pixels;
-    Colour             *tmp_int_ptr;
+    VIO_Colour             *tmp_int_ptr;
 
     if( pixel_type != pixels->pixel_type )
     {
@@ -150,7 +150,7 @@ BICAPI  void  modify_pixels_size(
     switch( pixel_type )
     {
     case COLOUR_INDEX_8BIT_PIXEL:    /* make sure it's word aligned */
-        tmp_int_ptr = (Colour *) (void *)
+        tmp_int_ptr = (VIO_Colour *) (void *)
                           pixels->data.pixels_8bit_colour_index;
 
         SET_ARRAY_SIZE( tmp_int_ptr, (*n_pixels_alloced + 3) / 4,
@@ -160,7 +160,7 @@ BICAPI  void  modify_pixels_size(
         break;
 
     case COLOUR_INDEX_16BIT_PIXEL:    /* make sure it's word aligned */
-        tmp_int_ptr = (Colour *) (void *)
+        tmp_int_ptr = (VIO_Colour *) (void *)
                           pixels->data.pixels_16bit_colour_index;
         SET_ARRAY_SIZE( tmp_int_ptr, (*n_pixels_alloced + 1) / 2,
                         (new_n_pixels + 1) / 2, DEFAULT_CHUNK_SIZE );
@@ -232,9 +232,9 @@ BICAPI  void  convert_pixels24_to_index8(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8,
     int             n_colours,
-    Colour          colour_table[] )
+    VIO_Colour          colour_table[] )
 {
-    Colour  col;
+    VIO_Colour  col;
     int     x, y;
 
     initialize_pixels( pixels_8, pixels_rgb->x_position, pixels_rgb->y_position,
@@ -273,7 +273,7 @@ BICAPI  void  convert_pixels24_to_index8(
 
 BICAPI  void  convert_index8_to_pixels24(
     pixels_struct   *pixels_8,
-    Colour          colour_table[],
+    VIO_Colour          colour_table[],
     pixels_struct   *pixels_rgb )
 {
     int     x, y;
@@ -345,18 +345,18 @@ BICAPI  void  convert_pixels24_to_dithered(
     pixels_struct   *pixels_rgb,
     pixels_struct   *pixels_8,
     int             n_colours,
-    Colour          colour_table[] )
+    VIO_Colour          colour_table[] )
 {
     int      x, y, dir, error_row, c, comp[3], used[3];
     int      first_x, last_x, ind, one, three, five, seven, error;
-    Colour   col;
+    VIO_Colour   col;
     short    ***errors;
 
     initialize_pixels( pixels_8, 0, 0, pixels_rgb->x_size, pixels_rgb->y_size,
                        1.0, 1.0,
                        COLOUR_INDEX_8BIT_PIXEL );
 
-    ALLOC3D( errors, 2, 3, pixels_rgb->x_size );
+    VIO_ALLOC3D( errors, 2, 3, pixels_rgb->x_size );
 
     for_less( x, 0, pixels_rgb->x_size )
     {
@@ -431,7 +431,7 @@ BICAPI  void  convert_pixels24_to_dithered(
         }
     }
 
-    FREE3D( errors );
+    VIO_FREE3D( errors );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -452,16 +452,16 @@ BICAPI  void  convert_pixels24_to_dithered(
 
 BICAPI  void  resample_pixels(
     pixels_struct   *pixels,
-    Transform_2d    *transform,
+    VIO_Transform_2d    *transform,
     int             n_samples,
     pixels_struct   *new_pixels,
-    Colour          background_colour )
+    VIO_Colour          background_colour )
 {
     int           x, y, i, j;
     VIO_Real          xs, ys, r_sum, g_sum, b_sum;
     VIO_Real          x_trans, y_trans, weight;
-    Colour        colour;
-    Transform_2d  inverse;
+    VIO_Colour        colour;
+    VIO_Transform_2d  inverse;
 
     if( pixels->pixel_type != RGB_PIXEL ||
         new_pixels->pixel_type != RGB_PIXEL )

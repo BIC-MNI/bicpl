@@ -1,9 +1,9 @@
 #include  <bicpl.h>
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input.obj  [output.obj colour_name]\n\
 \n\
      Copies the input objects to the output objects, with the colour set\n\
@@ -17,10 +17,10 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    STRING               src_filename, dest_filename, colour_name;
-    File_formats         format;
+    VIO_STR               src_filename, dest_filename, colour_name;
+    VIO_File_formats         format;
     int                  i;
-    Colour               colour, *colours;
+    VIO_Colour               colour, *colours;
     int                  n_objects;
     object_struct        **objects;
     VIO_BOOL              setting_flag;

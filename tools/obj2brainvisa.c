@@ -48,8 +48,8 @@ int main( int argc, char * argv[] ) {
   object_struct ** object;
 
   polygons_struct * surface;
-  File_formats      format;
-  STRING            expanded;
+  VIO_File_formats      format;
+  VIO_STR            expanded;
 
   // Parse the command line arguments for the file names.
 
@@ -138,7 +138,7 @@ int main( int argc, char * argv[] ) {
 //
 static void usage( char * executable_name ) {
 
-  STRING  usage_format = "\
+  VIO_STR  usage_format = "\
 Usage: %s in.obj out.mesh \n\
 Values: in.obj = CLASP input object file\n\
         out.mesh = BrainVisa output surface file\n";

@@ -54,8 +54,8 @@ BICAPI  double  fast_approx_sqrt(
 }
 
 BICAPI  VIO_Real  fast_approx_distance_between_points(
-    Point  *p1,
-    Point  *p2 )
+    VIO_Point  *p1,
+    VIO_Point  *p2 )
 {
     VIO_Real   dx, dy, dz;
 

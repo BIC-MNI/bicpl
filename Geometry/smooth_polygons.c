@@ -22,9 +22,9 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/smooth
 
 static  void  smooth_points(
     polygons_struct  *polygons,
-    Point            current_points[],
-    Point            new_points[],
-    Smallest_int     point_done[],
+    VIO_Point            current_points[],
+    VIO_Point            new_points[],
+    VIO_SCHAR     point_done[],
     VIO_Real             max_dist_from_original,
     VIO_Real             fraction_to_move,
     VIO_Real             normal_ratio,
@@ -39,8 +39,8 @@ static  VIO_Real  update_point_position(
     int              poly,
     int              vertex_index,
     int              point_index,
-    Point            current_points[],
-    Point            *new_point,
+    VIO_Point            current_points[],
+    VIO_Point            *new_point,
     VIO_Real             max_dist_from_original,
     VIO_Real             fraction_to_move,
     VIO_Real             normal_ratio,
@@ -50,7 +50,7 @@ static  VIO_Real  update_point_position(
     int              max_value );
 static  VIO_BOOL   point_inside_range(
     volume_struct  *volume,
-    Point          *point,
+    VIO_Point          *point,
     int            min_value,
     int            max_value );
 
@@ -89,8 +89,8 @@ BICAPI  void  smooth_polygon(
 {
     VIO_Real               avg_moved, max_moved;
     int                i, iteration;
-    Point              *new_points, *tmp, *current_points;
-    Smallest_int       *point_done;
+    VIO_Point              *new_points, *tmp, *current_points;
+    VIO_SCHAR       *point_done;
     VIO_Real               next_check_time;
 
     if( polygons->n_points <= 0 )
@@ -173,9 +173,9 @@ BICAPI  void  smooth_polygon(
 
 static  void  smooth_points(
     polygons_struct  *polygons,
-    Point            current_points[],
-    Point            new_points[],
-    Smallest_int     point_done[],
+    VIO_Point            current_points[],
+    VIO_Point            new_points[],
+    VIO_SCHAR     point_done[],
     VIO_Real             max_dist_from_original,
     VIO_Real             fraction_to_move,
     VIO_Real             normal_ratio,
@@ -254,8 +254,8 @@ static  VIO_Real  update_point_position(
     int              poly,
     int              vertex_index,
     int              point_index,
-    Point            current_points[],
-    Point            *new_point,
+    VIO_Point            current_points[],
+    VIO_Point            *new_point,
     VIO_Real             max_dist_from_original,
     VIO_Real             fraction_to_move,
     VIO_Real             normal_ratio,
@@ -266,10 +266,10 @@ static  VIO_Real  update_point_position(
 {
     int              i, halves, n_neighbours;
     int              neighbours[MAX_NEIGHBOURS];
-    Point            neigh_points[MAX_NEIGHBOURS];
-    Point            new_pos, current_scaled, centroid, destination;
+    VIO_Point            neigh_points[MAX_NEIGHBOURS];
+    VIO_Point            new_pos, current_scaled, centroid, destination;
     VIO_Real             len, ratio, movement, sin_of_angle;
-    Vector           diff, delta, normal, unit_delta, unit_normal, cross;
+    VIO_Vector           diff, delta, normal, unit_delta, unit_normal, cross;
     VIO_BOOL          interior_point;
 
     n_neighbours = get_neighbours_of_point( polygons, poly, vertex_index,
@@ -371,7 +371,7 @@ static  VIO_Real  update_point_position(
 
 static  VIO_BOOL   point_inside_range(
     volume_struct  *volume,
-    Point          *point,
+    VIO_Point          *point,
     int            min_value,
     int            max_value )
 {

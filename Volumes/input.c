@@ -1,13 +1,13 @@
 #include  "bicpl_internal.h"
 
-BICAPI Status  input_volume_header_only(
-    STRING               filename,
+BICAPI VIO_Status  input_volume_header_only(
+    VIO_STR               filename,
     int                  n_dimensions,
-    STRING               dim_names[],
-    Volume               *volume,
+    VIO_STR               dim_names[],
+    VIO_Volume               *volume,
     minc_input_options   *options )
 {
-    Status               status;
+    VIO_Status               status;
     volume_input_struct  input_info;
 
     status = start_volume_input( filename, n_dimensions, dim_names,

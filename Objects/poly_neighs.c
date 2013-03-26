@@ -52,7 +52,7 @@ BICAPI  void  delete_polygon_point_neighbours(
     polygons_struct  *polygons,
     int              n_point_neighbours[],
     int              *point_neighbours[],
-    Smallest_int     interior_flags[],
+    VIO_SCHAR     interior_flags[],
     int              *point_polygons[] )
 {
     int   i;
@@ -158,7 +158,7 @@ BICAPI   void   create_polygon_point_neighbours(
     VIO_BOOL          across_polygons_flag,
     int              *n_point_neighbours_ptr[],
     int              **point_neighbours_ptr[],
-    Smallest_int     *interior_flags_ptr[],
+    VIO_SCHAR     *interior_flags_ptr[],
     int              **point_polygons_ptr[] )
 {
     int                 edge, i0, i1, size, poly, total_neighbours, p0, p1;
@@ -249,7 +249,7 @@ BICAPI   void   create_polygon_point_neighbours(
         ALLOC( *interior_flags_ptr, n_points );
         for_less( point, 0, n_points )
         {
-            (*interior_flags_ptr)[point] = (Smallest_int)
+            (*interior_flags_ptr)[point] = (VIO_SCHAR)
               (point_neighbours[point][n_point_neighbours[point]-1] < n_points);
         }
     }

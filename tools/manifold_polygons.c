@@ -8,9 +8,9 @@ private  void   manifold_polygons(
     polygons_struct    *out );
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input.obj  output.obj [x y z] [max_poly]\n\
 \n\
      Creates a 2d manifold from an arbitrary polyhedron.\n\n";
@@ -22,13 +22,13 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING           input_filename, output_filename, dummy;
+    VIO_STR           input_filename, output_filename, dummy;
     int              n_objects, max_polygons;
     int              start_poly, poly;
     VIO_Real             x, y, z, dist, closest_dist;
-    Point            start, point;
+    VIO_Point            start, point;
     VIO_BOOL          start_specified, manifold_required;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list;
     polygons_struct  *polygons, out;
 
@@ -157,7 +157,7 @@ private  void   manifold_polygons(
     int                *poly_dist;
     VIO_Real               dist;
     VIO_BOOL            add;
-    Smallest_int       *point_included, *poly_included, *in_queue;
+    VIO_SCHAR       *point_included, *poly_included, *in_queue;
     PRIORITY_QUEUE_STRUCT(int)  queue;
 
     for_less( poly, 0, polygons->n_items )

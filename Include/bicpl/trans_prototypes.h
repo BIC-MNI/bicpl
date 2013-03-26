@@ -21,7 +21,7 @@ BICAPI  void  compute_transform_from_tags(
     VIO_General_transform   *transform);
 
 BICAPI  void  build_transformation_matrix(
-    Transform   *lt, 
+    VIO_Transform   *lt, 
     VIO_Real        center[],
     VIO_Real        translations[],
     VIO_Real        scales[],
@@ -60,11 +60,11 @@ BICAPI  void  procrustes(
     VIO_Real        **Bpoints,
     VIO_Real        translation[],
     VIO_Real        centre_of_rotation[],
-    Transform   *rotation_transform,
+    VIO_Transform   *rotation_transform,
     VIO_Real        *scale_ptr );
 
 BICAPI  VIO_BOOL  rotmat_to_ang(
-    Transform   *rot_trans,
+    VIO_Transform   *rot_trans,
     VIO_Real        *ang );
 
 BICAPI void safe_compute_transform_from_tags(
@@ -78,48 +78,48 @@ BICAPI  void  make_scale_transform(
     VIO_Real        sx,
     VIO_Real        sy,
     VIO_Real        sz,
-    Transform   *transform );
+    VIO_Transform   *transform );
 
 BICAPI  void  set_transform_x_and_z_axes(
-    Transform   *transform,
-    Vector      *x_axis,
-    Vector      *z_axis );
+    VIO_Transform   *transform,
+    VIO_Vector      *x_axis,
+    VIO_Vector      *z_axis );
 
 BICAPI  void  make_translation_transform(
     VIO_Real        x_trans,
     VIO_Real        y_trans,
     VIO_Real        z_trans,
-    Transform   *transform );
+    VIO_Transform   *transform );
 
 BICAPI  void  make_origin_transform(
-    Point       *origin,
-    Transform   *transform );
+    VIO_Point       *origin,
+    VIO_Transform   *transform );
 
 BICAPI  void  make_rotation_transform(
     VIO_Real       radians,
     int        axis,
-    Transform  *transform );
+    VIO_Transform  *transform );
 
 BICAPI  void  make_transform_relative_to_point(
-    Point      *point,
-    Transform  *transform,
-    Transform  *rel_transform );
+    VIO_Point      *point,
+    VIO_Transform  *transform,
+    VIO_Transform  *rel_transform );
 
 BICAPI  void  make_transform_in_coordinate_system(
-    Point      *origin,
-    Vector     *x_axis,
-    Vector     *y_axis,
-    Vector     *z_axis,
-    Transform  *transform,
-    Transform  *rel_transform );
+    VIO_Point      *origin,
+    VIO_Vector     *x_axis,
+    VIO_Vector     *y_axis,
+    VIO_Vector     *z_axis,
+    VIO_Transform  *transform,
+    VIO_Transform  *rel_transform );
 
 BICAPI  void  make_rotation_about_axis(
-    Vector     *axis,
+    VIO_Vector     *axis,
     VIO_Real       angle,
-    Transform  *transform );
+    VIO_Transform  *transform );
 
 BICAPI  void  convert_2d_transform_to_rotation_translation(
-    Transform  *transform,
+    VIO_Transform  *transform,
     VIO_Real       *degrees_clockwise,
     VIO_Real       *x_trans,
     VIO_Real       *y_trans );
@@ -127,17 +127,17 @@ BICAPI  void  convert_2d_transform_to_rotation_translation(
 BICAPI  VIO_Real  compute_clockwise_rotation( VIO_Real x, VIO_Real y );
 
 BICAPI  VIO_BOOL  is_transform_right_handed(
-    Transform   *transform );
+    VIO_Transform   *transform );
 
 BICAPI  void  make_identity_transform_2d(
-    Transform_2d *transform );
+    VIO_Transform_2d *transform );
 
 BICAPI  void  get_inverse_transform_2d(
-    Transform_2d   *transform,
-    Transform_2d   *inverse );
+    VIO_Transform_2d   *transform,
+    VIO_Transform_2d   *inverse );
 
 BICAPI  void  transform_point_2d(
-    Transform_2d   *transform,
+    VIO_Transform_2d   *transform,
     VIO_Real           x,
     VIO_Real           y,
     VIO_Real           *x_trans,
@@ -149,16 +149,16 @@ BICAPI  void  get_least_squares_transform_2d(
     VIO_Real          y[],
     VIO_Real          x_trans[],
     VIO_Real          y_trans[],
-    Transform_2d  *transform_2d );
+    VIO_Transform_2d  *transform_2d );
 
-BICAPI  Status  write_transform_file(
-    STRING       filename,
-    STRING       comments,
-    Transform    *transform );
+BICAPI  VIO_Status  write_transform_file(
+    VIO_STR       filename,
+    VIO_STR       comments,
+    VIO_Transform    *transform );
 
-BICAPI  Status  read_transform_file(
-    STRING       filename,
-    Transform    *transform );
+BICAPI  VIO_Status  read_transform_file(
+    VIO_STR       filename,
+    VIO_Transform    *transform );
 
 #ifdef __cplusplus
 }

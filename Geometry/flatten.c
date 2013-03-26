@@ -20,9 +20,9 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/flatte
 #include "bicpl_internal.h"
 
 BICAPI  void  flatten_around_vertex(
-    Point     *vertex,
+    VIO_Point     *vertex,
     int       n_neighbours,
-    Point     neighbours[],
+    VIO_Point     neighbours[],
     VIO_BOOL   closed_flag,
     VIO_Real      x_flat[],
     VIO_Real      y_flat[] )
@@ -71,17 +71,17 @@ BICAPI  void  flatten_around_vertex(
 
 BICAPI  void  flatten_around_vertex_to_sphere(
     VIO_Real      radius,
-    Point     *vertex,
+    VIO_Point     *vertex,
     int       n_neighbours,
-    Point     neighbours[],
+    VIO_Point     neighbours[],
     VIO_Real      x_sphere[],
     VIO_Real      y_sphere[],
     VIO_Real      z_sphere[] )
 {
     int        n;
     VIO_Real       *x_flat, *y_flat, angle, x, y, z, dist;
-    Vector     axis;
-    Transform  transform;
+    VIO_Vector     axis;
+    VIO_Transform  transform;
 
     ALLOC( x_flat, n_neighbours );
     ALLOC( y_flat, n_neighbours );

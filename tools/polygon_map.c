@@ -6,12 +6,12 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    STRING               src_polygons_filename, dest_polygons_filename;
-    STRING               input_filename, output_filename;
-    File_formats         format;
+    VIO_STR               src_polygons_filename, dest_polygons_filename;
+    VIO_STR               input_filename, output_filename;
+    VIO_File_formats         format;
     int                  i, n_points;
     int                  n_src_objects, n_dest_objects, n_objects;
-    Point                *points, point;
+    VIO_Point                *points, point;
     VIO_Real                 x, y, z;
     object_struct        **objects, **src_objects, **dest_objects;
 

@@ -56,7 +56,7 @@ BICAPI  void  start_timing( void )
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  end_timing(
-    STRING   title,
+    VIO_STR   title,
     int      n )
 {
     VIO_Real  per_unit_real_time, per_unit_cpu_time;

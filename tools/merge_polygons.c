@@ -8,9 +8,9 @@ private  void   merge_polygons(
     polygons_struct    *out2 );
 
 private  void  usage(
-    STRING   executable )
+    VIO_STR   executable )
 {
-    STRING  usage_str = "\n\
+    VIO_STR  usage_str = "\n\
 Usage: %s  input1.obj  input2.obj input.trans output.obj\n\
 \n\
      Merges two polygons into one.\n\n";
@@ -23,11 +23,11 @@ int  main(
     char   *argv[] )
 {
     FILE             *file;
-    STRING           input1_filename, input2_filename, output_filename;
-    STRING           translation_filename;
+    VIO_STR           input1_filename, input2_filename, output_filename;
+    VIO_STR           translation_filename;
     int              n_objects, *translation1, *translation2;
     int              p;
-    File_formats     format;
+    VIO_File_formats     format;
     object_struct    **object_list, *object;
     polygons_struct  *polygons1, *polygons2;
 
@@ -107,10 +107,10 @@ private  void   merge_polygons(
     int               n_indices, ind, new_index, point_index;
     int               n_pairs;
     VIO_Real              *x1, *y1, *x2, *y2, x_trans, y_trans;
-    Point             point;
+    VIO_Point             point;
     polygons_struct   in[2];
     int               *pair_index;
-    Transform_2d      transform_2d;
+    VIO_Transform_2d      transform_2d;
 
     in[0] = *in1;
     in[1] = *in2;

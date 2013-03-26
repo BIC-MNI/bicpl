@@ -4,13 +4,13 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    Status           status;
-    STRING           filename, output_filename;
+    VIO_Status           status;
+    VIO_STR           filename, output_filename;
     int              i, n_objects;
     int              n_sets, n_points, n_set_points;
     object_struct    *out_object;
     object_struct    **object_list;
-    Point            *points, *set_points;
+    VIO_Point            *points, *set_points;
 
     status = OK;
 

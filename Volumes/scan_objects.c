@@ -38,8 +38,8 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/scan_ob
 
 BICAPI void  scan_object_to_volume(
     object_struct    *object,
-    Volume           volume,
-    Volume           label_volume,
+    VIO_Volume           volume,
+    VIO_Volume           label_volume,
     int              label,
     VIO_Real             max_distance )
 {

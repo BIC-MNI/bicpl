@@ -47,8 +47,8 @@ static  VIO_BOOL  scaled_maximal_pivoting_gaussian_elimination_float(
     VIO_BOOL   success;
 
     ALLOC( row, n );
-    ALLOC2D( a, n, n );
-    ALLOC2D( solution, n, n_values );
+    VIO_ALLOC2D( a, n, n );
+    VIO_ALLOC2D( solution, n, n_values );
 
     for_less( i, 0, n )
     {
@@ -72,8 +72,8 @@ static  VIO_BOOL  scaled_maximal_pivoting_gaussian_elimination_float(
         }
     }
 
-    FREE2D( a );
-    FREE2D( solution );
+    VIO_FREE2D( a );
+    VIO_FREE2D( solution );
     FREE( row );
 
     return( success );

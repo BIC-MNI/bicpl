@@ -5,11 +5,11 @@ int  main(
     char *argv[] )
 {
     FILE           *file;
-    STRING         input_filename, output_filename, ascii_binary;
-    File_formats   format;
+    VIO_STR         input_filename, output_filename, ascii_binary;
+    VIO_File_formats   format;
     object_struct  **object_list;
     int            n_objects, n_points, i, obj;
-    Point          *points;
+    VIO_Point          *points;
     VIO_BOOL        ascii_binary_present;
 
     initialize_argument_processing( argc, argv );

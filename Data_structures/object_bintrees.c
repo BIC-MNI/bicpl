@@ -113,8 +113,8 @@ BICAPI  void  create_lines_bintree(
     VIO_Real             radius;
     int              line, size, n_segments, seg, object_id;
     range_struct     *bound_vols;
-    Point            min_range, max_range;
-    Point            points[2];
+    VIO_Point            min_range, max_range;
+    VIO_Point            points[2];
 
     check_install_bintree_delete_function();
 
@@ -184,8 +184,8 @@ BICAPI  void  create_polygons_bintree(
 {
     int              poly, size;
     range_struct     *bound_vols;
-    Point            min_range, max_range;
-    Point            points[MAX_POINTS_PER_POLYGON];
+    VIO_Point            min_range, max_range;
+    VIO_Point            points[MAX_POINTS_PER_POLYGON];
 
     check_install_bintree_delete_function();
 
@@ -233,8 +233,8 @@ BICAPI  void  create_quadmesh_bintree(
 {
     int              i, j, m, n, obj_index;
     range_struct     *bound_vols;
-    Point            min_range, max_range;
-    Point            points[4];
+    VIO_Point            min_range, max_range;
+    VIO_Point            points[4];
 
     check_install_bintree_delete_function();
 

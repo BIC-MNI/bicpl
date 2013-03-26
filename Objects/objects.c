@@ -297,7 +297,7 @@ BICAPI  text_struct  *get_text_ptr(
 
 static  int  get_lines_points(
     object_struct   *object,
-    Point           *points[] )
+    VIO_Point           *points[] )
 {
     *points = get_lines_ptr(object)->points;
 
@@ -320,7 +320,7 @@ static  int  get_lines_points(
 
 static  int  get_marker_points(
     object_struct   *object,
-    Point           *points[] )
+    VIO_Point           *points[] )
 {
     *points = &get_marker_ptr(object)->position;
 
@@ -345,7 +345,7 @@ static  int  get_marker_points(
 
 static  int  get_object_zero_points(
     object_struct   *object,
-    Point           *points[] )
+    VIO_Point           *points[] )
 {
     return( 0 );
 }
@@ -366,7 +366,7 @@ static  int  get_object_zero_points(
 
 static  int  get_polygons_points(
     object_struct   *object,
-    Point           *points[] )
+    VIO_Point           *points[] )
 {
     *points = get_polygons_ptr(object)->points;
 
@@ -389,7 +389,7 @@ static  int  get_polygons_points(
 
 static  int  get_quadmesh_points(
     object_struct   *object,
-    Point           *points[] )
+    VIO_Point           *points[] )
 {
     *points = get_quadmesh_ptr(object)->points;
 
@@ -412,7 +412,7 @@ static  int  get_quadmesh_points(
 
 static  int  get_text_points(
     object_struct   *object,
-    Point           *points[] )
+    VIO_Point           *points[] )
 {
     *points = &get_text_ptr(object)->origin;
 
@@ -437,7 +437,7 @@ static  int  get_text_points(
 
 static  int  get_object_zero_normals(
     object_struct   *object,
-    Vector          *normals[] )
+    VIO_Vector          *normals[] )
 {
     *normals = NULL;
     return( 0 );
@@ -459,7 +459,7 @@ static  int  get_object_zero_normals(
 
 static  int  get_polygons_normals(
     object_struct   *object,
-    Vector          *normals[] )
+    VIO_Vector          *normals[] )
 {
     *normals = get_polygons_ptr(object)->normals;
 
@@ -482,7 +482,7 @@ static  int  get_polygons_normals(
 
 static  int  get_quadmesh_normals(
     object_struct   *object,
-    Vector          *normals[] )
+    VIO_Vector          *normals[] )
 {
     *normals = get_quadmesh_ptr(object)->normals;
 
@@ -505,7 +505,7 @@ static  int  get_quadmesh_normals(
 
 static  Colour_flags  *get_lines_colours(
     object_struct   *object,
-    Colour          *colours[] )
+    VIO_Colour          *colours[] )
 {
     *colours = get_lines_ptr(object)->colours;
 
@@ -528,7 +528,7 @@ static  Colour_flags  *get_lines_colours(
 
 static  Colour_flags  *get_marker_colours(
     object_struct    *object,
-    Colour           *colours[] )
+    VIO_Colour           *colours[] )
 {
     *colours = &get_marker_ptr(object)->colour;
 
@@ -553,9 +553,9 @@ static  Colour_flags  *get_marker_colours(
 
 static  Colour_flags  *get_object_zero_colours(
     object_struct   *object,
-    Colour          *colours[] )
+    VIO_Colour          *colours[] )
 {
-    *colours = (Colour *) NULL;
+    *colours = (VIO_Colour *) NULL;
 
     return( (Colour_flags *) 0 );
 }
@@ -576,7 +576,7 @@ static  Colour_flags  *get_object_zero_colours(
 
 static  Colour_flags  *get_polygons_colours(
     object_struct   *object,
-    Colour          *colours[] )
+    VIO_Colour          *colours[] )
 {
     *colours = get_polygons_ptr(object)->colours;
 
@@ -599,7 +599,7 @@ static  Colour_flags  *get_polygons_colours(
 
 static  Colour_flags  *get_quadmesh_colours(
     object_struct   *object,
-    Colour          *colours[] )
+    VIO_Colour          *colours[] )
 {
     *colours = get_quadmesh_ptr(object)->colours;
 
@@ -622,7 +622,7 @@ static  Colour_flags  *get_quadmesh_colours(
 
 static  Colour_flags  *get_text_colours(
     object_struct   *object,
-    Colour          *colours[] )
+    VIO_Colour          *colours[] )
 {
     *colours = &get_text_ptr(object)->colour;
 
@@ -645,7 +645,7 @@ static  Colour_flags  *get_text_colours(
 
 static  void  set_lines_colours(
     object_struct   *object,
-    Colour          colours[] )
+    VIO_Colour          colours[] )
 {
     get_lines_ptr(object)->colours = colours;
 }
@@ -669,7 +669,7 @@ static  void  set_lines_colours(
 
 static  void  set_object_no_colours(
     object_struct    *object,
-    Colour           colours[] )
+    VIO_Colour           colours[] )
 {
 }
 
@@ -689,7 +689,7 @@ static  void  set_object_no_colours(
 
 static  void  set_polygons_colours(
     object_struct   *object,
-    Colour          colours[] )
+    VIO_Colour          colours[] )
 {
     get_polygons_ptr(object)->colours = colours;
 }
@@ -710,7 +710,7 @@ static  void  set_polygons_colours(
 
 static  void  set_quadmesh_colours(
     object_struct   *object,
-    Colour          colours[] )
+    VIO_Colour          colours[] )
 {
     get_quadmesh_ptr(object)->colours = colours;
 }
@@ -730,10 +730,10 @@ static  void  set_quadmesh_colours(
 
 /* ARGSUSED */
 
-static  Surfprop  *get_object_no_surfprop(
+static  VIO_Surfprop  *get_object_no_surfprop(
     object_struct   *object )
 {
-    return( (Surfprop *) NULL );
+    return( (VIO_Surfprop *) NULL );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -749,7 +749,7 @@ static  Surfprop  *get_object_no_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Surfprop  *get_polygons_surfprop(
+static  VIO_Surfprop  *get_polygons_surfprop(
     object_struct   *object )
 {
     return( &get_polygons_ptr(object)->surfprop );
@@ -768,7 +768,7 @@ static  Surfprop  *get_polygons_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Surfprop  *get_quadmesh_surfprop(
+static  VIO_Surfprop  *get_quadmesh_surfprop(
     object_struct   *object )
 {
     return( &get_quadmesh_ptr(object)->surfprop );
@@ -787,7 +787,7 @@ static  Surfprop  *get_quadmesh_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  STRING  get_lines_name(
+static  VIO_STR  get_lines_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -812,10 +812,10 @@ static  STRING  get_lines_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  STRING  get_marker_name(
+static  VIO_STR  get_marker_name(
     object_struct   *object )
 {
-    STRING   label;
+    VIO_STR   label;
     char     buffer[EXTREMELY_LARGE_STRING_SIZE];
 
     if( string_length(get_marker_ptr(object)->label) == 0 )
@@ -847,7 +847,7 @@ static  STRING  get_marker_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  STRING  get_model_name(
+static  VIO_STR  get_model_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -870,7 +870,7 @@ static  STRING  get_model_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  STRING  get_pixels_name(
+static  VIO_STR  get_pixels_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -895,7 +895,7 @@ static  STRING  get_pixels_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  STRING  get_polygons_name(
+static  VIO_STR  get_polygons_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -920,7 +920,7 @@ static  STRING  get_polygons_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  STRING  get_quadmesh_name(
+static  VIO_STR  get_quadmesh_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -944,7 +944,7 @@ static  STRING  get_quadmesh_name(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  STRING  get_text_name(
+static  VIO_STR  get_text_name(
     object_struct   *object )
 {
     char   buffer[EXTREMELY_LARGE_STRING_SIZE];
@@ -1097,12 +1097,12 @@ static  void  delete_text_object(
 
 typedef  struct
 {
-    int           (*get_points_function)( object_struct *, Point *[] );
-    int           (*get_normals_function)( object_struct *, Vector *[] );
-    Colour_flags  *(*get_colours_function)( object_struct *, Colour *[] );
-    void          (*set_colours_function)( object_struct *, Colour [] );
-    Surfprop      *(*get_surfprop_function)( object_struct * );
-    STRING        (*get_name_function)( object_struct * );
+    int           (*get_points_function)( object_struct *, VIO_Point *[] );
+    int           (*get_normals_function)( object_struct *, VIO_Vector *[] );
+    Colour_flags  *(*get_colours_function)( object_struct *, VIO_Colour *[] );
+    void          (*set_colours_function)( object_struct *, VIO_Colour [] );
+    VIO_Surfprop      *(*get_surfprop_function)( object_struct * );
+    VIO_STR        (*get_name_function)( object_struct * );
     void          (*delete_function)( object_struct * );
 }
 object_functions_list;
@@ -1209,7 +1209,7 @@ BICAPI  void  delete_object(
 
 BICAPI  int  get_object_points(
     object_struct   *object,
-    Point           *points[] )
+    VIO_Point           *points[] )
 {
     return( object_functions[object->object_type].get_points_function
                    ( object, points ) );
@@ -1230,7 +1230,7 @@ BICAPI  int  get_object_points(
 
 BICAPI  int  get_object_normals(
     object_struct   *object,
-    Vector          *normals[] )
+    VIO_Vector          *normals[] )
 {
     return( object_functions[object->object_type].get_normals_function
                    ( object, normals ) );
@@ -1251,7 +1251,7 @@ BICAPI  int  get_object_normals(
 
 BICAPI  Colour_flags  *get_object_colours(
     object_struct   *object,
-    Colour          *colours[] )
+    VIO_Colour          *colours[] )
 {
     return( object_functions[object->object_type].get_colours_function
                    ( object, colours ) );
@@ -1273,7 +1273,7 @@ BICAPI  Colour_flags  *get_object_colours(
 
 BICAPI  void  set_object_colours(
     object_struct   *object,
-    Colour          colours[] )
+    VIO_Colour          colours[] )
 {
     object_functions[object->object_type].set_colours_function(object,colours);
 }
@@ -1291,7 +1291,7 @@ BICAPI  void  set_object_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Surfprop  *get_object_surfprop(
+BICAPI  VIO_Surfprop  *get_object_surfprop(
     object_struct   *object )
 {
     return( object_functions[object->object_type].get_surfprop_function
@@ -1311,7 +1311,7 @@ BICAPI  Surfprop  *get_object_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  STRING  get_object_name(
+BICAPI  VIO_STR  get_object_name(
     object_struct  *object )
 {
     return( object_functions[object->object_type].get_name_function( object ) );
@@ -1519,11 +1519,11 @@ BICAPI  void  terminate_object_traverse(
 BICAPI  VIO_BOOL  get_range_of_object(
     object_struct   *object,
     VIO_BOOL         visible_ones_only,
-    Point           *min_corner,
-    Point           *max_corner )
+    VIO_Point           *min_corner,
+    VIO_Point           *max_corner )
 {
     VIO_BOOL                 found_flag;
-    Point                   min_obj, max_obj, *points;
+    VIO_Point                   min_obj, max_obj, *points;
     int                     n_points;
     object_struct           *current_object;
     object_traverse_struct  object_traverse;
@@ -1574,7 +1574,7 @@ BICAPI  void  reverse_object_normals(
     object_struct   *object )
 {
     int                     n_normals;
-    Vector                  *normals;
+    VIO_Vector                  *normals;
     object_struct           *current_object;
     object_traverse_struct  object_traverse;
 
@@ -1602,16 +1602,16 @@ BICAPI  void  reverse_object_normals(
 
 BICAPI  VIO_BOOL  get_object_colour(
     object_struct  *object,
-    Colour         *colour )
+    VIO_Colour         *colour )
 {
     VIO_BOOL       has_single_colour;
     Colour_flags  *colour_flag;
-    Colour        *colours;
+    VIO_Colour        *colours;
 
     colour_flag = get_object_colours( object, &colours );
 
     if( (colour_flag == (Colour_flags *) NULL ||
-         *colour_flag == ONE_COLOUR) && colours != (Colour *) NULL )
+         *colour_flag == ONE_COLOUR) && colours != (VIO_Colour *) NULL )
     {
         has_single_colour = TRUE;
         *colour = colours[0];
@@ -1640,10 +1640,10 @@ BICAPI  VIO_BOOL  get_object_colour(
 
 BICAPI  void  set_object_colour(
     object_struct  *object,
-    Colour         col )
+    VIO_Colour         col )
 {
     Colour_flags  *colour_flag;
-    Colour        *colours;
+    VIO_Colour        *colours;
 
     colour_flag = get_object_colours( object, &colours );
 
@@ -1651,14 +1651,14 @@ BICAPI  void  set_object_colour(
     {
         *colour_flag = ONE_COLOUR;
 
-        if( colours != (Colour *) NULL )
+        if( colours != (VIO_Colour *) NULL )
             FREE( colours );
 
         ALLOC( colours, 1 );
         set_object_colours( object, colours );
     }
 
-    if( colours != (Colour *) NULL )
+    if( colours != (VIO_Colour *) NULL )
         colours[0] = col;
 }
 
@@ -1678,13 +1678,13 @@ BICAPI  void  set_object_colour(
 
 BICAPI  void  set_object_surfprop(
     object_struct  *object,
-    Surfprop       *spr )
+    VIO_Surfprop       *spr )
 {
-    Surfprop   *object_spr;
+    VIO_Surfprop   *object_spr;
 
     object_spr = get_object_surfprop( object );
 
-    if( object_spr != (Surfprop *) NULL )
+    if( object_spr != (VIO_Surfprop *) NULL )
         *object_spr = *spr;
 }
 
@@ -1706,7 +1706,7 @@ BICAPI  void  set_object_surfprop(
 
 BICAPI  void  free_colours(
     Colour_flags   colour_flag,
-    Colour         colours[],
+    VIO_Colour         colours[],
     int            n_points,
     int            n_items )
 {

@@ -34,7 +34,7 @@ BICAPI  int  compute_distances_from_point(
     polygons_struct   *polygons,
     int               n_neighbours[],
     int               *neighbours[],
-    Point             *point,
+    VIO_Point             *point,
     int               poly,
     VIO_Real              max_distance,
     VIO_BOOL           distances_initialized,

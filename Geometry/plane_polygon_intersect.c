@@ -139,15 +139,15 @@ static  void  coalesce_lines(
 
 BICAPI  void   intersect_planes_with_polygons(
     polygons_struct   *polygons,
-    Point             *plane_origin,
-    Vector            *plane_normal,
+    VIO_Point             *plane_origin,
+    VIO_Vector            *plane_normal,
     lines_struct      *lines )
 {
     int                 n_points, p, index;
     int                 poly, edge, size;
     int                 point_index1, point_index2;
-    Vector              v1, v2;
-    Point               point;
+    VIO_Vector              v1, v2;
+    VIO_Point               point;
     VIO_Real                t1, t2, ratios[2];
     int                 p1s[2], p2s[2];
     hash2_table_struct  hash;
@@ -253,15 +253,15 @@ BICAPI  void   intersect_planes_with_polygons(
 
 BICAPI  void   intersect_planes_with_quadmesh(
     quadmesh_struct   *quadmesh,
-    Point             *plane_origin,
-    Vector            *plane_normal,
+    VIO_Point             *plane_origin,
+    VIO_Vector            *plane_normal,
     lines_struct      *lines )
 {
     int                 n_points, p, index, m, n, x_index, y_index;
     int                 edge;
     int                 point_index1, point_index2, indices[4];
-    Vector              v1, v2;
-    Point               point, *points;
+    VIO_Vector              v1, v2;
+    VIO_Point               point, *points;
     VIO_Real                t1, t2, ratios[2];
     int                 p1s[2], p2s[2];
     hash2_table_struct  hash;

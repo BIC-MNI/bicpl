@@ -93,9 +93,9 @@ static  void  set_deformation_model(
         model->models[model_index].model_object = (object_struct *) NULL;
 
     model->models[model_index].n_model_points = 0;
-    model->models[model_index].model_centroids = (Point *) NULL;
-    model->models[model_index].model_normals = (Vector *) NULL;
-    model->models[model_index].model_points = (Point *) NULL;
+    model->models[model_index].model_centroids = (VIO_Point *) NULL;
+    model->models[model_index].model_normals = (VIO_Vector *) NULL;
+    model->models[model_index].model_points = (VIO_Point *) NULL;
 
     model->models[model_index].min_curvature_offset = min_curvature_offset;
     model->models[model_index].max_curvature_offset = max_curvature_offset;
@@ -104,8 +104,8 @@ static  void  set_deformation_model(
 static  void  print_deform_model(
     deform_model_struct   *model )
 {
-    STRING  model_object_name;
-    STRING  type_name;
+    VIO_STR  model_object_name;
+    VIO_STR  type_name;
 
     switch( model->model_type )
     {
@@ -161,7 +161,7 @@ BICAPI  void  print_deformation_model(
     }
 }
 
-BICAPI  Status   add_deformation_model(
+BICAPI  VIO_Status   add_deformation_model(
     deformation_model_struct   *deformation_model,
     int                        up_to_n_points,
     VIO_Real                       model_weight,
@@ -169,11 +169,11 @@ BICAPI  Status   add_deformation_model(
     VIO_Real                       min_curvature_offset,
     VIO_Real                       max_curvature_offset )
 {
-    Status                    status;
+    VIO_Status                    status;
     int                       n_objects;
     Deformation_model_types   model_type;
     object_struct             *model_object, **object_list;
-    File_formats              format;
+    VIO_File_formats              format;
 
     status = OK;
 
@@ -234,22 +234,22 @@ BICAPI  void  delete_deformation_model(
         FREE( model->original_positions );
 }
 
-BICAPI  Status  input_original_positions(
+BICAPI  VIO_Status  input_original_positions(
     deformation_model_struct  *deform_model,
     char                      position_filename[],
     VIO_Real                      max_position_offset,
     int                       n_deforming_points )
 {
-    Status            status, input_status;
+    VIO_Status            status, input_status;
     int               i, n_objects, n_points;
     object_struct     **object_list;
-    File_formats      format;
-    Point             *points;
+    VIO_File_formats      format;
+    VIO_Point             *points;
     lines_struct      *lines;
     polygons_struct   *polygons;
 
     if( deform_model->position_constrained &&
-        deform_model->original_positions != (Point *) NULL )
+        deform_model->original_positions != (VIO_Point *) NULL )
         FREE( deform_model->original_positions );
 
     if( equal_strings( position_filename, "none" ) )
@@ -303,12 +303,12 @@ BICAPI  Status  input_original_positions(
 
 static  void  compute_line_model_info(
     lines_struct   *lines,
-    Point          centroids[],
-    Vector         normals[] )
+    VIO_Point          centroids[],
+    VIO_Vector         normals[] )
 {
     int      size, axis, a1, a2, start_index, end_index, vertex_index;
     int      point_index, neighbours[2], i;
-    Vector   dir_to_next;
+    VIO_Vector   dir_to_next;
     VIO_BOOL  closed;
 
     axis = find_axial_plane( lines );
@@ -353,10 +353,10 @@ static  void  compute_line_model_info(
 
 static  void  compute_polygons_model_info(
     polygons_struct   *polygons,
-    Point             centroids[],
-    Vector            normals[] )
+    VIO_Point             centroids[],
+    VIO_Vector            normals[] )
 {
-    Smallest_int   *points_done;
+    VIO_SCHAR   *points_done;
     int            p, size, poly, vertex_index, point_index;
     VIO_Real           base_length, curvature;
 
@@ -518,7 +518,7 @@ static  VIO_BOOL  check_correct_parametric_polygons(
     deform_model_struct   *model )
 {
     int               n_up, n_model_up, n_polygon_points, n_items;
-    Point             centre;
+    VIO_Point             centre;
     VIO_BOOL           model_sphere_topology, sphere_topology, correct;
     polygons_struct   *model_polygons;
 
@@ -575,7 +575,7 @@ static  VIO_BOOL  check_correct_subsampled_polygons(
     deform_model_struct   *model )
 {
     int               n_up, n_model_up, n_polygon_points, n_items;
-    Point             centre;
+    VIO_Point             centre;
     VIO_BOOL           model_sphere_topology, sphere_topology;
     polygons_struct   *model_polygons;
 
@@ -727,7 +727,7 @@ static  VIO_BOOL  check_correct_parametric_lines(
     lines_struct          *lines,
     deform_model_struct   *model )
 {
-    Point             centre;
+    VIO_Point             centre;
     VIO_BOOL           correct;
     lines_struct      *model_lines;
 

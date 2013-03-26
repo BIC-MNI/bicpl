@@ -33,12 +33,12 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/tran
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  write_transform_file(
-    STRING       filename,
-    STRING       comments,
-    Transform    *transform )
+BICAPI  VIO_Status  write_transform_file(
+    VIO_STR       filename,
+    VIO_STR       comments,
+    VIO_Transform    *transform )
 {
-    Status              status;
+    VIO_Status              status;
     FILE                *file;
     VIO_General_transform   gen_transform;
 
@@ -73,13 +73,13 @@ BICAPI  Status  write_transform_file(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  read_transform_file(
-    STRING       filename,
-    Transform    *transform )
+BICAPI  VIO_Status  read_transform_file(
+    VIO_STR       filename,
+    VIO_Transform    *transform )
 {
-    Status             status;
+    VIO_Status             status;
     FILE               *file;
-    Transform          *lin_trans;
+    VIO_Transform          *lin_trans;
     VIO_General_transform  gen_transform;
 
     status = open_file_with_default_suffix( filename, "xfm",

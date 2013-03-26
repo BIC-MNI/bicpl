@@ -91,8 +91,8 @@ BICAPI  Point_classes  get_isosurface_point(
     VIO_Real              point[] )
 {
     int             dim;
-    int             v1[N_DIMENSIONS], v2[N_DIMENSIONS];
-    int             offset[N_DIMENSIONS];
+    int             v1[VIO_N_DIMENSIONS], v2[VIO_N_DIMENSIONS];
+    int             offset[VIO_N_DIMENSIONS];
     VIO_Real            alpha, val1, val2;
     Point_classes   point_class;
 
@@ -102,7 +102,7 @@ BICAPI  Point_classes  get_isosurface_point(
 
     translate_from_edge_index( edge_intersected, offset );
 
-    for_less( dim, 0, N_DIMENSIONS )
+    for_less( dim, 0, VIO_N_DIMENSIONS )
         v2[dim] = v1[dim] + offset[dim];
 
     val1 = corners[v1[0]][v1[1]][v1[2]];
@@ -114,7 +114,7 @@ BICAPI  Point_classes  get_isosurface_point(
             is_binary_inside( val2, min_value, max_value ) )
         {
             point_class = ON_EDGE;
-            for_less( dim, 0, N_DIMENSIONS )
+            for_less( dim, 0, VIO_N_DIMENSIONS )
                 point[dim] = (VIO_Real) (v1[dim] + v2[dim]) / 2.0;
         }
         else
@@ -143,7 +143,7 @@ BICAPI  Point_classes  get_isosurface_point(
 
         if( point_class >= (Point_classes) 0 )
         {
-            for_less( dim, 0, N_DIMENSIONS )
+            for_less( dim, 0, VIO_N_DIMENSIONS )
             {
                 point[dim] = INTERPOLATE( alpha,
                                           (VIO_Real) v1[dim], (VIO_Real) v2[dim] );

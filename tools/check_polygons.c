@@ -14,10 +14,10 @@ int  main(
     int    argc,
     char   *argv[] )
 {
-    STRING               src_filename;
+    VIO_STR               src_filename;
     int                  n_objects, n_edges;
     int                  *n_neighbours, **neighbours;
-    File_formats         format;
+    VIO_File_formats         format;
     object_struct        **object_list;
     polygons_struct      *polygons;
 
@@ -191,7 +191,7 @@ private  void  test_polygon_integrity(
     int               *neighbours[] )
 {
     int    poly, size, p, n, n1, v, v1, n_points, p1, p2, p3;
-    Vector v12, v13, cross;
+    VIO_Vector v12, v13, cross;
 
     n_points = polygons->n_points;
 

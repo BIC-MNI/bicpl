@@ -24,13 +24,13 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Geometry/ray_in
 #define  TRIANGLE_TOLERANCE  1.0e-3
 
 static  VIO_BOOL  point_within_triangle_2d(
-    Point   *pt,
-    Point   points[] );
+    VIO_Point   *pt,
+    VIO_Point   points[] );
 static  VIO_BOOL  point_within_polygon_2d(
-    Point   *pt,
+    VIO_Point   *pt,
     int     n_points,
-    Point   points[],
-    Vector  *polygon_normal );
+    VIO_Point   points[],
+    VIO_Vector  *polygon_normal );
 
 static  int   n_dirs = -1;
 static  VIO_Real  *dirs = NULL;
@@ -64,11 +64,11 @@ BICAPI  VIO_Real  *get_intersect_directions( void )
 }
 
 static  VIO_BOOL   intersect_ray_triangle(
-    Point            *ray_origin,
-    Vector           *ray_direction,
-    Point            *point0,
-    Point            *point1,
-    Point            *point2,
+    VIO_Point            *ray_origin,
+    VIO_Vector           *ray_direction,
+    VIO_Point            *point0,
+    VIO_Point            *point1,
+    VIO_Point            *point2,
     VIO_Real             *dist )
 {
     VIO_Real     n_dot_d, d;
@@ -168,10 +168,10 @@ static  VIO_BOOL   intersect_ray_triangle(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL   intersect_ray_polygon_points(
-    Point            *ray_origin,
-    Vector           *ray_direction,
+    VIO_Point            *ray_origin,
+    VIO_Vector           *ray_direction,
     int              n_points,
-    Point            points[],
+    VIO_Point            points[],
     VIO_Real             *dist )
 {
     VIO_BOOL  intersects;
@@ -208,19 +208,19 @@ static  VIO_BOOL   intersect_ray_polygon_points(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL   intersect_ray_polygon(
-    Point            *ray_origin,
-    Vector           *ray_direction,
+    VIO_Point            *ray_origin,
+    VIO_Vector           *ray_direction,
     VIO_Real             *dist,
     polygons_struct  *polygons,
     int              poly_index )
 {
     VIO_BOOL  intersects;
-    Point    points[MAX_POINTS];
+    VIO_Point    points[MAX_POINTS];
     int      ind, p, start_index, end_index, size;
 
     intersects = FALSE;
 
-    if( polygons->visibilities == (Smallest_int *) 0 ||
+    if( polygons->visibilities == (VIO_SCHAR *) 0 ||
         polygons->visibilities[poly_index] )
     {
         start_index = START_INDEX( polygons->end_indices, poly_index );
@@ -276,10 +276,10 @@ static  VIO_BOOL   intersect_ray_polygon(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  point_within_polygon(
-    Point   *pt,
+    VIO_Point   *pt,
     int     n_points,
-    Point   points[],
-    Vector  *polygon_normal )
+    VIO_Point   points[],
+    VIO_Vector  *polygon_normal )
 {
     VIO_BOOL  intersects;
 
@@ -308,12 +308,12 @@ BICAPI  VIO_BOOL  point_within_polygon(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL  point_within_triangle_2d(
-    Point   *pt,
-    Point   points[] )
+    VIO_Point   *pt,
+    VIO_Point   points[] )
 {
     VIO_Real     x_pos, y_pos, sum, bottom;
     VIO_Real     x_dot_x, x_dot_y, x_dot_v, y_dot_y, y_dot_v;
-    Vector   x_axis, y_axis, v;
+    VIO_Vector   x_axis, y_axis, v;
 
     SUB_VECTORS( x_axis, points[1], points[0] );
     SUB_VECTORS( y_axis, points[2], points[0] );
@@ -362,10 +362,10 @@ static  VIO_BOOL  point_within_triangle_2d(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL  point_within_polygon_2d(
-    Point   *pt,
+    VIO_Point   *pt,
     int     n_points,
-    Point   points[],
-    Vector  *polygon_normal )
+    VIO_Point   points[],
+    VIO_Vector  *polygon_normal )
 {
     VIO_BOOL  intersects, cross;
     VIO_Real     x, y, x1, y1, x2, y2, x_inter, dx, dy, tx, ty, len, t;
@@ -517,14 +517,14 @@ static  VIO_BOOL  point_within_polygon_2d(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL   intersect_ray_quadmesh_patch(
-    Point            *ray_origin,
-    Vector           *ray_direction,
+    VIO_Point            *ray_origin,
+    VIO_Vector           *ray_direction,
     VIO_Real             *dist,
     quadmesh_struct  *quadmesh,
     int              obj_index )
 {
     VIO_BOOL  intersects;
-    Point    points[4];
+    VIO_Point    points[4];
     int      i, j, m, n;
 
     get_quadmesh_n_objects( quadmesh, &m, &n );
@@ -561,9 +561,9 @@ static  VIO_BOOL   intersect_ray_quadmesh_patch(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  line_intersects_ellipsoid(
-    Point    *line_origin,
-    Vector   *line_direction,
-    Point    *sphere_centre,
+    VIO_Point    *line_origin,
+    VIO_Vector   *line_direction,
+    VIO_Point    *sphere_centre,
     VIO_Real     x_size,
     VIO_Real     y_size,
     VIO_Real     z_size,
@@ -626,9 +626,9 @@ BICAPI  VIO_BOOL  line_intersects_ellipsoid(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_BOOL  ray_intersects_sphere(
-    Point       *origin,
-    Vector      *direction,
-    Point       *centre,
+    VIO_Point       *origin,
+    VIO_Vector      *direction,
+    VIO_Point       *centre,
     VIO_Real        radius,
     VIO_Real        *dist )
 {
@@ -671,20 +671,20 @@ BICAPI  VIO_BOOL  ray_intersects_sphere(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL  ray_intersects_tube(
-    Point       *origin,
-    Vector      *direction,
-    Point       *p1,
-    Point       *p2,
+    VIO_Point       *origin,
+    VIO_Vector      *direction,
+    VIO_Point       *p1,
+    VIO_Point       *p2,
     VIO_Real        radius,
     VIO_Real        *dist )
 {
-    Point      point;
+    VIO_Point      point;
     int        n_sols;
     VIO_Real       a, b, c, sols[2], t_min, t_max;
     VIO_Real       len_axis, x, y, z, dx, dy, ox, oy;
-    Point      trans_origin;
-    Vector     tube_axis, hor, vert, trans_direction;
-    Transform  transform;
+    VIO_Point      trans_origin;
+    VIO_Vector     tube_axis, hor, vert, trans_direction;
+    VIO_Transform  transform;
 
     if( EQUAL_POINTS( *p1, *p2 ) )
         return( FALSE );
@@ -772,8 +772,8 @@ static  VIO_BOOL  ray_intersects_tube(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL   intersect_ray_tube_segment(
-    Point            *origin,
-    Vector           *direction,
+    VIO_Point            *origin,
+    VIO_Vector           *direction,
     VIO_Real             *dist,
     lines_struct     *lines,
     int              obj_index )
@@ -828,9 +828,9 @@ static  VIO_BOOL   intersect_ray_tube_segment(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL  intersect_ray_with_cube(
-    Point            *ray_origin,
-    Vector           *ray_direction,
-    Point            *centre,
+    VIO_Point            *ray_origin,
+    VIO_Vector           *ray_direction,
+    VIO_Point            *centre,
     VIO_Real             size,
     VIO_Real             *dist )
 {
@@ -876,8 +876,8 @@ static  VIO_BOOL  intersect_ray_with_cube(
 ---------------------------------------------------------------------------- */
 
 static  VIO_BOOL  intersect_ray_with_marker(
-    Point            *ray_origin,
-    Vector           *ray_direction,
+    VIO_Point            *ray_origin,
+    VIO_Vector           *ray_direction,
     marker_struct    *marker,
     VIO_Real             *dist )
 {
@@ -913,8 +913,8 @@ static  VIO_BOOL  intersect_ray_with_marker(
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  intersect_ray_object(
-    Point                 *origin,
-    Vector                *direction,
+    VIO_Point                 *origin,
+    VIO_Vector                *direction,
     object_struct         *object,
     int                   obj_index,
     int                   *closest_obj_index,
@@ -984,8 +984,8 @@ BICAPI  void  intersect_ray_object(
 ---------------------------------------------------------------------------- */
 
 BICAPI  int  intersect_ray_with_object(
-    Point           *origin,
-    Vector          *direction,
+    VIO_Point           *origin,
+    VIO_Vector          *direction,
     object_struct   *object,
     int             *obj_index,
     VIO_Real            *dist,

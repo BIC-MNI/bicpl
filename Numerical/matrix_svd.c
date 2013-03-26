@@ -69,9 +69,9 @@ BICAPI  VIO_BOOL  singular_value_decomposition(
   VIO_Real temp;
 
   ALLOC(work,(int) lwork);
-  ALLOC2D(_a,n,m);
-  ALLOC2D(_u,n,m);
-  ALLOC2D(_v,n,n);
+  VIO_ALLOC2D(_a,n,m);
+  VIO_ALLOC2D(_u,n,m);
+  VIO_ALLOC2D(_v,n,n);
 
   for (j = 0; j < n; j++) {    
     for (i = 0; i < m; i++) {
@@ -97,9 +97,9 @@ BICAPI  VIO_BOOL  singular_value_decomposition(
   }
 
   FREE(work);
-  FREE2D(_u);
-  FREE2D(_v);
-  FREE2D(_a);
+  VIO_FREE2D(_u);
+  VIO_FREE2D(_v);
+  VIO_FREE2D(_a);
   
   return val;  
 }

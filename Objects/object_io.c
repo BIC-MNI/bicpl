@@ -164,30 +164,30 @@ A TEXT object consists of the following data items.
 */
 
 
-static  Status  io_vectors(
+static  VIO_Status  io_vectors(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     int             n,
-    Vector          *vectors[] );
-static  Status  io_line_thickness(
+    VIO_Vector          *vectors[] );
+static  VIO_Status  io_line_thickness(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     float           *line_thickness );
-static  Status  io_end_indices(
+static  VIO_Status  io_end_indices(
     FILE           *file,
-    IO_types       io_flag,
-    File_formats   format,
+    VIO_IO_types       io_flag,
+    VIO_File_formats   format,
     int            n_items,
     int            *end_indices[],
     int            min_size );
-static  Status  io_points(
+static  VIO_Status  io_points(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     int             n,
-    Point           *points[] );
+    VIO_Point           *points[] );
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : io_lines
@@ -205,13 +205,13 @@ static  Status  io_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_lines(
+BICAPI  VIO_Status  io_lines(
     FILE                *file,
-    IO_types            io_flag,
-    File_formats        format,
+    VIO_IO_types            io_flag,
+    VIO_File_formats        format,
     lines_struct        *lines )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = OK;
 
@@ -297,13 +297,13 @@ BICAPI  Status  io_lines(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_marker(
+BICAPI  VIO_Status  io_marker(
     FILE                *file,
-    IO_types            io_flag,
-    File_formats        format,
+    VIO_IO_types            io_flag,
+    VIO_File_formats        format,
     marker_struct       *marker )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = io_object_type( file, io_flag, format, MARKER );
 
@@ -354,13 +354,13 @@ BICAPI  Status  io_marker(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_model(
+BICAPI  VIO_Status  io_model(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     model_struct    *model )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = io_object_type( file, io_flag, format, MODEL );
 
@@ -389,13 +389,13 @@ BICAPI  Status  io_model(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_pixels(
+BICAPI  VIO_Status  io_pixels(
     FILE                *file,
-    IO_types            io_flag,
-    File_formats        format,
+    VIO_IO_types            io_flag,
+    VIO_File_formats        format,
     pixels_struct       *pixels )
 {
-    Status       status;
+    VIO_Status       status;
     int          n_pixels;
 
     status = OK;
@@ -500,16 +500,16 @@ BICAPI  VIO_BOOL  get_use_compressed_polygons_flag( void )
 @MODIFIED   : Mar. 23, 1997   D. MacDonald - added compressed polygons.
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_polygons(
+BICAPI  VIO_Status  io_polygons(
     FILE                *file,
-    IO_types            io_flag,
-    File_formats        format,
+    VIO_IO_types            io_flag,
+    VIO_File_formats        format,
     polygons_struct     *polygons )
 {
     int      n_items;
-    Status   status;
-    Surfprop save_surfprop;
-    Point    centre;
+    VIO_Status   status;
+    VIO_Surfprop save_surfprop;
+    VIO_Point    centre;
     VIO_BOOL  compressed_format;
 
     status = OK;
@@ -649,13 +649,13 @@ BICAPI  Status  io_polygons(
  * \param io_flag one of READ_FILE or WRITE_FILE
  * \param format one of ASCII_FORMAT or BINARY_FORMAT
  */
-BICAPI  Status  io_quadmesh(
+BICAPI  VIO_Status  io_quadmesh(
     FILE                *file,
-    IO_types            io_flag,
-    File_formats        format,
+    VIO_IO_types            io_flag,
+    VIO_File_formats        format,
     quadmesh_struct     *quadmesh )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = OK;
 
@@ -735,13 +735,13 @@ BICAPI  Status  io_quadmesh(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_text(
+BICAPI  VIO_Status  io_text(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     text_struct     *text )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = io_object_type( file, io_flag, format, TEXT );
 
@@ -782,13 +782,13 @@ BICAPI  Status  io_text(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_point(
+BICAPI  VIO_Status  io_point(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
-    Point           *point )
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
+    VIO_Point           *point )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = OK;
 
@@ -827,13 +827,13 @@ BICAPI  Status  io_point(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_vector(
+BICAPI  VIO_Status  io_vector(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
-    Vector          *v )
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
+    VIO_Vector          *v )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = OK;
 
@@ -871,15 +871,15 @@ BICAPI  Status  io_vector(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_colour(
+BICAPI  VIO_Status  io_colour(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
-    Colour          *colour )
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
+    VIO_Colour          *colour )
 {
     float          r, g, b, a;
     unsigned char  comps[4];
-    Status         status;
+    VIO_Status         status;
 
     status = OK;
 
@@ -948,17 +948,17 @@ BICAPI  Status  io_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_colours(
+BICAPI  VIO_Status  io_colours(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     Colour_flags    *colour_flag,
     int             n_items,
     int             n_points,
-    Colour          **colours )
+    VIO_Colour          **colours )
 {
     int      i, n_colours;
-    Status   status;
+    VIO_Status   status;
 
     status = io_int( file, io_flag, format, (int *) colour_flag );
 
@@ -1009,13 +1009,13 @@ BICAPI  Status  io_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_surfprop(
+BICAPI  VIO_Status  io_surfprop(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
-    Surfprop        *surfprop )
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
+    VIO_Surfprop        *surfprop )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = OK;
 
@@ -1066,14 +1066,14 @@ BICAPI  Status  io_surfprop(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  io_points(
+static  VIO_Status  io_points(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     int             n,
-    Point           *points[] )
+    VIO_Point           *points[] )
 {
-    Status   status;
+    VIO_Status   status;
     int      i;
 
     status = OK;
@@ -1125,14 +1125,14 @@ static  Status  io_points(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  io_vectors(
+static  VIO_Status  io_vectors(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     int             n,
-    Vector          *vectors[] )
+    VIO_Vector          *vectors[] )
 {
-    Status   status;
+    VIO_Status   status;
     int      i;
 
     status = OK;
@@ -1181,14 +1181,14 @@ static  Status  io_vectors(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_object_type(
+BICAPI  VIO_Status  io_object_type(
     FILE           *file,
-    IO_types       io_flag,
-    File_formats   format,
+    VIO_IO_types       io_flag,
+    VIO_File_formats   format,
     Object_types   type )
 {
     int      ch;
-    Status   status;
+    VIO_Status   status;
 
     status = OK;
 
@@ -1239,14 +1239,14 @@ BICAPI  Status  io_object_type(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  input_object_type(
+BICAPI  VIO_Status  input_object_type(
     FILE           *file,
     Object_types   *type,
-    File_formats   *format,
+    VIO_File_formats   *format,
     VIO_BOOL        *eof )
 {
     char     ch;
-    Status   status;
+    VIO_Status   status;
 
     status = OK;
     *eof = FALSE;
@@ -1312,16 +1312,16 @@ BICAPI  Status  input_object_type(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_pixel_colours(
+BICAPI  VIO_Status  io_pixel_colours(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     int             n,
-    Colour          *pixel_colours[] )
+    VIO_Colour          *pixel_colours[] )
 {
-    Status         status;
+    VIO_Status         status;
     unsigned char  buffer[3*BUFFER_SIZE];
-    Colour         pixel_colour;
+    VIO_Colour         pixel_colour;
     int            i, block, n_blocks, n_to_do, start_pixel_index;
 
     status = OK;
@@ -1413,14 +1413,14 @@ BICAPI  Status  io_pixel_colours(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  io_pixel_colour(
+BICAPI  VIO_Status  io_pixel_colour(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
-    Colour          *pixel_colour )
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
+    VIO_Colour          *pixel_colour )
 {
     int      r, g, b;
-    Status   status;
+    VIO_Status   status;
 
     status = OK;
 
@@ -1469,13 +1469,13 @@ BICAPI  Status  io_pixel_colour(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  io_line_thickness(
+static  VIO_Status  io_line_thickness(
     FILE            *file,
-    IO_types        io_flag,
-    File_formats    format,
+    VIO_IO_types        io_flag,
+    VIO_File_formats    format,
     float           *line_thickness )
 {
-    Status   status;
+    VIO_Status   status;
 
     status = io_float( file, io_flag, format, line_thickness );
 
@@ -1502,17 +1502,17 @@ static  Status  io_line_thickness(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  input_object(
-    STRING         directory,
+BICAPI  VIO_Status  input_object(
+    VIO_STR         directory,
     FILE           *file,
-    File_formats   *format,
+    VIO_File_formats   *format,
     object_struct  **object,
     VIO_BOOL        *eof )
 {
-    Status         status;
-    File_formats   sub_format;
+    VIO_Status         status;
+    VIO_File_formats   sub_format;
     Object_types   type;
-    STRING         abs_filename;
+    VIO_STR         abs_filename;
 
     status = input_object_type( file, &type, format, eof );
 
@@ -1596,12 +1596,12 @@ BICAPI  Status  input_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  Status  output_object(
+BICAPI  VIO_Status  output_object(
     FILE           *file,
-    File_formats   format,
+    VIO_File_formats   format,
     object_struct  *object )
 {
-    Status         status;
+    VIO_Status         status;
 
     switch( object->object_type )
     {
@@ -1665,16 +1665,16 @@ BICAPI  Status  output_object(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-static  Status  io_end_indices(
+static  VIO_Status  io_end_indices(
     FILE           *file,
-    IO_types       io_flag,
-    File_formats   format,
+    VIO_IO_types       io_flag,
+    VIO_File_formats   format,
     int            n_items,
     int            *end_indices[],
     int            min_size )
 {
     int      *sizes, item;
-    Status   status;
+    VIO_Status   status;
 
     if( io_flag == WRITE_FILE )
     {

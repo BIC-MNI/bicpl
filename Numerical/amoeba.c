@@ -78,7 +78,7 @@ BICAPI  void  initialize_amoeba(
     amoeba->function_data = function_data;
     amoeba->tolerance = tolerance;
     amoeba->n_steps_no_improvement = 0;
-    ALLOC2D( amoeba->parameters, n_parameters+1, n_parameters );
+    VIO_ALLOC2D( amoeba->parameters, n_parameters+1, n_parameters );
     ALLOC( amoeba->values, n_parameters+1 );
 
     ALLOC( amoeba->sum, n_parameters );
@@ -149,7 +149,7 @@ BICAPI  VIO_Real  get_amoeba_parameters(
 BICAPI  void  terminate_amoeba(
     amoeba_struct  *amoeba )
 {
-    FREE2D( amoeba->parameters );
+    VIO_FREE2D( amoeba->parameters );
     FREE( amoeba->values );
     FREE( amoeba->sum );
 }

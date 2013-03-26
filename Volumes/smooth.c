@@ -41,23 +41,23 @@ static VIO_Real  calculate_weight(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI Volume  smooth_resample_volume(
-    Volume              volume,
+BICAPI VIO_Volume  smooth_resample_volume(
+    VIO_Volume              volume,
     int                 new_nx,
     int                 new_ny,
     int                 new_nz )
 {
-    Volume             resampled_volume;
-    int                sizes[MAX_DIMENSIONS], new_sizes[MAX_DIMENSIONS];
-    int                dest_voxel[N_DIMENSIONS], src_voxel[N_DIMENSIONS], c;
+    VIO_Volume             resampled_volume;
+    int                sizes[VIO_MAX_DIMENSIONS], new_sizes[VIO_MAX_DIMENSIONS];
+    int                dest_voxel[VIO_N_DIMENSIONS], src_voxel[VIO_N_DIMENSIONS], c;
     VIO_Real               x_min, x_max, y_min, y_max, z_min, z_max;
-    VIO_Real               separations[N_DIMENSIONS];
+    VIO_Real               separations[VIO_N_DIMENSIONS];
     VIO_Real               dx, dy, dz;
     VIO_Real               voxel;
     VIO_Real               x_weight, xy_weight, weight;
     VIO_Real               *y_weights, *z_weights;
     VIO_Real               val;
-    Transform          scale_transform, translation_transform, transform;
+    VIO_Transform          scale_transform, translation_transform, transform;
     VIO_General_transform  general_transform, tmp;
     progress_struct    progress;
 
@@ -72,7 +72,7 @@ BICAPI Volume  smooth_resample_volume(
     new_sizes[Y] = new_ny;
     new_sizes[Z] = new_nz;
 
-    for_less( c, 0, N_DIMENSIONS )
+    for_less( c, 0, VIO_N_DIMENSIONS )
         if( new_sizes[c] <= 0 )
             new_sizes[c] = sizes[c];
 

@@ -41,7 +41,7 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/filters
 ---------------------------------------------------------------------------- */
 
 BICAPI int  get_slice_weights_for_filter(
-    Volume         volume,
+    VIO_Volume         volume,
     VIO_Real           voxel_position[],
     VIO_Real           voxel_direction[],   /* if filter_type != NEAREST */
     Filter_types   filter_type,
@@ -182,7 +182,7 @@ BICAPI int  get_slice_weights_for_filter(
         return( 0 );
     }
 
-    ALLOC2D( *positions, n_slices, n_dims );
+    VIO_ALLOC2D( *positions, n_slices, n_dims );
     sum_weights = 0.0;
     for_less( i, 0, n_slices )
         sum_weights += (*weights)[i];

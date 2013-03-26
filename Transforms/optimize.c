@@ -50,14 +50,14 @@ typedef struct
 ---------------------------------------------------------------------------- */
 
 static  VIO_Real  lsq_objective(
-    Transform  *lt,
+    VIO_Transform  *lt,
     VIO_Real       **pts1,
     VIO_Real       **pts2, 
     int        npoints )
 {
     int   i, j;
     VIO_Real  sum, error2, delta;
-    VIO_Real  newpt[N_DIMENSIONS];
+    VIO_Real  newpt[VIO_N_DIMENSIONS];
   
     sum = 0.0;
 
@@ -68,7 +68,7 @@ static  VIO_Real  lsq_objective(
 
         error2 = 0.0;        /* compare it to pts2, summing the squared error */
     
-        for_less( j, 0, N_DIMENSIONS )
+        for_less( j, 0, VIO_N_DIMENSIONS )
         {
             delta = newpt[j] - pts1[i][j];
             error2 += delta * delta;
@@ -101,7 +101,7 @@ static  VIO_Real  fit_function(
     void   *func_data,
     float  params[] ) 
 {
-    Transform      transform;
+    VIO_Transform      transform;
     int            i;
     VIO_Real           r;
     VIO_Real           trans[3];

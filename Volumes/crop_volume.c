@@ -37,12 +37,12 @@ static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Volumes/crop_vo
 ---------------------------------------------------------------------------- */
 
 BICAPI VIO_BOOL  find_volume_crop_bounds(
-    Volume          volume,
+    VIO_Volume          volume,
     VIO_Real            min_crop_threshold,
     VIO_Real            max_crop_threshold,
-    int             limits[2][MAX_DIMENSIONS] )
+    int             limits[2][VIO_MAX_DIMENSIONS] )
 {
-    int      dim, n_dims, lim, voxel[MAX_DIMENSIONS], sizes[MAX_DIMENSIONS];
+    int      dim, n_dims, lim, voxel[VIO_MAX_DIMENSIONS], sizes[VIO_MAX_DIMENSIONS];
     int      start, end, step, voxel_pos, new_limits[2];
     int      start0, start1, start2, start3, start4;
     int      end0, end1, end2, end3, end4;
@@ -52,7 +52,7 @@ BICAPI VIO_BOOL  find_volume_crop_bounds(
     n_dims = get_volume_n_dimensions( volume );
     get_volume_sizes( volume, sizes );
 
-    for_less( dim, 0, MAX_DIMENSIONS )
+    for_less( dim, 0, VIO_MAX_DIMENSIONS )
     {
         limits[0][dim] = 0;
 
@@ -161,24 +161,24 @@ BICAPI VIO_BOOL  find_volume_crop_bounds(
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI Volume  create_cropped_volume(
-    Volume          volume,
-    int             limits[2][MAX_DIMENSIONS] )
+BICAPI VIO_Volume  create_cropped_volume(
+    VIO_Volume          volume,
+    int             limits[2][VIO_MAX_DIMENSIONS] )
 {
     int                dim, n_dims;
-    int                sizes[MAX_DIMENSIONS], new_sizes[MAX_DIMENSIONS];
-    int                v0, v1, v2, v3, v4, offset[MAX_DIMENSIONS];
-    int                start[MAX_DIMENSIONS], end[MAX_DIMENSIONS];
+    int                sizes[VIO_MAX_DIMENSIONS], new_sizes[VIO_MAX_DIMENSIONS];
+    int                v0, v1, v2, v3, v4, offset[VIO_MAX_DIMENSIONS];
+    int                start[VIO_MAX_DIMENSIONS], end[VIO_MAX_DIMENSIONS];
     nc_type            nc_data_type;
-    VIO_Real               separations[MAX_DIMENSIONS];
-    VIO_Real               start_voxel[MAX_DIMENSIONS];
-    VIO_Real               xyz[N_DIMENSIONS], voxel_value;
+    VIO_Real               separations[VIO_MAX_DIMENSIONS];
+    VIO_Real               start_voxel[VIO_MAX_DIMENSIONS];
+    VIO_Real               xyz[VIO_N_DIMENSIONS], voxel_value;
     VIO_Real               min_voxel, max_voxel;
     VIO_BOOL            signed_flag, is_fully_inside;
     STRING             *dim_names;
-    Volume             cropped_volume;
+    VIO_Volume             cropped_volume;
     VIO_General_transform  cropped_transform, offset_transform;
-    Transform          translation;
+    VIO_Transform          translation;
 
     n_dims = get_volume_n_dimensions( volume );
     get_volume_sizes( volume, sizes );
@@ -236,7 +236,7 @@ BICAPI Volume  create_cropped_volume(
         end[dim] = MIN( new_sizes[dim]-1, sizes[dim] - 1 - limits[0][dim] );
     }
 
-    for_less( dim, n_dims, MAX_DIMENSIONS )
+    for_less( dim, n_dims, VIO_MAX_DIMENSIONS )
     {
         start[dim] = 0;
         end[dim] = 0;
@@ -281,15 +281,15 @@ BICAPI Volume  create_cropped_volume(
 @MODIFIED   :
 ---------------------------------------------------------------------------- */
 
-BICAPI Volume  autocrop_volume(
-    Volume    volume )
+BICAPI VIO_Volume  autocrop_volume(
+    VIO_Volume    volume )
 {
-    Volume  cropped;
-    int     dim, limits[2][MAX_DIMENSIONS];
+    VIO_Volume  cropped;
+    int     dim, limits[2][VIO_MAX_DIMENSIONS];
 
     if( !find_volume_crop_bounds( volume, 0.0, 0.0, limits ) )
     {
-        for_less( dim, 0, N_DIMENSIONS )
+        for_less( dim, 0, VIO_N_DIMENSIONS )
         {
             limits[0][dim] = 0;
             limits[1][dim] = 0;

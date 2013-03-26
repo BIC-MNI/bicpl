@@ -14,8 +14,8 @@ int  main(
     int   argc,
     char  *argv[] )
 {
-    STRING               src_polygons_filename, dest_lines_filename;
-    File_formats         format;
+    VIO_STR               src_polygons_filename, dest_lines_filename;
+    VIO_File_formats         format;
     int                  i;
     int                  n_objects, n_dest_objects;
     object_struct        **objects, **dest_objects, *object;

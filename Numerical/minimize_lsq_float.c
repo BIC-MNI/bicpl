@@ -164,7 +164,7 @@ BICAPI  void  delete_lsq_terms_float(
 }
 
 BICAPI  void  create_lsq_hypersurface_float(
-    STRING           filename,
+    VIO_STR           filename,
     int              parm1,
     int              parm2,
     int              x_size,
@@ -186,8 +186,8 @@ BICAPI  void  create_lsq_hypersurface_float(
     VIO_Real             save1, save2, p1, p2, val;
     object_struct    *object;
     quadmesh_struct  *quadmesh;
-    Point            point;
-    Vector           normal;
+    VIO_Point            point;
+    VIO_Vector           normal;
     int              x, y;
 
     object = create_object( QUADMESH );

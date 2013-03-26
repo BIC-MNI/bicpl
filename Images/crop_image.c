@@ -2,7 +2,7 @@
 
 static  VIO_BOOL  is_clear_slab(
     pixels_struct  *pixels,
-    Colour         bg_colour,
+    VIO_Colour         bg_colour,
     int            x_min,
     int            y_min,
     int            x_max,
@@ -24,7 +24,7 @@ static  VIO_BOOL  is_clear_slab(
 
 BICAPI  void  crop_pixels(
     pixels_struct  *in_pixels,
-    Colour         background_colour,
+    VIO_Colour         background_colour,
     int            border,
     pixels_struct  *out_pixels )
 {
