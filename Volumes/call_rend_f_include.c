@@ -6,7 +6,7 @@
 
          switch( volume1_type )
          {
-           case UNSIGNED_BYTE:
+           case VIO_UNSIGNED_BYTE:
              if( volume_data2 == NULL )
              {
                if( one_slice )
@@ -78,7 +78,7 @@
              {
                switch( volume2_type )
                {
-               case UNSIGNED_BYTE:
+               case VIO_UNSIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -162,7 +162,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_SHORT:
+               case VIO_UNSIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -246,7 +246,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_INT:
+               case VIO_UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -330,7 +330,7 @@
                    }
                  }
                  break;
-               case SIGNED_BYTE:
+               case VIO_SIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -414,7 +414,7 @@
                    }
                  }
                  break;
-               case SIGNED_SHORT:
+               case VIO_SIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -498,7 +498,7 @@
                    }
                  }
                  break;
-               case SIGNED_INT:
+               case VIO_SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -582,7 +582,7 @@
                    }
                  }
                  break;
-               case FLOAT:
+               case VIO_FLOAT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -666,7 +666,7 @@
                    }
                  }
                  break;
-               case DOUBLE:
+               case VIO_DOUBLE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -753,7 +753,7 @@
                }
              }
             break;
-           case UNSIGNED_SHORT:
+           case VIO_UNSIGNED_SHORT:
              if( volume_data2 == NULL )
              {
                if( one_slice )
@@ -825,7 +825,7 @@
              {
                switch( volume2_type )
                {
-               case UNSIGNED_BYTE:
+               case VIO_UNSIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -909,7 +909,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_SHORT:
+               case VIO_UNSIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -993,7 +993,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_INT:
+               case VIO_UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1077,7 +1077,7 @@
                    }
                  }
                  break;
-               case SIGNED_BYTE:
+               case VIO_SIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1161,7 +1161,7 @@
                    }
                  }
                  break;
-               case SIGNED_SHORT:
+               case VIO_SIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1245,7 +1245,7 @@
                    }
                  }
                  break;
-               case SIGNED_INT:
+               case VIO_SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1329,7 +1329,7 @@
                    }
                  }
                  break;
-               case FLOAT:
+               case VIO_FLOAT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1413,7 +1413,7 @@
                    }
                  }
                  break;
-               case DOUBLE:
+               case VIO_DOUBLE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1500,7 +1500,7 @@
                }
              }
             break;
-           case UNSIGNED_INT:
+           case VIO_UNSIGNED_INT:
              if( volume_data2 == NULL )
              {
                if( one_slice )
@@ -1587,7 +1587,7 @@
              {
                switch( volume2_type )
                {
-               case UNSIGNED_BYTE:
+               case VIO_UNSIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1671,7 +1671,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_SHORT:
+               case VIO_UNSIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1755,7 +1755,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_INT:
+               case VIO_UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1839,7 +1839,7 @@
                    }
                  }
                  break;
-               case SIGNED_BYTE:
+               case VIO_SIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -1923,7 +1923,7 @@
                    }
                  }
                  break;
-               case SIGNED_SHORT:
+               case VIO_SIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2007,7 +2007,7 @@
                    }
                  }
                  break;
-               case SIGNED_INT:
+               case VIO_SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2091,7 +2091,7 @@
                    }
                  }
                  break;
-               case FLOAT:
+               case VIO_FLOAT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2175,7 +2175,7 @@
                    }
                  }
                  break;
-               case DOUBLE:
+               case VIO_DOUBLE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2262,7 +2262,7 @@
                }
              }
             break;
-           case SIGNED_BYTE:
+           case VIO_SIGNED_BYTE:
              if( volume_data2 == NULL )
              {
                if( one_slice )
@@ -2334,7 +2334,7 @@
              {
                switch( volume2_type )
                {
-               case UNSIGNED_BYTE:
+               case VIO_UNSIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2418,7 +2418,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_SHORT:
+               case VIO_UNSIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2502,7 +2502,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_INT:
+               case VIO_UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2586,7 +2586,7 @@
                    }
                  }
                  break;
-               case SIGNED_BYTE:
+               case VIO_SIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2670,7 +2670,7 @@
                    }
                  }
                  break;
-               case SIGNED_SHORT:
+               case VIO_SIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2754,7 +2754,7 @@
                    }
                  }
                  break;
-               case SIGNED_INT:
+               case VIO_SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2838,7 +2838,7 @@
                    }
                  }
                  break;
-               case FLOAT:
+               case VIO_FLOAT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -2922,7 +2922,7 @@
                    }
                  }
                  break;
-               case DOUBLE:
+               case VIO_DOUBLE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3009,7 +3009,7 @@
                }
              }
             break;
-           case SIGNED_SHORT:
+           case VIO_SIGNED_SHORT:
              if( volume_data2 == NULL )
              {
                if( one_slice )
@@ -3081,7 +3081,7 @@
              {
                switch( volume2_type )
                {
-               case UNSIGNED_BYTE:
+               case VIO_UNSIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3165,7 +3165,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_SHORT:
+               case VIO_UNSIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3249,7 +3249,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_INT:
+               case VIO_UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3333,7 +3333,7 @@
                    }
                  }
                  break;
-               case SIGNED_BYTE:
+               case VIO_SIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3417,7 +3417,7 @@
                    }
                  }
                  break;
-               case SIGNED_SHORT:
+               case VIO_SIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3501,7 +3501,7 @@
                    }
                  }
                  break;
-               case SIGNED_INT:
+               case VIO_SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3585,7 +3585,7 @@
                    }
                  }
                  break;
-               case FLOAT:
+               case VIO_FLOAT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3669,7 +3669,7 @@
                    }
                  }
                  break;
-               case DOUBLE:
+               case VIO_DOUBLE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3756,7 +3756,7 @@
                }
              }
             break;
-           case SIGNED_INT:
+           case VIO_SIGNED_INT:
              if( volume_data2 == NULL )
              {
                if( one_slice )
@@ -3828,7 +3828,7 @@
              {
                switch( volume2_type )
                {
-               case UNSIGNED_BYTE:
+               case VIO_UNSIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3912,7 +3912,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_SHORT:
+               case VIO_UNSIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -3996,7 +3996,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_INT:
+               case VIO_UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4080,7 +4080,7 @@
                    }
                  }
                  break;
-               case SIGNED_BYTE:
+               case VIO_SIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4164,7 +4164,7 @@
                    }
                  }
                  break;
-               case SIGNED_SHORT:
+               case VIO_SIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4248,7 +4248,7 @@
                    }
                  }
                  break;
-               case SIGNED_INT:
+               case VIO_SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4332,7 +4332,7 @@
                    }
                  }
                  break;
-               case FLOAT:
+               case VIO_FLOAT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4416,7 +4416,7 @@
                    }
                  }
                  break;
-               case DOUBLE:
+               case VIO_DOUBLE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4503,7 +4503,7 @@
                }
              }
             break;
-           case FLOAT:
+           case VIO_FLOAT:
              if( volume_data2 == NULL )
              {
                if( one_slice )
@@ -4575,7 +4575,7 @@
              {
                switch( volume2_type )
                {
-               case UNSIGNED_BYTE:
+               case VIO_UNSIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4659,7 +4659,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_SHORT:
+               case VIO_UNSIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4743,7 +4743,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_INT:
+               case VIO_UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4827,7 +4827,7 @@
                    }
                  }
                  break;
-               case SIGNED_BYTE:
+               case VIO_SIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4911,7 +4911,7 @@
                    }
                  }
                  break;
-               case SIGNED_SHORT:
+               case VIO_SIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -4995,7 +4995,7 @@
                    }
                  }
                  break;
-               case SIGNED_INT:
+               case VIO_SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5079,7 +5079,7 @@
                    }
                  }
                  break;
-               case FLOAT:
+               case VIO_FLOAT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5163,7 +5163,7 @@
                    }
                  }
                  break;
-               case DOUBLE:
+               case VIO_DOUBLE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5250,7 +5250,7 @@
                }
              }
             break;
-           case DOUBLE:
+           case VIO_DOUBLE:
              if( volume_data2 == NULL )
              {
                if( one_slice )
@@ -5322,7 +5322,7 @@
              {
                switch( volume2_type )
                {
-               case UNSIGNED_BYTE:
+               case VIO_UNSIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5406,7 +5406,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_SHORT:
+               case VIO_UNSIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5490,7 +5490,7 @@
                    }
                  }
                  break;
-               case UNSIGNED_INT:
+               case VIO_UNSIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5574,7 +5574,7 @@
                    }
                  }
                  break;
-               case SIGNED_BYTE:
+               case VIO_SIGNED_BYTE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5658,7 +5658,7 @@
                    }
                  }
                  break;
-               case SIGNED_SHORT:
+               case VIO_SIGNED_SHORT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5742,7 +5742,7 @@
                    }
                  }
                  break;
-               case SIGNED_INT:
+               case VIO_SIGNED_INT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5826,7 +5826,7 @@
                    }
                  }
                  break;
-               case FLOAT:
+               case VIO_FLOAT:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )
@@ -5910,7 +5910,7 @@
                    }
                  }
                  break;
-               case DOUBLE:
+               case VIO_DOUBLE:
                  if( one_slice )
                  { 
                    if( pixels->pixel_type == RGB_PIXEL )

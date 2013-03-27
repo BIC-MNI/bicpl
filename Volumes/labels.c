@@ -34,8 +34,8 @@ static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/labels.c
 BICAPI void  set_label_volume_real_range(
     VIO_Volume  volume )
 {
-    if( get_volume_data_type(volume) != FLOAT &&
-        get_volume_data_type(volume) != DOUBLE )
+    if( get_volume_data_type(volume) != VIO_FLOAT &&
+        get_volume_data_type(volume) != VIO_DOUBLE )
     {
         set_volume_real_range( volume,
                                get_volume_voxel_min(volume),
@@ -134,7 +134,7 @@ BICAPI void  set_all_volume_label_data(
 
     type = get_volume_data_type( volume );
     if( !volume->is_cached_volume && value == 0 &&
-        type != FLOAT && type != DOUBLE )
+        type != VIO_FLOAT && type != VIO_DOUBLE )
     {
         GET_VOXEL_PTR( ptr, volume, 0, 0, 0, 0, 0 );
         n_voxels = get_volume_total_n_voxels( volume );

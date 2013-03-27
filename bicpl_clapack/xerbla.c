@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "blaswrap.h"
 #include "f2c.h"
 
@@ -34,7 +36,7 @@
 */
 
     printf("** On entry to %6s, parameter number %2i had an illegal value\n",
-		srname, *info);
+		srname, (int)*info);
 
 /*     End of XERBLA */
 

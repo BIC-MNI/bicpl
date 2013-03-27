@@ -62,7 +62,7 @@ BICAPI VIO_Status  output_volume_free_format(
 
     status = open_file( header_filename, WRITE_FILE, ASCII_FORMAT, &file );
 
-    if( get_volume_data_type(volume) == UNSIGNED_BYTE )
+    if( get_volume_data_type(volume) == VIO_UNSIGNED_BYTE )
         n_bytes_per_voxel = 1;
     else
         n_bytes_per_voxel = 2;
