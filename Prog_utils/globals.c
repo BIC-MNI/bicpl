@@ -234,32 +234,32 @@ BICAPI  VIO_Status  get_global_variable(
             (void) sprintf( buffer, "%g", * (VIO_Real *) ptr );
             break;
 
-        case STRING_type:
+        case VIO_STR_type:
             string_ptr = (VIO_STR *) ptr;
             (void) strcpy( buffer, *string_ptr );
             break;
 
-        case Point_type:
+        case VIO_Point_type:
             (void) sprintf( buffer, "%g %g %g",
                             Point_x(* (VIO_Point *) ptr),
                             Point_y(* (VIO_Point *) ptr),
                             Point_z(* (VIO_Point *) ptr) );
             break;
 
-        case Vector_type:
+        case VIO_Vector_type:
             (void) sprintf( buffer, "%g %g %g",
                             Vector_x(* (VIO_Vector *) ptr),
                             Vector_y(* (VIO_Vector *) ptr),
                             Vector_z(* (VIO_Vector *) ptr) );
             break;
 
-        case Colour_type:
+        case VIO_Colour_type:
             tmp_str = convert_colour_to_string( * (VIO_Colour *) ptr );
             (void) strcpy( buffer, tmp_str );
             delete_string( tmp_str );
             break;
 
-        case Surfprop_type:
+        case VIO_Surfprop_type:
             surfprop = (VIO_Surfprop *) ptr;
             (void) sprintf( buffer, "%g %g %g %g %g",
                             Surfprop_a(*surfprop),
@@ -365,7 +365,7 @@ BICAPI  VIO_Status  set_global_variable(
             }
             break;
 
-        case STRING_type:
+        case VIO_STR_type:
             string_ptr = (VIO_STR *) ptr;
             if( *set_flag )
                 delete_string( *string_ptr );
@@ -373,7 +373,7 @@ BICAPI  VIO_Status  set_global_variable(
             *set_flag = TRUE;
             break;
 
-        case Point_type:
+        case VIO_Point_type:
             if( sscanf( value, "%f %f %f", &Point_x(tmp_point),
                         &Point_y(tmp_point), &Point_z(tmp_point) ) == 3 )
                 * (VIO_Point *) ptr = tmp_point;
@@ -381,7 +381,7 @@ BICAPI  VIO_Status  set_global_variable(
                 status = VIO_ERROR;
             break;
 
-        case Vector_type:
+        case VIO_Vector_type:
             if( sscanf( value, "%f %f %f", &Vector_x(tmp_vector),
                         &Vector_y(tmp_vector), &Vector_z(tmp_vector) ) == 3 )
                 * (VIO_Vector *) ptr = tmp_vector;
@@ -389,7 +389,7 @@ BICAPI  VIO_Status  set_global_variable(
                 status = VIO_ERROR;
             break;
 
-        case Colour_type:
+        case VIO_Colour_type:
             tmp_colour = convert_string_to_colour( value );
 
             if( status == VIO_OK )
@@ -398,7 +398,7 @@ BICAPI  VIO_Status  set_global_variable(
             }
             break;
 
-        case Surfprop_type:
+        case VIO_Surfprop_type:
             if( sscanf( value, "%f %f %f %f %f",
                             &Surfprop_a(tmp_surfprop),
                             &Surfprop_d(tmp_surfprop),
@@ -559,7 +559,7 @@ BICAPI  void  delete_global_variables(
 
     for_less( i, 0, n_globals_lookup )
     {
-        if( globals_lookup[i].type == STRING_type &&
+        if( globals_lookup[i].type == VIO_STR_type &&
             globals_lookup[i].set_flag )
         {
             ptr = (VIO_STR *) globals_lookup[i].ptr_to_global;

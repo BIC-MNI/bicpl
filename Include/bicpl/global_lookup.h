@@ -22,19 +22,19 @@ typedef  enum {
                  VIO_BOOL_type,
                  int_type,
                  VIO_Real_type,
-                 STRING_type,
-                 Point_type,
-                 Vector_type,
-                 Colour_type,
-                 Surfprop_type
+                 VIO_STR_type,
+                 VIO_Point_type,
+                 VIO_Vector_type,
+                 VIO_Colour_type,
+                 VIO_Surfprop_type
               } Variable_types;
 
 typedef  struct 
 {
-    void             *ptr_to_global;
-    VIO_STR           variable_name;
-    Variable_types   type;
-    VIO_SCHAR     set_flag;
+    void                 *ptr_to_global;
+    VIO_STR              variable_name;
+    Variable_types       type;
+    VIO_SCHAR            set_flag;
 } global_struct;
 
 #endif

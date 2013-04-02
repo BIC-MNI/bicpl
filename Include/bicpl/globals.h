@@ -58,7 +58,7 @@
 
 #define  DEF_GLOBAL( variable, type, initial ) \
        { \
-           (void *) &variable, CREATE_STRING(variable), GLUE(type,_type), FALSE\
+           (void *) &variable, #variable, type##_type, FALSE\
        },
 
 #define  DEF_GLOBAL3( variable, type, initial1, initial2, initial3 ) \
