@@ -44,7 +44,7 @@ BICAPI int  get_slice_weights_for_filter(
     VIO_Volume         volume,
     VIO_Real           voxel_position[],
     VIO_Real           voxel_direction[],   /* if filter_type != NEAREST */
-    Filter_types   filter_type,
+    VIO_Filter_types   filter_type,
     VIO_Real           full_width_half_max,
     VIO_Real           ***positions,
     VIO_Real           *weights[] )

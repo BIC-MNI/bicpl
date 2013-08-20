@@ -331,7 +331,7 @@ static VIO_BOOL  get_filter_slices(
     VIO_Real            position[],
     VIO_Real            x_axis[],
     VIO_Real            y_axis[],
-    Filter_types    filter_type,
+    VIO_Filter_types    filter_type,
     VIO_Real            filter_width,
     int             *n_slices,
     VIO_Real            ***origins,
@@ -417,7 +417,7 @@ static VIO_BOOL  get_filter_slices(
 
 BICAPI void  create_volume_slice(
     VIO_Volume          volume1,
-    Filter_types    filter_type1,
+    VIO_Filter_types    filter_type1,
     VIO_Real            filter_width1,
     VIO_Real            slice_position1[],
     VIO_Real            x_axis1[],
@@ -427,7 +427,7 @@ BICAPI void  create_volume_slice(
     VIO_Real            x_scale1,
     VIO_Real            y_scale1,
     VIO_Volume          volume2,
-    Filter_types    filter_type2,
+    VIO_Filter_types    filter_type2,
     VIO_Real            filter_width2,
     VIO_Real            slice_position2[],
     VIO_Real            x_axis2[],
@@ -524,7 +524,7 @@ BICAPI void  create_volume_slice(
 
 BICAPI void  set_volume_slice_pixel_range(
     VIO_Volume          volume1,
-    Filter_types    filter_type1,
+    VIO_Filter_types    filter_type1,
     VIO_Real            filter_width1,
     VIO_Real            slice_position1[],
     VIO_Real            x_axis1[],
@@ -534,7 +534,7 @@ BICAPI void  set_volume_slice_pixel_range(
     VIO_Real            x_scale1,
     VIO_Real            y_scale1,
     VIO_Volume          volume2,
-    Filter_types    filter_type2,
+    VIO_Filter_types    filter_type2,
     VIO_Real            filter_width2,
     VIO_Real            slice_position2[],
     VIO_Real            x_axis2[],
