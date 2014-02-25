@@ -73,6 +73,11 @@ BICAPI  void  initialize_amoeba(
 {
     int    i, j;
 
+    float *parameter_fwd;
+    float *parameter_bwd;
+    VIO_Real cost_fwd;
+    VIO_Real cost_bwd;
+
     amoeba->n_parameters = n_parameters;
     amoeba->function = function;
     amoeba->function_data = function_data;
@@ -82,22 +87,43 @@ BICAPI  void  initialize_amoeba(
     ALLOC( amoeba->values, n_parameters+1 );
 
     ALLOC( amoeba->sum, n_parameters );
+    ALLOC( parameter_fwd, n_parameters);
+    ALLOC( parameter_bwd, n_parameters);
+
 
     for_less( j, 0, n_parameters )
         amoeba->sum[j] = 0.0;
 
     for_less( i, 0, n_parameters+1 )
     {
-        for_less( j, 0, n_parameters )
-        {
-            amoeba->parameters[i][j] = (float) initial_parameters[j];
-            if( i > 0 && j == i - 1 )
-                amoeba->parameters[i][j] = (float) parameter_deltas[j];
-            amoeba->sum[j] += (VIO_Real) amoeba->parameters[i][j];
-        }
+      for_less( j, 0, n_parameters )
+      {
+          parameter_fwd[j] = (float) initial_parameters[j];
+          parameter_bwd[j] = (float) initial_parameters[j];
+          if( i > 0 && j == i - 1 )
+          {
+              //amoeba->parameters[i][j] -= parameter_delta;
+              parameter_fwd[j] += (float) parameter_deltas[j];
+              parameter_bwd[j] -= (float) parameter_deltas[j];
 
-        amoeba->values[i] = get_function_value( amoeba, amoeba->parameters[i] );
+          }
+      }
+      
+      cost_fwd = get_function_value( amoeba, parameter_fwd);
+      cost_bwd = get_function_value( amoeba, parameter_bwd);
+
+      for(j=0; j<n_parameters; j++)
+      {
+          amoeba->parameters[i][j] = ( cost_fwd < cost_bwd ) ? parameter_fwd[j] : parameter_bwd[j];
+          amoeba->sum[j] += amoeba->parameters[i][j];
+      }
+      
+      amoeba->values[i] = ( cost_fwd < cost_bwd ) ? cost_fwd : cost_bwd;
+      // amoeba->values[i] = get_function_value( amoeba, amoeba->parameters[i] );
     }
+
+    FREE( parameter_fwd );
+    FREE( parameter_bwd );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
