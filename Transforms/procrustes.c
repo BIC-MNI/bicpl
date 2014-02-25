@@ -114,7 +114,7 @@ BICAPI  void  procrustes(
     VIO_Real  *Atranslation, *Btranslation, *svd_W;
     VIO_Real  **Ashift, **Bshift, **Atranspose, **Btranspose, **rotation;
     VIO_Real  **svd_V, **svd_VT;
-    VIO_Real  **Brotated, **product;
+    VIO_Real  **Brotated;
     VIO_Real  trace1, trace2;
     VIO_Real  **svd_U;
                                    
@@ -135,7 +135,6 @@ BICAPI  void  procrustes(
     VIO_ALLOC2D( svd_V, ndim, ndim );
     VIO_ALLOC2D( svd_VT, ndim, ndim );
     VIO_ALLOC2D( Brotated, npoints, ndim );
-    VIO_ALLOC2D( product, npoints, npoints );
 
     /* Calculate the centroids, remove them from A and B points and
        save the translation */
@@ -168,10 +167,26 @@ BICAPI  void  procrustes(
 
     matrix_multiply( npoints, ndim, ndim, Bshift, rotation, Brotated );
     transpose( npoints, ndim, Ashift, Atranspose );
-    matrix_multiply( npoints, ndim, npoints, Brotated, Atranspose, product );
-    trace1 = trace_of_matrix( npoints, product );
-    matrix_multiply( npoints, ndim, npoints, Bshift, Btranspose, product );
-    trace2 = trace_of_matrix( npoints, product );
+
+    trace1 = 0.0;
+    for_less( i, 0, npoints )
+    {
+      for_less( j, 0, ndim )
+      {
+	trace1 += Brotated[i][j]*Atranspose[j][i];
+      }
+    }
+
+    trace2 = 0.0;
+    for_less( i, 0, npoints )
+    {
+      for_less( j, 0, ndim )
+      {
+	trace2 += Bshift[i][j]*Btranspose[j][i];
+      }
+    }
+
+    
 
     if (trace2 != 0.0)
         *scale_ptr = trace1 / trace2;
@@ -201,7 +216,6 @@ BICAPI  void  procrustes(
     VIO_FREE2D( svd_V );
     VIO_FREE2D( svd_VT );
     VIO_FREE2D( Brotated );
-    VIO_FREE2D( product );
 }
 
 /* ----------------------------- MNI Header -----------------------------------
