@@ -310,7 +310,10 @@ private  Real  get_rms_points(
 {
     int    i, j, s;
     Real   rms, dx, dy, dz;
-    Real   variance[3][3], inverse[3][3];
+    Real   **variance, **inverse;
+
+    ALLOC2D( variance, 3, 3 );
+    ALLOC2D( inverse, 3, 3 );
 
     rms = 0.0;
 
@@ -349,6 +352,9 @@ private  Real  get_rms_points(
     for_less( i, 0, 3 )
     for_less( j, 0, 3 )
         inv_variance[i][j] = inverse[i][j];
+
+    FREE2D( variance );
+    FREE2D( inverse );
 
     rms /= (Real) n_surfaces;
 

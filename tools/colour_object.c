@@ -11,7 +11,7 @@ Usage: %s  src.obj values_file dest.obj\n\
                 gray, hot, hot_inv, cold_metal, cold_metal_inv,\n\
                 green_metal, green_metal_inv, lime_metal, lime_metal_inv,\n\
                 red_metal, red_metal_inv, purple_metal, purple_metal_inv,\n\
-                spectral, red, green, blue, rgba\n\n";
+                spectral, red, green, blue, label, rgba\n\n";
     print_error( usage_str, executable );
 }
 
@@ -32,6 +32,7 @@ Usage: %s  src.obj values_file dest.obj\n\
 #define  RED_STRING                 "red"
 #define  GREEN_STRING               "green"
 #define  BLUE_STRING                "blue"
+#define  LABEL_STRING               "label"
 #define  USER_STRING                "user"
 #define  RGBA_STRING                "rgba"
 
@@ -111,6 +112,8 @@ int  main(
         coding_type = GREEN_COLOUR_MAP;
     else if( equal_strings( coding_type_string, BLUE_STRING ) )
         coding_type = BLUE_COLOUR_MAP;
+    else if( equal_strings( coding_type_string, LABEL_STRING ) )
+        coding_type = LABEL256_COLOUR_MAP;
     else if( equal_strings( coding_type_string, RGBA_STRING ) ) {
         coding_type = SPECTRAL;   // anything
         rgba_type = 1;

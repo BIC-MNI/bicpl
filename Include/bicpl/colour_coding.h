@@ -36,6 +36,7 @@ typedef enum { GRAY_SCALE,
                GREEN_COLOUR_MAP,
                BLUE_COLOUR_MAP,
                CONTOUR_COLOUR_MAP,
+               LABEL256_COLOUR_MAP,
                SINGLE_COLOUR_SCALE,
                USER_DEFINED_COLOUR_MAP }
              Colour_coding_types;

@@ -1,3 +1,10 @@
+2014-09-25  Claude Lepage <claude@bic.mni.mcgill.ca>
+        * Added colour map for labels in colour_object.c (256 colours)
+	* Added subdivide_texture.c
+
+2011-08-01  Claude Lepage <claude@bic.mni.mcgill.ca>
+        * Detection of 2-D configuration for transformation (Transforms/compute_xfm.c)
+
 2009-06-29  Claude Lepage <claude@bic.mni.mcgill.ca>
 	* Fixed bug in viewport clipping in render.c (offset out of range would
 	  cause seg fault in register)

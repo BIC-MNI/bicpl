@@ -1,3 +1,9 @@
+New in Release 1.4.7
+
+* Added colour map for labels in colour_object.c (256 colours)
+* Added subdivide_texture.c
+* Detection of 2-D configuration for transformation (Transforms/compute_xfm.c)
+
 New in Release 1.4.6
 
 * Fixed bug in viewport clipping in render.c (offset out of range would

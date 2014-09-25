@@ -22,7 +22,10 @@
 @GLOBALS    : 
 @CREATED    : August 30, 1993 (Peter Neelin)
 @MODIFIED   : $Log: compute_xfm.c,v $
-@MODIFIED   : Revision 1.18  2005-08-17 22:26:47  bert
+@MODIFIED   : Revision 1.19  2014-09-25 22:59:13  claude
+@MODIFIED   : added subdivide_texture.c and 2-D xfm detection
+@MODIFIED   :
+@MODIFIED   : Revision 1.18  2005/08/17 22:26:47  bert
 @MODIFIED   : Replace public/private with BICAPI/static
 @MODIFIED   :
 @MODIFIED   : Revision 1.17  2000/02/06 15:30:50  stever
@@ -96,7 +99,7 @@
 #include "bicpl_internal.h"
 
 #ifndef lint
-static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.18 2005-08-17 22:26:47 bert Exp $";
+static char rcsid[] = "$Header: /private-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.19 2014-09-25 22:59:13 claude Exp $";
 #endif
 
 /* Function declarations */
@@ -233,11 +236,13 @@ static  void  compute_procrustes_transform(
     General_transform   *transform)
 {
     Transform   rotation;
-    int         i;
+    int         i, dim;
+    int         local_ndim = 0, axis[N_DIMENSIONS+1];
     Real        translation[N_DIMENSIONS];
     Real        centre_of_rotation[N_DIMENSIONS];
     Real        scale, scales[N_DIMENSIONS];
     Real        shears[N_DIMENSIONS];
+    Real        maxdim = 0.0, xyzmin[N_DIMENSIONS], xyzmax[N_DIMENSIONS];
     Transform   linear_transform;
 
     /* Do procrustes fit */
@@ -254,6 +259,36 @@ static  void  compute_procrustes_transform(
     {
         scales[i] = scale;
         shears[i] = 0.0;
+    }
+
+    /* look if dimensionality of problem can be reduced to 2-d */
+
+    for( dim = 0; dim < N_DIMENSIONS; dim++ ) {
+      axis[dim] = 1;
+      xyzmin[dim] = tag_list2[0][dim];
+      xyzmax[dim] = tag_list2[0][dim];
+      for( i = 0; i < npoints; i++ ) {
+        if( tag_list2[i][dim] < xyzmin[dim] ) xyzmin[dim] = tag_list2[i][dim];
+        if( tag_list2[i][dim] > xyzmax[dim] ) xyzmax[dim] = tag_list2[i][dim];
+      }
+      if( xyzmax[dim] - xyzmin[dim] > maxdim ) maxdim = xyzmax[dim] - xyzmin[dim];
+    }
+    for( dim = 0; dim < N_DIMENSIONS; dim++ ) {
+      if( xyzmax[dim] - xyzmin[dim] < 0.0001 * maxdim ) {
+        axis[dim] = 0;
+      } else {
+        axis[dim] = 1;
+        local_ndim++;
+      }
+    }
+    if( local_ndim == 2 ) {
+      for( dim = 0; dim < N_DIMENSIONS; dim++ ) {
+        if( axis[dim] == 0 ) {
+          scales[dim] = 1.0;
+          translation[dim] = 0.0;
+          // rotation angles in cross-planes should be set to zero.
+        }
+      }
     }
 
     /* Concatenate translation, scale, shear and rotation */
@@ -294,7 +329,9 @@ static  void  compute_arb_param_transform(
     Real       centre_of_rotation[N_DIMENSIONS], scale;
     Real       scales[N_DIMENSIONS];
     Real       shears[N_DIMENSIONS], angles[N_DIMENSIONS];
-    int        i;
+    Real       maxdim = 0.0, xyzmin[N_DIMENSIONS], xyzmax[N_DIMENSIONS];
+    int        local_ndim = 0, axis[N_DIMENSIONS+1];
+    int        i, dim;
     Transform  linear_transform;
   
     if( trans_type != TRANS_LSQ9 && trans_type != TRANS_LSQ10 )
@@ -334,6 +371,39 @@ static  void  compute_arb_param_transform(
         print_error( "Error in compute_arb_param_transform(),\n");
         print_error( "in call to optimize_simplex().\n");
         exit(EXIT_FAILURE);
+    }
+
+    /* look if dimensionality of problem can be reduced to 2-d */
+
+    for( dim = 0; dim < N_DIMENSIONS; dim++ ) {
+      axis[dim] = 1;
+      xyzmin[dim] = tag_list2[0][dim];
+      xyzmax[dim] = tag_list2[0][dim];
+      for( i = 0; i < npoints; i++ ) {
+        if( tag_list2[i][dim] < xyzmin[dim] ) xyzmin[dim] = tag_list2[i][dim];
+        if( tag_list2[i][dim] > xyzmax[dim] ) xyzmax[dim] = tag_list2[i][dim];
+      }
+      if( xyzmax[dim] - xyzmin[dim] > maxdim ) maxdim = xyzmax[dim] - xyzmin[dim];
+    }
+    for( dim = 0; dim < N_DIMENSIONS; dim++ ) {
+      if( xyzmax[dim] - xyzmin[dim] < 0.0001 * maxdim ) {
+        axis[dim] = 0;
+      } else {
+        axis[dim] = 1;
+        local_ndim++;
+      }
+    }
+    if( local_ndim == 2 ) {
+      for( dim = 0; dim < N_DIMENSIONS; dim++ ) {
+        if( axis[dim] == 0 ) {
+          scales[dim] = 1.0;
+          translation[dim] = 0.0;
+        } else {
+          // shears[dim] = 0.0;
+          angles[dim] = 0.0;
+        }
+        shears[dim] = 0.0;  // ignore shear in 2-D regardless of LSQ9 or LSQ10
+      }
     }
 
     build_transformation_matrix( &linear_transform,
@@ -488,7 +558,10 @@ static  void  compute_12param_transform(
     Trans_type          trans_type,
     General_transform   *transform)
 {
-    Real       *x, solution[N_DIMENSIONS + 1];
+    Real       *x, solution[N_DIMENSIONS + 1], local_solution[N_DIMENSIONS + 1];
+    Real       **local_tag;
+    Real       maxdim = 0.0, xyzmin[N_DIMENSIONS], xyzmax[N_DIMENSIONS];
+    int        local_ndim = 0, axis[N_DIMENSIONS+1];
     int        d, dim;
     int        point;
     Transform  linear_transform;
@@ -507,24 +580,88 @@ static  void  compute_12param_transform(
 
     ALLOC( x, npoints );
 
+    /*--- look if dimensionality of problem can be reduced to 2-d */
+
+    for( dim = 0; dim < N_DIMENSIONS; dim++ ) {
+      axis[dim] = 1;
+      xyzmin[dim] = tag_list2[0][dim];
+      xyzmax[dim] = tag_list2[0][dim];
+      for( point = 0; point < npoints; point++ ) {
+        if( tag_list2[point][dim] < xyzmin[dim] ) xyzmin[dim] = tag_list2[point][dim];
+        if( tag_list2[point][dim] > xyzmax[dim] ) xyzmax[dim] = tag_list2[point][dim];
+      }
+      if( xyzmax[dim] - xyzmin[dim] > maxdim ) maxdim = xyzmax[dim] - xyzmin[dim];
+    }
+    axis[0] = local_ndim;    // this is the translation part
+    for( dim = 0; dim < N_DIMENSIONS; dim++ ) {
+      if( xyzmax[dim] - xyzmin[dim] < 0.0001 * maxdim ) {
+        axis[dim+1] = -1;
+      } else {
+        local_ndim++;
+        axis[dim+1] = local_ndim;
+      }
+    }
+
+    if( local_ndim != N_DIMENSIONS ) {
+      ALLOC2D( local_tag, npoints, local_ndim );
+      for( point = 0; point < npoints; point++ ) {
+        int dd = 0;
+        for( dim = 0; dim < N_DIMENSIONS; dim++ ) {
+          if( axis[dim+1] >= 0 ) {
+            local_tag[point][dd] = tag_list2[point][dim];
+            dd++;
+          }
+        }
+      }
+    } else {
+      local_tag = tag_list2;
+    }
+
     /*--- for each dimension, find the linear least squares solution */
 
-    for_less( dim, 0, N_DIMENSIONS )
-    {
-        /*--- Copy the data points into a 1-D array */
+    for_less( dim, 0, N_DIMENSIONS ) {
 
-        for_less( point, 0, npoints )
-            x[point] = tag_list1[point][dim];
+        if( axis[dim+1] >= 0 ) {
 
-        /*--- find the solution */
+            /*--- Copy the data points into a 1-D array */
 
-        least_squares( npoints, N_DIMENSIONS, tag_list2, x, solution );
+            for_less( point, 0, npoints )
+                x[point] = tag_list1[point][dim];
+
+            /*--- find the solution */
+
+          // least_squares( npoints, local_ndim, tag_list2, x, local_solution );
+            least_squares( npoints, local_ndim, local_tag, x, local_solution );
+
+            /*--- extend local solution to global */
+ 
+            for( d = 0; d <= N_DIMENSIONS; d++ ) {
+                if( axis[d] >= 0 ) {
+                    solution[d] = local_solution[axis[d]];
+                } else {
+                    solution[d] = 0.0;
+                }
+            }
+        } else {
+            for( d = 0; d <= N_DIMENSIONS; d++ ) {
+                if( axis[d] >= 0 ) {
+                    solution[d] = 0.0;
+                } else {
+                    solution[d] = 1.0;
+                }
+            }
+        }
 
         /*--- record solution in the linear transform */
 
         Transform_elem( linear_transform, dim, N_DIMENSIONS ) = solution[0];
         for_less( d, 0, N_DIMENSIONS )
             Transform_elem( linear_transform, dim, d ) = solution[1+d];
+
+    }
+
+    if( local_ndim != N_DIMENSIONS ) {
+        FREE2D( local_tag );
     }
 
     /*--- Create general transform */

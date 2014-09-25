@@ -47,6 +47,7 @@ bin_PROGRAMS = add_surfaces \
                spline_lines \
                split_polygons \
                subdivide_polygons \
+               subdivide_texture \
                subdivide_values \
                triangulate_polygons
 
@@ -98,6 +99,7 @@ smooth_normals_SOURCES = smooth_normals.c
 spline_lines_SOURCES = spline_lines.c
 split_polygons_SOURCES = split_polygons.c
 subdivide_polygons_SOURCES = subdivide_polygons.c
+subdivide_texture_SOURCES = subdivide_texture.c
 subdivide_values_SOURCES = subdivide_values.c
 triangulate_polygons_SOURCES = triangulate_polygons.c
 
