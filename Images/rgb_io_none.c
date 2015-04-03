@@ -12,7 +12,7 @@ BICAPI  VIO_Status  input_rgb_file(
   ppm_err_t err;
   const ppm_pixel_t *px;
   int x,y;
-  if ((err = ppm_load_file(&ppm, filename)) != PPM_ERR_OK)
+  if ((err = ppm_load_file(&ppm, filename)) == PPM_ERR_OK)
   {
     if((ppm.bpp == PPM_BPP_24))
     {
