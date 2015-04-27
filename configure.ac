@@ -15,7 +15,9 @@ dnl Build only static libs by default
 AM_DISABLE_SHARED
 AM_PROG_LIBTOOL
 
-AC_CHECK_LIB(minc2, miopen)
+AC_CHECK_LIB(netcdf, ncopen, [], [AC_MSG_ERROR([-lnetcdf not found])])
+AC_CHECK_LIB(hdf5, H5open, [], [AC_MSG_ERROR([-lhdf5 not found])])
+AC_CHECK_LIB(minc2, miopen, [], [AC_MSG_ERROR([-lminc2 not found])])
 
 AC_FUNC_FORK
 AC_CHECK_FUNCS(srandom random cbrt gamma gettimeofday)

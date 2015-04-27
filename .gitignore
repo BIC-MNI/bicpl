@@ -1,9 +1,19 @@
 # ignore backup files
 *~
-.deps
+*.o
+*.lo
+config.h
+config.h.in
 aclocal.m4
 ac_config_aux
 autom4te.cache
 config.log
 config.status
+configure
+.deps
+.dirstamp
+libbicpl.la
+.libs
+libtool
+stamp-h1
 

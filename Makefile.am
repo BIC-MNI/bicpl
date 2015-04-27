@@ -1,6 +1,4 @@
 AUTOMAKE_OPTIONS = subdir-objects
-ACLOCAL_AMFLAGS =
-SUBDIRS= .
 
 EXTRA_DIST = README.release \
 	autogen.sh \
