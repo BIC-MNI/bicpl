@@ -1,2 +1,9 @@
 # ignore backup files
 *~
+.deps
+aclocal.m4
+ac_config_aux
+autom4te.cache
+config.log
+config.status
+
