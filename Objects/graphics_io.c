@@ -1,5 +1,8 @@
-/* ----------------------------------------------------------------------------
-@COPYRIGHT  :
+/** 
+ * \file graphics_io.c
+ * \brief Read/write graphics objects.
+ *
+ \copyright
               Copyright 1993,1994,1995 David MacDonald,
               McConnell Brain Imaging Centre,
               Montreal Neurological Institute, McGill University.
@@ -10,13 +13,9 @@
               make no representations about the suitability of this
               software for any purpose.  It is provided "as is" without
               express or implied warranty.
----------------------------------------------------------------------------- */
+*/
 
 #include "bicpl_internal.h"
-
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/graphics_io.c,v 1.9 2005-08-17 22:28:26 bert Exp $";
-#endif
 
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : input_graphics_file
@@ -160,7 +159,7 @@ BICAPI  VIO_Status   input_objects_any_format(
                                  marker_colour, marker_size, marker_type,
                                  n_objects, object_list );
     }
-    else
+    else if (!input_freesurfer_graphics_file(filename, n_objects, object_list))
     {
         status = input_graphics_file( filename, &format,
                                       n_objects, object_list );

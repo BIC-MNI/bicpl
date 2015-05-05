@@ -780,6 +780,11 @@ BICAPI  VIO_Status  input_texture_values(
     int            *n_values,
     VIO_Real           *values[] );
 
+BICAPI VIO_BOOL input_freesurfer_graphics_file(
+    const char *filename,
+    int *n_objects,
+    object_struct **object_list[] );
+
 #ifdef __cplusplus
 }
 #endif
