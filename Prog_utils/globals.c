@@ -95,6 +95,15 @@ static  VIO_Status  input_global_variable(
 
     status = input_string( file, &variable_name, (char) '=' );
 
+    /* Ignore comments.
+     */
+    if (variable_name != NULL && variable_name[0] == '#')
+    {
+       input_newline( file );
+       delete_string( variable_name );
+       return status;
+    }
+
     if( status == VIO_OK )
     {
         status = input_string( file, &value, (char) ';' );

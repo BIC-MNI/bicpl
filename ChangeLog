@@ -1,3 +1,7 @@
+2015-05-20  Robert Vincent <robert.d.vincent@mcgill.ca>
+	* Prog_utils/globals.c: Implement simple '#' comment convention for
+	globals files.
+
 2015-05-05  Robert Vincent <robert.d.vincent@mcgill.ca>
 	* Objects/freesurfer_io.c: Added basic support for loading
 	FreeSurfer format surfaces.
