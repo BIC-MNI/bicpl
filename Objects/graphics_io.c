@@ -136,15 +136,15 @@ BICAPI  VIO_Status   output_graphics_file(
 ---------------------------------------------------------------------------- */
 
 BICAPI  VIO_Status   input_objects_any_format(
-    VIO_Volume         volume,
-    VIO_STR         filename,
-    VIO_Colour         marker_colour,
-    VIO_Real           marker_size,
+    VIO_Volume     volume,
+    VIO_STR        filename,
+    VIO_Colour     marker_colour,
+    VIO_Real       marker_size,
     Marker_types   marker_type,
     int            *n_objects,
     object_struct  **object_list[] )
 {
-    VIO_Status            status;
+    VIO_Status            status = VIO_OK;
     VIO_File_formats      format;
 
     if( filename_extension_matches(filename,get_default_landmark_file_suffix()))
