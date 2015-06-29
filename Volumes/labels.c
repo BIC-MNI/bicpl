@@ -543,7 +543,7 @@ BICAPI VIO_Status  load_label_volume(
     VIO_Volume   label_volume )
 {
     int                   slice, n_slices;
-    int                   label_voxel[VIO_N_DIMENSIONS];
+    int                   label_voxel[VIO_MAX_DIMENSIONS];
     int                   int_voxel[VIO_N_DIMENSIONS], int_file_value;
     int                   limits[2][VIO_N_DIMENSIONS];
     int                   file_sizes[VIO_N_DIMENSIONS];
@@ -560,7 +560,13 @@ BICAPI VIO_Status  load_label_volume(
     Minc_file             file;
     VIO_BOOL               is_linear, is_integer_step;
     VIO_progress_struct       progress;
-    static VIO_STR         file_order_dim_names[] = {"", "", "", "", ""};
+    static VIO_STR         file_order_dim_names[VIO_MAX_DIMENSIONS] = {
+      "", "", "", "", ""
+    };
+    int                   i;
+
+    for_less(i, 0, VIO_MAX_DIMENSIONS)
+        label_voxel[i] = 0;       /* Initialize. */
 
     check_alloc_label_data( label_volume );
 
