@@ -165,12 +165,13 @@ int main( int argc, char * argv[] ) {
           fprintf( fp, "%g\n", 0.0 );
         }
       } else {
-        char * buf[80];
+        char buf[80];
         FILE * fp2 = fopen( argv[n_input_objs+i+1], "r+t" );
         if( fp2 != NULL ) {
           for( j = 0; j < surface->n_points; j++ ) {
-            fscanf( fp2, "%s", buf );
-            fprintf( fp, "%s\n", buf );
+            if (fscanf( fp2, "%s", buf ) == 1) {
+              fprintf( fp, "%s\n", buf );
+            }
           }
           fclose( fp2 );
         } else {
