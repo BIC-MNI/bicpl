@@ -14,23 +14,19 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/histogram.c,v 1.12 2005-08-17 22:28:59 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_histogram
 @INPUT      : delta
               offset
 @OUTPUT     : histogram
-@RETURNS    : 
+@RETURNS    :
 @DESCRIPTION: Initializes a histogram of boxes whose boundaries are integer
               multiples of delta from offset.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  initialize_histogram(
@@ -48,14 +44,14 @@ BICAPI  void  initialize_histogram(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : delete_histogram
 @INPUT      : histogram
-@OUTPUT     : 
-@RETURNS    : 
+@OUTPUT     :
+@RETURNS    :
 @DESCRIPTION: Deletes the histogram.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  delete_histogram(
@@ -71,15 +67,15 @@ BICAPI  void  delete_histogram(
 @NAME       : get_histogram_index
 @INPUT      : histogram
               value
-@OUTPUT     : 
+@OUTPUT     :
 @RETURNS    : box index
 @DESCRIPTION: Converts a real value to a histogram box index, which can be
               positive, zero, or negative.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 static  int  get_histogram_index(
@@ -97,19 +93,19 @@ static  int  get_histogram_index(
 @NAME       : convert_real_index_to_value
 @INPUT      : histogram
               ind
-@OUTPUT     : 
+@OUTPUT     :
 @RETURNS    : value
 @DESCRIPTION: Converts a histogram box index to a real value.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 static  VIO_Real  convert_real_index_to_value(
     histogram_struct  *histogram,
-    VIO_Real              ind )
+    VIO_Real          ind )
 {
     return( ind * histogram->delta + histogram->offset );
 }
@@ -118,15 +114,15 @@ static  VIO_Real  convert_real_index_to_value(
 @NAME       : convert_index_to_value
 @INPUT      : histogram
               ind
-@OUTPUT     : 
+@OUTPUT     :
 @RETURNS    : value
 @DESCRIPTION: Converts a histogram box index to a real value, which is the
               left edge of the ind'th box.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 static  VIO_Real  convert_index_to_value(
@@ -140,16 +136,16 @@ static  VIO_Real  convert_index_to_value(
 @NAME       : add_to_histogram
 @INPUT      : histogram
               value
-@OUTPUT     : 
-@RETURNS    : 
+@OUTPUT     :
+@RETURNS    :
 @DESCRIPTION: Adds a value to the histogram, by finding the box it belongs in,
               expanding the list of histogram boxes, if needed, and incrementing
               the box count for that box.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  add_to_histogram(
@@ -204,20 +200,20 @@ BICAPI  void  add_to_histogram(
 @INPUT      : histogram
 @OUTPUT     : min_value
               max_value
-@RETURNS    : 
+@RETURNS    :
 @DESCRIPTION: Passes back the range of the histogram, which is the left
               edge of the first box, and the right edge of the last box.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 static  void  get_histogram_range(
     histogram_struct  *histogram,
-    VIO_Real              *min_value,
-    VIO_Real              *max_value )
+    VIO_Real          *min_value,
+    VIO_Real          *max_value )
 {
     *min_value = convert_index_to_value( histogram, histogram->min_index );
     *max_value = convert_index_to_value( histogram, histogram->max_index + 1 );
@@ -226,14 +222,14 @@ static  void  get_histogram_range(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : get_histogram_max_count
 @INPUT      : histogram
-@OUTPUT     : 
+@OUTPUT     :
 @RETURNS    : maximum count
 @DESCRIPTION: Finds the maximum number of counts in the histogram boxes.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 static  int  get_histogram_max_count(
@@ -258,15 +254,15 @@ static  int  get_histogram_max_count(
               counts
               half_width
 @OUTPUT     : new_counts
-@RETURNS    : 
+@RETURNS    :
 @DESCRIPTION: Box filters the histogram boxes into another set of boxes
               which corresponds to the average number of counts in the
               range i - half_width to i + half_width.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 static  void  box_filter_histogram(
@@ -309,11 +305,11 @@ static  void  box_filter_histogram(
 @DESCRIPTION: Gets the histogram counts, after filtering as necessary.
               and a scale and trans factor for converting counts indices
               to real values.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 BICAPI  int  get_histogram_counts(
@@ -358,23 +354,23 @@ BICAPI  int  get_histogram_counts(
 @OUTPUT     : x_scale
               y_scale
               height
-@RETURNS    : 
+@RETURNS    :
 @DESCRIPTION: Resamples the histogram to fit in a grid of x_size boxes by
               max y_size counts.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 static  void  resample_histogram(
     histogram_struct  *histogram,
     int               x_size,
     int               y_size,
-    VIO_Real              *x_scale,
-    VIO_Real              *x_trans,
-    VIO_Real              height[] )
+    VIO_Real          *x_scale,
+    VIO_Real          *x_trans,
+    VIO_Real          height[] )
 {
     int   ind, x, max_count, left_ind, right_ind;
     VIO_Real  weight, sum_count, min_value, max_value;
@@ -405,6 +401,13 @@ static  void  resample_histogram(
         left_ind = get_histogram_index( histogram, left );
         right_ind = get_histogram_index( histogram, right );
 
+        /* Avoid reading past the end of the counts[] array.
+         */
+        if (right_ind >= (histogram->max_index - histogram->min_index) + 1)
+        {
+            right_ind = histogram->max_index - histogram->min_index;
+        }
+
         sum_count = 0.0;
 
         for_inclusive( ind, left_ind, right_ind )
@@ -415,7 +418,7 @@ static  void  resample_histogram(
             weight = MIN( right_side, right ) - MAX( left_side, left );
 
             sum_count += weight *
-                         (VIO_Real) histogram->counts[ind-histogram->min_index];
+                (VIO_Real) histogram->counts[ind - histogram->min_index];
         }
 
         height[x] = sum_count / (right - left) * (VIO_Real) y_size /
@@ -428,14 +431,14 @@ static  void  resample_histogram(
 @INPUT      : histogram
               x_size
               y_size
-@OUTPUT     : 
-@RETURNS    : 
+@OUTPUT     :
+@RETURNS    :
 @DESCRIPTION: Displays the histogram as an ascii plot.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  display_histogram(
@@ -479,13 +482,13 @@ BICAPI  void  display_histogram(
               y_size
               filter_width
 @OUTPUT     : lines
-@RETURNS    : 
+@RETURNS    :
 @DESCRIPTION: Creates a lines structure corresponding to the histogram.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  create_histogram_line(
