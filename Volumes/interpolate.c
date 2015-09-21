@@ -34,6 +34,7 @@ static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/interpol
               cmode_colour_map
               rgb_colour_map
               empty_colour
+              colour_coding,
 @OUTPUT     : pixels
 @RETURNS    : 
 @DESCRIPTION: Interpolates the volume to the given slice, using either
@@ -48,36 +49,37 @@ static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/interpol
 /* ARGSUSED */
 
 BICAPI void  interpolate_volume_to_slice(
-    VIO_Volume          volume1,
+    VIO_Volume      volume1,
     int             n_dims1,
-    VIO_Real            origin1[],
-    VIO_Real            x_axis1[],
-    VIO_Real            y_axis1[],
-    VIO_Volume          volume2,
+    VIO_Real        origin1[],
+    VIO_Real        x_axis1[],
+    VIO_Real        y_axis1[],
+    VIO_Volume      volume2,
     int             n_dims2,
-    VIO_Real            origin2[],
-    VIO_Real            x_axis2[],
-    VIO_Real            y_axis2[],
+    VIO_Real        origin2[],
+    VIO_Real        x_axis2[],
+    VIO_Real        y_axis2[],
     int             x_pixel_start,
     int             x_pixel_end,
     int             y_pixel_start,
     int             y_pixel_end,
     int             degrees_continuity,
     unsigned short  **cmode_colour_map,
-    VIO_Colour          **rgb_colour_map,
-    VIO_Colour          empty_colour,
+    VIO_Colour      **rgb_colour_map,
+    VIO_Colour      empty_colour,
+    colour_coding_struct *colour_coding,
     pixels_struct   *pixels )
 {
     int              dim, x, y;
     int              int_voxel_value1, int_voxel_value2;
-    VIO_Real             outside_value1, outside_value2;
-    VIO_Real             start_voxel1[VIO_MAX_DIMENSIONS], voxel1[VIO_MAX_DIMENSIONS];
-    VIO_Real             start_voxel2[VIO_MAX_DIMENSIONS], voxel2[VIO_MAX_DIMENSIONS];
-    VIO_Real             value1, voxel_value1, value2, voxel_value2;
-    VIO_Real             min_voxel1, max_voxel1, min_voxel2, max_voxel2;
+    VIO_Real         outside_value1, outside_value2;
+    VIO_Real         start_voxel1[VIO_MAX_DIMENSIONS], voxel1[VIO_MAX_DIMENSIONS];
+    VIO_Real         start_voxel2[VIO_MAX_DIMENSIONS], voxel2[VIO_MAX_DIMENSIONS];
+    VIO_Real         value1, voxel_value1, value2, voxel_value2;
+    VIO_Real         min_voxel1, max_voxel1, min_voxel2, max_voxel2;
     unsigned short   *cmode_ptr;
-    VIO_Colour           *rgb_ptr;
-    VIO_BOOL          inside1, inside2;
+    VIO_Colour       *rgb_ptr;
+    VIO_BOOL         inside1, inside2;
     Pixel_types      pixel_type;
 #ifdef  REPORT_PROGRESS
     VIO_progress_struct  progress;
@@ -214,7 +216,15 @@ BICAPI void  interpolate_volume_to_slice(
                     if( inside1 )
                     {
                         if( rgb_colour_map == NULL )
-                            *rgb_ptr = (VIO_Colour) voxel_value1;
+                        {
+                            if (colour_coding != NULL)
+                            {
+                                *rgb_ptr = get_colour_code(colour_coding,
+                                                           value1);
+                            }
+                            else
+                                *rgb_ptr = (VIO_Colour) voxel_value1;
+                        }
                         else
                         {
                             int_voxel_value1 = VIO_ROUND( voxel_value1 );

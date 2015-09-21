@@ -1,3 +1,11 @@
+2015-09-21  Robert Vincent <robert.d.vincent@mcgill.ca>
+	* Volumes/create_slice.c, Volumes/interpolate.c,
+	Include/bicpl/vol_prototypes.h: Added a create_volume_slice_coding()
+	function that can use a colour_coding_struct as an alternative to
+	the use of a simple colour map. This is needed when the range of the
+	volume data is either too large or too small for the simple map to
+	be useful.
+
 2015-05-20  Robert Vincent <robert.d.vincent@mcgill.ca>
 	* Prog_utils/globals.c: Implement simple '#' comment convention for
 	globals files.
