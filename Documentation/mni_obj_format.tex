@@ -1,0 +1,516 @@
+\documentclass{article}
+
+\usepackage{times}
+
+% Little macro to make keywords obvious.
+\newcommand{\kw}[1]{{\tt \mbox{#1}}}
+
+\title{MNI .obj file format}
+\author{Robert D. Vincent \\
+McConnell Brain Imaging Centre \\
+Montreal Neurological Institute \\
+Montreal, QC H3A 2B4 Canada \\~\\
+}
+\date{\today}
+\begin{document}
+\maketitle
+% \newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+The MNI .obj file format was designed as a simple storage format for
+representations of geometric objects.  Overall, an
+MNI .obj file may have either an ASCII and a binary representation.  In
+ASCII files, space and newline characters serve as separators for data
+fields, but have no other significance to the format.
+
+All of the original design and implementation of this format was the
+work of David MacDonald.  This document borrows extensively from David's
+existing comments and documentation.
+
+Also note that this specification was developed with the SGI GL and
+OpenGL graphics programming systems in mind.  As a result much of the
+terminology and format details reflect the capabilities and options
+supported by these systems.
+
+\section{Basics}
+
+A .obj file consists of a simple list of object records which may be in
+one of seven classes.  Each object record is introduced by a single
+ASCII alphabetic character that determines the class of the object
+record.  For binary records, the character is in lower case.  For ASCII
+records, the character is in upper case.  The size of the record itself
+is variable, but is typically determined by certain key fields that
+define the number of vertices or points in the object.
+
+\subsection{Basic types}
+
+File data consists of five fundamental types: {\it char} (alphabetic
+object class specifiers), {\it float}, {\it integer}, {\it string}, or
+{\it boolean}.
+
+Because the ASCII library is implemented using standard ``C'' functions
+such as \kw{fscanf} and \kw{fprintf}, the textual representations of
+numeric types are quite standard.  {\it Integer} values
+consist of an optional sign ('+' or '-') followed by one or more decimal
+digits. {\it Float} values will consist of an optional sign followed
+by an integer part consisting of one or more decimal digits, followed by
+an optional decimal point, followed by an optional fractional part
+consisting of one or more decimal digits, and finally an optional
+exponent specifier of the form 'e' or 'E' followed by an optional sign
+and an integer exponent.  Either the integer part or the fractional part
+must have a non-zero length.
+
+In the case of binary files, there is no clear specification of the
+format or ``endianness'' of the data.  It can be assumed that {\it integer}
+values will be 32-bit, 2's complement integers, and that {\it float}
+numbers will be 32-bit IEEE floating point values.
+
+In ASCII files, a {\it string} is represented as a sequence of zero or more
+characters surrounded by either single quotes, double quotes, or back
+quotes.
+
+In binary files, a {\it string} is represented as a 32-bit integer length
+followed by the specified number of 8-bit bytes.
+
+In ASCII files, {\it boolean} values are represented by the ASCII character
+'f' or 'F' for FALSE, and 't' or 'T' for TRUE.
+
+In binary files, {\it boolean} values are simply integer values.  Any non-zero
+value is interpreted as representing logical TRUE, zero is interpreted
+as FALSE.
+
+\subsection{Compound types}
+
+The MNI .obj format defines four compound types: {\it point}, 
+{\it colour}, {\it vector}, and {\it surfprop}, a surface property record.
+
+A {\it point} is defined by three floating point numbers corresponding to the
+point's location along the X, Y, and Z axis respectively.  The range of
+these values is arbitrary.
+
+The second compound type defined by this format is the {\it colour} object.  A
+colour is defined by four floating-point numbers in the interval 0..1,
+representing red, blue, green, and alpha values.  The alpha value is
+typically one.
+
+A {\it vector} is similar to a point object in structure, consisting of three
+values for the X, Y, and Z components of the vector.  Vectors are
+assumed to be normalized unit vectors, therefore all values should be in
+the range -1.0...+1.0.
+
+A {\it surfprop} structure is composed of five floating point
+parameters which define the appearance of a surface material. The
+definition of these values was based largely on the SGI IRIS Graphics
+Library and OpenGL specifications.  The five members of a surface
+property structure are defined as follows:
+\begin{itemize}
+\item Ambient colour (A)
+
+This value in the range 0...1 defines the intensity of the surface's
+ambient colour, as a proportion of the surface's specified colour.
+
+\item Diffuse reflectivity (D)
+
+This value in the range 0...1 sets the diffuse reflectivity of the
+object's surface, as a proportion of the surface's specified colour.
+
+\item Specular reflectance (S)
+
+This value in the range 0...1 specifies the specular reflectance of the
+object surface.  Specular reflectance is assumed to be uniform over the
+colour spectrum.
+
+\item Specular scattering exponent (SE)
+
+This value in the range 0...128 specifies the specular scattering
+exponent of the material.  The higher the value, the smoother the
+surface appearance and the more focused the specular highlight.
+
+\item Transparency (T)
+
+This value in the range 0...1 specifies the transparency of the surface.
+This value may be ignored in many implementations, depending on the
+graphics library in use and the capabilities of the graphics controller.
+
+\end{itemize}
+
+\subsection{Object classes}
+
+The following eight object classes are defined by the MNI .obj file
+format.
+
+\begin{itemize}
+\item 'L' (Lines) - A group of line segments.
+
+\item 'M' (Marker) - A tag or marker point.
+
+\item 'F' (Model) - A reference to an external .obj file.
+
+\item 'X' (Pixels) - An 2-dimensional bitmap.
+
+\item 'P' (Polygons) - A set of closed polygons.
+
+\item 'Q' (Quadmesh) - A quadrilateral mesh.
+
+\item 'T' (Text) - A text label.
+
+\end{itemize}
+
+The 'V' (Volume) character is reserved but not utilized.
+
+\section{Object record details}
+
+\subsection{Lines}
+
+A lines object is used to represent a series of line segments.
+
+\begin{itemize}
+
+\item \kw{thickness} ({\it float})
+
+This value specifies the overall thickness of the line segments.  It
+must be within the range 0.001...20.0.
+
+\item \kw{npoints} ({\it integer})
+
+This specifies the total number of distinct vertices in the lines object
+
+\item \kw{point\_array} (array of {\it point})
+
+A list of the coordinates for each distinct vertex in the lines object.
+Note that vertices may be reused if the \kw{end\_indices} and \kw{
+indices} fields are set appropriately.
+
+\item \kw{nitems} ({\it integer})
+
+The total number of line segments
+
+\item \kw{colour\_flag} ({\it integer})
+
+A flag indicating the number of colours allocated in this object.  A
+value of zero specifies that single colour applies to all line segments.
+A value of one specifies that colours are specified on a per-line basis.
+A value of two specifies that colours are specified on a per-vertex basis.
+
+\item \kw{colour\_table} (array of {\it colour})
+
+1The RGB colour values to be associated with the line segments.  The
+length of this section may be either 1 (if \kw{colour\_flag} is 0),
+\kw{nitems} (if \kw{colour\_flag} is 1) or \kw{npoints} (if \kw{
+colour\_flag} is 2).
+
+\item \kw{end\_indices} (array of {\it integer})
+
+This is a list of length \kw{nitems} that specifies the index of the
+last element in the \kw{indices} array for each group of line segments
+in the lines object.
+
+\item \kw{indices} (array of {\it integer})
+
+The integer index into the \kw{point\_array} that specifies how each of the
+vertices is assigned to each line segment.  The length of this array must
+be equal to the greatest value in the \kw{end\_indices} array plus one.
+
+\end{itemize}
+
+\subsection{Marker}
+
+A marker object is used to assign a special meaning to a position in the
+object.  The marker can be associated with a specific patient,
+anatomical structure, and text comment.
+
+\begin{itemize}
+
+\item \kw{type} ({\it integer}) 
+
+A value of zero indicates this marker should be displayed as a box,
+while a value of one indicates a sphere.
+
+\item \kw{size} ({\it float})
+
+The desired size of the marker.  The units and interpretation are not
+clearly specified.
+
+\item \kw{colour} ({\it colour})
+
+The desired colour for the marker.
+
+\item \kw{position} ({\it point})
+
+The location of the maker.
+
+\item \kw{structure\_id} ({\it integer})
+
+An integer value associating this marker with a specific anatomical
+structure.
+
+\item \kw{patient\_id} ({\it integer})
+
+An integer value associating this marker with a particular patient.
+
+\item \kw{label} ({\it string})
+
+A string to be displayed along with the marker.
+
+\end{itemize}
+
+\subsection{Model}
+
+A model record is used to incorporate the contents of another .obj file
+by reference.  Processing of model records is {\it not} automatically
+handled by the library, it is up to the calling program to read the
+external file.
+
+\begin{itemize}
+
+\item \kw{filename} ({\it string})
+
+The path name of the file to incorporate in this object.
+
+\end{itemize}
+
+\subsection{Pixels}
+A pixels record stores a two-dimensional bitmap object.
+
+\begin{itemize}
+
+\item \kw{pixel\_type} ({\it integer})
+
+This field specifies the type of the \kw{pixel\_array} field.  The
+pixel type can take a value of either 0, 1 or 2.  A value of zero
+indicates that the pixel array values are eight bit color indices of
+type {\it integer}.  A value of one indicates that pixel values are
+sixteen bit color indices of type {\it integer}.  A value of two
+indicates that pixel values are of RGB values of type {\it colour}.
+
+\item \kw{x\_size} ({\it integer})
+
+The extent of the bitmap in the horizontal direction.
+
+\item \kw{y\_size} ({\it integer})
+
+The extent of the bitmap in the vertical direction.
+
+\item \kw{pixel\_array} (see \kw{pixel\_type} field)
+
+The array of pixel values, with a total of $x\_size * y\_size$ elements.
+Pixels are stored such that the upper left corner is the first pixel in
+the array, and the lower right corner is the last pixel in the array.
+
+\end{itemize}
+
+\subsection{Polygons}
+
+Polygon records may be in either compressed or uncompressed
+format. Compressed format is reserved for sets of polygons with
+tetrahedral topology.
+
+The uncompressed format is as follows:
+
+\begin{itemize}
+\item \kw{surfprop} ({\it surfprop})
+
+Surface properties for the polygons.
+
+\item \kw{npoints} ({\it integer})
+
+Number of distinct vertices in the aggregate polygon object.
+
+\item \kw{point\_array} (array of {\it point})
+
+List of distinct vertices that define this group of polygons.  Note that
+vertices may be reused if the \kw{end\_indices} and \kw{indices}
+fields are set appropriately.
+
+\item \kw{normals} (array of {\it vector})
+
+List of point normals for each point.
+
+\item \kw{nitems} ({\it integer})
+
+Number of polygons defined.
+
+\item \kw{colour\_flag} ({\it integer})
+
+A flag indicating the number of colours allocated in this object.  A
+value of zero specifies that single colour applies to all line segments.
+A value of one specifies that colours are specified on a per-item basis.
+A value of two specifies that colours are specified on a per-vertex
+basis.
+
+\item \kw{colour\_table} (array of {\it colour})
+
+The RGB colour values to be associated with the polygons.  The length of
+this section may be either 1 (if \kw{colour\_flag} is 0), \kw{nitems}
+(if \kw{colour\_flag} is 1) or \kw{npoints} (if \kw{colour\_flag} is
+2).
+
+\item \kw{end\_indices} (array of {\it integer})
+
+This is a list of length \kw{nitems} that specifies the index of the
+element in the indices list associated with each successive polygon.
+
+\item \kw{indices} (array of {\it integer})
+
+A list of integer indices into the \kw{point\_array} that specifies how
+each of the vertices is assigned to each polygon.  The length of this
+array must be equal to the greatest value in the \kw{end\_indices}
+array plus one.
+
+\end{itemize}
+
+The compressed format is distinguised by the sign of the field after the
+surface properties, which should always be negative.  Use of the
+compressed format is reserved for polygons with tetrahedral topology.
+
+\begin{itemize}
+\item \kw{surfprop} ({\it surfprop})
+
+Surface properties for the polygons.
+
+\item -\kw{nitems} ({\it integer})
+
+Number of polygons, multiplied by -1.
+
+\item \kw{point\_array} (array of {\it point})
+
+List of vertices that define this group of polygons.
+
+\item \kw{colour\_flag} ({\it integer})
+
+A flag indicating the number of colours allocated in this object.  A
+value of zero specifies that single colour applies to all line segments.
+A value of one specifies that colours are specified on a per-item basis.
+A value of two specifies that colours are specified on a per-vertex basis.
+
+\item \kw{colour\_table} (array of {\it colour})
+
+The RGB colour values to be associated with the polygons.  The
+length of this section may be either 1 (if \kw{colour\_flag} is 0), nitems
+(if \kw{colour\_flag} is 1) or npoints (if \kw{colour\_flag} is 2).
+
+\end{itemize}
+
+\subsection{Quadmesh}
+
+Quadrilateral mesh.
+
+\begin{itemize}
+
+\item \kw{surfprop} ({\it surfprop})
+
+Surface properties for the mesh.
+
+\item \kw{m} ({\it integer})
+
+The number of rows in the mesh.
+
+\item \kw{n} ({\it integer})
+
+The number of columns in the mesh.
+
+\item \kw{m\_closed} ({\it boolean})
+
+A boolean specifying whether the rows have their extreme points joined
+by an edge.
+
+\item \kw{n\_closed} ({\it boolean})
+
+A boolean specifying whether the columns have their extreme points
+joined by an edge.
+
+\item \kw{colour\_flag} ({\it integer})
+
+A flag indicating the number of colours allocated in this object.  A
+value of zero specifies that single colour applies to all line segments.
+A value of one specifies that colours are specified on a per-item basis.
+A value of two specifies that colours are specified on a per-vertex basis.
+
+\item \kw{colour\_table} (array of {\it colour})
+
+The RGB colour values to be associated with the mesh.  The
+length of this section may be either 1 (if \kw{colour\_flag} is 0), 
+$(m - 1) * (n - 1)$ (if \kw{colour\_flag} is 1) or $m * n$ 
+(if \kw{colour\_flag} is 2).
+
+\item \kw{point\_array} (array of {\it point})
+
+A list of points, of total length $n * m$.
+
+\item \kw{normals} (array of {\it vector})
+
+A list of point normals, of total length $n * m$.
+
+\end{itemize}
+
+\subsection{Text}
+
+A text object specifies a text label.
+
+\begin{itemize}
+
+\item \kw{font\_type} ({\it integer})
+
+This integer flag is set to zero to specify a fixed-width font, or to
+one for proportional spaced font.
+
+\item \kw{text\_size} ({\it float})
+
+The desired font size.
+
+\item \kw{colour} ({\it colour})
+
+The desired text colour.
+
+\item \kw{point} ({\it point})
+
+The 3D position at which to display the text.
+
+\item \kw{text} ({\it string})
+
+The text to display.
+
+\end{itemize}
+
+\section{Implementation}
+
+The object file format is implemented by the ``BIC programmer's
+library'' (BICPL).  The low-level I/O functions for basic types are
+defined in the ``volume\_io'' library.  
+
+The following BICPL functions are used to implement high-level
+object file I/O:
+
+\begin{verbatim}
+Status input_graphics_file(char *filename, 
+                           File_formats *format,
+                           int *n_objects, 
+                           object_struct ***object_list);
+
+Status output_graphics_file(char *filename, 
+                            File_formats format,
+                            int n_objects, 
+                            object_struct *object_list[]);
+\end{verbatim}
+
+\section{Related file formats}
+
+\subsection{Transform files}
+
+MNI transform files are ASCII text files that define a transformation
+between two coordinate systems.
+
+\subsection{Tag point files}
+
+MNI tag point files are ASCII text files that define a series of points
+within a volume, or a correspondence between points in two separate
+volumes.
+
+For details on the format, please see the BIC wiki at:
+
+{\tt http://wiki.bic.mni.mcgill.ca/index.php/MNITagFile}
+
+\end{document}
