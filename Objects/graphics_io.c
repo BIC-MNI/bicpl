@@ -159,7 +159,8 @@ BICAPI  VIO_Status   input_objects_any_format(
                                  marker_colour, marker_size, marker_type,
                                  n_objects, object_list );
     }
-    else if (!input_freesurfer_graphics_file(filename, n_objects, object_list))
+    else if (!input_freesurfer_graphics_file(filename, n_objects, object_list) &&
+             !input_brainsuite_graphics_file(filename, n_objects, object_list))
     {
         status = input_graphics_file( filename, &format,
                                       n_objects, object_list );

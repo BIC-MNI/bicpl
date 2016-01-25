@@ -1,3 +1,7 @@
+2016-01-25  Robert D. Vincent <robert.d.vincent@mcgill.ca
+	* Objects/brainsuite_io.c: Added basic support for loading
+	BrainSuite format connectivity files (.dft/.dfc).
+
 2015-09-21  Robert Vincent <robert.d.vincent@mcgill.ca>
 	* Volumes/create_slice.c, Volumes/interpolate.c,
 	Include/bicpl/vol_prototypes.h: Added a create_volume_slice_coding()
