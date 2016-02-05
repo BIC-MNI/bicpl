@@ -142,9 +142,9 @@ BICAPI void  scan_a_polygon(
     int                 label )
 {
     int        vertex, dim, n_clip;
-    VIO_Real       voxel[VIO_N_DIMENSIONS];
-    VIO_Real       min_voxel[VIO_N_DIMENSIONS], max_voxel[VIO_N_DIMENSIONS];
-    int        min_iv[VIO_N_DIMENSIONS], max_iv[VIO_N_DIMENSIONS];
+    VIO_Real   voxel[VIO_MAX_DIMENSIONS];
+    VIO_Real   min_voxel[VIO_MAX_DIMENSIONS], max_voxel[VIO_MAX_DIMENSIONS];
+    int        min_iv[VIO_MAX_DIMENSIONS], max_iv[VIO_MAX_DIMENSIONS];
 
     min_voxel[VIO_X] = 0.0;     /*--- to avoid warnings */
     max_voxel[VIO_X] = 0.0;
