@@ -58,7 +58,7 @@ BICAPI VIO_BOOL  fill_connected_voxels(
 {
     int                          dir, n_dirs, *dx, *dy, *dz, dim;
     int                          x, y, z, tx, ty, tz;
-    int                          sizes[VIO_N_DIMENSIONS];
+    int                          sizes[VIO_MAX_DIMENSIONS];
     int                          voxel_index[VIO_MAX_DIMENSIONS];
     xyz_struct                   entry;
     QUEUE_STRUCT( xyz_struct )   queue;
