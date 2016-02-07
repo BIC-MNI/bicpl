@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/labels.c,v 1.42 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : set_label_volume_real_range
 @INPUT      : volume
@@ -466,9 +462,9 @@ static void  get_input_volume_label_limits(
     int      slice,
     int      limits[2][VIO_N_DIMENSIONS] )
 {
-    int       sizes1[VIO_N_DIMENSIONS], sizes2[VIO_N_DIMENSIONS];
+    int       sizes1[VIO_MAX_DIMENSIONS], sizes2[VIO_MAX_DIMENSIONS];
     int       d, t[VIO_N_DIMENSIONS];
-    VIO_Real      voxel1[VIO_N_DIMENSIONS], voxel2[VIO_N_DIMENSIONS];
+    VIO_Real  voxel1[VIO_MAX_DIMENSIONS], voxel2[VIO_MAX_DIMENSIONS];
     int       pos;
     VIO_Real      xw, yw, zw;
     VIO_BOOL   first;
@@ -547,7 +543,7 @@ BICAPI VIO_Status  load_label_volume(
     int                   int_voxel[VIO_N_DIMENSIONS], int_file_value;
     int                   limits[2][VIO_N_DIMENSIONS];
     int                   file_sizes[VIO_N_DIMENSIONS];
-    VIO_Real                  file_value, xw, yw, zw, amount_done;
+    VIO_Real              file_value, xw, yw, zw;
     int                   int_y_voxel[VIO_N_DIMENSIONS];
     VIO_Real                  y_voxel[VIO_N_DIMENSIONS];
     VIO_Real                  voxel[VIO_N_DIMENSIONS], z_dx, z_dy, z_dz;
@@ -556,62 +552,48 @@ BICAPI VIO_Status  load_label_volume(
     int                   int_y_dx, int_y_dy, int_y_dz;
     VIO_Real                  start_voxel[VIO_N_DIMENSIONS];
     VIO_Real                  end_voxel[VIO_N_DIMENSIONS];
-    VIO_Volume                file_volume, file_volume_3d;
-    Minc_file             file;
+    VIO_Volume            file_volume;
     VIO_BOOL               is_linear, is_integer_step;
     VIO_progress_struct       progress;
     static VIO_STR         file_order_dim_names[VIO_MAX_DIMENSIONS] = {
       "", "", "", "", ""
     };
     int                   i;
+    minc_input_options    options;
 
     for_less(i, 0, VIO_MAX_DIMENSIONS)
         label_voxel[i] = 0;       /* Initialize. */
 
     check_alloc_label_data( label_volume );
 
-    /*--- get 3d transformation in file */
+    set_default_minc_input_options( &options );
+    set_minc_input_vector_to_scalar_flag( &options, FALSE );
 
-    if( input_volume_header_only( filename, VIO_N_DIMENSIONS,
-                                  file_order_dim_names,
-                                  &file_volume_3d, NULL ) != VIO_OK )
-        return( VIO_ERROR );
+    if (input_volume( filename, VIO_N_DIMENSIONS, file_order_dim_names,
+                      NC_UNSPECIFIED, FALSE, 0.0, 0.0, TRUE,
+                      &file_volume, &options ) != VIO_OK)
+        return (VIO_ERROR);
 
-    get_volume_sizes( file_volume_3d, file_sizes );
+    get_volume_sizes( file_volume, file_sizes );
 
-    file_volume = create_volume( 2, file_order_dim_names,
-                                 NC_UNSPECIFIED, FALSE, 0.0, 0.0 );
-
-    file = initialize_minc_input( filename, file_volume, NULL );
-
-    if( file == NULL )
-        return( VIO_ERROR );
-
-    n_slices = get_n_input_volumes( file );
-
-    if( n_slices != file_sizes[0] )
-    {
-        print_error( "load_label_volume(): error in sizes: %d %d\n",
-                     n_slices, file_sizes[0] );
-    }
-
+    n_slices = file_sizes[0];
     /*--- check if the voxel1-to-voxel2 transform is linear */
 
     is_linear = get_transform_type(
                 get_voxel_to_world_transform(label_volume) ) == LINEAR &&
                 get_transform_type(
-                get_voxel_to_world_transform(file_volume_3d) ) == LINEAR;
+                get_voxel_to_world_transform(file_volume) ) == LINEAR;
     is_integer_step = FALSE;
 
     if( is_linear )
     {
         convert_3D_voxel_to_world( label_volume, 0.0, 0.0, 0.0,
                                    &xw, &yw, &zw );
-        convert_world_to_voxel( file_volume_3d, xw, yw, zw, start_voxel );
+        convert_world_to_voxel( file_volume, xw, yw, zw, start_voxel );
 
         convert_3D_voxel_to_world( label_volume, 0.0, 0.0, 1.0,
                                    &xw, &yw, &zw );
-        convert_world_to_voxel( file_volume_3d, xw, yw, zw, end_voxel );
+        convert_world_to_voxel( file_volume, xw, yw, zw, end_voxel );
 
         z_dx = end_voxel[0] - start_voxel[0];
         z_dy = end_voxel[1] - start_voxel[1];
@@ -619,7 +601,7 @@ BICAPI VIO_Status  load_label_volume(
 
         convert_3D_voxel_to_world( label_volume, 0.0, 1.0, 0.0,
                                    &xw, &yw, &zw );
-        convert_world_to_voxel( file_volume_3d, xw, yw, zw, end_voxel );
+        convert_world_to_voxel( file_volume, xw, yw, zw, end_voxel );
 
         y_dx = end_voxel[0] - start_voxel[0];
         y_dy = end_voxel[1] - start_voxel[1];
@@ -646,12 +628,8 @@ BICAPI VIO_Status  load_label_volume(
 
     for_less( slice, 0, n_slices )
     {
-        while( input_more_minc_file( file, &amount_done ) )
-        {}
-
-        get_input_volume_label_limits( label_volume, file_volume_3d,
+        get_input_volume_label_limits( label_volume, file_volume,
                                        slice, limits );
-
         for_inclusive( label_voxel[VIO_X], limits[0][VIO_X], limits[1][VIO_X] )
         {
             for_inclusive( label_voxel[VIO_Y], limits[0][VIO_Y], limits[1][VIO_Y] )
@@ -665,7 +643,7 @@ BICAPI VIO_Status  load_label_volume(
                                                    (VIO_Real) label_voxel[VIO_Y],
                                                    (VIO_Real) limits[0][VIO_Z],
                                                    &xw, &yw, &zw );
-                        convert_world_to_voxel( file_volume_3d, xw, yw, zw,
+                        convert_world_to_voxel( file_volume, xw, yw, zw,
                                                 y_voxel );
                         y_voxel[VIO_X] += 0.5;
                         y_voxel[VIO_Y] += 0.5;
@@ -717,7 +695,7 @@ BICAPI VIO_Status  load_label_volume(
                                                    (VIO_Real) label_voxel[VIO_Y],
                                                    (VIO_Real) label_voxel[VIO_Z],
                                                    &xw, &yw, &zw );
-                        convert_world_to_voxel( file_volume_3d, xw, yw, zw,
+                        convert_world_to_voxel( file_volume, xw, yw, zw,
                                                 voxel );
                         voxel[VIO_X] += 0.5;
                         voxel[VIO_Y] += 0.5;
@@ -751,7 +729,7 @@ BICAPI VIO_Status  load_label_volume(
                         int_voxel[VIO_Z] >= 0 && int_voxel[VIO_Z] < file_sizes[VIO_Z] )
                     {
                         file_value = get_volume_real_value( file_volume,
-                                        int_voxel[VIO_Y], int_voxel[VIO_Z], 0, 0, 0 );
+                                        int_voxel[VIO_X], int_voxel[VIO_Y], int_voxel[VIO_Z], 0, 0 );
 
                         if( file_value > 0.0 )
                         {
@@ -763,18 +741,12 @@ BICAPI VIO_Status  load_label_volume(
                 }
             }
         }
-
-        (void) advance_input_volume( file );
-
         update_progress_report( &progress, slice+1 );
     }
 
     terminate_progress_report( &progress );
 
     delete_volume( file_volume );
-    delete_volume( file_volume_3d );
-
-    (void) close_minc_input( file );
 
     return( VIO_OK );
 }
@@ -1018,10 +990,10 @@ BICAPI VIO_Status  output_labels_as_tags(
     VIO_Real    size,
     int     patient_id )
 {
-    int             ind[VIO_N_DIMENSIONS];
+    int             ind[VIO_MAX_DIMENSIONS];
     int             label, sizes[VIO_MAX_DIMENSIONS];
-    VIO_Real            real_ind[VIO_N_DIMENSIONS];
-    VIO_Real            tags[VIO_N_DIMENSIONS];
+    VIO_Real        real_ind[VIO_N_DIMENSIONS];
+    VIO_Real        tags[VIO_N_DIMENSIONS];
     int             n_tags;
 
     if( get_volume_n_dimensions(volume) != 3 )
