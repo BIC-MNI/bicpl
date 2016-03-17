@@ -262,7 +262,7 @@ BICAPI void  render_volume_to_slice(
   fixed_t x_axis_f[VIO_N_DIMENSIONS];
   fixed_t y_axis_f[VIO_N_DIMENSIONS];
   size_t fixed_offset = 0;
-  VIO_Colour *pixel_ptr = &pixels->data.pixels_rgb[0];
+  VIO_Colour *pixel_ptr;
 
   if (volume_data2 != NULL)
   {
@@ -304,6 +304,7 @@ BICAPI void  render_volume_to_slice(
       cur_origin[1] = row_origin[1];
       cur_origin[2] = row_origin[2];
 
+      pixel_ptr = &PIXEL_RGB_COLOUR(*pixels, x_pixel_start, y);
       for (x = x_pixel_start; x <= x_pixel_end; x++)
       {
         VIO_Colour colour;
@@ -389,6 +390,7 @@ BICAPI void  render_volume_to_slice(
       col_origin[1] = row_origin[1];
       col_origin[2] = row_origin[2];
 
+      pixel_ptr = &PIXEL_RGB_COLOUR(*pixels, x_pixel_start, y);
       for (x = x_pixel_start; x <= x_pixel_end; x++)
       {
         VIO_Colour colour;
@@ -518,7 +520,7 @@ BICAPI void  render_volume_to_slice(
   double row_origin[VIO_N_DIMENSIONS];
   double cur_origin[VIO_N_DIMENSIONS];
   size_t fixed_offset = 0;
-  VIO_Colour *pixel_ptr = &pixels->data.pixels_rgb[0];
+  VIO_Colour *pixel_ptr;
 
   if (volume_data2 != NULL)
   {
@@ -549,6 +551,7 @@ BICAPI void  render_volume_to_slice(
       cur_origin[1] = row_origin[1];
       cur_origin[2] = row_origin[2];
 
+      pixel_ptr = &PIXEL_RGB_COLOUR(*pixels, x_pixel_start, y);
       for (x = x_pixel_start; x <= x_pixel_end; x++)
       {
         VIO_Colour colour;
@@ -647,6 +650,7 @@ BICAPI void  render_volume_to_slice(
       col_origin[1] = row_origin[1];
       col_origin[2] = row_origin[2];
 
+      pixel_ptr = &PIXEL_RGB_COLOUR(*pixels, x_pixel_start, y);
       for (x = x_pixel_start; x <= x_pixel_end; x++)
       {
         VIO_Colour colour;
