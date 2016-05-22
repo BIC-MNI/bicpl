@@ -15,10 +15,6 @@
 #include  "bicpl_internal.h"
 #include  <bicpl/vols.h>
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/filters.c,v 1.15 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 #define  N_STD_DEVIATIONS  3.0
 #define  N_SAMPLES         9
 
@@ -82,19 +78,19 @@ BICAPI int  get_slice_weights_for_filter(
                     axis = c;
                 else
                 {
-                    print_error(
-                       "Cannot do linear interpolation on non-ortho axis\n" );
+                    /* Cannot do linear interpolation on non-ortho axis */
+                    axis = -1;
+                    break;
                 }
             }
         }
-        frac = VIO_FRACTION( voxel_position[c] );
-        origins[0] = (VIO_Real) (int) voxel_position[c];
+        frac = (axis >= 0) ? VIO_FRACTION( voxel_position[axis] ) : 0.0;
+        origins[0] = 0.0;
         (*weights)[0] = frac;
         n_slices = 1;
-
         if( frac > 0.0 )
         {
-            origins[1] = (VIO_Real) ((int) voxel_position[c] + 1);
+            origins[1] = 1.0;
             (*weights)[1] = 1.0 - frac;
             n_slices = 2;
         }
@@ -111,6 +107,8 @@ BICAPI int  get_slice_weights_for_filter(
             sigma = full_width_half_max / 2.0 / sqrt(log(2.0));
             half_width = N_STD_DEVIATIONS * sigma;
             break;
+        default:
+            break;                /* avoid warning */
         }
         first_slice = (int) (-half_width - 0.5);
         last_slice = (int) (half_width + 0.5);
@@ -168,6 +166,8 @@ BICAPI int  get_slice_weights_for_filter(
                     }
                 }
                 break;
+            default:
+                break;          /* avoid warning */
             }
 
             (*weights)[slice-first_slice] = weight;

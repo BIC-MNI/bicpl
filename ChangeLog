@@ -1,4 +1,8 @@
-2016-01-25  Robert D. Vincent <robert.d.vincent@mcgill.ca
+2016-05-22  Robert D. Vincent <robert.d.vincent@mcgill.ca>
+	* Volumes/filters.c: Make the linear interpolation filter work.
+	Also fixed some warnings.
+
+2016-01-25  Robert D. Vincent <robert.d.vincent@mcgill.ca>
 	* Objects/brainsuite_io.c: Added basic support for loading
 	BrainSuite format connectivity files (.dft/.dfc).
 
