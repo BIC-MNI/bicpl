@@ -276,7 +276,7 @@ BICAPI void  render_volume_to_slice(
 
   for (i = VIO_N_DIMENSIONS; i < n_dims1; i++)
   {
-    fixed_offset += rint(origins1[0][i] * strides1[i]);
+    fixed_offset += lrint(origins1[0][i] * strides1[i]);
   }
 
   for (i = 0; i < VIO_N_DIMENSIONS; i++)

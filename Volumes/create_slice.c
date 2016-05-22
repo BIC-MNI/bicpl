@@ -275,8 +275,11 @@ static void  create_weighted_volume_slices(
             (degrees_continuity != -1 && n_slices1 == 1 &&
             (volume_data2 == NULL || n_slices2 == 1)) )
         {
+            /* Do slow interpolation. this does _not_ handle slice-to-slice
+             * filtering yet, but does handle linear/tricubic interpolation.
+             */
             interpolate_volume_to_slice( volume1, n_dimensions1,
-                                         origins1[0],
+                                         origins1[n_slices1 / 2],
                                          x_axis1, y_axis1,
                                          volume2, n_dimensions2,
                                          (volume2 == NULL) ? NULL : origins2[0],
