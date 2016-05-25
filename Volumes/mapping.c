@@ -514,6 +514,23 @@ BICAPI void  get_mapping(
     VIO_Real  separations[VIO_MAX_DIMENSIONS], x_len, y_len, comp;
 
     n_dims = get_volume_n_dimensions( volume );
+    /* Initialize the pixel origin and axes. This is done so that non-spatial
+     * axes (e.g. time) will be handled correctly.
+     */
+    for_less ( c, 0, n_dims )
+    {
+        pix_origin[c] = origin[c];
+        pix_x_axis[c] = x_axis[c];
+        pix_y_axis[c] = y_axis[c];
+    }
+
+    /* Restrict the actual mapping calculations so that they apply to
+     * spatial dimensions ONLY. The X, Y, and Z should be the first
+     * dimensions in order for this to work correctly.
+     */
+    if ( n_dims > VIO_N_DIMENSIONS )
+        n_dims = VIO_N_DIMENSIONS;
+
     get_volume_separations( volume, separations );
 
     x_len = 0.0;
@@ -786,6 +803,13 @@ BICAPI void  convert_voxel_to_slice_pixel(
     get_mapping( volume, origin, x_axis, y_axis,
                  x_translation, y_translation, x_scale, y_scale,
                  real_origin, real_x_axis, real_y_axis );
+
+    /* Restrict the actual mapping calculations so that they apply to
+     * spatial dimensions ONLY. The X, Y, and Z should be the first
+     * dimensions in order for this to work correctly.
+     */
+    if ( n_dims > VIO_N_DIMENSIONS )
+        n_dims = VIO_N_DIMENSIONS;
 
     map_voxel_to_pixel( n_dims, voxel, real_origin,
                         real_x_axis, real_y_axis, x_pixel, y_pixel );
