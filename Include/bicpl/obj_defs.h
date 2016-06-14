@@ -189,9 +189,9 @@ typedef  struct
     Pixel_types     pixel_type;
     union
     {
+        VIO_Colour      *pixels_rgb;
         unsigned char   *pixels_8bit_colour_index;
         unsigned short  *pixels_16bit_colour_index;
-        VIO_Colour      *pixels_rgb;
     } data;
 
 } pixels_struct;
