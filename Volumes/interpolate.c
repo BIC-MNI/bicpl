@@ -87,8 +87,9 @@ BICAPI void  interpolate_volume_to_slice(
 
     if( is_an_rgb_volume( volume1 ) ||
         (volume2 != NULL && is_an_rgb_volume( volume2 )) ) {
-        degrees_continuity = -1;
         colour_coding = NULL;   /* Don't use the colour coding. */
+        if (degrees_continuity == 2)
+          degrees_continuity = 0;
     }
 
     get_volume_voxel_range( volume1, &min_voxel1, &max_voxel1 );
