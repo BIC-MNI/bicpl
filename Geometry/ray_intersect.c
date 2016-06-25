@@ -14,12 +14,7 @@
 
 #include "bicpl_internal.h"
 
-#define  MAX_POINTS    30
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/ray_intersect.c,v 1.32 2005-08-17 22:30:25 bert Exp $";
-#endif
-
-
+#define  MAX_POINTS    36
 #define  TOLERANCE           1.0e-2
 #define  TRIANGLE_TOLERANCE  1.0e-3
 
