@@ -1,0 +1,99 @@
+\documentclass{article}
+
+\usepackage{times}
+
+% Little macro to make keywords obvious.
+\newcommand{\kw}[1]{{\tt \mbox{#1}}}
+
+\title{MNI .obj file format}
+\author{Robert D. Vincent \\
+McConnell Brain Imaging Centre \\
+Montreal Neurological Institute \\
+Montreal, QC H3A 2B4 Canada \\~\\
+}
+\date{\today}
+\begin{document}
+\maketitle
+% \newpage
+%\tableofcontents
+%\newpage
+
+\section{Introduction}
+
+The MNI .tag file format was designed as a simple storage format for
+representations of selected points on either a single 3-dimensional
+data volumes, or on a pair of such volumes. The .tag file is an ASCII
+file format only - it provides no support for other character sets or
+binary data.
+
+All of the original design and implementation of this format was the
+work of David MacDonald.  This document borrows extensively from David's
+existing comments and documentation.
+
+\section{Format}
+
+The file is an ASCII file, and normally uses a single linefeed as a
+newline character. Spaces, tabs, and newlines may be used to delimit
+fields. Carriage return characters are ignored.
+
+\subsection{Header}
+A .tag file always begins with a single line containing the exact text:
+
+\begin{verbatim}
+MNI Tag Point File
+\end{verbatim}
+
+This header line is mandatory and should appear exactly as shown
+(capitalization is significant).
+
+The header is followed by the keyword {\tt Volumes} followed by an
+equals sign, either the digit '1' or '2', and a semicolon, e.g. either:
+\begin{verbatim}
+Volumes = 1;
+\end{verbatim}
+or:
+\begin{verbatim}
+Volumes = 2;
+\end{verbatim}
+
+This field indicates whether the tag point file applies to one or two
+volumes. Again, capitalization is significant.
+
+The next field defines the points themselves. It starts with a keyword:
+\begin{verbatim}
+Points =
+\end{verbatim}
+followed by a list of point records. The list of point records is
+terminated with another semicolon.
+
+\subsection{Point records}
+Each point record simply consists of either 3 or 6 floating-point
+numbers, represented in ASCII, and separated by spaces. The floating
+point numbers give the X, Y, and Z coordinates in the ``world space'' of
+the volume(s) to which the tag applies.
+
+The coordinates of the point are mandatory. Other fields may be included
+as needed, as follows:
+\begin{itemize}
+\item A floating-point weight\footnote{This corresponds to the size when markers are saved as tags in MNI-Display}.
+\item An integer structure ID\footnote{This corresponds to a paint label value
+  when labels are saved as tags in MNI-Display}.
+\item An integer patient ID.
+\item A text label.
+\end{itemize}
+
+These fields must either {\em all} be present for a tag, they may {\em
+ all} be absent, or the text label along may be present. The text label
+may be surrounded by quotes to allow it to include space characters.
+
+Each point record normally ends with an end-of-line character, but this
+is optional.
+
+\subsection{Comments}
+Comments can occur anywhere in the file. They are indicated by the
+character '\#' or '\%', and are terminated by an end-of-line character.
+
+There is an informal convention of using comments to indicate the
+specific volume files to which the tags apply.
+\end{document}
+
