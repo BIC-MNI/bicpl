@@ -164,6 +164,7 @@ SET(bicpl_LIB_SRCS
   Objects/freesurfer_io.c 
   Objects/brainsuite_io.c
   Objects/wavefront_io.c
+  Objects/ply_io.c
   Objects/landmark_file.c 
   Objects/lines.c 
   Objects/markers.c 
