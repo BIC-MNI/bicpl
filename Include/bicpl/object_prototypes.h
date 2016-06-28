@@ -785,6 +785,21 @@ BICAPI VIO_BOOL input_freesurfer_graphics_file(
     int *n_objects,
     object_struct **object_list[] );
 
+BICAPI VIO_BOOL input_brainsuite_graphics_file(
+    const char *filename,
+    int *n_objects,
+    object_struct **object_list[] );
+
+BICAPI VIO_BOOL input_wavefront_graphics_file(
+    const char *filename,
+    int *n_objects,
+    object_struct **object_list[] );
+
+BICAPI VIO_BOOL input_ply_graphics_file(
+    const char *filename,
+    int *n_objects,
+    object_struct **object_list[] );
+
 #ifdef __cplusplus
 }
 #endif

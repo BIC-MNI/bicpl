@@ -5,6 +5,10 @@
  * \file ply_io.c
  * \brief Input Stanford .ply format surface files.
  *
+ * This is an incomplete but functional implementation. It has not been 
+ * thoroughly tested because I have access to only a fairly small database 
+* of files, and the format is both vague and complex.
+ *
  * \copyright
               Copyright 1993-2016 David MacDonald and Robert D. Vincent
               McConnell Brain Imaging Centre,
@@ -19,18 +23,18 @@
  */
 
 static void
-swap_bytes(char *ptr, int n_total, int n_per_item)
+swap_bytes( char *ptr, int n_total, int n_per_item )
 {
   int d;
-  for (d = 0; d < n_total; d += n_per_item)
+  for ( d = 0; d < n_total; d += n_per_item )
   {
-    int hi_offset = n_per_item - 1;
-    int lo_offset = 0;
-    while (hi_offset > lo_offset)
+    int hi_offset = d + n_per_item - 1;
+    int lo_offset = d + 0;
+    while ( hi_offset > lo_offset )
     {
-      int tmp = ptr[d + hi_offset];
-      ptr[d + hi_offset] = ptr[d + lo_offset];
-      ptr[d + lo_offset] = tmp;
+      int tmp = ptr[hi_offset];
+      ptr[hi_offset] = ptr[lo_offset];
+      ptr[lo_offset] = tmp;
       hi_offset--;
       lo_offset++;
     }
@@ -38,16 +42,16 @@ swap_bytes(char *ptr, int n_total, int n_per_item)
 }
 
 static void
-trim(char *str)
+trim( char *str )
 {
   char *p = str;
-  while (*p != '\0')
+  while ( *p != '\0' )
   {
     p++;
   }
-  while (--p >= str)
+  while ( --p >= str )
   {
-    if (*p == '\n' || *p == '\r' || *p == ' ')
+    if ( *p == '\n' || *p == '\r' || *p == ' ' )
     {
       *p = 0;
     }
@@ -69,6 +73,17 @@ typedef enum property_type
   INT, UINT, FLOAT, DOUBLE, LIST
 } property_type_t;
 
+/** 
+ * This defines the maximum number of bytes that a property can contain.
+ */
+#define MAX_PROPERTY_BYTES 2048
+
+/** 
+ * This defines the maximum number of properties that an element can
+ * contain.
+ */
+#define MAX_PROPERTY_COUNT 24
+
 struct property_record
 {
   property_type_t prop_type;
@@ -77,46 +92,50 @@ struct property_record
   property_type_t element_type;
   int length;
   union {
-    char bval[1024];
-    short sval[1024/sizeof(short)];
-    int ival[1024/sizeof(int)];
-    float fval[1024/sizeof(float)];
-    double dval[1024/sizeof(double)];
+    char   bval[MAX_PROPERTY_BYTES];
+    short  sval[MAX_PROPERTY_BYTES / sizeof(short)];
+    int    ival[MAX_PROPERTY_BYTES / sizeof(int)];
+    float  fval[MAX_PROPERTY_BYTES / sizeof(float)];
+    double dval[MAX_PROPERTY_BYTES / sizeof(double)];
   } u;
 };
 
 static int
-read_ply_int(FILE *fp, int ply_type, int big_endian)
+read_ply_int( FILE *fp, int ply_type, int swap_needed )
 {
   char buf[8];
 
   switch (ply_type)
   {
   case CHAR:
-    fread(&buf[0], 1, 1, fp);
+    fread( &buf[0], 1, 1, fp );
     return (int) (char) buf[0];
   case UCHAR:
-    fread(&buf[0], 1, 1, fp);
+    fread( &buf[0], 1, 1, fp );
     return (int) (unsigned char) buf[0];
   case SHORT:
-    fread(&buf[0], 2, 1, fp);
-    if (big_endian)
-      swap_bytes(&buf[0], 2, 2);
+    fread( &buf[0], 2, 1, fp );
+    if ( swap_needed )
+    {
+      swap_bytes( &buf[0], 2, 2 );
+    }
     return (int) *(short *)&buf[0];
   case USHORT:
-    fread(&buf[0], 2, 1, fp);
-    if (big_endian)
-      swap_bytes(&buf[0], 2, 2);
+    fread( &buf[0], 2, 1, fp );
+    if ( swap_needed )
+    {
+      swap_bytes( &buf[0], 2, 2 );
+    }
     return (int) *(unsigned short *)&buf[0];
   case INT:
-    fread(&buf[0], 4, 1, fp);
-    if (big_endian)
-      swap_bytes(&buf[0], 4, 4);
+    fread( &buf[0], 4, 1, fp );
+    if ( swap_needed )
+      swap_bytes( &buf[0], 4, 4 );
     return (int) *(int *)&buf[0];
   case UINT:
-    fread(&buf[0], 4, 1, fp);
-    if (big_endian)
-      swap_bytes(&buf[0], 4, 4);
+    fread( &buf[0], 4, 1, fp );
+    if ( swap_needed )
+      swap_bytes( &buf[0], 4, 4 );
     return (int) *(unsigned int *)&buf[0];
   default:
     return -1;
@@ -132,7 +151,8 @@ plysize(int type_code)
     return 4;
   else if (type_code >= SHORT)
     return 2;
-  return 1;
+  else
+    return 1;
 }
 
 static int
@@ -211,48 +231,52 @@ scan_property_definition(char *p, struct property_record *prop_ptr)
   prop_ptr->prop_name = strdup( p );
 }
 
-int
-load_property_binary(FILE *fp, struct property_record *prop_ptr, int big_endian)
+static VIO_BOOL
+load_property_binary( FILE *fp, struct property_record *prop_ptr,
+                      int swap_needed )
 {
-  if (prop_ptr->prop_type == LIST)
+  int n_per_item = plysize( prop_ptr->element_type );
+  int n_total;
+
+  if ( prop_ptr->prop_type == LIST )
   {
-    int n_bytes = plysize(prop_ptr->element_type);
-    prop_ptr->length = read_ply_int(fp, prop_ptr->length_type, big_endian);
-    fread(prop_ptr->u.bval, n_bytes, prop_ptr->length, fp);
-    if (big_endian)
-    {
-      swap_bytes(prop_ptr->u.bval, prop_ptr->length * n_bytes, n_bytes);
-    }
+    prop_ptr->length = read_ply_int( fp, prop_ptr->length_type, swap_needed );
   }
   else
   {
-    int n_bytes = plysize(prop_ptr->prop_type);
-    fread(prop_ptr->u.bval, n_bytes, 1, fp);
-    if (big_endian)
-    {
-      swap_bytes(prop_ptr->u.bval, n_bytes, n_bytes);
-    }
+    prop_ptr->length = 1;
   }
-  return 0;
+  n_total = n_per_item * prop_ptr->length;
+  if ( n_total > MAX_PROPERTY_BYTES )
+  {
+    print_error( "Property is too large!\n" );
+    return FALSE;
+  }
+  fread( prop_ptr->u.bval, n_per_item, prop_ptr->length, fp );
+  if ( swap_needed && n_per_item > 1 )
+  {
+    swap_bytes( prop_ptr->u.bval, n_total, n_per_item );
+  }
+  return TRUE;
 }
 
-int
-load_property_text(char *ptr, char **endptr, struct property_record *prop_ptr)
+static int
+load_property_text( char *ptr, char **endptr, struct property_record *prop_ptr )
 {
   int i;
 
-  if (prop_ptr->prop_type == LIST)
+  if ( prop_ptr->prop_type == LIST )
   {
-    prop_ptr->length = strtol(ptr, &ptr, 10);
+    prop_ptr->length = strtol( ptr, &ptr, 10 );
   }
   else
   {
     prop_ptr->length = 1;
   }
 
-  for (i = 0; i < prop_ptr->length; i++)
+  for ( i = 0; i < prop_ptr->length; i++ )
   {
-    switch (prop_ptr->element_type)
+    switch ( prop_ptr->element_type )
     {
     case DOUBLE:
       prop_ptr->u.dval[i] = strtod( ptr, &ptr );
@@ -273,17 +297,16 @@ load_property_text(char *ptr, char **endptr, struct property_record *prop_ptr)
       prop_ptr->u.bval[i] = strtol( ptr, &ptr, 10 );
       break;
     default:
-      printf("SNH %s:%d\n", __func__, __LINE__ );
-      exit(-1);
+      print_error( "SNH %s:%d\n", __func__, __LINE__ );
+      exit( -1 );
     }
   }
   *endptr = ptr;
   return 0;
 }
 
-
-struct property_record *
-find_property( struct property_record *prop_arr, int n, char *name)
+static struct property_record *
+find_property( struct property_record *prop_arr, int n, char *name )
 {
   int i;
 
@@ -297,53 +320,64 @@ find_property( struct property_record *prop_arr, int n, char *name)
   return NULL;
 }
 
-
-int
-get_list_length( struct property_record *prop_ptr )
+static int
+get_property_length( struct property_record *prop_ptr )
 {
   return prop_ptr->length;
 }
 
-int
-get_list_element( struct property_record *prop_ptr, int k, void *ptr)
+static int
+get_property_element( struct property_record *prop_ptr, int k, void *value_ptr )
 {
-  if (k < 0 || (prop_ptr->prop_type == LIST && k >= prop_ptr->length))
+  if ( k < 0 || k >= prop_ptr->length )
   {
-    printf("SNH %s:%d\n", __func__, __LINE__);
-    exit(-1);
+    print_error( "SNH %s:%d\n", __func__, __LINE__ );
+    exit( -1 );
   }
 
-  switch (prop_ptr->element_type)
+  switch ( prop_ptr->element_type )
   {
   case CHAR:
-    *((int *)ptr) = (int) prop_ptr->u.bval[k];
+    *((int *)value_ptr) = (int) prop_ptr->u.bval[k];
     break;
   case UCHAR:
-    *((int *)ptr) = (int) (unsigned char) prop_ptr->u.bval[k];
+    *((int *)value_ptr) = (int) (unsigned char) prop_ptr->u.bval[k];
     break;
   case SHORT:
-    *((int *)ptr) = (int) prop_ptr->u.sval[k];
+    *((int *)value_ptr) = (int) prop_ptr->u.sval[k];
     break;
   case USHORT:
-    *((int *)ptr) = (int) (unsigned short) prop_ptr->u.sval[k];
+    *((int *)value_ptr) = (int) (unsigned short) prop_ptr->u.sval[k];
     break;
   case INT:
   case UINT:
-    *((int *)ptr) = (int) prop_ptr->u.ival[k];
+    *((int *)value_ptr) = (int) prop_ptr->u.ival[k];
     break;
   case FLOAT:
-    *((double *)ptr) = prop_ptr->u.fval[k];
+    *((double *)value_ptr) = prop_ptr->u.fval[k];
     break;
   case DOUBLE:
-    *((double *)ptr) = prop_ptr->u.dval[k];
+    *((double *)value_ptr) = prop_ptr->u.dval[k];
     break;
   default:
-    printf("SNH %s:%d\n", __func__, __LINE__);
+    print_error( "SNH %s:%d\n", __func__, __LINE__ );
     exit(-1);
   }
   return 1;
 }
 
+/** 
+ * Return non-zero if the processor is big-endian.
+ */
+static int
+is_big_endian(void)
+{
+  union {
+    int v;
+    char c[sizeof(int)];
+  } tmp = { 1 };
+  return tmp.c[0] == 0;
+}
 /**
  * Read a Stanford .ply format surface file, saving it as a
  * POLYGONS object in our internal format.
@@ -360,13 +394,13 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
   int n_indices = 0;
   int n_normals = 0;
   int is_binary;
-  int big_endian;
+  int swap_needed;
   polygons_struct *poly_ptr = get_polygons_ptr( object_ptr );
   int element_class = NONE;
   int i, j;
-  struct property_record face_props[10];
+  struct property_record face_props[MAX_PROPERTY_COUNT];
   int face_count = 0;
-  struct property_record vertex_props[10];
+  struct property_record vertex_props[MAX_PROPERTY_COUNT];
   int vertex_count = 0;
   struct property_record *prec_x, *prec_y, *prec_z;
   struct property_record *prec_r, *prec_g, *prec_b;
@@ -390,16 +424,16 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
   else if (!strcmp( line, "format binary_little_endian 1.0" ))
   {
     is_binary = 1;
-    big_endian = 0;
+    swap_needed = is_big_endian();
   }
   else if (!strcmp( line, "format binary_big_endian 1.0" ))
   {
     is_binary = 1;
-    big_endian = 1;
+    swap_needed = !is_big_endian();
   }
   else
   {
-    printf("format line error '%s'.\n", line);
+    print( "format line error '%s'.\n", line );
     return FALSE;
   }
 
@@ -408,6 +442,7 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
     trim( line );
     if (!strncmp( line, "comment ", 8 ))
     {
+      /* We just ignore comment lines. */
       continue;
     }
     else if (!strncmp( line, "element ", 8 ))
@@ -426,22 +461,30 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
       }
       else
       {
-        printf( "unknown element '%s'\n", line );
+        print_error( "unknown element '%s'\n", line );
         element_class = NONE;
         continue;
       }
     }
-    else if (!strncmp( line, "property ", 9))
+    else if ( !strncmp( line, "property ", 9 ) )
     {
       if ( element_class == VERTEX )
       {
         scan_property_definition( &line[9], &vertex_props[vertex_count] );
-        vertex_count++;
+        if ( ++vertex_count >= MAX_PROPERTY_COUNT )
+        {
+          print_error( "Too many vertex properties.\n" );
+          return FALSE;
+        }
       }
       else if ( element_class == FACE )
       {
         scan_property_definition( &line[9], &face_props[face_count] );
-        face_count++;
+        if ( ++face_count >= MAX_PROPERTY_COUNT )
+        {
+          print_error( "Too many face properties.\n" );
+          return FALSE;
+        }
       }
       else
       {
@@ -454,7 +497,7 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
     }
     else
     {
-      printf("unknown header directive '%s'\n", line);
+      print_error( "unknown header directive '%s'\n", line );
       continue;
     }
   }
@@ -465,7 +508,7 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
 
   if ( prec_x == NULL || prec_y == NULL || prec_z == NULL )
   {
-    printf("Can't read this .ply file, missing a coordinate.\n");
+    print_error( "Can't read this .ply file, missing a coordinate.\n" );
     return FALSE;
   }
 
@@ -473,7 +516,14 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
   prec_g = find_property( vertex_props, vertex_count, "green" );
   prec_b = find_property( vertex_props, vertex_count, "blue" );
 
-  if (prec_r != NULL && prec_g != NULL && prec_b != NULL )
+  if ( prec_r == NULL || prec_g == NULL || prec_b == NULL )
+  {
+    prec_r = find_property( vertex_props, vertex_count, "diffuse_red" );
+    prec_g = find_property( vertex_props, vertex_count, "diffuse_green" );
+    prec_b = find_property( vertex_props, vertex_count, "diffuse_blue" );
+  }
+
+  if ( prec_r != NULL && prec_g != NULL && prec_b != NULL )
   {
     poly_ptr->colour_flag = PER_VERTEX_COLOURS;
     FREE( poly_ptr->colours );
@@ -485,7 +535,7 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
 
   if ( prec_vertex_indices == NULL )
   {
-    printf("Can't read this .ply file, missing the vertex indices.\n");
+    print_error( "Can't read this .ply file, missing the vertex indices.\n" );
     return FALSE;
   }
 
@@ -496,7 +546,7 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
       char *p = &line[0];
       if (!fgets( line, sizeof(line), fp ))
       {
-        printf("premature end of file parsing vertices.\n");
+        print_error( "premature end of file parsing vertices.\n" );
         return FALSE;
       }
       for (j = 0; j < vertex_count; j++)
@@ -508,13 +558,13 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
     {
       for (j = 0; j < vertex_count; j++)
       {
-        load_property_binary( fp, &vertex_props[j], big_endian );
+        load_property_binary( fp, &vertex_props[j], swap_needed );
       }
     }
 
-    get_list_element( prec_x, 0, &x );
-    get_list_element( prec_y, 0, &y );
-    get_list_element( prec_z, 0, &z );
+    get_property_element( prec_x, 0, &x );
+    get_property_element( prec_y, 0, &y );
+    get_property_element( prec_z, 0, &z );
     Point_x( poly_ptr->points[i] ) = x;
     Point_y( poly_ptr->points[i] ) = y;
     Point_z( poly_ptr->points[i] ) = z;
@@ -522,21 +572,24 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
     if ( poly_ptr->colour_flag == PER_VERTEX_COLOURS )
     {
       int r, g, b;
-      get_list_element(prec_r, 0, &r);
-      get_list_element(prec_g, 0, &g);
-      get_list_element(prec_b, 0, &b);
+      get_property_element( prec_r, 0, &r );
+      get_property_element( prec_g, 0, &g );
+      get_property_element( prec_b, 0, &b );
+
       poly_ptr->colours[i] = make_Colour(r, g, b);
     }
   }
 
   for (i = 0; i < poly_ptr->n_items; i++)
   {
+    int n_elements;
+
     if (!is_binary)
     {
       char *p = &line[0];
       if (!fgets( line, sizeof(line), fp ))
       {
-        printf("premature end of file parsing vertices.\n");
+        print_error( "premature end of file parsing vertices.\n" );
         return FALSE;
       }
 
@@ -549,21 +602,21 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
     {
       for (j = 0; j < face_count; j++)
       {
-        load_property_binary( fp, &face_props[j], big_endian );
+        load_property_binary( fp, &face_props[j], swap_needed );
       }
     }
 
-    int n_el = get_list_length( prec_vertex_indices );
+    n_elements = get_property_length( prec_vertex_indices );
 
-    poly_ptr->end_indices[i] = n_indices + n_el;
+    poly_ptr->end_indices[i] = n_indices + n_elements;
 
-    for (j = 0; j < n_el; j++)
+    for (j = 0; j < n_elements; j++)
     {
       int i_pt;
-      get_list_element( prec_vertex_indices, j, &i_pt );
-      if (i_pt < 0 || i_pt >= poly_ptr->n_points)
+      get_property_element( prec_vertex_indices, j, &i_pt );
+      if ( i_pt < 0 || i_pt >= poly_ptr->n_points )
       {
-        printf("illegal vertex index in face.\n");
+        print_error( "illegal vertex index in face.\n" );
       }
       ADD_ELEMENT_TO_ARRAY( poly_ptr->indices,
                             n_indices,

@@ -5,6 +5,10 @@
  * \file wavefront_io.c
  * \brief Input Wavefront surface files.
  *
+ * Wavefront .obj files are quite simple ASCII files. We do not support
+ * any of the auxiliary information that can be used to support colours
+ * and textures, so these are always just single-colour images.
+ *
  * \copyright
               Copyright 1993-2016 David MacDonald and Robert D. Vincent
               McConnell Brain Imaging Centre,
@@ -42,68 +46,67 @@ input_wavefront_surface_file( FILE *fp, object_struct *object_ptr )
 
   initialize_polygons( poly_ptr, WHITE, NULL );
 
-  while (fgets( line, sizeof(line), fp ))
+  while ( fgets( line, sizeof(line), fp ) )
   {
     char *p = kw;
     char *s = line;
 
-    if (*s == '#')
+    if ( *s == '#' )            /* ignore comments */
     {
       continue;
     }
 
-    while (isspace(*s))
+    while ( isspace( *s ) )
     {
       s++;
     }
 
-    if (*s == '\n' || *s == '\0')
+    if ( *s == '\n' || *s == '\0' )
     {
       continue;
     }
 
-    while (isalpha(*s))
+    while ( isalpha( *s ) )
     {
       *p++ = *s++;
     }
     *p = 0;
 
-    while (isspace(*s))
-    {
-      s++;
-    }
-
-    if (!strcmp(kw, "v"))
+    if ( !strcmp( kw, "v" ) )
     {
       VIO_Point pt;
-      sscanf(s, "%f %f %f", &Point_x(pt), &Point_y(pt), &Point_z(pt));
+      Point_x(pt) = strtod( s, &s );
+      Point_y(pt) = strtod( s, &s );
+      Point_z(pt) = strtod( s, &s );
       ADD_ELEMENT_TO_ARRAY( poly_ptr->points, poly_ptr->n_points,
-                            pt, DEFAULT_CHUNK_SIZE );
+                            pt, DEFAULT_CHUNK_SIZE * 10 );
     }
-    else if (!strcmp(kw, "vn"))
+    else if ( !strcmp( kw, "vn" ) )
     {
       VIO_Vector vc;
-      sscanf(s, "%f %f %f", &Vector_x(vc), &Vector_y(vc), &Vector_z(vc));
-      ADD_ELEMENT_TO_ARRAY(poly_ptr->normals, n_normals,
-                           vc, DEFAULT_CHUNK_SIZE);
+      Vector_x( vc ) = strtod( s, &s );
+      Vector_y( vc ) = strtod( s, &s );
+      Vector_z( vc ) = strtod( s, &s );
+      ADD_ELEMENT_TO_ARRAY( poly_ptr->normals, n_normals,
+                            vc, DEFAULT_CHUNK_SIZE * 10 );
     }
-    else if (!strcmp(kw, "vt"))
+    else if ( !strcmp( kw, "vt" ) )
     {
       /* just ignore */
     }
-    else if (!strcmp(kw, "vp"))
+    else if ( !strcmp( kw, "vp" ) )
     {
       /* just ignore */
     }
-    else if (!strcmp(kw, "f"))
+    else if ( !strcmp( kw, "f" ) )
     {
-      while (*s != '\0')
+      while ( *s != '\0' )
       {
-        while (isspace(*s))
+        while ( isspace( *s ) )
         {
           s++;
         }
-        if (isdigit(*s))
+        if ( isdigit( *s ) )
         {
           int n = 0;
           while (isdigit(*s))
@@ -114,44 +117,50 @@ input_wavefront_surface_file( FILE *fp, object_struct *object_ptr )
           if (n < 0)
           {
             /* handle relative indices? */
-            printf("%d\n", n);
+            print_error("Negative indices are not supported!\n");
             return FALSE;
           }
           n = (n - 1) % (poly_ptr->n_points);
           ADD_ELEMENT_TO_ARRAY( poly_ptr->indices, n_indices, n,
-                                DEFAULT_CHUNK_SIZE );
+                                DEFAULT_CHUNK_SIZE * 100 );
         }
         if (*s == '/')
         {
           s++;
-          while (isdigit(*s))
+          while ( isdigit( *s ) )
           {
             s++;
           }
           if (*s == '/')
           {
             s++;
-            while (isdigit(*s))
+            while ( isdigit( *s ) )
             {
               s++;
             }
           }
         }
       }
-      ADD_ELEMENT_TO_ARRAY(poly_ptr->end_indices, poly_ptr->n_items,
-                           n_indices, DEFAULT_CHUNK_SIZE );
+      ADD_ELEMENT_TO_ARRAY( poly_ptr->end_indices, poly_ptr->n_items,
+                            n_indices, DEFAULT_CHUNK_SIZE * 10 );
     }
-    else if (!strcmp(kw, "usemtl") ||
-             !strcmp(kw, "mtllib") ||
-             !strcmp(kw, "o") ||
-             !strcmp(kw, "s") ||
-             !strcmp(kw, "g"))
+    else if ( !strcmp( kw, "usemtl" ) ||
+              !strcmp( kw, "mtllib" ) ||
+              !strcmp( kw, "o" ) ||
+              !strcmp( kw, "s" ) ||
+              !strcmp( kw, "g" ))
     {
       /* ignore */
     }
     else
     {
-      printf("Unknown record type '%s'\n", kw);
+      /* Tiny bit of "ply format" awareness - don't print an error for
+       * .ply files.
+       */
+      if (strcmp( kw, "ply" ))
+      {
+        printf( "Unknown record type '%s'\n", kw );
+      }
       return FALSE;
     }
   }
