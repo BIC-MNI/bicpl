@@ -1,3 +1,7 @@
+2016-06-28  Robert D. Vincent <robert.d.vincent@mcgill.ca>
+	* Objects/wavefront_io.c, Objects/ply_io.c: Add support for
+	reading Wavefront .obj and Stanford .ply surface files.
+
 2016-05-22  Robert D. Vincent <robert.d.vincent@mcgill.ca>
 	* Volumes/filters.c: Make the linear interpolation filter work.
 	Also fixed some warnings.
