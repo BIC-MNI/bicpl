@@ -21,11 +21,6 @@
               software for any purpose.  It is provided "as is" without
               express or implied warranty.
  */
-#define DFS_MAGIC_N_BYTES 12
-#define N_PER_TRIANGLE 3
-
-#define SIZEOF_POINT ( sizeof( float ) * N_PER_TRIANGLE )
-#define SIZEOF_TRIANGLE (sizeof( int32_t ) * N_PER_TRIANGLE)
 
 /**
  * Read a WaveFront .obj format surface file, saving it as a
@@ -154,10 +149,10 @@ input_wavefront_surface_file( FILE *fp, object_struct *object_ptr )
     }
     else
     {
-      /* Tiny bit of "ply format" awareness - don't print an error for
-       * .ply files.
+      /* Print this message only if we have successfully parsed some
+       * data already.
        */
-      if (strcmp( kw, "ply" ))
+      if ( poly_ptr->n_items > 0 || poly_ptr->n_points > 0 )
       {
         printf( "Unknown record type '%s'\n", kw );
       }
@@ -174,7 +169,7 @@ input_wavefront_surface_file( FILE *fp, object_struct *object_ptr )
 }
 
 /**
- * Function to read BrainSuite geometric files into the internal
+ * Function to read Wavefront .obj geometric files into the internal
  * object representation.
  * \param filename The path to the file.
  * \param n_objects A pointer to the object count field of the model.
