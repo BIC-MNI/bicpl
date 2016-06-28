@@ -66,14 +66,24 @@ typedef enum element_class
 typedef enum property_type
 {
   CHAR, UCHAR, SHORT, USHORT,
-  INT, UINT, FLOAT, DOUBLE
+  INT, UINT, FLOAT, DOUBLE, LIST
 } property_type_t;
 
-typedef enum property_id
+struct property_record
 {
-  ID_X, ID_Y, ID_Z, ID_R, ID_G, ID_B
-} property_id_t;
-
+  property_type_t prop_type;
+  char *prop_name;
+  property_type_t length_type;
+  property_type_t element_type;
+  int length;
+  union {
+    char bval[1024];
+    short sval[1024/sizeof(short)];
+    int ival[1024/sizeof(int)];
+    float fval[1024/sizeof(float)];
+    double dval[1024/sizeof(double)];
+  } u;
+};
 
 static int
 read_ply_int(FILE *fp, int ply_type, int big_endian)
@@ -109,7 +119,6 @@ read_ply_int(FILE *fp, int ply_type, int big_endian)
       swap_bytes(&buf[0], 4, 4);
     return (int) *(unsigned int *)&buf[0];
   default:
-    printf("???? %d\n", ply_type);
     return -1;
   }
 }
@@ -152,7 +161,7 @@ plytype(char *ptr, char **endptr)
     {"float64", DOUBLE },
     {NULL, 0}
   };
-    
+
   property_type_t typecode = -1;
   int i;
 
@@ -179,55 +188,160 @@ plytype(char *ptr, char **endptr)
   return typecode;
 }
 
-static int
-plyprop(char *ptr, char **endptr)
+static void
+scan_property_definition(char *p, struct property_record *prop_ptr)
 {
-  static struct propname
+  if (!strncmp( p, "list ", 5 ))
   {
-    const char *name;
-    int code;
-  } propnames[] = {
-    {"x", ID_X },
-    {"y", ID_Y },
-    {"z", ID_Z },
-    {"red", ID_R },
-    {"green", ID_G },
-    {"blue", ID_B },
-    {NULL, 0}
-  };
-    
-  property_id_t idcode = -1;
+    p += 5;
+    prop_ptr->prop_type = LIST;
+    prop_ptr->length_type = plytype( p, &p );
+    prop_ptr->element_type = plytype( p, &p );
+  }
+  else
+  {
+    prop_ptr->prop_type = plytype( p, &p );
+    prop_ptr->element_type = prop_ptr->prop_type;
+  }
+  while ( isspace( *p ) )
+  {
+    p++;
+  }
+
+  prop_ptr->prop_name = strdup( p );
+}
+
+int
+load_property_binary(FILE *fp, struct property_record *prop_ptr, int big_endian)
+{
+  if (prop_ptr->prop_type == LIST)
+  {
+    int n_bytes = plysize(prop_ptr->element_type);
+    prop_ptr->length = read_ply_int(fp, prop_ptr->length_type, big_endian);
+    fread(prop_ptr->u.bval, n_bytes, prop_ptr->length, fp);
+    if (big_endian)
+    {
+      swap_bytes(prop_ptr->u.bval, prop_ptr->length * n_bytes, n_bytes);
+    }
+  }
+  else
+  {
+    int n_bytes = plysize(prop_ptr->prop_type);
+    fread(prop_ptr->u.bval, n_bytes, 1, fp);
+    if (big_endian)
+    {
+      swap_bytes(prop_ptr->u.bval, n_bytes, n_bytes);
+    }
+  }
+  return 0;
+}
+
+int
+load_property_text(char *ptr, char **endptr, struct property_record *prop_ptr)
+{
   int i;
 
-  while (isspace(*ptr))
+  if (prop_ptr->prop_type == LIST)
   {
-    ptr++;
+    prop_ptr->length = strtol(ptr, &ptr, 10);
+  }
+  else
+  {
+    prop_ptr->length = 1;
   }
 
-  for (i = 0; propnames[i].name != NULL; i++)
+  for (i = 0; i < prop_ptr->length; i++)
   {
-    int nlen = strlen( propnames[i].name );
-    if (!strncmp( ptr, propnames[i].name, nlen ) && ptr[nlen] == '\0')
+    switch (prop_ptr->element_type)
     {
-      ptr += nlen + 1;
-      idcode = propnames[i].code;
+    case DOUBLE:
+      prop_ptr->u.dval[i] = strtod( ptr, &ptr );
       break;
+    case FLOAT:
+      prop_ptr->u.fval[i] = strtod( ptr, &ptr );
+      break;
+    case UINT:
+    case INT:
+      prop_ptr->u.ival[i] = strtol( ptr, &ptr, 10 );
+      break;
+    case USHORT:
+    case SHORT:
+      prop_ptr->u.sval[i] = strtol( ptr, &ptr, 10 );
+      break;
+    case UCHAR:
+    case CHAR:
+      prop_ptr->u.bval[i] = strtol( ptr, &ptr, 10 );
+      break;
+    default:
+      printf("SNH %s:%d\n", __func__, __LINE__ );
+      exit(-1);
     }
   }
+  *endptr = ptr;
+  return 0;
+}
 
-  if (idcode < 0)
+
+struct property_record *
+find_property( struct property_record *prop_arr, int n, char *name)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
   {
-    while (!isspace(*ptr) && *ptr != '\0')
+    if (!strcmp( name, prop_arr[i].prop_name ))
     {
-      ptr++;
+      return &prop_arr[i];
     }
   }
+  return NULL;
+}
 
-  if (endptr != NULL)
+
+int
+get_list_length( struct property_record *prop_ptr )
+{
+  return prop_ptr->length;
+}
+
+int
+get_list_element( struct property_record *prop_ptr, int k, void *ptr)
+{
+  if (k < 0 || (prop_ptr->prop_type == LIST && k >= prop_ptr->length))
   {
-    *endptr = ptr;
+    printf("SNH %s:%d\n", __func__, __LINE__);
+    exit(-1);
   }
-  return idcode;
+
+  switch (prop_ptr->element_type)
+  {
+  case CHAR:
+    *((int *)ptr) = (int) prop_ptr->u.bval[k];
+    break;
+  case UCHAR:
+    *((int *)ptr) = (int) (unsigned char) prop_ptr->u.bval[k];
+    break;
+  case SHORT:
+    *((int *)ptr) = (int) prop_ptr->u.sval[k];
+    break;
+  case USHORT:
+    *((int *)ptr) = (int) (unsigned short) prop_ptr->u.sval[k];
+    break;
+  case INT:
+  case UINT:
+    *((int *)ptr) = (int) prop_ptr->u.ival[k];
+    break;
+  case FLOAT:
+    *((double *)ptr) = prop_ptr->u.fval[k];
+    break;
+  case DOUBLE:
+    *((double *)ptr) = prop_ptr->u.dval[k];
+    break;
+  default:
+    printf("SNH %s:%d\n", __func__, __LINE__);
+    exit(-1);
+  }
+  return 1;
 }
 
 /**
@@ -249,11 +363,15 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
   int big_endian;
   polygons_struct *poly_ptr = get_polygons_ptr( object_ptr );
   int element_class = NONE;
-  int i;
-  char *p;
-  int vertex_size = 0;
-  int vertex_list_type = -1;
-  int vertex_elem_type = -1;
+  int i, j;
+  struct property_record face_props[10];
+  int face_count = 0;
+  struct property_record vertex_props[10];
+  int vertex_count = 0;
+  struct property_record *prec_x, *prec_y, *prec_z;
+  struct property_record *prec_r, *prec_g, *prec_b;
+  struct property_record *prec_vertex_indices;
+  double x, y, z;
 
   initialize_polygons( poly_ptr, WHITE, NULL );
 
@@ -284,10 +402,9 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
     printf("format line error '%s'.\n", line);
     return FALSE;
   }
-  
+
   while ( fgets( line, sizeof(line), fp ) )
   {
-    p = &line[0];
     trim( line );
     if (!strncmp( line, "comment ", 8 ))
     {
@@ -298,7 +415,6 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
       if (!strncmp( &line[8], "vertex ", 7 ))
       {
         element_class = VERTEX;
-        vertex_size = 0;
         poly_ptr->n_points = strtol( &line[15], NULL, 10 );
         ALLOC( poly_ptr->points, poly_ptr->n_points );
       }
@@ -317,81 +433,18 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
     }
     else if (!strncmp( line, "property ", 9))
     {
-      p += 9;
-      if (element_class == VERTEX)
+      if ( element_class == VERTEX )
       {
-        int id;
-        int element_type;
-
-        /* expect several lines of the form
-           property <type> x
-           property <type> y
-           property <type> z
-           [property <type> r]
-           [property <type> g]
-           [property <type> b]
-        */
-        if ( ( element_type = plytype( p, &p ) ) < 0 )
-        {
-          printf("not a type '%s'\n", line);
-          return FALSE;
-        }
-
-        /* accumulate size for binary records. */
-        vertex_size += plysize( element_type );
-
-        if ( ( id = plyprop( p, &p ) ) < 0 )
-        {
-          printf("unknown property '%s'\n", line);
-        }
-        
-        if ( id == ID_R )
-        {
-          poly_ptr->colour_flag = PER_VERTEX_COLOURS;
-          ALLOC( poly_ptr->colours, poly_ptr->n_points );
-        }
+        scan_property_definition( &line[9], &vertex_props[vertex_count] );
+        vertex_count++;
       }
       else if ( element_class == FACE )
       {
-        int tmp_list_type;
-        int tmp_elem_type;
-        /* expect one line of the form:
-           list <type1> <type2> vertex_indices
-        */
-        if (!strncmp( p, "list ", 5 ))
-        {
-          p += 5;
-        }
-        else
-        {
-          printf("list not found where expected\n");
-          return FALSE;
-        }
-        if ( ( tmp_list_type = plytype( p, &p ) ) < 0 )
-        {
-          return FALSE;
-        }
-        if ( ( tmp_elem_type = plytype( p, &p ) ) < 0 )
-        {
-          return FALSE;
-        }
-        while ( isspace( *p ) )
-        {
-          p++;
-        }
-        if (!strncmp( p, "vertex_indices", 14 ))
-        {
-          vertex_list_type = tmp_list_type;
-          vertex_elem_type = tmp_elem_type;
-        }
-        else
-        {
-          /* unknown alternative list? */
-        }
+        scan_property_definition( &line[9], &face_props[face_count] );
+        face_count++;
       }
       else
       {
-        printf("unknown element class '%s'.\n", line);
         continue;
       }
     }
@@ -406,107 +459,117 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
     }
   }
 
-  if (!is_binary)
+  prec_x = find_property( vertex_props, vertex_count, "x" );
+  prec_y = find_property( vertex_props, vertex_count, "y" );
+  prec_z = find_property( vertex_props, vertex_count, "z" );
+
+  if ( prec_x == NULL || prec_y == NULL || prec_z == NULL )
   {
-    for ( i = 0; i < poly_ptr->n_points; i++ )
+    printf("Can't read this .ply file, missing a coordinate.\n");
+    return FALSE;
+  }
+
+  prec_r = find_property( vertex_props, vertex_count, "red" );
+  prec_g = find_property( vertex_props, vertex_count, "green" );
+  prec_b = find_property( vertex_props, vertex_count, "blue" );
+
+  if (prec_r != NULL && prec_g != NULL && prec_b != NULL )
+  {
+    poly_ptr->colour_flag = PER_VERTEX_COLOURS;
+    FREE( poly_ptr->colours );
+    ALLOC( poly_ptr->colours, poly_ptr->n_points );
+  }
+
+  prec_vertex_indices = find_property( face_props, face_count,
+                                       "vertex_indices" );
+
+  if ( prec_vertex_indices == NULL )
+  {
+    printf("Can't read this .ply file, missing the vertex indices.\n");
+    return FALSE;
+  }
+
+  for ( i = 0; i < poly_ptr->n_points; i++ )
+  {
+    if (!is_binary)
     {
-      if ((i % 10000) == 0) printf("vertex %d\n", i);
+      char *p = &line[0];
       if (!fgets( line, sizeof(line), fp ))
       {
         printf("premature end of file parsing vertices.\n");
         return FALSE;
       }
-      p = &line[0];
-      Point_x( poly_ptr->points[i] ) = strtod( p, &p );
-      Point_y( poly_ptr->points[i] ) = strtod( p, &p );
-      Point_z( poly_ptr->points[i] ) = strtod( p, &p );
-      if ( poly_ptr->colour_flag == PER_VERTEX_COLOURS )
+      for (j = 0; j < vertex_count; j++)
       {
-        int r = strtol( p, &p, 10 );
-        int g = strtol( p, &p, 10 );
-        int b = strtol( p, &p, 10 );
-
-        poly_ptr->colours[i] = make_Colour(r, g, b);
+        load_property_text( p, &p, &vertex_props[j] );
+      }
+    }
+    else
+    {
+      for (j = 0; j < vertex_count; j++)
+      {
+        load_property_binary( fp, &vertex_props[j], big_endian );
       }
     }
 
-    for (i = 0; i < poly_ptr->n_items; i++)
+    get_list_element( prec_x, 0, &x );
+    get_list_element( prec_y, 0, &y );
+    get_list_element( prec_z, 0, &z );
+    Point_x( poly_ptr->points[i] ) = x;
+    Point_y( poly_ptr->points[i] ) = y;
+    Point_z( poly_ptr->points[i] ) = z;
+
+    if ( poly_ptr->colour_flag == PER_VERTEX_COLOURS )
     {
-      int j;
-      int n_el = 0;
-      int i_pt;
-
-      if ((i % 10000) == 0) printf("face %d\n", i);
-
-      if (!fgets( line, sizeof(line), fp ))
-      {
-        printf("premature end of file parsing vertices.\n");
-        return FALSE;
-      }
-
-      p = &line[0];
-      n_el = strtol(p, &p, 10);
-
-      poly_ptr->end_indices[i] = n_indices + n_el;
-
-      for (j = 0; j < n_el; j++)
-      {
-        i_pt = strtol(p, &p, 10);
-        if (i_pt < 0 || i_pt >= poly_ptr->n_points)
-        {
-          printf("illegal vertex index in face.\n");
-        }
-        ADD_ELEMENT_TO_ARRAY( poly_ptr->indices,
-                              n_indices,
-                              i_pt,
-                              DEFAULT_CHUNK_SIZE);
-
-      }
+      int r, g, b;
+      get_list_element(prec_r, 0, &r);
+      get_list_element(prec_g, 0, &g);
+      get_list_element(prec_b, 0, &b);
+      poly_ptr->colours[i] = make_Colour(r, g, b);
     }
   }
-  else
+
+  for (i = 0; i < poly_ptr->n_items; i++)
   {
-    char buf[128];
-
-    for ( i = 0; i < poly_ptr->n_points; i++ )
+    if (!is_binary)
     {
-      if ((i % 10000) == 0) printf("vertex %d\n", i);
-
-      fread(buf, vertex_size, 1, fp);
-      if (big_endian)
+      char *p = &line[0];
+      if (!fgets( line, sizeof(line), fp ))
       {
-        swap_bytes( buf, sizeof(buf), 4 );
+        printf("premature end of file parsing vertices.\n");
+        return FALSE;
       }
-      Point_x( poly_ptr->points[i] ) = *(float *)&buf[0];
-      Point_y( poly_ptr->points[i] ) = *(float *)&buf[4];
-      Point_z( poly_ptr->points[i] ) = *(float *)&buf[8];
+
+      for (j = 0; j < face_count; j++)
+      {
+        load_property_text( p, &p, &face_props[j] );
+      }
+    }
+    else
+    {
+      for (j = 0; j < face_count; j++)
+      {
+        load_property_binary( fp, &face_props[j], big_endian );
+      }
     }
 
-    for ( i = 0; i < poly_ptr->n_items; i++ )
+    int n_el = get_list_length( prec_vertex_indices );
+
+    poly_ptr->end_indices[i] = n_indices + n_el;
+
+    for (j = 0; j < n_el; j++)
     {
-      int n_el;
-      int j;
-
-      if ((i % 10000) == 0) printf("face %d\n", i);
-
-      n_el = read_ply_int( fp, vertex_list_type, big_endian );
-
-      poly_ptr->end_indices[i] = n_indices + n_el;
-
-      for ( j = 0; j < n_el; j++ )
+      int i_pt;
+      get_list_element( prec_vertex_indices, j, &i_pt );
+      if (i_pt < 0 || i_pt >= poly_ptr->n_points)
       {
-        int i_pt = read_ply_int( fp, vertex_elem_type, big_endian );
-
-        /* Using n_items as the "chunk size" here helps improve perfomance,
-         * and is probably generally efficient because we expect that the
-         * total number of vertices will be a small multiple of the total
-         * number of polygons.
-         */
-        ADD_ELEMENT_TO_ARRAY( poly_ptr->indices,
-                              n_indices,
-                              i_pt,
-                              poly_ptr->n_items );
+        printf("illegal vertex index in face.\n");
       }
+      ADD_ELEMENT_TO_ARRAY( poly_ptr->indices,
+                            n_indices,
+                            i_pt,
+                            poly_ptr->n_items );
+
     }
   }
 
