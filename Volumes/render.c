@@ -14,67 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/render.c,v 1.46 2009-06-29 18:10:48 claude Exp $";
-#endif
-
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : clip
-@INPUT      : left_edge
-              right_edge
-              origin
-              delta
-@OUTPUT     : t_min
-              t_max
-@RETURNS    :
-@DESCRIPTION: Clips one row of a slice.
-@METHOD     :
-@GLOBALS    :
-@CALLS      :
-@CREATED    :         1993    David MacDonald
-@MODIFIED   :
----------------------------------------------------------------------------- */
-
-static void  clip(
-    VIO_Real  left_edge,
-    VIO_Real  right_edge,
-    VIO_Real  origin,
-    VIO_Real  delta,
-    VIO_Real  *t_min,
-    VIO_Real  *t_max )
-{
-    VIO_Real  t;
-
-    if( delta == 0.0 )
-    {
-        if( origin < left_edge || origin >= right_edge )
-        {
-            *t_min = 1.0;
-            *t_max = 0.0;
-        }
-    }
-    else if( delta > 0.0 )
-    {
-        t = (left_edge - origin) / delta;
-        if( t > *t_min )
-            *t_min = t;
-
-        t = (right_edge - origin) / delta;
-        if( t < *t_max )
-            *t_max = t;
-    }
-    else
-    {
-        t = (left_edge - origin) / delta;
-        if( t < *t_max )
-            *t_max = t;
-
-        t = (right_edge - origin) / delta;
-        if( t > *t_min )
-            *t_min = t;
-    }
-}
-
 typedef  struct
 {
     size_t  **x_offsets1;
@@ -744,6 +683,64 @@ BICAPI void  render_volume_to_slice(
   }
 }
 #else
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : clip
+@INPUT      : left_edge
+              right_edge
+              origin
+              delta
+@OUTPUT     : t_min
+              t_max
+@RETURNS    :
+@DESCRIPTION: Clips one row of a slice.
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
+@CREATED    :         1993    David MacDonald
+@MODIFIED   :
+---------------------------------------------------------------------------- */
+
+static void  clip(
+    VIO_Real  left_edge,
+    VIO_Real  right_edge,
+    VIO_Real  origin,
+    VIO_Real  delta,
+    VIO_Real  *t_min,
+    VIO_Real  *t_max )
+{
+    VIO_Real  t;
+
+    if( delta == 0.0 )
+    {
+        if( origin < left_edge || origin >= right_edge )
+        {
+            *t_min = 1.0;
+            *t_max = 0.0;
+        }
+    }
+    else if( delta > 0.0 )
+    {
+        t = (left_edge - origin) / delta;
+        if( t > *t_min )
+            *t_min = t;
+
+        t = (right_edge - origin) / delta;
+        if( t < *t_max )
+            *t_max = t;
+    }
+    else
+    {
+        t = (left_edge - origin) / delta;
+        if( t < *t_max )
+            *t_max = t;
+
+        t = (right_edge - origin) / delta;
+        if( t > *t_min )
+            *t_min = t;
+    }
+}
+
 BICAPI void  render_volume_to_slice(
     int             n_dims1,
     int             sizes1[],

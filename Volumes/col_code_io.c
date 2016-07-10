@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/col_code_io.c,v 1.6 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 #define    DEFAULT_USER_DEFINED_COLOUR_CODE_SUFFIX      "ccd"
 
 BICAPI VIO_STR    get_default_user_def_colour_code_suffix( void )

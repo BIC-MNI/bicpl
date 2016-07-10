@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/colour_coding.c,v 1.28 2007-07-03 22:25:06 claude Exp $";
-#endif
-
 static void  interpolate_colours(
     colour_point   *p1,
     colour_point   *p2,
@@ -688,7 +684,7 @@ BICAPI VIO_Colour  get_colour_code(
     if( n_points < 2 )
     {
         print_error( "get_colour_code(): invalid piecewise function.\n" );
-        return( make_rgba_Colour( 0, 0, 0, 0 ) );
+        return( TRANSPARENT );
     }
 
     points = colour_coding->colour_points;

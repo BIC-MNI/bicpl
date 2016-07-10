@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/scan_markers.c,v 1.8 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : scan_marker_to_voxels
 @INPUT      : marker

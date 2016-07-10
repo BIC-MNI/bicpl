@@ -15,11 +15,6 @@
 #include "bicpl_internal.h"
 #include  <assert.h>
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/quadmesh.c,v 1.21 2005-08-17 22:28:27 bert Exp $";
-#endif
-
-
 /*! \defgroup grp_quadmesh Quadmeshes
  *  \ingroup grp_bicobj
  *

@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/pixels.c,v 1.27 2005-08-17 22:28:27 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : initialize_pixels
 @INPUT      : x_position

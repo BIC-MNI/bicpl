@@ -14,11 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/object_io.c,v 1.30 2005-08-17 22:28:27 bert Exp $";
-#endif
-
-
 /*! \defgroup grp_file File Format
 
 A BIC OBJ file stores one or more geometrical objects with

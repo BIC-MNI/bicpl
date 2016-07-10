@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/gaussian.c,v 1.8 2005-08-17 22:28:59 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : scaled_maximal_pivoting_gaussian_elimination_float
 @INPUT      : n

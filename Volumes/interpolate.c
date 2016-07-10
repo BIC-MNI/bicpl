@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/interpolate.c,v 1.12 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : interpolate_volume_to_slice
 @INPUT      : volume1

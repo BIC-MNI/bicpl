@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/tubes.c,v 1.7 2005-08-17 22:30:25 bert Exp $";
-#endif
-
 static  void  generate_tube(
     int    n_points,
     VIO_Point  points[],

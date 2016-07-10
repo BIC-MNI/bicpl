@@ -21,10 +21,6 @@
 #include <limits.h>
 #include <float.h>
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/rend_f.c,v 1.10 2008-12-19 00:07:55 claude Exp $";
-#endif
-
 #include  "render_funcs_include.c"
 
 /* ----------------------------- MNI Header -----------------------------------

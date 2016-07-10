@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/object_bintrees.c,v 1.13 2005-08-17 22:31:12 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : delete_the_bintree
 @INPUT      : bintree

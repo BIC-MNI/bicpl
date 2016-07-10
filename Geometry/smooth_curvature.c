@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/smooth_curvature.c,v 1.17 2005-08-17 22:30:25 bert Exp $";
-#endif
-
 static  int  get_smoothing_points(
     polygons_struct   *polygons,
     int               n_neighbours[],

@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/talairach.c,v 1.15 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 #define  TALAIRACH_OFFSET   16.0
 
 #define  FALSE  0

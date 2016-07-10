@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/mapping.c,v 1.34 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 #define  DISTANCE_THRESHOLD  1.0e-10
 
 /* ----------------------------- MNI Header -----------------------------------

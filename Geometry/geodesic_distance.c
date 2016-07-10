@@ -12,10 +12,6 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/geodesic_distance.c,v 1.9 2005-08-17 22:30:25 bert Exp $";
-#endif
-
 #include "bicpl_internal.h"
 
 

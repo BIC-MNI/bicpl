@@ -80,10 +80,6 @@ Tue Jun  8 08:44:59 EST 1993 LC
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/rotmat_to_ang.c,v 1.21 2005-08-17 22:26:48 bert Exp $";
-#endif
-
 #ifdef DEBUG
 static  void  are_rotations_equivalent(
     VIO_Transform  *rot_trans,

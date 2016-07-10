@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Prog_utils/arguments.c,v 1.14 2005-08-17 22:27:56 bert Exp $";
-#endif
-
 typedef struct
 {
     int   argc;

@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/dilate.c,v 1.14 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
              Voxel_classes;
 

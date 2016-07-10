@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/smooth.c,v 1.22 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 static VIO_Real  calculate_weight(
     int      x,
     VIO_Real     dx,

@@ -27,10 +27,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/procrustes.c,v 1.15 2005-08-17 22:26:47 bert Exp $";
-#endif
-
 static  VIO_Real  trace_of_matrix(
     int    size,
     VIO_Real   **the_matrix );

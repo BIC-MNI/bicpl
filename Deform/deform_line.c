@@ -4,11 +4,11 @@
 static  void  perturb_line_points(
     int                          axis,
     lines_struct                 *lines,
-    VIO_Real                         curvature_factors[],
-    VIO_Point                        new_points[],
-    VIO_Real                         fractional_step,
-    VIO_Real                         max_step,
-    VIO_Real                         max_search_distance,
+    VIO_Real                     curvature_factors[],
+    VIO_Point                    new_points[],
+    VIO_Real                     fractional_step,
+    VIO_Real                     max_step,
+    VIO_Real                     max_search_distance,
     int                          degrees_continuity,
     deform_data_struct           *deform_data,
     boundary_definition_struct   *boundary_def,
@@ -24,7 +24,7 @@ BICAPI  void  deform_lines(
     deform_struct     *deform_parms )
 {
     int                iteration;
-    VIO_Real               max_error;
+    VIO_Real           max_error;
 
     iteration = 0;
     do
@@ -51,13 +51,13 @@ static  VIO_Real  one_iteration_lines(
     int               iteration )
 {
     int                axis;
-    VIO_Point              *new_points, *tmp;
-    VIO_Real               *curvature_factors;
+    VIO_Point          *new_points, *tmp;
+    VIO_Real           *curvature_factors;
     deform_stats       stats;
 
     if( lines->n_items > 1 || 
-        lines->end_indices[0] != lines->n_points &&
-        lines->end_indices[0] != lines->n_points+1 )
+        ( lines->end_indices[0] != lines->n_points &&
+          lines->end_indices[0] != lines->n_points+1 ) )
     {
         print_error( "Must use on single line.\n" );
         return( 0.0 );

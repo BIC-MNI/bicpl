@@ -15,10 +15,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/bintree.c,v 1.10 2005-08-17 22:31:12 bert Exp $";
-#endif
-
 static  VIO_Status  io_range(
     FILE             *file,
     VIO_IO_types         direction,

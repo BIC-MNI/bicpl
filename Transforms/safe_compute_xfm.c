@@ -83,10 +83,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/safe_compute_xfm.c,v 1.13 2005-08-17 22:26:48 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : safe_compute_transform_from_tags
 @INPUT      : npoints - number of pairs of tag points

@@ -428,7 +428,7 @@ BICAPI  VIO_BOOL  find_boundary_in_direction(
             if( voxel_might_contain_boundary( volume, done_bits, surface_bits,
                                               degrees_continuity, voxel_index0,
                                               boundary_def ) &&
-                (isovalue &&
+                ((isovalue &&
                  check_voxel_for_isovalue( lookup, volume, label_volume,
                                            degrees_continuity,
                                            voxel_index0,
@@ -437,8 +437,8 @@ BICAPI  VIO_BOOL  find_boundary_in_direction(
                                            current_distance0, max_dist,
                                            boundary_def->min_isovalue,
                                            boundary_def->normal_direction,
-                                           found, &found_dist ) ||
-                !isovalue &&
+                                           found, &found_dist )) ||
+                 (!isovalue &&
                 check_voxel_for_boundary( lookup, volume, label_volume,
                                           degrees_continuity,
                                           voxel_index0,
@@ -446,7 +446,7 @@ BICAPI  VIO_BOOL  find_boundary_in_direction(
                                           &inside_surface0,
                                           FALSE,
                                           current_distance0, max_dist,
-                                          boundary_def, found, &found_dist ) ) )
+                                          boundary_def, found, &found_dist ) ) ) )
             {
                 found = TRUE;
                 *boundary_distance = found_dist;
@@ -510,7 +510,7 @@ BICAPI  VIO_BOOL  find_boundary_in_direction(
             if( voxel_might_contain_boundary( volume, done_bits, surface_bits,
                                               degrees_continuity, voxel_index1,
                                               boundary_def ) &&
-                (isovalue &&
+                ((isovalue &&
                  check_voxel_for_isovalue( lookup, volume, label_volume,
                                            degrees_continuity,
                                            voxel_index1,
@@ -519,8 +519,8 @@ BICAPI  VIO_BOOL  find_boundary_in_direction(
                                            current_distance1, max_dist,
                                            boundary_def->min_isovalue,
                                            boundary_def->normal_direction,
-                                           found, &found_dist ) ||
-                !isovalue &&
+                                           found, &found_dist )) ||
+                 (!isovalue &&
                 check_voxel_for_boundary( lookup, volume, label_volume,
                                           degrees_continuity,
                                           voxel_index1,
@@ -528,7 +528,7 @@ BICAPI  VIO_BOOL  find_boundary_in_direction(
                                           &inside_surface1,
                                           TRUE,
                                           current_distance1, max_dist,
-                                          boundary_def, found, &found_dist ) ) )
+                                          boundary_def, found, &found_dist ) ) ) )
             {
                 found = TRUE;
                 *boundary_distance = found_dist;
@@ -724,8 +724,8 @@ static  VIO_BOOL  check_voxel_for_isovalue(
                                first_deriv[VIO_Z] * line_direction[VIO_Z];
                     if( searching_inwards )
                         dot_prod = -dot_prod;
-                    if( normal_direction == TOWARDS_LOWER && dot_prod > 0.0 ||
-                        normal_direction == TOWARDS_HIGHER && dot_prod < 0.0 )
+                    if( (normal_direction == TOWARDS_LOWER && dot_prod > 0.0) ||
+                        (normal_direction == TOWARDS_HIGHER && dot_prod < 0.0) )
                     {
                         deriv_dir_correct = FALSE;
                     }

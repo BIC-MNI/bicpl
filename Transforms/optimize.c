@@ -15,10 +15,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/optimize.c,v 1.16 2005-08-17 22:26:47 bert Exp $";
-#endif
-
 #define   FUNCTION_TOLERANCE    1e-6
 #define   INITIAL_SIMPLEX_SIZE  3.0
 #define   MAX_ITERS             300

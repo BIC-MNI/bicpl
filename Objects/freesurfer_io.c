@@ -17,6 +17,8 @@
 
 #include "bicpl_internal.h"
 
+#include <arpa/inet.h>
+
 static VIO_BOOL
 input_freesurfer_binary_triangle_file(FILE *fp, polygons_struct *polygons)
 {
@@ -75,7 +77,7 @@ input_freesurfer_binary_triangle_file(FILE *fp, polygons_struct *polygons)
   for (i = 0; i < n_faces && !format_error; i++) {
     int v[3];
 
-    if (fread(v, sizeof(int), n_vertices_per_face, fp) != n_vertices_per_face) {
+    if (fread(v, sizeof(int), n_vertices_per_face, fp) != (size_t) n_vertices_per_face) {
       format_error = TRUE;
     }
 

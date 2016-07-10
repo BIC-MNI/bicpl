@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/scan_lines.c,v 1.10 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 static void  scan_line_segment_to_voxels(
     VIO_Volume    volume,
     VIO_Volume    label_volume,

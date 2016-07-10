@@ -12,10 +12,6 @@
               express or implied warranty.
 ---------------------------------------------------------------------------- */
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/texture_values.c,v 1.7 2005-08-17 22:28:27 bert Exp $";
-#endif
-
 #include "bicpl_internal.h"
 
 static  VIO_Status  output_texture_values_ascii(

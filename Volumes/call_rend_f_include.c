@@ -750,6 +750,10 @@
                    }
                  }
                  break;
+               default:
+                 print( "%s(%d): bad type %d\n",
+                        __func__, __LINE__, volume2_type );
+                 break;
                }
              }
             break;
@@ -1496,6 +1500,10 @@
        );
                    }
                  }
+                 break;
+               default:
+                 print( "%s(%d): bad type %d\n",
+                        __func__, __LINE__, volume2_type );
                  break;
                }
              }
@@ -2259,6 +2267,10 @@
                    }
                  }
                  break;
+               default:
+                 print( "%s(%d): bad type %d\n",
+                        __func__, __LINE__, volume2_type );
+                 break;
                }
              }
             break;
@@ -3005,6 +3017,10 @@
                           );
                    }
                  }
+                 break;
+               default:
+                 print( "%s(%d): bad type %d\n",
+                        __func__, __LINE__, volume2_type );
                  break;
                }
              }
@@ -3753,6 +3769,10 @@
                    }
                  }
                  break;
+               default:
+                 print( "%s(%d): bad type %d\n",
+                        __func__, __LINE__, volume2_type );
+                 break;
                }
              }
             break;
@@ -4499,6 +4519,10 @@
                           );
                    }
                  }
+                 break;
+               default:
+                 print( "%s(%d): bad type %d\n",
+                        __func__, __LINE__, volume2_type );
                  break;
                }
              }
@@ -5247,6 +5271,10 @@
                    }
                  }
                  break;
+               default:
+                 print( "%s(%d): bad type %d\n",
+                        __func__, __LINE__, volume2_type );
+                 break;
                }
              }
             break;
@@ -5994,8 +6022,15 @@
                    }
                  }
                  break;
+               default:
+                 print( "%s(%d): bad type %d\n",
+                        __func__, __LINE__, volume2_type );
+                 break;
                }
              }
             break;
+         default:
+           print( "%s(%d): bad type %d\n", __func__, __LINE__, volume1_type );
+           break;
         }
     }

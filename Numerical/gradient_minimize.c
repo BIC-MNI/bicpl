@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/gradient_minimize.c,v 1.6 2005-08-17 22:28:59 bert Exp $";
-#endif
-
 #define  SMALLEST_STEP_SIZE     1.0e-20
 
 #define  STEP_RATIO   0.5

@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/polygon_sphere.c,v 1.17 2005-08-17 22:30:25 bert Exp $";
-#endif
-
 static  int  get_n_sphere_points(
     int   n_up,
     int   n_around );
@@ -544,7 +540,7 @@ BICAPI  void  half_sample_sphere_tessellation(
     polygons_struct   *polygons,
     polygons_struct   *half )
 {
-    static VIO_Point   centre = { 0.0f, 0.0f, 0.0f };
+    static VIO_Point   centre = { { 0.0, 0.0, 0.0 } };
     int            n_up, n_around, half_n_up, half_n_around;
     int            up, around, n_circum, point_index, half_point_index;
 

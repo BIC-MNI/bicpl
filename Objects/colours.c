@@ -15,10 +15,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/colours.c,v 1.11 2005-08-17 22:28:26 bert Exp $";
-#endif
-
 static VIO_Colour ALICE_BLUE_COL;
 static VIO_Colour ANTIQUE_WHITE_COL;
 static VIO_Colour AQUAMARINE_COL;
@@ -482,7 +478,7 @@ static  void  check_initialize_colours( void )
         WHITE_SMOKE_COL = WHITE_SMOKE;
         YELLOW_COL = YELLOW;
         YELLOW_GREEN_COL = YELLOW_GREEN;
-        TRANSPARENT_COL = make_rgba_Colour( 0, 0, 0, 0 );
+        TRANSPARENT_COL = TRANSPARENT;
     }
 }
 

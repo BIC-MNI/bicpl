@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/hash_table.c,v 1.14 2005-08-17 22:31:12 bert Exp $";
-#endif
-
 #define  HASH_FUNCTION_CONSTANT          0.6180339887498948482
 
 /* ----------------------------- MNI Header -----------------------------------

@@ -21,10 +21,6 @@ int bicpl_dgesvd_(char *jobu, char *jobvt, long int *m, long int *n,
 	    VIO_Real *work, long int *lwork, long int *info);
 
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/matrix_svd.c,v 1.9 2005-08-17 22:28:59 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : singular_value_decomposition
 @INPUT      : m
@@ -66,7 +62,6 @@ BICAPI  VIO_BOOL  singular_value_decomposition(
   VIO_Real** _u;
   VIO_Real** _v;
   long int info;
-  VIO_Real temp;
 
   ALLOC(work,(int) lwork);
   VIO_ALLOC2D(_a,n,m);

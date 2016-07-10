@@ -24,10 +24,6 @@
 
 #include <stdlib.h>
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Prog_utils/random.c,v 1.15 2005-08-17 22:27:56 bert Exp $";
-#endif
-
 static  VIO_BOOL  initialized = FALSE;
 
 /* ----------------------------- MNI Header -----------------------------------

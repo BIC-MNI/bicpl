@@ -95,10 +95,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/compute_xfm.c,v 1.18 2005-08-17 22:26:47 bert Exp $";
-#endif
-
 /* Function declarations */
 
 static void compute_procrustes_transform(int npoints, 

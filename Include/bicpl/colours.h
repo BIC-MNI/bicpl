@@ -1,9 +1,11 @@
 #ifndef  DEF_COLOURS
 #define  DEF_COLOURS
 
-/* ----------------------------------------------------------------------------
-@COPYRIGHT  :
-              Copyright 1993,1994,1995 David MacDonald,
+/**
+ \file bicpl/Include/bicpl/colours.h
+ \brief Define global colour macros.
+ \copyright
+              Copyright 1993-2016 David MacDonald,
               McConnell Brain Imaging Centre,
               Montreal Neurological Institute, McGill University.
               Permission to use, copy, modify, and distribute this
@@ -13,8 +15,7 @@
               make no representations about the suitability of this
               software for any purpose.  It is provided "as is" without
               express or implied warranty.
----------------------------------------------------------------------------- */
-
+ */
 
 #include  <volume_io.h>
 
@@ -64,6 +65,7 @@ typedef  enum  { RGB_SPACE, HSL_SPACE }  Colour_spaces;
 #undef  YELLOW
 #undef  WHITE
 
+#define TRANSPARENT make_rgba_Colour( 0, 0, 0, 0 )
 #define ALICE_BLUE make_Colour_0_1( 0.941176, 0.972549, 1.0 )
 #define ANTIQUE_WHITE make_Colour_0_1( 0.980392, 0.921569, 0.843137 )
 #define AQUAMARINE make_Colour_0_1( 0.498039, 1.0, 0.831373 )

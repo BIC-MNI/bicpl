@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/tetrahedrons.c,v 1.15 2005-08-17 22:30:25 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : is_this_tetrahedral_topology
 @INPUT      : polygons
@@ -214,7 +210,7 @@ BICAPI  void  half_sample_tetrahedral_tessellation(
     polygons_struct  *half )
 {
     int             i, quarter_n_polygons;
-    static  VIO_Point   dummy_centre = { 0.0f, 0.0f, 0.0f };
+    static  VIO_Point   dummy_centre = { { 0.0f, 0.0f, 0.0f } };
 
     quarter_n_polygons = polygons->n_items / 4;
 

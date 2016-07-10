@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/skiplist.c,v 1.13 2005-08-17 22:31:13 bert Exp $";
-#endif
-
 static  int  get_random_level( void );
 
 /* ----------------------------- MNI Header -----------------------------------

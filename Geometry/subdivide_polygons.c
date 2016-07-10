@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Geometry/subdivide_polygons.c,v 1.19 2005-08-17 22:30:25 bert Exp $";
-#endif
-
 static  void  subdivide_polygon(
     polygons_struct   *polygons,
     int               poly,

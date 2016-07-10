@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Prog_utils/globals.c,v 1.16 2005-08-17 22:27:56 bert Exp $";
-#endif
-
 static    VIO_Status  input_global_variable( int, global_struct [],
                                          FILE *, VIO_BOOL * );
 static    VIO_STR    extract_string( VIO_STR );

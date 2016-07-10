@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/poly_neighs.c,v 1.23 2005-08-17 22:28:27 bert Exp $";
-#endif
-
 #define  SMALL_CHUNK_SIZE          4
 
 static   void   create_polygon_neighbours(

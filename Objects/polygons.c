@@ -14,11 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Objects/polygons.c,v 1.44 2005-08-17 22:28:27 bert Exp $";
-#endif
-
-
 /*! \defgroup grp_polygons Polygons
  *  \ingroup grp_bicobj
  *

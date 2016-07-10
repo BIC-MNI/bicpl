@@ -31,10 +31,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/compute_tps.c,v 1.13 2005-08-17 22:26:47 bert Exp $";
-#endif
-
 /* prototype definitions: */
 
 static  void  calculate_weights(

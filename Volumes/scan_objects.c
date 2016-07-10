@@ -15,10 +15,6 @@
 #include  "bicpl_internal.h"
 #include  <bicpl.h>
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/scan_objects.c,v 1.9 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : scan_object_to_volume
 @INPUT      : object

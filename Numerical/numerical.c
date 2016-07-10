@@ -20,10 +20,6 @@
 
 #include  <limits.h>
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Numerical/numerical.c,v 1.26 2005-08-17 22:28:59 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : numerically_close
 @INPUT      : n1

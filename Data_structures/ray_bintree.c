@@ -14,10 +14,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Data_structures/ray_bintree.c,v 1.19 2005-08-17 22:31:12 bert Exp $";
-#endif
-
 static  void  recursive_intersect_ray(
     VIO_Point                 *origin,
     VIO_Vector                *direction,

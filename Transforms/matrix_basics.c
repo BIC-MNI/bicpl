@@ -26,10 +26,6 @@
 
 #include "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Transforms/matrix_basics.c,v 1.17 2005-08-17 22:26:47 bert Exp $";
-#endif
-
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : transpose
 @INPUT      : rows    - number of rows

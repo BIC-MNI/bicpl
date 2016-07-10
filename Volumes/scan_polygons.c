@@ -14,10 +14,6 @@
 
 #include  "bicpl_internal.h"
 
-#ifndef lint
-static char rcsid[] = "$Header: /static-cvsroot/libraries/bicpl/Volumes/scan_polygons.c,v 1.16 2005-08-17 22:26:19 bert Exp $";
-#endif
-
 #define  MAX_TEMP_STORAGE  1000
 
 
