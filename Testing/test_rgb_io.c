@@ -49,5 +49,7 @@ int main( int ac, char* av[] )
 	return 2;
     }
 
+    delete_pixels( &image );
+
     return 0;
 }
