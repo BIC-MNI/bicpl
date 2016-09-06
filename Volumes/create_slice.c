@@ -270,6 +270,7 @@ static void  create_weighted_volume_slices(
         }
 
         if( (rgb_colour_map == NULL && colour_coding != NULL) ||
+            get_volume_n_dimensions(volume1) > 4 ||
             volume1->is_cached_volume ||
             (volume2 != NULL && volume2->is_cached_volume) ||
             (degrees_continuity != -1 && n_slices1 == 1 &&
