@@ -75,6 +75,7 @@ input_brainsuite_tractography_file( FILE *fp, object_struct *object_ptr )
   size_t n_meta;
   int i;
   int n_indices;
+  int n_chunk;
 
   lines_ptr = get_lines_ptr( object_ptr );
   initialize_lines( lines_ptr, WHITE );
@@ -118,7 +119,7 @@ input_brainsuite_tractography_file( FILE *fp, object_struct *object_ptr )
   lines_ptr->colour_flag = PER_ITEM_COLOURS;
   lines_ptr->n_points = 0;
 
-  ALLOC( lines_ptr->colours, n_curves );
+  REALLOC( lines_ptr->colours, n_curves );
   ALLOC( lines_ptr->end_indices, n_curves );
 
   n_meta = data_offset - meta_offset;
@@ -145,6 +146,7 @@ input_brainsuite_tractography_file( FILE *fp, object_struct *object_ptr )
 
   free(metadata);
 
+  n_chunk = n_curves * 100;
   n_indices = 0;
 
   /* Read in each of the curves.
@@ -162,8 +164,10 @@ input_brainsuite_tractography_file( FILE *fp, object_struct *object_ptr )
     if (fread(&n_curve_points, sizeof(int32_t), 1, fp) != 1)
       return FALSE;
 
-    SET_ARRAY_SIZE(lines_ptr->indices, n_indices, n_indices + n_curve_points, 1);
-    SET_ARRAY_SIZE(lines_ptr->points, n_indices, n_indices + n_curve_points, 1);
+    SET_ARRAY_SIZE(lines_ptr->indices, n_indices, n_indices + n_curve_points,
+                   n_chunk );
+    SET_ARRAY_SIZE(lines_ptr->points, n_indices, n_indices + n_curve_points,
+                   n_chunk );
 
     fread(&lines_ptr->points[n_indices], sizeof(float) * 3, n_curve_points, fp);
 
@@ -174,7 +178,6 @@ input_brainsuite_tractography_file( FILE *fp, object_struct *object_ptr )
     }
     lines_ptr->end_indices[i] = n_indices;
   }
-
   lines_ptr->n_points = n_indices;
 
   return TRUE;
