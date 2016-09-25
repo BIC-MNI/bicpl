@@ -65,6 +65,9 @@ BICAPI  VIO_STR  convert_colour_to_string(
 BICAPI  VIO_Colour  convert_string_to_colour(
     VIO_STR     string );
 
+BICAPI  VIO_Status  string_to_colour( VIO_STR     string,
+                                      VIO_Colour  *colour );
+
 BICAPI  int  get_colour_distance(
     int      r,
     int      g,

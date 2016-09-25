@@ -887,10 +887,10 @@ BICAPI  VIO_STR  convert_colour_to_string(
 }
 
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : convert_string_to_colour
+@NAME       : string_to_colour
 @INPUT      : string
-@OUTPUT     : 
-@RETURNS    : colour
+@OUTPUT     : colour_ptr
+@RETURNS    : status
 @DESCRIPTION: Converts a string to a colour.  If the string is a named colour
               such as "RED", then the corresponding colour is returned.
               Otherwise, the string is assumed to be of the form "0.3 1.0 0.7"
@@ -898,15 +898,16 @@ BICAPI  VIO_STR  convert_colour_to_string(
 @METHOD     : 
 @GLOBALS    : 
 @CALLS      : 
-@CREATED    : 1993            David MacDonald
+@CREATED    : 2016            Robert D Vincent
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI  VIO_Colour  convert_string_to_colour(
-    VIO_STR     string )
+BICAPI  VIO_Status  string_to_colour( VIO_STR     string,
+                                      VIO_Colour  *colour_ptr )
 {
     VIO_Colour   colour;
     double   r, g, b, a;
+    VIO_Status   status = VIO_OK;
 
     if( !lookup_colour( string, &colour ) )
     {
@@ -919,9 +920,35 @@ BICAPI  VIO_Colour  convert_string_to_colour(
         else if( sscanf( string, "%lf,%lf,%lf", &r, &g, &b ) == 3 )
             colour = make_Colour_0_1( r, g, b );
         else
+        {
             colour = make_Colour( 0, 0, 0 );
+            status = VIO_ERROR;
+        }
     }
+    *colour_ptr = colour;
+    return( status );
+}
 
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : convert_string_to_colour
+@INPUT      : string
+@OUTPUT     :
+@RETURNS    : colour
+@DESCRIPTION: Converts a string to a colour.  If the string is a named colour
+              such as "RED", then the corresponding colour is returned.
+              Otherwise, the string is assumed to be of the form "0.3 1.0 0.7"
+              and the corresponding colour returned.
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
+@CREATED    : 1993            David MacDonald
+@MODIFIED   :
+---------------------------------------------------------------------------- */
+
+BICAPI  VIO_Colour  convert_string_to_colour( VIO_STR     string )
+{
+    VIO_Colour colour;
+    string_to_colour( string, &colour );
     return( colour );
 }
 

@@ -51,7 +51,12 @@ BICAPI VIO_Status  input_user_defined_colour_coding(
             break;
         }
 
-        col = convert_string_to_colour( line );
+        status = string_to_colour( line, &col );
+        if ( status == VIO_ERROR )
+        {
+          print_error("Invalid colour code.\n");
+          break;
+        }
 
         delete_string( line );
 

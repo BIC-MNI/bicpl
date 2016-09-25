@@ -395,8 +395,7 @@ BICAPI  VIO_Status  set_global_variable(
             break;
 
         case VIO_Colour_type:
-            tmp_colour = convert_string_to_colour( value );
-
+            status = string_to_colour( value,  &tmp_colour );
             if( status == VIO_OK )
             {
                 * (VIO_Colour *) ptr = tmp_colour;
