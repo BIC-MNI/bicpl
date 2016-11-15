@@ -22,10 +22,11 @@
               express or implied warranty.
  */
 
-static void
-swap_bytes( char *ptr, int n_total, int n_per_item )
+void
+swap_bytes( void *_ptr, int n_total, int n_per_item )
 {
   int d;
+  char *ptr = (char *) _ptr;
   for ( d = 0; d < n_total; d += n_per_item )
   {
     int hi_offset = d + n_per_item - 1;
