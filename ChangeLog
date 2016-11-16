@@ -1,3 +1,12 @@
+2016-11-15  Robert D. Vincent <robert.d.vincent@mcgill.ca>
+	* Objects/trackvis_io.c: Add support for reading TrackVis
+	tractography files.
+
+2016-09-25  Robert D. Vincent <robert.d.vincent@mcgill.ca>
+	* Objects/colours.c: Add new string_to_colour() function
+	that returns an error code for unknown colours - used to
+	improve UX in Display.
+
 2016-06-28  Robert D. Vincent <robert.d.vincent@mcgill.ca>
 	* Objects/wavefront_io.c, Objects/ply_io.c: Add support for
 	reading Wavefront .obj and Stanford .ply surface files.
