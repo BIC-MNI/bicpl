@@ -215,10 +215,11 @@ int print_objects(int depth, int n_objects, object_struct **objects)
 int
 main(int argc, char **argv)
 {
-  object_struct **objects;
+  object_struct **objects = NULL;
   int n_objects = 0;
   VIO_Status status;
   int n_errors = 0;
+  int i;
 
   status = input_objects_any_format( NULL, argv[1],
                                      GREEN, 1, BOX_MARKER,
@@ -231,6 +232,11 @@ main(int argc, char **argv)
     n_errors++;
   }
   n_errors += print_objects(0, n_objects, objects);
+  for (i = 0; i < n_objects; i++)
+  {
+    delete_object( objects[i] );
+  }
+  FREE( objects );
   return n_errors;
 }
 

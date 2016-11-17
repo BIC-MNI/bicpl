@@ -627,6 +627,14 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
     }
   }
 
+  for (i = 0; i < face_count; i++)
+  {
+    FREE( face_props[i].prop_name );
+  }
+  for (i = 0; i < vertex_count; i++)
+  {
+    FREE( vertex_props[i].prop_name );
+  }
   if (n_normals == 0)
   {
     ALLOC( poly_ptr->normals, poly_ptr->n_points );
