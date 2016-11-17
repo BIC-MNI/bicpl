@@ -67,7 +67,7 @@ extern void swap_bytes( void *ptr, int n_total, int n_per_item );
  * \returns TRUE if successful.
  */
 BICAPI VIO_BOOL
-input_trackvis_graphics_file(const char *filename,
+input_trackvis_graphics_file(char *filename,
                              int *n_objects,
                              object_struct **object_list[])
 {
@@ -82,7 +82,7 @@ input_trackvis_graphics_file(const char *filename,
   uint32_t      n_count;
   uint32_t      n_points;
   
-  if ( ( fp = fopen( filename, "rb" )) == NULL )
+  if ( open_file( filename, READ_FILE, BINARY_FORMAT, &fp ) != VIO_OK )
   {
     return FALSE;
   }
@@ -91,7 +91,7 @@ input_trackvis_graphics_file(const char *filename,
 
   if ( strncmp( id_string, "TRACK", 5 ) != 0 )
   {
-    fclose( fp );
+    close_file( fp );
     return FALSE;
   }
 
@@ -117,7 +117,7 @@ input_trackvis_graphics_file(const char *filename,
   }
   else
   {
-    fclose( fp );
+    close_file( fp );
     return FALSE;
   }
 
@@ -174,6 +174,6 @@ input_trackvis_graphics_file(const char *filename,
     }
   }
   add_object_to_list( n_objects, object_list, object_ptr );
-  fclose( fp );
+  close_file( fp );
   return TRUE;
 }

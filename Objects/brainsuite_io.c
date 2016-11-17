@@ -342,7 +342,7 @@ static struct input_func_table
  * \returns TRUE if successful.
  */
 BICAPI VIO_BOOL
-input_brainsuite_graphics_file(const char *filename,
+input_brainsuite_graphics_file(char *filename,
                                int *n_objects,
                                object_struct **object_list[])
 {
@@ -353,7 +353,7 @@ input_brainsuite_graphics_file(const char *filename,
   {
     FILE *fp;
 
-    if ( ( fp = fopen( filename, "r" )) != NULL )
+    if ( open_file( filename, READ_FILE, BINARY_FORMAT, &fp ) == VIO_OK )
     {
       object_struct *object_ptr = create_object( table[i].object_type );
 
@@ -366,7 +366,7 @@ input_brainsuite_graphics_file(const char *filename,
         add_object_to_list( n_objects, object_list, object_ptr );
         result = TRUE;
       }
-      fclose( fp );
+      close_file( fp );
     }
   }
   return result;

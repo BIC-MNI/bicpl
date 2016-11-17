@@ -174,7 +174,7 @@ input_freesurfer_ascii_triangle_file(FILE *fp, polygons_struct *polygons)
  * surface representation.
  */
 BICAPI VIO_BOOL
-input_freesurfer_graphics_file(const char *filename,
+input_freesurfer_graphics_file(char *filename,
                                int *n_objects,
                                object_struct **object_list[])
 {
@@ -185,7 +185,7 @@ input_freesurfer_graphics_file(const char *filename,
   object_struct *object;
   polygons_struct *polygons;
 
-  if ((fp = fopen(filename, "r")) == NULL) {
+  if ( open_file( filename, READ_FILE, BINARY_FORMAT, &fp ) != VIO_OK ) {
     return FALSE;
   }
 
@@ -197,7 +197,7 @@ input_freesurfer_graphics_file(const char *filename,
     file_type = 1;
   }
   else {
-    fclose(fp);
+    close_file(fp);
     return FALSE;
   }
 
@@ -223,7 +223,7 @@ input_freesurfer_graphics_file(const char *filename,
     add_object_to_list( n_objects, object_list, object );
     result = TRUE;
   }
-  fclose(fp);
+  close_file(fp);
   return result;
 }
 

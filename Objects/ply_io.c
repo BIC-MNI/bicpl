@@ -644,14 +644,14 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
  * \returns TRUE if successful.
  */
 BICAPI VIO_BOOL
-input_ply_graphics_file(const char *filename,
+input_ply_graphics_file(char *filename,
                         int *n_objects,
                         object_struct **object_list[])
 {
   VIO_BOOL result = FALSE;
   FILE *fp;
 
-  if ( ( fp = fopen( filename, "rb" )) != NULL )
+  if ( open_file( filename, READ_FILE, BINARY_FORMAT, &fp ) == VIO_OK )
   {
     object_struct *object_ptr = create_object( POLYGONS );
 
@@ -664,7 +664,7 @@ input_ply_graphics_file(const char *filename,
       add_object_to_list( n_objects, object_list, object_ptr );
       result = TRUE;
     }
-    fclose( fp );
+    close_file( fp );
   }
   return result;
 }
