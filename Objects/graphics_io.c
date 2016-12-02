@@ -159,14 +159,31 @@ BICAPI  VIO_Status   input_objects_any_format(
                                  marker_colour, marker_size, marker_type,
                                  n_objects, object_list );
     }
-    else if (!input_freesurfer_graphics_file(filename, n_objects, object_list) &&
-             !input_brainsuite_graphics_file(filename, n_objects, object_list) &&
-             !input_wavefront_graphics_file(filename, n_objects, object_list) &&
-             !input_ply_graphics_file(filename, n_objects, object_list) &&
-             !input_trackvis_graphics_file(filename, n_objects, object_list))
+    else
     {
+      VIO_Status (*other_fmt_readers[])(char *, int *, object_struct ***) = {
+        input_freesurfer_graphics_file,
+        input_brainsuite_graphics_file,
+        input_wavefront_graphics_file,
+        input_ply_graphics_file,
+        input_trackvis_graphics_file,
+        NULL
+      };
+      int i;
+
+      for (i = 0; other_fmt_readers[i] != NULL; i++)
+      {
+        status = (other_fmt_readers[i])(filename, n_objects, object_list);
+        if (status != VIO_END_OF_FILE)
+        {
+          break;
+        }
+      }
+      if (status == VIO_END_OF_FILE)
+      {
         status = input_graphics_file( filename, &format,
                                       n_objects, object_list );
+      }
     }
 
     return( status );

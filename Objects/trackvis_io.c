@@ -64,9 +64,10 @@ extern void swap_bytes( void *ptr, int n_total, int n_per_item );
  * \param filename The path to the file.
  * \param n_objects A pointer to the object count field of the model.
  * \param object_list A pointer to the object list field of the model.
- * \returns TRUE if successful.
+ * \returns VIO_OK on success, VIO_ERROR on serious failure or file
+ * not found, VIO_END_OF_FILE if the file is not BrainSuite format.
  */
-BICAPI VIO_BOOL
+BICAPI VIO_Status
 input_trackvis_graphics_file(char *filename,
                              int *n_objects,
                              object_struct **object_list[])
@@ -84,7 +85,7 @@ input_trackvis_graphics_file(char *filename,
   
   if ( open_file( filename, READ_FILE, BINARY_FORMAT, &fp ) != VIO_OK )
   {
-    return FALSE;
+    return VIO_ERROR;
   }
   
   fread( id_string, sizeof(id_string), 1, fp );
@@ -92,7 +93,7 @@ input_trackvis_graphics_file(char *filename,
   if ( strncmp( id_string, "TRACK", 5 ) != 0 )
   {
     close_file( fp );
-    return FALSE;
+    return VIO_END_OF_FILE;
   }
 
   fseek( fp, TRACKVIS_OFF_N_SCALARS, 0 );
@@ -118,7 +119,7 @@ input_trackvis_graphics_file(char *filename,
   else
   {
     close_file( fp );
-    return FALSE;
+    return VIO_END_OF_FILE;
   }
 
   if (need_swap)
@@ -175,5 +176,5 @@ input_trackvis_graphics_file(char *filename,
   }
   add_object_to_list( n_objects, object_list, object_ptr );
   close_file( fp );
-  return TRUE;
+  return VIO_OK;
 }

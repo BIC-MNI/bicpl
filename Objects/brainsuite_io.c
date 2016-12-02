@@ -339,21 +339,25 @@ static struct input_func_table
  * \param filename The path to the file.
  * \param n_objects A pointer to the object count field of the model.
  * \param object_list A pointer to the object list field of the model.
- * \returns TRUE if successful.
+ * \returns VIO_OK on success, VIO_ERROR on serious failure or file
+ * not found, VIO_END_OF_FILE if the file is not BrainSuite format.
  */
-BICAPI VIO_BOOL
+BICAPI VIO_Status
 input_brainsuite_graphics_file(char *filename,
                                int *n_objects,
                                object_struct **object_list[])
 {
-  VIO_BOOL result = FALSE;
+  VIO_Status status = VIO_END_OF_FILE;
   int i;
 
-  for ( i = 0; !result && table[i].input_fn != NULL; i++ )
+  for ( i = 0; status != VIO_OK && table[i].input_fn != NULL; i++ )
   {
     FILE *fp;
-
-    if ( open_file( filename, READ_FILE, BINARY_FORMAT, &fp ) == VIO_OK )
+    if ( open_file( filename, READ_FILE, BINARY_FORMAT, &fp ) != VIO_OK )
+    {
+      return VIO_ERROR;
+    }
+    else
     {
       object_struct *object_ptr = create_object( table[i].object_type );
 
@@ -364,10 +368,10 @@ input_brainsuite_graphics_file(char *filename,
       else
       {
         add_object_to_list( n_objects, object_list, object_ptr );
-        result = TRUE;
+        status = VIO_OK;
       }
       close_file( fp );
     }
   }
-  return result;
+  return status;
 }

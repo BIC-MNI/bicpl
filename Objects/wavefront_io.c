@@ -174,17 +174,22 @@ input_wavefront_surface_file( FILE *fp, object_struct *object_ptr )
  * \param filename The path to the file.
  * \param n_objects A pointer to the object count field of the model.
  * \param object_list A pointer to the object list field of the model.
- * \returns TRUE if successful.
+ * \returns VIO_OK on success, VIO_ERROR on serious failure or file
+ * not found, VIO_END_OF_FILE if the file is not Wavefront format.
  */
-BICAPI VIO_BOOL
+BICAPI VIO_Status
 input_wavefront_graphics_file(char *filename,
                               int *n_objects,
                               object_struct **object_list[])
 {
-  VIO_BOOL result = FALSE;
+  VIO_Status status = VIO_END_OF_FILE;
   FILE *fp;
 
-  if ( open_file( filename, READ_FILE, BINARY_FORMAT, &fp ) == VIO_OK )
+  if ( open_file( filename, READ_FILE, BINARY_FORMAT, &fp ) != VIO_OK )
+  {
+    return VIO_ERROR;
+  }
+  else
   {
     object_struct *object_ptr = create_object( POLYGONS );
 
@@ -195,9 +200,9 @@ input_wavefront_graphics_file(char *filename,
     else
     {
       add_object_to_list( n_objects, object_list, object_ptr );
-      result = TRUE;
+      status = VIO_OK;
     }
     close_file( fp );
   }
-  return result;
+  return status;
 }
