@@ -267,7 +267,7 @@ BICAPI  void  insert_object_in_model(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : remove_ith_object_from_model
 @INPUT      : model
-              obj_index
+              index
 @OUTPUT     : 
 @RETURNS    : 
 @DESCRIPTION: Removes an object from a list, without deleting the object.
@@ -280,9 +280,12 @@ BICAPI  void  insert_object_in_model(
 
 BICAPI  void  remove_ith_object_from_model(
     model_struct   *model,
-    int            obj_index )
+    int            index )
 {
-    remove_object_from_list( &model->n_objects, &model->objects, obj_index );
+    if ( index >= 0 && index < model->n_objects )
+    {
+        remove_object_from_list( &model->n_objects, &model->objects, index );
+    }
 }
 
 /* ----------------------------- MNI Header -----------------------------------
