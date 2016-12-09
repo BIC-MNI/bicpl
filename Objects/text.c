@@ -39,6 +39,8 @@ BICAPI  void   initialize_text(
 {
     if( position != NULL )
         text->origin = *position;
+    else
+        fill_Point( text->origin, 0.0, 0.0, 0.0 );
 
     text->colour = colour;
     text->font = text_font;
