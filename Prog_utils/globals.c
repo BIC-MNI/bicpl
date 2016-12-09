@@ -331,11 +331,14 @@ BICAPI  VIO_Status  set_global_variable(
         switch( type )
         {
         case VIO_BOOL_type:
-            if( (value[0] == 't' || value[0] == 'T') )
+            make_string_upper_case( value );
+            if( value[0] == 'T' || !strcmp(value, "1") ||
+                !strcmp(value, "YES"))
             {
                 * (VIO_BOOL *) ptr = TRUE;
             }
-            else if( (value[0] == 'f' || value[0] == 'F') )
+            else if( value[0] == 'F' || !strcmp(value, "0") ||
+                     !strcmp(value, "NO"))
             {
                 * (VIO_BOOL *) ptr = FALSE;
             }
