@@ -19,8 +19,18 @@ typedef struct
     int  x, y, z;
 } xyz_struct;
 
+/*
+ * default callback function we use.
+ */
+static void
+set_label_callback( VIO_Volume volume, int x, int y, int z, int label,
+                    void *data )
+{
+    set_volume_voxel_value( volume, x, y, z, 0, 0, label );
+}
+
 /* ----------------------------- MNI Header -----------------------------------
-@NAME       : fill_connected_voxels
+@NAME       : fill_connected_voxels_callback
 @INPUT      : volume
               label_volume
               connectivity
@@ -30,6 +40,8 @@ typedef struct
               desired_label
               min_threshold
               max_threshold
+              callback
+              data
 @OUTPUT     : 
 @RETURNS    : TRUE if changed
 @DESCRIPTION: Performs a 3D fill from the specified voxel.
@@ -40,17 +52,19 @@ typedef struct
 @MODIFIED   : 
 ---------------------------------------------------------------------------- */
 
-BICAPI VIO_BOOL  fill_connected_voxels(
-    VIO_Volume              volume,
-    VIO_Volume              label_volume,
+BICAPI VIO_BOOL  fill_connected_voxels_callback(
+    VIO_Volume          volume,
+    VIO_Volume          label_volume,
     Neighbour_types     connectivity,
     int                 voxel[],
     int                 min_label_threshold,
     int                 max_label_threshold,
     int                 desired_label,
-    VIO_Real                min_threshold,
-    VIO_Real                max_threshold,
-    int                 range_changed[2][VIO_N_DIMENSIONS] )
+    VIO_Real            min_threshold,
+    VIO_Real            max_threshold,
+    int                 range_changed[2][VIO_N_DIMENSIONS],
+    void                (*callback)(VIO_Volume, int, int, int, int, void *),
+    void                *data )
 {
     int                          dir, n_dirs, *dx, *dy, *dz, dim;
     int                          x, y, z, tx, ty, tz;
@@ -59,7 +73,10 @@ BICAPI VIO_BOOL  fill_connected_voxels(
     xyz_struct                   entry;
     QUEUE_STRUCT( xyz_struct )   queue;
     bitlist_3d_struct            checked_flags, change_flags;
-    VIO_BOOL                      first;
+    VIO_BOOL                     first;
+
+    if ( callback == NULL )
+      callback = set_label_callback;
 
     if( !should_change_this_one( volume, label_volume, voxel,
                                  min_threshold, max_threshold,
@@ -132,7 +149,12 @@ BICAPI VIO_BOOL  fill_connected_voxels(
         if( get_bitlist_bit_3d( &change_flags, voxel_index[VIO_X], voxel_index[VIO_Y],
                                 voxel_index[VIO_Z] ) )
         {
-            set_volume_label_data( label_volume, voxel_index, desired_label );
+            (*callback)(label_volume,
+                        voxel_index[VIO_X],
+                        voxel_index[VIO_Y],
+                        voxel_index[VIO_Z],
+                        desired_label,
+                        data );
 
             for_less( dim, 0, VIO_N_DIMENSIONS )
             {
@@ -152,6 +174,47 @@ BICAPI VIO_BOOL  fill_connected_voxels(
     DELETE_QUEUE( queue );
 
     return( TRUE );
+}
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : fill_connected_voxels
+@INPUT      : volume
+              label_volume
+              connectivity
+              voxel
+              min_label_threshold
+              max_label_threshold
+              desired_label
+              min_threshold
+              max_threshold
+@OUTPUT     : 
+@RETURNS    : TRUE if changed
+@DESCRIPTION: Performs a 3D fill from the specified voxel.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+BICAPI VIO_BOOL  fill_connected_voxels(
+    VIO_Volume          volume,
+    VIO_Volume          label_volume,
+    Neighbour_types     connectivity,
+    int                 voxel[],
+    int                 min_label_threshold,
+    int                 max_label_threshold,
+    int                 desired_label,
+    VIO_Real            min_threshold,
+    VIO_Real            max_threshold,
+    int                 range_changed[2][VIO_N_DIMENSIONS] )
+{
+    return fill_connected_voxels_callback( volume, label_volume,
+                                           connectivity, voxel,
+                                           min_label_threshold,
+                                           max_label_threshold,
+                                           desired_label,
+                                           min_threshold, max_threshold,
+                                           range_changed, NULL, NULL );
 }
 
 static  int   Dx4[4] = { 1, 0, -1,  0 };

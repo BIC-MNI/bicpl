@@ -17,56 +17,44 @@
 typedef enum { NOT_INVOLVED, INSIDE_REGION, CANDIDATE }
              Voxel_classes;
 
-/* ----------------------------- MNI Header -----------------------------------
-@NAME       : dilate_voxels_3d
-@INPUT      : volume
-              label_volume
-              min_inside_label
-              max_inside_label
-              min_inside_value
-              max_inside_value
-              min_outside_label
-              max_outside_label
-              min_outside_value
-              max_outside_value
-              new_label
-              connectivity
-@OUTPUT     : 
-@RETURNS    : 
-@DESCRIPTION: Dilates the label volume.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
-@CREATED    :         1993    David MacDonald
-@MODIFIED   : 
----------------------------------------------------------------------------- */
+static void
+set_label_callback( VIO_Volume volume, int x, int y, int z, int label,
+                    void *data )
+{
+    set_volume_voxel_value( volume, x, y, z, 0, 0, label );
+}
 
-BICAPI int  dilate_voxels_3d(
-    VIO_Volume          volume,
-    VIO_Volume          label_volume,
-    VIO_Real            min_inside_label,
-    VIO_Real            max_inside_label,
-    VIO_Real            min_inside_value,
-    VIO_Real            max_inside_value,
-    VIO_Real            min_outside_label,
-    VIO_Real            max_outside_label,
-    VIO_Real            min_outside_value,
-    VIO_Real            max_outside_value,
-    VIO_Real            new_label,
+BICAPI int  dilate_voxels_callback(
+    VIO_Volume      volume,
+    VIO_Volume      label_volume,
+    VIO_Real        min_inside_label,
+    VIO_Real        max_inside_label,
+    VIO_Real        min_inside_value,
+    VIO_Real        max_inside_value,
+    VIO_Real        min_outside_label,
+    VIO_Real        max_outside_label,
+    VIO_Real        min_outside_value,
+    VIO_Real        max_outside_value,
+    VIO_Real        new_label,
     Neighbour_types connectivity,
-    int             range_changed[2][VIO_N_DIMENSIONS] )
+    int             range_changed[2][VIO_N_DIMENSIONS],
+    void            (*callback)(VIO_Volume, int, int, int, int, void *),
+    void            *data)
 {
     int                     n_changed;
     int                     x, y, z, delta_x, tx, ty, tz;
     int                     sizes[VIO_N_DIMENSIONS];
     int                     dir, n_dirs, *dx, *dy, *dz;
-    VIO_Real                    value, label, *value_row, *label_row;
-    VIO_SCHAR            **voxel_classes[3], **swap;
-    VIO_progress_struct         progress;
+    VIO_Real                value, label, *value_row, *label_row;
+    VIO_SCHAR               **voxel_classes[3], **swap;
+    VIO_progress_struct     progress;
     Voxel_classes           voxel_class;
-    VIO_BOOL                 use_label_volume, use_volume, at_end, at_edge_y;
-    VIO_BOOL                 inside_specified, outside_specified;
-    VIO_BOOL                 inside, outside;
+    VIO_BOOL                use_label_volume, use_volume, at_end, at_edge_y;
+    VIO_BOOL                inside_specified, outside_specified;
+    VIO_BOOL                inside, outside;
+
+    if ( callback == NULL )
+      callback = set_label_callback;
 
     use_label_volume = (min_inside_label <= max_inside_label ||
                         min_outside_label <= max_outside_label);
@@ -207,8 +195,8 @@ BICAPI int  dilate_voxels_3d(
 
                         if( voxel_classes[tx][ty][tz] == INSIDE_REGION )
                         {
-                            set_volume_real_value( label_volume, x, y, z, 0, 0,
-                                                   new_label );
+                            (*callback)( label_volume, x, y, z, new_label,
+                                         data );
 
                             if( n_changed == 0 || x < range_changed[0][VIO_X] )
                                 range_changed[0][VIO_X] = x;
@@ -251,3 +239,53 @@ BICAPI int  dilate_voxels_3d(
 
     return( n_changed );
 }
+
+/* ----------------------------- MNI Header -----------------------------------
+@NAME       : dilate_voxels_3d
+@INPUT      : volume
+              label_volume
+              min_inside_label
+              max_inside_label
+              min_inside_value
+              max_inside_value
+              min_outside_label
+              max_outside_label
+              min_outside_value
+              max_outside_value
+              new_label
+              connectivity
+@OUTPUT     : 
+@RETURNS    : 
+@DESCRIPTION: Dilates the label volume.
+@METHOD     : 
+@GLOBALS    : 
+@CALLS      : 
+@CREATED    :         1993    David MacDonald
+@MODIFIED   : 
+---------------------------------------------------------------------------- */
+
+BICAPI int  dilate_voxels_3d(
+    VIO_Volume          volume,
+    VIO_Volume          label_volume,
+    VIO_Real            min_inside_label,
+    VIO_Real            max_inside_label,
+    VIO_Real            min_inside_value,
+    VIO_Real            max_inside_value,
+    VIO_Real            min_outside_label,
+    VIO_Real            max_outside_label,
+    VIO_Real            min_outside_value,
+    VIO_Real            max_outside_value,
+    VIO_Real            new_label,
+    Neighbour_types connectivity,
+    int             range_changed[2][VIO_N_DIMENSIONS] )
+{
+  return dilate_voxels_callback( volume, label_volume,
+                                 min_inside_label, max_inside_label,
+                                 min_inside_value, max_inside_value,
+                                 min_outside_label, max_outside_label,
+                                 min_outside_value, max_outside_value,
+                                 new_label, connectivity, range_changed,
+                                 NULL, NULL );
+}
+
+

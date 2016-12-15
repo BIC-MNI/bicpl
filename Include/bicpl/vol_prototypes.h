@@ -220,6 +220,23 @@ BICAPI  int  dilate_voxels_3d(
     Neighbour_types connectivity,
     int             range_changed[2][VIO_N_DIMENSIONS] );
 
+BICAPI  int  dilate_voxels_callback(
+    VIO_Volume      volume,
+    VIO_Volume      label_volume,
+    VIO_Real        min_inside_label,
+    VIO_Real        max_inside_label,
+    VIO_Real        min_inside_value,
+    VIO_Real        max_inside_value,
+    VIO_Real        min_outside_label,
+    VIO_Real        max_outside_label,
+    VIO_Real        min_outside_value,
+    VIO_Real        max_outside_value,
+    VIO_Real        new_label,
+    Neighbour_types connectivity,
+    int             range_changed[2][VIO_N_DIMENSIONS],
+    void            (*callback)(VIO_Volume, int, int, int, int, void *),
+    void            *data );
+
 BICAPI  int  get_slice_weights_for_filter(
     VIO_Volume         volume,
     VIO_Real           voxel_position[],
@@ -229,6 +246,20 @@ BICAPI  int  get_slice_weights_for_filter(
     VIO_Real           ***positions,
     VIO_Real           *weights[] );
 
+BICAPI  VIO_BOOL  fill_connected_voxels_callback(
+    VIO_Volume      volume,
+    VIO_Volume      label_volume,
+    Neighbour_types connectivity,
+    int             voxel[],
+    int             min_label_threshold,
+    int             max_label_threshold,
+    int             desired_label,
+    VIO_Real        min_threshold,
+    VIO_Real        max_threshold,
+    int             range_changed[2][VIO_N_DIMENSIONS],
+    void            (*callback)(VIO_Volume, int, int, int, int, void *),
+    void            *data );
+  
 BICAPI  VIO_BOOL  fill_connected_voxels(
     VIO_Volume              volume,
     VIO_Volume              label_volume,
