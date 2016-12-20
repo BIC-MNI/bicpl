@@ -5,8 +5,8 @@
  * \file ply_io.c
  * \brief Input Stanford .ply format surface files.
  *
- * This is an incomplete but functional implementation. It has not been 
- * thoroughly tested because I have access to only a fairly small database 
+ * This is an incomplete but functional implementation. It has not been
+ * thoroughly tested because I have access to only a fairly small database
 * of files, and the format is both vague and complex.
  *
  * \copyright
@@ -74,12 +74,12 @@ typedef enum property_type
   INT, UINT, FLOAT, DOUBLE, LIST
 } property_type_t;
 
-/** 
+/**
  * This defines the maximum number of bytes that a property can contain.
  */
 #define MAX_PROPERTY_BYTES 2048
 
-/** 
+/**
  * This defines the maximum number of properties that an element can
  * contain.
  */
@@ -367,7 +367,7 @@ get_property_element( struct property_record *prop_ptr, int k, void *value_ptr )
   return 1;
 }
 
-/** 
+/**
  * Return non-zero if the processor is big-endian.
  */
 static int
@@ -534,6 +534,10 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
 
   prec_vertex_indices = find_property( face_props, face_count,
                                        "vertex_indices" );
+
+  if ( prec_vertex_indices == NULL )
+    prec_vertex_indices = find_property( face_props, face_count,
+                                         "vertex_index" );
 
   if ( prec_vertex_indices == NULL )
   {
