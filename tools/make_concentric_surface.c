@@ -19,7 +19,7 @@ int  main(
         !get_string_argument( NULL, &output_filename ) ||
         !get_real_argument( 0.0, &scaling ) )
     {
-        print_error(
+        fprintf(stderr,
           "Usage: %s input.obj output.obj scale\n",
           argv[0] );
         return( 1 );

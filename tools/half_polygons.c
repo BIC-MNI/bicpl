@@ -10,7 +10,7 @@ Usage: %s  input.obj  [output.obj]\n\
      Subdivides any polygons in the file, placing output in the original file\n\
      or in a different output file.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(

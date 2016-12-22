@@ -42,12 +42,12 @@ int  main(
         !get_real_argument( 0.0, &high ) ||
         !get_real_argument( 0.0, &max_limit ) )
     {
-        print_error(
+        fprintf(stderr,
             "Usage: %s  output.obj gray|hot|spectral min low high max\n",
             argv[0]  );
-        print_error( "   [under_col]  [over_col]  [outline_col] [n_steps]  \n");
-        print_error( "   [width] [tick_width] [scale]\n" );
-        print_error( "   [range_colour] [limit_colour]\n" );
+        fprintf(stderr, "   [under_col]  [over_col]  [outline_col] [n_steps]  \n");
+        fprintf(stderr, "   [width] [tick_width] [scale]\n" );
+        fprintf(stderr, "   [range_colour] [limit_colour]\n" );
         return( 1 );
     }
 
@@ -77,7 +77,7 @@ int  main(
         coding_type = BLUE_COLOUR_MAP;
     else
     {
-        print_error( "Invalid coding type: %s\n", coding_type_string );
+        fprintf(stderr, "Invalid coding type: %s\n", coding_type_string );
         return( 1 );
     }
 
@@ -87,7 +87,7 @@ int  main(
         !lookup_colour( range_tick_colour_name, &range_tick_colour ) ||
         !lookup_colour( limit_tick_colour_name, &limit_tick_colour ) )
     {
-        print_error( "Invalid colour names.\n" );
+        fprintf(stderr, "Invalid colour names.\n" );
         return( 1 );
     }
 

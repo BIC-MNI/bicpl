@@ -26,7 +26,7 @@ int  main(
         !get_real_argument( 0.0, &distance ) ||
         !get_string_argument( NULL, &output_filename ) )
     {
-        print_error(
+        fprintf(stderr,
           "Usage: %s  input.obj  x y z fwhm dist out.obj\n", argv[0] );
         return( 1 );
     }
@@ -35,7 +35,7 @@ int  main(
                              &object_list ) != VIO_OK || n_objects != 1 ||
         get_object_type(object_list[0]) != POLYGONS )
     {
-        print_error( "Error reading %s.\n", input_filename );
+        fprintf(stderr, "Error reading %s.\n", input_filename );
         return( 1 );
     }
 

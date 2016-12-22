@@ -17,7 +17,7 @@ int  main(
     if( !get_string_argument( NULL, &input_filename ) ||
         !get_string_argument( NULL, &output_filename ) )
     {
-        print_error( "Usage: %s input.obj output.pt [ascii|binary]\n", argv[0] );
+        fprintf(stderr, "Usage: %s input.obj output.pt [ascii|binary]\n", argv[0] );
         return( 1 );
     }
 
@@ -25,7 +25,7 @@ int  main(
     if( ascii_binary_present && ascii_binary[0] != 'a' &&
         ascii_binary[0] != 'b' )
     {
-        print_error( "Usage: %s input.obj output.pt [ascii|binary]\n", argv[0] );
+        fprintf(stderr, "Usage: %s input.obj output.pt [ascii|binary]\n", argv[0] );
         return( 1 );
     }
 

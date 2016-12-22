@@ -12,7 +12,7 @@ Usage: %s  full_topology.obj  input.pt  output.obj [ascii|binary]\n\
      Creates an output file which has the topology of the first argument.\n\
      but the points of the second argument. (Default = binary input format)\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(

@@ -25,7 +25,7 @@ int  main(
 
     if( !get_string_argument( NULL, &src_filename ) )
     {
-        print_error( "Usage: %s  input.obj\n", argv[0] );
+        fprintf(stderr, "Usage: %s  input.obj\n", argv[0] );
         return( 1 );
     }
 
@@ -171,7 +171,7 @@ static  void  test_closed_surface(
                     if( (edge3 + 1) % size2 == edge2 )
                         ++n_found;
                     else
-                        print_error( "Edge facing the wrong way\n" );
+                        fprintf(stderr, "Edge facing the wrong way\n" );
                 }
             }
 

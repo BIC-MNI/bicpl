@@ -8,7 +8,7 @@ Usage: %s  input.obj\n\
 \n\
      Prints the centroid of the object.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(

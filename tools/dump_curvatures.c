@@ -18,7 +18,7 @@ int  main(
     if( !get_string_argument( NULL, &object_filename ) ||
         !get_string_argument( NULL, &output_filename ) )
     {
-        print_error(
+        fprintf(stderr,
               "Usage: %s  object_file  output_file  [curvature_distance]\n",
               argv[0] );
         return( 1 );

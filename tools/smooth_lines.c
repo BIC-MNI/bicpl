@@ -9,7 +9,7 @@ Usage: %s  input_lines.obj  output_lines.obj [smooth_distance]\n\
      Copies the input lines to the output lines, with the any points within\n\
      smooth_distance (default 1) apart being deleted.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(

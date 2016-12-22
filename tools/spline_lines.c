@@ -10,7 +10,7 @@ Usage: %s  input_lines.obj  output_lines.obj [n_points_per_segment]\n\
      The n_points_per_segment indicates the number of line points used\n\
      to approximate each spline segment, defaulting to 8.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(

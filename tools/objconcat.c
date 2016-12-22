@@ -103,13 +103,13 @@ int main( int argc, char * argv[] ) {
                                    &object_list[i] );
 
     if( err != VIO_OK ) {
-      print_error( "Error reading file %s\n", expanded );
+      fprintf(stderr, "Error reading file %s\n", expanded );
       return( 1 );
     }
 
     if( n_objects[i] != 1 || 
         ( n_objects[i] == 1 && get_object_type(object_list[i][0]) != POLYGONS ) ) {
-      print_error( "Error in contents of file %s\n", expanded );
+      fprintf(stderr, "Error in contents of file %s\n", expanded );
       return( 1 );
     }
     delete_string( expanded );
@@ -245,6 +245,6 @@ Values: in1.obj = first input object file\n\
         out.obj = output object file\n\
         out.txt = \"none\" or output data field file\n\n";
 
-  print_error( usage_format, executable_name );
+  fprintf(stderr, usage_format, executable_name );
 }
 

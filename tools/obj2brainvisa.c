@@ -72,13 +72,13 @@ int main( int argc, char * argv[] ) {
   int err = input_graphics_file( expanded, &format, &n_objects, &object );
 
   if( err != VIO_OK ) {
-    print_error( "Error reading file %s\n", expanded );
+    fprintf(stderr, "Error reading file %s\n", expanded );
     return( 1 );
   }
 
   if( n_objects != 1 || 
       ( n_objects == 1 && get_object_type(object[0]) != POLYGONS ) ) {
-    print_error( "Error in contents of file %s\n", expanded );
+    fprintf(stderr, "Error in contents of file %s\n", expanded );
     return( 1 );
   }
   delete_string( expanded );
@@ -143,6 +143,6 @@ Usage: %s in.obj out.mesh \n\
 Values: in.obj = CLASP input object file\n\
         out.mesh = BrainVisa output surface file\n";
 
-  print_error( usage_format, executable_name );
+  fprintf(stderr, usage_format, executable_name );
 }
 

@@ -9,7 +9,7 @@ Usage: %s  input_lines.obj  output_lines.obj [thickness]\n\
      Copies the input lines to the output lines, with the line thickness set\n\
      accordingly, defaulting to 1.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(

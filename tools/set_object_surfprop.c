@@ -9,7 +9,7 @@ Usage: %s  input.obj  output.obj amb_coef diff_coef spec_coef spec_exp opacity\n
      Copies the input objects to the output objects, with the surfprop set\n\
      accordingly.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 

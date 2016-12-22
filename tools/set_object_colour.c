@@ -9,7 +9,7 @@ Usage: %s  input.obj  [output.obj colour_name]\n\
      Copies the input objects to the output objects, with the colour set\n\
      accordingly.  If only 1 arg specified, simply prints colour of object\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 

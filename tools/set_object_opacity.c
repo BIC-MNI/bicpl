@@ -9,7 +9,7 @@ Usage: %s  input.obj  output.obj opacity\n\
      Copies the input objects to the output objects, with the opacity set\n\
      accordingly, a value between 0 (transparent) and 1.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(

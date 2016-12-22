@@ -37,7 +37,7 @@ int  main(
         !get_real_argument( 0.0, &ry ) ||
         !get_real_argument( 0.0, &rz ) )
     {
-        print_error( "Usage: %s filename cx cy cz rx ry rz n_triangles.\n",
+        fprintf(stderr, "Usage: %s filename cx cy cz rx ry rz n_triangles.\n",
                      argv[0] );
         return( 1 );
     }

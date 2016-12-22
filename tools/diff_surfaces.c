@@ -29,7 +29,7 @@ int  main(
         !get_string_argument( NULL, &input2_filename ) ||
         !get_string_argument( NULL, &method_name ) )
     {
-        print_error(
+        fprintf(stderr,
           "Usage: %s  input1.obj  input2.obj link|near|normal [output.txt]\n", argv[0] );
         return( 1 );
     }
@@ -42,7 +42,7 @@ int  main(
         method = NORMAL_DISTANCE;
     else
     {
-        print_error(
+        fprintf(stderr,
           "Usage: %s  input1.obj  input2.obj link|near|normal [output.txt]\n", argv[0] );
         return( 1 );
     }
@@ -55,7 +55,7 @@ int  main(
                              &object_list ) != VIO_OK || n_objects != 1 ||
         get_object_type(object_list[0]) != POLYGONS )
     {
-        print_error( "Error reading %s.\n", input1_filename );
+        fprintf(stderr, "Error reading %s.\n", input1_filename );
         return( 1 );
     }
 
@@ -65,7 +65,7 @@ int  main(
                              &object_list ) != VIO_OK || n_objects != 1 ||
         get_object_type(object_list[0]) != POLYGONS )
     {
-        print_error( "Error reading %s.\n", input2_filename );
+        fprintf(stderr, "Error reading %s.\n", input2_filename );
         return( 1 );
     }
 
@@ -75,7 +75,7 @@ int  main(
     {
         if( !polygons_are_same_topology( polygons1, polygons2 ) )
         {
-            print_error(
+            fprintf(stderr,
                  "Polygons must be same topology to used linked method.\n" );
             return( 1 );
         }

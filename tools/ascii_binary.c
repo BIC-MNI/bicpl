@@ -9,7 +9,7 @@ Usage: ascii_binary  input.obj  [output.obj] [ascii|binary]\n\
      Converts ascii BIC .obj files to binary and vice versa, placing output in\n\
      either output.obj, if specified, or input.obj.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 

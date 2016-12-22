@@ -20,10 +20,10 @@ int  main(
     if( !get_string_argument( NULL, &src_polygons_filename ) ||
         !get_string_argument( NULL, &dest_polygons_filename ) )
     {
-        print_error(
+        fprintf(stderr,
              "Usage: %s  src_polygons  dest_polygons input_file output_file\n",
                argv[0] );
-        print_error(
+        fprintf(stderr,
              "        [input2.obj output2.obj] [input3.obj output3.obj]\n" );
         return( 1 );
     }

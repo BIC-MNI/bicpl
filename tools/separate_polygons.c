@@ -13,7 +13,7 @@ Usage: %s  input.obj  output_prefix [which] \n\
 \n\
      Separates polygons into its disjoint parts.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(
@@ -43,7 +43,7 @@ int  main(
                              &object_list ) != VIO_OK || n_objects < 1 ||
         get_object_type( object_list[0] ) != POLYGONS )
     {
-        print_error( "File must have a polygons structure.\n" );
+        fprintf(stderr, "File must have a polygons structure.\n" );
         return( 1 );
     }
 

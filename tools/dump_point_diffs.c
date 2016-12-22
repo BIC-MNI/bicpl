@@ -18,7 +18,7 @@ int  main(
         !get_string_argument( "", &filename2 ) ||
         !get_string_argument( "", &output_filename ) )
     {
-        print_error( "Usage: %s  input1.obj input2.obj output.txt\n",
+        fprintf(stderr, "Usage: %s  input1.obj input2.obj output.txt\n",
                      argv[0] );
         return( 1 );
     }
@@ -33,7 +33,7 @@ int  main(
 
     if( n_objects1 != n_objects2 )
     {
-        print_error( "Number of objects do not match.\n" );
+        fprintf(stderr, "Number of objects do not match.\n" );
         return( 1 );
     }
 
@@ -47,7 +47,7 @@ int  main(
 
         if( n_points1 != n_points2 )
         {
-            print_error( "Number of points do not match.\n" );
+            fprintf(stderr, "Number of points do not match.\n" );
             return( 1 );
         }
 

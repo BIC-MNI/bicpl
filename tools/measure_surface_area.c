@@ -30,7 +30,7 @@ int  main(
 
     if( !get_string_argument( NULL, &src_filename ) )
     {
-        print_error( "Usage: %s  src.obj values_file  low high [x|y|z +|- pos]\n",
+        fprintf(stderr, "Usage: %s  src.obj values_file  low high [x|y|z +|- pos]\n",
                      argv[0] );
         return( 1 );
     }
@@ -61,7 +61,7 @@ int  main(
 
     if( n_objects != 1 || get_object_type(object_list[0]) != POLYGONS )
     {
-        print_error( "Must contain exactly one polygons object.\n" );
+        fprintf(stderr, "Must contain exactly one polygons object.\n" );
         return( 1 );
     }
 
@@ -79,7 +79,7 @@ int  main(
         {
             if( input_real( file, &values[p] ) != VIO_OK )
             {
-                print_error( "Could not read %d'th value from file.\n", p );
+                fprintf(stderr, "Could not read %d'th value from file.\n", p );
                 return( 1 );
             }
         }

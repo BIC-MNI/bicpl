@@ -1,4 +1,5 @@
-#include  <bicpl.h>
+#include <bicpl.h>
+#include <stdio.h>
 
 static  void  usage(
     VIO_STR   executable )
@@ -12,7 +13,8 @@ Usage: %s  src.obj values_file dest.obj\n\
                 green_metal, green_metal_inv, lime_metal, lime_metal_inv,\n\
                 red_metal, red_metal_inv, purple_metal, purple_metal_inv,\n\
                 spectral, red, green, blue, rgba\n\n";
-    print_error( usage_str, executable );
+    printf( usage_str, executable );
+    
 }
 
 #define  GRAY_STRING                "gray"
@@ -119,7 +121,7 @@ int  main(
         if( !get_string_argument( NULL, &user_def_filename ) )
         {
             usage( argv[0] );
-            print_error( "Error in user def colour coding argument.\n");                    return( 1 );
+            fprintf(stderr, "Error in user def colour coding argument.\n");                    return( 1 );
         }
     }
     else
@@ -162,7 +164,7 @@ int  main(
     {
         if( input_user_defined_colour_coding( &colour_coding,
                                               user_def_filename ) != VIO_OK)                {
-            print_error( "Error in user defined colour map: %s\n",
+            fprintf(stderr, "Error in user defined colour map: %s\n",
                           user_def_filename );
             return( 1 );
         }
@@ -202,7 +204,7 @@ int  main(
         {
             if( value_index >= n_values )
             {
-                print_error( "Insufficient number of values in file.\n" );
+                fprintf(stderr, "Insufficient number of values in file.\n" );
                 return( 1 );
             }
 

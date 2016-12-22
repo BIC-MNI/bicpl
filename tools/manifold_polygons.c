@@ -15,7 +15,7 @@ Usage: %s  input.obj  output.obj [x y z] [max_poly]\n\
 \n\
      Creates a 2d manifold from an arbitrary polyhedron.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(
@@ -58,7 +58,7 @@ int  main(
                              &object_list ) != VIO_OK || n_objects < 1 ||
         get_object_type( object_list[0] ) != POLYGONS )
     {
-        print_error( "File must have a polygons structure.\n" );
+        fprintf(stderr, "File must have a polygons structure.\n" );
         return( 1 );
     }
 
@@ -164,7 +164,7 @@ static  void   manifold_polygons(
     {
         if( GET_OBJECT_SIZE( *polygons, poly ) != 3 )
         {
-            print_error( "Must be triangulation.\n" );
+            fprintf(stderr, "Must be triangulation.\n" );
             return;
         }
     }

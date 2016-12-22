@@ -11,7 +11,7 @@ Usage: %s  input.obj  [output.obj] [iters] [ratio]\n\
      each normal with the ratio interpolation between itself and the\n\
      average of its neighbours.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(

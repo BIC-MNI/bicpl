@@ -20,8 +20,8 @@ int  main( int    argc, char   *argv[] ) {
 
     if( !get_string_argument( NULL, &input_filename ) ||
         !get_string_argument( NULL, &output_filename ) ) {
-        print_error( "Toggle format of a .obj file from ASCII to BINARY, or vice-versa\n" );
-        print_error( "Usage: %s input.obj output.obj\n", argv[0] );
+        fprintf(stderr, "Toggle format of a .obj file from ASCII to BINARY, or vice-versa\n" );
+        fprintf(stderr, "Usage: %s input.obj output.obj\n", argv[0] );
         return( 1 );
     }
 

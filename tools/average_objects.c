@@ -18,9 +18,9 @@ int  main(
 
     if( !get_string_argument( NULL, &output_filename ) )
     {
-        print_error(
+        fprintf(stderr,
           "Usage: %s output.obj\n", argv[0] );
-        print_error( "         [input1.obj] [input2.obj] ...\n" );
+        fprintf(stderr, "         [input1.obj] [input2.obj] ...\n" );
         return( 1 );
     }
 
@@ -32,7 +32,7 @@ int  main(
                                       GREEN, 1.0, SPHERE_MARKER,
                                       &n_objects, &object_list ) != VIO_OK )
 	{
-	    print_error( "Could not read input %s\n", filename );
+	    fprintf(stderr, "Could not read input %s\n", filename );
 	    return 2;
 	}
 
@@ -67,7 +67,7 @@ int  main(
     }
 
     if ( n_sets == 0 ) {
-	print_error( "No input?!  No output for you!!\n" );
+	fprintf(stderr, "No input?!  No output for you!!\n" );
 	return 1;
     }
 

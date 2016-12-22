@@ -16,7 +16,7 @@ Usage: %s  input.obj  [output.obj]  [new_n_polygons]\n\
      or in a different output file.   If a new_n_polygons is specified\n\
      then the polygons will be resampled to this size.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(
@@ -56,7 +56,7 @@ int  main(
             {
                 if( !is_this_tetrahedral_topology( polygons ) )
                 {
-                    print_error( "Polygons are not tetrahedral topology.\n" );
+                    fprintf(stderr, "Polygons are not tetrahedral topology.\n" );
                     return( 1 );
                 }
 

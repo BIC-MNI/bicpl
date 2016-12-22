@@ -10,7 +10,7 @@ Usage: %s  input.obj\n\
 \n\
      Writes out the number of items in the object.\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(
@@ -36,7 +36,7 @@ int  main(
 
     if( n_objects != 1 || get_object_type(object_list[0]) != POLYGONS )
     {
-        print_error( "File must contain exactly 1 polygons struct.\n" );
+        fprintf(stderr, "File must contain exactly 1 polygons struct.\n" );
         return( 1 );
     }
 

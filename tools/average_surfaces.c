@@ -52,10 +52,10 @@ int  main(
         !get_string_argument( NULL, &variance_filename ) ||
         !get_int_argument( 1, &n_groups ) )
     {
-        print_error(
+        fprintf(stderr,
           "Usage: %s output.obj  none|rms_file  none|variance_file n_groups\n",
                   argv[0] );
-        print_error( "         [input1.obj] [input2.obj] ...\n" );
+        fprintf(stderr, "         [input1.obj] [input2.obj] ...\n" );
         return( 1 );
     }
 
@@ -343,7 +343,7 @@ static  VIO_Real  get_rms_points(
         variance[i][j] /= (VIO_Real) (n_surfaces-n_groups);
 
     if( !invert_square_matrix( 3, (VIO_Real**)variance, (VIO_Real**)inverse ) ) {
-        print_error( "Error getting inverse of variance\n" );
+        fprintf(stderr, "Error getting inverse of variance\n" );
     }
 
     for_less( i, 0, 3 )

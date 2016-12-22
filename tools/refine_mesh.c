@@ -12,7 +12,7 @@ static  void  usage(
     VIO_STR  usage_str = "\n\
 Usage: %s  lengths.obj  input.obj output.obj  max_length\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(
@@ -43,7 +43,7 @@ int  main(
                              &len_object_list ) != VIO_OK ||
         n_len_objects < 1 || get_object_type(len_object_list[0]) != POLYGONS )
     {
-        print_error( "Error in input file.\n" );
+        fprintf(stderr, "Error in input file.\n" );
         return( 1 );
     }
 
@@ -51,7 +51,7 @@ int  main(
                              &object_list ) != VIO_OK ||
         n_objects < 1 || get_object_type(object_list[0]) != POLYGONS )
     {
-        print_error( "Error in input file.\n" );
+        fprintf(stderr, "Error in input file.\n" );
         return( 1 );
     }
 
@@ -67,7 +67,7 @@ int  main(
                                     length->end_indices,
                                     length->indices ) )
     {
-        print_error( "Mismatching topology.\n" );
+        fprintf(stderr, "Mismatching topology.\n" );
         return( 1 );
     }
 
@@ -283,7 +283,7 @@ static  int  refine_mesh(
         size = GET_OBJECT_SIZE( *polygons, poly );
         if( size != 3 )
         {
-            print_error( "Cannot handle non-triangles\n" );
+            fprintf(stderr, "Cannot handle non-triangles\n" );
         }
 
         for_less( edge, 0, size )

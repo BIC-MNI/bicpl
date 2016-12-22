@@ -10,7 +10,7 @@ Usage: %s  input.obj  values.txt [output.txt]\n\
 \n\
      .\n\n";
 
-    print_error( usage_str, executable );
+    fprintf(stderr, usage_str, executable );
 }
 
 int  main(
@@ -44,7 +44,7 @@ int  main(
 
     if( n_objects != 1 || get_object_type(object_list[0]) != POLYGONS )
     {
-        print_error( "Must be polygons\n" );
+        fprintf(stderr, "Must be polygons\n" );
         return( 1 );
     }
 
@@ -81,7 +81,7 @@ int  main(
         }
 
         if( n_non != 2 )
-            print_error( "n_non: %d\n", n_non );
+            fprintf(stderr, "n_non: %d\n", n_non );
         values[p] = avg / 2.0;
     }
 
