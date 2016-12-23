@@ -13,7 +13,7 @@ Usage: %s  src.obj values_file dest.obj\n\
                 green_metal, green_metal_inv, lime_metal, lime_metal_inv,\n\
                 red_metal, red_metal_inv, purple_metal, purple_metal_inv,\n\
                 spectral, red, green, blue, rgba\n\n";
-    printf( usage_str, executable );
+      fprintf(stderr, usage_str, executable );
     
 }
 
