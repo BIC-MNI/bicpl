@@ -1,6 +1,9 @@
 /* $Id: ppm.c 8 2008-10-03 02:18:17Z gophi $ */
 
-#define _XOPEN_SOURCE
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE 500
+#endif
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif //HAVE_CONFIG_H
