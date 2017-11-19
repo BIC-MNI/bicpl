@@ -22,7 +22,8 @@
 /**
  * \brief Structure of a TrackVis .trk file.
  *
- * This structure defines the header. However, we don't rely 
+ * This structure defines the header. However, we don't rely on
+ * this structure, we only read certain pieces of it from the file.
  */
 struct trackvis_header
 {                               /* SIZE | OFFSET */

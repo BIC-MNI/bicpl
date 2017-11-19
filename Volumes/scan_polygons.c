@@ -46,6 +46,7 @@ static void  recursive_scan_polygon_to_voxels(
     VIO_Point      left_vertices[MAX_TEMP_STORAGE];
     VIO_Vector     normal;
 
+    /* find the maximal dimension extent */
     max_dim = 0;
     for_less( dim, 1, VIO_N_DIMENSIONS )
     {
@@ -60,6 +61,7 @@ static void  recursive_scan_polygon_to_voxels(
         return;
     }
 
+    /* otherwise we split the polygon across the maximal dimension */
     pos = (min_voxel[max_dim] + max_voxel[max_dim]) / 2;
     slice_pos = (VIO_Real) pos + 0.5;
 
@@ -145,6 +147,11 @@ BICAPI void  scan_a_polygon(
     min_voxel[VIO_X] = 0.0;     /*--- to avoid warnings */
     max_voxel[VIO_X] = 0.0;
 
+    /* for each vertex in the polygon, convert the vertex to
+       voxel coordinates. Record all of the voxel coordinates
+       in the voxels array. While we're at it, find the minimum
+       and maximum extent of the polygon in voxel space.
+    */
     for_less( vertex, 0, size )
     {
         convert_world_to_voxel( volume,
@@ -175,6 +182,9 @@ BICAPI void  scan_a_polygon(
         }
     }
 
+    /* Convert the minimum/maximum voxel coordinates to integers,
+       bounded by the size of the overall voxel space.
+    */
     for_less( dim, 0, VIO_N_DIMENSIONS )
     {
         min_iv[dim] = VIO_ROUND( min_voxel[dim] );
@@ -186,6 +196,9 @@ BICAPI void  scan_a_polygon(
             max_iv[dim] = sizes[dim]-1;
     }
 
+    /* Now clip the polygon to the box defined by its
+     * bounded extent in voxel space.
+     */
     n_clip = clip_polygon_against_box( size, voxels,
                                        (VIO_Real) min_iv[VIO_X] - 0.5,
                                        (VIO_Real) max_iv[VIO_X] + 0.5,
