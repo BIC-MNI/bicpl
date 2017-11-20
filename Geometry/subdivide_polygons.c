@@ -18,11 +18,13 @@ static  void  subdivide_polygon(
     polygons_struct   *polygons,
     int               poly,
     int               *new_n_points,
-    VIO_Point             *new_points[],
+    VIO_Point         *new_points[],
     int               *new_n_polygons,
     int               *new_end_indices[],
     int               *new_n_indices,
     int               *new_indices[],
+    int               *new_n_colours,
+    VIO_Colour        *new_colours[],
     int               n_neighbours[],
     int               *neighbours[],
     int               *midpoints[] );
@@ -30,29 +32,31 @@ static  void  subdivide_polygon(
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : subdivide_polygons
 @INPUT      : polygons
-@OUTPUT     : 
-@RETURNS    : 
+@OUTPUT     :
+@RETURNS    :
 @DESCRIPTION: Subdivides the polygons, each polygon become 4 polygons.
               Can only handle polygons that have 3 or 4 vertices.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 BICAPI  void  subdivide_polygons(
     polygons_struct  *polygons )
 {
-    int                i, new_n_points, new_n_indices, new_n_polygons;
-    int                *new_indices, *new_end_indices;
-    int                size, *n_point_neighbours, **point_neighbours;
-    int                **midpoints;
-    int                total_n_point_neighbours;
-    VIO_Point              *new_points;
-    VIO_Point              dummy;
-    VIO_Colour             save_colour;
-    VIO_progress_struct    progress;
+    int                 i, new_n_points, new_n_indices, new_n_polygons;
+    int                 *new_indices, *new_end_indices;
+    int                 new_n_colours;
+    VIO_Colour          *new_colours;
+    int                 size, *n_point_neighbours, **point_neighbours;
+    int                 **midpoints;
+    int                 total_n_point_neighbours;
+    VIO_Point           *new_points;
+    VIO_Point           dummy;
+    VIO_progress_struct progress;
+    int                 colour_flag = polygons->colour_flag;
 
     new_points = NULL;
 
@@ -63,11 +67,27 @@ BICAPI  void  subdivide_polygons(
         return;
     }
 
-    save_colour = polygons->colours[0];
-
     new_n_points = polygons->n_points;
     new_n_polygons = 0;
     new_n_indices = 0;
+    new_n_colours = 0;
+
+    if ( colour_flag == ONE_COLOUR )
+    {
+      ADD_ELEMENT_TO_ARRAY( new_colours, new_n_colours, polygons->colours[0],
+                            1 );
+    }
+    else if ( polygons->colour_flag == PER_VERTEX_COLOURS )
+    {
+        /* For per-vertex colours, start with a copy of the colour array.
+         */
+        for_less ( i, 0, polygons->n_points )
+        {
+            ADD_ELEMENT_TO_ARRAY( new_colours, new_n_colours,
+                                  polygons->colours[i], DEFAULT_CHUNK_SIZE );
+        }
+    }
+
 
     size = 0;
     SET_ARRAY_SIZE( new_points, size, new_n_points, DEFAULT_CHUNK_SIZE );
@@ -101,6 +121,7 @@ BICAPI  void  subdivide_polygons(
                            &new_n_points, &new_points,
                            &new_n_polygons, &new_end_indices,
                            &new_n_indices, &new_indices,
+                           &new_n_colours, &new_colours,
                            n_point_neighbours, point_neighbours, midpoints );
         update_progress_report( &progress, i+1 );
     }
@@ -115,10 +136,6 @@ BICAPI  void  subdivide_polygons(
 
     delete_polygons( polygons );
 
-    ALLOC( polygons->colours, 1 );
-    polygons->colour_flag = ONE_COLOUR;
-    polygons->colours[0] = save_colour;
-
     ALLOC( polygons->normals, new_n_points );
 
     polygons->n_points = new_n_points;
@@ -126,6 +143,8 @@ BICAPI  void  subdivide_polygons(
     polygons->n_items = new_n_polygons;
     polygons->end_indices = new_end_indices;
     polygons->indices = new_indices;
+    polygons->colour_flag = colour_flag;
+    polygons->colours = new_colours;
 }
 
 /* ----------------------------- MNI Header -----------------------------------
@@ -138,32 +157,36 @@ BICAPI  void  subdivide_polygons(
               new_end_indices
               new_n_indices
               new_indices
+              new_n_colours
+              new_colours
               midpoint_table
-@RETURNS    : 
+@RETURNS    :
 @DESCRIPTION: Subdivides the poly'th polygon into 4 new polygons.
-@METHOD     : 
-@GLOBALS    : 
-@CALLS      : 
+@METHOD     :
+@GLOBALS    :
+@CALLS      :
 @CREATED    :         1993    David MacDonald
-@MODIFIED   : 
+@MODIFIED   :
 ---------------------------------------------------------------------------- */
 
 static  void  subdivide_polygon(
     polygons_struct   *polygons,
     int               poly,
     int               *new_n_points,
-    VIO_Point             *new_points[],
+    VIO_Point         *new_points[],
     int               *new_n_polygons,
     int               *new_end_indices[],
     int               *new_n_indices,
     int               *new_indices[],
+    int               *new_n_colours,
+    VIO_Colour        *new_colours[],
     int               n_neighbours[],
     int               *neighbours[],
     int               *midpoints[] )
 {
-    int     edge, size, i0, i1, point_indices[4], p;
-    int     midpoint_indices[4], centre_point_index, p1, p2;
-    VIO_Point   midpoint;
+    int       edge, size, i0, i1, point_indices[4], p;
+    int       midpoint_indices[4], centre_point_index, p1, p2;
+    VIO_Point midpoint;
 
     size = GET_OBJECT_SIZE( *polygons, poly );
 
@@ -205,12 +228,17 @@ static  void  subdivide_polygon(
                                 polygons->points[i1], 0.5 );
             ADD_ELEMENT_TO_ARRAY( *new_points, *new_n_points,
                                   midpoint, DEFAULT_CHUNK_SIZE );
+
+            if ( polygons->colour_flag == PER_VERTEX_COLOURS )
+            {
+                ADD_ELEMENT_TO_ARRAY( *new_colours, *new_n_colours,
+                                      polygons->colours[i0], DEFAULT_CHUNK_SIZE );
+            }
         }
     }
 
     if( size == 3 )
     {
-
         ADD_ELEMENT_TO_ARRAY( *new_indices, *new_n_indices,
                               point_indices[0], DEFAULT_CHUNK_SIZE );
         ADD_ELEMENT_TO_ARRAY( *new_indices, *new_n_indices,
@@ -303,5 +331,17 @@ static  void  subdivide_polygon(
                               midpoint_indices[2], DEFAULT_CHUNK_SIZE );
         ADD_ELEMENT_TO_ARRAY( *new_end_indices, *new_n_polygons,
                               *new_n_indices, DEFAULT_CHUNK_SIZE );
+
+    }
+    if ( polygons->colour_flag == PER_ITEM_COLOURS )
+    {
+        ADD_ELEMENT_TO_ARRAY( *new_colours, *new_n_colours,
+                              polygons->colours[poly], DEFAULT_CHUNK_SIZE );
+        ADD_ELEMENT_TO_ARRAY( *new_colours, *new_n_colours,
+                              polygons->colours[poly], DEFAULT_CHUNK_SIZE );
+        ADD_ELEMENT_TO_ARRAY( *new_colours, *new_n_colours,
+                              polygons->colours[poly], DEFAULT_CHUNK_SIZE );
+        ADD_ELEMENT_TO_ARRAY( *new_colours, *new_n_colours,
+                              polygons->colours[poly], DEFAULT_CHUNK_SIZE );
     }
 }
