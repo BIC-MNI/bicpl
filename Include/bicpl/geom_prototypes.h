@@ -477,6 +477,10 @@ BICAPI  void  subdivide_lines(
 BICAPI  void  subdivide_polygons(
     polygons_struct  *polygons );
 
+BICAPI  void  subdivide_polygons_indices(
+  polygons_struct  *polygons,
+  int              *data_indices[]);
+
 BICAPI  VIO_Real  get_polygon_2d_area(
     int      n_points,
     VIO_Point    points[] );
