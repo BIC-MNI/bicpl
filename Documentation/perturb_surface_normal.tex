@@ -1,0 +1,60 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{txfonts}
+
+% Little macro to make keywords obvious.
+\newcommand{\kw}[1]{{\tt \mbox{#1}}}
+
+\title{perturb\_surface\_normal}
+\author{Robert D. Vincent \\
+McConnell Brain Imaging Centre \\
+Montreal Neurological Institute \\
+Montreal, QC H3A 2B4 Canada \\~\\
+}
+\date{\today}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This is a simple tool to introduce a controlled amount of distortion
+into a polygonal surface, intended for testing and evaluation purposes.
+
+The program takes seven parameters:
+\begin{enumerate}
+\item An input file name.
+  \item An x-coordinate of a point in the space of the surface.
+  \item An y-coordinate of a point in the space of the surface.
+  \item An z-coordinate of a point in the space of the surface.
+  \item A FWHM (full width at half maximum) parameter.
+  \item A weight or amplitude parameter (misleadingly called
+    ``distance'' in the code).
+  \item An output file name.
+\end{enumerate}
+
+\section{Algorithm}
+The representation of a polygon in the tool includes a list of
+points $\mathbf{P}$ and a parallel list of normal vectors $\mathbf{N}$.
+
+The $x$, $y$ and $z$ parameters define a point $c$ that
+is used as the centre of a 3-dimensional Gaussian function. The Gaussian
+controls the amount of perturbation applied to a given point.
+
+For every point $p$ in the list $\mathbf{P}$, the
+program computes a distance $d$ as the Euclidean distance from $c$ to
+$p$:
+\begin{equation}
+  d = \sqrt{(p_x - c_x)^2 + (p_y - c_y)^2 + (p_z - c_z)^2}
+\end{equation}
+Taking $n$ as the normal vector that corresponds to the point $p$,
+and we compute a new point $p'$ as follows:
+\begin{eqnarray}
+  p'_x = p_x + n_x a e^{-\frac{4\ln(2) d^2}{w^2}}\\
+  p'_y = p_y + n_y a e^{-\frac{4\ln(2) d^2}{w^2}}\\
+  p'_z = p_z + n_z a e^{-\frac{4\ln(2) d^2}{w^2}}
+\end{eqnarray}
+where $a$ is the amplitude parameter and $w$ is the FWHM parameter. In the
+resulting surface, each 
+each point $p$ in $\mathbf{P}$ is replaced with its perturbed point $p'$.
+
+\end{document}
