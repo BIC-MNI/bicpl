@@ -166,7 +166,7 @@ int main( int argc, char * argv[] ) {
         }
       } else {
         char buf[80];
-        FILE * fp2 = fopen( argv[n_input_objs+i+1], "r+t" );
+        FILE * fp2 = fopen( argv[n_input_objs+i+1], "rt" );
         if( fp2 != NULL ) {
           for( j = 0; j < surface->n_points; j++ ) {
             if (fscanf( fp2, "%s", buf ) == 1) {
