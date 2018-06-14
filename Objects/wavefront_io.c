@@ -190,19 +190,29 @@ input_wavefront_graphics_file(char *filename,
     return VIO_ERROR;
   }
   else
-  {
-    object_struct *object_ptr = create_object( POLYGONS );
-
-    if ( !input_wavefront_surface_file( fp, object_ptr ) )
-    {
-      delete_object( object_ptr );
+  { 
+    int c = fgetc(fp);
+    if ( c == EOF  ){
+      close_file( fp );
+      return VIO_END_OF_FILE;
     }
     else
-    {
-      add_object_to_list( n_objects, object_list, object_ptr );
-      status = VIO_OK;
+    { 
+      ungetc(c, fp);
+      
+      object_struct *object_ptr = create_object( POLYGONS );
+
+      if ( !input_wavefront_surface_file( fp, object_ptr ) )
+      {
+        delete_object( object_ptr );
+      }
+      else
+      {
+        add_object_to_list( n_objects, object_list, object_ptr );
+        status = VIO_OK;
+      }
+      close_file( fp );
     }
-    close_file( fp );
   }
   return status;
 }
