@@ -51,6 +51,7 @@ ADD_EXECUTABLE(subdivide_polygons  subdivide_polygons.c)
 ADD_EXECUTABLE(subdivide_values  subdivide_values.c)
 ADD_EXECUTABLE(triangulate_polygons  triangulate_polygons.c)
 ADD_EXECUTABLE(expand_object_along_surface_normal expand_object_along_surface_normal.c)
+ADD_EXECUTABLE(tagtoxfm tagtoxfm.c)
 
 INSTALL(
   TARGETS 
@@ -103,4 +104,5 @@ INSTALL(
     subdivide_values
     triangulate_polygons
     expand_object_along_surface_normal
+    tagtoxfm
   DESTINATION bin)
