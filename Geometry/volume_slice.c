@@ -66,7 +66,8 @@ BICAPI  void   create_slice_quadmesh(
         y_tess = MAX( 2, sizes[y_axis] );
 
     get_default_surfprop( &spr );
-    initialize_quadmesh( quadmesh, WHITE, &spr, x_tess, y_tess );
+    spr.se = 0.0; // disable shineness
+    initialize_quadmesh( quadmesh, TRANSPARENT, &spr, x_tess, y_tess ); /*VF: WHITE*/
 
     voxel[axis_index] = voxel_position;
 
