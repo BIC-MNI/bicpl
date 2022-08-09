@@ -110,7 +110,7 @@ BICAPI  void  procrustes(
     VIO_Real  *Atranslation, *Btranslation, *svd_W;
     VIO_Real  **Ashift, **Bshift, **Atranspose, **Btranspose, **rotation;
     VIO_Real  **svd_V, **svd_VT;
-    VIO_Real  **Brotated, **product;
+    VIO_Real  **Brotated;
     VIO_Real  trace1, trace2;
     VIO_Real  **svd_U;
                                    
