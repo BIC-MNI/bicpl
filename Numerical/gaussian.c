@@ -14,6 +14,22 @@
 
 #include "bicpl_internal.h"
 
+
+/* EVIL HACK: scaled_maximal_pivoting_gaussian_elimination is an internal function in libminc*/
+/* see minc2_private.h*/
+
+int scaled_maximal_pivoting_gaussian_elimination(int   n,
+                                                  int   row[],
+                                                  double **a,
+                                                  int   n_values,
+                                                  double **solution );
+
+int scaled_maximal_pivoting_gaussian_elimination_real(int n,
+                                                      double **coefs,
+                                                      int n_values,
+                                                      double **values );
+
+
 /* ----------------------------- MNI Header -----------------------------------
 @NAME       : scaled_maximal_pivoting_gaussian_elimination_float
 @INPUT      : n
