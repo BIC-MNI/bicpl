@@ -23,6 +23,7 @@
 #endif
 
 #include <stdlib.h>
+#include <time.h>
 
 static  VIO_BOOL  initialized = FALSE;
 
