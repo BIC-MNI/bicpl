@@ -22,6 +22,10 @@
 #include  <sys/time.h>
 #endif
 
+#if HAVE_TIME_H
+#include <time.h>
+#endif 
+
 #include <stdlib.h>
 
 static  VIO_BOOL  initialized = FALSE;

@@ -10,8 +10,8 @@
 
 
 
-BICAPI  Status  input_rgb_file(
-    STRING          filename,
+BICAPI  VIO_Status  input_rgb_file(
+    VIO_STR          filename,
     pixels_struct   *pixels )
 {
     FILE* f;
@@ -57,8 +57,8 @@ BICAPI  Status  input_rgb_file(
 }
 
 
-BICAPI  Status  output_rgb_file(
-    STRING          filename,
+BICAPI  VIO_Status  output_rgb_file(
+    VIO_STR          filename,
     pixels_struct   *pixels )
 {
     FILE* f;
@@ -105,7 +105,7 @@ BICAPI  Status  output_rgb_file(
 
     for ( y = pixels->y_size - 1; y >= 0; --y ) {
         for( x = 0; x < pixels->x_size; ++x ) {
-                  Colour col = PIXEL_RGB_COLOUR( *pixels, x, y );
+                  VIO_Colour col = PIXEL_RGB_COLOUR( *pixels, x, y );
             PPM_ASSIGN( rowbuf[x], 
             get_Colour_r( col ),
             get_Colour_g( col ),

@@ -66,6 +66,10 @@
 /* Define to 1 if you have the <vfork.h> header file. */
 #cmakedefine HAVE_VFORK_H 1
 
+/* Define to 1 if you have the <time.h> header file. */
+#cmakedefine HAVE_TIME_H 1
+
+
 /* Define to 1 if `fork' works. */
 #cmakedefine HAVE_WORKING_FORK 1
 
