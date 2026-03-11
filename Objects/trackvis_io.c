@@ -91,7 +91,7 @@ input_trackvis_graphics_file(char *filename,
   
   fread( id_string, sizeof(id_string), 1, fp );
 
-  if ( strncmp( id_string, "TRACK", 5 ) != 0 )
+  if ( feof(fp) || ferror(fp) || strncmp( id_string, "TRACK", 5 ) != 0 )
   {
     close_file( fp );
     return VIO_END_OF_FILE;

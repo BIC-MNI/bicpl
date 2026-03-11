@@ -411,7 +411,10 @@ input_ply_surface_file( FILE *fp, object_struct *object_ptr )
 
   initialize_polygons( poly_ptr, WHITE, NULL );
 
-  fgets( line, sizeof(line), fp );
+  if ( fgets( line, sizeof(line), fp ) == NULL )
+  {
+    return FALSE;
+  }
   trim( line );
   if (strcmp( line, "ply" ))
   {
