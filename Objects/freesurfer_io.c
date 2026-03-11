@@ -211,6 +211,11 @@ input_freesurfer_graphics_file(char *filename,
   }
 
   fread(magic, FS_MAGIC_N_BYTES, 1, fp);
+  if (feof(fp) || ferror(fp))
+  {
+    close_file(fp);
+    return VIO_END_OF_FILE;     /* Too short or unreadable. */
+  }
   if (magic[0] == 0xff || magic[1] == 0xff || magic[2] == 0xfe)
   {
     file_type = 0;
