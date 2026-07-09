@@ -583,6 +583,7 @@ BICAPI void  create_volume_slice_coding(
 
     if( volume2 != NULL )
     {
+        printf("volume2=%p\n", volume2);
         if( !get_filter_slices( volume2, slice_position2, x_axis2, y_axis2,
                                 filter_type2, filter_width2, &n_slices2,
                                 &positions2, &weights2 ) )
