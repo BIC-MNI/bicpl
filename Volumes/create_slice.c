@@ -247,7 +247,10 @@ static void  create_weighted_volume_slices(
                  strides2[axis] = strides2[axis+1] * sizes2[axis+1];
         }
         else
+        {
             volume_data2 = NULL;
+            n_dimensions2 = 0;
+        }
 
         if( x_pixel_start > x_pixel_end || y_pixel_start > y_pixel_end )
         {
@@ -342,6 +345,9 @@ static VIO_BOOL  get_filter_slices(
 {
     int    c, a1, a2;
     VIO_Real   direction[VIO_N_DIMENSIONS], separations[VIO_MAX_DIMENSIONS];
+
+    if( volume == NULL )
+        return( FALSE );
 
     if( filter_type != NEAREST_NEIGHBOUR )
     {
@@ -572,6 +578,9 @@ BICAPI void  create_volume_slice_coding(
 
     real_origins1 = NULL;       /* Initialize this!! */
     real_origins2 = NULL;       /* Initialize this!! */
+    n_slices2 = 0;
+    positions2 = NULL;
+    weights2 = NULL;
 
     if( !get_filter_slices( volume1, slice_position1, x_axis1, y_axis1,
                             filter_type1, filter_width1, &n_slices1,
@@ -583,7 +592,6 @@ BICAPI void  create_volume_slice_coding(
 
     if( volume2 != NULL )
     {
-        printf("volume2=%p\n", volume2);
         if( !get_filter_slices( volume2, slice_position2, x_axis2, y_axis2,
                                 filter_type2, filter_width2, &n_slices2,
                                 &positions2, &weights2 ) )
@@ -667,6 +675,12 @@ BICAPI void  set_volume_slice_pixel_range(
     VIO_Real         **real_origins1, **real_origins2;
     VIO_Real         real_x_axis1[VIO_MAX_DIMENSIONS], real_y_axis1[VIO_MAX_DIMENSIONS];
     VIO_Real         real_x_axis2[VIO_MAX_DIMENSIONS], real_y_axis2[VIO_MAX_DIMENSIONS];
+
+    real_origins1 = NULL;
+    real_origins2 = NULL;
+    n_slices2 = 0;
+    positions2 = NULL;
+    weights2 = NULL;
 
     if( !get_filter_slices( volume1, slice_position1, x_axis1, y_axis1,
                             filter_type1, filter_width1, &n_slices1,
