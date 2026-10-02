@@ -1,0 +1,72 @@
+# Citation metadata for bicpl (Citation File Format, https://citation-file-format.github.io/).
+# The author list comes from the commit history and from the history comments in the files.
+
+cff-version: 1.2.0
+title: bicpl
+message: >-
+  If you use this software, please cite it using the metadata from this file.
+type: software
+authors:
+  - given-names: David
+    family-names: MacDonald
+  - given-names: Steve M.
+    family-names: Robbins
+  - given-names: Robert D.
+    family-names: Vincent
+  - given-names: Vladimir
+    family-names: Fonov
+    email: vladimir.fonov@gmail.com
+    affiliation: McGill University
+    orcid: "https://orcid.org/0000-0003-3402-7749"
+  - given-names: Peter
+    family-names: Neelin
+  - given-names: D. Louis
+    family-names: Collins
+    affiliation: McGill University
+    orcid: "https://orcid.org/0000-0002-8432-7021"
+  - given-names: Claude
+    family-names: Lepage
+  - given-names: Jason
+    family-names: Lerch
+    orcid: "https://orcid.org/0000-0001-6164-2881"
+  - given-names: Vivek
+    family-names: Singh
+  - given-names: Weiqian
+    family-names: Dai
+  - given-names: Andrew L.
+    family-names: Janke
+    orcid: "https://orcid.org/0000-0003-0547-5171"
+  - given-names: Massine
+    alias: "bbbxyz"
+  - alias: "Abelian-grape"
+  - given-names: Haz-Edine
+    family-names: Assemlal
+  - given-names: Gabriel A.
+    family-names: Devenyi
+    email: gdevenyi@gmail.com
+    affiliation: Douglas Mental Health University Institute
+    orcid: "https://orcid.org/0000-0002-7766-1187"
+  - given-names: Shyan
+    family-names: Ku
+  - given-names: Sean
+    family-names: Marrett
+    orcid: "https://orcid.org/0000-0001-8179-6511"
+  - given-names: Guilhem
+    family-names: Saurel
+    orcid: "https://orcid.org/0000-0002-0867-1664"
+  - given-names: Raghav
+    family-names: Sood
+repository-code: "https://github.com/BIC-MNI/bicpl"
+abstract: >-
+  BICPL, the Brain Imaging Centre Programming Library: functions to manipulate
+  volumes and geometric objects such as polygons and lines, basic geometry,
+  and general programming utilities. It is a layer on top of the MINC Volume
+  IO library.
+keywords:
+  - MINC
+  - medical imaging
+  - neuroimaging
+  - geometry
+  - surface
+  - library
+license-url: "https://github.com/BIC-MNI/bicpl/blob/master/COPYING"
